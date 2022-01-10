@@ -32,7 +32,6 @@ use TYPO3\CMS\Core\Log\LogManager;
  * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
  * @property-read array $fileGrps This holds the file ID -> USE concordance
  * @property-read bool $hasFulltext Are there any fulltext files available?
- * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
  * @property-read int $numPages The holds the total number of pages
@@ -47,7 +46,6 @@ use TYPO3\CMS\Core\Log\LogManager;
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
  * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
- * @property-read mixed $uid This holds the UID or the URL of the document
  */
 final class MetsDocument extends Doc
 {
@@ -636,7 +634,7 @@ final class MetsDocument extends Doc
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Doc::init()
      */
-    protected function init()
+    protected function init($location)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
         // Get METS node from XML file.
@@ -647,7 +645,13 @@ final class MetsDocument extends Doc
             // Register namespaces.
             $this->registerNamespaces($this->mets);
         } else {
-            $this->logger->error('No METS part found in document with location "' . $this->location . '"');
+            if (!empty($location)) {
+                $this->logger->error('No METS part found in document with location "' . $location . '".');
+            } else if (!empty($this->recordId)) {
+                $this->logger->error('No METS part found in document with recordId "' . $this->recordId . '".');
+            } else {
+                $this->logger->error('No METS part found in current document.');
+            }
         }
     }
 
@@ -1055,7 +1059,7 @@ final class MetsDocument extends Doc
             $this->asXML = '';
             $this->xml = $xml;
             // Rebuild the unserializable properties.
-            $this->init();
+            $this->init('');
         } else {
             $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
             $this->logger->error('Could not load XML after deserialization');
