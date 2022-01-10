@@ -668,7 +668,7 @@ abstract class Document
                 if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
                     // Get full text file.
                     $fileContent = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
-                    if ($fileContent !== false && !empty($fileContent)) {
+                    if ($fileContent !== false) {
                         $textFormat = $this->getTextFormat($fileContent);
                     } else {
                         $this->logger->warning('Couldn\'t load full text file for structure node @ID "' . $id . '"');
@@ -718,8 +718,14 @@ abstract class Document
      */
     private function getTextFormat($fileContent)
     {
-        // Get the root element's name as text format.
-        return strtoupper(Helper::getXmlFileAsString($fileContent)->getName());
+        $xml = Helper::getXmlFileAsString($fileContent);
+
+        if ($xml !== false) {
+            // Get the root element's name as text format.
+            return strtoupper($xml->getName());
+        } else {
+            return '';
+        }
     }
 
     /**
