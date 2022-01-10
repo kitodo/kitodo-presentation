@@ -629,9 +629,11 @@ final class MetsDocument extends Document
 
                 $allResults = $result->fetchAll();
 
-                foreach ($allResults as $resArray) {
-                    if (!in_array($resArray['index_name'], $metadata['collection'])) {
-                        $metadata['collection'][] = $resArray['index_name'];
+                if (is_array($allResults)) {
+                    foreach ($allResults as $resArray) {
+                        if (!in_array($resArray['index_name'], $metadata['collection'])) {
+                            $metadata['collection'][] = $resArray['index_name'];
+                        }
                     }
                 }
 
@@ -647,11 +649,15 @@ final class MetsDocument extends Document
                         $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
                         $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
                     )
+                    ->setMaxResults(1)
                     ->execute();
 
-                $resArray = $result->fetch();
-
-                $metadata['owner'][0] = $resArray['owner'];
+                if ($resArray = $result->fetch()) {
+                    // Only overwrite owner with found value, if not already set.
+                    if (empty($metadata['owner'][0]) && isset($resArray['owner'])) {
+                        $metadata['owner'][0] = $resArray['owner'];
+                    }
+                }
             }
             // Extract metadata only from first supported dmdSec.
             $hasSupportedMetadata = true;
