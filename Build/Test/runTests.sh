@@ -20,6 +20,7 @@ setUpDockerComposeDotEnv() {
         # Your local user
         echo "DLF_ROOT=${DLF_ROOT}"
         echo "HOST_USER=${USER}"
+        echo "TYPO3_VERSION=${TYPO3_VERSION}"
         echo "TEST_FILE=${TEST_FILE}"
         echo "PHP_XDEBUG_ON=${PHP_XDEBUG_ON}"
         echo "PHP_XDEBUG_PORT=${PHP_XDEBUG_PORT}"
@@ -47,7 +48,15 @@ No arguments: Run all unit tests with PHP 7.4
 Options:
     -s <...>
         Specifies which test suite to run
+            - composerInstall: "composer install"
             - unit (default): PHP unit tests
+
+    -t <9.5|10.4>
+        Only with -s composerInstall
+        Specifies which TYPO3 version to install. When unset, installs either the packages from
+        composer.lock, or the latest version otherwise (default behavior of "composer install").
+            - 9.5
+            - 10.4
 
     -p <7.4|8.0|8.1>
         Specifies the PHP minor version to be used
@@ -119,6 +128,7 @@ fi
 
 # Option defaults
 TEST_SUITE="unit"
+TYPO3_VERSION=""
 PHP_VERSION="7.4"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
@@ -131,10 +141,13 @@ OPTIND=1
 # Array for invalid options
 INVALID_OPTIONS=();
 # Simple option parsing based on getopts (! not getopt)
-while getopts ":s:p:e:xy:huv" OPT; do
+while getopts ":s:t:p:e:xy:huv" OPT; do
     case ${OPT} in
         s)
             TEST_SUITE=${OPTARG}
+            ;;
+        t)
+            TYPO3_VERSION=${OPTARG}
             ;;
         p)
             PHP_VERSION=${OPTARG}
@@ -194,6 +207,12 @@ fi
 
 # Suite execution
 case ${TEST_SUITE} in
+    composerInstall)
+        setUpDockerComposeDotEnv
+        docker-compose run composer_install
+        SUITE_EXIT_CODE=$?
+        docker-compose down
+        ;;
     unit)
         setUpDockerComposeDotEnv
         docker-compose run unit

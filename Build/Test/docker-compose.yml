@@ -2,6 +2,26 @@
 
 version: "2.3"
 services:
+  composer_install:
+    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    user: "${HOST_UID}:${HOST_GID}"
+    volumes:
+      - ${DLF_ROOT}:${DLF_ROOT}
+    working_dir: ${DLF_ROOT}
+    environment:
+      COMPOSER_CACHE_DIR: ".cache/composer"
+    command: >
+      /bin/sh -c "
+        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
+          set -x
+        fi
+        if [ -z ${TYPO3_VERSION} ]; then
+          composer install --no-progress --no-interaction;
+        else
+          composer update --with=typo3/cms-core:^${TYPO3_VERSION} --no-progress --no-interaction;
+        fi
+      "
+
   unit:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: "${HOST_UID}:${HOST_GID}"

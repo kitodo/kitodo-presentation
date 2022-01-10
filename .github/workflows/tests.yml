@@ -1,0 +1,21 @@
+name: Run the tests
+
+on:
+  push:
+    branches: [master, dev-extbase-fluid, dev-testing]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        typo3: [9.5, 10.4]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.typo3 }}
+
+      - name: Run the tests
+        run: Build/Test/runTests.sh

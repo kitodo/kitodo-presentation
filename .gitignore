@@ -1,4 +1,5 @@
 .buildpath
+.cache
 .idea/
 .loadpath
 .metadata
