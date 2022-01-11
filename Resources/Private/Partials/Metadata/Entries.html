@@ -20,12 +20,10 @@
         <f:variable name="buildUrlVariable" value="{buildUrl.{sectionIterator.index}}" />
         <f:if condition="{buildUrlVariable.{configObject.indexName}}">
             <f:then>
-                <p>
-                    <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
-                </p>
+                <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
             </f:then>
             <f:else>
-                <p>{value}<f:if condition="{iterator.total} > 1 && !{iterator.isLast}">{separator}</f:if></p>
+                {value}<f:if condition="{iterator.total} > 1 && !{iterator.isLast}">{separator}</f:if>
             </f:else>
         </f:if>
     </f:for>
