@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
+use TYPO3\CMS\Core\Log\LogManager;
 
 /**
  * MetsDocument class for the 'dlf' extension.
@@ -31,7 +32,6 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
  * @property-read array $fileGrps This holds the file ID -> USE concordance
  * @property-read bool $hasFulltext Are there any fulltext files available?
- * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
  * @property-read int $numPages The holds the total number of pages
@@ -46,7 +46,6 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
  * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
- * @property-read mixed $uid This holds the UID or the URL of the document
  */
 final class MetsDocument extends Doc
 {
@@ -589,70 +588,6 @@ final class MetsDocument extends Doc
                 $metadata['title'][0] = '';
                 $metadata['title_sorting'][0] = '';
             }
-            // Add collections and owner from database to toplevel element if document is already saved.
-            if (
-                \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->uid)
-                && $id == $this->_getToplevelId()
-            ) {
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_collections_join.index_name AS index_name'
-                    )
-                    ->from('tx_dlf_documents')
-                    ->innerJoin(
-                        'tx_dlf_documents',
-                        'tx_dlf_relations',
-                        'tx_dlf_relations_joins',
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_relations_joins.uid_local',
-                            'tx_dlf_documents.uid'
-                        )
-                    )
-                    ->innerJoin(
-                        'tx_dlf_relations_joins',
-                        'tx_dlf_collections',
-                        'tx_dlf_collections_join',
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_relations_joins.uid_foreign',
-                            'tx_dlf_collections_join.uid'
-                        )
-                    )
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
-                    )
-                    ->orderBy('tx_dlf_collections_join.index_name', 'ASC')
-                    ->execute();
-
-                $allResults = $result->fetchAll();
-
-                foreach ($allResults as $resArray) {
-                    if (!in_array($resArray['index_name'], $metadata['collection'])) {
-                        $metadata['collection'][] = $resArray['index_name'];
-                    }
-                }
-
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_documents.owner AS owner'
-                    )
-                    ->from('tx_dlf_documents')
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($cPid)),
-                        $queryBuilder->expr()->eq('tx_dlf_documents.uid', intval($this->uid))
-                    )
-                    ->execute();
-
-                $resArray = $result->fetch();
-
-                $metadata['owner'][0] = $resArray['owner'];
-            }
             // Extract metadata only from first supported dmdSec.
             $hasSupportedMetadata = true;
             break;
@@ -699,8 +634,9 @@ final class MetsDocument extends Doc
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Doc::init()
      */
-    protected function init()
+    protected function init($location)
     {
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
         // Get METS node from XML file.
         $this->registerNamespaces($this->xml);
         $mets = $this->xml->xpath('//mets:mets');
@@ -709,7 +645,13 @@ final class MetsDocument extends Doc
             // Register namespaces.
             $this->registerNamespaces($this->mets);
         } else {
-            $this->logger->error('No METS part found in document with UID ' . $this->uid);
+            if (!empty($location)) {
+                $this->logger->error('No METS part found in document with location "' . $location . '".');
+            } else if (!empty($this->recordId)) {
+                $this->logger->error('No METS part found in document with recordId "' . $this->recordId . '".');
+            } else {
+                $this->logger->error('No METS part found in current document.');
+            }
         }
     }
 
@@ -1117,8 +1059,9 @@ final class MetsDocument extends Doc
             $this->asXML = '';
             $this->xml = $xml;
             // Rebuild the unserializable properties.
-            $this->init();
+            $this->init('');
         } else {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
             $this->logger->error('Could not load XML after deserialization');
         }
     }
