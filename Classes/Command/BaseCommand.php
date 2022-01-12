@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
@@ -81,9 +82,12 @@ class BaseCommand extends Command
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
             $configurationManager->setConfiguration($frameworkConfiguration);
 
-            $this->collectionRepository = GeneralUtility::makeInstance(CollectionRepository::class);
-            $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
-            $this->libraryRepository = GeneralUtility::makeInstance(LibraryRepository::class);
+            // TODO: When we drop support for TYPO3@9, we needn't/shouldn't use ObjectManager anymore
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+            $this->collectionRepository = $objectManager->get(CollectionRepository::class);
+            $this->documentRepository = $objectManager->get(DocumentRepository::class);
+            $this->libraryRepository = $objectManager->get(LibraryRepository::class);
         } else {
             return false;
         }

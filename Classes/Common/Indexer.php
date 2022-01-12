@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
 use Ubl\Iiif\Tools\IiifHelper;
 
@@ -100,7 +101,9 @@ class Indexer
             // Handle multi-volume documents.
             if ($parentId = $document->getPartof()) {
                 // initialize documentRepository
-                $documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+                // TODO: When we drop support for TYPO3@9, we needn't/shouldn't use ObjectManager anymore
+                $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+                $documentRepository = $objectManager->get(DocumentRepository::class);
                 // get parent document
                 $parent = $documentRepository->findByUid($parentId);
                 if ($parent) {

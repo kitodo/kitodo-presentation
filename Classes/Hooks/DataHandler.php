@@ -24,6 +24,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
@@ -38,19 +39,10 @@ class DataHandler implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * @Inject
      * @var DocumentRepository
      */
     protected $documentRepository;
-
-    /**
-     * Initialize the extbase repositories
-     *
-     * @return void
-     */
-    protected function initializeRepositories()
-    {
-        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
-    }
 
     /**
      * Field post-processing hook for the process_datamap() method.
@@ -196,8 +188,6 @@ class DataHandler implements LoggerAwareInterface
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray)
     {
-        $this->initializeRepositories();
-
         if ($status == 'update') {
             switch ($table) {
                     // After database operations for table "tx_dlf_documents".
