@@ -47,7 +47,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
  * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
- * @property-read mixed $uid This holds the UID or the URL of the document
  * @abstract
  */
 abstract class Doc
@@ -124,14 +123,6 @@ abstract class Doc
      * @access protected
      */
     protected $lastSearchedPhysicalPage = ['logicalPage' => null, 'physicalPage' => null];
-
-    /**
-     * This holds the documents location
-     *
-     * @var string
-     * @access protected
-     */
-    protected $location = '';
 
     /**
      * This holds the logical units
@@ -317,14 +308,6 @@ abstract class Doc
      * @access protected
      */
     protected $toplevelId = '';
-
-    /**
-     * This holds the UID or the URL of the document
-     *
-     * @var mixed
-     * @access protected
-     */
-    protected $uid = 0;
 
     /**
      * This holds the whole XML file as \SimpleXMLElement object
@@ -774,9 +757,11 @@ abstract class Doc
      *
      * @abstract
      *
+     * @param string $location:The location URL of the XML file to parse
+     *
      * @return void
      */
-    protected abstract function init();
+    protected abstract function init($location);
 
     /**
      * Reuse any document object that might have been already loaded to determine wether document is METS or IIIF
@@ -1176,7 +1161,7 @@ abstract class Doc
      *
      * @access protected
      *
-     * @param int $location: The location URL of the XML file to parse
+     * @param string $location: The location URL of the XML file to parse
      * @param int $pid: If > 0, then only document with this PID gets loaded
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
@@ -1186,10 +1171,8 @@ abstract class Doc
     protected function __construct($location, $pid, $preloadedDocument)
     {
         $this->setPreloadedDocument($preloadedDocument);
-        $this->init();
+        $this->init($location);
         $this->establishRecordId($pid);
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
-
         return;
     }
 
