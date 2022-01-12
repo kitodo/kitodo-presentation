@@ -15,5 +15,5 @@
 
 <f:variable name="urlParameterId" value="{buildUrlVariable.{configObject.indexName}.buildUrl.id}" />
 <f:link.page pageUid="{buildUrlVariable.{configObject.indexName}.buildUrl.targetPid}" additionalParams="{tx_dlf: '{id: \'{urlParameterId}\'}'}">
-    {value}<f:if condition="{iterator.total} > 1 && !{iterator.isLast}">{separator}</f:if>
+    {value}
 </f:link.page>
