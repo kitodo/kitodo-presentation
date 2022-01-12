@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation\Inject;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
@@ -39,10 +39,19 @@ class DataHandler implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * @Inject
      * @var DocumentRepository
      */
     protected $documentRepository;
+
+    protected function getDocumentRepository()
+    {
+        if ($this->documentRepository === null) {
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->documentRepository = $objectManager->get(DocumentRepository::class);
+        }
+
+        return $this->documentRepository;
+    }
 
     /**
      * Field post-processing hook for the process_datamap() method.
@@ -239,7 +248,7 @@ class DataHandler implements LoggerAwareInterface
                                 }
                             } else {
                                 // Reindex document.
-                                $document = $this->documentRepository->findByUid($id);
+                                $document = $this->getDocumentRepository()->findByUid($id);
                                 $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
                                     $document->setDoc($doc);
@@ -321,7 +330,7 @@ class DataHandler implements LoggerAwareInterface
                         }
                     case 'undelete':
                         // Reindex document.
-                        $document = $this->documentRepository->findByUid($id);
+                        $document = $this->getDocumentRepository()->findByUid($id);
                         $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                         if ($document !== null && $doc !== null) {
                             $document->setDoc($doc);
