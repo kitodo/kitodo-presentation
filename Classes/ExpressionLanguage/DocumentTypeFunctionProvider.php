@@ -70,6 +70,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     protected function initializeRepositories($storagePid)
     {
+        Helper::polyfillExtbaseClassesForTYPO3v9();
+
         // TODO: When we drop support for TYPO3@9, we needn't/shouldn't use ObjectManager anymore
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $configurationManager = $objectManager->get(ConfigurationManager::class);
