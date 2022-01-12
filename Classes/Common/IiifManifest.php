@@ -41,7 +41,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @access public
  * @property int $cPid This holds the PID for the configuration
  * @property-read bool $hasFulltext Are there any fulltext files available?
- * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read int $numPages The holds the total number of pages
  * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
@@ -55,7 +54,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
  * @property-read string $toplevelId This holds the toplevel manifest's @id
- * @property-read mixed $uid This holds the UID or the URL of the document
  */
 final class IiifManifest extends Document
 {
@@ -844,7 +842,7 @@ final class IiifManifest extends Document
      * {@inheritDoc}
      * @see Doc::init()
      */
-    protected function init()
+    protected function init($location)
     {
         // Nothing to do here, at the moment
     }
@@ -984,7 +982,7 @@ final class IiifManifest extends Document
         if ($resource != null && $resource instanceof ManifestInterface) {
             $this->asJson = '';
             $this->iiif = $resource;
-            $this->init();
+            $this->init('');
         } else {
             $this->logger->error('Could not load IIIF after deserialization');
         }
