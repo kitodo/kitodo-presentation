@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
-class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
+class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
      * @var int

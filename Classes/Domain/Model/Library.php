@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
-class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
+class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
      * @var string
