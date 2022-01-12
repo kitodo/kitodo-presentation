@@ -214,7 +214,10 @@ class MetadataController extends AbstractController
             }
         } else {
 
-            $metadataResult = $this->metadataRepository->findAll();
+            // findBySettings also sorts entries by the `sorting` field
+            $metadataResult = $this->metadataRepository->findBySettings([
+                'is_listed' => !$this->settings['showFull'],
+            ]);
 
             // Get collections to check if they are hidden
             $collections = $this->collectionRepository->getCollectionForMetadata($this->settings['storagePid']);
