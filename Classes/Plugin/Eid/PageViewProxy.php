@@ -15,8 +15,11 @@ namespace Kitodo\Dlf\Plugin\Eid;
 use Kitodo\Dlf\Common\Helper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * eID image proxy for plugin 'Page View' of the 'dlf' extension
  *
@@ -28,6 +31,26 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PageViewProxy
 {
     /**
+     * @var RequestFactory
+     */
+    protected $requestFactory;
+
+    public function __construct()
+    {
+        $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+    }
+
+    protected function overwriteHeaders(array $headers)
+    {
+        header_remove();
+        foreach ($headers as $key => $value) {
+            // The `header()` function should already make sure this is safe
+            // (Won't let $value containing newline pass.)
+            @header($key . ': ' . $value);
+        }
+    }
+
+    /**
      * The main method of the eID script
      *
      * @access public
@@ -37,46 +60,50 @@ class PageViewProxy
      */
     public function main(ServerRequestInterface $request)
     {
-        // the URI to fetch data or header from
         $url = (string) $request->getQueryParams()['url'];
         if (!Helper::isValidHttpUrl($url)) {
-            throw new \InvalidArgumentException('No valid url passed!', 1580482805);
+            return new JsonResponse(['message' => 'Did not receive a valid URL.'], 400);
         }
 
         // get and verify the uHash
         $uHash = (string) $request->getQueryParams()['uHash'];
         if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
-            throw new \InvalidArgumentException('No valid uHash passed!', 1643796565);
+            return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
         }
 
-        // fetch the requested data
-        $fetchedData = GeneralUtility::getUrl($url);
-
-        // Fetch header data separately to get "Last-Modified" info
-        $fetchedHeaderString = GeneralUtility::getUrl($url, 2);
-        if (!empty($fetchedHeaderString)) {
-            $fetchedHeader = explode("\n", $fetchedHeaderString);
-            foreach ($fetchedHeader as $headerline) {
-                if (stripos($headerline, 'Last-Modified:') !== false) {
-                    $lastModified = trim(substr($headerline, strpos($headerline, ':') + 1));
-                    break;
-                }
-            }
+        try {
+            $response = $this->requestFactory->request($url, 'GET', [
+                // For performance, don't download content up-front. Rather, we'll
+                // download and upload simultaneously.
+                // https://docs.guzzlephp.org/en/6.5/request-options.html#stream
+                'stream' => true,
+                // Don't throw exceptions when a non-success status code is
+                // received. We handle these manually.
+                'http_errors' => false,
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => 'Could not fetch resource of given URL.'], 500);
         }
 
-        // create response object
-        /** @var Response $response */
-        $response = GeneralUtility::makeInstance(Response::class);
-        if ($fetchedData) {
-            $response->getBody()->write($fetchedData);
-            $response = $response->withHeader('Access-Control-Allow-Methods', 'GET');
-            $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin') ? : '*');
-            $response = $response->withHeader('Access-Control-Max-Age', '86400');
-            $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
+        http_response_code($response->getStatusCode());
+
+        $this->overwriteHeaders([
+            'Access-Control-Allow-Methods' => 'GET',
+            'Access-Control-Allow-Origin' => $request->getHeaderLine('Origin') ?: '*',
+            'Access-Control-Max-Age' => '86400',
+            'Content-Type' => $response->getHeader('Content-Type')[0],
+            'Last-Modified' => $response->getHeader('Last-Modified')[0],
+        ]);
+
+        // Disable output buffering
+        ob_end_flush();
+
+        // Stream proxied content in chunks of 8KB
+        $outStream = $response->getBody();
+        while (!$outStream->eof()) {
+            echo $outStream->read(8 * 1024);
         }
-        if (!empty($lastModified)) {
-            $response = $response->withHeader('Last-Modified', $lastModified);
-        }
-        return $response;
+
+        exit;
     }
 }
