@@ -199,7 +199,7 @@ dlfUtils.exists = function (val) {
 /**
  * Fetch image data for given image sources.
  *
- * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
+ * @param {ImageDesc[]} imageSourceObjs
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchImageData = function (imageSourceObjs) {
@@ -257,7 +257,7 @@ dlfUtils.fetchImageData = function (imageSourceObjs) {
 /**
  * Fetches the image data for static images source.
  *
- * @param {{url: *, mimetype: *}} imageSourceObj
+ * @param {ImageDesc} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchStaticImageData = function (imageSourceObj) {
@@ -323,7 +323,7 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
 /**
  * Fetches the image data for iip images source.
  *
- * @param {{url: *, mimetype: *}} imageSourceObj
+ * @param {ImageDesc} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchIIPData = function (imageSourceObj) {
@@ -351,7 +351,7 @@ dlfUtils.fetchIIPData = function (imageSourceObj) {
 /**
  * Fetch image data for zoomify source.
  *
- * @param {{url: *, mimetype: *}} imageSourceObj
+ * @param {ImageDesc} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchZoomifyData = function (imageSourceObj) {
@@ -443,7 +443,7 @@ dlfUtils.isNullEmptyUndefinedOrNoNumber = function (val) {
  * fulltext (@see PageView::getFulltext in PageView.php).
  *
  * @param {any} obj The object to test.
- * @return {boolean}
+ * @return {obj is FulltextDesc}
  */
 dlfUtils.isFulltextDescriptor = function (obj) {
     return (

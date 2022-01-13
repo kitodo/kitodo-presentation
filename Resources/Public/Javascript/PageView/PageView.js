@@ -9,12 +9,26 @@
  */
 
 /**
+ * @typedef {{
+ *  url: string;
+ *  mimetype: string;
+ * }} ResourceLocator
+ *
+ * @typedef {ResourceLocator} ImageDesc
+ *
+ * @typedef {ResourceLocator} FulltextDesc
+ *
+ * @typedef {{
+ *  div: string;
+ *  images?: ImageDesc[] | [];
+ *  fulltexts?: FulltextDesc[] | [];
+ *  controls?: ('OverviewMap' | 'ZoomPanel')[];
+ * }} DlfViewerConfig
+ */
+
+/**
  * @TODO Trigger resize map event after fullscreen is toggled
- * @param {Object} settings
- *      {string=} div
- *      {Array.<?>} images
- *      {Array.<?>} fulltexts
- *      {Array.<?>} controls
+ * @param {DlfViewerConfig} settings
  * @constructor
  */
 var dlfViewer = function(settings){
@@ -35,7 +49,7 @@ var dlfViewer = function(settings){
 
     /**
      * Contains image information (e.g. URL, width, height)
-     * @type {Array.<string>}
+     * @type {DlfViewerConfig['images']}
      * @private
      */
     this.imageUrls = dlfUtils.exists(settings.images) ? settings.images : [];
@@ -472,7 +486,7 @@ dlfViewer.prototype.init = function(controlNames) {
 /**
  * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
- * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
+ * @param {ImageDesc[]} imageSourceObjs
  * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
  * @private
  */
