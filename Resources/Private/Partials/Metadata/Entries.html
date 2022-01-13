@@ -13,7 +13,7 @@
       xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-{configObject.wrap -> kitodo:parseMetadataWrap() -> f:variable(name: 'metadataWrap')}
+{configObject.wrap -> kitodo:metadataWrapVariable(name: 'metadataWrap')}
 <kitodo:stdWrap wrap="{metadataWrap.all}">
     <kitodo:stdWrap wrap="{metadataWrap.key}">{configObject.label}</kitodo:stdWrap>
     <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
