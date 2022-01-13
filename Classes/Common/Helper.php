@@ -1075,6 +1075,9 @@ class Helper
      * where it normally isn't, and where the classical way via TypoScript won't
      * work either.
      *
+     * This transforms the structure used in `Classes.php` to that used in
+     * `ext_typoscript_setup.txt`. See commit 5e6110fb for a similar approach.
+     *
      * @deprecated Remove once we drop support for TYPO3@9
      *
      * @access public
