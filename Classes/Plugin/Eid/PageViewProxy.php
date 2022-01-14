@@ -25,6 +25,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * eID image proxy for plugin 'Page View' of the 'dlf' extension
  *
+ * Supported query parameters:
+ * - `url` (mandatory): The URL to be proxied
+ * - `uHash` (mandatory): HMAC of the URL
+ *
  * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
@@ -58,13 +62,15 @@ class PageViewProxy
      */
     public function main(ServerRequestInterface $request)
     {
-        $url = (string) $request->getQueryParams()['url'];
+        $queryParams = $request->getQueryParams();
+
+        $url = (string) ($queryParams['url'] ?? '');
         if (!Helper::isValidHttpUrl($url)) {
             return new JsonResponse(['message' => 'Did not receive a valid URL.'], 400);
         }
 
         // get and verify the uHash
-        $uHash = (string) $request->getQueryParams()['uHash'];
+        $uHash = (string) ($queryParams['uHash'] ?? '');
         if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
             return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
         }
