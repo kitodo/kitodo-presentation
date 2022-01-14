@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Plugin\Eid;
 use Kitodo\Dlf\Common\Helper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Http\Response;
@@ -35,9 +36,15 @@ class PageViewProxy
      */
     protected $requestFactory;
 
+    /**
+     * @var mixed
+     */
+    protected $extConf;
+
     public function __construct()
     {
         $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
     }
 
     protected function overwriteHeaders(array $headers)
@@ -73,10 +80,15 @@ class PageViewProxy
 
         try {
             $response = $this->requestFactory->request($url, 'GET', [
+                'headers' => [
+                    'User-Agent' => $this->extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                ],
+
                 // For performance, don't download content up-front. Rather, we'll
                 // download and upload simultaneously.
                 // https://docs.guzzlephp.org/en/6.5/request-options.html#stream
                 'stream' => true,
+
                 // Don't throw exceptions when a non-success status code is
                 // received. We handle these manually.
                 'http_errors' => false,
