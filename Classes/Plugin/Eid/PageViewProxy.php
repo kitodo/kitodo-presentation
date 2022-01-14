@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Plugin\Eid;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\StdOutStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -45,16 +46,6 @@ class PageViewProxy
     {
         $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-    }
-
-    protected function overwriteHeaders(array $headers)
-    {
-        header_remove();
-        foreach ($headers as $key => $value) {
-            // The `header()` function should already make sure this is safe
-            // (Won't let $value containing newline pass.)
-            @header($key . ': ' . $value);
-        }
     }
 
     /**
@@ -97,25 +88,15 @@ class PageViewProxy
             return new JsonResponse(['message' => 'Could not fetch resource of given URL.'], 500);
         }
 
-        http_response_code($response->getStatusCode());
+        $body = new StdOutStream($response->getBody());
 
-        $this->overwriteHeaders([
-            'Access-Control-Allow-Methods' => 'GET',
-            'Access-Control-Allow-Origin' => $request->getHeaderLine('Origin') ?: '*',
-            'Access-Control-Max-Age' => '86400',
-            'Content-Type' => $response->getHeader('Content-Type')[0],
-            'Last-Modified' => $response->getHeader('Last-Modified')[0],
-        ]);
-
-        // Disable output buffering
-        ob_end_flush();
-
-        // Stream proxied content in chunks of 8KB
-        $outStream = $response->getBody();
-        while (!$outStream->eof()) {
-            echo $outStream->read(8 * 1024);
-        }
-
-        exit;
+        return GeneralUtility::makeInstance(Response::class)
+            ->withStatus($response->getStatusCode())
+            ->withHeader('Access-Control-Allow-Methods', 'GET')
+            ->withHeader('Access-Control-Allow-Origin', (string) ($request->getHeaderLine('Origin') ?: '*'))
+            ->withHeader('Access-Control-Max-Age', '86400')
+            ->withHeader('Content-Type', (string) $response->getHeader('Content-Type')[0])
+            ->withHeader('Last-Modified', (string) $response->getHeader('Last-Modified')[0])
+            ->withBody($body);
     }
 }
