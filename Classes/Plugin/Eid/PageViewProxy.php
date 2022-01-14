@@ -53,14 +53,46 @@ class PageViewProxy
     }
 
     /**
-     * The main method of the eID script
+     * Return a response that is derived from $response and contains CORS
+     * headers to be sent to the client.
      *
-     * @access public
+     * @return ResponseInterface $response
+     * @return ServerRequestInterface $request The incoming request.
+     * @return ResponseInterface
+     */
+    protected function withCorsResponseHeaders(
+        ResponseInterface $response,
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        $origin = (string) ($request->getHeaderLine('Origin') ?: '*');
+
+        return $response
+            ->withHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            ->withHeader('Access-Control-Allow-Origin', $origin)
+            ->withHeader('Access-Control-Max-Age', '86400');
+    }
+
+    /**
+     * Handle an OPTIONS request.
      *
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    public function main(ServerRequestInterface $request)
+    protected function handleOptions(ServerRequestInterface $request): ResponseInterface
+    {
+        // 204 No Content
+        $response = GeneralUtility::makeInstance(Response::class)
+            ->withStatus(204);
+        return $this->withCorsResponseHeaders($response, $request);
+    }
+
+    /**
+     * Handle a GET request.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    protected function handleGet(ServerRequestInterface $request): ResponseInterface
     {
         $queryParams = $request->getQueryParams();
 
@@ -76,7 +108,7 @@ class PageViewProxy
         }
 
         try {
-            $response = $this->requestFactory->request($url, 'GET', [
+            $targetResponse = $this->requestFactory->request($url, 'GET', [
                 'headers' => [
                     'User-Agent' => $this->extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
                 ],
@@ -94,15 +126,38 @@ class PageViewProxy
             return new JsonResponse(['message' => 'Could not fetch resource of given URL.'], 500);
         }
 
-        $body = new StdOutStream($response->getBody());
+        $body = new StdOutStream($targetResponse->getBody());
 
-        return GeneralUtility::makeInstance(Response::class)
-            ->withStatus($response->getStatusCode())
-            ->withHeader('Access-Control-Allow-Methods', 'GET')
-            ->withHeader('Access-Control-Allow-Origin', (string) ($request->getHeaderLine('Origin') ?: '*'))
-            ->withHeader('Access-Control-Max-Age', '86400')
-            ->withHeader('Content-Type', (string) $response->getHeader('Content-Type')[0])
-            ->withHeader('Last-Modified', (string) $response->getHeader('Last-Modified')[0])
+        $clientResponse = GeneralUtility::makeInstance(Response::class)
+            ->withStatus($targetResponse->getStatusCode())
+            ->withHeader('Content-Type', (string) $targetResponse->getHeader('Content-Type')[0])
+            ->withHeader('Last-Modified', (string) $targetResponse->getHeader('Last-Modified')[0])
             ->withBody($body);
+
+        return $this->withCorsResponseHeaders($clientResponse, $request);
+    }
+
+    /**
+     * The main method of the eID script
+     *
+     * @access public
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    public function main(ServerRequestInterface $request)
+    {
+        switch ($request->getMethod()) {
+            case 'OPTIONS':
+                return $this->handleOptions($request);
+
+            case 'GET':
+                return $this->handleGet($request);
+
+            default:
+                // 405 Method Not Allowed
+                return GeneralUtility::makeInstance(Response::class)
+                    ->withStatus(405);
+        }
     }
 }
