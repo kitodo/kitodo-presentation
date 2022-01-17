@@ -73,6 +73,30 @@ class PageViewProxy
     }
 
     /**
+     * Takes headers listed in $headerNames from $fromResponse, adds them to
+     * $toResponse and returns the result.
+     *
+     * @param ResponseInterface $fromResponse
+     * @param ResponseInterface $toResponse
+     * @param array $headerNames
+     * @return ResponseInterface
+     */
+    protected function copyHeaders(
+        ResponseInterface $fromResponse,
+        ResponseInterface $toResponse,
+        array $headerNames
+    ) {
+        $result = $toResponse;
+
+        foreach ($headerNames as $headerName) {
+            $headerValues = $fromResponse->getHeader($headerName);
+            $result = $result->withAddedHeader($headerName, $headerValues);
+        }
+
+        return $result;
+    }
+
+    /**
      * Handle an OPTIONS request.
      *
      * @param ServerRequestInterface $request
@@ -130,9 +154,13 @@ class PageViewProxy
 
         $clientResponse = GeneralUtility::makeInstance(Response::class)
             ->withStatus($targetResponse->getStatusCode())
-            ->withHeader('Content-Type', (string) $targetResponse->getHeader('Content-Type')[0])
-            ->withHeader('Last-Modified', (string) $targetResponse->getHeader('Last-Modified')[0])
             ->withBody($body);
+
+        $clientResponse = $this->copyHeaders($targetResponse, $clientResponse, [
+            'Content-Length',
+            'Content-Type',
+            'Last-Modified',
+        ]);
 
         return $this->withCorsResponseHeaders($clientResponse, $request);
     }
