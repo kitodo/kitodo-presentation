@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
-class Printer extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
+class Printer extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
      * @var string

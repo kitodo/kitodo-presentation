@@ -14,7 +14,7 @@ namespace Kitodo\Dlf\Domain\Model;
 
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
+class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
      * @var \DateTime

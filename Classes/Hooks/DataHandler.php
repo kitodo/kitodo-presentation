@@ -24,6 +24,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
@@ -42,14 +43,14 @@ class DataHandler implements LoggerAwareInterface
      */
     protected $documentRepository;
 
-    /**
-     * Initialize the extbase repositories
-     *
-     * @return void
-     */
-    protected function initializeRepositories()
+    protected function getDocumentRepository()
     {
-        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+        if ($this->documentRepository === null) {
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->documentRepository = $objectManager->get(DocumentRepository::class);
+        }
+
+        return $this->documentRepository;
     }
 
     /**
@@ -196,8 +197,6 @@ class DataHandler implements LoggerAwareInterface
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray)
     {
-        $this->initializeRepositories();
-
         if ($status == 'update') {
             switch ($table) {
                     // After database operations for table "tx_dlf_documents".
@@ -249,7 +248,7 @@ class DataHandler implements LoggerAwareInterface
                                 }
                             } else {
                                 // Reindex document.
-                                $document = $this->documentRepository->findByUid($id);
+                                $document = $this->getDocumentRepository()->findByUid($id);
                                 $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
                                     $document->setDoc($doc);
@@ -331,7 +330,7 @@ class DataHandler implements LoggerAwareInterface
                         }
                     case 'undelete':
                         // Reindex document.
-                        $document = $this->documentRepository->findByUid($id);
+                        $document = $this->getDocumentRepository()->findByUid($id);
                         $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                         if ($document !== null && $doc !== null) {
                             $document->setDoc($doc);
