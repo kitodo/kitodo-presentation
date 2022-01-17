@@ -1078,7 +1078,7 @@ class Helper
      * This transforms the structure used in `Classes.php` to that used in
      * `ext_typoscript_setup.txt`. See commit 5e6110fb for a similar approach.
      *
-     * @deprecated Remove once we drop support for TYPO3@9
+     * @deprecated Remove once we drop support for TYPO3v9
      *
      * @access public
      */

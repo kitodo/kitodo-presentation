@@ -41,4 +41,8 @@ return [
     \Kitodo\Dlf\Domain\Model\Token::class => [
         'tableName' => 'tx_dlf_tokens',
     ],
+    // This mapping is only required in TYPO3v9. It usually comes from the core.
+    TYPO3\CMS\Extbase\Domain\Model\FileReference::class => [
+        'tableName' => 'sys_file_reference',
+    ]
 ];
