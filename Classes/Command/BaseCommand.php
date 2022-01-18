@@ -82,7 +82,7 @@ class BaseCommand extends Command
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
             $configurationManager->setConfiguration($frameworkConfiguration);
 
-            // TODO: When we drop support for TYPO3@9, we needn't/shouldn't use ObjectManager anymore
+            // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
             $this->collectionRepository = $objectManager->get(CollectionRepository::class);

@@ -101,7 +101,7 @@ class Indexer
             // Handle multi-volume documents.
             if ($parentId = $document->getPartof()) {
                 // initialize documentRepository
-                // TODO: When we drop support for TYPO3@9, we needn't/shouldn't use ObjectManager anymore
+                // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
                 $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
                 $documentRepository = $objectManager->get(DocumentRepository::class);
                 // get parent document

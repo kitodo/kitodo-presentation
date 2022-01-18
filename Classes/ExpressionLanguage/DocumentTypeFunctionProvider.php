@@ -72,7 +72,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     {
         Helper::polyfillExtbaseClassesForTYPO3v9();
 
-        // TODO: When we drop support for TYPO3@9, we needn't/shouldn't use ObjectManager anymore
+        // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $configurationManager = $objectManager->get(ConfigurationManager::class);
         $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
