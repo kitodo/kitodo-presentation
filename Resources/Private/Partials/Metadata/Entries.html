@@ -13,19 +13,18 @@
       xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<dt>{configObject.label}</dt>
-<dd>
+{configObject.wrap -> kitodo:metadataWrapVariable(name: 'metadataWrap')}
+<kitodo:stdWrap wrap="{metadataWrap.all}">
+    <kitodo:stdWrap wrap="{metadataWrap.key}">{configObject.label}</kitodo:stdWrap>
     <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
         <f:variable name="buildUrlVariable" value="{buildUrl.{sectionIterator.index}}" />
         <f:if condition="{buildUrlVariable.{configObject.indexName}}">
             <f:then>
-                <p>
-                    <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
-                </p>
+                <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
             </f:then>
             <f:else>
-                <p>{value}<f:if condition="{iterator.total} > 1 && !{iterator.isLast}">{separator}</f:if></p>
+                <kitodo:stdWrap wrap="{metadataWrap.value}">{value}</kitodo:stdWrap>
             </f:else>
         </f:if>
     </f:for>
-</dd>
+</kitodo:stdWrap>

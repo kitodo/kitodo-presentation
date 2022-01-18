@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
-class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractValueObject
+class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
      * @var string|null

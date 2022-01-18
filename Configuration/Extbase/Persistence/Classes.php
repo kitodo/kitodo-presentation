@@ -40,5 +40,5 @@ return [
     ],
     \Kitodo\Dlf\Domain\Model\Token::class => [
         'tableName' => 'tx_dlf_tokens',
-    ],
+    ]
 ];

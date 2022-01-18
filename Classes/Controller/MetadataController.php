@@ -191,16 +191,17 @@ class MetadataController extends AbstractController
                             if (is_array($value)) {
                                 $value = implode($this->settings['separator'], $value);
                             }
+                            // NOTE: Labels are to be escaped in Fluid template
                             if (IRI::isAbsoluteIri($value) && (($scheme = (new IRI($value))->getScheme()) == 'http' || $scheme == 'https')) {
                                 $nolabel = $value == $label;
                                 $iiifData[$key]['data'][] = [
-                                    'label' => $nolabel ? '' : htmlspecialchars($label),
+                                    'label' => $nolabel ? '' : $label,
                                     'value' => $value,
                                     'buildUrl' => true
                                 ];
                             } else {
                                 $iiifData[$key]['data'][] = [
-                                    'label' => htmlspecialchars($label),
+                                    'label' => $label,
                                     'value' => $value,
                                     'buildUrl' => false
                                 ];
@@ -213,7 +214,10 @@ class MetadataController extends AbstractController
             }
         } else {
 
-            $metadataResult = $this->metadataRepository->findAll();
+            // findBySettings also sorts entries by the `sorting` field
+            $metadataResult = $this->metadataRepository->findBySettings([
+                'is_listed' => !$this->settings['showFull'],
+            ]);
 
             // Get collections to check if they are hidden
             $collections = $this->collectionRepository->getCollectionForMetadata($this->settings['storagePid']);
@@ -228,6 +232,8 @@ class MetadataController extends AbstractController
             $i = 0;
             foreach ($metadataArray as $metadataSection) {
                 foreach ($metadataSection as $metadataName => $metadataValue) {
+                    // NOTE: Labels are to be escaped in Fluid template
+
                     if ($metadataName == 'title') {
                         // Get title of parent document if needed.
                         if (empty($metadataValue) && $this->settings['getTitle'] && $this->document->getDoc()->parentId) {
@@ -237,7 +243,7 @@ class MetadataController extends AbstractController
                             }
                         }
                         if (!empty($metadataValue)) {
-                            $metadataArray[$i][$metadataName][0] = htmlspecialchars($metadataArray[$i][$metadataName][0]);
+                            $metadataArray[$i][$metadataName][0] = $metadataArray[$i][$metadataName][0];
                             // Link title to pageview.
                             if ($this->settings['linkTitle'] && $metadataSection['_id']) {
                                 $details = $this->document->getDoc()->getLogicalStructure($metadataSection['_id']);
@@ -250,17 +256,17 @@ class MetadataController extends AbstractController
                         }
                     } elseif ($metadataName == 'owner' && !empty($metadataValue)) {
                         // Translate name of holding library.
-                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_libraries', $this->settings['storagePid']));
+                        $metadataArray[$i][$metadataName][0] = Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_libraries', $this->settings['storagePid']);
                     } elseif ($metadataName == 'type' && !empty($metadataValue)) {
                         // Translate document type.
-                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_structures', $this->settings['storagePid']));
+                        $metadataArray[$i][$metadataName][0] = Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_structures', $this->settings['storagePid']);
                     } elseif ($metadataName == 'collection' && !empty($metadataValue)) {
                         // Check if collections isn't hidden.
                         $j = 0;
                         foreach ($metadataValue as $metadataEntry) {
                             if (in_array($metadataEntry, $collList)) {
                                 // Translate collection.
-                                $metadataArray[$i][$metadataName][$j] = htmlspecialchars(Helper::translate($metadataArray[$i][$metadataName][$j], 'tx_dlf_collections', $this->settings['storagePid']));
+                                $metadataArray[$i][$metadataName][$j] = Helper::translate($metadataArray[$i][$metadataName][$j], 'tx_dlf_collections', $this->settings['storagePid']);
                             } else {
                                 $metadataArray[$i][$metadataName][$j] = '';
                             }
@@ -268,10 +274,13 @@ class MetadataController extends AbstractController
                         }
                     } elseif ($metadataName == 'language' && !empty($metadataValue)) {
                         // Translate ISO 639 language code.
-                        $metadataArray[$i][$metadataName][0] = htmlspecialchars(Helper::getLanguageName($metadataArray[$i][$metadataName][0]));
+                        $metadataArray[$i][$metadataName][0] = Helper::getLanguageName($metadataArray[$i][$metadataName][0]);
                     } elseif (!empty($metadataValue)) {
-                        // Sanitize value for output.
-                        $metadataArray[$i][$metadataName][0] = htmlspecialchars($metadataArray[$i][$metadataName][0]);
+                        $metadataArray[$i][$metadataName][0] = $metadataArray[$i][$metadataName][0];
+                    }
+
+                    if (is_array($metadataArray[$i][$metadataName])) {
+                        $metadataArray[$i][$metadataName] = array_values(array_filter($metadataArray[$i][$metadataName], function ($x) { return !empty($x); }));
                     }
                 }
                 $i++;

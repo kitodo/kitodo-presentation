@@ -24,6 +24,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
@@ -69,13 +70,17 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     protected function initializeRepositories($storagePid)
     {
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        Helper::polyfillExtbaseClassesForTYPO3v9();
+
+        // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationManager = $objectManager->get(ConfigurationManager::class);
         $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
         $configurationManager->setConfiguration($frameworkConfiguration);
 
-        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+        $this->documentRepository = $objectManager->get(DocumentRepository::class);
     }
 
     /**
