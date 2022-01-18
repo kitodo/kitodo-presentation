@@ -519,48 +519,6 @@ class Helper
     }
 
     /**
-     * Wrapper function for getting localized messages in backend
-     *
-     * @access public
-     *
-     * @param string $key: The locallang key to translate
-     * @param bool $hsc: Should the result be htmlspecialchar()'ed?
-     * @param string $default: Default return value if no translation is available
-     *
-     * @return string The translated string or the given key on failure
-     */
-    public static function getMessage($key, $hsc = false, $default = '')
-    {
-        // Set initial output to default value.
-        $translated = (string) $default;
-
-        /** @var LanguageService $languageService */
-        $languageService = self::getLanguageService();
-
-        // Load common messages file.
-        if (empty(self::$messages)) {
-            if (\TYPO3_MODE === 'BE') {
-                self::$messages = $languageService->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
-            } else {
-                self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            }
-        }
-        // Get translation.
-        if (!empty(self::$messages['default'][$key])) {
-            if (\TYPO3_MODE === 'BE') {
-                $translated = $languageService->getLL($key);
-            } else {
-                self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            }
-        }
-        // Escape HTML characters if applicable.
-        if ($hsc) {
-            $translated = htmlspecialchars($translated);
-        }
-        return $translated;
-    }
-
-    /**
      * Get all document structures as array
      *
      * @param int $pid: Get the "index_name" from this page only
