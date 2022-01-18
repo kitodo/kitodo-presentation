@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
@@ -153,6 +154,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection>
+     * @Extbase\ORM\Lazy
      */
     protected $collections = null;
 
@@ -168,6 +170,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 
     /**
      * @var \Kitodo\Dlf\Domain\Model\Library
+     * @Extbase\ORM\Lazy
      */
     protected $owner;
 
