@@ -27,15 +27,35 @@ setUpDockerComposeDotEnv() {
         echo "DOCKER_PHP_IMAGE=${DOCKER_PHP_IMAGE}"
         echo "EXTRA_TEST_OPTIONS=${EXTRA_TEST_OPTIONS}"
         echo "SCRIPT_VERBOSE=${SCRIPT_VERBOSE}"
+        echo "DBMS=${DBMS}"
+        echo "DATABASE_DRIVER=${DATABASE_DRIVER}"
+        echo "MARIADB_VERSION=${MARIADB_VERSION}"
+        echo "MYSQL_VERSION=${MYSQL_VERSION}"
         echo "PHP_VERSION=${PHP_VERSION}"
     } > .env
+}
+
+# Options -a and -d depend on each other. The function
+# validates input combinations and sets defaults.
+handleDbmsAndDriverOptions() {
+    case ${DBMS} in
+        mysql|mariadb)
+            [ -z "${DATABASE_DRIVER}" ] && DATABASE_DRIVER="mysqli"
+            if [ "${DATABASE_DRIVER}" != "mysqli" ] && [ "${DATABASE_DRIVER}" != "pdo_mysql" ]; then
+                echo "Invalid option -a ${DATABASE_DRIVER} with -d ${DBMS}" >&2
+                echo >&2
+                echo "call \".Build/Test/runTests.sh -h\" to display help and valid options" >&2
+                exit 1
+            fi
+            ;;
+    esac
 }
 
 # Load help text into $HELP
 read -r -d '' HELP <<EOF
 Based upon TYPO3 core test runner.
 
-Execute unit and other test suites in a docker based test environment. Handles
+Execute unit, functional and other test suites in a docker based test environment. Handles
 execution of single test files, sending xdebug information to a local IDE and more.
 
 Recommended docker version is >=20.10 for xdebug break pointing to work reliably, and
@@ -49,6 +69,7 @@ Options:
     -s <...>
         Specifies which test suite to run
             - composerInstall: "composer install"
+            - functional: PHP functional tests
             - unit (default): PHP unit tests
 
     -t <9.5|10.4>
@@ -58,6 +79,39 @@ Options:
             - 9.5
             - 10.4
 
+    -a <mysqli|pdo_mysql>
+        Only with -s functional
+        Specifies to use another driver, following combinations are available:
+            - mysql
+                - mysqli (default)
+                - pdo_mysql
+            - mariadb
+                - mysqli (default)
+                - pdo_mysql
+
+    -d <mariadb|mysql>
+        Only with -s functional
+        Specifies on which DBMS tests are performed
+            - mariadb (default): use mariadb
+            - mysql: use MySQL server
+
+    -i <10.1|10.2|10.3|10.4|10.5>
+        Only with -d mariadb
+        Specifies on which version of mariadb tests are performed
+            - 10.1
+            - 10.2
+            - 10.3 (default)
+            - 10.4
+            - 10.5
+
+    -j <5.5|5.6|5.7|8.0>
+        Only with -d mysql
+        Specifies on which version of mysql tests are performed
+            - 5.5 (default)
+            - 5.6
+            - 5.7
+            - 8.0
+
     -p <7.4|8.0|8.1>
         Specifies the PHP minor version to be used
             - 7.4 (default): use PHP 7.4
@@ -65,14 +119,14 @@ Options:
             - 8.1: use PHP 8.1
 
     -e "<phpunit options>"
-        Only with -s unit
+        Only with -s functional|unit
         Additional options to send to phpunit (unit & functional tests) or codeception (acceptance
         tests). For phpunit, options starting with "--" must be added after options starting with "-".
         Example -e "-v --filter canDoEverything" to enable verbose output AND filter tests
         named "canDoEverything"
 
     -x
-        Only with -s unit
+        Only with -s functional|unit
         Send information to host instance for test or system under test break points. This is especially
         useful if a local PhpStorm instance is listening on default xdebug port 9003. A different port
         can be selected with -y
@@ -129,11 +183,15 @@ fi
 # Option defaults
 TEST_SUITE="unit"
 TYPO3_VERSION=""
+DBMS="mariadb"
 PHP_VERSION="7.4"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
 EXTRA_TEST_OPTIONS=""
 SCRIPT_VERBOSE=0
+DATABASE_DRIVER=""
+MARIADB_VERSION="10.3"
+MYSQL_VERSION="5.5"
 
 # Option parsing
 # Reset in case getopts has been used previously in the shell
@@ -141,13 +199,31 @@ OPTIND=1
 # Array for invalid options
 INVALID_OPTIONS=();
 # Simple option parsing based on getopts (! not getopt)
-while getopts ":s:t:p:e:xy:huv" OPT; do
+while getopts ":a:s:t:d:i:j:p:e:xy:huv" OPT; do
     case ${OPT} in
         s)
             TEST_SUITE=${OPTARG}
             ;;
         t)
             TYPO3_VERSION=${OPTARG}
+            ;;
+        a)
+            DATABASE_DRIVER=${OPTARG}
+            ;;
+        d)
+            DBMS=${OPTARG}
+            ;;
+        i)
+            MARIADB_VERSION=${OPTARG}
+            if ! [[ ${MARIADB_VERSION} =~ ^(10.1|10.2|10.3|10.4|10.5)$ ]]; then
+                INVALID_OPTIONS+=("${OPTARG}")
+            fi
+            ;;
+        j)
+            MYSQL_VERSION=${OPTARG}
+            if ! [[ ${MYSQL_VERSION} =~ ^(5.5|5.6|5.7|8.0)$ ]]; then
+                INVALID_OPTIONS+=("${OPTARG}")
+            fi
             ;;
         p)
             PHP_VERSION=${OPTARG}
@@ -213,6 +289,23 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         docker-compose down
         ;;
+    functional)
+        handleDbmsAndDriverOptions
+        setUpDockerComposeDotEnv
+        case ${DBMS} in
+            mariadb|mysql)
+                echo "Using driver: ${DATABASE_DRIVER}"
+                docker-compose run functional
+                SUITE_EXIT_CODE=$?
+                ;;
+            *)
+                echo "Functional tests don't run with DBMS ${DBMS}" >&2
+                echo >&2
+                echo "call \".Build/Test/runTests.sh -h\" to display help and valid options" >&2
+                exit 1
+        esac
+        docker-compose down
+        ;;
     unit)
         setUpDockerComposeDotEnv
         docker-compose run unit
@@ -232,6 +325,18 @@ case ${TEST_SUITE} in
         exit 1
 esac
 
+case ${DBMS} in
+    mariadb)
+        DBMS_OUTPUT="DBMS: ${DBMS}  version ${MARIADB_VERSION}  driver ${DATABASE_DRIVER}"
+        ;;
+    mysql)
+        DBMS_OUTPUT="DBMS: ${DBMS}  version ${MYSQL_VERSION}  driver ${DATABASE_DRIVER}"
+        ;;
+    *)
+        DBMS_OUTPUT="DBMS not recognized: $DBMS"
+        exit 1
+esac
+
 # Print summary
 if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
     # Turn off verbose mode for the script summary
@@ -239,8 +344,14 @@ if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
 fi
 echo "" >&2
 echo "###########################################################################" >&2
-echo "Result of ${TEST_SUITE}" >&2
-echo "PHP: ${PHP_VERSION}" >&2
+if [[ ${TEST_SUITE} =~ ^(functional)$ ]]; then
+    echo "Result of ${TEST_SUITE}" >&2
+    echo "PHP: ${PHP_VERSION}" >&2
+    echo "${DBMS_OUTPUT}" >&2
+else
+    echo "Result of ${TEST_SUITE}" >&2
+    echo "PHP: ${PHP_VERSION}" >&2
+fi
 
 if [[ ${SUITE_EXIT_CODE} -eq 0 ]]; then
     echo "SUCCESS" >&2

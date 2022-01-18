@@ -17,5 +17,8 @@ jobs:
       - name: Install dependencies
         run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.typo3 }}
 
-      - name: Run the tests
-        run: Build/Test/runTests.sh
+      - name: Run unit tests
+        run: Build/Test/runTests.sh -s unit
+
+      - name: Run functional tests
+        run: Build/Test/runTests.sh -s functional

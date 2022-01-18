@@ -2,6 +2,20 @@
 
 version: "2.3"
 services:
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: funcp
+    tmpfs:
+      - /var/lib/mysql/:rw,noexec,nosuid
+
+  mariadb:
+    image: mariadb:${MARIADB_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: funcp
+    tmpfs:
+      - /var/lib/mysql/:rw,noexec,nosuid
+
   composer_install:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: "${HOST_UID}:${HOST_GID}"
@@ -19,6 +33,48 @@ services:
           composer install --no-progress --no-interaction;
         else
           composer update --with=typo3/cms-core:^${TYPO3_VERSION} --no-progress --no-interaction;
+        fi
+      "
+
+  functional:
+    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    links:
+      - ${DBMS}
+    user: "${HOST_UID}:${HOST_GID}"
+    volumes:
+      - ${DLF_ROOT}:${DLF_ROOT}
+    environment:
+      typo3DatabaseDriver: "${DATABASE_DRIVER}"
+      typo3DatabaseName: func_test
+      typo3DatabaseUsername: root
+      typo3DatabasePassword: funcp
+      typo3DatabaseHost: ${DBMS}
+    working_dir: ${DLF_ROOT}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: >
+      /bin/sh -c "
+        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
+          set -x
+        fi
+        echo Waiting for database start...;
+        while ! nc -z ${DBMS} 3306; do
+          sleep 1;
+        done;
+        echo Database is up;
+
+        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
+          set -x
+        fi
+        php -v | grep '^PHP'
+        COMMAND=\"vendor/phpunit/phpunit/phpunit -c Build/Test/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE}\"
+        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
+          XDEBUG_MODE=\"off\" $${COMMAND};
+        else
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=host.docker.internal\" \
+          $${COMMAND};
         fi
       "
 

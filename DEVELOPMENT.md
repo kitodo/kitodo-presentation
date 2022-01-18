@@ -32,7 +32,7 @@ https://docs.typo3.org/m/typo3/reference-coreapi/10.4/en-us/ApiOverview/Paginati
 
 ## Testing
 
-Before running the tests, please install the project dependencies. Choose which version of TYPO3 you would like to test against.
+Before running any of the tests, please install the project dependencies. Choose which version of TYPO3 you would like to test against.
 
 ```bash
 # (a)
@@ -47,11 +47,15 @@ composer update --with=typo3/cms-core:^10.4
 ```bash
 # Run all tests
 composer test
+
+# Run specific kind of tests
+composer test:unit
+composer test:func
 ```
 
 ### Run Tests Manually
 
-Tests may be run either via a locally installed Composer / PHP setup, or within a Docker container.
+Unit tests may be run either via a locally installed Composer / PHP setup, or within a Docker container.
 
 ```bash
 # Run locally
@@ -59,6 +63,12 @@ vendor/bin/phpunit -c Build/Test/UnitTests.xml
 
 # Run in Docker
 Build/Test/runTests.sh
+```
+
+Functional tests may only be run in Docker as they require more infrastructure to be set up.
+
+```bash
+Build/Test/runTests.sh -s functional
 ```
 
 To learn about available options (e.g., to select the PHP version), check the usage info:
@@ -73,13 +83,19 @@ You may also interact with the Docker containers directly:
 cd Build/Test/
 vim .env  # Edit configuration
 docker-compose run unit
+docker-compose run functional
 docker-compose down
 ```
+
+### Fixtures
+
+- When writing datasets, please use `uid`s that are easy to search (`grep`) for.
 
 ### File Structure
 
 - `Build/Test/`: Test-related setup files (e.g. configuration for PHPUnit and testing container)
 - `Tests/`: Test cases. In unit tests, namespacing follows the structure of `Classes/`.
+- `Tests/Fixtures`: Datasets to use in functional tests.
 
 ### External Links
 
