@@ -597,22 +597,13 @@
                 <source><![CDATA[Apache Solr not reachable with given configuration.]]></source>
             </trans-unit>
             <trans-unit id="metadataFormats.nsOkay" approved="yes">
-                <source><![CDATA[Default namespaces found!]]></source>
+                <source><![CDATA[Found default data formats!]]></source>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsOkayMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
+            <trans-unit id="metadataFormats.nsNotOkay" approved="yes">
+                <source><![CDATA[Default data formats not found!]]></source>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsCreated" approved="yes">
-                <source><![CDATA[Default namespaces created successfully!]]></source>
-            </trans-unit>
-            <trans-unit id="metadataFormats.nsCreatedMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.]]></source>
-            </trans-unit>
-            <trans-unit id="metadataFormats.nsNotCreated" approved="yes">
-                <source><![CDATA[Default namespaces not found!]]></source>
-            </trans-unit>
-            <trans-unit id="metadataFormats.nsNotCreatedMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
+            <trans-unit id="metadataFormats.nsNotOkayMsg" approved="yes">
+                <source><![CDATA[The default data formats are not declared. You may run the upgrade wizard to automatically create the records.]]></source>
             </trans-unit>
 		</body>
 	</file>

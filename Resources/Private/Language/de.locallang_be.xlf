@@ -778,28 +778,16 @@
                 <target><![CDATA[Apache Solr ist mit der gegebenen Konfiguration nicht erreichbar.]]></target>
             </trans-unit>
             <trans-unit id="metadataFormats.nsOkay" approved="yes">
-                <source><![CDATA[Default namespaces found!]]></source>
-                <target><![CDATA[Standard-Namensräume gefunden!]]></target>
+                <source><![CDATA[Found default data formats!]]></source>
+                <target><![CDATA[Standard-Datenformate gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsOkayMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
-                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.]]></target>
+            <trans-unit id="metadataFormats.nsNotOkay" approved="yes">
+                <source><![CDATA[Default data formats not found!]]></source>
+                <target><![CDATA[Standard-Datenformate nicht gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsCreated" approved="yes">
-                <source><![CDATA[Default namespaces created successfully!]]></source>
-                <target><![CDATA[Standard-Namensräume erfolgreich angelegt!]]></target>
-            </trans-unit>
-            <trans-unit id="metadataFormats.nsCreatedMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.]]></source>
-                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO wurden erfolgreich definiert.]]></target>
-            </trans-unit>
-            <trans-unit id="metadataFormats.nsNotCreated" approved="yes">
-                <source><![CDATA[Default namespaces not found!]]></source>
-                <target><![CDATA[Standard-Namensräume nicht gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="metadataFormats.nsNotCreatedMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
-                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.]]></target>
+            <trans-unit id="metadataFormats.nsNotOkayMsg" approved="yes">
+                <source><![CDATA[The default data formats are not declared. You may run the upgrade wizard to automatically create the records.]]></source>
+                <target><![CDATA[Die Standard-Datenformate sind nicht deklariert. Sie können sie im Upgrade-Wizard anlegen.]]></target>
             </trans-unit>
 		</body>
 	</file>
