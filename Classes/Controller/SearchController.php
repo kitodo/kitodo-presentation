@@ -16,16 +16,13 @@ use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
-use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 
 class SearchController extends AbstractController
 {
-    public $prefixId = 'tx_dlf';
-    public $extKey = 'dlf';
-
     /**
      * @var CollectionRepository
      */
@@ -40,195 +37,76 @@ class SearchController extends AbstractController
     }
 
     /**
-     * Search action
+     * @var MetadataRepository
      */
-    public function searchAction()
+    protected $metadataRepository;
+
+    /**
+     * @param MetadataRepository $metadataRepository
+     */
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
-        // Build label for result list.
-        $label = htmlspecialchars(LocalizationUtility::translate('search.search', 'dlf'));
-        if (!empty($this->requestData['query'])) {
-            $label .= ' ' . htmlspecialchars(sprintf(LocalizationUtility::translate('search.for', 'dlf'), trim($this->requestData['query'])));
-        }
-        // Prepare query parameters.
-        $params = [];
-        $matches = [];
-        // Set search query.
-        if (
-            (!empty($this->settings['fulltext']) && !empty($this->requestData['fulltext']))
-            || preg_match('/fulltext:\((.*)\)/', trim($this->requestData['query']), $matches)
-        ) {
-            // If the query already is a fulltext query e.g using the facets
-            $this->requestData['query'] = empty($matches[1]) ? $this->requestData['query'] : $matches[1];
-            // Search in fulltext field if applicable. Query must not be empty!
-            if (!empty($this->requestData['query'])) {
-                $query = 'fulltext:(' . Solr::escapeQuery(trim($this->requestData['query'])) . ')';
-            }
-        } else {
-            // Retain given search field if valid.
-            $query = Solr::escapeQueryKeepField(trim($this->requestData['query']), $this->settings['storagePid']);
-        }
-        // Add extended search query.
-        if (
-            !empty($this->requestData['extQuery'])
-            && is_array($this->requestData['extQuery'])
-        ) {
-            $allowedOperators = ['AND', 'OR', 'NOT'];
-            $allowedFields = GeneralUtility::trimExplode(',', $this->settings['extendedFields'], true);
-            $numberOfExtQueries = count($this->requestData['extQuery']);
-            for ($i = 0; $i < $numberOfExtQueries; $i++) {
-                if (!empty($this->requestData['extQuery'][$i])) {
-                    if (
-                        in_array($this->requestData['extOperator'][$i], $allowedOperators)
-                        && in_array($this->requestData['extField'][$i], $allowedFields)
-                    ) {
-                        if (!empty($query)) {
-                            $query .= ' ' . $this->requestData['extOperator'][$i] . ' ';
-                        }
-                        $query .= Indexer::getIndexFieldName($this->requestData['extField'][$i], $this->settings['storagePid']) . ':(' . Solr::escapeQuery($this->requestData['extQuery'][$i]) . ')';
-                    }
-                }
-            }
-        }
-        // Add filter query for faceting.
-        if (!empty($this->requestData['fq'])) {
-            foreach ($this->requestData['fq'] as $filterQuery) {
-                $params['filterquery'][]['query'] = $filterQuery;
-            }
-        }
-
-        // Add filter query for in-document searching.
-        if (
-            $this->settings['searchIn'] == 'document'
-            || $this->settings['searchIn'] == 'all'
-        ) {
-            if (
-                !empty($this->requestData['id'])
-                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
-            ) {
-                // Search in document and all subordinates (valid for up to three levels of hierarchy).
-                $params['filterquery'][]['query'] = '_query_:"{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:' . $this->requestData['id'] . '"' .
-                    ' OR {!join from=uid to=partof}uid:' . $this->requestData['id'] .
-                    ' OR uid:' . $this->requestData['id'];
-                $label .= ' ' . htmlspecialchars(sprintf(LocalizationUtility::translate('search.in', 'dlf'), Doc::getTitle($this->requestData['id'])));
-            }
-        }
-        // Add filter query for in-collection searching.
-        if (
-            $this->settings['searchIn'] == 'collection'
-            || $this->settings['searchIn'] == 'all'
-        ) {
-            if (
-                !empty($this->requestData['collection'])
-                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->requestData['collection'])
-            ) {
-                $index_name = Helper::getIndexNameFromUid($this->requestData['collection'], 'tx_dlf_collections', $this->settings['storagePid']);
-                $params['filterquery'][]['query'] = 'collection_faceting:("' . Solr::escapeQuery($index_name) . '")';
-                $label .= ' ' . sprintf(LocalizationUtility::translate('search.in', 'dlf'), Helper::translate($index_name, 'tx_dlf_collections', $this->settings['storagePid']));
-            }
-        }
-        // Add filter query for collection restrictions.
-        if ($this->settings['collections']) {
-            $collIds = explode(',', $this->settings['collections']);
-            $collIndexNames = [];
-            foreach ($collIds as $collId) {
-                $collIndexNames[] = Solr::escapeQuery(Helper::getIndexNameFromUid(intval($collId), 'tx_dlf_collections', $this->settings['storagePid']));
-            }
-            // Last value is fake and used for distinction in $this->addCurrentCollection()
-            $params['filterquery'][]['query'] = 'collection_faceting:("' . implode('" OR "', $collIndexNames) . '" OR "FakeValueForDistinction")';
-        }
-        // Set some query parameters.
-        $params['query'] = !empty($query) ? $query : '*';
-        $params['start'] = 0;
-        $params['rows'] = 0;
-        $params['sort'] = ['score' => 'desc'];
-        // Instantiate search object.
-        $solr = Solr::getInstance($this->settings['solrcore']);
-        if (!$solr->ready) {
-            $this->logger->error('Apache Solr not available');
-            $this->redirect('main', 'Search', null);
-            //return $this->responseFactory->createHtmlResponse($this->view->render());
-        }
-        // Set search parameters.
-        $solr->cPid = $this->settings['storagePid'];
-        $solr->params = $params;
-        // Perform search.
-        $list = $solr->search();
-        $list->metadata = [
-            'label' => $label,
-            'thumbnail' => '',
-            'searchString' => $this->requestData['query'],
-            'fulltextSearch' => (!empty($this->requestData['fulltext']) ? '1' : '0'),
-            'options' => $list->metadata['options']
-        ];
-        $list->save();
-        // Clean output buffer.
-        ob_end_clean();
-        $additionalParams = [];
-        if (!empty($this->requestData['logicalPage'])) {
-            $additionalParams['logicalPage'] = $this->requestData['logicalPage'];
-        }
-        // Jump directly to the page view, if there is only one result and it is configured
-        if ($list->metadata['options']['numberOfHits'] == 1 && !empty($this->settings['showSingleResult'])) {
-            $linkConf['parameter'] = $this->settings['targetPidPageView'];
-            $additionalParams['id'] = $list->current()['uid'];
-            $additionalParams['highlight_word'] = preg_replace('/\s\s+/', ';', $list->metadata['searchString']);
-            $additionalParams['page'] = count($list[0]['subparts']) == 1 ? $list[0]['subparts'][0]['page'] : 1;
-        } else {
-            // Keep some plugin variables.
-            $linkConf['parameter'] = $this->settings['targetPid'];
-            if (!empty($this->requestData['order'])) {
-                $additionalParams['order'] = $this->requestData['order'];
-                $additionalParams['asc'] = !empty($this->requestData['asc']) ? '1' : '0';
-            }
-        }
-        $linkConf['forceAbsoluteUrl'] = !empty($this->settings['forceAbsoluteUrl']) ? 1 : 0;
-        $linkConf['forceAbsoluteUrl.']['scheme'] = !empty($this->settings['forceAbsoluteUrl']) && !empty($this->settings['forceAbsoluteUrlHttps']) ? 'https' : 'http';
-        $linkConf['additionalParams'] = GeneralUtility::implodeArrayForUrl($this->prefixId, $additionalParams, '', true, false);
-
-        $this->redirect('main', 'Search', null, null);
+        $this->metadataRepository = $metadataRepository;
     }
 
     /**
+     * Search Action
      *
-     * @return mixed
-     * @throws \TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException
+     * @return void
+     */
+    public function searchAction()
+    {
+        // if search was triggered, get search parameters from POST variables
+        $searchParams = $this->getParametersSafely('searchParameter');
+
+        // output is done by main action
+        $this->forward('main', null, null, ['searchParameter' => $searchParams]);
+    }
+
+    /**
+     * Main action
+     *
+     * @return void
      */
     public function mainAction()
     {
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
             $this->logger->warning('Incomplete plugin configuration');
-            return '';
-        }
-        if (!isset($this->requestData['query'])
-            && empty($this->requestData['extQuery'])
-        ) {
-            // Extract query and filter from last search.
-            $list = GeneralUtility::makeInstance(DocumentList::class);
-            if (!empty($list->metadata['searchString'])) {
-                if ($list->metadata['options']['source'] == 'search') {
-                    $search['query'] = $list->metadata['searchString'];
-                }
-                $search['params'] = $list->metadata['options']['params'];
-            }
-
-            $this->view->assign('QUERY', (!empty($search['query']) ? htmlspecialchars($search['query']) : ''));
-            $this->view->assign('FULLTEXT_SEARCH', $list->metadata['fulltextSearch']);
-        } else {
-            $this->view->assign('QUERY', (!empty($this->requestData['query']) ? htmlspecialchars($this->requestData['query']) : ''));
-            $this->view->assign('FULLTEXT_SEARCH', $this->requestData['fulltext']);
+            return;
         }
 
-        $this->view->assign('FACETS_MENU', $this->addFacetsMenu());
+        // if search was triggered, get search parameters from POST variables
+        $searchParams = $this->getParametersSafely('searchParameter');
 
-        $this->addEncryptedCoreName();
+        // get all sortable metadata records
+        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
-        if ($this->settings['searchIn'] == 'collection' || $this->settings['searchIn'] == 'all') {
-            $this->addCurrentCollection();
+        // get all metadata records to be shown in results
+        $listedMetadata = $this->metadataRepository->findByIsListed(true);
+
+        // get results from search
+        // find all documents from Solr
+        $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
+
+        // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
+        $widgetPage = $this->getParametersSafely('@widget_0');
+        if (empty($widgetPage)) {
+            $widgetPage = ['currentPage' => 1];
         }
-        if ($this->settings['searchIn'] == 'document' || $this->settings['searchIn'] == 'all') {
-            $this->addCurrentDocument();
-        }
+
+        $documents = $solrResults['documents'];
+        //$this->view->assign('metadata', $sortableMetadata);
+        $this->view->assign('documents', $documents);
+        $this->view->assign('widgetPage', $widgetPage);
+        $this->view->assign('lastSearch', $searchParams);
+
+        $this->view->assign('listedMetadata', $listedMetadata);
+        $this->view->assign('sortableMetadata', $sortableMetadata);
+
+        // ABTODO: facets and extended search might fail
+        // Add the facets menu
+        $this->addFacetsMenu();
 
         // Get additional fields for extended search.
         $this->addExtendedSearch();
@@ -303,27 +181,6 @@ class SearchController extends AbstractController
                 }
             }
             $this->view->assign('COLLECTION_ID', $collectionId);
-        }
-    }
-
-    /**
-     * Adds the encrypted Solr core name to the search form
-     *
-     * @access protected
-     *
-     * @return string HTML input fields with encrypted core name and hash
-     */
-    protected function addEncryptedCoreName()
-    {
-        // Get core name.
-        $name = Helper::getIndexNameFromUid($this->settings['solrcore'], 'tx_dlf_solrcores');
-        // Encrypt core name.
-        if (!empty($name)) {
-            $name = Helper::encrypt($name);
-        }
-        // Add encrypted fields to search form.
-        if ($name !== false) {
-            $this->view->assign('ENCRYPTED_CORE_NAME', $name);
         }
     }
 

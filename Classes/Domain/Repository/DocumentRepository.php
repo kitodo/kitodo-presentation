@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
@@ -492,4 +493,266 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $documents;
     }
 
+    /**
+     * Finds all documents with given uids
+     *
+     * @param string $uids separated by comma
+     *
+     * @return objects
+     */
+    private function findAllByUids($uids)
+    {
+        // get all documents from db we are talking about
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
+        // Fetch document info for UIDs in $documentSet from DB
+        $kitodoDocuments = $queryBuilder
+            ->select(
+                'tx_dlf_documents.uid AS uid',
+                'tx_dlf_documents.title AS title',
+                'tx_dlf_documents.structure AS structure',
+                'tx_dlf_documents.thumbnail AS thumbnail',
+                'tx_dlf_documents.volume_sorting AS volumeSorting',
+                'tx_dlf_documents.mets_orderlabel AS metsOrderlabel',
+                'tx_dlf_documents.partof AS partOf'
+            )
+            ->from('tx_dlf_documents')
+            ->where(
+                $queryBuilder->expr()->in('tx_dlf_documents.pid', $this->settings['storagePid']),
+                $queryBuilder->expr()->in('tx_dlf_documents.uid', $uids)
+            )
+            ->addOrderBy('tx_dlf_documents.volume_sorting', 'asc')
+            ->addOrderBy('tx_dlf_documents.mets_orderlabel', 'asc')
+            ->execute();
+
+        $allDocuments = [];
+        $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
+        // Process documents in a usable array structure
+        while ($resArray = $kitodoDocuments->fetch()) {
+            $resArray['structure'] = $documentStructures[$resArray['structure']];
+            $allDocuments[$resArray['uid']] = $resArray;
+        }
+
+        return $allDocuments;
+    }
+
+    /**
+     * Find all documents with given collection from Solr
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $collections
+     * @param array $settings
+     * @param array $searchParams
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
+     * @return array
+     */
+    public function findSolrByCollection($collections, $settings, $searchParams, $listedMetadata = null) {
+
+        $this->settings = $settings;
+
+        // Instantiate search object.
+        $solr = Solr::getInstance($settings['solrcore']);
+        if (!$solr->ready) {
+            $this->logger->error('Apache Solr not available');
+            return [];
+        }
+
+        // Prepare query parameters.
+        $params = [];
+        $matches = [];
+        // Set search query.
+        if (
+            (!empty($settings['fulltext']) && !empty($searchParams['fulltext']))
+            || preg_match('/fulltext:\((.*)\)/', trim($searchParams['query']), $matches)
+        ) {
+            // If the query already is a fulltext query e.g using the facets
+            $searchParams['query'] = empty($matches[1]) ? $searchParams['query'] : $matches[1];
+            // Search in fulltext field if applicable. Query must not be empty!
+            if (!empty($searchParams['query'])) {
+                $query = 'fulltext:(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
+            }
+            $params['fulltext'] = true;
+
+        } else {
+            // Retain given search field if valid.
+            // ABTODO: the storagePid won't be available here
+            $query = Solr::escapeQueryKeepField(trim($searchParams['query']), $settings['storagePid']);
+        }
+
+        // Set some query parameters.
+        $params['query'] = !empty($query) ? $query : '*';
+        $params['start'] = 0;
+        $params['rows'] = 10000;
+
+        // order the results as given or by title as default
+        if (!empty($searchParams['orderBy'])) {
+            $querySort = [
+                $searchParams['orderBy'] => $searchParams['order']
+            ];
+        } else {
+            $querySort = [
+                'year' => 'asc',
+                'title' => 'asc'
+            ];
+        }
+
+        $params['sort'] = $querySort;
+        $params['listMetadataRecords'] = [];
+
+        // Restrict the fields to the required ones.
+        $params['fields'] = 'uid,id,page,title,thumbnail,partof,toplevel,type';
+
+        if ($listedMetadata) {
+            foreach ($listedMetadata as $metadata) {
+                if ($metadata->getIndexStored() || $metadata->getIndexIndexed()) {
+                    $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . ($metadata->getIndexIndexed() ? 'i' : 'u');
+                    $params['fields'] .= ',' . $listMetadataRecord;
+                    $params['listMetadataRecords'][$metadata->getIndexName()] = $listMetadataRecord;
+                }
+            }
+        }
+
+        // Perform search.
+        $result = $solr->search_raw($params);
+
+        $numberOfToplevels = 0;
+        $documents = [];
+
+        if ($result['numFound'] > 0) {
+            // Initialize array
+            $documentSet = [];
+            // flat array with uids from Solr search
+            $documentSet = array_unique(array_column($result['documents'], 'uid'));
+
+            if (empty($documentSet)) {
+                // return nothing found
+                return ['solrResults' => [], 'documents' => []];
+            }
+
+            // get the Extbase document objects for all uids
+            $allDocuments = $this->findAllByUids($documentSet);
+            $children = $this->findByPartof($documentSet);
+
+            foreach ($result['documents'] as $doc) {
+                if (empty($documents[$doc['uid']]) && $allDocuments[$doc['uid']]) {
+                    $documents[$doc['uid']] = $allDocuments[$doc['uid']];
+                }
+                if ($documents[$doc['uid']]) {
+                    if ($doc['toplevel'] === false) {
+                        // this maybe a chapter, article, ..., year
+                        if ($doc['type'] === 'year') {
+                            continue;
+                        }
+                        if (!empty($doc['page'])) {
+                            // it's probably a fulltext or metadata search
+                            $searchResult = [];
+                            $searchResult['page'] = $doc['page'];
+                            $searchResult['thumbnail'] = $doc['thumbnail'];
+                            $searchResult['structure'] = $doc['type'];
+                            $searchResult['title'] = $doc['title'];
+                            foreach ($params['listMetadataRecords'] as $indexName => $solrField) {
+                                if (isset($doc['metadata'][$indexName])) {
+                                    $documents[$doc['uid']]['metadata'][$indexName] = $doc['metadata'][$indexName];
+                                }
+                            }
+                            if ($searchParams['fulltext'] == '1') {
+                                $searchResult['snippet'] = $doc['snippet'];
+                                $searchResult['highlight'] = $doc['highlight'];
+                                $searchResult['highlight_word'] = $searchParams['query'];
+                            }
+                            $documents[$doc['uid']]['searchResults'][] = $searchResult;
+                        }
+                    } else if ($doc['toplevel'] === true) {
+                        $numberOfToplevels++;
+                        foreach ($params['listMetadataRecords'] as $indexName => $solrField) {
+                            if (isset($doc['metadata'][$indexName])) {
+                                $documents[$doc['uid']]['metadata'][$indexName] = $doc['metadata'][$indexName];
+                            }
+                        }
+                        if ($searchParams['fulltext'] != '1') {
+                            $documents[$doc['uid']]['page'] = 1;
+                            if (empty($searchParams['query'])) {
+                                // find all child documents but not on active search
+                                if (is_array($children[$documents[$doc['uid']]['uid']])) {
+                                    $documents[$doc['uid']]['children'] = $this->findAllByUids($children[$documents[$doc['uid']]['uid']]);
+                                }
+                            }
+                        }
+                    }
+                    if (empty($documents[$doc['uid']]['metadata'])) {
+                        $documents[$doc['uid']]['metadata'] = $this->fetchMetadataFromSolr($doc['uid'], $settings, $listedMetadata);
+                    }
+                    // get title of parent if empty
+                    if (empty($documents[$doc['uid']]['title']) && ($documents[$doc['uid']]['partOf'] > 0)) {
+                        $parentDocument = $this->findByUid($documents[$doc['uid']]['partOf']);
+                        if ($parentDocument) {
+                            $documents[$doc['uid']]['title'] = $parentDocument->getTitle();
+                        }
+                    }
+                }
+            }
+        }
+
+        return ['solrResults' => $result, 'numberOfToplevels' => $numberOfToplevels, 'documents' => $documents];
+    }
+
+    /**
+     * Find all documents with given collection from Solr
+     *
+     * @param int $uid the uid of the document
+     * @param array $settings
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
+     * @return array
+     */
+    protected function fetchMetadataFromSolr($uid, $settings, $listedMetadata = []) {
+
+        $this->settings = $settings;
+
+        // Instantiate search object.
+        $solr = Solr::getInstance($settings['solrcore']);
+        if (!$solr->ready) {
+            $this->logger->error('Apache Solr not available');
+            return [];
+        }
+
+        // Prepare query parameters.
+        $params = [];
+        $matches = [];
+
+        // Set some query parameters.
+        $params['query'] = 'uid:' . $uid;
+        $params['start'] = 0;
+        $params['rows'] = 1;
+        $params['sort'] = ['score' => 'desc'];
+        $params['listMetadataRecords'] = [];
+
+        // Restrict the fields to the required ones.
+        $params['fields'] = 'uid,toplevel';
+
+        if ($listedMetadata) {
+            foreach ($listedMetadata as $metadata) {
+                if ($metadata->getIndexIndexed()) {
+                    $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
+                    $params['fields'] .= ',' . $listMetadataRecord;
+                    $params['listMetadataRecords'][$metadata->getIndexName()] = $listMetadataRecord;
+                }
+            }
+        }
+        // Set filter query to just get toplevel documents.
+        $params['filterquery'][] = ['query' => 'toplevel:true'];
+
+        // Perform search.
+        $result = $solr->search_raw($params);
+
+        if ($result['numFound'] > 0) {
+            $searchResult = [];
+            foreach ($result['documents'] as $doc) {
+                foreach ($params['listMetadataRecords'] as $indexName => $solrField) {
+                    if (isset($doc['metadata'][$solrField])) {
+                        $searchResult[$indexName] = $doc['metadata'][$solrField];
+                    }
+                }
+            }
+        }
+        return $searchResult;
+    }
 }

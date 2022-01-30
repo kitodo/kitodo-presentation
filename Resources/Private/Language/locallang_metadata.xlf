@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2021-11-27T12:07:34Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="metadata.author">
+				<source><![CDATA[Author]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.collection">
+				<source><![CDATA[Collection(s)]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.coordinates">
+				<source><![CDATA[Coordinates]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.language">
+				<source><![CDATA[Language]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.license">
+				<source><![CDATA[License]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.opac_id">
+				<source><![CDATA[OPAC Identifier]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.out_of_print">
+				<source><![CDATA[Out Of Print Works]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.owner">
+				<source><![CDATA[Owner]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.place">
+				<source><![CDATA[Place of Publication]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.prod_id">
+				<source><![CDATA[Kitodo Process Number]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.purl">
+				<source><![CDATA[PURL]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.record_id">
+				<source><![CDATA[OAI Identifier]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.restrictions">
+				<source><![CDATA[Restrictions on Access]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.rights_info">
+				<source><![CDATA[Rights Information]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.terms">
+				<source><![CDATA[Terms of Use]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.title">
+				<source><![CDATA[Title]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.type">
+				<source><![CDATA[Type]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.union_id">
+				<source><![CDATA[Union Catalog ID]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.urn">
+				<source><![CDATA[URN]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.volume">
+				<source><![CDATA[Volume]]></source>
+			</trans-unit>
+			<trans-unit id="metadata.year">
+				<source><![CDATA[Year of Publication]]></source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

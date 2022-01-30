@@ -88,6 +88,8 @@ class NewTenantController extends AbstractController
         // Load backend localization file.
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf');
+        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_structure.xlf');
+        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf');
     }
 
     /**

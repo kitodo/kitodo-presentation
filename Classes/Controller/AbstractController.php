@@ -173,6 +173,22 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
+     * Safely gets Parameters from request
+     * if they exist
+     *
+     * @param string $parameterName
+     *
+     * @return null|string
+     */
+    protected function getParametersSafely($parameterName)
+    {
+        if ($this->request->hasArgument($parameterName)) {
+            return $this->request->getArgument($parameterName);
+        }
+        return null;
+    }
+
+    /**
      * This is the constructor
      *
      * @access public

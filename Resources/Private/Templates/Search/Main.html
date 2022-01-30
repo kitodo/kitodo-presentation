@@ -1,3 +1,4 @@
+<f:comment>
 <!--
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -7,38 +8,46 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
 -->
+</f:comment>
 <html xmlns:content="http://purl.org/rss/1.0/modules/content/"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:form action="search" controller="Search" fieldNamePrefix="tx_dlf" method="post">
+<f:form action="search" controller="Search" name="searchParameter" method="post">
     <label for="tx-dlf-search-query">
-        <f:if condition="{QUERY}">
-            <f:then>{QUERY -> f:format.htmlspecialchars()}</f:then>
+        <f:if condition="{lastSearch.query}">
+            <f:then>{lastSearch.query -> f:format.htmlspecialchars()}</f:then>
             <f:else><f:translate key="search.query"/></f:else>
         </f:if>
     </label>
 
-    <f:form.textfield id="tx-dlf-search-query" name="query" value="{QUERY}" />
+    <f:form.textfield id="tx-dlf-search-query" property="query" value="{lastSearch.query}" />
 
-    <!-- Logical page -->
     <f:if condition="{showLogicalPageField}">
         <f:then>
+            <!-- Logical page -->
             <label for="tx-dlf-search-logical-page"><f:translate key="search.logicalPage"/>: </label>
             <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" name="logicalPage" />
         </f:then>
     </f:if>
 
-    <!-- The following element is needed for auto-completion! -->
+    <f:comment><!-- The following element is needed for auto-completion! --></f:comment>
     <div id="tx-dlf-search-suggest"></div>
 
     <f:form.submit value="{f:translate(key: 'search.submit')}" />
 
     <!-- Fulltext switch -->
-    <f:form.radio name="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: '', else: 'checked')}"/>
+    <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
     <label for="tx-dlf-search-fulltext-no"><f:translate key="search.inMetadata"/></label>
-    <f:form.radio name="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: 'checked', else: '')}"/>
+    <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
     <label for="tx-dlf-search-fulltext-yes"><f:translate key="search.inFulltext"/></label>
+
+    <f:if condition="{settings.collections}">
+        <f:form.hidden property="collections" value="{settings.collections}" />
+    </f:if>
+    <f:if condition="{settings.collections}">
+        <f:form.hidden property="documentId" value="{settings.collections}" />
+    </f:if>
 
     <!-- Add current document -->
     <f:if condition="{DOCUMENT_ID}">
@@ -54,12 +63,6 @@
         </f:then>
     </f:if>
 
-    <f:if condition="{ENCRYPTED_CORE_NAME}">
-        <f:then>
-            <f:form.hidden name="encryptedCoreName" value="{ENCRYPTED_CORE_NAME}"/>
-        </f:then>
-    </f:if>
-
     <div class="tx-dlf-search-extended">
         <f:for each="{extendedSlotCount}" as="slot" key="slot_label" iteration="slot_iterator">
             <f:form.select name="extOperator.{slot_iterator.index}" options="{operators}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}"/>
@@ -67,7 +70,206 @@
             <f:form.textfield name="extQuery.{slot_iterator.index}" class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"/>
         </f:for>
     </div>
+
+    <f:comment>
+    <f:form.select id="form-orderBy" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
+        <f:for each="{metadata}" as="meta">
+           <f:form.select.option value="{meta.indexName}_sorting">
+              <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{meta.indexName}' />
+           </f:form.select.option>
+        </f:for>
+     </f:form.select>
+    </f:comment>
+
+    <f:form.hidden property="orderBy" value="{lastSearch.orderBy}" />
+    <f:form.hidden property="order" value="{lastSearch.order}" />
+
 </f:form>
+
+<div class="tx-dlf-listview">
+    <f:variable name="currentPage" value="{widgetPage.currentPage - 1}" />
+    <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
+    <f:variable name="allDocuments" value="{documents->f:count()}" />
+    <f:variable name="numDocuments" value="{pageOffset + settings.list.paginate.itemsPerPage}" />
+    <p class="tx-dlf-search-numHits">Die Suche ergab {rawResults->f:count()} Treffer in {allDocuments} Dokumenten.</p>
+    <p class="tx-dlf-sortinfo">
+       <f:translate
+          key="LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:sortinfo"
+          arguments="{0:'{pageOffset + 1}',1:'{f:if(condition: \'{numDocuments} > {allDocuments}\', then: \'{allDocuments}\', else: \'{numDocuments}\')}', 2:'{allDocuments}'}" />
+    </p>
+
+    <f:form section="showResults" action="search" name="searchParameter" method="post" class="tx-dlf-search-form">
+       <div>
+          <label for="form-orderBy">
+             <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.orderBy' extensionName='slub_digitalcollections' />
+          </label>
+          <f:form.select id="form-orderBy" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
+             <f:for each="{sortableMetadata}" as="meta">
+                <f:form.select.option value="{meta.indexName}_sorting">
+                   <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{meta.indexName}' />
+                </f:form.select.option>
+             </f:for>
+          </f:form.select>
+          <label for="form-order">
+             <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order' extensionName='slub_digitalcollections' />
+          </label>
+          <f:form.select id="form-order" property="order" value="{lastSearch.order}" onclick="javascript:this.form.submit();">
+             <f:form.select.option value="asc">
+                <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.asc' extensionName='slub_digitalcollections' />
+             </f:form.select.option>
+             <f:form.select.option value="desc">
+                <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.desc' extensionName='slub_digitalcollections' />
+             </f:form.select.option>
+          </f:form.select>
+          <f:form.hidden property="collections" value="{settings.collections}" />
+          <f:form.hidden property="query" value="{lastSearch.query}" />
+          <f:form.hidden property="fulltext" value="{lastSearch.fulltext}" />
+       </div>
+    </f:form>
+
+    <f:widget.paginate objects="{documents}" as="paginatedDocuments" configuration="{settings.list.paginate}">
+       <ol class="tx-dlf-abstracts">
+          <f:for each="{paginatedDocuments}" as="document" iteration="docIterator">
+             <f:variable name="docTitle" value="{f:if(condition:'{document.title}', then:'{document.title}', else:'{document.metsOrderlabel}')}" />
+             <li value="{settings.list.paginate.itemsPerPage * pageOffset + docIterator.index}">
+                <f:link.page
+                pageUid="{settings.targetPidPageView}"
+                additionalParams="{tx_dlf:{page:'{document.page}', double:'0', id:'{document.uid}', pagegrid:'0'}}"
+                class=""
+                title="{docTitle}">
+                   <div class="tx-dlf-listview-thumbnail">
+                      <f:if condition="{document.thumbnail}">
+                         <img src="{document.thumbnail}" alt="Vorschaubild von {docTitle}" />
+                      </f:if>
+                   </div>
+                   <dl>
+                      <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
+                      <dd class="tx-dlf-title">{docTitle}</dd>
+                      <f:if condition="{document.metadata}">
+                          <f:then>
+                              <f:for each="{listedMetadata}" as="metadata" key="label">
+                                <f:if condition="{document.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
+                                    <dt class="tx-dlf-{metadata.indexName}">
+                                        {metadata.label}
+                                    </dt>
+                                    <dd>
+                                        {document.metadata.{metadata.indexName}.0}
+                                    </dd>
+                                </f:if>
+                              </f:for>
+                          </f:then>
+                          <f:else>
+                              <p class="error">No metadata for document with uid={document.uid}</p>
+                          </f:else>
+                      </f:if>
+                      <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
+                      <dd class="tx-dlf-type">
+                         <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{document.structure}' />
+                      </dd>
+                   </dl>
+                </f:link.page>
+                <f:if condition="{document.children} || {document.searchResults}">
+                   <button class="tx-dlf-morevolumes" title="{f:translate(key='listview.moredetails.toggle')}"><f:translate key='listview.moredetails.toggle' /></button>
+                </f:if>
+                <f:if condition="{document.children}">
+                   <ol class="tx-dlf-volume">
+                      <f:for each="{document.children}" as="child" iteration="childIterator">
+                         <f:if condition="{document.structure} == 'ephemera' || {document.structure} == 'newspaper'">
+                            <f:then>
+                               <f:comment>Special output for Newspaper / Ephemera</f:comment>
+                               <li value="{childIterator.cycle}" class="years">
+                                  <f:link.page
+                                  pageUid="{settings.targetPidPageView}"
+                                  additionalParams="{tx_dlf:{page:'1', double:'0', id:'{child.uid}', pagegrid:'0'}}"
+                                  class=""
+                                  title="{f:if(condition:'{child.metsOrderlabel}', then:'{child.metsOrderlabel}', else:'[{document.title}]')}">
+                                  {child.metsOrderlabel}
+                                  </f:link.page>
+                               </li>
+                            </f:then>
+                            <f:else>
+                               <li value="{childIterator.cycle}" class="pageresult">
+                                  <f:link.page
+                                  pageUid="{settings.targetPidPageView}"
+                                  additionalParams="{tx_dlf:{page:'1', double:'0', id:'{child.uid}', pagegrid:'0'}}"
+                                  class=""
+                                  title="{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}">
+                                     <div class="tx-dlf-listview-thumbnail">
+                                        <f:if condition="{child.thumbnail}">
+                                           <img src="{child.thumbnail}" alt="Vorschaubild von {f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}" />
+                                        </f:if>
+                                     </div>
+                                     <dl>
+                                        <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
+                                        <dd class="tx-dlf-title">{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}</dd>
+                                        <f:for each="{listedMetadata}" as="metadata">
+                                            <f:if condition="{child.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
+                                                <dt class="tx-dlf-{metadata.indexName}">
+                                                    {metadata.label}
+                                                </dt>
+                                                <dd>
+                                                    {child.metadata.{metadata.indexName}.0}
+                                                </dd>
+                                            </f:if>
+                                          </f:for>
+                                        <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
+                                        <dd class="tx-dlf-type">
+                                           <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{child.structure}' />
+                                        </dd>
+                                     </dl>
+                                  </f:link.page>
+                               </li>
+                            </f:else>
+                         </f:if>
+                      </f:for>
+                   </ol>
+                </f:if>
+
+                <f:if condition="{document.searchResults}">
+                   <ol class="tx-dlf-volume">
+                      <f:for each="{document.searchResults}" as="result" iteration="resultIterator">
+                         <li value="{resultIterator.cycle}" class="pageresult">
+                            <f:link.page
+                            pageUid="{settings.targetPidPageView}"
+                            additionalParams="{tx_dlf:{page:'{result.page}', double:'0', id:'{document.uid}', pagegrid:'0', highlight_word: '{result.highlight_word}'}}"
+                            class=""
+                            title="{f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}, Seite {result.page}">
+                               <div class="tx-dlf-listview-thumbnail">
+                                  <f:if condition="{result.thumbnail}">
+                                     <img src="{result.thumbnail}" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
+                                  </f:if>
+                               </div>
+                               <div>
+                                  <div class="tx-dlf-listview-preview">
+                                     <f:if condition="{result.structure} && {result.title}">
+                                        <f:then>
+                                           <p class="page">
+                                                <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{result.structure}' />: {result.title}
+                                            </p>
+                                           <p><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /> {result.page}</p>
+                                        </f:then>
+                                        <f:else>
+                                            <p>
+                                                {result.title}
+                                            </p>
+                                            <p class="page"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /> {result.page}</p>
+                                        </f:else>
+                                     </f:if>
+                                    <f:if condition="{result.snippet}">
+                                        <p class="textsnippet">[...] <f:format.raw>{result.snippet}</f:format.raw> [...]</p>
+                                    </f:if>
+                                  </div>
+                               </div>
+                            </f:link.page>
+                         </li>
+                      </f:for>
+                   </ol>
+                </f:if>
+             </li>
+          </f:for>
+       </ol>
+    </f:widget.paginate>
+ </div>
 
 <div class="tx-dlf-search-facets">
     <f:for each="{facetsMenu}" as="facet">

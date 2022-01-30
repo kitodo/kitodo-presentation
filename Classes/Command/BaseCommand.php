@@ -260,8 +260,6 @@ class BaseCommand extends Command
         }
 
         // to be still (re-) implemented
-        // 'metadata' => serialize($listed),
-        // 'metadata_sorting' => serialize($sortable),
         // 'volume' => $metadata['volume'][0],
         // 'volume_sorting' => $metadata['volume_sorting'][0],
 
