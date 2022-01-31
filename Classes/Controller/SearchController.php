@@ -87,7 +87,8 @@ class SearchController extends AbstractController
 
         // get results from search
         // find all documents from Solr
-        if (!empty($searchParams)) {
+        $solrResults = [];
+        if (is_array($searchParams) && !empty($searchParams)) {
             $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
         }
 
