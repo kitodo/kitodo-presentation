@@ -506,9 +506,9 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds all documents with given uids
      *
-     * @param string $uids separated by comma
+     * @param array $uids
      *
-     * @return objects
+     * @return array
      */
     private function findAllByUids($uids)
     {
@@ -617,12 +617,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Perform search.
         $result = $this->searchSolr($params, true);
 
+        // Initialize values
         $numberOfToplevels = 0;
         $documents = [];
 
         if ($result['numFound'] > 0) {
-            // Initialize array
-            $documentSet = [];
             // flat array with uids from Solr search
             $documentSet = array_unique(array_column($result['documents'], 'uid'));
 
@@ -709,7 +708,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     {
         // Prepare query parameters.
         $params = [];
-        $matches = [];
+        $metadataArray = [];
 
         // Set some query parameters.
         $params['query'] = 'uid:' . $uid;
@@ -737,7 +736,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $result = $this->searchSolr($params, true);
 
         if ($result['numFound'] > 0) {
-            $metadataArray = [];
             // There is only one result found because of toplevel:true.
             if (isset($result['documents'][0]['metadata'])) {
                 $metadataArray = $result['documents'][0]['metadata'];
@@ -768,10 +766,12 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Instantiate search object.
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
-            $this->logger->error('Apache Solr not available');
+            Helper::log('Apache Solr not available', LOG_SEVERITY_ERROR);
             return [];
         }
 
+        $cacheIdentifier = '';
+        $cache = null;
         // Calculate cache identifier.
         if ($enableCache === true) {
             $cacheIdentifier = Helper::digest($solr->core . print_r($parameters, true));
