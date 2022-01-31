@@ -87,7 +87,9 @@ class SearchController extends AbstractController
 
         // get results from search
         // find all documents from Solr
-        $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
+        if (!empty($searchParams)) {
+            $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
+        }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
         $widgetPage = $this->getParametersSafely('@widget_0');
@@ -95,7 +97,7 @@ class SearchController extends AbstractController
             $widgetPage = ['currentPage' => 1];
         }
 
-        $documents = $solrResults['documents'];
+        $documents = $solrResults['documents'] ? : [];
         //$this->view->assign('metadata', $sortableMetadata);
         $this->view->assign('documents', $documents);
         $this->view->assign('widgetPage', $widgetPage);

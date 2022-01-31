@@ -27,6 +27,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
     /**
+     * The controller settings passed to the repository for some special actions.
+     *
+     * @var array
+     * @access protected
+     */
+    protected $settings;
+
+    /**
      * Find one document by given parameters
      *
      * GET parameters may be:
@@ -547,8 +555,9 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
      * @return array
      */
-    public function findSolrByCollection($collections, $settings, $searchParams, $listedMetadata = null) {
-
+    public function findSolrByCollection($collections, $settings, $searchParams, $listedMetadata = null)
+    {
+        // set settings global inside this repository
         $this->settings = $settings;
 
         // Prepare query parameters.
@@ -569,7 +578,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         } else {
             // Retain given search field if valid.
-            // ABTODO: the storagePid won't be available here
             $query = Solr::escapeQueryKeepField(trim($searchParams['query']), $settings['storagePid']);
         }
 
@@ -674,7 +682,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         }
                     }
                     if (empty($documents[$doc['uid']]['metadata'])) {
-                        $documents[$doc['uid']]['metadata'] = $this->fetchMetadataFromSolr($doc['uid'], $settings, $listedMetadata);
+                        $documents[$doc['uid']]['metadata'] = $this->fetchMetadataFromSolr($doc['uid'], $listedMetadata);
                     }
                     // get title of parent if empty
                     if (empty($documents[$doc['uid']]['title']) && ($documents[$doc['uid']]['partOf'] > 0)) {
@@ -694,14 +702,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Find all listed metadata for given document
      *
      * @param int $uid the uid of the document
-     * @param array $settings
      * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
      * @return array
      */
-    protected function fetchMetadataFromSolr($uid, $settings, $listedMetadata = []) {
-
-        $this->settings = $settings;
-
+    protected function fetchMetadataFromSolr($uid, $listedMetadata = [])
+    {
         // Prepare query parameters.
         $params = [];
         $matches = [];
