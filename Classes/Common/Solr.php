@@ -393,18 +393,15 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $query: The search query
      * @param array $parameters: Additional search parameters
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw($query = '', $parameters = [])
+    public function search_raw($parameters = [])
     {
         // Set additional query parameters.
         $parameters['start'] = 0;
         $parameters['rows'] = $this->limit;
-        // Set query.
-        $parameters['query'] = $query;
         // Calculate cache identifier.
         $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true));
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');

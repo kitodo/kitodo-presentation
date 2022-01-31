@@ -354,7 +354,7 @@ class Indexer
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
             $solrDoc->setField('record_id', $metadata['record_id'][0]);
             $solrDoc->setField('purl', $metadata['purl'][0]);
-            $solrDoc->setField('location', $doc->location);
+            $solrDoc->setField('location', $document->getLocation());
             $solrDoc->setField('urn', $metadata['urn']);
             $solrDoc->setField('license', $metadata['license']);
             $solrDoc->setField('terms', $metadata['terms']);
