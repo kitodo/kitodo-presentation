@@ -13,7 +13,7 @@
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:form action="search" controller="Search" name="searchParameter" method="post">
+<f:form action="search" controller="Search" name="searchParameter" method="get">
     <label for="tx-dlf-search-query">
         <f:if condition="{lastSearch.query}">
             <f:then>{lastSearch.query -> f:format.htmlspecialchars()}</f:then>
@@ -71,16 +71,6 @@
         </f:for>
     </div>
 
-    <f:comment>
-    <f:form.select id="form-orderBy" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
-        <f:for each="{metadata}" as="meta">
-           <f:form.select.option value="{meta.indexName}_sorting">
-              <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{meta.indexName}' />
-           </f:form.select.option>
-        </f:for>
-     </f:form.select>
-    </f:comment>
-
     <f:form.hidden property="orderBy" value="{lastSearch.orderBy}" />
     <f:form.hidden property="order" value="{lastSearch.order}" />
 
@@ -98,7 +88,7 @@
           arguments="{0:'{pageOffset + 1}',1:'{f:if(condition: \'{numDocuments} > {allDocuments}\', then: \'{allDocuments}\', else: \'{numDocuments}\')}', 2:'{allDocuments}'}" />
     </p>
 
-    <f:form section="showResults" action="search" name="searchParameter" method="post" class="tx-dlf-search-form">
+    <f:form section="showResults" action="search" controller="Search" name="searchParameter" method="get" class="tx-dlf-search-form">
        <div>
           <label for="form-orderBy">
              <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.orderBy' extensionName='slub_digitalcollections' />

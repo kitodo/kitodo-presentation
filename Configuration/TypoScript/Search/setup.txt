@@ -1,4 +1,7 @@
 plugin.tx_dlf_search {
+    view {
+        # widget.TYPO3\CMS\Fluid\ViewHelpers\Widget\PaginateViewHelper.templateRootPath =
+    }
     settings {
         list.paginate {
             itemsPerPage = 25
