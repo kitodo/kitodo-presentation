@@ -16,6 +16,8 @@ use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -549,13 +551,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $this->settings = $settings;
 
-        // Instantiate search object.
-        $solr = Solr::getInstance($settings['solrcore']);
-        if (!$solr->ready) {
-            $this->logger->error('Apache Solr not available');
-            return [];
-        }
-
         // Prepare query parameters.
         $params = [];
         $matches = [];
@@ -612,7 +607,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         // Perform search.
-        $result = $solr->search_raw($params);
+        $result = $this->searchSolr($params, true);
 
         $numberOfToplevels = 0;
         $documents = [];
@@ -707,13 +702,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $this->settings = $settings;
 
-        // Instantiate search object.
-        $solr = Solr::getInstance($settings['solrcore']);
-        if (!$solr->ready) {
-            $this->logger->error('Apache Solr not available');
-            return [];
-        }
-
         // Prepare query parameters.
         $params = [];
         $matches = [];
@@ -741,7 +729,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $params['filterquery'][] = ['query' => 'toplevel:true'];
 
         // Perform search.
-        $result = $solr->search_raw($params);
+        $result = $this->searchSolr($params, true);
 
         if ($result['numFound'] > 0) {
             $metadataArray = [];
@@ -752,4 +740,109 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
         return $metadataArray;
     }
+
+    /**
+     * Processes a search request
+     *
+     * @access public
+     *
+     * @param array $parameters: Additional search parameters
+     * @param boolean $enableCache: Enable caching of Solr requests
+     *
+     * @return array The Apache Solr Documents that were fetched
+     */
+    protected function searchSolr($parameters = [], $enableCache = true)
+    {
+        // Set additional query parameters.
+        $parameters['start'] = 0;
+        // Set query.
+        $parameters['query'] = isset($parameters['query']) ? $parameters['query'] : '*';
+        $parameters['filterquery'] = isset($parameters['filterquery']) ? $parameters['filterquery'] : [];
+
+        // Perform Solr query.
+        // Instantiate search object.
+        $solr = Solr::getInstance($this->settings['solrcore']);
+        if (!$solr->ready) {
+            $this->logger->error('Apache Solr not available');
+            return [];
+        }
+
+        // Calculate cache identifier.
+        if ($enableCache === true) {
+            $cacheIdentifier = Helper::digest($solr->core . print_r($parameters, true));
+            $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
+        }
+        $resultSet = [
+            'documents' => [],
+            'numFound' => 0,
+        ];
+        if ($enableCache === false || ($entry = $cache->get($cacheIdentifier)) === false) {
+            $selectQuery = $solr->service->createSelect($parameters);
+
+            if ($parameters['fulltext'] === true) {
+                // get highlighting component and apply settings
+                $selectQuery->getHighlighting();
+            }
+
+            $solrRequest = $solr->service->createRequest($selectQuery);
+
+            if ($parameters['fulltext'] === true) {
+                // If it is a fulltext search, enable highlighting.
+                // field for which highlighting is going to be performed,
+                // is required if you want to have OCR highlighting
+                $solrRequest->addParam('hl.ocr.fl', 'fulltext');
+                // return the coordinates of highlighted search as absolute coordinates
+                $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
+                // max amount of snippets for a single page
+                $solrRequest->addParam('hl.snippets', 20);
+                // we store the fulltext on page level and can disable this option
+                $solrRequest->addParam('hl.ocr.trackPages', 'off');
+            }
+
+            // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
+            $response = $solr->service->executeRequest($solrRequest);
+            $result = $solr->service->createResult($selectQuery, $response);
+
+            /** @scrutinizer ignore-call */
+            $resultSet['numFound'] = $result->getNumFound();
+            $highlighting = [];
+            if ($parameters['fulltext'] === true) {
+                $data = $result->getData();
+                $highlighting = $data['ocrHighlighting'];
+            }
+            $fields = Solr::getFields();
+
+            foreach ($result as $record) {
+                $resultDocument = new ResultDocument($record, $highlighting, $fields);
+
+                $document = [
+                    'id' => $resultDocument->getId(),
+                    'page' => $resultDocument->getPage(),
+                    'snippet' => $resultDocument->getSnippets(),
+                    'thumbnail' => $resultDocument->getThumbnail(),
+                    'title' => $resultDocument->getTitle(),
+                    'toplevel' => $resultDocument->getToplevel(),
+                    'type' => $resultDocument->getType(),
+                    'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+                    'highlight' => $resultDocument->getHighlightsIds(),
+                ];
+                foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
+                    if (!empty($record->$solrField)) {
+                        $document['metadata'][$indexName] = $record->$solrField;
+                    }
+                }
+                $resultSet['documents'][] = $document;
+            }
+
+            // Save value in cache.
+            if (!empty($resultSet) && $enableCache === true) {
+                $cache->set($cacheIdentifier, $resultSet);
+            }
+        } else {
+            // Return cache hit.
+            $resultSet = $entry;
+        }
+        return $resultSet;
+    }
+
 }

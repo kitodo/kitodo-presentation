@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Common;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -390,157 +389,34 @@ class Solr implements LoggerAwareInterface
     }
 
     /**
-     * Processes a search request.
-     *
-     * @access public
-     *
-     * @return \Kitodo\Dlf\Common\DocumentList The result list
-     */
-    public function search()
-    {
-        $toplevel = [];
-        // Take over query parameters.
-        $params = $this->params;
-        $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : [];
-        // Set some query parameters.
-        $params['start'] = 0;
-        $params['rows'] = 0;
-        // Perform search to determine the total number of hits without fetching them.
-        $selectQuery = $this->service->createSelect($params);
-        $results = $this->service->select($selectQuery);
-        $this->numberOfHits = $results->getNumFound();
-        // Restore query parameters
-        $params = $this->params;
-        $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : [];
-        // Restrict the fields to the required ones.
-        $params['fields'] = 'uid,id';
-        // Set filter query to just get toplevel documents.
-        $params['filterquery'][] = ['query' => 'toplevel:true'];
-        // Set join query to get all documents with the same uids.
-        $params['query'] = '{!join from=uid to=uid}' . $params['query'];
-        // Perform search to determine the total number of toplevel hits and fetch the required rows.
-        $selectQuery = $this->service->createSelect($params);
-        $results = $this->service->select($selectQuery);
-        $numberOfToplevelHits = $results->getNumFound();
-        // Process results.
-        foreach ($results as $doc) {
-            $toplevel[$doc->id] = [
-                'u' => $doc->uid,
-                'h' => '',
-                's' => '',
-                'p' => []
-            ];
-        }
-        // Save list of documents.
-        $list = GeneralUtility::makeInstance(DocumentList::class);
-        $list->reset();
-        $list->add(array_values($toplevel));
-        // Set metadata for search.
-        $list->metadata = [
-            'label' => '',
-            'description' => '',
-            'options' => [
-                'source' => 'search',
-                'engine' => 'solr',
-                'select' => $this->params['query'],
-                'userid' => 0,
-                'params' => $this->params,
-                'core' => $this->core,
-                'pid' => $this->cPid,
-                'order' => 'score',
-                'order.asc' => true,
-                'numberOfHits' => $this->numberOfHits,
-                'numberOfToplevelHits' => $numberOfToplevelHits
-            ]
-        ];
-        return $list;
-    }
-
-    /**
      * Processes a search request and returns the raw Apache Solr Documents.
      *
      * @access public
      *
+     * @param string $query: The search query
      * @param array $parameters: Additional search parameters
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw($parameters = [])
+    public function search_raw($query = '', $parameters = [])
     {
         // Set additional query parameters.
         $parameters['start'] = 0;
+        $parameters['rows'] = $this->limit;
         // Set query.
-        $parameters['query'] = isset($parameters['query']) ? $parameters['query'] : '*';
-        $parameters['filterquery'] = isset($parameters['filterquery']) ? $parameters['filterquery'] : [];
+        $parameters['query'] = $query;
         // Calculate cache identifier.
         $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true));
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
-        $resultSet = [
-            'documents' => [],
-            'numFound' => 0,
-        ];
+        $resultSet = [];
         if (($entry = $cache->get($cacheIdentifier)) === false) {
-            $selectQuery = $this->service->createSelect($parameters);
-
-            if ($parameters['fulltext'] === true) {
-                // get highlighting component and apply settings
-                $selectQuery->getHighlighting();
+            $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
+            $result = $this->service->select($selectQuery);
+            foreach ($result as $doc) {
+                $resultSet[] = $doc;
             }
-
-            $solrRequest = $this->service->createRequest($selectQuery);
-
-            if ($parameters['fulltext'] === true) {
-                // If it is a fulltext search, enable highlighting.
-                // field for which highlighting is going to be performed,
-                // is required if you want to have OCR highlighting
-                $solrRequest->addParam('hl.ocr.fl', 'fulltext');
-                // return the coordinates of highlighted search as absolute coordinates
-                $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
-                // max amount of snippets for a single page
-                $solrRequest->addParam('hl.snippets', 20);
-                // we store the fulltext on page level and can disable this option
-                $solrRequest->addParam('hl.ocr.trackPages', 'off');
-            }
-
-            // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
-            $response = $this->service->executeRequest($solrRequest);
-            $result = $this->service->createResult($selectQuery, $response);
-
-            /** @scrutinizer ignore-call */
-            $resultSet['numFound'] = $result->getNumFound();
-            $highlighting = [];
-            if ($parameters['fulltext'] === true) {
-                $data = $result->getData();
-                $highlighting = $data['ocrHighlighting'];
-            }
-            $fields = Solr::getFields();
-
-            foreach ($result as $record) {
-                $resultDocument = new ResultDocument($record, $highlighting, $fields);
-
-                $document = [
-                    'id' => $resultDocument->getId(),
-                    'page' => $resultDocument->getPage(),
-                    'snippet' => $resultDocument->getSnippets(),
-                    'thumbnail' => $resultDocument->getThumbnail(),
-                    'title' => $resultDocument->getTitle(),
-                    'toplevel' => $resultDocument->getToplevel(),
-                    'type' => $resultDocument->getType(),
-                    'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
-                    'highlight' => $resultDocument->getHighlightsIds(),
-                ];
-                foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
-                    if (!empty($record->$solrField)) {
-                        $document['metadata'][$indexName] = $record->$solrField;
-                    }
-                }
-                $resultSet['documents'][] = $document;
-            }
-
             // Save value in cache.
-            if (!empty($resultSet)) {
-                $cache->set($cacheIdentifier, $resultSet);
-            }
+            $cache->set($cacheIdentifier, $resultSet);
         } else {
             // Return cache hit.
             $resultSet = $entry;
