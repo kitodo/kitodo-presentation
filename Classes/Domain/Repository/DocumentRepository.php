@@ -590,8 +590,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ];
         } else {
             $querySort = [
-                'year' => 'asc',
-                'title' => 'asc'
+                'year_sorting' => 'asc',
+                'title_sorting' => 'asc'
             ];
         }
 
@@ -696,7 +696,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
-     * Find all documents with given collection from Solr
+     * Find all listed metadata for given document
      *
      * @param int $uid the uid of the document
      * @param array $settings
@@ -744,15 +744,12 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $result = $solr->search_raw($params);
 
         if ($result['numFound'] > 0) {
-            $searchResult = [];
-            foreach ($result['documents'] as $doc) {
-                foreach ($params['listMetadataRecords'] as $indexName => $solrField) {
-                    if (isset($doc['metadata'][$solrField])) {
-                        $searchResult[$indexName] = $doc['metadata'][$solrField];
-                    }
-                }
+            $metadataArray = [];
+            // There is only one result found because of toplevel:true.
+            if (isset($result['documents'][0]['metadata'])) {
+                $metadataArray = $result['documents'][0]['metadata'];
             }
         }
-        return $searchResult;
+        return $metadataArray;
     }
 }
