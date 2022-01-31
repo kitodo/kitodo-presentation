@@ -484,9 +484,7 @@ class Solr implements LoggerAwareInterface
 
             if ($parameters['fulltext'] === true) {
                 // get highlighting component and apply settings
-                $hl = $selectQuery->getHighlighting();
-                // $hl->setSimplePrefix('<em>');
-                // $hl->setSimplePostfix('</em>');
+                $selectQuery->getHighlighting();
             }
 
             $solrRequest = $this->service->createRequest($selectQuery);
@@ -510,6 +508,7 @@ class Solr implements LoggerAwareInterface
 
             /** @scrutinizer ignore-call */
             $resultSet['numFound'] = $result->getNumFound();
+            $highlighting = [];
             if ($parameters['fulltext'] === true) {
                 $data = $result->getData();
                 $highlighting = $data['ocrHighlighting'];

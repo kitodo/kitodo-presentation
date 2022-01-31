@@ -268,9 +268,6 @@ class BaseCommand extends Command
             $document->setPartof($this->getParentDocumentUidForSaving($document));
         }
 
-        $document->setMetadata('');
-        $document->setMetadataSorting('');
-
         if ($document->getUid() === null) {
             // new document
             $this->documentRepository->add($document);

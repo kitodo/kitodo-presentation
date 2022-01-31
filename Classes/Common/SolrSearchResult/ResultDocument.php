@@ -242,7 +242,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return boolean
+     * @return string
      */
     public function getType()
     {

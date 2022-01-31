@@ -178,7 +178,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @param string $parameterName
      *
-     * @return null|string
+     * @return null|string|array
      */
     protected function getParametersSafely($parameterName)
     {
