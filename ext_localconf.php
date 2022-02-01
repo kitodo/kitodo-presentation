@@ -125,10 +125,12 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Search',
     [
         Search::class => 'main, search',
+        ListView::class => 'main'
     ],
     // non-cacheable actions
     [
         Search::class => 'main, search',
+        ListView::class => 'main'
     ]
 );
 

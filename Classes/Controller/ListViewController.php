@@ -320,12 +320,14 @@ class ListViewController extends AbstractController
      */
     public function mainAction()
     {
+        return;
+
         $sort = $this->requestData['sort'];
         $pointer = $this->requestData['pointer'];
         $logicalPage = $this->requestData['logicalPage'];
 
         // Load the list.
-        $this->list = GeneralUtility::makeInstance(DocumentList::class);
+//        $this->list = GeneralUtility::makeInstance(DocumentList::class);
         $currentEntry = $pointer * $this->settings['limit'];
         $lastEntry = ($pointer + 1) * $this->settings['limit'];
 

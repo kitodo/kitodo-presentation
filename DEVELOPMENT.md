@@ -16,3 +16,16 @@
 
   To simplify this, we may consider to rename database tables according to the
   default naming scheme.
+
+
+## Future Changes
+
+### Pagination Widget will be removed in TYPO3 11
+
+https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Breaking-92529-AllFluidWidgetFunctionalityRemoved.html
+
+The current solution does only work with TYPO3 9 and 10.
+
+As of TYPO3 10 a new pagination API has been introduced. This could be used as replacement in a release supporting TYPO3 10 and 11.
+
+https://docs.typo3.org/m/typo3/reference-coreapi/10.4/en-us/ApiOverview/Pagination/Index.html

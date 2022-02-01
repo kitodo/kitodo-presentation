@@ -60,7 +60,8 @@ class SearchController extends AbstractController
         $searchParams = $this->getParametersSafely('searchParameter');
 
         // output is done by main action
-        $this->forward('main', null, null, ['searchParameter' => $searchParams]);
+//        $this->forward('main', null, null, ['searchParameter' => $searchParams]);
+//        $this->forward('main', 'ListView', null, ['searchParameter' => $searchParams]);
     }
 
     /**
@@ -90,6 +91,7 @@ class SearchController extends AbstractController
         $solrResults = [];
         if (is_array($searchParams) && !empty($searchParams)) {
             $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
+            $this->forward('main', 'ListView', null, ['searchParameter' => $searchParams]);
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
