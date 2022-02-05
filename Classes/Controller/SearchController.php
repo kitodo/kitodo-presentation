@@ -80,34 +80,48 @@ class SearchController extends AbstractController
         // if search was triggered, get search parameters from POST variables
         $searchParams = $this->getParametersSafely('searchParameter');
 
-        // get all sortable metadata records
-        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
-
-        // get all metadata records to be shown in results
-        $listedMetadata = $this->metadataRepository->findByIsListed(true);
-
-        // get results from search
-        // find all documents from Solr
-        $solrResults = [];
-        if (is_array($searchParams) && !empty($searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
-            $this->forward('main', 'ListView', null, ['searchParameter' => $searchParams]);
-        }
-
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
         $widgetPage = $this->getParametersSafely('@widget_0');
         if (empty($widgetPage)) {
             $widgetPage = ['currentPage' => 1];
         }
 
-        $documents = $solrResults['documents'] ? : [];
-        //$this->view->assign('metadata', $sortableMetadata);
-        $this->view->assign('documents', $documents);
-        $this->view->assign('widgetPage', $widgetPage);
-        $this->view->assign('lastSearch', $searchParams);
+        // If a targetPid is given, the results will be shown by ListView on the target page.
+        if (!empty($this->settings['targetPid']) && !empty($searchParams)) {
+            $this->redirect('main', 'ListView', null,
+                [
+                    'searchParameter' => $searchParams,
+                    'widgetPage' => $widgetPage,
+                    'solrcore' => $this->settings['solrcore']
+                ], $this->settings['targetPid']
+            );
+        }
 
-        $this->view->assign('listedMetadata', $listedMetadata);
-        $this->view->assign('sortableMetadata', $sortableMetadata);
+        // get results from search
+        // find all documents from Solr
+        $solrResults = [];
+        if (is_array($searchParams) && !empty($searchParams)) {
+           $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
+
+           // get all sortable metadata records
+            $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+
+            // get all metadata records to be shown in results
+            $listedMetadata = $this->metadataRepository->findByIsListed(true);
+
+            if (is_array($searchParams) && !empty($searchParams)) {
+                $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
+            }
+
+            $documents = $solrResults['documents'] ? : [];
+            //$this->view->assign('metadata', $sortableMetadata);
+            $this->view->assign('documents', $documents);
+            $this->view->assign('widgetPage', $widgetPage);
+            $this->view->assign('lastSearch', $searchParams);
+
+            $this->view->assign('listedMetadata', $listedMetadata);
+            $this->view->assign('sortableMetadata', $sortableMetadata);
+        }
 
         // ABTODO: facets and extended search might fail
         // Add the facets menu

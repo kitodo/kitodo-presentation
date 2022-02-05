@@ -69,15 +69,12 @@ plugin.tx_dlf_pagegrid {
 
 plugin.tx_dlf_listview {
   settings {
-      paginate {
-          itemsPerPage = 10
-          insertAbove = 1
-          insertBelow = 1
-          lessPages = 1
-          forcedNumberOfLinks = 5
-          pagesBefore = 3
-          pagesAfter = 3
-          section =
-      }
+    list.paginate {
+        itemsPerPage = 25
+        insertAbove = 1
+        insertBelow = 1
+        maximumNumberOfLinks = 10
+        section = showResults
+    }
   }
 }

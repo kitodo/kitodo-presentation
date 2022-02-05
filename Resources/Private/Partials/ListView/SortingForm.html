@@ -13,43 +13,50 @@
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:if condition="{sortables}">
-    <f:form action="main" name="sort" object="{sort}"
-            addQueryString="1"
-            argumentsToBeExcludedFromQueryString="{0:'tx_dlf[DATA]'}"
-            enctype="multipart/form-data" method="get"
-            fieldNamePrefix="tx_dlf"
-            additionalParams="{f:if(condition: '{logicalPage}', then:'{logicalPage:logicalPage}', else:'{}')}"
-    >
-        <div>
-            <label for="listview-form-oderby">
-                <f:translate key="listview.orderBy"/>
-            </label>
-            <f:form.select id="listview-form-oderby" property="order" value="{documentList.metadata.options.order}" onclick="javascript:this.form.submit();">
-                <f:if condition="{documentList.metadata.options.source} == 'search'">
+    <f:if condition="{{sortableMetadata}">
+        <f:variable name="currentPage" value="{widgetPage.currentPage - 1}" />
+        <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
+        <f:variable name="allDocuments" value="{documents->f:count()}" />
+        <f:variable name="numDocuments" value="{pageOffset + settings.list.paginate.itemsPerPage}" />
+        <p class="tx-dlf-search-numHits">
+            <f:translate key="listview.hits" arguments="{0: '{rawResults->f:count()}', 1: '{allDocuments}'}" />
+        </p>
+        <p class="tx-dlf-sortinfo">
+            <f:translate
+                key="listview.count"
+                arguments="{0:'{pageOffset + 1}', 1:'{f:if(condition: \'{numDocuments} > {allDocuments}\', then: \'{allDocuments}\', else: \'{numDocuments}\')}', 2:'{allDocuments}'}" />
+        </p>
+
+        <f:form section="showResults" action="search" controller="Search" name="searchParameter" method="get" class="tx-dlf-search-form">
+            <div>
+                <label for="form-orderBy">
+                    <f:translate key="listview.form.orderBy"/>
+                </label>
+                <f:form.select id="form-orderBy" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
                     <f:form.select.option value="score">
-                        <f:translate key="listview.relevance" />
+                        <f:translate key="listview.form.relevance" />
                     </f:form.select.option>
-                </f:if>
-
-                <f:for each="{sortables}" key="indexName" as="label">
-                    <f:form.select.option value="{indexName -> f:format.htmlspecialchars()}">
-                        {label}
+                    <f:for each="{sortableMetadata}" as="meta">
+                        <f:form.select.option value="{meta.indexName}_sorting">
+                            <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{meta.indexName}' />
+                        </f:form.select.option>
+                    </f:for>
+                </f:form.select>
+                <label for="form-order">
+                    <f:translate key="listview.form.order"/>
+                </label>
+                <f:form.select id="form-order" property="order" value="{lastSearch.order}" onclick="javascript:this.form.submit();">
+                    <f:form.select.option value="asc">
+                    <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.asc' extensionName='slub_digitalcollections' />
                     </f:form.select.option>
-                </f:for>
-            </f:form.select>
-
-            <label for="listview-form-sortby">
-                <f:translate key="listview.direction"/>
-            </label>
-            <f:form.select id="listview-form-sortby" property="orderBy" value="{documentList.metadata.options.orderBy}" onclick="javascript:this.form.submit();">
-                <f:form.select.option value="asc">
-                        <f:translate key="listview.direction.asc"/>
-                </f:form.select.option>
-                <f:form.select.option value="desc">
-                    <f:translate key="listview.direction.desc"/>
-                </f:form.select.option>
-            </f:form.select>
-        </div>
-    </f:form>
-</f:if>
+                    <f:form.select.option value="desc">
+                    <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.desc' extensionName='slub_digitalcollections' />
+                    </f:form.select.option>
+                </f:form.select>
+                <f:form.hidden property="collections" value="{settings.collections}" />
+                <f:form.hidden property="query" value="{lastSearch.query}" />
+                <f:form.hidden property="fulltext" value="{lastSearch.fulltext}" />
+            </div>
+        </f:form>
+    </f:if>
+</html>

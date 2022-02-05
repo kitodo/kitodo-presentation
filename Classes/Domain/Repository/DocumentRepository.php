@@ -565,7 +565,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $matches = [];
         // Set search query.
         if (
-            (!empty($settings['fulltext']) && !empty($searchParams['fulltext']))
+            (!empty($searchParams['fulltext']))
             || preg_match('/fulltext:\((.*)\)/', trim($searchParams['query']), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
