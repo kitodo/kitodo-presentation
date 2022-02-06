@@ -22,14 +22,6 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 class CollectionController extends AbstractController
 {
     /**
-     * This holds the hook objects
-     *
-     * @var array
-     * @access protected
-     */
-    protected $hookObjects = [];
-
-    /**
      * @var CollectionRepository
      */
     protected $collectionRepository;
@@ -50,25 +42,18 @@ class CollectionController extends AbstractController
     public function mainAction()
     {
         // access to GET parameter tx_dlf_collection['collection']
-        $requestData = $this->request->getArguments();
-
-        $collection = $requestData['collection'];
+        $collection = $this->getParametersSafely('collection');
 
         // Quit without doing anything if required configuration variables are not set.
         if (empty($this->settings['storagePid'])) {
             $this->logger->warning('Incomplete plugin configuration');
         }
 
-        // Get hook objects.
-        // TODO: $this->hookObjects = Helper::getHookObjects($this->scriptRelPath);
-
         if ($collection) {
             $this->showSingleCollection($this->collectionRepository->findByUid($collection[0]));
         } else {
             $this->showCollectionList();
         }
-
-        $this->view->assign('currentPageUid', $GLOBALS['TSFE']->id);
     }
 
     /**
@@ -111,8 +96,11 @@ class CollectionController extends AbstractController
             } else {
                 $solr_query .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
             }
-            $partOfNothing = $solr->search_raw($solr_query . ' AND partof:0 AND toplevel:true', $params);
-            $partOfSomething = $solr->search_raw($solr_query . ' AND NOT partof:0 AND toplevel:true', $params);
+            $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
+            $partOfNothing = $solr->search_raw($params);
+
+            $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
+            $partOfSomething = $solr->search_raw($params);
             // Titles are all documents that are "root" elements i.e. partof == 0
             $collectionInfo['titles'] = [];
             foreach ($partOfNothing as $doc) {
@@ -141,14 +129,6 @@ class CollectionController extends AbstractController
         if (!empty($this->settings['randomize'])) {
             ksort($processedCollections, SORT_NUMERIC);
         }
-
-        // TODO: Hook for getting custom collection hierarchies/subentries (requested by SBB).
-        /*    foreach ($this->hookObjects as $hookObj) {
-                if (method_exists($hookObj, 'showCollectionList_getCustomCollectionList')) {
-                    $hookObj->showCollectionList_getCustomCollectionList($this, $this->settings['templateFile'], $content, $markerArray);
-                }
-            }
-        */
 
         $this->view->assign('collections', $processedCollections);
     }
@@ -181,7 +161,8 @@ class CollectionController extends AbstractController
         }
         $params['fields'] = 'uid';
         $params['sort'] = ['uid' => 'asc'];
-        $solrResult = $solr->search_raw($solr_query, $params);
+        $params['query'] = $solr_query;
+        $solrResult = $solr->search_raw($params);
         // Initialize array
         $documentSet = [];
         foreach ($solrResult as $doc) {
