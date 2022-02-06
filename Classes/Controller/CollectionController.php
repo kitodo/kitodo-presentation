@@ -14,10 +14,13 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 
 class CollectionController extends AbstractController
 {
@@ -35,32 +38,24 @@ class CollectionController extends AbstractController
     }
 
     /**
-     * The main method of the plugin
-     *
-     * @return void
+     * @var MetadataRepository
      */
-    public function mainAction()
+    protected $metadataRepository;
+
+    /**
+     * @param MetadataRepository $metadataRepository
+     */
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
-        // access to GET parameter tx_dlf_collection['collection']
-        $collection = $this->getParametersSafely('collection');
-
-        // Quit without doing anything if required configuration variables are not set.
-        if (empty($this->settings['storagePid'])) {
-            $this->logger->warning('Incomplete plugin configuration');
-        }
-
-        if ($collection) {
-            $this->showSingleCollection($this->collectionRepository->findByUid($collection[0]));
-        } else {
-            $this->showCollectionList();
-        }
+        $this->metadataRepository = $metadataRepository;
     }
 
     /**
-     * Builds a collection list
+     * Show a list of collections
+     *
      * @return void
      */
-    protected function showCollectionList()
+    public function listAction()
     {
         $solr = Solr::getInstance($this->settings['solrcore']);
 
@@ -73,17 +68,19 @@ class CollectionController extends AbstractController
         $params['sort'] = ['uid' => 'asc'];
         $collections = [];
 
-        // Sort collections according to flexform configuration
+        // Sort collections according to order in plugin flexform configuration
         if ($this->settings['collections']) {
             $sortedCollections = [];
             foreach (GeneralUtility::intExplode(',', $this->settings['collections']) as $uid) {
                 $sortedCollections[$uid] = $this->collectionRepository->findByUid($uid);
             }
             $collections = $sortedCollections;
+        } else {
+            $collections = $this->collectionRepository->findAll();
         }
 
         if (count($collections) == 1 && empty($this->settings['dont_show_single'])) {
-            $this->showSingleCollection(array_pop($collections));
+            $this->forward('show', null, null, ['collection' => array_pop($collections)]);
         }
 
         $processedCollections = [];
@@ -134,7 +131,7 @@ class CollectionController extends AbstractController
     }
 
     /**
-     * Builds a collection's list
+     * Show a single collection with description and all its documents.
      *
      * @access protected
      *
@@ -142,27 +139,28 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    protected function showSingleCollection(\Kitodo\Dlf\Domain\Model\Collection $collection)
+    public function showAction(\Kitodo\Dlf\Domain\Model\Collection $collection)
     {
-        // access storagePid from TypoScript
-        $pageSettings = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-        $this->settings['storagePid'] = $pageSettings["plugin."]["tx_dlf."]["persistence."]["storagePid"];
-
-        // Fetch corresponding document UIDs from Solr.
-        if ($collection->getIndexSearch() != '') {
-            $solr_query = '(' . $collection->getIndexSearch() . ')';
-        } else {
-            $solr_query = 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '") AND toplevel:true';
-        }
+        // Instaniate the Solr. Without Solr present, we can't do anything.
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return;
         }
+
+        // Check if it's a virtual collection with an Solr query set.
+        if ($collection->getIndexSearch() != '') {
+            $solr_query = '(' . $collection->getIndexSearch() . ')';
+        } else {
+            $solr_query = 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '") AND toplevel:true';
+        }
+
+        // We only fetch the UIDs of the found toplevel documents.
         $params['fields'] = 'uid';
         $params['sort'] = ['uid' => 'asc'];
         $params['query'] = $solr_query;
         $solrResult = $solr->search_raw($params);
+
         // Initialize array
         $documentSet = [];
         foreach ($solrResult as $doc) {
@@ -174,86 +172,37 @@ class CollectionController extends AbstractController
 
         $this->settings['documentSets'] = implode(',', $documentSet);
 
+        // Now find document objects for the given UIDs.
         $documents = $this->documentRepository->findDocumentsBySettings($this->settings);
 
-        $toplevel = [];
-        $subparts = [];
-        $listMetadata = [];
-        // Process results.
-        /** @var Document $document */
-        foreach ($documents as $document) {
-            if (empty($listMetadata)) {
-                $listMetadata = [
-                    'label' => htmlspecialchars($collection->getLabel()),
-                    'description' => $collection->getDescription(),
-                    'thumbnail' => htmlspecialchars($collection->getThumbnail()),
-                    'options' => [
-                        'source' => 'collection',
-                        'select' => $collection->getUid(),
-                        'userid' => $collection->getFeCruserId(),
-                        'params' => ['filterquery' => [['query' => 'collection_faceting:("' . $collection->getIndexName() . '")']]],
-                        'core' => '',
-                        'order' => 'title',
-                        'order.asc' => true
-                    ]
-                ];
-            }
-            // Prepare document's metadata for sorting.
-            $sorting = unserialize($document->getMetadataSorting());
-            if (!empty($sorting['type']) && MathUtility::canBeInterpretedAsInteger($sorting['type'])) {
-                $sorting['type'] = Helper::getIndexNameFromUid($sorting['type'], 'tx_dlf_structures', $this->settings['storagePid']);
-            }
-            if (!empty($sorting['owner']) && MathUtility::canBeInterpretedAsInteger($sorting['owner'])) {
-                $sorting['owner'] = Helper::getIndexNameFromUid($sorting['owner'], 'tx_dlf_libraries', $this->settings['storagePid']);
-            }
-            if (!empty($sorting['collection']) && MathUtility::canBeInterpretedAsInteger($sorting['collection'])) {
-                $sorting['collection'] = Helper::getIndexNameFromUid($sorting['collection'], 'tx_dlf_collections', $this->settings['storagePid']);
-            }
-            // Split toplevel documents from volumes.
-            if ($document->getPartof() == 0) {
-                $toplevel[$document->getUid()] = [
-                    'u' => $document->getUid(),
-                    'h' => '',
-                    's' => $sorting,
-                    'p' => []
-                ];
-            } else {
-                // volume_sorting should be always set - but it's not a required field. We append the uid to the array key to make it always unique.
-                $subparts[$document->getPartof()][$document->getVolumeSorting() . str_pad($document->getUid(), 9, '0', STR_PAD_LEFT)] = [
-                    'u' => $document->getUid(),
-                    'h' => '',
-                    's' => $sorting,
-                    'p' => []
-                ];
-            }
+        // If a targetPid is given, the results will be shown by ListView on the target page.
+        if (!empty($this->settings['targetPid'])) {
+            $this->redirect('main', 'ListView', null,
+                [
+                    'searchParameter' => $searchParams,
+                    'widgetPage' => $widgetPage,
+                    'solrcore' => $this->settings['solrcore']
+                ], $this->settings['targetPid']
+            );
         }
 
-        // Add volumes to the corresponding toplevel documents.
-        foreach ($subparts as $partof => $parts) {
-            ksort($parts);
-            foreach ($parts as $part) {
-                if (!empty($toplevel[$partof])) {
-                    $toplevel[$partof]['p'][] = ['u' => $part['u']];
-                } else {
-                    $toplevel[$part['u']] = $part;
-                }
-            }
+        // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
+        $widgetPage = $this->getParametersSafely('@widget_0');
+        if (empty($widgetPage)) {
+            $widgetPage = ['currentPage' => 1];
         }
-        // Save list of documents.
-        $list = GeneralUtility::makeInstance(DocumentList::class);
-        $list->reset();
-        $list->add(array_values($toplevel));
-        $listMetadata['options']['numberOfToplevelHits'] = count($list);
-        $list->metadata = $listMetadata;
-        $list->sort('title');
-        $list->save();
-        // Clean output buffer.
-        ob_end_clean();
 
-        $uri = $this->uriBuilder
-            ->reset()
-            ->setTargetPageUid($this->settings['targetPid'])
-            ->uriFor('main', [], 'ListView', 'dlf', 'ListView');
-        $this->redirectToURI($uri);
+        // get all sortable metadata records
+        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+
+        // get all metadata records to be shown in results
+        $listedMetadata = $this->metadataRepository->findByIsListed(true);
+
+        $this->view->assign('documents', $documents);
+        $this->view->assign('collection', $collection);
+        $this->view->assign('widgetPage', $widgetPage);
+        $this->view->assign('sortableMetadata', $sortableMetadata);
+        $this->view->assign('listedMetadata', $listedMetadata);
+
     }
 }

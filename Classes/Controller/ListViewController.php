@@ -49,6 +49,9 @@ class ListViewController extends AbstractController
     public function mainAction()
     {
         $searchRequestData = GeneralUtility::_GPmerged('tx_dlf_search');
+        $collectionRequestData = GeneralUtility::_GPmerged('tx_dlf_collection');
+
+        // ABTODO: This plugin may be called from search and collection plugin...
 
         $searchParams = $searchRequestData['searchParameter'];
         $widgetPage = $searchRequestData['widgetPage'];
@@ -66,12 +69,11 @@ class ListViewController extends AbstractController
         }
 
         $documents = $solrResults['documents'] ? : [];
-        //$this->view->assign('metadata', $sortableMetadata);
         $this->view->assign('documents', $documents);
         $this->view->assign('widgetPage', $widgetPage);
         $this->view->assign('lastSearch', $searchParams);
 
-        $this->view->assign('listedMetadata', $listedMetadata);
         $this->view->assign('sortableMetadata', $sortableMetadata);
+        $this->view->assign('listedMetadata', $listedMetadata);
     }
 }

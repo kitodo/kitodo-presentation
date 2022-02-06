@@ -19,28 +19,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
-
-    public function getCollectionList(array $uids, $showUserDefined = 0)
-    {
-        $query = $this->createQuery();
-
-        if (!empty($uids)) {
-            $constraints = [];
-            // selected collections
-            foreach ($uids as $uid) {
-                $constraints[] = $query->contains('uid', $uid);
-            }
-            $query->matching($query->logicalOr($constraints));
-        }
-
-        $query->matching($query->equals('fe_cruser_id', $showUserDefined));
-
-        $query->setOrderings([
-            'label' => QueryInterface::ORDER_ASCENDING
-        ]);
-
-    }
-
+    /**
+     * Set the default ordering. This is applied to findAll(), too.
+     *
+     * @var array
+     */
+    protected $defaultOrderings = [
+        'label' => QueryInterface::ORDER_ASCENDING,
+    ];
 
     /**
      * Finds all collections

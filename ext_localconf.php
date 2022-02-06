@@ -282,7 +282,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Collection',
     [
-        Collection::class => 'main',
+        Collection::class => 'list, show',
+        ListView::class => 'main'
     ],
     // non-cacheable actions
     [

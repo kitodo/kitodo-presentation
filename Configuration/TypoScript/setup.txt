@@ -78,3 +78,15 @@ plugin.tx_dlf_listview {
     }
   }
 }
+
+plugin.tx_dlf_collection {
+  settings {
+    list.paginate {
+        itemsPerPage = 25
+        insertAbove = 1
+        insertBelow = 1
+        maximumNumberOfLinks = 10
+        section = showResults
+    }
+  }
+}
