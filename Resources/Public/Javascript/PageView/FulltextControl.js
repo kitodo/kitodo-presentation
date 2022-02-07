@@ -161,6 +161,12 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.selectedFeature_ = undefined;
 
     /**
+     * @type {ol.Feature[] | undefined}
+     * @private
+     */
+    this.lastRenderedFeatures_ = undefined;
+
+    /**
      * @type {dlfFulltextSegments}
      * @private
      */
@@ -548,20 +554,30 @@ dlfTmplFulltext.space.className = "sp";
  * @param {Array.<ol.Feature>|undefined} features
  */
 dlfViewerFullTextControl.prototype.showFulltext = function(features) {
+    if (features === undefined) {
+        return;
+    }
 
-    if (features !== undefined) {
-        var target = document.getElementById('tx-dlf-fulltextselection');
-        if (target !== null) {
-            target.innerHTML = "";
-            for (var feature of features) {
-                var textLines = feature.get('textlines');
-                for (var textLine of textLines) {
-                    var textLineSpan = this.getTextLineSpan(textLine);
-                    target.append(textLineSpan);
-                }
-                target.append(document.createElement('br'), document.createElement('br'));
+    // Don't rerender when it's the same features as last time
+    if (this.lastRenderedFeatures_ !== undefined
+        && dlfUtils.arrayEqualsByIdentity(features, this.lastRenderedFeatures_)
+    ) {
+        return;
+    }
+
+    var target = document.getElementById('tx-dlf-fulltextselection');
+    if (target !== null) {
+        target.innerHTML = "";
+        for (var feature of features) {
+            var textLines = feature.get('textlines');
+            for (var textLine of textLines) {
+                var textLineSpan = this.getTextLineSpan(textLine);
+                target.append(textLineSpan);
             }
+            target.append(document.createElement('br'), document.createElement('br'));
         }
+
+        this.lastRenderedFeatures_ = features;
     }
 };
 

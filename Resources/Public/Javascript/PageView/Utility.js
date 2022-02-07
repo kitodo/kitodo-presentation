@@ -45,6 +45,28 @@ dlfUtils.CUSTOM_MIMETYPE = {
 dlfUtils.RUNNING_INDEX = 99999999;
 
 /**
+ * Check if arrays {@link lhs} and {@link rhs} contain exactly the same elements (compared via `===`).
+ *
+ * @template {T}
+ * @param {T[]} lhs
+ * @param {T[]} rhs
+ * @returns {boolean}
+ */
+dlfUtils.arrayEqualsByIdentity = function (lhs, rhs) {
+    if (lhs.length !== rhs.length) {
+        return false;
+    }
+
+    for (let i = 0; i < lhs.length; i++) {
+        if (lhs[i] !== rhs[i]) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+/**
  * Clone OpenLayers layer for dlfViewer (only properties used there are
  * considered).
  *
