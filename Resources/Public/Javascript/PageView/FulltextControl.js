@@ -73,10 +73,9 @@ dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
  * Encapsulates especially the fulltext behavior
  * @constructor
  * @param {ol.Map} map
- * @param {Object} image
- * @param {string} fulltextUrl
+ * @param {FullTextFeature} fulltextData
  */
-var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
+var dlfViewerFullTextControl = function(map, fulltextData) {
 
     /**
      * @private
@@ -85,16 +84,10 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.map = map;
 
     /**
-     * @type {Object}
+     * @type {FullTextFeature}
      * @private
      */
-    this.image = image;
-
-    /**
-     * @type {string}
-     * @private
-     */
-    this.url = fulltextUrl;
+    this.fulltextData_ = fulltextData;
 
     /**
      * @type {Object}
@@ -120,12 +113,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      * @private
      */
     this.fullTextScrollElement = this.dic['full-text-scroll-element'];
-
-    /**
-     * @type {ol.Feature|undefined}
-     * @private
-     */
-    this.fulltextData_ = undefined;
 
     /**
      * @type {Object}
@@ -423,27 +410,22 @@ dlfViewerFullTextControl.prototype.activate = function() {
 
     var controlEl = $('#tx-dlf-tools-fulltext');
 
-    // if the activate method is called for the first time fetch
-    // fulltext data from server
-    if (this.fulltextData_ === undefined)  {
-        this.fulltextData_ = dlfFullTextUtils.fetchFullTextDataFromServer(this.url, this.image);
+    // if the activate method is called for the first time, render fulltext data
+    if (this.lastRenderedFeatures_ === undefined)  {
+        // add features to fulltext layer
+        const textblockFeatures = this.fulltextData_.getTextblocks();
+        this.layers_.textblock.getSource().addFeatures(textblockFeatures);
+        this.textblocks_.populate(textblockFeatures);
 
-        if (this.fulltextData_ !== undefined) {
-            // add features to fulltext layer
-            const textblockFeatures = this.fulltextData_.getTextblocks();
-            this.layers_.textblock.getSource().addFeatures(textblockFeatures);
-            this.textblocks_.populate(textblockFeatures);
+        const textlineFeatures = this.fulltextData_.getTextlines();
+        this.layers_.textline.getSource().addFeatures(textlineFeatures);
+        this.textlines_.populate(textlineFeatures);
 
-            const textlineFeatures = this.fulltextData_.getTextlines();
-            this.layers_.textline.getSource().addFeatures(textlineFeatures);
-            this.textlines_.populate(textlineFeatures);
-
-            // add first feature of textBlockFeatures to map
-            if (this.fulltextData_.getTextblocks().length > 0) {
-                this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
-                this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
-                this.showFulltext(this.fulltextData_.getTextblocks());
-            }
+        // add first feature of textBlockFeatures to map
+        if (this.fulltextData_.getTextblocks().length > 0) {
+            this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
+            this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
+            this.showFulltext(this.fulltextData_.getTextblocks());
         }
     }
 

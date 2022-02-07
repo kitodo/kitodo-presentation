@@ -44,7 +44,7 @@ dlfFullTextUtils.isFeatureEqual = function(element, feature){
  * @param {string} url
  * @param {Object} image
  * @param {number=} optOffset
- * @return {ol.Feature|undefined}
+ * @return {FullTextFeature | undefined}
  * @static
  */
 dlfFullTextUtils.fetchFullTextDataFromServer = function(url, image, optOffset){
@@ -64,7 +64,7 @@ dlfFullTextUtils.fetchFullTextDataFromServer = function(url, image, optOffset){
  * @param {Object} image
  * @param {number=} offset
  * @param {Object} request
- * @return {ol.Feature|undefined}
+ * @return {FullTextFeature | undefined}
  * @static
  */
 dlfFullTextUtils.parseAltoData = function(image, offset, request){

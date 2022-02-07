@@ -188,8 +188,12 @@ dlfViewer.prototype.addCustomControls = function() {
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
     if (dlfUtils.isFulltextDescriptor(this.fulltexts[0]) && this.images.length === 1) {
-        fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
-        fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map, this.images[0], this.fulltexts[0].url);
+        var fulltextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[0].url, this.images[0]);
+
+        if (fulltextData !== undefined) {
+            fulltextControl = new dlfViewerFullTextControl(this.map, fulltextData);
+            fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map, fulltextData);
+        }
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }

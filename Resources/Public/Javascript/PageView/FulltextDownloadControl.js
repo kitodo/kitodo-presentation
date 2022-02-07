@@ -1,4 +1,4 @@
-var dlfViewerFullTextDownloadControl = function(map, image, fullTextUrl) {
+var dlfViewerFullTextDownloadControl = function(map, fulltextData) {
 
     /**
      * @private
@@ -7,16 +7,10 @@ var dlfViewerFullTextDownloadControl = function(map, image, fullTextUrl) {
     this.map = map;
 
     /**
-     * @type {Object}
+     * @type {FullTextFeature}
      * @private
      */
-    this.image = image;
-
-    /**
-     * @type {string}
-     * @private
-     */
-    this.url = fullTextUrl;
+    this.fulltextData_ = fulltextData;
 
     // add active / deactive behavior in case of click on control
     var element = $('#tx-dlf-tools-fulltextdownload');
@@ -54,17 +48,14 @@ dlfViewerFullTextDownloadControl.prototype.downloadFullTextFile = function() {
  * Activate Fulltext Features
  */
 dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function() {
-    var fullTextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.url, this.image);
-    var features = fullTextData.getTextblocks();
+    var features = this.fulltextData_.getTextblocks();
     var fileContent = '';
-    if (features !== undefined) {
-        for (var feature of features) {
-            var textLines = feature.get('textlines');
-            for (var textLine of textLines) {
-                fileContent = fileContent.concat(this.appendTextLine(textLine));
-            }
-            fileContent = fileContent.concat('\n\n');
+    for (var feature of features) {
+        var textLines = feature.get('textlines');
+        for (var textLine of textLines) {
+            fileContent = fileContent.concat(this.appendTextLine(textLine));
         }
+        fileContent = fileContent.concat('\n\n');
     }
 
     return fileContent;
