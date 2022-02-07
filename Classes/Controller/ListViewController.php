@@ -70,6 +70,8 @@ class ListViewController extends AbstractController
 
         $documents = $solrResults['documents'] ? : [];
         $this->view->assign('documents', $documents);
+        $rawResults = $solrResults['solrResults'] ? : [];
+        $this->view->assign('numResults', count($rawResults['documents']));
         $this->view->assign('widgetPage', $widgetPage);
         $this->view->assign('lastSearch', $searchParams);
 

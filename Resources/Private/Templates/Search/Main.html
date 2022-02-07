@@ -79,6 +79,7 @@
 <f:if condition="{settings.targetPid} == '' && {documents}">
 
     <div class="tx-dlf-listview">
+        <f:render partial="ListView/SearchHits" arguments="{_all}" />
         <f:render partial="ListView/SortingForm" arguments="{_all}" />
         <f:render partial="ListView/Results" arguments="{_all}" />
     </div>
