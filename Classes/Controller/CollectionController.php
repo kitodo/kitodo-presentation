@@ -141,6 +141,8 @@ class CollectionController extends AbstractController
      */
     public function showAction(\Kitodo\Dlf\Domain\Model\Collection $collection)
     {
+        $searchParams = $this->getParametersSafely('searchParameter');
+
         // Instaniate the Solr. Without Solr present, we can't do anything.
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
@@ -160,8 +162,7 @@ class CollectionController extends AbstractController
                 [
                     'searchParameter' => $searchParams,
                     'collection' => $collection,
-                    'widgetPage' => $widgetPage,
-                    'solrcore' => $this->settings['solrcore']
+                    'widgetPage' => $widgetPage
                 ], $this->settings['targetPid']
             );
         }
@@ -173,13 +174,32 @@ class CollectionController extends AbstractController
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         // get all documents of given collection
-        $documents = $this->documentRepository->findSolrByCollection($collection, $this->settings, $params, $listedMetadata);
+        $documents = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
 
         $this->view->assign('documents', $documents['documents']);
         $this->view->assign('collection', $collection);
         $this->view->assign('widgetPage', $widgetPage);
+        $this->view->assign('lastSearch', $searchParams);
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);
+    }
+
+    /**
+     * This is an uncached helper action.
+     *
+     * @access protected
+     *
+     * @param \Kitodo\Dlf\Domain\Model\Collection $collection: The collection object
+     *
+     * @return void
+     */
+    public function showSortedAction(\Kitodo\Dlf\Domain\Model\Collection $collection)
+    {
+        // if search was triggered, get search parameters from POST variables
+        $searchParams = $this->getParametersSafely('searchParameter');
+
+        // output is done by show action
+        $this->forward('show', null, null, ['searchParameter' => $searchParams, 'collection' => $collection]);
 
     }
 }

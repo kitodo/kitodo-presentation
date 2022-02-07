@@ -80,6 +80,8 @@
 
     <div class="tx-dlf-listview">
         <f:render partial="ListView/SearchHits" arguments="{_all}" />
+        <f:variable name="action" value="search" />
+        <f:variable name="controller" value="Search" />
         <f:render partial="ListView/SortingForm" arguments="{_all}" />
         <f:render partial="ListView/Results" arguments="{_all}" />
     </div>

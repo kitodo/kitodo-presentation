@@ -49,14 +49,19 @@ class ListViewController extends AbstractController
     public function mainAction()
     {
         $searchRequestData = GeneralUtility::_GPmerged('tx_dlf_search');
+        $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
         $collectionRequestData = GeneralUtility::_GPmerged('tx_dlf_collection');
+
+        $searchRequestData = array_merge($searchRequestData, $listRequestData);
+        $searchRequestData = array_merge($searchRequestData, $collectionRequestData);
 
         // ABTODO: This plugin may be called from search and collection plugin...
 
         $searchParams = $searchRequestData['searchParameter'];
         $widgetPage = $searchRequestData['widgetPage'];
-        // solrcore is configured in search plugin and must be passed by parameter
-        $this->settings['solrcore'] = $searchRequestData['solrcore'];
+        if (empty($widgetPage)) {
+            $widgetPage = ['currentPage' => 1];
+        }
 
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
@@ -70,8 +75,8 @@ class ListViewController extends AbstractController
 
         $documents = $solrResults['documents'] ? : [];
         $this->view->assign('documents', $documents);
-        $rawResults = $solrResults['solrResults'] ? : [];
-        $this->view->assign('numResults', count($rawResults['documents']));
+        $rawResults = $solrResults['solrResults']['documents'] ? : [];
+        $this->view->assign('numResults', count($rawResults));
         $this->view->assign('widgetPage', $widgetPage);
         $this->view->assign('lastSearch', $searchParams);
 

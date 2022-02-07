@@ -60,8 +60,7 @@ class SearchController extends AbstractController
         $searchParams = $this->getParametersSafely('searchParameter');
 
         // output is done by main action
-//        $this->forward('main', null, null, ['searchParameter' => $searchParams]);
-//        $this->forward('main', 'ListView', null, ['searchParameter' => $searchParams]);
+        $this->forward('main', null, null, ['searchParameter' => $searchParams]);
     }
 
     /**
@@ -91,8 +90,7 @@ class SearchController extends AbstractController
             $this->redirect('main', 'ListView', null,
                 [
                     'searchParameter' => $searchParams,
-                    'widgetPage' => $widgetPage,
-                    'solrcore' => $this->settings['solrcore']
+                    'widgetPage' => $widgetPage
                 ], $this->settings['targetPid']
             );
         }
@@ -113,11 +111,10 @@ class SearchController extends AbstractController
 
             $documents = $solrResults['documents'] ? : [];
             $this->view->assign('documents', $documents);
-            $rawResults = $solrResults['solrResults'] ? : [];
-            $this->view->assign('numResults', count($rawResults['documents']));
+            $rawResults = $solrResults['solrResults']['documents'] ? : [];
+            $this->view->assign('numResults', count($rawResults));
             $this->view->assign('widgetPage', $widgetPage);
             $this->view->assign('lastSearch', $searchParams);
-
             $this->view->assign('listedMetadata', $listedMetadata);
             $this->view->assign('sortableMetadata', $sortableMetadata);
         }

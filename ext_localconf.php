@@ -282,12 +282,12 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Collection',
     [
-        Collection::class => 'list, show',
+        Collection::class => 'list, show, showSorted',
         ListView::class => 'main'
     ],
     // non-cacheable actions
     [
-        Collection::class => '',
+        Collection::class => 'showSorted',
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
