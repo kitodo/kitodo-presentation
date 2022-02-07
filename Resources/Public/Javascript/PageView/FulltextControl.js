@@ -25,6 +25,51 @@ jQuery.fn.scrollTo = function(elem, speed) {
 };
 
 /**
+ * Represents segments on the fulltext plane that are addressable by coordinate.
+ *
+ * This assumes that the segments are rectangles parallel to the page.
+ */
+var dlfFulltextSegments = function () {
+    /**
+     * @type {{ feature: ol.Feature; extent: ol.Extent }}
+     * @private
+     */
+    this.segments_ = [];
+}
+
+/**
+ * Add {@link features} to the list of segments.
+ *
+ * @param {ol.Feature[]} features
+ */
+dlfFulltextSegments.prototype.populate = function (features) {
+    for (var i = 0; i < features.length; i++) {
+        var feature = features[i];
+
+        this.segments_.push({
+            feature: feature,
+            extent: feature.getGeometry().getExtent()
+        });
+    }
+};
+
+/**
+ * Returns the feature at a given {@link coordinate}, or `undefined` if no such feature is found.
+ *
+ * @param {ol.Coordinate} coordinate
+ * @returns {ol.Feature | undefined}
+ */
+dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
+    for (var i = 0; i < this.segments_.length; i++) {
+        var segment = this.segments_[i];
+
+        if (ol.extent.containsCoordinate(segment.extent, coordinate)) {
+            return segment.feature;
+        }
+    }
+};
+
+/**
  * Encapsulates especially the fulltext behavior
  * @constructor
  * @param {ol.Map} map
@@ -116,20 +161,38 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.selectedFeature_ = undefined;
 
     /**
+     * @type {dlfFulltextSegments}
+     * @private
+     */
+    this.textlines_ = new dlfFulltextSegments();
+
+    /**
+     * @type {dlfFulltextSegments}
+     * @private
+     */
+    this.textblocks_ = new dlfFulltextSegments();
+
+    /**
      * @type {Object}
      * @private
      */
     this.handlers_ = {
+        // On some systems in Firefox, the call to forEachFeatureAtPixel takes very long when no feature is found.
+        // For now, we thus replace this with manual bounds checking in dlfFulltextSegments.
+        //
+        // Inspiration from https://stackoverflow.com/a/47101658
+        // Issues:
+        // - https://github.com/openlayers/openlayers/issues/4232
+        // - https://github.com/openlayers/openlayers/issues/8592#issuecomment-419817607
+        // - https://stackoverflow.com/questions/45710306/firefox-very-slow-with-foreachfeatureatpixel
+        // - https://stackoverflow.com/questions/33246093/very-slow-hover-interactions-in-openlayers-3-with-any-browser-except-chrome
         mapClick: $.proxy(function(event) {
                 // the click handler adds the clicked feature to a
                 // select layer which could be used to create a highlight
                 // effect on the map
 
-                var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                    if (feature.get('type') === 'textblock') {
-                        return feature;
-                    }
-                });
+                var mouseCoordinate = this.map.getCoordinateFromPixel(event['pixel']);
+                var feature = this.textblocks_.coordinateToFeature(mouseCoordinate);
 
                 // deselect all
                 if (feature === undefined) {
@@ -159,18 +222,9 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                 var hoverSourceTextblock_ = this.layers_.hoverTextblock.getSource(),
                     hoverSourceTextline_ = this.layers_.hoverTextline.getSource(),
                     selectSource_ = this.layers_.select.getSource(),
-                    map_ = this.map,
-                    textblockFeature,
-                    textlineFeature;
-
-                map_.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                    if (feature.get('type') === 'textblock') {
-                        textblockFeature = feature;
-                    }
-                    if (feature.get('type') === 'textline') {
-                        textlineFeature = feature;
-                    }
-                });
+                    mouseCoordinate = this.map.getCoordinateFromPixel(event['pixel']),
+                    textblockFeature = this.textblocks_.coordinateToFeature(mouseCoordinate),
+                    textlineFeature = this.textlines_.coordinateToFeature(mouseCoordinate);
 
                 this.handleTextBlockElements(textblockFeature, selectSource_, hoverSourceTextblock_);
                 this.handleTextLineElements(textlineFeature, hoverSourceTextline_);
@@ -370,8 +424,13 @@ dlfViewerFullTextControl.prototype.activate = function() {
 
         if (this.fulltextData_ !== undefined) {
             // add features to fulltext layer
-            this.layers_.textblock.getSource().addFeatures(this.fulltextData_.getTextblocks());
-            this.layers_.textline.getSource().addFeatures(this.fulltextData_.getTextlines());
+            const textblockFeatures = this.fulltextData_.getTextblocks();
+            this.layers_.textblock.getSource().addFeatures(textblockFeatures);
+            this.textblocks_.populate(textblockFeatures);
+
+            const textlineFeatures = this.fulltextData_.getTextlines();
+            this.layers_.textline.getSource().addFeatures(textlineFeatures);
+            this.textlines_.populate(textlineFeatures);
 
             // add first feature of textBlockFeatures to map
             if (this.fulltextData_.getTextblocks().length > 0) {
