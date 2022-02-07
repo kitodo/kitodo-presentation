@@ -531,6 +531,18 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
 };
 
 /**
+ * Template elements to be used via cloneNode when rendering fulltext.
+ */
+var dlfTmplFulltext = {
+    word: document.createElement('span'),
+    textline: document.createElement('span'),
+    space: document.createElement('span'),
+};
+
+dlfTmplFulltext.textline.className = "textline";
+dlfTmplFulltext.space.className = "sp";
+
+/**
  * Show full text
  *
  * @param {Array.<ol.Feature>|undefined} features
@@ -538,13 +550,17 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
 dlfViewerFullTextControl.prototype.showFulltext = function(features) {
 
     if (features !== undefined) {
-        $('#tx-dlf-fulltextselection').children().remove();
-        for (var feature of features) {
-            var textLines = feature.get('textlines');
-            for (var textLine of textLines) {
-                this.appendTextLineSpan(textLine);
+        var target = document.getElementById('tx-dlf-fulltextselection');
+        if (target !== null) {
+            target.innerHTML = "";
+            for (var feature of features) {
+                var textLines = feature.get('textlines');
+                for (var textLine of textLines) {
+                    var textLineSpan = this.getTextLineSpan(textLine);
+                    target.append(textLineSpan);
+                }
+                target.append(document.createElement('br'), document.createElement('br'));
             }
-            $('#tx-dlf-fulltextselection').append('<br /><br />');
         }
     }
 };
@@ -554,16 +570,19 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
  *
  * @param {Object} textLine
  */
-dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
-    var textLineSpan = $('<span class="textline" id="' + textLine.getId() + '">');
+dlfViewerFullTextControl.prototype.getTextLineSpan = function(textLine) {
+    var textLineSpan = dlfTmplFulltext.textline.cloneNode();
+    textLineSpan.id = textLine.getId();
+
     var content = textLine.get('content');
 
     for (var item of content) {
         textLineSpan.append(this.getItemForTextLineSpan(item));
     }
 
-    textLineSpan.append('<span class="sp"> </span>');
-    $('#tx-dlf-fulltextselection').append(textLineSpan);
+    textLineSpan.append(dlfTmplFulltext.space.cloneNode());
+
+    return textLineSpan;
 };
 
 /**
@@ -572,14 +591,14 @@ dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
  *
  * @param {Object} item
  *
- * @return {string}
+ * @return {HTMLElement}
  */
 dlfViewerFullTextControl.prototype.getItemForTextLineSpan = function(item) {
-    var span = '';
-    if (item.get('type') === 'string') {
-        span = $('<span class="' + item.get('type') + '" id="' + item.getId() + '"/>');
-    } else {
-        span = $('<span class="' + item.get('type') + '"/>');
+    var type = item.get('type');
+    var span = dlfTmplFulltext.word.cloneNode();
+    span.className = type;
+    if (type === 'string') {
+        span.id = item.getId();
     }
 
     var spanText = item.get('fulltext');
@@ -587,8 +606,9 @@ dlfViewerFullTextControl.prototype.getItemForTextLineSpan = function(item) {
     for (const [i, spanTextLine] of spanTextLines.entries()) {
         span.append(document.createTextNode(spanTextLine));
         if (i < spanTextLines.length - 1) {
-            span.append($('<br />'));
+            span.append(document.createElement('br'));
         }
     }
+
     return span;
 };
