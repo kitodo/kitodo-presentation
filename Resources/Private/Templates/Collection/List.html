@@ -16,16 +16,16 @@
 <div class="tx-dlf-collection">
     <ul class="tx-dlf-collection-list">
         <f:for each="{collections}" as="item">
-            <li>
+            <li class="tx-dlf-collection-item">
                 <h2>
                     <f:link.action action="show"
-                                   arguments="{collection : item.collection.uid}"
+                                   arguments="{collection : item.collection}"
                                    pageUid="{pageUid}">
                         {item.collection.label}
                     </f:link.action>
 
                     <f:if condition="{settings.targetFeed}">
-                        <span>
+                        <span class="tx-dlf-collection-thumbnail">
                             <f:link.page
                                 pageUid="{settings.targetFeed}"
                                 additionalParams="{'tx_dlf_feeds[collection]': item.collection.uid}"
@@ -42,7 +42,9 @@
                         <f:image image="{item.collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {item.collection.label}" title="{item.collection.label}" maxWidth="250" />
                      </f:if>
                 </div>
-                <f:format.html>{item.collection.description}</f:format.html>
+                <div class="tx-dlf-collection-description">
+                    <f:format.html>{item.collection.description}</f:format.html>
+                </div>
                 <p class="tx-dlf-collection-counts">
                     ({item.info.titles -> f:count()}
                     <f:translate key="{f:if(condition:'{item.info.titles -> f:count()} > 1', then: 'titles', else: 'title')}" />

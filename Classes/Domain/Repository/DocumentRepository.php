@@ -549,13 +549,13 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find all documents with given collection from Solr
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $collections
+     * @param \Kitodo\Dlf\Domain\Model\Collection $collection
      * @param array $settings
      * @param array $searchParams
      * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
      * @return array
      */
-    public function findSolrByCollection($collections, $settings, $searchParams, $listedMetadata = null)
+    public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
     {
         // set settings global inside this repository
         $this->settings = $settings;
@@ -563,6 +563,15 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Prepare query parameters.
         $params = [];
         $matches = [];
+
+        // if a collection is given, we prepare the collection query string
+        if ($collection) {
+            $collecionsQueryString = $collection->getIndexName();
+            $params['filterquery'][] = ['query' => 'toplevel:true'];
+            $params['filterquery'][] = ['query' => 'partof:0'];
+            $params['filterquery'][] = ['query' => 'collection_faceting:("' . $collecionsQueryString .'")'];
+        }
+
         // Set search query.
         if (
             (!empty($searchParams['fulltext']))
@@ -575,11 +584,13 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $query = 'fulltext:(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
             }
             $params['fulltext'] = true;
-
         } else {
             // Retain given search field if valid.
-            $query = Solr::escapeQueryKeepField(trim($searchParams['query']), $settings['storagePid']);
+            if (!empty($searchParams['query'])) {
+                $query = Solr::escapeQueryKeepField(trim($searchParams['query']), $settings['storagePid']);
+            }
         }
+
 
         // Set some query parameters.
         $params['query'] = !empty($query) ? $query : '*';
@@ -632,7 +643,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
             // get the Extbase document objects for all uids
             $allDocuments = $this->findAllByUids($documentSet);
-            $children = $this->findByPartof($documentSet);
 
             foreach ($result['documents'] as $doc) {
                 if (empty($documents[$doc['uid']]) && $allDocuments[$doc['uid']]) {
@@ -672,12 +682,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         }
                         if ($searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
-                            if (empty($searchParams['query'])) {
-                                // find all child documents but not on active search
-                                if (is_array($children[$documents[$doc['uid']]['uid']])) {
-                                    $documents[$doc['uid']]['children'] = $this->findAllByUids($children[$documents[$doc['uid']]['uid']]);
-                                }
-                            }
+                            $documents[$doc['uid']]['children'] = $this->findByPartof($doc['uid']);
                         }
                     }
                     if (empty($documents[$doc['uid']]['metadata'])) {
@@ -704,7 +709,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
      * @return array
      */
-    protected function fetchMetadataFromSolr($uid, $listedMetadata = [])
+    public function fetchMetadataFromSolr($uid, $listedMetadata = [])
     {
         // Prepare query parameters.
         $params = [];

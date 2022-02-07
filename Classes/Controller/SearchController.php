@@ -101,9 +101,7 @@ class SearchController extends AbstractController
         // find all documents from Solr
         $solrResults = [];
         if (is_array($searchParams) && !empty($searchParams)) {
-           $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
-
-           // get all sortable metadata records
+            // get all sortable metadata records
             $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
             // get all metadata records to be shown in results

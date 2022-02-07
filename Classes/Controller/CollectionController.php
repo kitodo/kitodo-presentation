@@ -148,57 +148,34 @@ class CollectionController extends AbstractController
             return;
         }
 
-        // Check if it's a virtual collection with an Solr query set.
-        if ($collection->getIndexSearch() != '') {
-            $solr_query = '(' . $collection->getIndexSearch() . ')';
-        } else {
-            $solr_query = 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '") AND toplevel:true';
-        }
-
-        // We only fetch the UIDs of the found toplevel documents.
-        $params['fields'] = 'uid';
-        $params['sort'] = ['uid' => 'asc'];
-        $params['query'] = $solr_query;
-        $solrResult = $solr->search_raw($params);
-
-        // Initialize array
-        $documentSet = [];
-        foreach ($solrResult as $doc) {
-            if ($doc->uid) {
-                $documentSet[] = $doc->uid;
-            }
-        }
-        $documentSet = array_unique($documentSet);
-
-        $this->settings['documentSets'] = implode(',', $documentSet);
-
-        // Now find document objects for the given UIDs.
-        $documents = $this->documentRepository->findDocumentsBySettings($this->settings);
-
-        // If a targetPid is given, the results will be shown by ListView on the target page.
-        if (!empty($this->settings['targetPid'])) {
-            $this->redirect('main', 'ListView', null,
-                [
-                    'searchParameter' => $searchParams,
-                    'widgetPage' => $widgetPage,
-                    'solrcore' => $this->settings['solrcore']
-                ], $this->settings['targetPid']
-            );
-        }
-
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
         $widgetPage = $this->getParametersSafely('@widget_0');
         if (empty($widgetPage)) {
             $widgetPage = ['currentPage' => 1];
         }
 
-        // get all sortable metadata records
-        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+        // If a targetPid is given, the results will be shown by ListView on the target page.
+        if (!empty($this->settings['targetPid'])) {
+            $this->redirect('main', 'ListView', null,
+                [
+                    'searchParameter' => $searchParams,
+                    'collection' => $collection,
+                    'widgetPage' => $widgetPage,
+                    'solrcore' => $this->settings['solrcore']
+                ], $this->settings['targetPid']
+            );
+        }
 
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-        $this->view->assign('documents', $documents);
+        // get all sortable metadata records
+        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+
+        // get all documents of given collection
+        $documents = $this->documentRepository->findSolrByCollection($collection, $this->settings, $params, $listedMetadata);
+
+        $this->view->assign('documents', $documents['documents']);
         $this->view->assign('collection', $collection);
         $this->view->assign('widgetPage', $widgetPage);
         $this->view->assign('sortableMetadata', $sortableMetadata);
