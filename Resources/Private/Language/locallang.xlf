@@ -188,6 +188,9 @@
 			<trans-unit id="tools.fulltext">
 				<source><![CDATA[Full text]]></source>
 			</trans-unit>
+			<trans-unit id="tools.fulltext.loading">
+				<source><![CDATA[Loading full text...]]></source>
+			</trans-unit>
 			<trans-unit id="tools.fulltext.not-available">
 				<source><![CDATA[No full text available]]></source>
 			</trans-unit>

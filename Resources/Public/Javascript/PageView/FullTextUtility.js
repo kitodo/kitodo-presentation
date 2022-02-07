@@ -47,16 +47,25 @@ dlfFullTextUtils.isFeatureEqual = function(element, feature){
  * @return {FullTextFeature | undefined}
  * @static
  */
-dlfFullTextUtils.fetchFullTextDataFromServer = function(url, image, optOffset){
-    // fetch data from server
-    var request = $.ajax({
-        url,
-        async: false
+dlfFullTextUtils.fetchFullTextDataFromServer = function(url, image, optOffset) {
+    var result = new $.Deferred();
+
+    $.ajax({ url }).done(function (data, status, jqXHR) {
+        try {
+            var fulltext = dlfFullTextUtils.parseAltoData(image, optOffset, jqXHR);
+
+            if (fulltext === undefined) {
+                result.reject();
+            } else {
+                result.resolve(fulltext);
+            }
+        } catch (e) {
+            console.error(e);
+            result.reject();
+        }
     });
 
-    var offset = dlfUtils.exists(optOffset) ? optOffset : undefined;
-
-    return dlfFullTextUtils.parseAltoData(image, offset, request);
+    return result;
 };
 
 /**

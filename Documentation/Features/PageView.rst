@@ -76,6 +76,8 @@ In the *Digital Collections* template, the following full text features are avai
 *  When showing an indexed document, click the search icon on the right to toggle in-document search.
    Search results should be highlighted on the page.
 
+*  In single page mode, click the download link and select "Fulltext page (TXT)" to download the raw text.
+
 Overview Map and Zoom Buttons
 -----------------------------
 

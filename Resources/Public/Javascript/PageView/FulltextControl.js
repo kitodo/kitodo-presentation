@@ -73,21 +73,14 @@ dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
  * Encapsulates especially the fulltext behavior
  * @constructor
  * @param {ol.Map} map
- * @param {FullTextFeature} fulltextData
  */
-var dlfViewerFullTextControl = function(map, fulltextData) {
+var dlfViewerFullTextControl = function(map) {
 
     /**
      * @private
      * @type {ol.Map}
      */
     this.map = map;
-
-    /**
-     * @type {FullTextFeature}
-     * @private
-     */
-    this.fulltextData_ = fulltextData;
 
     /**
      * @type {Object}
@@ -97,6 +90,7 @@ var dlfViewerFullTextControl = function(map, fulltextData) {
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
         {
             'fulltext':'Fulltext',
+            'fulltext-loading':'Loading full text...',
             'fulltext-on':'Activate Fulltext',
             'fulltext-off':'Deactivate Fulltext',
             'activate-full-text-initially':'0',
@@ -225,8 +219,31 @@ var dlfViewerFullTextControl = function(map, fulltextData) {
         this)
     };
 
+    $('#tx-dlf-fulltextselection').text(this.dic['fulltext-loading']);
+
     this.changeActiveBehaviour();
 };
+
+/**
+ * @param {FullTextFeature} fulltextData
+ */
+dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
+    // add features to fulltext layer
+    const textblockFeatures = fulltextData.getTextblocks();
+    this.layers_.textblock.getSource().addFeatures(textblockFeatures);
+    this.textblocks_.populate(textblockFeatures);
+
+    const textlineFeatures = fulltextData.getTextlines();
+    this.layers_.textline.getSource().addFeatures(textlineFeatures);
+    this.textlines_.populate(textlineFeatures);
+
+    // add first feature of textBlockFeatures to map
+    if (textblockFeatures.length > 0) {
+        this.layers_.select.getSource().addFeature(textblockFeatures[0]);
+        this.selectedFeature_ = textblockFeatures[0];
+        this.showFulltext(textblockFeatures);
+    }
+}
 
 /**
  * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.
@@ -409,25 +426,6 @@ dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScro
 dlfViewerFullTextControl.prototype.activate = function() {
 
     var controlEl = $('#tx-dlf-tools-fulltext');
-
-    // if the activate method is called for the first time, render fulltext data
-    if (this.lastRenderedFeatures_ === undefined)  {
-        // add features to fulltext layer
-        const textblockFeatures = this.fulltextData_.getTextblocks();
-        this.layers_.textblock.getSource().addFeatures(textblockFeatures);
-        this.textblocks_.populate(textblockFeatures);
-
-        const textlineFeatures = this.fulltextData_.getTextlines();
-        this.layers_.textline.getSource().addFeatures(textlineFeatures);
-        this.textlines_.populate(textlineFeatures);
-
-        // add first feature of textBlockFeatures to map
-        if (this.fulltextData_.getTextblocks().length > 0) {
-            this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
-            this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
-            this.showFulltext(this.fulltextData_.getTextblocks());
-        }
-    }
 
     // now activate the fulltext overlay and map behavior
     this.enableFulltextSelect();

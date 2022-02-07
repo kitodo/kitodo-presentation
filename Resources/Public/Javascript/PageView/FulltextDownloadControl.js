@@ -7,14 +7,16 @@ var dlfViewerFullTextDownloadControl = function(map, fulltextData) {
     this.map = map;
 
     /**
-     * @type {FullTextFeature}
+     * @type {FullTextFeature | undefined}
      * @private
      */
-    this.fulltextData_ = fulltextData;
+    this.fulltextData_ = undefined;
 
     // add active / deactive behavior in case of click on control
-    var element = $('#tx-dlf-tools-fulltextdownload');
-    if (element.length > 0){
+    this.element_ = $('#tx-dlf-tools-fulltextdownload');
+    if (this.element_.length > 0){
+        this.element_.addClass('disabled');
+
         var downloadFullText = $.proxy(function(event) {
             event.preventDefault();
 
@@ -22,33 +24,47 @@ var dlfViewerFullTextDownloadControl = function(map, fulltextData) {
         }, this);
 
 
-        element.on('click', downloadFullText);
-        element.on('touchstart', downloadFullText);
+        this.element_.on('click', downloadFullText);
+        this.element_.on('touchstart', downloadFullText);
     }
+};
+
+/**
+ * Set fulltext data to be used when clicking the button.
+ *
+ * @param {FullTextFeature} fulltextData
+ */
+dlfViewerFullTextDownloadControl.prototype.setFulltextData = function (fulltextData) {
+    this.fulltextData_ = fulltextData;
+    this.element_.removeClass('disabled');
 };
 
 /**
  * Method fetches the fulltext data from the server
  */
 dlfViewerFullTextDownloadControl.prototype.downloadFullTextFile = function() {
-    var clickedElement = $('#tx-dlf-tools-fulltextdownload');
+    if (this.fulltextData_) {
+        var clickedElement = $('#tx-dlf-tools-fulltextdownload');
 
-    var element = $('<a/>');
-    element.attr('id', 'downloadFile');
-    element.attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.createFullTextFile()));
-    element.attr('download', 'fulltext.txt');
+        var element = $('<a/>');
+        element.attr('id', 'downloadFile');
+        element.attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.createFullTextFile(this.fulltextData_)));
+        element.attr('download', 'fulltext.txt');
 
-    element.insertAfter(clickedElement);
+        element.insertAfter(clickedElement);
 
-    $('#downloadFile').get(0).click();
-    $('#downloadFile').remove();
+        $('#downloadFile').get(0).click();
+        $('#downloadFile').remove();
+    }
 };
 
 /**
  * Activate Fulltext Features
+ *
+ * @param {FullTextFeature} fulltextData
  */
-dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function() {
-    var features = this.fulltextData_.getTextblocks();
+dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fulltextData) {
+    var features = fulltextData.getTextblocks();
     var fileContent = '';
     for (var feature of features) {
         var textLines = feature.get('textlines');
