@@ -318,7 +318,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
                 1 = {$module.tx_dlf.view.layoutRootPath}
             }
         }
-        persistence < plugin.tx_dlf.persistence
     }'
 );
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptConstants(
