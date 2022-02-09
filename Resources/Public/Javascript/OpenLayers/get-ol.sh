@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="6.2.1"
+VERSION="6.3.1"
 
 wget -O ol.zip "https://github.com/openlayers/openlayers/releases/download/v$VERSION/v$VERSION-dist.zip"
 unzip -p ol.zip "v$VERSION-dist/ol.js" > ol3-dlf.js

@@ -255,8 +255,28 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
                 case "OverviewMap":
 
+                    var extent = ol.extent.createEmpty();
+                    for (let i = 0; i < this.images.length; i++) {
+                        ol.extent.extend(extent, [0, -this.images[i].height, this.images[i].width, 0]);
+                    }
+
+                    var ovExtent = ol.extent.buffer(
+                        extent,
+                        1 * Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent))
+                    );
+
                     controls.push(new ol.control.OverviewMap({
-                        layers: layers.map(dlfUtils.cloneOl3Layer)
+                        layers: layers.map(dlfUtils.cloneOl3Layer),
+                        view: new ol.View({
+                            center: ol.extent.getCenter(extent),
+                            extent: ovExtent,
+                            projection: new ol.proj.Projection({
+                                code: 'kitodo-image',
+                                units: 'pixels',
+                                extent: ovExtent
+                            }),
+                            showFullExtent: false
+                        })
                     }));
                     break;
 
