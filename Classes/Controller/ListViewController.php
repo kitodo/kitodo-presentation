@@ -11,9 +11,12 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 
 /**
  * Plugin 'List View' for the 'dlf' extension
@@ -27,6 +30,18 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
  */
 class ListViewController extends AbstractController
 {
+    /**
+     * @var CollectionRepository
+     */
+    protected $collectionRepository;
+
+    /**
+     * @param CollectionRepository $collectionRepository
+     */
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    {
+        $this->collectionRepository = $collectionRepository;
+    }
 
     /**
      * @var MetadataRepository
@@ -42,23 +57,25 @@ class ListViewController extends AbstractController
     }
 
     /**
+     * @var array $this->searchParams: The current search parameter
+     * @access protected
+     */
+    protected $searchParams;
+
+    /**
      * The main method of the plugin
      *
      * @return void
      */
     public function mainAction()
     {
-        $searchRequestData = GeneralUtility::_GPmerged('tx_dlf_search');
-        $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
-        $collectionRequestData = GeneralUtility::_GPmerged('tx_dlf_collection');
+        $this->searchParams = $this->getParametersSafely('searchParameter');
 
-        $searchRequestData = array_merge($searchRequestData, $listRequestData);
-        $searchRequestData = array_merge($searchRequestData, $collectionRequestData);
+        if ($this->searchParams['collection'] && MathUtility::canBeInterpretedAsInteger($this->searchParams['collection'])) {
+            $collection = $this->collectionRepository->findByUid($this->searchParams['collection']);
+        }
 
-        // ABTODO: This plugin may be called from search and collection plugin...
-
-        $searchParams = $searchRequestData['searchParameter'];
-        $widgetPage = $searchRequestData['widgetPage'];
+        $widgetPage = $this->getParametersSafely('@widget_0');
         if (empty($widgetPage)) {
             $widgetPage = ['currentPage' => 1];
         }
@@ -69,8 +86,8 @@ class ListViewController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-        if (is_array($searchParams) && !empty($searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
+        if (is_array($this->searchParams) && !empty($this->searchParams)) {
+            $solrResults = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
         }
 
         $documents = $solrResults['documents'] ? : [];
@@ -78,7 +95,7 @@ class ListViewController extends AbstractController
         $rawResults = $solrResults['solrResults']['documents'] ? : [];
         $this->view->assign('numResults', count($rawResults));
         $this->view->assign('widgetPage', $widgetPage);
-        $this->view->assign('lastSearch', $searchParams);
+        $this->view->assign('lastSearch', $this->searchParams);
 
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);

@@ -57,9 +57,9 @@
     </f:if>
 
     <!-- Add collection -->
-    <f:if condition="{COLLECTION_ID}">
+    <f:if condition="{lastSearch.collection}">
         <f:then>
-            <input type="hidden" name="collection" value="{COLLECTION_ID}" />
+            <input type="hidden" name="collection" value="{lastSearch.collection}" />
         </f:then>
     </f:if>
 
@@ -93,21 +93,20 @@
         <ul>
             <li class="tx-dlf-search-no {f:if(condition: '{facet._SUB_MENU}', then: 'tx-dlf-search-ifsub')}">
                 {facet.title}
+                <f:if condition="{facet._SUB_MENU}">
+                    <f:then>
+                        <ul>
+                            <f:for each="{facet._SUB_MENU}" as="values">
+                                <li class="">
+                                    <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}'}">
+                                        {values.title}
+                                    </f:link.action>
+                                </li>
+                            </f:for>
+                        </ul>
+                    </f:then>
+                </f:if>
             </li>
-            <f:if condition="{facet._SUB_MENU}">
-                <f:then>
-                    <ul>
-                        <f:for each="{facet._SUB_MENU}" as="values">
-                            <li class="">
-                                <f:link.typolink parameter="{values._OVERRIDE_HREF}">
-                                    {values.title}
-                                </f:link.typolink>
-                            </li>
-                        </f:for>
-                    </ul>
-                </f:then>
-            </f:if>
-
         </ul>
     </f:for>
 </div>

@@ -156,12 +156,12 @@ class CollectionController extends AbstractController
             $widgetPage = ['currentPage' => 1];
         }
 
+        $searchParams['collection'] = $collection;
         // If a targetPid is given, the results will be shown by ListView on the target page.
         if (!empty($this->settings['targetPid'])) {
             $this->redirect('main', 'ListView', null,
                 [
                     'searchParameter' => $searchParams,
-                    'collection' => $collection,
                     'widgetPage' => $widgetPage
                 ], $this->settings['targetPid']
             );

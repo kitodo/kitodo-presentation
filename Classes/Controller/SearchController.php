@@ -50,6 +50,12 @@ class SearchController extends AbstractController
     }
 
     /**
+     * @var array $this->searchParams: The current search parameter
+     * @access protected
+     */
+    protected $searchParams;
+
+    /**
      * Search Action
      *
      * @return void
@@ -57,19 +63,22 @@ class SearchController extends AbstractController
     public function searchAction()
     {
         // if search was triggered, get search parameters from POST variables
-        $searchParams = $this->getParametersSafely('searchParameter');
+        $this->searchParams = $this->getParametersSafely('searchParameter');
 
         // output is done by main action
-        $this->forward('main', null, null, ['searchParameter' => $searchParams]);
+        $this->forward('main', null, null, ['searchParameter' => $this->searchParams]);
     }
 
     /**
      * Main action
      *
+     * This shows the search form and optional the facets and extended search form.
+     *
      * @return void
      */
     public function mainAction()
     {
+        $listViewSearch = false;
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
             $this->logger->warning('Incomplete plugin configuration');
@@ -77,7 +86,14 @@ class SearchController extends AbstractController
         }
 
         // if search was triggered, get search parameters from POST variables
-        $searchParams = $this->getParametersSafely('searchParameter');
+        $this->searchParams = $this->getParametersSafely('searchParameter');
+        // if search was triggered by the ListView plugin, get the parameters from GET variables
+        $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
+
+        if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
+            $this->searchParams = array_merge($this->searchParams ? : [], $listRequestData['searchParameter']);
+            $listViewSearch = true;
+        }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
         $widgetPage = $this->getParametersSafely('@widget_0');
@@ -86,10 +102,10 @@ class SearchController extends AbstractController
         }
 
         // If a targetPid is given, the results will be shown by ListView on the target page.
-        if (!empty($this->settings['targetPid']) && !empty($searchParams)) {
+        if (!empty($this->settings['targetPid']) && !empty($this->searchParams) && !$listViewSearch) {
             $this->redirect('main', 'ListView', null,
                 [
-                    'searchParameter' => $searchParams,
+                    'searchParameter' => $this->searchParams,
                     'widgetPage' => $widgetPage
                 ], $this->settings['targetPid']
             );
@@ -98,15 +114,15 @@ class SearchController extends AbstractController
         // get results from search
         // find all documents from Solr
         $solrResults = [];
-        if (is_array($searchParams) && !empty($searchParams)) {
+        if (is_array($this->searchParams) && !empty($this->searchParams)) {
             // get all sortable metadata records
             $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-            if (is_array($searchParams) && !empty($searchParams)) {
-                $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $searchParams, $listedMetadata);
+            if (is_array($this->searchParams) && !empty($this->searchParams) && !$listViewSearch) {
+                $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $this->searchParams, $listedMetadata);
             }
 
             $documents = $solrResults['documents'] ? : [];
@@ -114,7 +130,7 @@ class SearchController extends AbstractController
             $rawResults = $solrResults['solrResults']['documents'] ? : [];
             $this->view->assign('numResults', count($rawResults));
             $this->view->assign('widgetPage', $widgetPage);
-            $this->view->assign('lastSearch', $searchParams);
+            $this->view->assign('lastSearch', $this->searchParams);
             $this->view->assign('listedMetadata', $listedMetadata);
             $this->view->assign('sortableMetadata', $sortableMetadata);
         }
@@ -252,12 +268,11 @@ class SearchController extends AbstractController
             ]
         ];
         // Extract query and filter from last search.
-        $list = GeneralUtility::makeInstance(DocumentList::class);
-        if (!empty($list->metadata['options']['source'])) {
-            if ($list->metadata['options']['source'] == 'search') {
-                $search['query'] = $list->metadata['options']['select'];
+        $search['query'] = $this->searchParams['query'];
+        if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
+            foreach($this->searchParams['fq'] as $fq) {
+                $search['params']['filterquery'][]['query'] = $fq;
             }
-            $search['params'] = $list->metadata['options']['params'];
         }
         // Get applicable facets.
         $solr = Solr::getInstance($this->settings['solrcore']);
@@ -384,17 +399,11 @@ class SearchController extends AbstractController
             $queryColumn = array_values($queryColumn);
             $entryArray['ITEM_STATE'] = 'CUR';
             $state = 'ACTIFSUB';
-            //Reset facets
+            // Reset facets
             if ($this->settings['resetFacets']) {
                 //remove ($count) for selected facet in template
                 $entryArray['count'] = false;
-                //build link to delete selected facet
-                $uri = $this->uriBuilder->reset()
-                    ->setTargetPageUid($GLOBALS['TSFE']->id)
-                    ->setArguments(['tx_dlf' => ['query' => $search['query'], 'fq' => $queryColumn], 'tx_dlf_search' => ['action' => 'search']])
-                    ->setAddQueryString(true)
-                    ->build();
-                $entryArray['_OVERRIDE_HREF'] = $uri;
+                $entryArray['queryColumn'] = $queryColumn;
                 $entryArray['title'] = sprintf(LocalizationUtility::translate('search.resetFacet', 'dlf'), $entryArray['title']);
             }
         } else {
@@ -402,12 +411,7 @@ class SearchController extends AbstractController
             $queryColumn[] = $field . ':("' . Solr::escapeQuery($value) . '")';
             $entryArray['ITEM_STATE'] = 'NO';
         }
-        $uri = $this->uriBuilder->reset()
-            ->setTargetPageUid($GLOBALS['TSFE']->id)
-            ->setArguments(['tx_dlf' => ['query' => $search['query'], 'fq' => $queryColumn], 'tx_dlf_search' => ['action' => 'search']])
-            ->setArgumentPrefix('tx_dlf')
-            ->build();
-        $entryArray['_OVERRIDE_HREF'] = $uri;
+        $entryArray['queryColumn'] = $queryColumn;
 
         return $entryArray;
     }

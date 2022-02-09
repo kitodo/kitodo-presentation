@@ -124,13 +124,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Search',
     [
-        Search::class => 'main, search',
-        ListView::class => 'main'
+        Search::class => 'main, search'
     ],
     // non-cacheable actions
     [
-        Search::class => 'main, search',
-        ListView::class => 'main'
+        Search::class => 'main, search'
     ]
 );
 
@@ -282,8 +280,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Collection',
     [
-        Collection::class => 'list, show, showSorted',
-        ListView::class => 'main'
+        Collection::class => 'list, show, showSorted'
     ],
     // non-cacheable actions
     [

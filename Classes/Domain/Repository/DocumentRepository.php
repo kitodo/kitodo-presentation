@@ -567,9 +567,15 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // if a collection is given, we prepare the collection query string
         if ($collection) {
             $collecionsQueryString = $collection->getIndexName();
-            $params['filterquery'][] = ['query' => 'toplevel:true'];
-            $params['filterquery'][] = ['query' => 'partof:0'];
-            $params['filterquery'][] = ['query' => 'collection_faceting:("' . $collecionsQueryString .'")'];
+            $params['filterquery'][]['query'] = 'toplevel:true';
+            $params['filterquery'][]['query'] = 'partof:0';
+            $params['filterquery'][]['query'] = 'collection_faceting:("' . $collecionsQueryString .'")';
+        }
+
+        if (isset($searchParams['fq']) && is_array($searchParams['fq'])) {
+            foreach ($searchParams['fq'] as $filterQuery) {
+                $params['filterquery'][]['query'] = $filterQuery;
+            }
         }
 
         // Set search query.
