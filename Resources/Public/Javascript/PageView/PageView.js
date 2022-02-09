@@ -373,15 +373,6 @@ dlfViewer.prototype.init = function(controlNames) {
                 //        undefinedHTML: '&nbsp;'
                 //    })];
 
-            // NOTE: Temporary workaround, will be fixed in OL v6.1.1
-            document.body.innerHTML += `
-                <style>
-                    .ol-layer canvas {
-                        left: 0;
-                    }
-                </style>
-            `;
-
             // create map
             this.map = new ol.Map({
                 layers: layers,
