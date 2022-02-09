@@ -91,9 +91,6 @@ ol.Map.prototype.rotate = function(rotation) {
         'anchor': center,
         'duration': 200
     });
-    if (this.ov_view !== null && this.ov_view !== undefined) {
-        this.ov_view.rotate(rotate);
-    }
 };
 
 /**
@@ -101,9 +98,6 @@ ol.Map.prototype.rotate = function(rotation) {
  */
 ol.Map.prototype.rotateLeft = function() {
     this.rotate(-5);
-    if (this.ov_view !== null && this.ov_view !== undefined) {
-        this.ov_view.rotate(-5);
-    }
 };
 
 /**
@@ -111,17 +105,11 @@ ol.Map.prototype.rotateLeft = function() {
  */
 ol.Map.prototype.rotateRight = function() {
     this.rotate(5);
-    if (this.ov_view !== null && this.ov_view !== undefined) {
-        this.ov_view.rotate(5);
-    }
 };
 
 /**
  * Resets the rotation of the map
  */
 ol.Map.prototype.resetRotation = function() {
-    this.getView().rotate(0, this.getView().getCenter());
-    if (this.ov_view !== null && this.ov_view !== undefined) {
-        this.ov_view.rotate(0);
-    }
+    this.getView().setRotation(0, this.getView().getCenter());
 };

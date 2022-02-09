@@ -255,7 +255,9 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
                 case "OverviewMap":
 
-                    controls.push(new ol.control.OverviewMap({layers}));
+                    controls.push(new ol.control.OverviewMap({
+                        layers: layers.map(dlfUtils.cloneOl3Layer)
+                    }));
                     break;
 
                 case "ZoomPanel":
@@ -370,6 +372,15 @@ dlfViewer.prototype.init = function(controlNames) {
                 //        coordinateFormat: ol.coordinate.createStringXY(4),
                 //        undefinedHTML: '&nbsp;'
                 //    })];
+
+            // NOTE: Temporary workaround, will be fixed in OL v6.1.1
+            document.body.innerHTML += `
+                <style>
+                    .ol-layer canvas {
+                        left: 0;
+                    }
+                </style>
+            `;
 
             // create map
             this.map = new ol.Map({
@@ -589,6 +600,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
     });
 
     this.ov_view = new ol.View({
+        constrainRotation: false,
         projection: layerProj,
         center: ol.extent.getCenter(extent),
         zoom: 3,
@@ -602,7 +614,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
         interactions: []
     });
 
-    this.ov_map.addLayer(this.map.getLayers().getArray()[0]);
+    this.ov_map.addLayer(dlfUtils.cloneOl3Layer(this.map.getLayers().getArray()[0]));
 
     var mousePosition = null;
     var dlfViewer = this;
@@ -618,7 +630,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
             var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
 
             if (rotateDiff || centerDiff) {
-                destMap.getView().rotate(sourceView.getRotation());
+                destMap.getView().setRotation(sourceView.getRotation());
             }
         },
         adjustViewHandler = function(event) {

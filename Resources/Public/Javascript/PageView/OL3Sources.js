@@ -230,7 +230,7 @@ dlfViewerSource.IIIF = function(options) {
             return;
         }
         var tileX = tileCoord[1],
-            tileY = -tileCoord[2] - 1,
+            tileY = tileCoord[2],
             scale = resolutions[zoom];
         if (tileX === undefined || Number.isNaN(tileY) || scale === undefined ||
                 tileX < 0 || Math.ceil(width / scale / tileWidth) <= tileX ||
@@ -309,7 +309,8 @@ dlfViewerSource.IIIF = function(options) {
         projection,
         tileGrid,
         tileUrlFunction,
-        tileLoadFunction: dlfViewerSource.tileLoadFunction.bind(this, [tileWidth, tileHeight])
+        tileLoadFunction: dlfViewerSource.tileLoadFunction.bind(this, [tileWidth, tileHeight]),
+        zDirection: options.zDirection
     };
 
     return new ol.source.TileImage(tileImageParams);

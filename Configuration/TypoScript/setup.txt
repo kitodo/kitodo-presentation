@@ -24,7 +24,6 @@ page {
     kitodo-audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
 
     # PageView plugin
-    kitodo-openLayers-glif = EXT:dlf/Resources/Public/Javascript/OpenLayers/glif.min.js
     kitodo-openLayers-dlf = EXT:dlf/Resources/Public/Javascript/OpenLayers/ol3-dlf.js
 
     kitodo-pageView-utility = EXT:dlf/Resources/Public/Javascript/PageView/Utility.js

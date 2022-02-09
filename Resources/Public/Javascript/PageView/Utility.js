@@ -45,6 +45,21 @@ dlfUtils.CUSTOM_MIMETYPE = {
 dlfUtils.RUNNING_INDEX = 99999999;
 
 /**
+ * Clone OL3 layer for dlfViewer (only properties used there are considered).
+ *
+ * @param {ol.layer.Layer} layer
+ * @returns {ol.layer.Layer}
+ */
+dlfUtils.cloneOl3Layer = function (layer) {
+    // Get a fresh instance of layer's class (ol.layer.Tile or ol.layer.Image)
+    var LayerClass = layer.constructor;
+
+    return new LayerClass({
+        source: layer.getSource()
+    });
+};
+
+/**
  * @param imageSourceObjs
  * @param {string} opt_origin
  * @return {Array.<ol.layer.Layer>}
@@ -87,9 +102,9 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                     url: url,
                     size: [imageSourceObj.width, imageSourceObj.height],
                     crossOrigin: origin,
-                    offset: [offsetWidth, 0]
-                }),
-                zDirection: -1
+                    extent: extent,
+                    zDirection: -1
+                })
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
 
@@ -118,9 +133,9 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                         code: 'kitodo-image',
                         units: 'pixels',
                         extent: extent
-                    })
-                }),
-                zDirection: -1
+                    }),
+                    zDirection: -1
+                })
             });
         } else {
 
@@ -180,7 +195,9 @@ dlfUtils.createOl3View = function (images) {
         center: ol.extent.getCenter(extent),
         zoom: 1,
         maxZoom: window.OL3_MAX_ZOOM,
-        extent
+        extent,
+        constrainOnlyCenter: true,
+        constrainRotation: false
     };
 
     return new ol.View(viewParams);
