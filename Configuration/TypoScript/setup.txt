@@ -9,7 +9,7 @@ config {
 page {
   includeCSS {
     jPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
-    ol3 = EXT:dlf/Resources/Public/Javascript/OpenLayers/ol3.css
+    openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.css
   }
 
   includeJSFooterlibs {
@@ -24,12 +24,12 @@ page {
     kitodo-audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
 
     # PageView plugin
-    kitodo-openLayers-dlf = EXT:dlf/Resources/Public/Javascript/OpenLayers/ol3-dlf.js
+    kitodo-openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.js
 
     kitodo-pageView-utility = EXT:dlf/Resources/Public/Javascript/PageView/Utility.js
-    kitodo-pageView-ol3 = EXT:dlf/Resources/Public/Javascript/PageView/OL3.js
-    kitodo-pageView-ol3Styles = EXT:dlf/Resources/Public/Javascript/PageView/OL3Styles.js
-    kitodo-pageView-ol3Sources = EXT:dlf/Resources/Public/Javascript/PageView/OL3Sources.js
+    kitodo-pageView-ol = EXT:dlf/Resources/Public/Javascript/PageView/OL.js
+    kitodo-pageView-olStyles = EXT:dlf/Resources/Public/Javascript/PageView/OLStyles.js
+    kitodo-pageView-olSources = EXT:dlf/Resources/Public/Javascript/PageView/OLSources.js
     kitodo-pageView-altoParser = EXT:dlf/Resources/Public/Javascript/PageView/AltoParser.js
     kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationParser.js
     kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationControl.js

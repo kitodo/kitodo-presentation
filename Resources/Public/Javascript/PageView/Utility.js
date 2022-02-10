@@ -45,12 +45,13 @@ dlfUtils.CUSTOM_MIMETYPE = {
 dlfUtils.RUNNING_INDEX = 99999999;
 
 /**
- * Clone OL3 layer for dlfViewer (only properties used there are considered).
+ * Clone OpenLayers layer for dlfViewer (only properties used there are
+ * considered).
  *
  * @param {ol.layer.Layer} layer
  * @returns {ol.layer.Layer}
  */
-dlfUtils.cloneOl3Layer = function (layer) {
+dlfUtils.cloneOlLayer = function (layer) {
     // Get a fresh instance of layer's class (ol.layer.Tile or ol.layer.Image)
     var LayerClass = layer.constructor;
 
@@ -64,7 +65,7 @@ dlfUtils.cloneOl3Layer = function (layer) {
  * @param {string} opt_origin
  * @return {Array.<ol.layer.Layer>}
  */
-dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
+dlfUtils.createOlLayers = function (imageSourceObjs, opt_origin) {
 
     var origin = opt_origin !== undefined ? opt_origin : null,
         widthSum = 0,
@@ -150,7 +151,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
  * @param {Array.<{src: *, width: *, height: *}>} images
  * @return {ol.View}
  */
-dlfUtils.createOl3View = function (images) {
+dlfUtils.createOlView = function (images) {
 
     //
     // Calculate map extent
@@ -164,7 +165,7 @@ dlfUtils.createOl3View = function (images) {
         extent = [0, -maxLatY, maxLonX, 0];
 
     // globally define max zoom
-    window.OL3_MAX_ZOOM = 8;
+    window.DLF_MAX_ZOOM = 8;
 
     // define map projection
     var proj = new ol.proj.Projection({
@@ -178,7 +179,7 @@ dlfUtils.createOl3View = function (images) {
         projection: proj,
         center: ol.extent.getCenter(extent),
         zoom: 1,
-        maxZoom: window.OL3_MAX_ZOOM,
+        maxZoom: window.DLF_MAX_ZOOM,
         extent,
         constrainOnlyCenter: true,
         constrainRotation: false

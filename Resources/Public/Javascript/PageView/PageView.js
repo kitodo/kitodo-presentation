@@ -237,7 +237,7 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
 };
 
 /**
- * Creates OL3 controls
+ * Creates OpenLayers controls
  * @param {Array.<string>} controlNames
  * @param {Array.<ol.layer.Layer>} layers
  * @return {Array.<ol.control.Control>}
@@ -266,7 +266,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
                     );
 
                     controls.push(new ol.control.OverviewMap({
-                        layers: layers.map(dlfUtils.cloneOl3Layer),
+                        layers: layers.map(dlfUtils.cloneOlLayer),
                         view: new ol.View({
                             center: ol.extent.getCenter(extent),
                             extent: ovExtent,
@@ -308,7 +308,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
 
         this.highlightLayer = new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.wordStyle
+            'style': dlfViewerOLStyles.wordStyle
         });
 
         this.map.addLayer(this.highlightLayer);
@@ -411,7 +411,7 @@ dlfViewer.prototype.init = function(controlNames) {
                 ],
                 // necessary for proper working of the keyboard events
                 keyboardEventTarget: document,
-                view: dlfUtils.createOl3View(this.images),
+                view: dlfUtils.createOlView(this.images),
             });
 
             // Position image according to user preferences
@@ -470,7 +470,7 @@ dlfViewer.prototype.init = function(controlNames) {
 };
 
 /**
- * Function generate the ol3 layer objects for given image sources. Returns a promise.
+ * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
  * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
  * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
@@ -491,7 +491,7 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
 
     dlfUtils.fetchImageData(imageSourceObjs)
       .done(function(imageSourceData) {
-          resolveCallback(imageSourceData, dlfUtils.createOl3Layers(imageSourceData));
+          resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
       });
 
     return deferredResponse;
@@ -625,7 +625,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
         interactions: []
     });
 
-    this.ov_map.addLayer(dlfUtils.cloneOl3Layer(this.map.getLayers().getArray()[0]));
+    this.ov_map.addLayer(dlfUtils.cloneOlLayer(this.map.getLayers().getArray()[0]));
 
     var mousePosition = null;
     var dlfViewer = this;

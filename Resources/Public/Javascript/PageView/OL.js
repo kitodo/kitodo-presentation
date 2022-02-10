@@ -20,7 +20,7 @@ ol.Map.prototype.getZoom = function(){
  * @return {Array.<number>}
  */
 ol.Map.prototype.getZoomRange = function() {
-    var maxZoom = window.OL3_MAX_ZOOM !== undefined && !isNaN(window.OL3_MAX_ZOOM) ? window.OL3_MAX_ZOOM : 18;
+    var maxZoom = window.DLF_MAX_ZOOM !== undefined && !isNaN(window.DLF_MAX_ZOOM) ? window.DLF_MAX_ZOOM : 18;
     return [0, maxZoom];
 };
 

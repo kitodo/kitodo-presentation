@@ -9,7 +9,7 @@
  */
 
 /**
- * Namespace for dlfViewer ol3 sources
+ * Namespace for dlfViewer OpenLayers sources
  * @namespace
  */
 var dlfViewerSource = dlfViewerSource || {};
