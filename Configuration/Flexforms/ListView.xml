@@ -46,7 +46,7 @@
                             </config>
                         </TCEforms>
                     </settings.limit>
-                    <settings.targetPid>
+                    <settings.targetPidPageView>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
@@ -65,7 +65,7 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </settings.targetPid>
+                    </settings.targetPidPageView>
                     <settings.getTitle>
                         <TCEforms>
                             <exclude>1</exclude>

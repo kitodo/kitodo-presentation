@@ -199,8 +199,33 @@ class SearchController extends AbstractController
                 ]
             ]
         ];
-        // Extract query and filter from last search.
-        $search['query'] = $this->searchParams['query'];
+
+        // Set needed parameters for facet search.
+        if (empty($search['params']['filterquery'])) {
+            $search['params']['filterquery'] = [];
+        }
+
+        $fields = Solr::getFields();
+
+        // Set search query.
+        $searchParams = $this->searchParams;
+        if (
+            (!empty($searchParams['fulltext']))
+            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($searchParams['query']), $matches)
+        ) {
+            // If the query already is a fulltext query e.g using the facets
+            $searchParams['query'] = empty($matches[1]) ? $searchParams['query'] : $matches[1];
+            // Search in fulltext field if applicable. Query must not be empty!
+            if (!empty($this->searchParams['query'])) {
+                $search['query'] = $fields['fulltext'] . ':(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
+            }
+        } else {
+            // Retain given search field if valid.
+            if (!empty($searchParams['query'])) {
+                $search['query'] = Solr::escapeQueryKeepField(trim($earchParams['query']), $this->settings['storagePid']);
+            }
+        }
+
         if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
             foreach($this->searchParams['fq'] as $fq) {
                 $search['params']['filterquery'][]['query'] = $fq;
@@ -211,10 +236,6 @@ class SearchController extends AbstractController
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return [];
-        }
-        // Set needed parameters for facet search.
-        if (empty($search['params']['filterquery'])) {
-            $search['params']['filterquery'] = [];
         }
 
         foreach (array_keys($facets) as $field) {
@@ -333,10 +354,8 @@ class SearchController extends AbstractController
             $state = 'ACTIFSUB';
             // Reset facets
             if ($this->settings['resetFacets']) {
-                //remove ($count) for selected facet in template
-                $entryArray['count'] = false;
+                $entryArray['resetFacet'] = true;
                 $entryArray['queryColumn'] = $queryColumn;
-                $entryArray['title'] = sprintf(LocalizationUtility::translate('search.resetFacet', 'dlf'), $entryArray['title']);
             }
         } else {
             // Facet is not selected, thus add it to filter.

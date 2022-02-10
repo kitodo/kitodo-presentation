@@ -92,11 +92,22 @@
                     <f:then>
                         <ul>
                             <f:for each="{facet._SUB_MENU}" as="values">
-                                <li class="">
-                                    <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}'}">
-                                        {values.title}
-                                    </f:link.action>
-                                </li>
+                                <f:if condition="{values.resetFacet}">
+                                    <f:then>
+                                        <li class="tx-dlf-search-cur">
+                                            <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}'}">
+                                                {values.title} ({values.count})
+                                            </f:link.action>
+                                        </li>
+                                    </f:then>
+                                    <f:else>
+                                        <li class="tx-dlf-search-no">
+                                            <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}'}">
+                                                {values.title} ({values.count})
+                                            </f:link.action>
+                                        </li>
+                                    </f:else>
+                                </f:if>
                             </f:for>
                         </ul>
                     </f:then>
