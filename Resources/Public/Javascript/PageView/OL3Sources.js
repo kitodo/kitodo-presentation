@@ -333,90 +333,9 @@ dlfViewerSource.IIIF.getMetdadataURL = function(baseUrl) {
 };
 
 /**
- * OpenLayers 3 compatible source object for an iip server.
- *
- *
- * @param {Object} options
- * @constructor
+ * @namespace
  */
-dlfViewerSource.IIP = function(options) {
-
-    // parse parameters
-    var url = options.url.indexOf('?') > -1
-          ? options.url
-          : options.url + '?',
-        width = options.size[0],
-        height = options.size[1],
-        tileSize = options.tileSize !== undefined ? options.tileSize : 256,
-        origin = options.crossOrigin !== undefined ? options.crossOrigin : '*',
-        offset = options.offset !==  undefined ? options.offset : [0, 0],
-        resolutions = [],
-        projection = options.projection;
-
-    // calculate tiersize in tiles and resolutions
-    var tierSizeInTiles = [],
-        imageWidth = width,
-        imageHeight = height,
-        res = 1;
-    while (imageWidth > tileSize || imageHeight > tileSize) {
-
-        tierSizeInTiles.push([
-            Math.ceil(imageWidth / tileSize),
-            Math.ceil(imageHeight / tileSize)
-        ]);
-        resolutions.push( res );
-
-        imageWidth >>= 1;
-        imageHeight >>= 1;
-        res += res;
-
-    }
-    resolutions.push( res );
-    tierSizeInTiles.push( [1,1]);
-    tierSizeInTiles.reverse();
-
-    var extent = [offset[0], offset[1] - height, offset[0] + width, offset[1]];
-    var tileGrid = new ol.tilegrid.TileGrid({
-        extent: extent,
-        resolutions: resolutions.reverse(),
-        origin: ol.extent.getTopLeft(extent),
-        tileSize: tileSize
-    });
-
-    /**
-     * @this {ol.source.TileImage}
-     * @param {ol.TileCoord} tileCoord Tile Coordinate.
-     * @param {number} pixelRatio Pixel ratio.
-     * @param {ol.proj.Projection} projection Projection.
-     * @return {string|undefined} Tile URL.
-     */
-    var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
-        if (tileCoord === undefined ||tileCoord === null) {
-            return undefined;
-        } else {
-            var resolution = tileCoord[0],
-                tileCoordX = tileCoord[1],
-                tileCoordY = -tileCoord[2] - 1,
-                tileIndex = tileCoordY * tierSizeInTiles[resolution][0] + tileCoordX;
-            return url + '&JTL=' + resolution + ',' + tileIndex;
-        }
-    };
-
-    var tileImageParams = {
-        crossOrigin: origin,
-        projection: projection,
-        tileGrid: tileGrid,
-        tileUrlFunction: tileUrlFunction
-    };
-
-    if (ol.has.CANVAS) {
-        tileImageParams.tileLoadFunction = dlfViewerSource.tileLoadFunction.bind(this, tileSize);
-    }
-
-    return new ol.source.TileImage(tileImageParams);
-
-
-};
+dlfViewerSource.IIP = {};
 
 /**
  * Returns an iip compatible metadata url.

@@ -57,7 +57,6 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
         layers = [];
 
     imageSourceObjs.forEach(function (imageSourceObj) {
-        var tileSize = void 0;
         if (widthSum > 0) {
             // set offset width in case of multiple images
             offsetWidth = widthSum;
@@ -69,11 +68,23 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
         var extent = [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0],
             layer = void 0;
 
-        if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
+        // OL's Zoomify source also supports IIP; we just need to make sure
+        // the url is a proper template.
+        if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
+            || imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
+        ) {
             // create zoomify layer
+            var url = imageSourceObj.src;
+
+            if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
+                && url.indexOf('JTL') === -1
+            ) {
+                url += '&JTL={z},{tileIndex}';
+            }
+
             layer = new ol.layer.Tile({
                 source: new ol.source.Zoomify({
-                    url: imageSourceObj.src,
+                    url: url,
                     size: [imageSourceObj.width, imageSourceObj.height],
                     crossOrigin: origin,
                     offset: [offsetWidth, 0]
@@ -108,21 +119,6 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                         units: 'pixels',
                         extent: extent
                     })
-                }),
-                zDirection: -1
-            });
-        } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
-            tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
-                ? imageSourceObj.tilesize[0]
-                : 256;
-
-            layer = new ol.layer.Tile({
-                source: new dlfViewerSource.IIP({
-                    url: imageSourceObj.src,
-                    size: [imageSourceObj.width, imageSourceObj.height],
-                    crossOrigin: origin,
-                    tileSize,
-                    offset: [offsetWidth, 0]
                 }),
                 zDirection: -1
             });
