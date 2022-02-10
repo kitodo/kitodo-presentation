@@ -42,21 +42,16 @@
     <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
     <label for="tx-dlf-search-fulltext-yes"><f:translate key="search.inFulltext"/></label>
 
-    <f:if condition="{settings.collections}">
+    <f:if condition="{settings.searchIn} == 'collection' || {settings.searchIn} == 'all'">
         <f:form.hidden property="collections" value="{settings.collections}" />
     </f:if>
-    <f:if condition="{settings.collections}">
-        <f:form.hidden property="documentId" value="{settings.collections}" />
+
+    <f:if condition="{settings.searchIn} == 'document' || {settings.searchIn} == 'all'">
+        <f:form.hidden property="documentId" value="{currentDocument.uid}" />
+        <input type="hidden" name="tx_dlf[id]" value="{currentDocument.uid}" />
     </f:if>
 
-    <!-- Add current document -->
-    <f:if condition="{DOCUMENT_ID}">
-        <f:then>
-            <f:form.hidden name="documentId" value="{DOCUMENT_ID}"/>
-        </f:then>
-    </f:if>
-
-    <!-- Add collection -->
+    <!-- Add current collection if using on collection single view -->
     <f:if condition="{lastSearch.collection}">
         <f:then>
             <input type="hidden" name="collection" value="{lastSearch.collection}" />

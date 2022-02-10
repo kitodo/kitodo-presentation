@@ -111,9 +111,7 @@ class SearchController extends AbstractController
             );
         }
 
-        // get results from search
-        // find all documents from Solr
-        $solrResults = [];
+        // If no search has been executed, no variables habe to be prepared. An empty form will be shown.
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
             // get all sortable metadata records
             $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
@@ -121,7 +119,9 @@ class SearchController extends AbstractController
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-            if (is_array($this->searchParams) && !empty($this->searchParams) && !$listViewSearch) {
+            $solrResults = [];
+            // Do not execute the Solr search if used together with ListView plugin.
+            if (!$listViewSearch) {
                 $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $this->searchParams, $listedMetadata);
             }
 
@@ -133,14 +133,20 @@ class SearchController extends AbstractController
             $this->view->assign('lastSearch', $this->searchParams);
             $this->view->assign('listedMetadata', $listedMetadata);
             $this->view->assign('sortableMetadata', $sortableMetadata);
+
+            // Add the facets menu
+            $this->addFacetsMenu();
+
+            // Get additional fields for extended search.
+            $this->addExtendedSearch();
         }
 
-        // ABTODO: facets and extended search might fail
-        // Add the facets menu
-        $this->addFacetsMenu();
+        // Add the current document if present to fluid. This way, we can limit further searches to this document.
+        if (isset($this->requestData['id'])) {
+            $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
+            $this->view->assign('currentDocument', $currentDocument);
+        }
 
-        // Get additional fields for extended search.
-        $this->addExtendedSearch();
     }
 
     /**

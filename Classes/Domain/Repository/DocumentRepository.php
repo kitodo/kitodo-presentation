@@ -563,31 +563,18 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Prepare query parameters.
         $params = [];
         $matches = [];
-
-        // if a collection is given, we prepare the collection query string
-        if ($collection) {
-            $collecionsQueryString = $collection->getIndexName();
-            $params['filterquery'][]['query'] = 'toplevel:true';
-            $params['filterquery'][]['query'] = 'partof:0';
-            $params['filterquery'][]['query'] = 'collection_faceting:("' . $collecionsQueryString .'")';
-        }
-
-        if (isset($searchParams['fq']) && is_array($searchParams['fq'])) {
-            foreach ($searchParams['fq'] as $filterQuery) {
-                $params['filterquery'][]['query'] = $filterQuery;
-            }
-        }
+        $fields = Solr::getFields();
 
         // Set search query.
         if (
             (!empty($searchParams['fulltext']))
-            || preg_match('/fulltext:\((.*)\)/', trim($searchParams['query']), $matches)
+            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($searchParams['query']), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
             $searchParams['query'] = empty($matches[1]) ? $searchParams['query'] : $matches[1];
             // Search in fulltext field if applicable. Query must not be empty!
             if (!empty($searchParams['query'])) {
-                $query = 'fulltext:(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
+                $query = $fields['fulltext'] . ':(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
             }
             $params['fulltext'] = true;
         } else {
@@ -597,6 +584,41 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             }
         }
 
+        // Add filter query for faceting.
+        if (isset($searchParams['fq']) && is_array($searchParams['fq'])) {
+            foreach ($searchParams['fq'] as $filterQuery) {
+                $params['filterquery'][]['query'] = $filterQuery;
+            }
+        }
+
+        // Add filter query for in-document searching.
+        if (
+            $this->settings['searchIn'] == 'document'
+            || $this->settings['searchIn'] == 'all'
+        ) {
+            if (
+                !empty($searchParams['documentId'])
+                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchParams['documentId'])
+            ) {
+                // Search in document and all subordinates (valid for up to three levels of hierarchy).
+                $params['filterquery'][]['query'] = '_query_:"{!join from='
+                    . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                    . $fields['uid'] . ':{!join from=' . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                    . $fields['uid'] . ':' . $searchParams['documentId'] . '"' . ' OR {!join from='
+                    . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                    . $fields['uid'] . ':' . $searchParams['documentId'] . ' OR '
+                    . $fields['uid'] . ':' . $searchParams['documentId'];
+//                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
+            }
+        }
+
+        // if a collection is given, we prepare the collection query string
+        if ($collection) {
+            $collecionsQueryString = $collection->getIndexName();
+            $params['filterquery'][]['query'] = 'toplevel:true';
+            $params['filterquery'][]['query'] = 'partof:0';
+            $params['filterquery'][]['query'] = 'collection_faceting:("' . $collecionsQueryString .'")';
+        }
 
         // Set some query parameters.
         $params['query'] = !empty($query) ? $query : '*';
