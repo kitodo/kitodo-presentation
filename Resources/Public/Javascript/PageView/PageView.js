@@ -545,13 +545,13 @@ dlfViewer.prototype.initCropping = function () {
     geometryFunction = function(coordinates, geometry) {
         var start = coordinates[0];
         var end = coordinates[1];
-        var geom_coordinates = [
+        var geomCoordinates = [
             [start, [start[0], end[1]], end, [end[0], start[1]], start]
         ];
         if (geometry) {
-            geometry.setCoordinates(geom_coordinates);
+            geometry.setCoordinates(geomCoordinates);
         } else {
-            geometry = new ol.geom.Polygon(geom_coordinates);
+            geometry = new ol.geom.Polygon(geomCoordinates);
         }
 
         // add to basket button

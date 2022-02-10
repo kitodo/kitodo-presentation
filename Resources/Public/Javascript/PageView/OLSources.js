@@ -12,7 +12,7 @@
  * Namespace for dlfViewer OpenLayers sources
  * @namespace
  */
-var dlfViewerSource = dlfViewerSource || {};
+var dlfViewerSource = {};
 
 /**
  * @namespace
@@ -88,7 +88,7 @@ dlfViewerSource.IIP.parseMetadata = function(metadataString) {
         'width': parseInt(size[0].substring(1,size[0].length)),
         'height': parseInt(size[1]),
         'tilesize': [parseInt(tileSize[0].substring(1,tileSize[0].length)), parseInt(tileSize[1]) ],
-        'resolutions': resolutions
+        resolutions
     };
     return metadataObj;
 };

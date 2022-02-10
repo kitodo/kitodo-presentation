@@ -62,13 +62,12 @@ dlfUtils.cloneOlLayer = function (layer) {
 
 /**
  * @param imageSourceObjs
- * @param {string} opt_origin
+ * @param {string=} origin
  * @return {Array.<ol.layer.Layer>}
  */
-dlfUtils.createOlLayers = function (imageSourceObjs, opt_origin) {
+dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
 
-    var origin = opt_origin !== undefined ? opt_origin : null,
-        widthSum = 0,
+    var widthSum = 0,
         offsetWidth = 0,
         layers = [];
 
@@ -100,10 +99,10 @@ dlfUtils.createOlLayers = function (imageSourceObjs, opt_origin) {
 
             layer = new ol.layer.Tile({
                 source: new ol.source.Zoomify({
-                    url: url,
+                    url,
                     size: [imageSourceObj.width, imageSourceObj.height],
                     crossOrigin: origin,
-                    extent: extent,
+                    extent,
                     zDirection: -1
                 })
             });
@@ -112,10 +111,10 @@ dlfUtils.createOlLayers = function (imageSourceObjs, opt_origin) {
                 projection: new ol.proj.Projection({
                     code: 'kitodo-image',
                     units: 'pixels',
-                    extent: extent
+                    extent
                 }),
                 crossOrigin: origin,
-                extent: extent,
+                extent,
                 zDirection: -1
             }, imageSourceObj.iiifSourceOptions);
 
@@ -131,7 +130,7 @@ dlfUtils.createOlLayers = function (imageSourceObjs, opt_origin) {
                     projection: new ol.proj.Projection({
                         code: 'kitodo-image',
                         units: 'pixels',
-                        extent: extent
+                        extent
                     }),
                     imageExtent: extent,
                     crossOrigin: origin

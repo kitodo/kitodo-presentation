@@ -71,9 +71,9 @@ ol.Map.prototype.zoomTo = function(center, zoomLevel, opt_duration) {
     var view = this.getView(),
         duration = opt_duration !== undefined ? opt_duration : 500;
     view.animate({
-        'center': center,
+        center,
         'zoom': zoomLevel,
-        'duration': duration
+        duration
     });
 };
 
