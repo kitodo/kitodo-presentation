@@ -159,7 +159,7 @@ class ReindexCommand extends BaseCommand
             exit(1);
         }
 
-        foreach ($documents as $document) {
+        foreach ($documents as $id => $document) {
             $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
 
             if ($doc === null) {
@@ -168,10 +168,10 @@ class ReindexCommand extends BaseCommand
             }
 
             if ($dryRun) {
-                $io->writeln('DRY RUN: Would index ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+                $io->writeln('DRY RUN: Would index ' . ($id + 1) . '/' . count($documents) . '  with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
             } else {
                 if ($io->isVerbose()) {
-                    $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . '/' . count($documents) . ' ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+                    $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . ($id + 1) . '/' . count($documents) . ' with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 $document->setDoc($doc);
                 // save to database
