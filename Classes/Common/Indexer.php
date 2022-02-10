@@ -461,7 +461,7 @@ class Indexer
                     break;
                 }
             }
-            $solrDoc->setField('partof', $doc->parentId);
+            $solrDoc->setField('partof', $document->getPartof());
             $solrDoc->setField('root', $doc->rootId);
             $solrDoc->setField('sid', $physicalUnit['id']);
             $solrDoc->setField('toplevel', false);
