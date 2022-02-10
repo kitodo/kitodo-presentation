@@ -11,8 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Doc;
-use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
@@ -147,78 +145,6 @@ class SearchController extends AbstractController
             $this->view->assign('currentDocument', $currentDocument);
         }
 
-    }
-
-    /**
-     * Adds the current document's UID or parent ID to the search form
-     *
-     * @access protected
-     *
-     * @return string HTML input fields with current document's UID
-     */
-    protected function addCurrentDocument()
-    {
-        // Load current list object.
-        $list = GeneralUtility::makeInstance(DocumentList::class);
-        // Load current document.
-        if (
-            !empty($this->requestData['id'])
-            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
-        ) {
-            $this->loadDocument($this->requestData);
-            // Get document's UID
-            if ($this->document) {
-                $this->view->assign('DOCUMENT_ID', $this->document->getUid());
-            }
-        } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
-            // Get document's UID from search metadata.
-            // The string may be e.g. "{!join from=uid to=partof}uid:{!join from=uid to=partof}uid:2" OR {!join from=uid to=partof}uid:2 OR uid:2"
-            // or "collection_faceting:("Some Collection Title")"
-            foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
-                if (($lastUidPos = strrpos($facet['query'], 'uid:')) !== false) {
-                    $facetKeyVal = explode(':', substr($facet['query'], $lastUidPos));
-                    if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($facetKeyVal[1])) {
-                        $documentId = (int) $facetKeyVal[1];
-                    }
-                }
-            }
-            if (!empty($documentId)) {
-                $this->view->assign('DOCUMENT_ID', $documentId);
-            }
-        }
-    }
-
-
-    /**
-     * Adds the current collection's UID to the search form
-     *
-     * @access protected
-     *
-     * @return string HTML input fields with current document's UID and parent ID
-     */
-    protected function addCurrentCollection()
-    {
-        // Load current collection.
-        $list = GeneralUtility::makeInstance(DocumentList::class);
-        if (
-            !empty($list->metadata['options']['source'])
-            && $list->metadata['options']['source'] == 'collection'
-        ) {
-            $this->view->assign('COLLECTION_ID', $list->metadata['options']['select']);
-            // Get collection's UID.
-        } elseif (!empty($list->metadata['options']['params']['filterquery'])) {
-            // Get collection's UID from search metadata.
-            foreach ($list->metadata['options']['params']['filterquery'] as $facet) {
-                $facetKeyVal = explode(':', $facet['query'], 2);
-                if (
-                    $facetKeyVal[0] == 'collection_faceting'
-                    && !strpos($facetKeyVal[1], '" OR "')
-                ) {
-                    $collectionId = Helper::getUidFromIndexName(trim($facetKeyVal[1], '(")'), 'tx_dlf_collections');
-                }
-            }
-            $this->view->assign('COLLECTION_ID', $collectionId);
-        }
     }
 
     /**
