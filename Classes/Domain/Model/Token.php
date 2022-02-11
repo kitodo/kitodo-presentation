@@ -46,17 +46,17 @@ class Token extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Common\DocumentList
+     * @return array
      */
-    public function getOptions(): \Kitodo\Dlf\Common\DocumentList
+    public function getOptions(): array
     {
         return unserialize($this->options);
     }
 
     /**
-     * @param \Kitodo\Dlf\Common\DocumentList $options
+     * @param array $options
      */
-    public function setOptions(\Kitodo\Dlf\Common\DocumentList $options): void
+    public function setOptions(array $options): void
     {
         $this->options = serialize($options);
     }

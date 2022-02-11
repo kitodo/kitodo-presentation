@@ -11,7 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
