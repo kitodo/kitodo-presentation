@@ -617,7 +617,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $collecionsQueryString = $collection->getIndexName();
             $params['filterquery'][]['query'] = 'toplevel:true';
             $params['filterquery'][]['query'] = 'partof:0';
-            $params['filterquery'][]['query'] = 'collection_faceting:("' . $collecionsQueryString .'")';
+            $params['filterquery'][]['query'] = 'collection_faceting:("' . $collecionsQueryString . '")';
         }
 
         // Set some query parameters.
