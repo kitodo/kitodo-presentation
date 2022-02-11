@@ -37,7 +37,7 @@
         <mets_label>10 Keyboard pieces - Go. S. 658</mets_label>
         <mets_orderlabel>10 Keyboard pieces - Go. S. 658</mets_orderlabel>
         <owner>10001</owner>
-        <solrcore>1</solrcore>
+        <solrcore>1</solrcore> <!-- may be overridden in test -->
         <status>0</status>
         <document_format>METS</document_format>
     </tx_dlf_documents>

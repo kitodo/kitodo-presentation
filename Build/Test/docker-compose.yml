@@ -44,6 +44,12 @@ services:
         fi
       "
 
+  solr:
+    image: solr:8
+    volumes:
+      - ${DLF_ROOT}/Configuration/ApacheSolr/configsets:/var/solr/data/configsets
+      - ./solr/contrib/ocrsearch:/opt/solr/contrib/ocrsearch
+
   composer_install:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: "${HOST_UID}:${HOST_GID}"
@@ -69,6 +75,7 @@ services:
     links:
       - ${DBMS}
       - web
+      - solr
     user: "${HOST_UID}:${HOST_GID}"
     volumes:
       - ${DLF_ROOT}:${DLF_ROOT}
@@ -78,6 +85,7 @@ services:
       typo3DatabaseUsername: root
       typo3DatabasePassword: funcp
       typo3DatabaseHost: ${DBMS}
+      dlfTestingSolrHost: solr
     working_dir: ${DLF_ROOT}
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -91,6 +99,11 @@ services:
           sleep 1;
         done;
         echo Database is up;
+        echo Waiting for Solr start...;
+        while ! nc -z solr 8983; do
+          sleep 1;
+        done;
+        echo Solr is up;
 
         if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
           set -x

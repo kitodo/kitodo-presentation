@@ -82,7 +82,35 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected function getDlfConfiguration()
     {
-        return [];
+        return [
+            'solrFieldAutocomplete' => 'autocomplete',
+            'solrFieldCollection' => 'collection',
+            'solrFieldDefault' => 'default',
+            'solrFieldFulltext' => 'fulltext',
+            'solrFieldGeom' => 'geom',
+            'solrFieldId' => 'id',
+            'solrFieldLicense' => 'license',
+            'solrFieldLocation' => 'location',
+            'solrFieldPage' => 'page',
+            'solrFieldPartof' => 'partof',
+            'solrFieldPid' => 'pid',
+            'solrFieldPurl' => 'purl',
+            'solrFieldRecordId' => 'record_id',
+            'solrFieldRestrictions' => 'restrictions',
+            'solrFieldRoot' => 'root',
+            'solrFieldSid' => 'sid',
+            'solrFieldTerms' => 'terms',
+            'solrFieldThumbnail' => 'thumbnail',
+            'solrFieldTimestamp' => 'timestamp',
+            'solrFieldTitle' => 'title',
+            'solrFieldToplevel' => 'toplevel',
+            'solrFieldType' => 'type',
+            'solrFieldUid' => 'uid',
+            'solrFieldUrn' => 'urn',
+            'solrFieldVolume' => 'volume',
+
+            'solrHost' => getenv('dlfTestingSolrHost'),
+        ];
     }
 
     protected function initializeRepository(string $className, int $storagePid)
