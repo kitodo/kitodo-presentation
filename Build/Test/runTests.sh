@@ -27,6 +27,7 @@ setUpDockerComposeDotEnv() {
         echo "DOCKER_PHP_IMAGE=${DOCKER_PHP_IMAGE}"
         echo "EXTRA_TEST_OPTIONS=${EXTRA_TEST_OPTIONS}"
         echo "SCRIPT_VERBOSE=${SCRIPT_VERBOSE}"
+        echo "PHPUNIT_WATCH=${PHPUNIT_WATCH}"
         echo "DBMS=${DBMS}"
         echo "DATABASE_DRIVER=${DATABASE_DRIVER}"
         echo "MARIADB_VERSION=${MARIADB_VERSION}"
@@ -135,6 +136,10 @@ Options:
         Send xdebug information to a different port than default 9003 if an IDE like PhpStorm
         is not listening on default port.
 
+    -w
+        Only with -s functional|unit
+        Run tests in watch mode.
+
     -u
         Update existing typo3/core-testing-*:latest docker images. Maintenance call to docker pull latest
         versions of the main php images. The images are updated once in a while and only the youngest
@@ -189,6 +194,7 @@ PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
 EXTRA_TEST_OPTIONS=""
 SCRIPT_VERBOSE=0
+PHPUNIT_WATCH=0
 DATABASE_DRIVER=""
 MARIADB_VERSION="10.3"
 MYSQL_VERSION="5.5"
@@ -199,7 +205,7 @@ OPTIND=1
 # Array for invalid options
 INVALID_OPTIONS=();
 # Simple option parsing based on getopts (! not getopt)
-while getopts ":a:s:t:d:i:j:p:e:xy:huv" OPT; do
+while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
     case ${OPT} in
         s)
             TEST_SUITE=${OPTARG}
@@ -239,6 +245,9 @@ while getopts ":a:s:t:d:i:j:p:e:xy:huv" OPT; do
             ;;
         y)
             PHP_XDEBUG_PORT=${OPTARG}
+            ;;
+        w)
+            PHPUNIT_WATCH=1
             ;;
         h)
             echo "${HELP}"

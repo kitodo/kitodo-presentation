@@ -40,6 +40,7 @@
     "solarium/solarium": "^4.2|^5.2"
   },
   "require-dev": {
+    "spatie/phpunit-watcher": "^1.23",
     "typo3/cms-backend": "^9.5|^10.4",
     "typo3/cms-fluid": "^9.5|^10.4",
     "typo3/cms-frontend": "^9.5|^10.4",
@@ -76,7 +77,9 @@
       "@test:func"
     ],
     "test:unit": "phpunit -c Build/Test/UnitTests.xml",
+    "test:unit:watch": "phpunit-watcher watch -c Build/Test/UnitTests.xml",
     "test:func": "Build/Test/runTests.sh -s functional",
+    "test:func:watch": "@test:func -w",
 	"docs:db": "./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst",
 	"docs:setup": "./Build/Documentation/sphinx.sh install",
 	"docs:serve": "./Build/Documentation/sphinx.sh serve",

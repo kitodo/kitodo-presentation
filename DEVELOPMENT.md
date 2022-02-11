@@ -51,6 +51,10 @@ composer test
 # Run specific kind of tests
 composer test:unit
 composer test:func
+
+# Run tests in watch mode
+composer test:unit:watch
+composer test:func:watch
 ```
 
 ### Run Tests Manually
@@ -63,12 +67,14 @@ vendor/bin/phpunit -c Build/Test/UnitTests.xml
 
 # Run in Docker
 Build/Test/runTests.sh
+Build/Test/runTests.sh -w  # Watch mode
 ```
 
 Functional tests may only be run in Docker as they require more infrastructure to be set up.
 
 ```bash
 Build/Test/runTests.sh -s functional
+Build/Test/runTests.sh -s functional -w  # Watch mode
 ```
 
 To learn about available options (e.g., to select the PHP version), check the usage info:

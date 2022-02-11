@@ -96,7 +96,12 @@ services:
           set -x
         fi
         php -v | grep '^PHP'
-        COMMAND=\"vendor/phpunit/phpunit/phpunit -c Build/Test/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE}\"
+        if [ ${PHPUNIT_WATCH} -eq 0 ]; then
+          PHPUNIT_BIN=\"vendor/bin/phpunit\"
+        else
+          PHPUNIT_BIN=\"vendor/bin/phpunit-watcher watch\"
+        fi
+        COMMAND=\"$${PHPUNIT_BIN} -c Build/Test/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE}\"
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
           XDEBUG_MODE=\"off\" $${COMMAND};
         else
@@ -121,13 +126,18 @@ services:
           set -x
         fi
         php -v | grep '^PHP'
+        if [ ${PHPUNIT_WATCH} -eq 0 ]; then
+          PHPUNIT_BIN=\"vendor/bin/phpunit\"
+        else
+          PHPUNIT_BIN=\"vendor/bin/phpunit-watcher watch\"
+        fi
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
           XDEBUG_MODE=\"off\" \
-          vendor/phpunit/phpunit/phpunit -c Build/Test/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          $${PHPUNIT_BIN} -c Build/Test/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         else
           XDEBUG_MODE=\"debug,develop\" \
           XDEBUG_TRIGGER=\"foo\" \
           XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=host.docker.internal\" \
-          vendor/phpunit/phpunit/phpunit -c Build/Test/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+          $${PHPUNIT_BIN} -c Build/Test/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         fi
       "
