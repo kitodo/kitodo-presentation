@@ -156,11 +156,6 @@ class SearchController extends AbstractController
      */
     protected function addFacetsMenu()
     {
-        // Check for typoscript configuration to prevent fatal error.
-        if (empty($this->settings['facetsConf'])) {
-            $this->logger->warning('Incomplete plugin configuration');
-            return '';
-        }
         // Quit without doing anything if no facets are selected.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
             return '';

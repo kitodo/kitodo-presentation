@@ -68,25 +68,37 @@ plugin.tx_dlf_pagegrid {
 }
 
 plugin.tx_dlf_listview {
-  settings {
-    list.paginate {
-        itemsPerPage = 25
-        insertAbove = 1
-        insertBelow = 1
-        maximumNumberOfLinks = 10
-        section = showResults
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
     }
-  }
 }
 
 plugin.tx_dlf_collection {
-  settings {
-    list.paginate {
-        itemsPerPage = 25
-        insertAbove = 1
-        insertBelow = 1
-        maximumNumberOfLinks = 10
-        section = showResults
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
     }
-  }
+}
+
+plugin.tx_dlf_search {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
 }
