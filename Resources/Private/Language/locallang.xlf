@@ -23,13 +23,13 @@
 			<trans-unit id="search.in">
 				<source><![CDATA[in "%s"]]></source>
 			</trans-unit>
-			<trans-unit id="search.and">
+			<trans-unit id="search.operator.AND">
 				<source><![CDATA[and]]></source>
 			</trans-unit>
-			<trans-unit id="search.or">
+			<trans-unit id="search.operator.OR">
 				<source><![CDATA[or]]></source>
 			</trans-unit>
-			<trans-unit id="search.not">
+			<trans-unit id="search.operator.NOT">
 				<source><![CDATA[not]]></source>
 			</trans-unit>
 			<trans-unit id="search.resetFacet">

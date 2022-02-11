@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
@@ -580,11 +581,32 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         } else {
             // Retain given search field if valid.
             if (!empty($searchParams['query'])) {
-                $query = Solr::escapeQueryKeepField(trim($searchParams['query']), $settings['storagePid']);
+                $query = Solr::escapeQueryKeepField(trim($searchParams['query']), $this->settings['storagePid']);
             }
         }
 
-        // Add filter query for faceting.
+        // Add extended search query.
+        if (
+            !empty($searchParams['extQuery'])
+            && is_array($searchParams['extQuery'])
+        ) {
+            $allowedOperators = ['AND', 'OR', 'NOT'];
+            $numberOfExtQueries = count($searchParams['extQuery']);
+            for ($i = 0; $i < $numberOfExtQueries; $i++) {
+                if (!empty($searchParams['extQuery'][$i])) {
+                    if (
+                        in_array($searchParams['extOperator'][$i], $allowedOperators)
+                    ) {
+                        if (!empty($query)) {
+                            $query .= ' ' . $searchParams['extOperator'][$i] . ' ';
+                        }
+                        $query .= Indexer::getIndexFieldName($searchParams['extField'][$i], $this->settings['storagePid']) . ':(' . Solr::escapeQuery($searchParams['extQuery'][$i]) . ')';
+                    }
+                }
+            }
+        }
+
+            // Add filter query for faceting.
         if (isset($searchParams['fq']) && is_array($searchParams['fq'])) {
             foreach ($searchParams['fq'] as $filterQuery) {
                 $params['filterquery'][]['query'] = $filterQuery;
@@ -608,7 +630,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     . $fields['uid'] . ' to=' . $fields['partof'] . '}'
                     . $fields['uid'] . ':' . $searchParams['documentId'] . ' OR '
                     . $fields['uid'] . ':' . $searchParams['documentId'];
-//                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($this->piVars['id'])));
+//                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($searchParams['id'])));
             }
         }
 

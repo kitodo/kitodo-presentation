@@ -68,6 +68,9 @@
 			<trans-unit id="metadata.year">
 				<source><![CDATA[Year of Publication]]></source>
 			</trans-unit>
+			<trans-unit id="metadata.shelfmark">
+				<source><![CDATA[Shelfmark]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -58,13 +58,30 @@
         </f:then>
     </f:if>
 
-    <div class="tx-dlf-search-extended">
-        <f:for each="{extendedSlotCount}" as="slot" key="slot_label" iteration="slot_iterator">
-            <f:form.select name="extOperator.{slot_iterator.index}" options="{operators}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}"/>
-            <f:form.select name="extField.{slot_iterator.index}" options="{searchFields}" class="tx-dlf-search-field-option tx-dlf-search-field-{slot_iterator.index}"/>
-            <f:form.textfield name="extQuery.{slot_iterator.index}" class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"/>
-        </f:for>
-    </div>
+    <f:if condition="{extendedSlotCount}">
+        <div class="tx-dlf-search-extended">
+            <f:for each="{extendedSlotCount}" as="slot" iteration="slot_iterator">
+                <f:form.select property="extOperator.{slot_iterator.index}" value="{lastSearch.extOperator}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}">
+                    <f:for each="{operators}" as="operator">
+                        <f:form.select.option value="{operator}" class="tx-dlf-search-operator-option tx-dlf-search-operator-{operator}">
+                            <f:translate key="search.operator.{operator}" />
+                        </f:form.select.option>
+                    </f:for>
+                </f:form.select>
+                <f:form.select property="extField.{slot_iterator.index}" value="{lastSearch.extField}" class="tx-dlf-search-field-option tx-dlf-search-field-{slot_iterator.index}">
+                    <f:for each="{searchFields}" as="searchField">
+                        <f:form.select.option value="{searchField}" class="tx-dlf-search-field-option tx-dlf-search-field-{searchField}">
+                            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{searchField}" />
+                        </f:form.select.option>
+                    </f:for>
+                </f:form.select>
+                <f:form.textfield
+                    property="extQuery.{slot_iterator.index}"
+                    class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"
+                    value="{lastSearch.extQuery.{slot_iterator.index}}" />
+            </f:for>
+        </div>
+    </f:if>
 
     <f:form.hidden property="orderBy" value="{lastSearch.orderBy}" />
     <f:form.hidden property="order" value="{lastSearch.order}" />
@@ -95,14 +112,14 @@
                                 <f:if condition="{values.resetFacet}">
                                     <f:then>
                                         <li class="tx-dlf-search-cur">
-                                            <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}'}">
+                                            <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}'}">
                                                 {values.title} ({values.count})
                                             </f:link.action>
                                         </li>
                                     </f:then>
                                     <f:else>
                                         <li class="tx-dlf-search-no">
-                                            <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}'}">
+                                            <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}'}">
                                                 {values.title} ({values.count})
                                             </f:link.action>
                                         </li>

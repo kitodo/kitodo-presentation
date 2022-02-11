@@ -71,6 +71,26 @@ class ItemsProcFunc
      * @access public
      *
      * @param array &$params: An array with parameters
+     *
+     * @return void
+     */
+    public function extendedSearchList(&$params)
+    {
+        $this->generateList(
+            $params,
+            'label,index_name',
+            'tx_dlf_metadata',
+            'label',
+            'index_indexed=1'
+        );
+    }
+
+    /**
+     * Helper to get flexform's items array for plugin "Search"
+     *
+     * @access public
+     *
+     * @param array &$params: An array with parameters
      */
     public function getFacetsList(array &$params): void
     {
@@ -78,7 +98,7 @@ class ItemsProcFunc
             $params,
             'label,index_name',
             'tx_dlf_metadata',
-            'sorting',
+            'label',
             'is_facet=1'
         );
     }

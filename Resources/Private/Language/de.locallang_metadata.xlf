@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-12-29T14:02:58Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2022-02-11T15:29:32Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -60,6 +60,10 @@
 			<trans-unit id="metadata.rights_info" approved="yes">
 				<source><![CDATA[Rights Information]]></source>
 				<target><![CDATA[Rechteinformation]]></target>
+			</trans-unit>
+			<trans-unit id="metadata.shelfmark" approved="yes">
+				<source><![CDATA[Shelfmark]]></source>
+				<target><![CDATA[Signatur]]></target>
 			</trans-unit>
 			<trans-unit id="metadata.terms" approved="yes">
 				<source><![CDATA[Terms of Use]]></source>

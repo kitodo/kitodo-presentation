@@ -285,7 +285,7 @@
 				<source><![CDATA[Rotate Right]]></source>
 				<target><![CDATA[Ansicht nach rechts drehen]]></target>
 			</trans-unit>
-			<trans-unit id="search.and" approved="yes">
+			<trans-unit id="search.operator.AND" approved="yes">
 				<source><![CDATA[and]]></source>
 				<target><![CDATA[und]]></target>
 			</trans-unit>
@@ -309,11 +309,11 @@
 				<source><![CDATA[Page]]></source>
 				<target><![CDATA[Seite]]></target>
 			</trans-unit>
-			<trans-unit id="search.not" approved="yes">
+			<trans-unit id="search.operator.NOT" approved="yes">
 				<source><![CDATA[not]]></source>
 				<target><![CDATA[nicht]]></target>
 			</trans-unit>
-			<trans-unit id="search.or" approved="yes">
+			<trans-unit id="search.operator.OR" approved="yes">
 				<source><![CDATA[or]]></source>
 				<target><![CDATA[oder]]></target>
 			</trans-unit>

@@ -135,9 +135,10 @@ class SearchController extends AbstractController
             // Add the facets menu
             $this->addFacetsMenu();
 
-            // Get additional fields for extended search.
-            $this->addExtendedSearch();
         }
+
+        // Get additional fields for extended search.
+        $this->addExtendedSearch();
 
         // Add the current document if present to fluid. This way, we can limit further searches to this document.
         if (isset($this->requestData['id'])) {
@@ -185,7 +186,6 @@ class SearchController extends AbstractController
         $menuArray = [];
         // Set default value for facet search.
         $search = [
-            'query' => '*',
             'params' => [
                 'component' => [
                     'facetset' => [
@@ -221,11 +221,33 @@ class SearchController extends AbstractController
             }
         }
 
+        // Add extended search query.
+        if (
+            !empty($searchParams['extQuery'])
+            && is_array($searchParams['extQuery'])
+        ) {
+            $allowedOperators = ['AND', 'OR', 'NOT'];
+            $numberOfExtQueries = count($searchParams['extQuery']);
+            for ($i = 0; $i < $numberOfExtQueries; $i++) {
+                if (!empty($searchParams['extQuery'][$i])) {
+                    if (
+                        in_array($searchParams['extOperator'][$i], $allowedOperators)
+                    ) {
+                        if (!empty($search['query'])) {
+                            $search['query'] .= ' ' . $searchParams['extOperator'][$i] . ' ';
+                        }
+                        $search['query'] .= Indexer::getIndexFieldName($searchParams['extField'][$i], $this->settings['storagePid']) . ':(' . Solr::escapeQuery($searchParams['extQuery'][$i]) . ')';
+                    }
+                }
+            }
+        }
+
         if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
             foreach ($this->searchParams['fq'] as $fq) {
                 $search['params']['filterquery'][]['query'] = $fq;
             }
         }
+
         // Get applicable facets.
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
@@ -378,17 +400,11 @@ class SearchController extends AbstractController
         ) {
             return '';
         }
-        // Get operator options.
-        $operatorOptions = [];
-        foreach (['AND', 'OR', 'NOT'] as $operator) {
-            $operatorOptions[$operator] = htmlspecialchars(LocalizationUtility::translate('search.' . $operator, 'dlf'));
-        }
+
         // Get field selector options.
         $fieldSelectorOptions = [];
         $searchFields = GeneralUtility::trimExplode(',', $this->settings['extendedFields'], true);
-        foreach ($searchFields as $searchField) {
-            $fieldSelectorOptions[$searchField] = Helper::translate($searchField, 'tx_dlf_metadata', $this->settings['storagePid']);
-        }
+
         $slotCountArray = [];
         for ($i = 0; $i < $this->settings['extendedSlotCount']; $i++) {
             $slotCountArray[] = $i;
@@ -396,7 +412,7 @@ class SearchController extends AbstractController
 
         $this->view->assign('extendedSlotCount', $slotCountArray);
         $this->view->assign('extendedFields', $this->settings['extendedFields']);
-        $this->view->assign('operators', $operatorOptions);
-        $this->view->assign('searchFields', $fieldSelectorOptions);
+        $this->view->assign('operators', ['AND', 'OR', 'NOT']);
+        $this->view->assign('searchFields', $searchFields);
     }
 }
