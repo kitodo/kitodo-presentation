@@ -120,7 +120,7 @@ class SearchController extends AbstractController
             $solrResults = [];
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
-                $solrResults = $this->documentRepository->findSolrByCollection('', $this->settings, $this->searchParams, $listedMetadata);
+                $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
             }
 
             $documents = $solrResults['documents'] ? : [];
@@ -217,7 +217,7 @@ class SearchController extends AbstractController
         } else {
             // Retain given search field if valid.
             if (!empty($searchParams['query'])) {
-                $search['query'] = Solr::escapeQueryKeepField(trim($earchParams['query']), $this->settings['storagePid']);
+                $search['query'] = Solr::escapeQueryKeepField(trim($searchParams['query']), $this->settings['storagePid']);
             }
         }
 

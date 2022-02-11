@@ -18,8 +18,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-use TYPO3\CMS\Backend\View\PageLayoutContext;
-
 /**
  * Helper for Flexform's custom "itemsProcFunc"
  *
