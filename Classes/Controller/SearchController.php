@@ -222,7 +222,7 @@ class SearchController extends AbstractController
         }
 
         if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
-            foreach($this->searchParams['fq'] as $fq) {
+            foreach ($this->searchParams['fq'] as $fq) {
                 $search['params']['filterquery'][]['query'] = $fq;
             }
         }
