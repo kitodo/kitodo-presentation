@@ -13,6 +13,8 @@
       xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
+      <f:debug>{_all}</f:debug>
+
 <f:for each="{documentList}" key="entryIndex" as="entry" iteration="docIterator">
     <f:variable name="currentPage" value="{widgetPage.currentPage - 1}" />
     <f:variable name="pageOffset" value="{settings.limit * currentPage}" />

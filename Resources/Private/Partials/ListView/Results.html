@@ -35,15 +35,17 @@
                         <dd class="tx-dlf-title">{docTitle}</dd>
                         <f:if condition="{document.metadata}">
                             <f:then>
-                                <f:for each="{listedMetadata}" as="metadata" key="label">
-                                <f:if condition="{document.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
-                                    <dt class="tx-dlf-{metadata.indexName}">
-                                        {metadata.label}
-                                    </dt>
-                                    <dd>
-                                        {document.metadata.{metadata.indexName}.0}
-                                    </dd>
-                                </f:if>
+                                <f:for each="{listedMetadata}" as="metadata">
+                                    <f:if condition="{document.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
+                                        <dt class="tx-dlf-{metadata.indexName}">
+                                            {metadata.label}
+                                        </dt>
+                                        <f:for each="{document.metadata.{metadata.indexName}}" as="metadataentry">
+                                            <dd class="tx-dlf-metadata-{metadata.indexName}">
+                                                    {metadataentry}
+                                            </dd>
+                                        </f:for>
+                                    </f:if>
                                 </f:for>
                             </f:then>
                             <f:else>
@@ -95,11 +97,13 @@
                                                 <dt class="tx-dlf-{metadata.indexName}">
                                                     {metadata.label}
                                                 </dt>
-                                                <dd>
-                                                    {child.metadata.{metadata.indexName}.0}
-                                                </dd>
+                                                <f:for each="{child.metadata.{metadata.indexName}}" as="metadataentry">
+                                                    <dd class="tx-dlf-metadata-{metadata.indexName}">
+                                                            {metadataentry}
+                                                    </dd>
+                                                </f:for>
                                             </f:if>
-                                            </f:for>
+                                        </f:for>
                                         <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
                                         <dd class="tx-dlf-type">
                                             <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{child.structure}' />
