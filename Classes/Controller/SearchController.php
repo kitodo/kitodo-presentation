@@ -15,6 +15,8 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
@@ -146,6 +148,10 @@ class SearchController extends AbstractController
             $this->view->assign('currentDocument', $currentDocument);
         }
 
+        // Add uHash parameter to suggest parameter to make a basic protection of this form.
+        if ($this->settings['suggest']) {
+            $this->view->assign('uHash', GeneralUtility::hmac((string)(new Typo3Version()) . Environment::getExtensionsPath('dlf'), 'SearchSuggest'));
+        }
     }
 
     /**

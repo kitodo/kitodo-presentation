@@ -134,6 +134,11 @@
     </f:for>
 </div>
 
+<f:if condition="{settings.suggest}">
+    <f:form.hidden name="solrcore" value="{settings.solrcore}" />
+    <f:form.hidden name="uHash" value="{uHash}" />
+</f:if>
+
 </html>
 
 <f:section name="FooterAssets">
