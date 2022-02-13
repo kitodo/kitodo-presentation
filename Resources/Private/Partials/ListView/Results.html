@@ -131,26 +131,36 @@
                                         <img src="{result.thumbnail}" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
                                     </f:if>
                                 </div>
-                                <div>
-                                    <div class="tx-dlf-listview-preview">
-                                        <f:if condition="{result.structure} && {result.title}">
+                                <dl>
+                                    <f:if condition="{result.title}">
                                         <f:then>
-                                            <p class="page">
-                                                <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{result.structure}' />: {result.title}
-                                            </p>
-                                            <p><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /> {result.page}</p>
+                                            <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
+                                            <dd class="tx-dlf-title">{result.title}</dd>
                                         </f:then>
-                                        <f:else>
-                                            <p>
-                                                {result.title}
-                                            </p>
-                                            <p class="page"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /> {result.page}</p>
-                                        </f:else>
+                                    </f:if>
+                                    <f:if condition="{result.structure} != 'page'">
+                                        <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
+                                        <dd class="tx-dlf-type">
+                                            <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{result.structure}' />
+                                        </dd>
+                                    </f:if>
+                                    <dt class="tx-dlf-page"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /></dt>
+                                    <dd class="tx-dlf-page">{result.page}</dd>
+                                    <f:for each="{listedMetadata}" as="metadata">
+                                        <f:if condition="{result.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
+                                            <dt class="tx-dlf-metadata-{metadata.indexName}">{metadata.label}</dt>
+                                            <f:for each="{result.metadata.{metadata.indexName}}" as="metadataentry">
+                                                <dd class="tx-dlf-metadata-{metadata.indexName}">
+                                                        {metadataentry}
+                                                </dd>
+                                            </f:for>
                                         </f:if>
+                                    </f:for>
+                                </dl>
+                                <div class="tx-dlf-listview-preview">
                                     <f:if condition="{result.snippet}">
                                         <p class="textsnippet">[...] <f:format.raw>{result.snippet}</f:format.raw> [...]</p>
                                     </f:if>
-                                    </div>
                                 </div>
                             </f:link.page>
                             </li>

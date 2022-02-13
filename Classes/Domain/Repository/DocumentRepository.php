@@ -714,6 +714,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                             foreach ($params['listMetadataRecords'] as $indexName => $solrField) {
                                 if (isset($doc['metadata'][$indexName])) {
                                     $documents[$doc['uid']]['metadata'][$indexName] = $doc['metadata'][$indexName];
+                                    $searchResult['metadata'][$indexName] = $doc['metadata'][$indexName];
                                 }
                             }
                             if ($searchParams['fulltext'] == '1') {
@@ -732,7 +733,19 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         }
                         if ($searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
-                            $documents[$doc['uid']]['children'] = $this->findByPartof($doc['uid']);
+                            $children = $this->findByPartof($doc['uid']);
+                            foreach($children as $docChild) {
+                                // We need only a few fields from the children, but we need them as array.
+                                $childDocument = [
+                                    'thumbnail' => $docChild->getThumbnail(),
+                                    'title' => $docChild->getTitle(),
+                                    'structure' => Helper::getIndexNameFromUid($docChild->getStructure(), 'tx_dlf_structures'),
+                                    'metsOrderlabel' => $docChild->getMetsOrderlabel(),
+                                    'uid' => $docChild->getUid(),
+                                    'metadata' => $this->fetchMetadataFromSolr($docChild->getUid(), $listedMetadata)
+                                ];
+                                $documents[$doc['uid']]['children'][$docChild->getUid()] = $childDocument;
+                            }
                         }
                     }
                     if (empty($documents[$doc['uid']]['metadata'])) {
@@ -742,7 +755,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     if (empty($documents[$doc['uid']]['title']) && ($documents[$doc['uid']]['partOf'] > 0)) {
                         $parentDocument = $this->findByUid($documents[$doc['uid']]['partOf']);
                         if ($parentDocument) {
-                            $documents[$doc['uid']]['title'] = $parentDocument->getTitle();
+                            $documents[$doc['uid']]['title'] = '[' . $parentDocument->getTitle() . ']';
                         }
                     }
                 }
