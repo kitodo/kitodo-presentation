@@ -51,5 +51,10 @@
     "typo3/cms": {
       "extension-key": "dlf"
     }
+  },
+  "scripts": {
+	"docs:setup": "./Build/Documentation/sphinx.sh install",
+	"docs:serve": "./Build/Documentation/sphinx.sh serve",
+	"docs:t3": "docker-compose -f ./Build/Documentation/docker-compose.t3docs.yml run --rm t3docs"
   }
 }

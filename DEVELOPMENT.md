@@ -29,3 +29,44 @@ The current solution does only work with TYPO3 9 and 10.
 As of TYPO3 10 a new pagination API has been introduced. This could be used as replacement in a release supporting TYPO3 10 and 11.
 
 https://docs.typo3.org/m/typo3/reference-coreapi/10.4/en-us/ApiOverview/Pagination/Index.html
+
+## Documentation
+
+Following TYPO3's practices, the main documentation of the extension is located in `Documentation` and written in [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText). The build system is [Sphinx](https://en.wikipedia.org/wiki/Sphinx_(documentation_generator)).
+
+### Local Preview Server
+
+To preview the rendered output and automatically rebuild documentation on changes, you may spawn a local server. This supports auto-refresh and is faster than the official preview build, but omits some features such as syntax highlighting.
+
+This requires Python 2 to be installed.
+
+```bash
+# First start: Setup Sphinx in a virtualenv
+composer docs:setup
+
+# Spawn server
+composer docs:serve
+composer docs:serve -- -E  # Don't use a saved environment (useful when changing toctree)
+composer docs:serve -- -p 8000  # Port may be specified
+```
+
+By default, the output is served to http://127.0.0.1:8000.
+
+> The setup and serve commands are defined in [Build/Documentation/sphinx.sh](./Build/Documentation/sphinx.sh).
+
+### Official Preview Build
+
+The TYPO3 project [provides a Docker image to build documentation](https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/RenderingDocs/Quickstart.html). This requires both Docker and Docker Compose to be installed.
+
+```bash
+# Full build
+composer docs:t3 makehtml
+
+# Only run sphinx-build
+composer docs:t3 just1sphinxbuild
+
+# (Alternative) Run docker-compose manually
+docker-compose -f ./Build/Documentation/docker-compose.t3docs.yml run --rm t3docs makehtml
+```
+
+The build output is available at [Documentation-GENERATED-temp/Result/project/0.0.0/Index.html](./Documentation-GENERATED-temp/Result/project/0.0.0/Index.html).
