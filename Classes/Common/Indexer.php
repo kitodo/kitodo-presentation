@@ -16,6 +16,7 @@ use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -98,6 +99,7 @@ class Indexer
             return true;
         } elseif (self::solrConnect($document->getSolrcore(), $document->getPid())) {
             $success = true;
+            Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Handle multi-volume documents.
             if ($parentId = $document->getPartof()) {
                 // initialize documentRepository
@@ -152,16 +154,16 @@ class Indexer
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     if ($success) {
                         Helper::addMessage(
-                            sprintf(Helper::getMessage('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
-                            Helper::getMessage('flash.done', true),
+                            sprintf(Helper::getLanguageService()->getLL('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
+                            Helper::getLanguageService()->getLL('flash.done'),
                             FlashMessage::OK,
                             true,
                             'core.template.flashMessages'
                         );
                     } else {
                         Helper::addMessage(
-                            sprintf(Helper::getMessage('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()),
-                            Helper::getMessage('flash.error', true),
+                            sprintf(Helper::getLanguageService()->getLL('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()),
+                            Helper::getLanguageService()->getLL('flash.error'),
                             FlashMessage::ERROR,
                             true,
                             'core.template.flashMessages'
@@ -172,8 +174,8 @@ class Indexer
             } catch (\Exception $e) {
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', true) . ' ' . htmlspecialchars($e->getMessage()),
-                        Helper::getMessage('flash.error', true),
+                        Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
+                        Helper::getLanguageService()->getLL('flash.error'),
                         FlashMessage::ERROR,
                         true,
                         'core.template.flashMessages'
@@ -185,8 +187,8 @@ class Indexer
         } else {
             if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                 Helper::addMessage(
-                    Helper::getMessage('flash.solrNoConnection', true),
-                    Helper::getMessage('flash.warning', true),
+                    Helper::getLanguageService()->getLL('flash.solrNoConnection'),
+                    Helper::getLanguageService()->getLL('flash.warning'),
                     FlashMessage::WARNING,
                     true,
                     'core.template.flashMessages'
@@ -320,12 +322,9 @@ class Indexer
                     $metadata['author'][$i] = $splitName[0];
                 }
             }
-            // Replace owner UID with index_name.
-            if (
-                !empty($metadata['owner'][0])
-                && MathUtility::canBeInterpretedAsInteger($metadata['owner'][0])
-            ) {
-                $metadata['owner'][0] = Helper::getIndexNameFromUid($metadata['owner'][0], 'tx_dlf_libraries', $doc->cPid);
+            // set Owner if available
+            if ($document->getOwner()) {
+                $metadata['owner'][0] = $document->getOwner()->getIndexName();
             }
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
@@ -352,7 +351,7 @@ class Indexer
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
             $solrDoc->setField('record_id', $metadata['record_id'][0]);
             $solrDoc->setField('purl', $metadata['purl'][0]);
-            $solrDoc->setField('location', $doc->location);
+            $solrDoc->setField('location', $document->getLocation());
             $solrDoc->setField('urn', $metadata['urn']);
             $solrDoc->setField('license', $metadata['license']);
             $solrDoc->setField('terms', $metadata['terms']);
@@ -401,8 +400,8 @@ class Indexer
             } catch (\Exception $e) {
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
-                        Helper::getMessage('flash.error', true),
+                        Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()),
+                        Helper::getLanguageService()->getLL('flash.error'),
                         FlashMessage::ERROR,
                         true,
                         'core.template.flashMessages'
@@ -459,7 +458,7 @@ class Indexer
                     break;
                 }
             }
-            $solrDoc->setField('partof', $doc->parentId);
+            $solrDoc->setField('partof', $document->getPartof());
             $solrDoc->setField('root', $doc->rootId);
             $solrDoc->setField('sid', $physicalUnit['id']);
             $solrDoc->setField('toplevel', false);
@@ -502,8 +501,8 @@ class Indexer
             } catch (\Exception $e) {
                 if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
                     Helper::addMessage(
-                        Helper::getMessage('flash.solrException', true) . '<br />' . htmlspecialchars($e->getMessage()),
-                        Helper::getMessage('flash.error', true),
+                        Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()),
+                        Helper::getLanguageService()->getLL('flash.error'),
                         FlashMessage::ERROR,
                         true,
                         'core.template.flashMessages'

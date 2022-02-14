@@ -11,7 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PageGridController extends AbstractController
@@ -23,13 +22,11 @@ class PageGridController extends AbstractController
      */
     public function mainAction()
     {
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-
         $this->loadDocument($this->requestData);
         if (
             $this->document === null
             || $this->document->getDoc()->numPages < 1
-            || empty($extConf['fileGrpThumbs'])
+            || empty($this->extConf['fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -40,7 +37,7 @@ class PageGridController extends AbstractController
         $numPages = $this->document->getDoc()->numPages;
         // Iterate through visible page set and display thumbnails.
         for ($i = 1; $i < $numPages; $i++) {
-            $foundEntry = $this->getEntry($i, $extConf['fileGrpThumbs']);
+            $foundEntry = $this->getEntry($i, $this->extConf['fileGrpThumbs']);
             $foundEntry['state'] = ($i == $this->requestData['page']) ? 'cur' : 'no';
             $entryArray[] = $foundEntry;
         }

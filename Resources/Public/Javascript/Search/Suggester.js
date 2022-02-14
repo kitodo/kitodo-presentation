@@ -25,8 +25,8 @@ $(
 					{
 						eID: "tx_dlf_search_suggest",
 						q: encodeURIComponent(request.term.toLowerCase()),
-						encrypted: $("input[name='tx_dlf[encryptedCoreName]']").val(),
-						hashed: $("input[name='tx_dlf[hashed]']").val()
+            uHash: $("input[name='uHash']").val(),
+            solrcore: $("input[name='solrcore']").val()
 					},
 					function(data) {
 						var result = [];

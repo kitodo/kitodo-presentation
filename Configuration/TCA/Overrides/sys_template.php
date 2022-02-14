@@ -21,11 +21,6 @@ if (!defined('TYPO3_MODE')) {
 );
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
-    'Configuration/TypoScript/Search/',
-    'Search Facets Configuration'
-);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'dlf',
     'Configuration/TypoScript/TableOfContents/',
     'Table of Contents Menu Configuration'
 );

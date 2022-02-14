@@ -11,9 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Kitodo\Dlf\Common\DocumentList;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Token;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -110,11 +108,6 @@ class OaiPmhController extends AbstractController
             'requiredFields' => ['location'],
         ]
     ];
-
-    /**
-     * @var ExtensionConfiguration
-     */
-    protected $extensionConfiguration;
 
     /**
      * @var array
@@ -270,9 +263,6 @@ class OaiPmhController extends AbstractController
         // Get allowed GET and POST variables.
         $this->getUrlParams();
 
-        // Get extension configuration.
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
 
@@ -308,16 +298,16 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return \Kitodo\Dlf\Common\DocumentList|null list of uids
+     * @return array|null list of uids
      */
-    protected function resume(): ?DocumentList
+    protected function resume(): ?array
     {
         $token = $this->tokenRepository->findOneByToken($this->parameters['resumptionToken']);
 
         if ($token) {
             $options = $token->getOptions();
         }
-        if ($options instanceof DocumentList) {
+        if (is_array($options)) {
             return $options;
         } else {
             // No resumption token found or resumption token expired.
@@ -444,7 +434,7 @@ class OaiPmhController extends AbstractController
             } else {
                 // return next chunk of documents
                 $resultSet = $this->resume();
-                if ($resultSet instanceof DocumentList) {
+                if (is_array($resultSet)) {
                     $listIdentifiers = $this->generateOutputForDocumentList($resultSet);
                     $this->view->assign('listIdentifiers', $listIdentifiers);
                 }
@@ -467,11 +457,10 @@ class OaiPmhController extends AbstractController
             return;
         }
         // create new and empty documentlist
-        $resultSet = GeneralUtility::makeInstance(DocumentList::class);
-        $resultSet->reset();
+        $resultSet = [];
         if (is_array($documentSet)) {
-            $resultSet->add($documentSet);
-            $resultSet->metadata = [
+            $resultSet[] = ($documentSet);
+            $resultSet['metadata'] = [
                 'completeListSize' => count($documentSet),
                 'metadataPrefix' => $this->parameters['metadataPrefix'],
             ];
@@ -532,9 +521,9 @@ class OaiPmhController extends AbstractController
             } else {
                 // return next chunk of documents
                 $resultSet = $this->resume();
-                if ($resultSet instanceof DocumentList) {
+                if (is_array($resultSet)) {
                     $listRecords = $this->generateOutputForDocumentList($resultSet);
-                    $this->parameters['metadataPrefix'] = $resultSet->metadata['metadataPrefix'];
+                    $this->parameters['metadataPrefix'] = $resultSet['metadata']['metadataPrefix'];
                     $this->view->assign('listRecords', $listRecords);
                 }
                 return;
@@ -556,11 +545,10 @@ class OaiPmhController extends AbstractController
             $this->error = 'idDoesNotExist';
             return;
         }
-        $resultSet = GeneralUtility::makeInstance(DocumentList::class);
-        $resultSet->reset();
+        $resultSet = [];
         if (is_array($documentSet)) {
-            $resultSet->add($documentSet);
-            $resultSet->metadata = [
+            $resultSet[] = $documentSet;
+            $resultSet['metadata'] = [
                 'completeListSize' => count($documentSet),
                 'metadataPrefix' => $this->parameters['metadataPrefix'],
             ];
@@ -684,7 +672,8 @@ class OaiPmhController extends AbstractController
                 "uid" => "asc"
             ]
         ];
-        $result = $solr->search_raw($solr_query, $parameters);
+        $parameters['query'] = $solr_query;
+        $result = $solr->search_raw($parameters);
         if (empty($result)) {
             $this->error = 'noRecordsMatch';
             return;
@@ -699,13 +688,13 @@ class OaiPmhController extends AbstractController
      * Fetch more information for document list
      * @access protected
      *
-     * @param \Kitodo\Dlf\Common\DocumentList $documentListSet
+     * @param array $documentListSet
      *
      * @return array of enriched records
      */
-    protected function generateOutputForDocumentList(DocumentList $documentListSet)
+    protected function generateOutputForDocumentList(array $documentListSet)
     {
-        $documentsToProcess = $documentListSet->removeRange(0, (int) $this->settings['limit']);
+        $documentsToProcess = array_splice($documentListSet, 0, (int) $this->settings['limit']);
         if ($documentsToProcess === null) {
             $this->error = 'noRecordsMatch';
             return [];
@@ -724,7 +713,7 @@ class OaiPmhController extends AbstractController
                 $metadataPrefix = $this->parameters['metadataPrefix'];
                 if (!$metadataPrefix) {
                     // If we resume an action the metadataPrefix is stored with the documentSet
-                    $metadataPrefix = $documentListSet->metadata['metadataPrefix'];
+                    $metadataPrefix = $documentListSet['metadata']['metadataPrefix'];
                 }
                 switch ($metadataPrefix) {
                     case 'oai_dc':
@@ -752,13 +741,13 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Common\DocumentList $documentListSet
+     * @param array $documentListSet
      *
      * @return void
      */
-    protected function generateResumptionTokenForDocumentListSet(DocumentList $documentListSet)
+    protected function generateResumptionTokenForDocumentListSet(array $documentListSet)
     {
-        if ($documentListSet->count() !== 0) {
+        if (count($documentListSet) !== 0) {
             $resumptionToken = uniqid('', false);
 
             // create new token
@@ -775,8 +764,8 @@ class OaiPmhController extends AbstractController
 
         $resumptionTokenInfo = [];
         $resumptionTokenInfo['token'] = $resumptionToken;
-        $resumptionTokenInfo['cursor'] = $documentListSet->metadata['completeListSize'] - count($documentListSet);
-        $resumptionTokenInfo['completeListSize'] = $documentListSet->metadata['completeListSize'];
+        $resumptionTokenInfo['cursor'] = $documentListSet['metadata']['completeListSize'] - count($documentListSet);
+        $resumptionTokenInfo['completeListSize'] = $documentListSet['metadata']['completeListSize'];
         $expireDateTime = new \DateTime();
         $expireDateTime->add(new \DateInterval('PT' . $this->settings['expired'] . 'S'));
         $resumptionTokenInfo['expired'] = $expireDateTime;

@@ -49,6 +49,8 @@ page {
     kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
+    kitodo-search-suggest = EXT:dlf/Resources/Public/Javascript/Search/Suggester.js
+
   }
 }
 
@@ -68,16 +70,37 @@ plugin.tx_dlf_pagegrid {
 }
 
 plugin.tx_dlf_listview {
-  settings {
-      paginate {
-          itemsPerPage = 10
-          insertAbove = 1
-          insertBelow = 1
-          lessPages = 1
-          forcedNumberOfLinks = 5
-          pagesBefore = 3
-          pagesAfter = 3
-          section =
-      }
-  }
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
+}
+
+plugin.tx_dlf_collection {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
+}
+
+plugin.tx_dlf_search {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
 }

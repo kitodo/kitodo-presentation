@@ -13,4 +13,7 @@
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
+    <p class="tx-dlf-search-numHits">
+        <f:translate key="listview.hits" arguments="{0: '{numResults}', 1: '{documents->f:count()}'}" />
+    </p>
 </html>

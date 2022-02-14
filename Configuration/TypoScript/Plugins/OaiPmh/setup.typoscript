@@ -6,7 +6,7 @@ plugin.tx_dlf_oaipmh {
 		}
 	}
   settings {
-    title = fake title
+    title =
   }
 }
 

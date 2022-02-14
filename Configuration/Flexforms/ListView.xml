@@ -20,26 +20,21 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <settings.pages>
+                    <settings.solrcore>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
-                                <type>group</type>
-                                <internal_type>db</internal_type>
-                                <allowed>pages</allowed>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <foreign_table>tx_dlf_solrcores</foreign_table>
+                                <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
-                                <minitems>1</minitems>
-                                <show_thumbs>1</show_thumbs>
-                                <wizards>
-                                    <suggest>
-                                        <type>suggest</type>
-                                    </suggest>
-                                </wizards>
+                                <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </settings.pages>
+                    </settings.solrcore>
                     <settings.limit>
                         <TCEforms>
                             <exclude>1</exclude>
@@ -51,7 +46,7 @@
                             </config>
                         </TCEforms>
                     </settings.limit>
-                    <settings.targetPid>
+                    <settings.targetPidPageView>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
@@ -70,7 +65,7 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </settings.targetPid>
+                    </settings.targetPidPageView>
                     <settings.getTitle>
                         <TCEforms>
                             <exclude>1</exclude>
@@ -83,6 +78,7 @@
                     </settings.getTitle>
                     <settings.basketButton>
                         <TCEforms>
+                            <onChange>reload</onChange>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
                             <config>
@@ -93,6 +89,7 @@
                     </settings.basketButton>
                     <settings.targetBasket>
                         <TCEforms>
+                            <displayCond>FIELD:settings.basketButton:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
                             <config>
@@ -101,7 +98,7 @@
                                 <allowed>pages</allowed>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
-                                <minitems>0</minitems>
+                                <minitems>1</minitems>
                             </config>
                         </TCEforms>
                     </settings.targetBasket>

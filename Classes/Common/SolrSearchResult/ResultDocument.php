@@ -60,6 +60,38 @@ class ResultDocument
     private $snippets;
 
     /**
+     * The thumbnail URL
+     *
+     * @var string
+     * @access private
+     */
+    private $thumbnail;
+
+    /**
+     * The title of the document / structure element (e.g. chapter)
+     *
+     * @var string
+     * @access private
+     */
+    private $title;
+
+    /**
+     * It's a toplevel element?
+     *
+     * @var boolean
+     * @access private
+     */
+    private $toplevel = false;
+
+    /**
+     * The structure type
+     *
+     * @var string
+     * @access private
+     */
+    private $type;
+
+    /**
      * All pages in which search phrase was found
      *
      * @var array(Page)
@@ -107,6 +139,10 @@ class ResultDocument
         $this->id = $record[$fields['id']];
         $this->uid = $record[$fields['uid']];
         $this->page = $record[$fields['page']];
+        $this->thumbnail = $record[$fields['thumbnail']];
+        $this->title = $record[$fields['title']];
+        $this->toplevel = $record[$fields['toplevel']];
+        $this->type = $record[$fields['type']];
 
         $highlightingForRecord = $highlighting[$record[$fields['id']]][$fields['fulltext']];
         $this->snippetsForRecord = is_array($highlightingForRecord['snippets']) ? $highlightingForRecord['snippets'] : [];
@@ -163,6 +199,54 @@ class ResultDocument
     public function getSnippets()
     {
         return $this->snippets;
+    }
+
+    /**
+     * Get the thumnail URL
+     *
+     * @access public
+     *
+     * @return string
+     */
+    public function getThumbnail()
+    {
+        return $this->thumbnail;
+    }
+
+    /**
+     * Get the title
+     *
+     * @access public
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Get the toplevel flag
+     *
+     * @access public
+     *
+     * @return boolean
+     */
+    public function getToplevel()
+    {
+        return $this->toplevel;
+    }
+
+    /**
+     * Get the structure type
+     *
+     * @access public
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**

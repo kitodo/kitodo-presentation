@@ -153,15 +153,15 @@
 				<source><![CDATA[Entries %d to %d of %d.]]></source>
 				<target><![CDATA[Einträge %d bis %d von %d.]]></target>
 			</trans-unit>
-			<trans-unit id="listview.direction" approved="yes">
+			<trans-unit id="listview.form.order" approved="yes">
 				<source><![CDATA[Direction:]]></source>
 				<target><![CDATA[Richtung:]]></target>
 			</trans-unit>
-			<trans-unit id="listview.direction.asc" approved="yes">
+			<trans-unit id="listview.form.order.asc" approved="yes">
 				<source><![CDATA[ascending]]></source>
 				<target><![CDATA[aufsteigend]]></target>
 			</trans-unit>
-			<trans-unit id="listview.direction.desc" approved="yes">
+			<trans-unit id="listview.form.order.desc" approved="yes">
 				<source><![CDATA[descending]]></source>
 				<target><![CDATA[absteigend]]></target>
 			</trans-unit>
@@ -177,7 +177,7 @@
 				<source><![CDATA[Nothing found.]]></source>
 				<target><![CDATA[Keine Treffer.]]></target>
 			</trans-unit>
-			<trans-unit id="listview.orderBy" approved="yes">
+			<trans-unit id="listview.form.orderBy" approved="yes">
 				<source><![CDATA[Order by:]]></source>
 				<target><![CDATA[Sortieren nach:]]></target>
 			</trans-unit>
@@ -189,7 +189,7 @@
 				<source><![CDATA[&lt;]]></source>
 				<target><![CDATA[&lt;]]></target>
 			</trans-unit>
-			<trans-unit id="listview.relevance" approved="yes">
+			<trans-unit id="listview.form.relevance" approved="yes">
 				<source><![CDATA[relevance]]></source>
 				<target><![CDATA[Relevanz]]></target>
 			</trans-unit>
@@ -285,7 +285,7 @@
 				<source><![CDATA[Rotate Right]]></source>
 				<target><![CDATA[Ansicht nach rechts drehen]]></target>
 			</trans-unit>
-			<trans-unit id="search.and" approved="yes">
+			<trans-unit id="search.operator.AND" approved="yes">
 				<source><![CDATA[and]]></source>
 				<target><![CDATA[und]]></target>
 			</trans-unit>
@@ -309,11 +309,11 @@
 				<source><![CDATA[Page]]></source>
 				<target><![CDATA[Seite]]></target>
 			</trans-unit>
-			<trans-unit id="search.not" approved="yes">
+			<trans-unit id="search.operator.NOT" approved="yes">
 				<source><![CDATA[not]]></source>
 				<target><![CDATA[nicht]]></target>
 			</trans-unit>
-			<trans-unit id="search.or" approved="yes">
+			<trans-unit id="search.operator.OR" approved="yes">
 				<source><![CDATA[or]]></source>
 				<target><![CDATA[oder]]></target>
 			</trans-unit>

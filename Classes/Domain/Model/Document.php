@@ -98,16 +98,6 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $thumbnail;
 
     /**
-     * @var string
-     */
-    protected $metadata;
-
-    /**
-     * @var string
-     */
-    protected $metadataSorting;
-
-    /**
      * @var int
      */
     protected $structure;
@@ -425,38 +415,6 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setThumbnail(string $thumbnail): void
     {
         $this->thumbnail = $thumbnail;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMetadata(): string
-    {
-        return $this->metadata;
-    }
-
-    /**
-     * @param string $metadata
-     */
-    public function setMetadata(string $metadata): void
-    {
-        $this->metadata = $metadata;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMetadataSorting(): string
-    {
-        return $this->metadataSorting;
-    }
-
-    /**
-     * @param string $metadataSorting
-     */
-    public function setMetadataSorting(string $metadataSorting): void
-    {
-        $this->metadataSorting = $metadataSorting;
     }
 
     /**

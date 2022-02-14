@@ -23,13 +23,13 @@
 			<trans-unit id="search.in">
 				<source><![CDATA[in "%s"]]></source>
 			</trans-unit>
-			<trans-unit id="search.and">
+			<trans-unit id="search.operator.AND">
 				<source><![CDATA[and]]></source>
 			</trans-unit>
-			<trans-unit id="search.or">
+			<trans-unit id="search.operator.OR">
 				<source><![CDATA[or]]></source>
 			</trans-unit>
-			<trans-unit id="search.not">
+			<trans-unit id="search.operator.NOT">
 				<source><![CDATA[not]]></source>
 			</trans-unit>
 			<trans-unit id="search.resetFacet">
@@ -320,19 +320,19 @@
 			<trans-unit id="listview.skip">
 				<source><![CDATA[...]]></source>
 			</trans-unit>
-			<trans-unit id="listview.orderBy">
+			<trans-unit id="listview.form.orderBy">
 				<source><![CDATA[Order by:]]></source>
 			</trans-unit>
-			<trans-unit id="listview.relevance">
+			<trans-unit id="listview.form.relevance">
 				<source><![CDATA[relevance]]></source>
 			</trans-unit>
-			<trans-unit id="listview.direction">
+			<trans-unit id="listview.form.order">
 				<source><![CDATA[Direction:]]></source>
 			</trans-unit>
-			<trans-unit id="listview.direction.asc">
+			<trans-unit id="listview.form.order.asc">
 				<source><![CDATA[ascending]]></source>
 			</trans-unit>
-			<trans-unit id="listview.direction.desc">
+			<trans-unit id="listview.form.order.desc">
 				<source><![CDATA[descending]]></source>
 			</trans-unit>
 			<trans-unit id="collection.feed.alt">

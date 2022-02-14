@@ -124,11 +124,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Search',
     [
-        Search::class => 'main, search',
+        Search::class => 'main, search'
     ],
     // non-cacheable actions
     [
-        Search::class => 'main, search',
+        Search::class => 'main, search'
     ]
 );
 
@@ -280,11 +280,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Collection',
     [
-        Collection::class => 'main',
+        Collection::class => 'list, show, showSorted'
     ],
     // non-cacheable actions
     [
-        Collection::class => '',
+        Collection::class => 'showSorted',
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -315,7 +315,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
                 1 = {$module.tx_dlf.view.layoutRootPath}
             }
         }
-        persistence < plugin.tx_dlf.persistence
     }'
 );
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptConstants(

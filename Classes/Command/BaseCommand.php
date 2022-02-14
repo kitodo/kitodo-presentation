@@ -260,8 +260,6 @@ class BaseCommand extends Command
         }
 
         // to be still (re-) implemented
-        // 'metadata' => serialize($listed),
-        // 'metadata_sorting' => serialize($sortable),
         // 'volume' => $metadata['volume'][0],
         // 'volume_sorting' => $metadata['volume_sorting'][0],
 
@@ -269,9 +267,6 @@ class BaseCommand extends Command
         if ($document->getDocumentFormat() === 'METS') {
             $document->setPartof($this->getParentDocumentUidForSaving($document));
         }
-
-        $document->setMetadata('');
-        $document->setMetadataSorting('');
 
         if ($document->getUid() === null) {
             // new document

@@ -17,6 +17,7 @@ use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -86,6 +87,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             $this->requestData['page'] = 1;
         }
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+
+        // Get extension configuration.
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         $this->viewData = [
             'pageUid' => $GLOBALS['TSFE']->id,
@@ -166,6 +170,22 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
+    }
+
+    /**
+     * Safely gets Parameters from request
+     * if they exist
+     *
+     * @param string $parameterName
+     *
+     * @return null|string|array
+     */
+    protected function getParametersSafely($parameterName)
+    {
+        if ($this->request->hasArgument($parameterName)) {
+            return $this->request->getArgument($parameterName);
+        }
+        return null;
     }
 
     /**

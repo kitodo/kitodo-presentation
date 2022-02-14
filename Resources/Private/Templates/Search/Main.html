@@ -1,3 +1,4 @@
+<f:comment>
 <!--
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -7,94 +8,135 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
 -->
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+</f:comment>
+<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:form action="search" controller="Search" fieldNamePrefix="tx_dlf" method="post">
+<f:form action="search" controller="Search" name="searchParameter" method="get">
     <label for="tx-dlf-search-query">
-        <f:if condition="{QUERY}">
-            <f:then>{QUERY -> f:format.htmlspecialchars()}</f:then>
+        <f:if condition="{lastSearch.query}">
+            <f:then>{lastSearch.query -> f:format.htmlspecialchars()}</f:then>
             <f:else><f:translate key="search.query"/></f:else>
         </f:if>
     </label>
 
-    <f:form.textfield id="tx-dlf-search-query" name="query" value="{QUERY}" />
+    <f:form.textfield id="tx-dlf-search-query" property="query" value="{lastSearch.query}" />
 
-    <!-- Logical page -->
     <f:if condition="{showLogicalPageField}">
         <f:then>
+            <!-- Logical page -->
             <label for="tx-dlf-search-logical-page"><f:translate key="search.logicalPage"/>: </label>
             <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" name="logicalPage" />
         </f:then>
     </f:if>
 
-    <!-- The following element is needed for auto-completion! -->
+    <f:comment><!-- The following element is needed for auto-completion! --></f:comment>
     <div id="tx-dlf-search-suggest"></div>
 
     <f:form.submit value="{f:translate(key: 'search.submit')}" />
 
     <!-- Fulltext switch -->
-    <f:form.radio name="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: '', else: 'checked')}"/>
+    <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
     <label for="tx-dlf-search-fulltext-no"><f:translate key="search.inMetadata"/></label>
-    <f:form.radio name="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{f:if(condition: '{FULLTEXT_SEARCH}', then: 'checked', else: '')}"/>
+    <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
     <label for="tx-dlf-search-fulltext-yes"><f:translate key="search.inFulltext"/></label>
 
-    <!-- Add current document -->
-    <f:if condition="{DOCUMENT_ID}">
+    <f:if condition="{settings.searchIn} == 'collection' || {settings.searchIn} == 'all'">
+        <f:form.hidden property="collections" value="{settings.collections}" />
+    </f:if>
+
+    <f:if condition="{settings.searchIn} == 'document' || {settings.searchIn} == 'all'">
+        <f:form.hidden property="documentId" value="{currentDocument.uid}" />
+        <input type="hidden" name="tx_dlf[id]" value="{currentDocument.uid}" />
+    </f:if>
+
+    <!-- Add current collection if using on collection single view -->
+    <f:if condition="{lastSearch.collection}">
         <f:then>
-            <f:form.hidden name="documentId" value="{DOCUMENT_ID}"/>
+            <input type="hidden" name="collection" value="{lastSearch.collection}" />
         </f:then>
     </f:if>
 
-    <!-- Add collection -->
-    <f:if condition="{COLLECTION_ID}">
-        <f:then>
-            <input type="hidden" name="collection" value="{COLLECTION_ID}" />
-        </f:then>
+    <f:if condition="{extendedSlotCount}">
+        <div class="tx-dlf-search-extended">
+            <f:for each="{extendedSlotCount}" as="slot" iteration="slot_iterator">
+                <f:form.select property="extOperator.{slot_iterator.index}" value="{lastSearch.extOperator}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}">
+                    <f:for each="{operators}" as="operator">
+                        <f:form.select.option value="{operator}" class="tx-dlf-search-operator-option tx-dlf-search-operator-{operator}">
+                            <f:translate key="search.operator.{operator}" />
+                        </f:form.select.option>
+                    </f:for>
+                </f:form.select>
+                <f:form.select property="extField.{slot_iterator.index}" value="{lastSearch.extField}" class="tx-dlf-search-field-option tx-dlf-search-field-{slot_iterator.index}">
+                    <f:for each="{searchFields}" as="searchField">
+                        <f:form.select.option value="{searchField}" class="tx-dlf-search-field-option tx-dlf-search-field-{searchField}">
+                            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{searchField}" />
+                        </f:form.select.option>
+                    </f:for>
+                </f:form.select>
+                <f:form.textfield
+                    property="extQuery.{slot_iterator.index}"
+                    class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"
+                    value="{lastSearch.extQuery.{slot_iterator.index}}" />
+            </f:for>
+        </div>
     </f:if>
 
-    <f:if condition="{ENCRYPTED_CORE_NAME}">
-        <f:then>
-            <f:form.hidden name="encryptedCoreName" value="{ENCRYPTED_CORE_NAME}"/>
-        </f:then>
-    </f:if>
+    <f:form.hidden property="orderBy" value="{lastSearch.orderBy}" />
+    <f:form.hidden property="order" value="{lastSearch.order}" />
 
-    <div class="tx-dlf-search-extended">
-        <f:for each="{extendedSlotCount}" as="slot" key="slot_label" iteration="slot_iterator">
-            <f:form.select name="extOperator.{slot_iterator.index}" options="{operators}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}"/>
-            <f:form.select name="extField.{slot_iterator.index}" options="{searchFields}" class="tx-dlf-search-field-option tx-dlf-search-field-{slot_iterator.index}"/>
-            <f:form.textfield name="extQuery.{slot_iterator.index}" class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"/>
-        </f:for>
-    </div>
 </f:form>
+
+<f:if condition="{settings.targetPid} == '' && {documents}">
+
+    <div class="tx-dlf-listview">
+        <f:render partial="ListView/SearchHits" arguments="{_all}" />
+        <f:variable name="action" value="search" />
+        <f:variable name="controller" value="Search" />
+        <f:render partial="ListView/SortingForm" arguments="{_all}" />
+        <f:render partial="ListView/Results" arguments="{_all}" />
+    </div>
+
+</f:if>
 
 <div class="tx-dlf-search-facets">
     <f:for each="{facetsMenu}" as="facet">
         <ul>
             <li class="tx-dlf-search-no {f:if(condition: '{facet._SUB_MENU}', then: 'tx-dlf-search-ifsub')}">
                 {facet.title}
+                <f:if condition="{facet._SUB_MENU}">
+                    <f:then>
+                        <ul>
+                            <f:for each="{facet._SUB_MENU}" as="values">
+                                <f:if condition="{values.resetFacet}">
+                                    <f:then>
+                                        <li class="tx-dlf-search-cur">
+                                            <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}'}">
+                                                {values.title} ({values.count})
+                                            </f:link.action>
+                                        </li>
+                                    </f:then>
+                                    <f:else>
+                                        <li class="tx-dlf-search-no">
+                                            <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}'}">
+                                                {values.title} ({values.count})
+                                            </f:link.action>
+                                        </li>
+                                    </f:else>
+                                </f:if>
+                            </f:for>
+                        </ul>
+                    </f:then>
+                </f:if>
             </li>
-            <f:if condition="{facet._SUB_MENU}">
-                <f:then>
-                    <ul>
-                        <f:for each="{facet._SUB_MENU}" as="values">
-                            <li class="">
-                                <f:link.typolink parameter="{values._OVERRIDE_HREF}">
-                                    {values.title}
-                                </f:link.typolink>
-                            </li>
-                        </f:for>
-                    </ul>
-                </f:then>
-            </f:if>
-
         </ul>
     </f:for>
 </div>
 
-</html>
+<f:if condition="{settings.suggest}">
+    <f:form.hidden name="solrcore" value="{settings.solrcore}" />
+    <f:form.hidden name="uHash" value="{uHash}" />
+</f:if>
 
-<f:section name="FooterAssets">
-    <f:if condition="{settings.suggest}">
-        <script src="{f:uri.resource(path: 'Javascript/Search/Suggester.js')}"></script>
-    </f:if>
-</f:section>
+</html>

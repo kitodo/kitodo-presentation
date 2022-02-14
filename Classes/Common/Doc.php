@@ -441,11 +441,9 @@ abstract class Doc
                     // Try to load file as IIIF resource instead.
                     $contentAsJsonArray = json_decode($content, true);
                     if ($contentAsJsonArray !== null) {
-                        // Load plugin configuration.
-                        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
                         IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-                        IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
-                        IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
+                        IiifHelper::setMaxThumbnailHeight($extConf['iiifThumbnailHeight']);
+                        IiifHelper::setMaxThumbnailWidth($extConf['iiifThumbnailWidth']);
                         $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
                         if ($iiif instanceof IiifResourceInterface) {
                             $documentFormat = 'IIIF';
@@ -621,8 +619,14 @@ abstract class Doc
      */
     private function getTextFormat($fileContent)
     {
-        // Get the root element's name as text format.
-        return strtoupper(Helper::getXmlFileAsString($fileContent)->getName());
+        $xml = Helper::getXmlFileAsString($fileContent);
+
+        if ($xml !== false) {
+            // Get the root element's name as text format.
+            return strtoupper($xml->getName());
+        } else {
+            return '';
+        }
     }
 
     /**

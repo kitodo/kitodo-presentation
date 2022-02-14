@@ -84,9 +84,6 @@ class BasketController extends AbstractController
      */
     public function basketAction()
     {
-        $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
-        unset($this->requestData['__referrer'], $this->requestData['__trustedProperties']);
-
         $basket = $this->getBasketData();
 
         // action remove from basket

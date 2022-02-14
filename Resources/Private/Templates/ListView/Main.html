@@ -9,57 +9,28 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 </f:comment>
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<div class="tx-dlf-listview">
+    <div class="tx-dlf-listview">
 
-    <h2 class="tx-dlf-listview-label"><f:format.raw>{documentList.metadata.label}</f:format.raw></h2>
+        <h2 class="tx-dlf-listview-label">
+            <f:translate key="search.search"  />
+            <f:translate key="search.for" arguments="{0: '{lastSearch.query}'}" />
+            <f:comment>
+                We need an ViewHelper to get the Extbase document object here. Usable e.g. on search in a newspaper title.
+                <f:translate key="search.in" arguments="{0: '{lastSearch.documentId}'}" />
+            </f:comment>
+        </h2>
+        <f:render partial="ListView/SearchHits" arguments="{_all}" />
 
-    <div class="tx-dlf-listview-thumbnail">
-        <f:if condition="{documentList.thumbnail}">
-            <img alt="" title="{documentList.label -> f:format.htmlspecialchars()}" src="{documentList.thumbnail}" />';
-        </f:if>
+        <f:variable name="action" value="main" />
+        <f:variable name="controller" value="ListView" />
+        <f:render partial="ListView/SortingForm" arguments="{_all}" />
+
+        <f:render partial="ListView/Results" arguments="{_all}" />
+
     </div>
 
-    <f:if condition="{documentList.metadata.options.source} == 'search'">
-        <p class="tx-dlf-search-numHits">
-            <f:format.htmlSpecialChars>
-                <f:translate
-                    key="listview.hits"
-                    arguments="{0:documentList.metadata.options.numberOfHits, 1:documentList.metadata.options.numberOfToplevelHits}"
-                />
-            </f:format.htmlSpecialChars>
-        </p>
-    </f:if>
-
-    <p class="tx-dlf-listview-counts">
-        <f:if condition="{currentEntry}">
-            <f:then>
-                <f:variable
-                    name="toEntry"
-                    value="{f:if(condition:'{lastEntry} < {documentList.metadata.options.numberOfToplevelHits}',then:'{lastEntry}',else:'{documentList.metadata.options.numberOfToplevelHits}')}"
-                />
-                <f:translate
-                    key="listview.count"
-                    arguments="{
-                       0: currentEntry,
-                       1: toEntry,
-                       2: documentList.metadata.options.numberOfToplevelHits
-                    }"
-                />
-            </f:then>
-            <f:else>
-                <f:translate key="listview.nohits" />
-            </f:else>
-        </f:if>
-    </p>
-
-    <f:render partial="ListView/SortingForm" arguments="{_all}" />
-
-    <ol class="tx-dlf-listview-list">
-        <f:widget.paginate objects="{documentListArray}" as="paginatedEntries" configuration="{settings.paginate}">
-            <f:render partial="ListView/Entries" arguments="{documentList: paginatedEntries, widgetPage: widgetPage, metadataList: metadataList}" />
-        </f:widget.paginate>
-    </ol>
-
-</div>
+</html>
