@@ -78,7 +78,7 @@ class CollectionController extends AbstractController
             $collections = $this->collectionRepository->findAll();
         }
 
-        if (count($collections) == 1 && empty($this->settings['dont_show_single'])) {
+        if (count($collections) == 1 && empty($this->settings['dont_show_single']) && is_array($collections)) {
             $this->forward('show', null, null, ['collection' => array_pop($collections)]);
         }
 
@@ -184,18 +184,21 @@ class CollectionController extends AbstractController
     }
 
     /**
-     * This is an uncached helper action.
+     * This is an uncached helper action to make sorting possible on collection single views.
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection $collection: The collection object
-     *
      * @return void
      */
-    public function showSortedAction(\Kitodo\Dlf\Domain\Model\Collection $collection)
+    public function showSortedAction()
     {
         // if search was triggered, get search parameters from POST variables
         $searchParams = $this->getParametersSafely('searchParameter');
+
+        $collection = null;
+        if ($searchParams['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($searchParams['collection']['__identity'])) {
+            $collection = $this->collectionRepository->findByUid($searchParams['collection']['__identity']);
+        }
 
         // output is done by show action
         $this->forward('show', null, null, ['searchParameter' => $searchParams, 'collection' => $collection]);
