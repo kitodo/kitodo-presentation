@@ -150,7 +150,7 @@ class SearchController extends AbstractController
 
         // Add uHash parameter to suggest parameter to make a basic protection of this form.
         if ($this->settings['suggest']) {
-            $this->view->assign('uHash', GeneralUtility::hmac((string)(new Typo3Version()) . Environment::getExtensionsPath('dlf'), 'SearchSuggest'));
+            $this->view->assign('uHash', GeneralUtility::hmac((string)(new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
     }
 
@@ -408,7 +408,6 @@ class SearchController extends AbstractController
         }
 
         // Get field selector options.
-        $fieldSelectorOptions = [];
         $searchFields = GeneralUtility::trimExplode(',', $this->settings['extendedFields'], true);
 
         $slotCountArray = [];
