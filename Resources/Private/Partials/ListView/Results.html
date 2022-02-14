@@ -58,6 +58,9 @@
                         </dd>
                     </dl>
                 </f:link.page>
+
+                <f:render partial="Basket/AddToBasket" arguments="{result: document}" />
+
                 <f:if condition="{document.children} || {document.searchResults}">
                     <button class="tx-dlf-morevolumes" title="{f:translate(key='listview.moredetails.toggle')}"><f:translate key='listview.moredetails.toggle' /></button>
                 </f:if>
@@ -110,6 +113,9 @@
                                         </dd>
                                         </dl>
                                     </f:link.page>
+
+                                    <f:render partial="Basket/AddToBasket" arguments="{result: child}" />
+
                                 </li>
                             </f:else>
                             </f:if>
@@ -121,48 +127,51 @@
                     <ol class="tx-dlf-volume">
                         <f:for each="{document.searchResults}" as="result" iteration="resultIterator">
                             <li value="{resultIterator.cycle}" class="pageresult">
-                            <f:link.page
-                            pageUid="{settings.targetPidPageView}"
-                            additionalParams="{tx_dlf:{page:'{result.page}', double:'0', id:'{document.uid}', pagegrid:'0', highlight_word: '{result.highlight_word}'}}"
-                            class=""
-                            title="{f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}, Seite {result.page}">
-                                <div class="tx-dlf-listview-thumbnail">
-                                    <f:if condition="{result.thumbnail}">
-                                        <img src="{result.thumbnail}" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
-                                    </f:if>
-                                </div>
-                                <dl>
-                                    <f:if condition="{result.title}">
-                                        <f:then>
-                                            <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
-                                            <dd class="tx-dlf-title">{result.title}</dd>
-                                        </f:then>
-                                    </f:if>
-                                    <f:if condition="{result.structure} != 'page'">
-                                        <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
-                                        <dd class="tx-dlf-type">
-                                            <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{result.structure}' />
-                                        </dd>
-                                    </f:if>
-                                    <dt class="tx-dlf-page"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /></dt>
-                                    <dd class="tx-dlf-page">{result.page}</dd>
-                                    <f:for each="{listedMetadata}" as="metadata">
-                                        <f:if condition="{result.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
-                                            <dt class="tx-dlf-metadata-{metadata.indexName}">{metadata.label}</dt>
-                                            <f:for each="{result.metadata.{metadata.indexName}}" as="metadataentry">
-                                                <dd class="tx-dlf-metadata-{metadata.indexName}">
-                                                        {metadataentry}
-                                                </dd>
-                                            </f:for>
+                                <f:link.page
+                                    pageUid="{settings.targetPidPageView}"
+                                    additionalParams="{tx_dlf:{page:'{result.page}', double:'0', id:'{document.uid}', pagegrid:'0', highlight_word: '{result.highlight_word}'}}"
+                                    class=""
+                                    title="{f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}, Seite {result.page}">
+                                    <div class="tx-dlf-listview-thumbnail">
+                                        <f:if condition="{result.thumbnail}">
+                                            <img src="{result.thumbnail}" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
                                         </f:if>
-                                    </f:for>
-                                </dl>
-                                <div class="tx-dlf-listview-preview">
-                                    <f:if condition="{result.snippet}">
-                                        <p class="textsnippet">[...] <f:format.raw>{result.snippet}</f:format.raw> [...]</p>
-                                    </f:if>
-                                </div>
-                            </f:link.page>
+                                    </div>
+                                    <dl>
+                                        <f:if condition="{result.title}">
+                                            <f:then>
+                                                <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
+                                                <dd class="tx-dlf-title">{result.title}</dd>
+                                            </f:then>
+                                        </f:if>
+                                        <f:if condition="{result.structure} != 'page'">
+                                            <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
+                                            <dd class="tx-dlf-type">
+                                                <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{result.structure}' />
+                                            </dd>
+                                        </f:if>
+                                        <dt class="tx-dlf-page"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /></dt>
+                                        <dd class="tx-dlf-page">{result.page}</dd>
+                                        <f:for each="{listedMetadata}" as="metadata">
+                                            <f:if condition="{result.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
+                                                <dt class="tx-dlf-metadata-{metadata.indexName}">{metadata.label}</dt>
+                                                <f:for each="{result.metadata.{metadata.indexName}}" as="metadataentry">
+                                                    <dd class="tx-dlf-metadata-{metadata.indexName}">
+                                                            {metadataentry}
+                                                    </dd>
+                                                </f:for>
+                                            </f:if>
+                                        </f:for>
+                                    </dl>
+                                    <div class="tx-dlf-listview-preview">
+                                        <f:if condition="{result.snippet}">
+                                            <p class="textsnippet">[...] <f:format.raw>{result.snippet}</f:format.raw> [...]</p>
+                                        </f:if>
+                                    </div>
+                                </f:link.page>
+
+                                <f:render partial="Basket/AddToBasket" arguments="{result: {uid:document.uid, page: result.page}}" />
+
                             </li>
                         </f:for>
                     </ol>
@@ -170,6 +179,7 @@
                 </li>
             </f:for>
         </ol>
+
     </f:widget.paginate>
 
 </html>

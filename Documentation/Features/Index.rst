@@ -26,3 +26,10 @@ F-1-4 Facet Search
 
 F-1-5 Search In Document
 ------------------------
+
+
+F-10 Basket
+==========
+
+In the ListView it is possible to place an "Add-To-Basket" button. The list entry will be put in a basket.
+The basket itself must be configures on the same or a separate page.

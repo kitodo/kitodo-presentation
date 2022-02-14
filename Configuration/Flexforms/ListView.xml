@@ -78,6 +78,7 @@
                     </settings.getTitle>
                     <settings.basketButton>
                         <TCEforms>
+                            <onChange>reload</onChange>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
                             <config>
@@ -88,6 +89,7 @@
                     </settings.basketButton>
                     <settings.targetBasket>
                         <TCEforms>
+                            <displayCond>FIELD:settings.basketButton:REQ:true</displayCond>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
                             <config>
@@ -96,7 +98,7 @@
                                 <allowed>pages</allowed>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
-                                <minitems>0</minitems>
+                                <minitems>1</minitems>
                             </config>
                         </TCEforms>
                     </settings.targetBasket>
