@@ -615,23 +615,18 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         // Add filter query for in-document searching.
         if (
-            $this->settings['searchIn'] == 'document'
-            || $this->settings['searchIn'] == 'all'
+            !empty($searchParams['documentId'])
+            && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchParams['documentId'])
         ) {
-            if (
-                !empty($searchParams['documentId'])
-                && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($searchParams['documentId'])
-            ) {
-                // Search in document and all subordinates (valid for up to three levels of hierarchy).
-                $params['filterquery'][]['query'] = '_query_:"{!join from='
-                    . $fields['uid'] . ' to=' . $fields['partof'] . '}'
-                    . $fields['uid'] . ':{!join from=' . $fields['uid'] . ' to=' . $fields['partof'] . '}'
-                    . $fields['uid'] . ':' . $searchParams['documentId'] . '"' . ' OR {!join from='
-                    . $fields['uid'] . ' to=' . $fields['partof'] . '}'
-                    . $fields['uid'] . ':' . $searchParams['documentId'] . ' OR '
-                    . $fields['uid'] . ':' . $searchParams['documentId'];
+            // Search in document and all subordinates (valid for up to three levels of hierarchy).
+            $params['filterquery'][]['query'] = '_query_:"{!join from='
+                . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                . $fields['uid'] . ':{!join from=' . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                . $fields['uid'] . ':' . $searchParams['documentId'] . '"' . ' OR {!join from='
+                . $fields['uid'] . ' to=' . $fields['partof'] . '}'
+                . $fields['uid'] . ':' . $searchParams['documentId'] . ' OR '
+                . $fields['uid'] . ':' . $searchParams['documentId'];
 //                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($searchParams['id'])));
-            }
         }
 
         // if a collection is given, we prepare the collection query string
