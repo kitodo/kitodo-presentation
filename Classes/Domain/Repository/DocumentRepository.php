@@ -626,7 +626,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 . $fields['uid'] . ' to=' . $fields['partof'] . '}'
                 . $fields['uid'] . ':' . $searchParams['documentId'] . ' OR '
                 . $fields['uid'] . ':' . $searchParams['documentId'];
-//                $label .= htmlspecialchars(sprintf($this->pi_getLL('in', ''), Document::getTitle($searchParams['id'])));
         }
 
         // if a collection is given, we prepare the collection query string
@@ -729,7 +728,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         if ($searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $this->findByPartof($doc['uid']);
-                            foreach($children as $docChild) {
+                            foreach ($children as $docChild) {
                                 // We need only a few fields from the children, but we need them as array.
                                 $childDocument = [
                                     'thumbnail' => $docChild->getThumbnail(),
