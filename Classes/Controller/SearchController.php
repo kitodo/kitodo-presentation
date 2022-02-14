@@ -299,10 +299,9 @@ class SearchController extends AbstractController
         if ($facet) {
             foreach ($facet as $field => $values) {
                 $entryArray = [];
-                $entryArray['title'] = htmlspecialchars($facets[$field]);
+                $entryArray['field'] = substr($field, 0, strpos($field, '_'));
                 $entryArray['count'] = 0;
                 $entryArray['_OVERRIDE_HREF'] = '';
-                $entryArray['doNotLinkIt'] = 1;
                 $entryArray['ITEM_STATE'] = 'NO';
                 // Count number of facet values.
                 $i = 0;
