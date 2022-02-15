@@ -175,6 +175,7 @@
             <label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
             <label index="tt_content.dlf_validator">DLF: Validator</label>
             <label index="config.metadataFormats">Default metadata namespaces</label>
+            <label index="config.enableInternalProxy">Enable internal page view proxy?: (default is "FALSE")</label>
             <label index="config.useragent">DLF User-Agent: (default is "Kitodo.Presentation")</label>
             <label index="config.forceAbsoluteUrl">Force all links to pages and resources to be absolute?: Only needed for some multi-domain environments; requires a fully qualified Entry Point in Site Configuration (default is "FALSE")</label>
             <label index="config.forceAbsoluteUrlHttps">Use HTTPS for absolute links?: requires a valid Entry Point with "https://..." in Site Configuration (default is "FALSE")</label>
@@ -385,6 +386,7 @@
             <label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
             <label index="tt_content.dlf_validator">DLF: Validator</label>
             <label index="config.metadataFormats">Standard-Namensräume für Metadaten</label>
+            <label index="config.enableInternalProxy">Internen Proxy für Werkansicht aktivieren? (Standard ist "FALSE")</label>
             <label index="config.useragent">DLF User-Agent: (Standard ist "Kitodo.Presentation")</label>
             <label index="config.forceAbsoluteUrl">Verwende nur absolute Links für Seiten und Ressourcen?: Wird nur in speziellen Multi-Domain-Umgebungen benötigt; erfordert einen voll qualifizierten Einstiegspunkt in der Seitenkonfiguration (Standard ist "FALSE")</label>
             <label index="config.forceAbsoluteUrlHttps">Verwende HTTPS for absolute Links?: erfordert einen Einstiegspunkt mit "https://..." in der Seitenkonfiguration (Standard ist "FALSE")</label>

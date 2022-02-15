@@ -191,7 +191,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                         'parameter' => $GLOBALS['TSFE']->id,
                         'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                         'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                        'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($image['url']),
+                        'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($image['url']) . '&uHash=' . GeneralUtility::hmac($image['url'], 'PageViewProxy'),
                     ];
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
                 }
@@ -230,7 +230,7 @@ class PageView extends \Kitodo\Dlf\Common\AbstractPlugin
                         'parameter' => $GLOBALS['TSFE']->id,
                         'forceAbsoluteUrl' => !empty($this->conf['forceAbsoluteUrl']) ? 1 : 0,
                         'forceAbsoluteUrl.' => ['scheme' => !empty($this->conf['forceAbsoluteUrl']) && !empty($this->conf['forceAbsoluteUrlHttps']) ? 'https' : 'http'],
-                        'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']),
+                        'additionalParams' => '&eID=tx_dlf_pageview_proxy&url=' . urlencode($fulltext['url']) . '&uHash=' . GeneralUtility::hmac($fulltext['url'], 'PageViewProxy'),
                     ];
                     $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);
                 }
