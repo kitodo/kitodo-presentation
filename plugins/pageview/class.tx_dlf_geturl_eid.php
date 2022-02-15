@@ -57,7 +57,7 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             throw new \InvalidArgumentException('No valid uHash passed!', 1643796565);
         }
 
-        $fetchedData = GeneralUtility::getUrl($url, $includeHeader);
+        $fetchedData = GeneralUtility::getUrl($url);
 
         // add some self calculated header tags
         header('Last-Modified: '.gmdate("D, d M Y H:i:s").'GMT');
