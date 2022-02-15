@@ -250,7 +250,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
                     // Configure @action URL for form.
                     $linkConf = array (
                         'parameter' => $GLOBALS['TSFE']->id,
-                        'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($image['url']),
+                        'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($image['url']) . '&uHash=' . \TYPO3\CMS\Core\Utility\GeneralUtility::hmac($image['url'], 'PageViewProxy'),
                     );
 
                     $image['url'] = $this->cObj->typoLink_URL($linkConf);
@@ -297,7 +297,7 @@ class tx_dlf_pageview extends tx_dlf_plugin {
             // Configure @action URL for form.
             $linkConf = array (
                 'parameter' => $GLOBALS['TSFE']->id,
-                'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($fulltext['url']),
+                'additionalParams' => '&eID=tx_dlf_geturl_eid&url='.urlencode($fulltext['url']) . '&uHash=' . \TYPO3\CMS\Core\Utility\GeneralUtility::hmac($fulltext['url'], 'PageViewProxy'),
             );
 
             $fulltext['url'] = $this->cObj->typoLink_URL($linkConf);

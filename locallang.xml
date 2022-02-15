@@ -147,7 +147,7 @@
 			<label index="tx_dlf_toolbox.toolsFulltext">Fulltext</label>
 			<label index="tx_dlf_toolbox.toolsImagemanipulation">Image Manipulation</label>
 			<label index="tx_dlf_toolbox.toolsImagedownload">Image Download</label>
-            <label index="tx_dlf_toolbox.toolsSearchindocument">Search in Document</label>
+			<label index="tx_dlf_toolbox.toolsSearchindocument">Search in Document</label>
 			<label index="tt_content.dlf_audioplayer">DLF: Audio Player</label>
 			<label index="tt_content.dlf_basket">DLF: Basket</label>
 			<label index="tt_content.dlf_collection">DLF: Collection</label>
@@ -165,6 +165,7 @@
 			<label index="tt_content.dlf_toolbox">DLF: Toolbox</label>
 			<label index="tt_content.dlf_validator">DLF: Validator</label>
 			<label index="config.metadataFormats">Default metadata namespaces</label>
+			<label index="config.enableInternalProxy">Enable internal page view proxy?: (default is "FALSE")</label>
 			<label index="config.cliUserGroup">CLI user/group</label>
 			<label index="config.makeCliUserGroup">Create and configure CLI user/group automatically?: (default is "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (default is "Kitodo.Presentation")</label>
@@ -363,7 +364,7 @@
 			<label index="tx_dlf_toolbox.toolsFulltext">Volltext</label>
 			<label index="tx_dlf_toolbox.toolsImagemanipulation">Bildbearbeitung</label>
 			<label index="tx_dlf_toolbox.toolsImagedownload">Bild-Download</label>
-            <label index="tx_dlf_toolbox.toolsSearchindocument">Suche im Dokument</label>
+			<label index="tx_dlf_toolbox.toolsSearchindocument">Suche im Dokument</label>
 			<label index="tt_content.dlf_audioplayer">DLF: Audioplayer</label>
 			<label index="tt_content.dlf_basket">DLF: Warenkorb</label>
 			<label index="tt_content.dlf_collection">DLF: Kollektion</label>
@@ -381,6 +382,7 @@
 			<label index="tt_content.dlf_toolbox">DLF: Werkzeugkasten</label>
 			<label index="tt_content.dlf_validator">DLF: Validator</label>
 			<label index="config.metadataFormats">Standard-Namensräume für Metadaten</label>
+			<label index="config.enableInternalProxy">Internen Proxy für Werkansicht aktivieren?: (Standard ist "FALSE")</label>
 			<label index="config.cliUserGroup">CLI Benutzer/Gruppe</label>
 			<label index="config.makeCliUserGroup">CLI Benutzer/Gruppe automatisch anlegen?: (Standard ist "FALSE")</label>
 			<label index="config.useragent">DLF User-Agent: (Standard ist "Kitodo.Presentation")</label>
