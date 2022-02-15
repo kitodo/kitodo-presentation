@@ -117,7 +117,7 @@ dlfViewerImageManipulationControl = function(options) {
 dlfViewerImageManipulationControl.prototype.setCssFilter_ = function (filters) {
     this.canvas_.style.filter = filters;
     this.canvas_.style.webkitFilter = filters;
-}
+};
 
 /**
  * @private
@@ -139,7 +139,7 @@ dlfViewerImageManipulationControl.prototype.applyFilters_ = function () {
     }
 
     this.setCssFilter_(filters);
-}
+};
 
 
 /**
@@ -323,7 +323,7 @@ dlfViewerImageManipulationControl.prototype.isActive = function() {
 dlfViewerImageManipulationControl.prototype.setFilter_ = function (filter, value) {
     this.filters_[filter] = value;
     this.applyFilters_();
-}
+};
 
 /**
  * Convert filter value to its CSS representation.
@@ -348,4 +348,4 @@ dlfViewerImageManipulationControl.prototype.valueToCss_ = function (filter, valu
         case 'invert':
             return value ? '100%' : '0%';
     }
-}
+};
