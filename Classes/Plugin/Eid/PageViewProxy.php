@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Plugin\Eid;
 
+use Kitodo\Dlf\Common\Helper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\Response;
@@ -26,7 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageViewProxy
 {
-
     /**
      * The main method of the eID script
      *
@@ -37,29 +37,29 @@ class PageViewProxy
      */
     public function main(ServerRequestInterface $request)
     {
-        // header parameter for getUrl(); allowed values 0,1,2; default 0
-        $header = (int) $request->getQueryParams()['header'];
-        $header = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($header, 0, 2, 0);
-
         // the URI to fetch data or header from
         $url = (string) $request->getQueryParams()['url'];
-        if (!GeneralUtility::isValidUrl($url)) {
+        if (!Helper::isValidHttpUrl($url)) {
             throw new \InvalidArgumentException('No valid url passed!', 1580482805);
         }
 
-        // fetch the requested data or header
-        $fetchedData = GeneralUtility::getUrl($url, $header);
+        // get and verify the uHash
+        $uHash = (string) $request->getQueryParams()['uHash'];
+        if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
+            throw new \InvalidArgumentException('No valid uHash passed!', 1643796565);
+        }
+
+        // fetch the requested data
+        $fetchedData = GeneralUtility::getUrl($url);
 
         // Fetch header data separately to get "Last-Modified" info
-        if ($header === 0) {
-            $fetchedHeaderString = GeneralUtility::getUrl($url, 2);
-            if (!empty($fetchedHeaderString)) {
-                $fetchedHeader = explode("\n", $fetchedHeaderString);
-                foreach ($fetchedHeader as $headerline) {
-                    if (stripos($headerline, 'Last-Modified:') !== false) {
-                        $lastModified = trim(substr($headerline, strpos($headerline, ':') + 1));
-                        break;
-                    }
+        $fetchedHeaderString = GeneralUtility::getUrl($url, 2);
+        if (!empty($fetchedHeaderString)) {
+            $fetchedHeader = explode("\n", $fetchedHeaderString);
+            foreach ($fetchedHeader as $headerline) {
+                if (stripos($headerline, 'Last-Modified:') !== false) {
+                    $lastModified = trim(substr($headerline, strpos($headerline, ':') + 1));
+                    break;
                 }
             }
         }
@@ -74,7 +74,7 @@ class PageViewProxy
             $response = $response->withHeader('Access-Control-Max-Age', '86400');
             $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
         }
-        if ($header === 0 && !empty($lastModified)) {
+        if (!empty($lastModified)) {
             $response = $response->withHeader('Last-Modified', $lastModified);
         }
         return $response;

@@ -191,18 +191,12 @@ dlfViewer.prototype.addCustomControls = function() {
     //
     // Add image manipulation tool if container is added.
     //
-    // It is important to know that the image manipulation tool uses a webgl renderer as basis. Therefor the
-    // application has as first to check if the renderer is active. Further it has to check if cors supported through
-    // image.
-    //
-    if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled() && this.isCorsEnabled) {
+    if ($('#tx-dlf-tools-imagetools').length > 0) {
 
         // should be called if cors is enabled
         imageManipulationControl = new dlfViewerImageManipulationControl({
             controlTarget: $('.tx-dlf-tools-imagetools')[0],
-            layers: dlfUtils.createOl3Layers(images, '*'),
             map: this.map,
-            view: dlfUtils.createOl3View(images)
         });
 
         // bind behavior of both together
@@ -217,11 +211,6 @@ dlfViewer.prototype.addCustomControls = function() {
 
         // set on object scope
         this.imageManipulationControl = imageManipulationControl;
-
-    } else if ($('#tx-dlf-tools-imagetools').length > 0) {
-
-        // hide the element because the functionality is not supported through missing webgl or cors support.
-        $('#tx-dlf-tools-imagetools').addClass('deactivate');
 
     }
 };
@@ -385,17 +374,7 @@ dlfViewer.prototype.init = function(controlNames) {
     if (this.imageUrls.length <= 0)
         throw new Error('Missing image source objects.');
 
-    /**
-     * Is cors enabled. Important information for correct renderer and layer initialization
-     * @type {boolean}
-     */
-     if (this.useInternalProxy) {
-       this.isCorsEnabled = true;
-     } else {
-       this.isCorsEnabled = dlfUtils.isCorsEnabled(this.imageUrls);
-     }
-
-    this.initLayer(this.imageUrls, this.isCorsEnabled)
+    this.initLayer(this.imageUrls)
         .done($.proxy(function(layers){
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
@@ -483,11 +462,10 @@ dlfViewer.prototype.init = function(controlNames) {
  * Function generate the ol3 layer objects for given image sources. Returns a promise.
  *
  * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
- * @param {boolean} isCorsEnabled
  * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
  * @private
  */
-dlfViewer.prototype.initLayer = function(imageSourceObjs, isCorsEnabled) {
+dlfViewer.prototype.initLayer = function(imageSourceObjs) {
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred(),
@@ -498,12 +476,11 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs, isCorsEnabled) {
       resolveCallback = $.proxy(function(imageSourceData, layers) {
             this.images = imageSourceData;
             deferredResponse.resolve(layers);
-        }, this),
-      origin = isCorsEnabled ? '*' : undefined;
+        }, this);
 
     dlfUtils.fetchImageData(imageSourceObjs)
       .done(function(imageSourceData) {
-          resolveCallback(imageSourceData, dlfUtils.createOl3Layers(imageSourceData, origin));
+          resolveCallback(imageSourceData, dlfUtils.createOl3Layers(imageSourceData));
       });
 
     return deferredResponse;
