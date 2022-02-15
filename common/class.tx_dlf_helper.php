@@ -847,6 +847,26 @@ class tx_dlf_helper {
     }
 
     /**
+     * Determine whether or not $url is a valid URL using HTTP or HTTPS scheme.
+     *
+     * @param string $url
+     *
+     * @return bool
+     */
+    public static function isValidHttpUrl($url)
+    {
+        if (!\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($url)) {
+            return false;
+        }
+
+        $parsed = parse_url($url);
+        $scheme = isset($parsed['scheme']) ? $parsed['scheme'] : '';
+        $schemeNormalized = strtolower($scheme);
+
+        return $schemeNormalized === 'http' || $schemeNormalized === 'https';
+    }
+
+    /**
      * Load value from user's session.
      *
      * @access	public

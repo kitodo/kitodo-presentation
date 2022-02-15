@@ -47,21 +47,17 @@ class tx_dlf_geturl_eid extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $this->scriptRelPath = 'plugins/pageview/class.tx_dlf_geturl_eid.php';
 
         $url = GeneralUtility::_GP('url');
-
-        $includeHeader = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(GeneralUtility::_GP('header'), 0, 2, 0);
-
-        // first we fetch header separately
-        $fetchedHeader = GeneralUtility::getUrl($url, 2);
-
-        if ($includeHeader == 0) {
-
-            $fetchedData = GeneralUtility::getUrl($url, $includeHeader);
-
-        } else {
-
-            $fetchedData = $fetchedHeader;
-
+        if (!tx_dlf_helper::isValidHttpUrl($url)) {
+            throw new \InvalidArgumentException('No valid url passed!', 1580482805);
         }
+
+        // get and verify the uHash
+        $uHash = (string) GeneralUtility::_GP('uHash');
+        if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
+            throw new \InvalidArgumentException('No valid uHash passed!', 1643796565);
+        }
+
+        $fetchedData = GeneralUtility::getUrl($url, $includeHeader);
 
         // add some self calculated header tags
         header('Last-Modified: '.gmdate("D, d M Y H:i:s").'GMT');
