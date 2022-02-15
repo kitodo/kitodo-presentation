@@ -126,7 +126,11 @@ class PageViewController extends AbstractController
                     $uri = $this->uriBuilder->reset()
                         ->setTargetPageUid($GLOBALS['TSFE']->id)
                         ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments(['eID' => 'tx_dlf_pageview_proxy', 'url' => urlencode($fulltext['url'])])
+                        ->setArguments([
+                            'eID' => 'tx_dlf_pageview_proxy',
+                            'url' => urlencode($fulltext['url']),
+                            'uHash' => GeneralUtility::hmac($fulltext['url'], 'PageViewProxy')
+                            ])
                         ->build();
 
                     $fulltext['url'] = $uri;
@@ -250,7 +254,11 @@ class PageViewController extends AbstractController
                     $uri = $this->uriBuilder->reset()
                         ->setTargetPageUid($GLOBALS['TSFE']->id)
                         ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments(['eID' => 'tx_dlf_pageview_proxy', 'url' => urlencode($image['url'])])
+                        ->setArguments([
+                            'eID' => 'tx_dlf_pageview_proxy',
+                            'url' => urlencode($image['url']),
+                            'uHash' => GeneralUtility::hmac($image['url'], 'PageViewProxy')
+                            ])
                         ->build();
                     $image['url'] = $uri;
                 }
