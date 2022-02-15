@@ -13,7 +13,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Kitodo.Presentation',
     'description' => 'Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.',
-    'version' => '3.2.2',
+    'version' => '3.2.3',
     'category' => 'misc',
     'constraints' => [
         'depends' => [

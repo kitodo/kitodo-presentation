@@ -9,17 +9,9 @@
  */
 
 /**
- * Right know the image manipulation uses an own ol.Map object based on a webgl renderer. This is due to the fact
- * that other parts of the viewer application are using vector geometries and ol3 does only support full vector
- * renderering with the canvas and dom renderer yet. In contrast the image manipulation tool is only working
- * with a webgl renderer. Therefore it uses an own ol.Map object which is overlaid and synchronized with the
- * base ol.Map object.
- *
  * @constructor
  * @param {Object=} options Control options.
- *  {Array.<ol.layer.Layer>} layers
  *  {Element} target
- *  {ol.View} view
  *  {ol.Map} map
  */
 dlfViewerImageManipulationControl = function(options) {
@@ -33,28 +25,10 @@ dlfViewerImageManipulationControl = function(options) {
         {'imagemanipulation-on':'Activate image manipulation', 'imagemanipulation-off':'Deactivate image manipulation', 'saturation':'Saturation', 'hue':'Hue', 'brightness':'Brightness', 'contrast':'Contrast', 'reset':'Reset', 'invert':'Color inverting', 'parentContainer':'.tx-dlf-imagemanipulationtool'};
 
     /**
-     * @type {Array.<ol.layer.Layer>}
-     * @private
-     */
-    this.layers = options.layers;
-
-    /**
      * @type {ol.Map}
      * @private
      */
     this.baseMap_ = options.map;
-
-    /**
-     * @type {ol.Map|undefined}
-     * @private
-     */
-    this.map_ = undefined;
-
-    /**
-     * @type {ol.View}
-     * @private
-     */
-    this.view_ = options.view;
 
     /**
      * @type {Element}
@@ -72,6 +46,12 @@ dlfViewerImageManipulationControl = function(options) {
      * @private
      */
     this.toolContainerEl_ = dlfUtils.exists(options.toolContainer) ? options.toolContainer : $(this.dic['parentContainer'])[0];
+
+    /**
+     * @type {HTMLCanvasElement}
+     *
+     */
+    this.canvas_ = this.baseMap_.getTargetElement().querySelector('canvas');
 
     //
     // Append open/close behavior to toolbox
@@ -95,8 +75,8 @@ dlfViewerImageManipulationControl = function(options) {
     var FILTERS_DEFAULT_ = {
         'brightness': 1,
         'contrast': 1,
-        'hue': 0,
-        'saturation': 0
+        'hue-rotate': 0,
+        'saturate': 0
     };
 
     /**
@@ -106,46 +86,13 @@ dlfViewerImageManipulationControl = function(options) {
     this.filters_ = $.extend({}, FILTERS_DEFAULT_);
 
     /**
-     * Is filter updated
-     * @type {boolean}
-     * @private
-     */
-    this.filterUpdated_ = false;
-
-    /**
      * @type {Object}
      * @private
      */
     this.handler_ = {
-        'postcomposeImageFilter': $.proxy(function (event) {
-            var webglContext = event['glContext'],
-            canvas = $('#' + this.map_.getTargetElement().id + ' canvas.ol-unselectable')[0];
-
-            if (webglContext !== undefined && webglContext !== null) {
-                var gl = webglContext.getGL();
-
-                if (this.filterUpdated_) {
-
-                    glif.reset();
-
-                    for (var filter in this.filters_) {
-                        glif.addFilter(filter, this.filters_[String(filter)]);
-                    };
-
-                    this.filterUpdated_ = false;
-                }
-
-                glif.apply(gl, canvas);
-
-                // for showing openlayers that the program changed
-                // if missing openlayers will produce errors because it
-                // expected other shaders in the webgl program
-                webglContext.useProgram(undefined);
-            }
-        }, this),
-        'resetFilter': $.proxy(function(event) {
+        'resetFilter': $.proxy(function() {
             // reset the checked filters
-            if (this.filters_.hasOwnProperty('invert')) {
+            if (this.filters_['invert']) {
                 $('#invert-filter').click();
             }
 
@@ -163,29 +110,46 @@ dlfViewerImageManipulationControl = function(options) {
 };
 
 /**
+ * Set filter style property on map canvas.
+ *
+ * @param {string} filters
+ */
+dlfViewerImageManipulationControl.prototype.setCssFilter_ = function (filters) {
+    this.canvas_.style.filter = filters;
+    this.canvas_.style.webkitFilter = filters;
+}
+
+/**
+ * @private
+ */
+dlfViewerImageManipulationControl.prototype.applyFilters_ = function () {
+    var filters = '';
+
+    for (var filter in this.filters_) {
+        if (!this.filters_.hasOwnProperty(filter)) {
+            continue;
+        }
+
+        var cssValue = this.valueToCss_(filter, this.filters_[filter]);
+        if (cssValue === undefined) {
+            continue;
+        }
+
+        filters += filter + '(' + cssValue + ') ';
+    }
+
+    this.setCssFilter_(filters);
+}
+
+
+/**
  * Activates the image manipulation tool
  */
 dlfViewerImageManipulationControl.prototype.activate = function(){
+    // Apply filters from last time
+    this.applyFilters_();
 
-    //
-    // Toggle maps
-    //
-    $.when($(this.baseMap_.getTargetElement())
-        // fadeOut the base map container
-        .hide())
-        // fadeIn image map container
-        .done($.proxy(function(){
-            if (!dlfUtils.exists(this.map_)) {
-                // create map container and map object if not exists yet
-                this.createMap_();
-            }
-
-            // Show map
-            $(this.map_.getTargetElement()).show();
-
-            // trigger open event
-            $(this).trigger("activate-imagemanipulation", this.map_);
-        }, this));
+    $(this).trigger("activate-imagemanipulation", this.baseMap_);
 
     //
     // Toggle toolbox controls
@@ -199,10 +163,6 @@ dlfViewerImageManipulationControl.prototype.activate = function(){
         this.createFilters_();
     }
     $(this.sliderContainer_).show().addClass('open');
-
-    // add postcompose listener to layers
-    if (this.map_ !== undefined)
-        this.map_.on('postcompose', this.handler_.postcomposeImageFilter);
 };
 
 /**
@@ -230,7 +190,7 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
         [1, 0, 2, 0.01], this.dic['contrast'], function(v) {
             return parseInt(v * 100 - 100);
         }),
-        saturationSlider = this.createSlider_('slider-saturation', 'horizontal', 'saturation',
+        saturationSlider = this.createSlider_('slider-saturation', 'horizontal', 'saturate',
             [0, -1, 1, 0.01], this.dic['saturation'], function(v) {
                 return parseInt(v * 100);
             }),
@@ -238,7 +198,7 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
             [1, 0, 2, 0.1], this.dic['brightness'],function(v) {
                 return parseInt(v * 100 - 100);
             }),
-        hueSlider = this.createSlider_('slider-hue', 'horizontal', 'hue',
+        hueSlider = this.createSlider_('slider-hue', 'horizontal', 'hue-rotate',
             [0, -180, 180, 5], this.dic['hue'], function(v) {
                 return parseInt(v);
             });
@@ -252,91 +212,16 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
     $(this.sliderContainer_).append($('<div class="checkbox"><label><input type="checkbox" id="' + elFilterId + '">' +
          this.dic['invert'] + '</label></div>'));
     $('#' + elFilterId).on('click', $.proxy(function(event) {
-        if (event.target.checked === true && !this.filters_.hasOwnProperty('invert')) {
-            // if checked add the invert filter to the filters
-            this.filters_['invert'] = true;
-        } else {
-            // remove invert filter
-            if (this.filters_.hasOwnProperty('invert')) {
-                delete this.filters_['invert'];
-            }
-        }
+        var invert = event.target.checked;
 
         // update filter chain
-        this.filterUpdated_ = true;
-        this.layers[0].changed();
+        this.setFilter_('invert', invert);
     }, this));
 
     // button for reset to default state
     var resetBtn = $('<button class="reset-btn" title="' + this.dic['reset'] + '">' + this.dic['reset'] + '</button>');
     $(this.sliderContainer_).append(resetBtn);
     $(resetBtn).on('click', this.handler_.resetFilter);
-};
-
-/**
- * Setup the map object used from the image manipulation tool and bind it to the baseMap
- * @private
- */
-dlfViewerImageManipulationControl.prototype.createMap_ = function() {
-    var mapEl_ = $('<div id="tx-dlf-map-manipulate" class="tx-dlf-map"></div>');
-    $(this.baseMap_.getTargetElement().parentElement).append(mapEl_);
-
-    this.map_ = new ol.Map({
-        layers: this.layers,
-        target: mapEl_[0].id,
-        controls: [],
-        interactions: [
-            new ol.interaction.DragRotate(),
-            new ol.interaction.DragPan(),
-            new ol.interaction.DragZoom(),
-            new ol.interaction.PinchRotate(),
-            new ol.interaction.PinchZoom(),
-            new ol.interaction.MouseWheelZoom(),
-            new ol.interaction.KeyboardPan(),
-            new ol.interaction.KeyboardZoom(),
-            new ol.interaction.DragRotateAndZoom()
-        ],
-        // necessary for proper working of the keyboard events
-        keyboardEventTarget: document,
-        view: this.view_,
-        renderer: 'webgl'
-    });
-
-    // couple map behavior with baseMap
-    var adjustViews = function(sourceView, destMap) {
-            var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
-            var resDiff = sourceView.getResolution() !== destMap.getView().getResolution();
-            var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
-
-            if (rotateDiff || resDiff || centerDiff) {
-                destMap.zoomTo(sourceView.getCenter(),sourceView.getZoom(), 50);
-                destMap.getView().rotate(sourceView.getRotation());
-            }
-
-        },
-        adjustViewHandler = function(event) {
-            adjustViews(event.target, this);
-        };
-
-    // when deactivate / activate adjust both map centers / zoom
-    $(this).on("activate-imagemanipulation", $.proxy(function(event, map) {
-        // pass change events for resolution and rotation to image manipulation map
-        // created through external view controls
-        this.baseMap_.getView().on('change:resolution', adjustViewHandler, this.map_);
-        this.baseMap_.getView().on('change:rotation', adjustViewHandler, this.map_);
-
-        // adjust the view of both maps
-        adjustViews(this.baseMap_.getView(), this.map_);
-    }, this));
-    $(this).on("deactivate-imagemanipulation", $.proxy(function(event, map) {
-        // pass change events for resolution and rotation to image manipulation map
-        // created through external view controls
-        this.baseMap_.getView().un('change:resolution', adjustViewHandler, this.map_);
-        this.baseMap_.getView().un('change:rotation', adjustViewHandler, this.map_);
-
-        // adjust the view of both maps
-        adjustViews(this.map_.getView(), this.baseMap_);
-    }, this));
 };
 
 /**
@@ -366,7 +251,6 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
      */
     var update = $.proxy(function(event, ui){
         var value = ui['value'],
-                layer = this.layers[0],
                 element = valueEl[0],
                 labelValue = dlfUtils.exists(opt_labelFn) ? opt_labelFn(value) : value + '%';
 
@@ -382,9 +266,7 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
         element.innerHTML = labelValue;
 
         // update filters.
-        this.filters_[key] = value;
-        this.filterUpdated_ = true;
-        layer.changed();
+        this.setFilter_(key, value);
     }, this);
 
     $(sliderEl).slider({
@@ -410,12 +292,7 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
  * Deactivates the image manipulation control
  */
 dlfViewerImageManipulationControl.prototype.deactivate = function(){
-
-    // toggle maps
-    if (dlfUtils.exists(this.map_)) {
-        $(this.map_.getTargetElement()).hide();
-    }
-    $(this.baseMap_.getTargetElement()).show();
+    this.setCssFilter_("");
 
     // toggle view of image manipulation control element
     $(this.anchor_).removeClass('active')
@@ -423,10 +300,6 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
         .attr('title', this.dic['imagemanipulation-on']);
 
     $(this.sliderContainer_).hide().removeClass('open');
-
-    // remove postcompose listener to map
-    if (this.map_ !== undefined)
-        this.map_.un('postcompose', this.handler_.postcomposeImageFilter);
 
     // trigger close event for trigger map adjust behavior
     $(this).trigger("deactivate-imagemanipulation");
@@ -440,3 +313,39 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 dlfViewerImageManipulationControl.prototype.isActive = function() {
     return $(this.anchor_).hasClass('active');
 };
+
+
+/**
+ * @param {string} filter The filter to set
+ * @param {string} value The value to set the filter to
+ * @private
+ */
+dlfViewerImageManipulationControl.prototype.setFilter_ = function (filter, value) {
+    this.filters_[filter] = value;
+    this.applyFilters_();
+}
+
+/**
+ * Convert filter value to its CSS representation.
+ *
+ * @param {string} filter
+ * @param {number} value
+ * @private
+ * @return {string}
+ */
+dlfViewerImageManipulationControl.prototype.valueToCss_ = function (filter, value) {
+    switch (filter) {
+        case 'contrast':
+        case 'brightness':
+            return (value * 100).toString() + '%';
+
+        case 'saturate':
+            return ((value + 1) * 100).toString() + '%';
+
+        case 'hue-rotate':
+            return value + 'deg';
+
+        case 'invert':
+            return value ? '100%' : '0%';
+    }
+}
