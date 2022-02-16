@@ -13,8 +13,13 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of 'Format'.
- * This contains the configured namespaces like ALTO, METS, MODS, IIIF etc.
+ * Configured data formats and namespaces like MODS, ALTO, IIIF etc.
+ * They are referenced by ``tx_dlf_metadataformat.encoded``.
+ * The formats OAI, METS and XLINK are pre-defined.
+ *
+ * Data formats are modeled after XML, though JSON may be used with a pseudo root and namespace.
+ *
+ * For more information, see the documentation page on metadata.
  *
  * @package TYPO3
  * @subpackage dlf
@@ -23,21 +28,29 @@ namespace Kitodo\Dlf\Domain\Model;
 class Format extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * Name of the type that is used to reference it.
+     *
      * @var string
      */
     protected $type;
 
     /**
+     * The XML root element used by this format.
+     *
      * @var string
      */
     protected $root;
 
     /**
+     * The XML namespace URI used by this format.
+     *
      * @var string
      */
     protected $namespace;
 
     /**
+     * Fully qualified name of the PHP class that handles the format, or the empty string if no such class is configured.
+     *
      * @var string
      */
     protected $class;

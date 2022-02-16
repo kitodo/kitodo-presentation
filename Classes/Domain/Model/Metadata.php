@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * Domain model of the 'Metadata'.
+ * A metadata kind (title, year, ...) and its configuration for display and indexing.
  *
  * @package TYPO3
  * @subpackage dlf

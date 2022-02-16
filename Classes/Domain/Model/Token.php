@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of 'Token' (OAI-PMH feature).
+ * Resumption tokens for OAI-PMH interface.
  *
  * @package TYPO3
  * @subpackage dlf

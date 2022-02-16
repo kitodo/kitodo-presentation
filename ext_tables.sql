@@ -249,7 +249,7 @@ CREATE TABLE tx_dlf_libraries (
 CREATE TABLE tx_dlf_tokens (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
+    tstamp int(11) DEFAULT '0' NOT NULL COMMENT 'Timestamp of the token used to determine if it has expired.',
     token varchar(255) DEFAULT '' NOT NULL,
     options mediumtext NOT NULL,
     ident varchar(30) DEFAULT '' NOT NULL,
@@ -269,11 +269,11 @@ CREATE TABLE tx_dlf_relations (
     tablenames varchar(30) DEFAULT '' NOT NULL,
     sorting int(11) DEFAULT '0' NOT NULL,
     sorting_foreign int(11) DEFAULT '0' NOT NULL,
-    ident varchar(30) DEFAULT '' NOT NULL,
+    ident varchar(30) DEFAULT '' NOT NULL COMMENT 'An identifier to describe which tables are matched.',
 
     PRIMARY KEY (uid),
     KEY local_foreign (uid_local,uid_foreign,ident)
-);
+) COMMENT 'Pivot table for many-to-many relations between tables. In particular, this is used to match documents and collections by using ident=docs_colls.';
 
 --
 -- Table structure for table 'tx_dlf_basket'

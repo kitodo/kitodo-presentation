@@ -13,7 +13,9 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of 'SolrCore'. This holds especially the indexName of the used Solr core.
+ * Cores on the application-wide Solr instance that are available for indexing.
+ * They may be used, for example, as a parameter to the CLI indexing commands, and are referenced by ``tx_dlf_document.solrcore``.
+ * In particular, this holds the index name of the used Solr core.
  *
  * @package TYPO3
  * @subpackage dlf
@@ -27,11 +29,15 @@ class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $pid;
 
     /**
+     * Label of the core that is displayed in the backend.
+     *
      * @var string
      */
     protected $label;
 
     /**
+     * The actual name of the Solr core.
+     *
      * @var string
      */
     protected $indexName;

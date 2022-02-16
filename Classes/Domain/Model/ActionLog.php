@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of the 'ActionLog' (Basket feature).
+ * (Basket Plugin) Action log for mails and printouts.
  *
  * @package TYPO3
  * @subpackage dlf

@@ -13,7 +13,13 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of the 'MetadataFormat'. This contains the xpath expressions on the model 'Metadata'.
+ * This specifies a way how a metadatum (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
+ *
+ * For instance, the title of a document may be obtained from either the MODS
+ * title field, or from the TEIHDR caption. This is modeled as two ``tx_dlf_metadaformat``
+ * that refer to the same ``tx_dlf_metadata`` but different ``tx_dlf_format``.
+ *
+ * This contains the xpath expressions on the model 'Metadata'.
  *
  * @package TYPO3
  * @subpackage dlf
@@ -22,26 +28,36 @@ namespace Kitodo\Dlf\Domain\Model;
 class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
+     *
      * @var int
      */
     protected $parentId;
 
     /**
+     * UID of the ``tx_dlf_format`` in which this metadata entry is encoded.
+     *
      * @var int
      */
     protected $encoded;
 
     /**
+     * XPath/JSONPath expression to extract the metadatum (relative to the data format root).
+     *
      * @var string
      */
     protected $xpath;
 
     /**
+     * XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadatum.
+     *
      * @var string
      */
     protected $xpathSorting;
 
     /**
+     * Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
+     *
      * @var int
      */
     protected $mandatory;
