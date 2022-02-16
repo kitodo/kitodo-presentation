@@ -70,3 +70,12 @@ docker-compose -f ./Build/Documentation/docker-compose.t3docs.yml run --rm t3doc
 ```
 
 The build output is available at [Documentation-GENERATED-temp/Result/project/0.0.0/Index.html](./Documentation-GENERATED-temp/Result/project/0.0.0/Index.html).
+
+### Database Documentation
+
+Generate the database reference table:
+
+```bash
+composer install
+composer docs:db
+```
