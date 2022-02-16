@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 
 /**
  * Helper class for the 'dlf' extension
@@ -198,19 +197,6 @@ class Helper
         // Decrypt data.
         $decrypted = openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
         return $decrypted;
-    }
-
-    /**
-     * Convert a domain object that is lazy-loaded to the actual instance, i.e.,
-     * unwrap LazyLoadingProxy if necessary.
-     *
-     * @access public
-     */
-    public static function fromLazy($object)
-    {
-        return $object instanceof LazyLoadingProxy
-            ? $object->_loadRealInstance()
-            : $object;
     }
 
     /**
