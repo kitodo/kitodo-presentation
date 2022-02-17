@@ -240,10 +240,7 @@ class OaiPmhController extends AbstractController
             // Get root element.
             $root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
             if ($root->item(0) instanceof \DOMNode) {
-                // Import node into \DOMDocument.
-                $mets = $xml->saveXML();
-                // Remove leading line
-                $mets = substr($mets, strpos($mets, '>'));
+                $mets = $xml->saveXML($root->item(0));
             } else {
                 $this->logger->error('No METS part found in document with location "' . $record['location'] . '"');
             }
@@ -284,6 +281,9 @@ class OaiPmhController extends AbstractController
                 break;
             case 'ListSets':
                 $this->verbListSets();
+                break;
+            default:
+                $this->error = 'badVerb';
                 break;
         }
 
@@ -404,6 +404,9 @@ class OaiPmhController extends AbstractController
         if ($document) {
             $oaiIdentifyInfo['earliestDatestamp'] = gmdate('Y-m-d\TH:i:s\Z', $document->getTstamp()->getTimestamp());
         } else {
+            // Provide a fallback timestamp if no document is found
+            $oaiIdentifyInfo['earliestDatestamp'] = '0000-00-00T00:00:00Z';
+
             // access storagePid from TypoScript
             $pageSettings = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
             $storagePid = $pageSettings["plugin."]["tx_dlf."]["persistence."]["storagePid"];
@@ -459,8 +462,9 @@ class OaiPmhController extends AbstractController
         // create new and empty documentlist
         $resultSet = [];
         if (is_array($documentSet)) {
-            $resultSet[] = ($documentSet);
+            $resultSet['elements'] = $documentSet;
             $resultSet['metadata'] = [
+                'cursor' => 0,
                 'completeListSize' => count($documentSet),
                 'metadataPrefix' => $this->parameters['metadataPrefix'],
             ];
@@ -547,8 +551,9 @@ class OaiPmhController extends AbstractController
         }
         $resultSet = [];
         if (is_array($documentSet)) {
-            $resultSet[] = $documentSet;
+            $resultSet['elements'] = $documentSet;
             $resultSet['metadata'] = [
+                'cursor' => 0,
                 'completeListSize' => count($documentSet),
                 'metadataPrefix' => $this->parameters['metadataPrefix'],
             ];
@@ -694,8 +699,8 @@ class OaiPmhController extends AbstractController
      */
     protected function generateOutputForDocumentList(array $documentListSet)
     {
-        $documentsToProcess = array_splice($documentListSet, 0, (int) $this->settings['limit']);
-        if ($documentsToProcess === null) {
+        $documentsToProcess = array_splice($documentListSet['elements'], 0, (int) $this->settings['limit']);
+        if (empty($documentsToProcess)) {
             $this->error = 'noRecordsMatch';
             return [];
         }
@@ -731,7 +736,7 @@ class OaiPmhController extends AbstractController
             $records[] = $resArray;
         }
 
-        $this->generateResumptionTokenForDocumentListSet($documentListSet);
+        $this->generateResumptionTokenForDocumentListSet($documentListSet, count($documentsToProcess));
 
         return $records;
     }
@@ -742,13 +747,20 @@ class OaiPmhController extends AbstractController
      * @access protected
      *
      * @param array $documentListSet
+     * @param int $numShownDocuments
      *
      * @return void
      */
-    protected function generateResumptionTokenForDocumentListSet(array $documentListSet)
+    protected function generateResumptionTokenForDocumentListSet(array $documentListSet, int $numShownDocuments)
     {
-        if (count($documentListSet) !== 0) {
+        // The cursor specifies how many elements have already been returned in previous requests
+        // See http://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl
+        $currentCursor = $documentListSet['metadata']['cursor'];
+
+        if (count($documentListSet['elements']) !== 0) {
             $resumptionToken = uniqid('', false);
+
+            $documentListSet['metadata']['cursor'] += $numShownDocuments;
 
             // create new token
             $newToken = GeneralUtility::makeInstance(Token::class);
@@ -764,7 +776,7 @@ class OaiPmhController extends AbstractController
 
         $resumptionTokenInfo = [];
         $resumptionTokenInfo['token'] = $resumptionToken;
-        $resumptionTokenInfo['cursor'] = $documentListSet['metadata']['completeListSize'] - count($documentListSet);
+        $resumptionTokenInfo['cursor'] = $currentCursor;
         $resumptionTokenInfo['completeListSize'] = $documentListSet['metadata']['completeListSize'];
         $expireDateTime = new \DateTime();
         $expireDateTime->add(new \DateInterval('PT' . $this->settings['expired'] . 'S'));
