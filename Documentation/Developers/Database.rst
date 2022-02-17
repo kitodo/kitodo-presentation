@@ -383,7 +383,14 @@ tx_dlf_libraries: Libraries
 
 Extbase domain model: ``Kitodo\Dlf\Domain\Model\Library``
 
-Domain model of the 'Library' or owner of the document.
+A library institution with the following use cases:
+
+- Each ``tx_dlf_document`` is *owned* by exactly one ``tx_dlf_library``. The
+  owner is set on indexing, and it is shown in the metadata plugin. If no
+  library is configured, the fallback library is named 'default'.
+
+- The OAI-PMH plugin has a configuration option ``library`` that is used to
+  identify the OAI repository.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -429,6 +436,9 @@ Domain model of the 'Library' or owner of the document.
 
    - :field:                    contact  *string*
      :description:              *Contact*
+                                
+                                Contact email address of the library (used as ``adminEmail`` in responses
+                                to OAI ``Identify`` requests).
 
    - :field:                    image  *blob*
      :description:              *Logo*
@@ -437,9 +447,14 @@ Domain model of the 'Library' or owner of the document.
 
    - :field:                    oai_label  *string*
      :description:              *Open Archives Interface (OAI) Label*
+                                
+                                The label that is used as ``repositoryName`` in responses to OAI
+                                ``Identify`` requests.
 
    - :field:                    oai_base  *string*
      :description:              *Open Archives Interface (OAI) Base URL*
+                                
+                                OAI base URL used when harvesting the library via ``kitodo:harvest``.
 
    - :field:                    opac_label  *string*
      :description:              *Online Public Access Catalog (OPAC) Label*
@@ -852,10 +867,10 @@ Resumption tokens for OAI-PMH interface.
      :description:              Timestamp of the token used to determine if it has expired.
 
    - :field:                    token  *string*
-     :description:              
+     :description:              The resumption token string.
 
    - :field:                    options  *text*
-     :description:              
+     :description:              Data that is used to resume the previous request.
 
    - :field:                    ident  *string*
      :description:              

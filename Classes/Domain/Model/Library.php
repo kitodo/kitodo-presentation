@@ -13,7 +13,14 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of the 'Library' or owner of the document.
+ * A library institution with the following use cases:
+ *
+ * - Each ``tx_dlf_document`` is *owned* by exactly one ``tx_dlf_library``. The
+ *   owner is set on indexing, and it is shown in the metadata plugin. If no
+ *   library is configured, the fallback library is named 'default'.
+ *
+ * - The OAI-PMH plugin has a configuration option ``library`` that is used to
+ *   identify the OAI repository.
  *
  * @package TYPO3
  * @subpackage dlf
@@ -37,6 +44,9 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $website;
 
     /**
+     * Contact email address of the library (used as ``adminEmail`` in responses
+     * to OAI ``Identify`` requests).
+     *
      * @var string
      */
     protected $contact;
@@ -49,11 +59,16 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $image;
 
     /**
+     * The label that is used as ``repositoryName`` in responses to OAI
+     * ``Identify`` requests.
+     *
      * @var string
      */
     protected $oaiLabel;
 
     /**
+     * OAI base URL used when harvesting the library via ``kitodo:harvest``.
+     *
      * @var string
      */
     protected $oaiBase;
