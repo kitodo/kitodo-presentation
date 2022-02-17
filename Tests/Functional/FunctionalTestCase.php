@@ -3,6 +3,7 @@
 namespace Kitodo\Dlf\Tests\Functional;
 
 use GuzzleHttp\Client as HttpClient;
+use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -29,6 +30,14 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         ],
         'EXTENSIONS' => [
             'dlf' => [], // = $this->getDlfConfiguration(), set in constructor
+        ],
+        'DB' => [
+            'Connections' => [
+                'Default' => [
+                    // TODO: This is taken from the base class, minus "ONLY_FULL_GROUP_BY"; should probably rather be changed in DocumentRepository::getOaiDocumentList
+                    'initCommands' => 'SET SESSION sql_mode = \'STRICT_ALL_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_VALUE_ON_ZERO,NO_ENGINE_SUBSTITUTION,NO_ZERO_DATE,NO_ZERO_IN_DATE\';',
+                ],
+            ],
         ],
     ];
 
@@ -78,6 +87,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             'base_uri' => $this->baseUrl,
             'http_errors' => false,
         ]);
+
+        $this->addSiteConfig('dlf-testing', $this->baseUrl);
     }
 
     protected function getDlfConfiguration()
@@ -111,6 +122,17 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
             'solrHost' => getenv('dlfTestingSolrHost'),
         ];
+    }
+
+    protected function addSiteConfig($identifier, $baseUrl)
+    {
+        $siteConfig = Yaml::parseFile(__DIR__ . '/../Fixtures/siteconfig.yaml');
+        $siteConfig['base'] = $baseUrl;
+        $siteConfig['languages'][0]['base'] = $baseUrl;
+
+        $siteConfigPath = $this->instancePath . '/typo3conf/sites/' . $identifier;
+        @mkdir($siteConfigPath, 0775, true);
+        file_put_contents($siteConfigPath . '/config.yaml', Yaml::dump($siteConfig));
     }
 
     protected function initializeRepository(string $className, int $storagePid)

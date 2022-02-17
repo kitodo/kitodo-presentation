@@ -14,9 +14,9 @@
         <label>Default Library</label>
         <index_name>default</index_name>
         <website></website>
-        <contact></contact>
+        <contact>default-library@example.com</contact>
         <image></image>
-        <oai_label></oai_label>
+        <oai_label>Default Library - OAI Repository</oai_label>
         <oai_base></oai_base>
         <opac_label></opac_label>
         <opac_base></opac_base>
