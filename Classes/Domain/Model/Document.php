@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
@@ -639,7 +640,9 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     public function getOwner(): \Kitodo\Dlf\Domain\Model\Library
     {
-        return $this->owner;
+        return $this->owner instanceof LazyLoadingProxy
+            ? $this->owner->_loadRealInstance()
+            : $this->owner;
     }
 
     /**

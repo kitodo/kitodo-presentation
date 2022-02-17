@@ -16,10 +16,9 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Metadata;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Ubl\Iiif\Context\IRI;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Ubl\Iiif\Context\IRI;
 
 class MetadataController extends AbstractController
 {
@@ -173,14 +172,14 @@ class MetadataController extends AbstractController
                             $iiifData[$key] = [
                                 'label' => $key,
                                 'value' => $group,
-                                'buildUrl' => true
+                                'buildUrl' => true,
                             ];
                         } else {
                             // Data output
                             $iiifData[$key] = [
                                 'label' => $key,
                                 'value' => $group,
-                                'buildUrl' => false
+                                'buildUrl' => false,
                             ];
                         }
                     } else {
@@ -197,13 +196,13 @@ class MetadataController extends AbstractController
                                 $iiifData[$key]['data'][] = [
                                     'label' => $nolabel ? '' : $label,
                                     'value' => $value,
-                                    'buildUrl' => true
+                                    'buildUrl' => true,
                                 ];
                             } else {
                                 $iiifData[$key]['data'][] = [
                                     'label' => $label,
                                     'value' => $value,
-                                    'buildUrl' => false
+                                    'buildUrl' => false,
                                 ];
                             }
                         }
@@ -250,7 +249,7 @@ class MetadataController extends AbstractController
                                 $buildUrl[$i][$metadataName]['buildUrl'] = [
                                     'id' => $this->document->getUid(),
                                     'page' => (!empty($details['points']) ? intval($details['points']) : 1),
-                                    'targetPid' => (!empty($this->settings['targetPid']) ? $this->settings['targetPid'] : 0)
+                                    'targetPid' => (!empty($this->settings['targetPid']) ? $this->settings['targetPid'] : 0),
                                 ];
                             }
                         }
@@ -280,7 +279,9 @@ class MetadataController extends AbstractController
                     }
 
                     if (is_array($metadataArray[$i][$metadataName])) {
-                        $metadataArray[$i][$metadataName] = array_values(array_filter($metadataArray[$i][$metadataName], function($x) { return !empty($x); }));
+                        $metadataArray[$i][$metadataName] = array_values(array_filter($metadataArray[$i][$metadataName], function ($value) {
+                            return !empty($value);
+                        }));
                     }
                 }
                 $i++;
