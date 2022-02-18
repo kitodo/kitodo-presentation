@@ -782,6 +782,9 @@ class OaiPmhController extends AbstractController
         $expireDateTime->add(new \DateInterval('PT' . $this->settings['expired'] . 'S'));
         $resumptionTokenInfo['expired'] = $expireDateTime;
 
-        $this->view->assign('resumptionToken', $resumptionTokenInfo);
+        $omitResumptionToken = $currentCursor === 0 && $numShownDocuments >= $documentListSet['metadata']['completeListSize'];
+        if (!$omitResumptionToken) {
+            $this->view->assign('resumptionToken', $resumptionTokenInfo);
+        }
     }
 }

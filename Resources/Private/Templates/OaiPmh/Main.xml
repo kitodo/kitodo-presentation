@@ -124,9 +124,7 @@
                         </f:else>
                     </f:if>
                 </f:for>
-                <f:if condition="{resumptionToken.token}">
-                    <resumptionToken cursor="{resumptionToken.cursor}" completeListSize="{resumptionToken.completeListSize}" expirationDate="<f:format.date format="Y-m-d\TH:i:s\Z">{resumptionToken.expired}</f:format.date>">{resumptionToken.token}</resumptionToken>
-                </f:if>
+                <f:render section="resumptionToken" arguments="{resumptionToken: resumptionToken}" />
             </ListIdentifiers>
         </f:then>
     </f:if>
@@ -162,9 +160,7 @@
                         </f:if>
                     </record>
                 </f:for>
-                <f:if condition="{resumptionToken.token}">
-                    <resumptionToken cursor="{resumptionToken.cursor}" completeListSize="{resumptionToken.completeListSize}" expirationDate="<f:format.date format="Y-m-d\TH:i:s\Z">{resumptionToken.expired}</f:format.date>">{resumptionToken.token}</resumptionToken>
-                </f:if>
+                <f:render section="resumptionToken" arguments="{resumptionToken: resumptionToken}" />
             </ListRecords>
         </f:then>
     </f:if>
@@ -242,4 +238,17 @@
         </f:case>
         <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
     </f:switch>
+</f:section>
+
+<f:section name="resumptionToken">
+    <f:if condition="{resumptionToken}">
+        <f:if condition="{resumptionToken.token}">
+            <f:then>
+                <resumptionToken cursor="{resumptionToken.cursor}" completeListSize="{resumptionToken.completeListSize}" expirationDate="<f:format.date format="Y-m-d\TH:i:s\Z">{resumptionToken.expired}</f:format.date>">{resumptionToken.token}</resumptionToken>
+            </f:then>
+            <f:else>
+                <resumptionToken cursor="{resumptionToken.cursor}" completeListSize="{resumptionToken.completeListSize}" />
+            </f:else>
+        </f:if>
+    </f:if>
 </f:section>
