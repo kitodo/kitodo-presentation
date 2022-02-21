@@ -277,11 +277,12 @@ class TableOfContentsController extends AbstractController
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['doNotLinkIt'] = 1;
 
-        if($entry['children'] == NULL) {
+        if ($entry['children'] == NULL) {
             $entryArray['description'] = $entry['description'];
-            $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['THUMBS']);;
+            $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['THUMBS']);
             $entryArray['doNotLinkIt'] = 0;
-            $entryArray['_OVERRIDE_HREF'] = '/index.php?id=' . GeneralUtility::_GET('id') . '&html=1&tx_dlf%5Bid%5D=' . urlencode($entry['points']);
+            // index.php?tx_dlf%5Bid%5D=http%3A%2F%2Flink_to_METS_file.xml
+            $entryArray['_OVERRIDE_HREF'] = '/index.php?id=' . GeneralUtility::_GET('id') . '&tx_dlf%5Bid%5D=' . urlencode($entry['points']);
         }
 
         $entryArray['ITEM_STATE'] = 'NO';
