@@ -39,7 +39,7 @@ class View3DController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            $this->view->assign('url', '');
+            $this->view->assign('url', $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['DEFAULT']));
             $this->view->assign('script.main', '');
             $this->view->assign('script.toastify', '');
             $this->view->assign('script.spinner', '');
