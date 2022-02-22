@@ -86,6 +86,52 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
                 }
             }
         }
+
+        $creators = $xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]="cre"]');
+        if (!empty($creators)) {
+            $creators[0]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
+            $displayForm = $creators[0]->xpath('./mods:displayForm');
+            if ($displayForm) {
+                $metadata['creator'][] = (string) $displayForm[0];
+            }
+        }
+
+        $holders = $xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]="prv"]');
+        if (!empty($holders)) {
+            $holders[0]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
+            $displayForm = $holders[0]->xpath('./mods:displayForm');
+            if ($displayForm) {
+                $metadata['holder'][] = (string) $displayForm[0];
+            }
+        }
+
+        $publishers = $xml->xpath('./mods:originInfo[@eventType="digitisation"]/mods:publisher/text()');
+        if (!empty($publishers)) {
+            $metadata['publisher'][] = (string) $publishers[0];
+        }
+
+        $publicationDates = $xml->xpath('./mods:originInfo[@eventType="digitisation"]/mods:dateIssued/text()');
+        if (!empty($publicationDates)) {
+            $metadata['publication_date'][] = (string) $publicationDates[0];
+        }
+
+        $originalDateCreatedStart = $xml->xpath('./mods:relatedItem/mods:originInfo/mods:dateCreated[@point="start" and @encoding="iso8601"]/text()');
+        $originalDateCreatedEnd = $xml->xpath('./mods:relatedItem/mods:originInfo/mods:dateCreated[@point="end" and @encoding="iso8601"]/text()');
+        if (!empty($originalDateCreatedStart) && !empty($originalDateCreatedEnd)) {
+            $dateCreatedStart = (string) $originalDateCreatedStart[0];
+            $dateCreatedEnd = (string) $originalDateCreatedEnd[0];
+            if ($dateCreatedStart == $dateCreatedEnd) {
+                $metadata['object_date_created'][] = $dateCreatedStart;
+            } else {
+                $metadata['object_date_created'][] = $dateCreatedStart . ' - ' . $dateCreatedEnd;
+            }
+        }
+
+        $physicalLocations = $xml->xpath('./mods:relatedItem/mods:location/mods:physicalLocation/text()');
+        if (!empty($physicalLocations)) {
+            $metadata['object _location'][] = (string) $physicalLocations[0];
+        }
+
         // Get "place" and "place_sorting".
         $places = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:place/mods:placeTerm');
         // Get "place" and "place_sorting" again if that was to sophisticated.
@@ -132,9 +178,12 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         // Get "description"
         $descriptions = $xml->xpath('./mods:recordInfo/mods:recordInfoNote/text()');
         if (!empty($descriptions)) {
-            foreach ($descriptions as $description) {
-                $metadata['description'] = (string) $description;
-            }
+            $metadata['description'][] = (string) $descriptions[0];
+        }
+
+        $licenses = $xml->xpath('./mods:accessCondition[@type="license"]/text()');
+        if (!empty($licenses)) {
+            $metadata['rights_info'][] = (string) $licenses[0];
         }
     }
 }
