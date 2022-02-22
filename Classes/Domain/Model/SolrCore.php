@@ -32,22 +32,6 @@ class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return string
      */
-    public function getPid(): int
-    {
-        return $this->pid;
-    }
-
-    /**
-     * @param string $pid
-     */
-    public function setPid(int $pid): void
-    {
-        $this->pid = $pid;
-    }
-
-    /**
-     * @return string
-     */
     public function getLabel(): string
     {
         return $this->label;
