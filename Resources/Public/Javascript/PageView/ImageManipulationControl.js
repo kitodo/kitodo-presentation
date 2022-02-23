@@ -47,12 +47,6 @@ dlfViewerImageManipulationControl = function(options) {
      */
     this.toolContainerEl_ = dlfUtils.exists(options.toolContainer) ? options.toolContainer : $(this.dic['parentContainer'])[0];
 
-    /**
-     * @type {HTMLCanvasElement}
-     *
-     */
-    this.canvas_ = this.baseMap_.getTargetElement().querySelector('canvas');
-
     //
     // Append open/close behavior to toolbox
     //
@@ -115,8 +109,14 @@ dlfViewerImageManipulationControl = function(options) {
  * @param {string} filters
  */
 dlfViewerImageManipulationControl.prototype.setCssFilter_ = function (filters) {
-    this.canvas_.style.filter = filters;
-    this.canvas_.style.webkitFilter = filters;
+    // TODO: For some reason, we can't query the selector in constructor (not
+    //       yet available) or in first rendercomplete event (just won't work).
+    //       Why?
+    var canvas = this.baseMap_.getTargetElement().querySelector('canvas');
+    if (canvas) {
+        canvas.style.filter = filters;
+        canvas.style.webkitFilter = filters;
+    }
 };
 
 /**

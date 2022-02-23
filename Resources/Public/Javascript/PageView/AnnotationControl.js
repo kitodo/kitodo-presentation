@@ -47,23 +47,23 @@ function DlfAnnotationControl(map, image, annotationContainers) {
     this.layers_ = {
         annotationList: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.defaultStyle()
+            'style': dlfViewerOLStyles.defaultStyle()
         }),
         annotation: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.invisibleStyle()
+            'style': dlfViewerOLStyles.invisibleStyle()
         }),
         select: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.selectStyle()
+            'style': dlfViewerOLStyles.selectStyle()
         }),
         hoverAnnotationList: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.hoverStyle()
+            'style': dlfViewerOLStyles.hoverStyle()
         }),
         hoverAnnotation: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.textlineStyle()
+            'style': dlfViewerOLStyles.textlineStyle()
         }),
     };
 

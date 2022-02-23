@@ -89,23 +89,23 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.layers_ = {
         textblock: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.defaultStyle()
+            'style': dlfViewerOLStyles.defaultStyle()
         }),
         textline: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.invisibleStyle()
+            'style': dlfViewerOLStyles.invisibleStyle()
         }),
         select: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.selectStyle()
+            'style': dlfViewerOLStyles.selectStyle()
         }),
         hoverTextblock: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.hoverStyle()
+            'style': dlfViewerOLStyles.hoverStyle()
         }),
         hoverTextline: new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.textlineStyle()
+            'style': dlfViewerOLStyles.textlineStyle()
         })
     };
 
