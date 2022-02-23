@@ -123,7 +123,7 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             )
             ->from('tx_dlf_collections')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($settings['pages'])),
+                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($settings['storagePid'])),
                 $queryBuilder->expr()->eq('tx_dlf_collections.oai_name',
                     $queryBuilder->expr()->literal($set)),
                 $where,
