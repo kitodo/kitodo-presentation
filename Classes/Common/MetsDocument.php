@@ -298,7 +298,7 @@ final class MetsDocument extends Doc
         // add description for 3D objects
         if ($details['type'] == 'object') {
             $metadata = $this->getMetadata($details['id']);
-            $details['description'] = $metadata['description'];
+            $details['description'] = $metadata['description'][0];
         }
         $details['thumbnailId'] = '';
         // Load smLinks.
