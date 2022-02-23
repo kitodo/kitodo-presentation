@@ -381,7 +381,7 @@ p.intro {
         <p>There are more results.</p>
     </xsl:if>
     <table class="values">
-        <tr><td class="key">Submitted Records</td>
+        <tr><td class="key">Cursor</td>
         <td class="value"><xsl:value-of select="@cursor"/></td></tr>
         <tr><td class="key">Total Records</td>
         <td class="value"><xsl:value-of select="@completeListSize"/></td></tr>
