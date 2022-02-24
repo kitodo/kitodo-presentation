@@ -2,6 +2,11 @@
 Features and Testing
 ====================
 
+.. toctree::
+   :hidden:
+
+   PageView
+
 This is a list of features and how to do some functional tests.
 
 F-1 Search

@@ -12,12 +12,12 @@
  * @const
  * @namespace
  */
-dlfViewerOL3Styles = {};
+dlfViewerOLStyles = {};
 
 /**
  * @return {ol.style.Style}
  */
-dlfViewerOL3Styles.defaultStyle = function() {
+dlfViewerOLStyles.defaultStyle = function() {
 
     return new ol.style.Style({
         'stroke': new ol.style.Stroke({
@@ -34,7 +34,7 @@ dlfViewerOL3Styles.defaultStyle = function() {
 /**
  * @return {ol.style.Style}
  */
-dlfViewerOL3Styles.hoverStyle = function() {
+dlfViewerOLStyles.hoverStyle = function() {
 
     return new ol.style.Style({
         'stroke': new ol.style.Stroke({
@@ -51,12 +51,15 @@ dlfViewerOL3Styles.hoverStyle = function() {
 /**
  * @return {ol.style.Style}
  */
-dlfViewerOL3Styles.invisibleStyle = function() {
+dlfViewerOLStyles.invisibleStyle = function() {
 
     return new ol.style.Style({
         'stroke': new ol.style.Stroke({
             'color': 'rgba(170,0,0,0)',
             'width': 1
+        }),
+        'fill': new ol.style.Fill({
+            'color': 'transparent'
         })
     });
 
@@ -65,7 +68,7 @@ dlfViewerOL3Styles.invisibleStyle = function() {
 /**
  * @return {ol.style.Style}
  */
-dlfViewerOL3Styles.selectStyle = function() {
+dlfViewerOLStyles.selectStyle = function() {
 
     return new ol.style.Style({
         'stroke': new ol.style.Stroke({
@@ -82,7 +85,7 @@ dlfViewerOL3Styles.selectStyle = function() {
 /**
  * @return {ol.style.Style}
  */
-dlfViewerOL3Styles.textlineStyle = function() {
+dlfViewerOLStyles.textlineStyle = function() {
 
     return new ol.style.Style({
         'stroke': new ol.style.Stroke({
@@ -96,7 +99,7 @@ dlfViewerOL3Styles.textlineStyle = function() {
 /**
  * @return {ol.style.Style}
  */
-dlfViewerOL3Styles.wordStyle = function() {
+dlfViewerOLStyles.wordStyle = function() {
 
     return new ol.style.Style({
         'stroke': new ol.style.Stroke({
