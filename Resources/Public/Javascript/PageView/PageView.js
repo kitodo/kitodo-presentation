@@ -237,7 +237,7 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
 };
 
 /**
- * Creates OL3 controls
+ * Creates OpenLayers controls
  * @param {Array.<string>} controlNames
  * @param {Array.<ol.layer.Layer>} layers
  * @return {Array.<ol.control.Control>}
@@ -255,7 +255,29 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
                 case "OverviewMap":
 
-                    controls.push(new ol.control.OverviewMap({layers}));
+                    var extent = ol.extent.createEmpty();
+                    for (let i = 0; i < this.images.length; i++) {
+                        ol.extent.extend(extent, [0, -this.images[i].height, this.images[i].width, 0]);
+                    }
+
+                    var ovExtent = ol.extent.buffer(
+                        extent,
+                        1 * Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent))
+                    );
+
+                    controls.push(new ol.control.OverviewMap({
+                        layers: layers.map(dlfUtils.cloneOlLayer),
+                        view: new ol.View({
+                            center: ol.extent.getCenter(extent),
+                            extent: ovExtent,
+                            projection: new ol.proj.Projection({
+                                code: 'kitodo-image',
+                                units: 'pixels',
+                                extent: ovExtent
+                            }),
+                            showFullExtent: false
+                        })
+                    }));
                     break;
 
                 case "ZoomPanel":
@@ -286,7 +308,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
 
         this.highlightLayer = new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.wordStyle
+            'style': dlfViewerOLStyles.wordStyle
         });
 
         this.map.addLayer(this.highlightLayer);
@@ -389,15 +411,18 @@ dlfViewer.prototype.init = function(controlNames) {
                 ],
                 // necessary for proper working of the keyboard events
                 keyboardEventTarget: document,
-                view: dlfUtils.createOl3View(this.images),
-                renderer: 'canvas'
+                view: dlfUtils.createOlView(this.images),
             });
 
             // Position image according to user preferences
-            var lon = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
-              lat = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
-              zoom = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
-            if (!dlfUtils.isNullEmptyUndefinedOrNoNumber(lon) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(lat) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoom)) {
+            var lonCk = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
+              latCk = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
+              zoomCk = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
+            if (!dlfUtils.isNullEmptyUndefinedOrNoNumber(lonCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(latCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoomCk)) {
+                var lon = Number(lonCk),
+                  lat = Number(latCk),
+                  zoom = Number(zoomCk);
+
                 // make sure, zoom center is on viewport
                 var center = this.map.getView().getCenter();
                 if ((lon < (2.2 * center[0])) && (lat < (-0.2 * center[1])) && (lat > (2.2 * center[1]))) {
@@ -445,7 +470,7 @@ dlfViewer.prototype.init = function(controlNames) {
 };
 
 /**
- * Function generate the ol3 layer objects for given image sources. Returns a promise.
+ * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
  * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
  * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
@@ -466,7 +491,7 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
 
     dlfUtils.fetchImageData(imageSourceObjs)
       .done(function(imageSourceData) {
-          resolveCallback(imageSourceData, dlfUtils.createOl3Layers(imageSourceData));
+          resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
       });
 
     return deferredResponse;
@@ -518,14 +543,16 @@ dlfViewer.prototype.initCropping = function () {
     value = 'LineString';
     maxPoints = 2;
     geometryFunction = function(coordinates, geometry) {
-        if (!geometry) {
-            geometry = new ol.geom.Polygon(null);
-        }
         var start = coordinates[0];
         var end = coordinates[1];
-        geometry.setCoordinates([
+        var geomCoordinates = [
             [start, [start[0], end[1]], end, [end[0], start[1]], start]
-        ]);
+        ];
+        if (geometry) {
+            geometry.setCoordinates(geomCoordinates);
+        } else {
+            geometry = new ol.geom.Polygon(geomCoordinates);
+        }
 
         // add to basket button
         var extent = geometry.getExtent();
@@ -584,6 +611,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
     });
 
     this.ov_view = new ol.View({
+        constrainRotation: false,
         projection: layerProj,
         center: ol.extent.getCenter(extent),
         zoom: 3,
@@ -597,7 +625,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
         interactions: []
     });
 
-    this.ov_map.addLayer(this.map.getLayers().getArray()[0]);
+    this.ov_map.addLayer(dlfUtils.cloneOlLayer(this.map.getLayers().getArray()[0]));
 
     var mousePosition = null;
     var dlfViewer = this;
@@ -613,7 +641,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
             var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
 
             if (rotateDiff || centerDiff) {
-                destMap.getView().rotate(sourceView.getRotation());
+                destMap.getView().setRotation(sourceView.getRotation());
             }
         },
         adjustViewHandler = function(event) {
