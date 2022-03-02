@@ -1,0 +1,112 @@
+@mixin touch-vars { 
+	@media (pointer: coarse) {
+		&.allow-touch-styles {
+			@content;
+		}
+	}
+	&.force-touch-styles { 
+		@content;
+	}
+}
+
+.lil-gui {
+	font-family: var(--font-family);
+	font-size: var(--font-size);
+	line-height: 1;
+
+	font-weight: normal;
+	font-style: normal;
+	text-align: left;
+
+	background-color: var(--background-color);
+	color: var(--text-color);
+
+	user-select: none;
+	-webkit-user-select: none;
+
+	// prevent double tap zooming
+	touch-action: manipulation;
+
+	&,
+	& * {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	&.root {
+		width: var(--width, 245px);
+		display: flex;
+		flex-direction: column;
+		> .title {
+			background: var(--title-background-color);
+			color: var(--title-text-color);
+		}
+		> .children {
+			overflow-x: hidden;
+			overflow-y: auto;
+			&::-webkit-scrollbar {
+				width: var(--scrollbar-width);
+				height: var(--scrollbar-width);
+				background: var(--background-color);
+			}
+			&::-webkit-scrollbar-thumb {
+				border-radius: var(--scrollbar-width);
+				background: var(--focus-color);
+			}
+		}
+	}
+
+	// "Theme" properties
+	// -------------------------------------------------------------------------
+
+	--background-color: #1f1f1f;
+	--text-color: #ebebeb;
+	--title-background-color: #111111;
+	--title-text-color: #ebebeb;
+	--widget-color: #424242;
+	--hover-color: #4f4f4f;
+	--focus-color: #595959;
+	--number-color: #2cc9ff;
+	--string-color: #a2db3c;
+	--font-size: 11px;
+	--input-font-size: 11px;
+	--font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+	--font-family-mono: Menlo, Monaco, Consolas, 'Droid Sans Mono', monospace;
+	--padding: 4px;
+	--spacing: 4px;
+	--widget-height: 20px;
+	--name-width: 45%;
+	--slider-knob-width: 2px;
+	--slider-input-width: 27%;
+	--color-input-width: 27%;
+	--slider-input-min-width: 45px;
+	--color-input-min-width: 45px;
+	--folder-indent: 7px;
+	--widget-padding: 0 0 0 3px;
+	--widget-border-radius: 2px;
+	--checkbox-size: calc(0.75 * var(--widget-height));
+	--scrollbar-width: 5px;
+
+	@include touch-vars { 
+		--widget-height: 28px;
+		--padding: 6px;
+		--spacing: 6px;
+		--font-size: 13px;
+		--input-font-size: 16px; // < 16px causes zoom on iOS
+		--folder-indent: 10px;
+		--widget-padding: 0 0 0 3px;
+		--scrollbar-width: 7px;
+		--slider-input-min-width: 50px;
+		--color-input-min-width: 65px;
+	}
+
+	&.autoPlace {
+		max-height: 100%;
+		position: fixed;
+		top: 0;
+		right: 15px;
+		z-index: 1001;
+	}
+	
+}

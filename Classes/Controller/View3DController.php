@@ -40,9 +40,9 @@ class View3DController extends AbstractController
             return '';
         } else {
             $this->view->assign('url', $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['DEFAULT']));
-            $this->view->assign('script.main', '');
-            $this->view->assign('script.toastify', '');
-            $this->view->assign('script.spinner', '');
+            $this->view->assign('script.main', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/main.js');
+            $this->view->assign('script.toastify', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/toastify.js');
+            $this->view->assign('script.spinner', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/spinner/main.js');
         }
     }
 }

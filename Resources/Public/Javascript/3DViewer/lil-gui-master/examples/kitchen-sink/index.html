@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1">
+	<title>lil-gui - Kitchen Sink</title>
+	<style>
+		html,
+		body,
+		#container {
+			height: 100%;
+		}
+
+		body {
+			margin: 0;
+		}
+
+		#container {
+			display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
+			align-content: flex-start;
+		}
+
+		#container>* {
+			flex-shrink: 0;
+			margin-left: 18px;
+			margin-top: 18px;
+		}
+
+		#custom-css:not(:empty) {
+			width: 245px;
+			min-height: 200px;
+			font: 11px/14px Menlo, Monaco, Consolas, 'Droid Sans Mono', monospace, 'Droid Sans Fallback';
+			-webkit-font-smoothing: antialiased;
+			tab-size: 0;
+			color: #000;
+		}
+
+	</style>
+</head>
+<body>
+	<div id="container"></div>
+	<script type="module" src="kitchen-sink.js"></script>
+	<script type="module" src="customization.js"></script>
+</body>
+</html>

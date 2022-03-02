@@ -1,0 +1,63 @@
+env:
+  browser: true
+  es6: true
+parserOptions:
+  ecmaVersion: 6
+  sourceType: module
+extends: 
+  - eslint:recommended
+  - plugin:jsdoc/recommended
+plugins: 
+  - jsdoc
+rules:
+  array-bracket-spacing: [ warn, always ]
+  arrow-spacing: warn
+  brace-style: [ warn, 1tbs, { allowSingleLine: true } ]
+  comma-spacing: warn
+  comma-dangle: [ warn, never ]
+  computed-property-spacing: [ warn, always ]
+  eol-last: [ warn, always ]
+  eqeqeq: [ warn, always ]
+  func-call-spacing: [ warn, never ]
+  indent: [ warn, tab, { SwitchCase: 1 } ]
+  key-spacing: [ warn, { mode: minimum } ]
+  keyword-spacing: warn
+  linebreak-style: [ warn, unix ]
+  max-len: [ warn, { code: 120 } ]
+  new-parens: warn
+  no-console: warn
+  no-empty: warn
+  no-extra-semi: warn
+  no-multiple-empty-lines: [ warn, { max: 1, maxEOF: 1 } ]
+  no-trailing-spaces: [ warn ]
+  no-unused-vars: warn
+  no-var: warn
+  no-whitespace-before-property: warn
+  object-curly-spacing: [ warn, always ]
+  quotes: [ warn, single ]
+  semi-spacing: warn
+  semi: [ warn, always ]
+  space-before-function-paren: [ warn, never ]
+  space-in-parens: [ warn, always, { exceptions: [ empty ] } ]
+  space-infix-ops: warn
+  jsdoc/newline-after-description: [ warn, never ]
+  jsdoc/no-undefined-types: [ warn, { definedTypes: [ GUI, this, "false" ] } ]
+  jsdoc/require-jsdoc: off
+  jsdoc/require-param-description: off
+  jsdoc/require-returns-description: off
+  jsdoc/require-description: warn
+  jsdoc/tag-lines: [ warn, any ]
+overrides:
+  - files: [ rollup.config.js, scripts/**/*.js, tests/**/*.js ]
+    env:
+      node: true
+    parserOptions:
+      ecmaVersion: 9
+  - files: [ rollup.config.js, scripts/**/*.js, tests/**/*.js, examples/**/*.js ]
+    rules:
+      no-console: off
+      max-len: off
+      jsdoc/require-description: off
+  - files: [ tests/*.test.js ]
+    rules:
+      no-console: warn
