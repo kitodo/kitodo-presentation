@@ -71,10 +71,10 @@ guiElement.className = 'guiContainer';
 guiElement.appendChild(guiContainer);
 container.appendChild(guiContainer);
 
-/*let spinner = new lv();
+let spinner = new lv();
 spinner.initLoaderAll();
 spinner.startObserving();
-let circle = lv.create(spinnerElement);*/
+let circle = lv.create(spinnerElement);
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -374,8 +374,8 @@ function init() {
 
 function loadModel ( path, basename, filename, extension, org_extension ) {
 	if (!imported) {
-		//circle.show();
-		//circle.set(0, 100);
+		circle.show();
+		circle.set(0, 100);
 		switch(extension) {
 			case 'obj':
 			case 'OBJ':
@@ -450,7 +450,7 @@ function loadModel ( path, basename, filename, extension, org_extension ) {
 			case 'ifc':
 			case 'IFC':
 				const ifcLoader = new IFCLoader();
-				ifcLoader.setWasmPath( '/modules/dfg_3dviewer/js/jsm/loaders/ifc/' );
+				ifcLoader.setWasmPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/jsm/loaders/ifc/' );
 				ifcLoader.load( path + filename, function ( object ) {
 					//object.position.set (0, 300, 0);
 					scene.add( object );
@@ -538,7 +538,7 @@ function loadModel ( path, basename, filename, extension, org_extension ) {
 			case 'gltf':
 			case 'GLTF':
 				const dracoLoader = new DRACOLoader();
-				dracoLoader.setDecoderPath( '/modules/dfg_3dviewer/js/libs/draco/' );
+				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/libs/draco/' );
 				dracoLoader.preload();
 				const gltf = new GLTFLoader();
 				gltf.setDRACOLoader(dracoLoader);
@@ -604,9 +604,9 @@ function loadModel ( path, basename, filename, extension, org_extension ) {
 						var percentComplete = xhr.loaded / xhr.total * 100;
 						if (percentComplete != Infinity) {
 							//console.log( ( percentComplete ) + '% loaded' );
-							//circle.set(percentComplete, 100);
+							circle.set(percentComplete, 100);
 							if (percentComplete >= 100) {
-								//circle.hide();
+								circle.hide();
 								//console.log("[i] Model " + filename + " has been loaded.");
 								showToast("Model " + filename + " has been loaded.");
 							}
@@ -628,8 +628,8 @@ function loadModel ( path, basename, filename, extension, org_extension ) {
 	else {
 		//console.log("File " + path + basename + " not found.");
 		showToast("File " + path + basename + " not found.");
-		//circle.set(100, 100);
-		//circle.hide();
+		circle.set(100, 100);
+		circle.hide();
 	}
 	
 	scene.updateMatrixWorld();
@@ -800,9 +800,9 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 function setupCamera (_object, _camera, _light, _data, _controls) {
 	if (typeof (_data) != "undefined") {
 		_camera.position.set( _data["camPosition"][0], _data["camPosition"][1], _data["camPosition"][2] );
-		_light.position.set( _data["lightPosition"][0], _data["lightPosition"][1], _data["lightPosition"][2] );
-		_light.color = new THREE.Color( _data["lightColor"][0] );
-		_light.intensity = _data["lightIntensity"][0];
+		//_light.position.set( _data["lightPosition"][0], _data["lightPosition"][1], _data["lightPosition"][2] );
+		//_light.color = new THREE.Color( _data["lightColor"][0] );
+		//_light.intensity = _data["lightIntensity"][0];
 		_camera.updateProjectionMatrix();
 		_controls.update();
 		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls );
@@ -1090,16 +1090,16 @@ function onPointerMove( event ) {
 }
 
 const onError = function () {
-	//circle.set(100, 100);
-	//circle.hide();	
+	circle.set(100, 100);
+	circle.hide();	
 };
 
 const onProgress = function ( xhr ) {
 	var percentComplete = xhr.loaded / xhr.total * 100;
 	//console.log( ( percentComplete ) + '% loaded' );					
-	//circle.set(percentComplete, 100);
+	circle.set(percentComplete, 100);
 	if (percentComplete >= 100) {
-		//circle.hide();
+		circle.hide();
 		showToast("Model has been loaded.");
 	}
 };
