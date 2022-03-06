@@ -16,6 +16,34 @@ services:
     tmpfs:
       - /var/lib/mysql/:rw,noexec,nosuid
 
+  web:
+    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    user: "${HOST_UID}:${HOST_GID}"
+    stop_grace_period: 1s
+    volumes:
+      - ${DLF_ROOT}:${DLF_ROOT}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
+    # NOTE: For testing PageViewProxy, we need another web server web:8001 that
+    #       can be requested from TYPO3 running on web:8000.
+    #       Setting PHP_CLI_SERVER_WORKERS wouldn't seem to work consistently.
+    command: >
+      /bin/sh -c "
+        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
+          XDEBUG_MODE=\"off\" \
+          php -S web:8000 -t ${DLF_ROOT} ${DLF_ROOT}/Tests/routeFunctionalInstance.php &
+          php -S web:8001 -t ${DLF_ROOT}
+        else
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=host.docker.internal\" \
+          php -S web:8000 -t ${DLF_ROOT} ${DLF_ROOT}/Tests/routeFunctionalInstance.php &
+          php -S web:8001 -t ${DLF_ROOT}
+        fi
+      "
+
   composer_install:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: "${HOST_UID}:${HOST_GID}"
@@ -40,6 +68,7 @@ services:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     links:
       - ${DBMS}
+      - web
     user: "${HOST_UID}:${HOST_GID}"
     volumes:
       - ${DLF_ROOT}:${DLF_ROOT}

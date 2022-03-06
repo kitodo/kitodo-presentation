@@ -2,6 +2,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional;
 
+use GuzzleHttp\Client as HttpClient;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -31,14 +32,39 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         ],
     ];
 
+    /**
+     * By default, the testing framework wraps responses into a JSON object
+     * that contains status code etc. as fields. Set this field to true to avoid
+     * this behavior by not loading the json_response extension.
+     *
+     * @var bool
+     */
+    protected $disableJsonWrappedResponse = false;
+
     /** @var ObjectManager */
     protected $objectManager;
+
+    /**
+     * @var string
+     */
+    protected $baseUrl;
+
+    /**
+     * @var HttpClient
+     */
+    protected $httpClient;
 
     public function __construct()
     {
         parent::__construct();
 
         $this->configurationToUseInTestInstance['EXTENSIONS']['dlf'] = $this->getDlfConfiguration();
+
+        if ($this->disableJsonWrappedResponse) {
+            $this->frameworkExtensionsToLoad = array_filter($this->frameworkExtensionsToLoad, function ($ext) {
+                return $ext !== 'Resources/Core/Functional/Extensions/json_response';
+            });
+        }
     }
 
     public function setUp(): void
@@ -46,6 +72,12 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         parent::setUp();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        $this->baseUrl = 'http://web:8000/public/typo3temp/var/tests/functional-' . $this->identifier . '/';
+        $this->httpClient = new HttpClient([
+            'base_uri' => $this->baseUrl,
+            'http_errors' => false,
+        ]);
     }
 
     protected function getDlfConfiguration()
