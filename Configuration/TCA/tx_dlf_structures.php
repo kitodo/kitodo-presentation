@@ -29,9 +29,6 @@ return [
         'rootLevel' => 0,
         'searchFields' => 'label,index_name,oai_name',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
     ],
     'columns' => [

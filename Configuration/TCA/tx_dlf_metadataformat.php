@@ -25,9 +25,6 @@ return [
         'searchFields' => 'encoded',
         'hideTable' => 1,
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
     ],
     'columns' => [
