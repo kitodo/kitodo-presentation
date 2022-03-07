@@ -55,7 +55,7 @@ container.appendChild(spinnerContainer);
 var statsContainer = document.createElement("div");
 statsContainer.id = 'statsContainer';
 statsContainer.className = 'statsContainer';
-statsContainer.style.position = 'relative';
+statsContainer.style.position = 'absolute';
 statsContainer.style.right = '93%';
 container.appendChild(statsContainer);
 
@@ -311,7 +311,7 @@ function init() {
 
 	// stats
 	stats = new Stats();
-	stats.domElement.style.cssText = 'position:relative;top:0px;left:0px;max-height:120px;max-width:90px;';
+	stats.domElement.style.cssText = 'position:absolute;top:0px;left:0px;max-height:120px;max-width:90px;';
 	container.appendChild( stats.dom );
 	
 	windowHalfX = canvasDimensions.x / 2;
