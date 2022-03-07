@@ -10,7 +10,18 @@
     -->
 </f:comment>
 
-<h1></h1>
+<h1>New Tenant</h1>
+
+<div style="padding: 5px;">
+    <f:if condition="{format}">
+        <f:then>
+            <f:form action="addFormat" name="format" addQueryString="1">
+                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createFormat')}" class="btn btn-primary"/>
+            </f:form>
+        </f:then>
+    </f:if>
+</div>
+
 <div style="padding: 5px;">
     <f:if condition="{structure}">
         <f:then>

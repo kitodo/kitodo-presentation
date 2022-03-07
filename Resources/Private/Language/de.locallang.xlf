@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-12-29T14:02:58Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2022-03-07T21:48:12Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -165,6 +165,14 @@
 				<source><![CDATA[descending]]></source>
 				<target><![CDATA[absteigend]]></target>
 			</trans-unit>
+			<trans-unit id="listview.form.orderBy" approved="yes">
+				<source><![CDATA[Order by:]]></source>
+				<target><![CDATA[Sortieren nach:]]></target>
+			</trans-unit>
+			<trans-unit id="listview.form.relevance" approved="yes">
+				<source><![CDATA[relevance]]></source>
+				<target><![CDATA[Relevanz]]></target>
+			</trans-unit>
 			<trans-unit id="listview.hits" approved="yes">
 				<source><![CDATA[%d hits found in %d documents.]]></source>
 				<target><![CDATA[Die Suche ergab %d Treffer in %d Dokumenten.]]></target>
@@ -177,10 +185,6 @@
 				<source><![CDATA[Nothing found.]]></source>
 				<target><![CDATA[Keine Treffer.]]></target>
 			</trans-unit>
-			<trans-unit id="listview.form.orderBy" approved="yes">
-				<source><![CDATA[Order by:]]></source>
-				<target><![CDATA[Sortieren nach:]]></target>
-			</trans-unit>
 			<trans-unit id="listview.page" approved="yes">
 				<source><![CDATA[%d]]></source>
 				<target><![CDATA[%d]]></target>
@@ -189,10 +193,6 @@
 				<source><![CDATA[&lt;]]></source>
 				<target><![CDATA[&lt;]]></target>
 			</trans-unit>
-			<trans-unit id="listview.form.relevance" approved="yes">
-				<source><![CDATA[relevance]]></source>
-				<target><![CDATA[Relevanz]]></target>
-			</trans-unit>
 			<trans-unit id="listview.separator" approved="yes">
 				<source><![CDATA[ - ]]></source>
 				<target><![CDATA[ - ]]></target>
@@ -200,6 +200,10 @@
 			<trans-unit id="listview.skip" approved="yes">
 				<source><![CDATA[...]]></source>
 				<target><![CDATA[...]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createFormat" approved="yes">
+				<source><![CDATA[Create default namespaces]]></source>
+				<target><![CDATA[Standard-Namensräume anlegen]]></target>
 			</trans-unit>
 			<trans-unit id="newTenant.createMetadata" approved="yes">
 				<source><![CDATA[Create metadata]]></source>
@@ -285,10 +289,6 @@
 				<source><![CDATA[Rotate Right]]></source>
 				<target><![CDATA[Ansicht nach rechts drehen]]></target>
 			</trans-unit>
-			<trans-unit id="search.operator.AND" approved="yes">
-				<source><![CDATA[and]]></source>
-				<target><![CDATA[und]]></target>
-			</trans-unit>
 			<trans-unit id="search.for" approved="yes">
 				<source><![CDATA[for "%s"]]></source>
 				<target><![CDATA[nach "%s"]]></target>
@@ -308,6 +308,10 @@
 			<trans-unit id="search.logicalPage" approved="yes">
 				<source><![CDATA[Page]]></source>
 				<target><![CDATA[Seite]]></target>
+			</trans-unit>
+			<trans-unit id="search.operator.AND" approved="yes">
+				<source><![CDATA[and]]></source>
+				<target><![CDATA[und]]></target>
 			</trans-unit>
 			<trans-unit id="search.operator.NOT" approved="yes">
 				<source><![CDATA[not]]></source>

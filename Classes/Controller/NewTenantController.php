@@ -12,14 +12,17 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\Format;
+use Kitodo\Dlf\Domain\Repository\FormatRepository;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use Kitodo\Dlf\Domain\Repository\StructureRepository;
-use Kitodo\Dlf\Domain\Repository\MetadataRepository;
-use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 
 class NewTenantController extends AbstractController
 {
@@ -41,16 +44,16 @@ class NewTenantController extends AbstractController
     protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
 
     /**
-     * @var StructureRepository
+     * @var FormatRepository
      */
-    protected $structureRepository;
+    protected $formatRepository;
 
     /**
-     * @param StructureRepository $structureRepository
+     * @param FormatRepository $formatRepository
      */
-    public function injectStructureRepository(StructureRepository $structureRepository)
+    public function injectFormatRepository(FormatRepository $formatRepository)
     {
-        $this->structureRepository = $structureRepository;
+        $this->formatRepository = $formatRepository;
     }
 
     /**
@@ -64,6 +67,19 @@ class NewTenantController extends AbstractController
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
         $this->metadataRepository = $metadataRepository;
+    }
+
+    /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
+     * @param StructureRepository $structureRepository
+     */
+    public function injectStructureRepository(StructureRepository $structureRepository)
+    {
+        $this->structureRepository = $structureRepository;
     }
 
     /**
@@ -90,6 +106,39 @@ class NewTenantController extends AbstractController
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf');
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_structure.xlf');
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf');
+
+    }
+
+
+    /**
+     * Action adding formats records
+     */
+    public function addFormatAction()
+    {
+        // Include formats definition file.
+        $formatsDefaults = include (ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
+
+        $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
+        // tx_dlf_formats are stored on PID = 0
+        $frameworkConfiguration['persistence']['storagePid'] = 0;
+        $this->configurationManager->setConfiguration($frameworkConfiguration);
+
+        $allFormats = $this->formatRepository->findAll();
+
+        foreach ($formatsDefaults as $type => $values) {
+
+            if ($this->formatRepository->findOneByType($type) === null) {
+                $newFormat = GeneralUtility::makeInstance(Format::class);
+                $newFormat->setType($type);
+                $newFormat->setRoot($values['root']);
+                $newFormat->setNamespace($values['namespace']);
+                $newFormat->setClass($values['class']);
+                $this->formatRepository->add($newFormat);
+            }
+
+        }
+
+        $this->forward('index');
     }
 
     /**
@@ -255,6 +304,8 @@ class NewTenantController extends AbstractController
     {
         $this->pid = (int) GeneralUtility::_GP('id');
 
+        $formatsDefaults = include (ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
+
         if ($this->pageInfo['doktype'] != 254) {
             $this->addFlashMessage(
                 $this->getLanguageService()->getLL('flash.wrongPageTypeMsg'),
@@ -262,6 +313,25 @@ class NewTenantController extends AbstractController
                 \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
             return;
+        }
+
+        $countFormats = $this->formatRepository->countAll();
+
+        if ($countFormats >= count($formatsDefaults)) {
+            // Fine.
+            $this->addFlashMessage(
+                $this->getLanguageService()->getLL('flash.formatOkayMsg'),
+                $this->getLanguageService()->getLL('flash.formatOkay'),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+            );
+        } else {
+            // Configuration missing.
+            $this->addFlashMessage(
+                $this->getLanguageService()->getLL('flash.formatNotOkayMsg'),
+                $this->getLanguageService()->getLL('flash.formatNotOkay'),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+            );
+            $this->view->assign('format', 1);
         }
 
         $structures = $this->structureRepository->countByPid($this->pid);

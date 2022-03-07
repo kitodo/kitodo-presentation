@@ -350,6 +350,9 @@
 			<trans-unit id="newTenant.createMetadata" approved="yes">
 				<source><![CDATA[Create metadata]]></source>
 			</trans-unit>
+			<trans-unit id="newTenant.createFormat" approved="yes">
+				<source><![CDATA[Create default namespaces]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

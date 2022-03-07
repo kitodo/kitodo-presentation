@@ -18,7 +18,7 @@ if (\TYPO3_MODE === 'BE') {
         'newTenantModule', // Name of the module
         'bottom', // Position of the module
         [// Allowed controller action combinations
-            NewTenant::class => 'index,addMetadata,addSolrCore,addStructure',
+            NewTenant::class => 'index,addFormat,addMetadata,addSolrCore,addStructure',
         ],
         [// Additional configuration
             'access'    => 'admin',

@@ -777,27 +777,27 @@
                 <source><![CDATA[Apache Solr not reachable with given configuration.]]></source>
                 <target><![CDATA[Apache Solr ist mit der gegebenen Konfiguration nicht erreichbar.]]></target>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsOkay" approved="yes">
+            <trans-unit id="flash.formatOkay" approved="yes">
                 <source><![CDATA[Default namespaces found!]]></source>
                 <target><![CDATA[Standard-Namensräume gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsOkayMsg" approved="yes">
+            <trans-unit id="flash.formatOkayMsg" approved="yes">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
                 <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.]]></target>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsCreated" approved="yes">
+            <trans-unit id="flash.formatCreated" approved="yes">
                 <source><![CDATA[Default namespaces created successfully!]]></source>
                 <target><![CDATA[Standard-Namensräume erfolgreich angelegt!]]></target>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsCreatedMsg" approved="yes">
+            <trans-unit id="flash.formatCreatedMsg" approved="yes">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.]]></source>
                 <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO wurden erfolgreich definiert.]]></target>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsNotCreated" approved="yes">
+            <trans-unit id="flash.formatNotCreated" approved="yes">
                 <source><![CDATA[Default namespaces not found!]]></source>
                 <target><![CDATA[Standard-Namensräume nicht gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="metadataFormats.nsNotCreatedMsg" approved="yes">
+            <trans-unit id="flash.formatNotCreatedMsg" approved="yes">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
                 <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.]]></target>
             </trans-unit>
