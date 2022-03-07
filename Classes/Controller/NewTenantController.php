@@ -106,7 +106,6 @@ class NewTenantController extends AbstractController
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf');
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_structure.xlf');
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf');
-
     }
 
 
@@ -123,10 +122,9 @@ class NewTenantController extends AbstractController
         $frameworkConfiguration['persistence']['storagePid'] = 0;
         $this->configurationManager->setConfiguration($frameworkConfiguration);
 
-        $allFormats = $this->formatRepository->findAll();
-
         foreach ($formatsDefaults as $type => $values) {
 
+            // if default format record is not found, add it to the repository
             if ($this->formatRepository->findOneByType($type) === null) {
                 $newFormat = GeneralUtility::makeInstance(Format::class);
                 $newFormat->setType($type);
