@@ -613,38 +613,6 @@
                 <source><![CDATA[While adding the configuration records an error occurred. The records should be checked in the list module!]]></source>
                 <target><![CDATA[Beim Anlegen der Grundkonfiguration für Strukturdaten ist ein Fehler aufgetreten. Die Konfiguration wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!]]></target>
             </trans-unit>
-            <trans-unit id="flash.metadataOkay" approved="yes">
-                <source><![CDATA[Metadata found!]]></source>
-                <target><![CDATA[Metadaten gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.metadataOkayMsg" approved="yes">
-                <source><![CDATA[There are configuration records for bibliographic metadata. They can be edited in the list module.]]></source>
-                <target><![CDATA[Es ist eine Konfiguration für Metadaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
-            </trans-unit>
-            <trans-unit id="flash.metadataNotOkay" approved="yes">
-                <source><![CDATA[No metadata found!]]></source>
-                <target><![CDATA[Keine Metadaten gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.metadataNotOkayMsg" approved="yes">
-                <source><![CDATA[There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.]]></source>
-                <target><![CDATA[Es wurde keine Konfiguration für Metadaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
-            </trans-unit>
-            <trans-unit id="flash.metadataAdded" approved="yes">
-                <source><![CDATA[Basic configuration added!]]></source>
-                <target><![CDATA[Grundkonfiguration angelegt!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.metadataAddedMsg" approved="yes">
-                <source><![CDATA[Basic configuration records for bibliographic metadata were added. The records should be checked in the list module!]]></source>
-                <target><![CDATA[Es wurde eine Grundkonfiguration für Metadaten angelegt. Die Datensätze sollten über das Listenmodul kontrolliert und ggf. angepasst werden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.metadataNotAdded" approved="yes">
-                <source><![CDATA[No configuration added!]]></source>
-                <target><![CDATA[Keine Grundkonfiguration angelegt!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.metadataNotAddedMsg" approved="yes">
-                <source><![CDATA[While adding the configuration records an error occurred. The records should be checked in the list module!]]></source>
-                <target><![CDATA[Beim Anlegen der Grundkonfiguration für Metadaten ist ein Fehler aufgetreten. Die Konfiguration wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!]]></target>
-            </trans-unit>
             <trans-unit id="flash.solrcoreOkay" approved="yes">
                 <source><![CDATA[Solr core found!]]></source>
                 <target><![CDATA[Solr Kern gefunden!]]></target>
@@ -776,30 +744,6 @@
             <trans-unit id="solr.error" approved="yes">
                 <source><![CDATA[Apache Solr not reachable with given configuration.]]></source>
                 <target><![CDATA[Apache Solr ist mit der gegebenen Konfiguration nicht erreichbar.]]></target>
-            </trans-unit>
-            <trans-unit id="flash.formatOkay" approved="yes">
-                <source><![CDATA[Default namespaces found!]]></source>
-                <target><![CDATA[Standard-Namensräume gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.formatOkayMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
-                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.]]></target>
-            </trans-unit>
-            <trans-unit id="flash.formatCreated" approved="yes">
-                <source><![CDATA[Default namespaces created successfully!]]></source>
-                <target><![CDATA[Standard-Namensräume erfolgreich angelegt!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.formatCreatedMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.]]></source>
-                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO wurden erfolgreich definiert.]]></target>
-            </trans-unit>
-            <trans-unit id="flash.formatNotCreated" approved="yes">
-                <source><![CDATA[Default namespaces not found!]]></source>
-                <target><![CDATA[Standard-Namensräume nicht gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.formatNotCreatedMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
-                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.]]></target>
             </trans-unit>
 		</body>
 	</file>

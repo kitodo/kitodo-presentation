@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2022-03-07T21:48:12Z">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2022-03-08T16:25:36Z">
 		<header>
 			<generator>LFEditor</generator>
 		</header>
@@ -216,6 +216,10 @@
 			<trans-unit id="newTenant.createStructure" approved="yes">
 				<source><![CDATA[Create structure]]></source>
 				<target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.module" approved="yes">
+				<source><![CDATA[New Tenant Module]]></source>
+				<target><![CDATA[Modul Neuer Mandant]]></target>
 			</trans-unit>
 			<trans-unit id="nextPage" approved="yes">
 				<source><![CDATA[Next Page]]></source>
@@ -465,6 +469,47 @@
 				<source><![CDATA[Zoom Out]]></source>
 				<target><![CDATA[Ansicht verkleinern]]></target>
 			</trans-unit>
+            <trans-unit id="newTenant.formatOkay" approved="yes">
+                <source><![CDATA[Default namespaces found!]]></source>
+                <target><![CDATA[Standard-Namensräume gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.formatOkayMsg" approved="yes">
+                <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
+                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.formatCreated" approved="yes">
+                <source><![CDATA[Default namespaces created successfully!]]></source>
+                <target><![CDATA[Standard-Namensräume erfolgreich angelegt!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.formatCreatedMsg" approved="yes">
+                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.]]></source>
+                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO wurden erfolgreich definiert.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.formatNotCreated" approved="yes">
+                <source><![CDATA[Default namespaces not found!]]></source>
+                <target><![CDATA[Standard-Namensräume nicht gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.formatNotCreatedMsg" approved="yes">
+                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
+                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataOkay" approved="yes">
+                <source><![CDATA[Metadata found!]]></source>
+                <target><![CDATA[Metadaten gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataOkayMsg" approved="yes">
+                <source><![CDATA[There are configuration records for bibliographic metadata. They can be edited in the list module.]]></source>
+                <target><![CDATA[Es ist eine Konfiguration für Metadaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataNotOkay" approved="yes">
+                <source><![CDATA[No metadata found!]]></source>
+                <target><![CDATA[Keine Metadaten gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataNotOkayMsg" approved="yes">
+                <source><![CDATA[There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.]]></source>
+                <target><![CDATA[Es wurde keine Konfiguration für Metadaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
+            </trans-unit>
+
 		</body>
 	</file>
 </xliff>

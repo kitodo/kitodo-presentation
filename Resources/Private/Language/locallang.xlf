@@ -341,18 +341,64 @@
 			<trans-unit id="collection.feed.title">
 				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
 			</trans-unit>
-			<trans-unit id="newTenant.createSolrCore" approved="yes">
+			<trans-unit id="newTenant.module">
+				<source><![CDATA[New Tenant Module]]></source>
+			</trans-unit>
+			<trans-unit id="newTenant.createSolrCore">
 				<source><![CDATA[Create solr core]]></source>
 			</trans-unit>
-			<trans-unit id="newTenant.createStructure" approved="yes">
+			<trans-unit id="newTenant.createStructure">
 				<source><![CDATA[Create structure]]></source>
 			</trans-unit>
-			<trans-unit id="newTenant.createMetadata" approved="yes">
+			<trans-unit id="newTenant.createMetadata">
 				<source><![CDATA[Create metadata]]></source>
 			</trans-unit>
-			<trans-unit id="newTenant.createFormat" approved="yes">
+			<trans-unit id="newTenant.createFormat">
 				<source><![CDATA[Create default namespaces]]></source>
 			</trans-unit>
+            <trans-unit id="newTenant.formatOkay" approved="yes">
+                <source><![CDATA[Default namespaces found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.formatOkayMsg" approved="yes">
+                <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.formatCreated" approved="yes">
+                <source><![CDATA[Default namespaces created successfully!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.formatCreatedMsg" approved="yes">
+                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.formatNotOkay" approved="yes">
+                <source><![CDATA[Default namespaces not found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.formatNotOkayMsg" approved="yes">
+                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.structureOkay" approved="yes">
+                <source><![CDATA[Structures found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.structureOkayMsg" approved="yes">
+                <source><![CDATA[There are configuration records for structural metadata. They can be edited in the list module.]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.structureNotOkay" approved="yes">
+                <source><![CDATA[No structures found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.structureNotOkayMsg" approved="yes">
+                <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataOkay" approved="yes">
+                <source><![CDATA[Metadata found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataOkayMsg" approved="yes">
+                <source><![CDATA[There are configuration records for bibliographic metadata. They can be edited in the list module.]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataNotOkay" approved="yes">
+                <source><![CDATA[No metadata found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataNotOkayMsg" approved="yes">
+                <source><![CDATA[There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.]]></source>
+            </trans-unit>
+
 		</body>
 	</file>
 </xliff>

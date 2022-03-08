@@ -12,6 +12,10 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
@@ -30,7 +34,9 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $indexName;
 
     /**
-     * @var int
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat>
+     * @Extbase\ORM\Lazy
+     * @Extbase\ORM\Cascade("remove")
      */
     protected $format;
 
@@ -95,6 +101,20 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $sysLanguageUid;
 
     /**
+     * constructor
+     */
+    public function __construct()
+    {
+        // Do not remove the next line: It would break the functionality
+        $this->initStorageObjects();
+    }
+
+    protected function initStorageObjects()
+    {
+        $this->format = new ObjectStorage();
+    }
+
+    /**
      * @return int
      */
     public function getSorting(): int
@@ -143,19 +163,43 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return int
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> $format
      */
-    public function getFormat(): int
+    public function getFormat()
     {
         return $this->format;
     }
 
     /**
-     * @param int $format
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> $format
      */
-    public function setFormat(int $format): void
+    public function setFormat(ObjectStorage $format): void
     {
         $this->format = $format;
+    }
+
+    /**
+     * Adds a Format
+     *
+     * @param \Kitodo\Dlf\Domain\Model\MetadataFormat $format
+     *
+     * @return void
+     */
+    public function addFormat(MetadataFormat $format)
+    {
+        $this->format->attach($format);
+    }
+
+    /**
+     * Removes a Format
+     *
+     * @param \Kitodo\Dlf\Domain\Model\MetadataFormat $formatToRemove
+     *
+     * @return void
+     */
+    public function removeFormat(MetadataFormat $formatToRemove)
+    {
+        $this->format->detach($formatToRemove);
     }
 
     /**

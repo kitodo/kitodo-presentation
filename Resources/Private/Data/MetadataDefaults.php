@@ -16,7 +16,7 @@ return [
     'type' => [
         'format' => [
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => '$.metadata.[?(@.label==\'Manifest Type\')].value',
                 'xpath_sorting' => '',
             ],
@@ -35,17 +35,18 @@ return [
     'title' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => 'concat(./mods:titleInfo/mods:nonSort," ",./mods:titleInfo/mods:title)',
                 'xpath_sorting' => './mods:titleInfo/mods:title',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:note[@type="caption"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
+                'format_root' => 'IIIF1',
                 'xpath' => '$[label]',
                 'xpath_sorting' => '',
             ],
@@ -64,7 +65,7 @@ return [
     'volume' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:part/mods:detail/mods:number',
                 'xpath_sorting' => './mods:part[@type="host"]/@order',
             ],
@@ -83,12 +84,12 @@ return [
     'author' => [
         'format' => [
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:name',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => "$.metadata.[?(@.label=='Author')].value",
                 'xpath_sorting' => '',
             ],
@@ -107,12 +108,12 @@ return [
     'place' => [
         'format' => [
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origPlace',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => "$.metadata.[?(@.label=='Place of publication')].value",
                 'xpath_sorting' => '',
             ],
@@ -131,12 +132,12 @@ return [
     'year' => [
         'format' => [
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate',
                 'xpath_sorting' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:origDate/@when',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => "$.metadata.[?(@.label=='Date of publication')].value",
                 'xpath_sorting' => '',
             ],
@@ -155,7 +156,7 @@ return [
     'language' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:language/mods:languageTerm',
                 'xpath_sorting' => '',
             ],
@@ -174,17 +175,17 @@ return [
     'collection' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:classification',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:msIdentifier/teihdr:collection',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => "$.metadata.[?(@.label=='Collection')].value",
                 'xpath_sorting' => '',
             ],
@@ -203,17 +204,17 @@ return [
     'owner' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:name[./mods:role/mods:roleTerm="own"]/mods:displayForm',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:publisher',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => "$.metadata.[?(@.label=='Owner')].value",
                 'xpath_sorting' => '',
             ],
@@ -232,12 +233,12 @@ return [
     'purl' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:identifier[@type="purl"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="purl"]',
                 'xpath_sorting' => '',
             ],
@@ -256,17 +257,17 @@ return [
     'urn' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:identifier[@type="urn"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="urn"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => "$.metadata.[?(@.label=='URN')].value",
                 'xpath_sorting' => '',
             ],
@@ -285,12 +286,12 @@ return [
     'opac_id' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:identifier[@type="opac"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="opac"]',
                 'xpath_sorting' => '',
             ],
@@ -309,12 +310,12 @@ return [
     'union_id' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:identifier[@type="ppn"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="mmid"]',
                 'xpath_sorting' => '',
             ],
@@ -333,17 +334,17 @@ return [
     'record_id' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:recordInfo/mods:recordIdentifier',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="recordIdentifier"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => "$['@id']",
                 'xpath_sorting' => '',
             ],
@@ -362,17 +363,17 @@ return [
     'prod_id' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:identifier[@type="kitodo"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 2,
+                'format_root' => 'teiHeader',
                 'xpath' => './teihdr:fileDesc/teihdr:publicationStmt/teihdr:idno[@type="kitodo"]',
                 'xpath_sorting' => '',
             ],
             [
-                'encoded' => 5,
+                'format_root' => 'IIIF2',
                 'xpath' => "$.metadata.[?(@.label=='Kitodo')].value",
                 'xpath_sorting' => '',
             ],
@@ -391,7 +392,7 @@ return [
     'coordinates' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:subject/mods:cartographics/mods:coordinates',
                 'xpath_sorting' => '',
             ],
@@ -410,7 +411,7 @@ return [
     'license' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:accessCondition[@type="use and reproduction"]/@xlink:href',
                 'xpath_sorting' => '',
             ],
@@ -429,7 +430,7 @@ return [
     'terms' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:accessCondition[@type="local terms of use"]/@xlink:href',
                 'xpath_sorting' => '',
             ],
@@ -448,7 +449,7 @@ return [
     'restrictions' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:accessCondition[@type="restriction on access"]/@xlink:href',
                 'xpath_sorting' => '',
             ],
@@ -467,7 +468,7 @@ return [
     'out_of_print' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:accessCondition[@type="out of print work"]',
                 'xpath_sorting' => '',
             ],
@@ -486,7 +487,7 @@ return [
     'rights_info' => [
         'format' => [
             [
-                'encoded' => 1,
+                'format_root' => 'mods',
                 'xpath' => './mods:accessCondition[@type="info"]',
                 'xpath_sorting' => '',
             ],
