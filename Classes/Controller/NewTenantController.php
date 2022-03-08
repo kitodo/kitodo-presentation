@@ -186,13 +186,13 @@ class NewTenantController extends AbstractController
                 $newRecord->setDefaultValue($values['default_value']);
                 $newRecord->setWrap($values['wrap']);
                 $newRecord->setIndexTokenized($values['index_tokenized']);
-                $newRecord->setIndexStored((int)$values['index_stored']);
-                $newRecord->setIndexIndexed((int)$values['index_indexed']);
-                $newRecord->setIndexBoost((float)$values['index_boost']);
-                $newRecord->setIsSortable((int)$values['is_sortable']);
-                $newRecord->setIsFacet((int)$values['is_facet']);
-                $newRecord->setIsListed((int)$values['is_listed']);
-                $newRecord->setIndexAutocomplete((int)$values['index_autocomplete']);
+                $newRecord->setIndexStored((int) $values['index_stored']);
+                $newRecord->setIndexIndexed((int) $values['index_indexed']);
+                $newRecord->setIndexBoost((float) $values['index_boost']);
+                $newRecord->setIsSortable((int) $values['is_sortable']);
+                $newRecord->setIsFacet((int) $values['is_facet']);
+                $newRecord->setIsListed((int) $values['is_listed']);
+                $newRecord->setIndexAutocomplete((int) $values['index_autocomplete']);
 
                 if (is_array($values['format'])) {
                     foreach ($values['format'] as $format) {
