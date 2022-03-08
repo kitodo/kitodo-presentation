@@ -538,7 +538,7 @@ function loadModel ( path, basename, filename, extension, org_extension ) {
 			case 'gltf':
 			case 'GLTF':
 				const dracoLoader = new DRACOLoader();
-				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/libs/draco/' );
+				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/draco/' );
 				dracoLoader.preload();
 				const gltf = new GLTFLoader();
 				gltf.setDRACOLoader(dracoLoader);
