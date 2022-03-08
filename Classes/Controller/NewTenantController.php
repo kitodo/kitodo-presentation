@@ -332,17 +332,14 @@ class NewTenantController extends AbstractController
         }
 
         $formatsDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
-        $countFormats = $this->formatRepository->countAll();
         $recordInfos['formats']['numCurrent'] = $this->formatRepository->countAll();
         $recordInfos['formats']['numDefault'] = count($formatsDefaults);
 
         $structuresDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/StructureDefaults.php');
-        $structures = $this->structureRepository->countByPid($this->pid);
         $recordInfos['structures']['numCurrent'] = $this->structureRepository->countByPid($this->pid);
         $recordInfos['structures']['numDefault'] = count($structuresDefaults);
 
         $metadataDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/MetadataDefaults.php');
-        $metadata = $this->metadataRepository->countByPid($this->pid);
         $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->countByPid($this->pid);
         $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
 
