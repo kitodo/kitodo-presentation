@@ -121,6 +121,10 @@ class NewTenantController extends AbstractController
         $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf');
 
         $this->pid = (int) GeneralUtility::_GP('id');
+
+        $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
+        $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
+        $this->configurationManager->setConfiguration($frameworkConfiguration);
     }
 
 
@@ -169,11 +173,6 @@ class NewTenantController extends AbstractController
     {
         // Include metadata definition file.
         $metadataDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/MetadataDefaults.php');
-
-        // Set storagePid for saving records.
-        $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
-        $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
-        $this->configurationManager->setConfiguration($frameworkConfiguration);
 
         $doPersist = false;
 
@@ -262,17 +261,13 @@ class NewTenantController extends AbstractController
         // Include structure definition file.
         $structureDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/StructureDefaults.php');
 
-        // Set storagePid for saving records.
-        $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
-        $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
-        $this->configurationManager->setConfiguration($frameworkConfiguration);
-
         $doPersist = false;
 
         foreach ($structureDefaults as $indexName => $values) {
             // if default format record is not found, add it to the repository
             if ($this->structureRepository->findOneByIndexName($indexName) === null) {
                 $newRecord = GeneralUtility::makeInstance(Structure::class);
+                $newRecord->setLabel($this->getLanguageService()->getLL('structure.' . $indexName));
                 $newRecord->setIndexName($indexName);
                 $newRecord->setToplevel($values['toplevel']);
                 $newRecord->setOaiName($values['oai_name']);
@@ -318,8 +313,6 @@ class NewTenantController extends AbstractController
      */
     public function indexAction()
     {
-        $this->pid = (int) GeneralUtility::_GP('id');
-
         $recordInfos = [];
 
         if ($this->pageInfo['doktype'] != 254) {
@@ -361,7 +354,6 @@ class NewTenantController extends AbstractController
             );
             $this->view->assign('solr', 1);
         }
-
 
         $this->view->assign('recordInfos', $recordInfos);
     }
