@@ -22,9 +22,6 @@ return [
         'rootLevel' => -1,
         'searchFields' => 'token',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
         'showRecordFieldList' => 'token,options',
     ],

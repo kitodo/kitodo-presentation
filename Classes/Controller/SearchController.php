@@ -161,7 +161,7 @@ class SearchController extends AbstractController
 
         // Add uHash parameter to suggest parameter to make a basic protection of this form.
         if ($this->settings['suggest']) {
-            $this->view->assign('uHash', GeneralUtility::hmac((string)(new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
+            $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
     }
 
