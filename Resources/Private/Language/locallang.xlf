@@ -410,6 +410,12 @@
             <trans-unit id="newTenant.solrcoreNotOkayMsg" approved="yes">
                 <source><![CDATA[There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.]]></source>
             </trans-unit>
+            <trans-unit id="newTenant.wrongPageType" approved="yes">
+                <source><![CDATA[Page is no Folder!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.wrongPageTypeMsg" approved="yes">
+                <source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
+            </trans-unit>
 
 		</body>
 	</file>

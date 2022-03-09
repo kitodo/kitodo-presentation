@@ -246,7 +246,6 @@ class NewTenantController extends AbstractController
         }
 
         $this->forward('index');
-
     }
 
     /**
@@ -312,12 +311,7 @@ class NewTenantController extends AbstractController
         $recordInfos = [];
 
         if ($this->pageInfo['doktype'] != 254) {
-            $this->addFlashMessage(
-                $this->getLanguageService()->getLL('flash.wrongPageTypeMsg'),
-                $this->getLanguageService()->getLL('flash.wrongPageType'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
-            );
-            return;
+            $this->forward('error');
         }
 
         $formatsDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
@@ -336,4 +330,15 @@ class NewTenantController extends AbstractController
 
         $this->view->assign('recordInfos', $recordInfos);
     }
+
+    /**
+     * Error function - there is nothing to do at the moment.
+     *
+     * @access public
+     *
+     */
+    public function errorAction()
+    {
+    }
+
 }

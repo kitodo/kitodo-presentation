@@ -573,14 +573,6 @@
                 <source><![CDATA[File "%s" could not be loaded.]]></source>
                 <target><![CDATA[Datei "%s" konnte nicht eingelesen werden.]]></target>
             </trans-unit>
-            <trans-unit id="flash.wrongPageType" approved="yes">
-                <source><![CDATA[Page is no Folder!]]></source>
-                <target><![CDATA[Seite ist kein Ordner!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.wrongPageTypeMsg" approved="yes">
-                <source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
-                <target><![CDATA[Die Konfigurationsdatensätze von Kitodo.Presentation müssen in Ordnern abgelegt werden.]]></target>
-            </trans-unit>
             <trans-unit id="flash.structureOkay" approved="yes">
                 <source><![CDATA[Structures found!]]></source>
                 <target><![CDATA[Strukturdaten gefunden!]]></target>
