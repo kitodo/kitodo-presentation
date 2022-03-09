@@ -32,9 +32,6 @@ return [
         'rootLevel' => 0,
         'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'label,description,thumbnail,documents',
-    ],
     'interface' => [
     ],
     'columns' => [

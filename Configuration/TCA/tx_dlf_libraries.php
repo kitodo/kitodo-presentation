@@ -26,9 +26,6 @@ return [
         'rootLevel' => 0,
         'searchFields' => 'label,website,contact',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
     ],
     'columns' => [

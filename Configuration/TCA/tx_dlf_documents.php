@@ -29,9 +29,6 @@ return [
         'rootLevel' => 0,
         'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,record_id,oai_id,opac_id,union_id,urn',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
         'maxDBListItems' => 25,
         'maxSingleDBListItems' => 50,

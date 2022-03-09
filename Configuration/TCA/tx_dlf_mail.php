@@ -22,9 +22,6 @@ return [
     ],
     'interface' => [
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'columns' => [
         'label' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail',

@@ -26,9 +26,6 @@ return [
         'maxDBListItems' => 25,
         'maxSingleDBListItems' => 50,
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'columns' => [
         'label' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.label',

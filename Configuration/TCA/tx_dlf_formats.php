@@ -23,9 +23,6 @@ return [
         'rootLevel' => 1,
         'searchFields' => 'type,class',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
     ],
     'columns' => [

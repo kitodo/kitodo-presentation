@@ -279,7 +279,8 @@ class MetadataController extends AbstractController
                     }
 
                     if (is_array($metadataArray[$i][$metadataName])) {
-                        $metadataArray[$i][$metadataName] = array_values(array_filter($metadataArray[$i][$metadataName], function ($value) {
+                        $metadataArray[$i][$metadataName] = array_values(array_filter($metadataArray[$i][$metadataName], function($value)
+                        {
                             return !empty($value);
                         }));
                     }
