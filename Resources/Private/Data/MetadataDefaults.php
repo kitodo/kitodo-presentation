@@ -46,7 +46,6 @@ return [
             ],
             [
                 'format_root' => 'IIIF2',
-                'format_root' => 'IIIF1',
                 'xpath' => '$[label]',
                 'xpath_sorting' => '',
             ],
