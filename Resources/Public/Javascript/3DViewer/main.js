@@ -1,6 +1,6 @@
 //Supported file formats: OBJ, DAE, FBX, PLY, IFC, STL, XYZ, JSON, 3DS, glTF
 
-const path = '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer';
+//const path = '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer';
 //const path = '..'; //local
 
 import * as THREE from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/three.module.js';
@@ -35,9 +35,15 @@ const editor = true;
 
 let mixer;
 
-const supportedFormats = [ 'OBJ', 'DAE', 'FBX', 'PLY', 'IFC', 'STL', 'XYZ', 'JSON' ];
-
 const container = document.getElementById("DFG_3DViewer");
+const supportedFormats = [ 'OBJ', 'DAE', 'FBX', 'PLY', 'IFC', 'STL', 'XYZ', 'JSON', '3DS', 'GLFT' ];
+const filename = container.getAttribute("3d").split("/").pop();
+const basename = filename.substring(0, filename.lastIndexOf('.'));
+const extension = filename.substring(filename.lastIndexOf('.') + 1);	
+const path = container.getAttribute("3d").substring(0, container.getAttribute("3d").lastIndexOf(filename));
+const domain = "https://3d-repository.hs-mainz.de";
+const uri = path.replace(domain+"/", "");
+
 var spinnerContainer = document.createElement("div");
 spinnerContainer.id = 'spinnerContainer';
 spinnerContainer.className = 'spinnerContainer';
@@ -63,7 +69,7 @@ var guiContainer = document.createElement("div");
 guiContainer.id = 'guiContainer';
 guiContainer.className = 'guiContainer';
 guiContainer.style.position = 'absolute';
-guiContainer.style.left = '80%';
+guiContainer.style.right = '10%';
 guiContainer.style.marginTop = '0px';
 var guiElement = document.createElement("div");
 guiElement.id = 'guiContainer';
@@ -108,6 +114,11 @@ const colors = {
 }
 
 const intensity = { startIntensity: 1 }
+
+const saveProperties = {
+	Camera: true,
+	Light: true
+}
 
 var EDITOR = false;
 
@@ -156,6 +167,7 @@ var clippingPlanes = [
 		new THREE.Plane( new THREE.Vector3( 0, 0, - 1 ), 0 )
 	];
 var planeHelpers, clippingFolder;
+var propertiesFolder;
 var planeObjects = [];
 
 var clippingGeometry = [];
@@ -205,12 +217,12 @@ function createClippingPlaneGroup( geometry, plane, renderOrder ) {
 }
 
 function init() {
-	
+	// model
 	canvasDimensions = {x: container.getBoundingClientRect().width, y: container.getBoundingClientRect().bottom};
 	container.setAttribute("width", canvasDimensions.x);
 	container.setAttribute("height", canvasDimensions.y);
 
-	camera = new THREE.PerspectiveCamera( 45, canvasDimensions.x / canvasDimensions.y, 1, 200000 );
+	camera = new THREE.PerspectiveCamera( 45, canvasDimensions.x / canvasDimensions.y, 0.1, 200000 );
 	camera.position.set( 0, 0, 0 );
 
 	scene = new THREE.Scene();
@@ -262,16 +274,7 @@ function init() {
 	} );
 	scene.add( transformControlLight );
 
-	// model
-	const filename = container.getAttribute("3d").split("/").pop();
-	const basename = filename.substring(0, filename.lastIndexOf('.'));
-	const extension = filename.substring(filename.lastIndexOf('.') + 1);	
-	const path = container.getAttribute("3d").substring(0, container.getAttribute("3d").lastIndexOf(filename));
-	const domain = "https://3d-repository.hs-mainz.de";
-	const uri = path.replace(domain+"/", "");
-
 	/*try {
-
 	} catch (e) {
 		// statements to handle any exceptions
 		console.log("No glTF file, loading original file.");
@@ -322,7 +325,7 @@ function init() {
 	{ 
 		if (value == '') transformControl.detach(); else { transformControl.mode = value; transformControl.attach( helperObjects[0] ); }
 	});
-	const lightFolder = editorFolder.addFolder('Lights');
+	const lightFolder = editorFolder.addFolder('Lights').close();
 	lightFolder.add(transformText, 'Transform Light', { None: '', Move: 'translate', Rotate: 'rotate', Scale: 'scale' } ).onChange(function (value)
 	{ 
 		if (value == '') transformControlLight.detach(); else { transformControlLight.mode = value; transformControlLight.attach( lightObjects[0] ); }
@@ -334,7 +337,10 @@ function init() {
 	lightFolder.add( intensity, 'startIntensity', 0, 10 ).onChange(function (value) {
 		lightObjects[0].intensity = value;
 	});
-	clippingFolder = editorFolder.addFolder('Clipping Planes');
+	clippingFolder = editorFolder.addFolder('Clipping Planes').close();
+	propertiesFolder = editorFolder.addFolder('Save properties').close();
+	propertiesFolder.add( saveProperties, 'Camera' ); 
+	propertiesFolder.add( saveProperties, 'Light' ); 
 
 	if (editor)
 		editorFolder.add({["Save"]: function(){
@@ -347,8 +353,13 @@ function init() {
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			//console.log(camera.position);
 			var rotateMetadata = new THREE.Vector3(THREE.Math.radToDeg(helperObjects[0].rotation.x),THREE.Math.radToDeg(helperObjects[0].rotation.y),THREE.Math.radToDeg(helperObjects[0].rotation.z));
-			var newMetadata = ({"objPosition": [ helperObjects[0].position.x, helperObjects[0].position.y, helperObjects[0].position.z ], "objScale": [ helperObjects[0].scale.x, helperObjects[0].scale.y, helperObjects[0].scale.z ], "objRotation": [ rotateMetadata.x, rotateMetadata.y, rotateMetadata.z ], "camPosition": [ camera.position.x, camera.position.y, camera.position.z ], "camLookAt": [ 0, 0, 0 ], "lightPosition": [ dirLight.position.x, dirLight.position.y, dirLight.position.z ], "lightColor": [ "#" + (dirLight.color.getHexString()).toUpperCase() ], "lightIntensity": [ dirLight.intensity ] });
-			console.log(uri+basename+"/");
+			var newMetadata = ({"objPosition": [ helperObjects[0].position.x, helperObjects[0].position.y, helperObjects[0].position.z ], "objScale": [ helperObjects[0].scale.x, helperObjects[0].scale.y, helperObjects[0].scale.z ], "objRotation": [ rotateMetadata.x, rotateMetadata.y, rotateMetadata.z ] });
+			//console.log(newMetadata);
+			if (saveProperties.Camera)
+				newMetadata = Object.assign(newMetadata, {"cameraPosition": [ camera.position.x, camera.position.y, camera.position.z ], "controlsTarget": [ controls.target.x, controls.target.y, controls.target.z ]});
+			if (saveProperties.Light)
+				newMetadata = Object.assign(newMetadata, {"lightPosition": [ dirLight.position.x, dirLight.position.y, dirLight.position.z ], "lightColor": [ "#" + (dirLight.color.getHexString()).toUpperCase() ], "lightIntensity": [ dirLight.intensity ] });
+			//console.log(uri+basename+"/");
 			if (compressedFile != '')
 				var params = "5MJQTqB7W4uwBPUe="+JSON.stringify(newMetadata, null, '\t')+"&path="+uri+basename+compressedFile+"&filename="+filename;
 			else
@@ -554,44 +565,34 @@ function loadModel ( path, basename, filename, extension, org_extension ) {
 							child.geometry.computeVertexNormals();
 							if(child.material.map) child.material.map.anisotropy = 16;
 							child.material.side = THREE.DoubleSide;
-							for ( let i = 0; i < 3; i ++ ) {
-
+							/*for ( let i = 0; i < 3; i ++ ) {
 								const poGroup = new THREE.Group();
 								const plane = clippingPlanes[ i ];
 								const stencilGroup = createClippingPlaneGroup( child.geometry, plane, i + 1 );
-
 								// plane is clipped by the other clipping planes
 								const planeMat =
 									new THREE.MeshStandardMaterial( {
-
 										color: 0xE91E63,
 										metalness: 0.1,
 										roughness: 0.75,
 										clippingPlanes: clippingPlanes.filter( p => p !== plane ),
-
 										stencilWrite: true,
 										stencilRef: 0,
 										stencilFunc: THREE.NotEqualStencilFunc,
 										stencilFail: THREE.ReplaceStencilOp,
 										stencilZFail: THREE.ReplaceStencilOp,
 										stencilZPass: THREE.ReplaceStencilOp,
-
 									} );
 								const po = new THREE.Mesh( planeGeom, planeMat );
 								po.onAfterRender = function ( renderer ) {
-
 									renderer.clearStencil();
-
 								};
-
 								po.renderOrder = i + 1.1;
-
 								clippingObject.add( stencilGroup );
 								poGroup.add( po );
 								planeObjects.push( po );
 								scene.add( poGroup );
-
-							}
+							}*/
 							child.material.clippingPlanes = clippingPlanes;
 							child.material.clipIntersection = false;
 							mainObject.push(child);	
@@ -628,7 +629,7 @@ function loadModel ( path, basename, filename, extension, org_extension ) {
 	else {
 		//console.log("File " + path + basename + " not found.");
 		showToast("File " + path + basename + " not found.");
-		circle.set(100, 100);
+		//circle.set(100, 100);
 		circle.hide();
 	}
 	
@@ -799,13 +800,18 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 
 function setupCamera (_object, _camera, _light, _data, _controls) {
 	if (typeof (_data) != "undefined") {
-		_camera.position.set( _data["camPosition"][0], _data["camPosition"][1], _data["camPosition"][2] );
-		//_light.position.set( _data["lightPosition"][0], _data["lightPosition"][1], _data["lightPosition"][2] );
-		//_light.color = new THREE.Color( _data["lightColor"][0] );
-		//_light.intensity = _data["lightIntensity"][0];
+		if (typeof (_data["cameraPosition"]) != "undefined") {
+			_camera.position.set (_data["cameraPosition"][0], _data["cameraPosition"][1], _data["cameraPosition"][2]);
+			_controls.target.set (_data["controlsTarget"][0], _data["controlsTarget"][1], _data["controlsTarget"][2]);
+		}
+		if (typeof (_data["lightPosition"]) != "undefined") {
+			_light.position.set( _data["lightPosition"][0], _data["lightPosition"][1], _data["lightPosition"][2] );
+			_light.color = new THREE.Color( _data["lightColor"][0] );
+			_light.intensity = _data["lightIntensity"][0];
+		}
 		_camera.updateProjectionMatrix();
 		_controls.update();
-		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls );
+		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls, true );
 	}
 	else {
 		var boundingBox = new THREE.Box3();
@@ -820,7 +826,7 @@ function setupCamera (_object, _camera, _light, _data, _controls) {
 		var size = new THREE.Vector3();
 		boundingBox.getSize(size);
 		camera.position.set(size.x, size.y, size.z);
-		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls );
+		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls, false );
 	}
 }
 
@@ -877,7 +883,7 @@ function animate() {
 	stats.update();
 }
 
-function fitCameraToCenteredObject (camera, object, offset, orbitControls ) {
+function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit ) {
 	const boundingBox = new THREE.Box3();
 	if (Array.isArray(object)) {
 		for (var i = 0; i < object.length; i++) {			
@@ -952,6 +958,7 @@ function fitCameraToCenteredObject (camera, object, offset, orbitControls ) {
     let dx = size.z / 2 + Math.abs( size.x / 2 / Math.tan( fovh / 2 ) );
     let dy = size.z / 2 + Math.abs( size.y / 2 / Math.tan( fov / 2 ) );
     let cameraZ = Math.max(dx, dy);
+	if (_fit) cameraZ = camera.position.z;
 
     // offset the camera, if desired (to avoid filling the whole canvas)
     if( offset !== undefined && offset !== 0 ) cameraZ *= offset;
@@ -1076,7 +1083,6 @@ function onPointerMove( event ) {
 			var intersects = raycaster.intersectObjects( helperObjects[0].children, false );
 		else
 			var intersects = raycaster.intersectObjects( helperObjects[0], false );
-
 		if ( intersects.length > 0 ) {
 			const object = intersects[ 0 ].object;
 			if ( object !== transformControl.object ) {
