@@ -12,6 +12,13 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+/**
+ * Domain model of the 'Library' or owner of the document.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**

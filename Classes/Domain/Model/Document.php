@@ -16,6 +16,13 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
+/**
+ * Domain model of the 'Document'.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
@@ -29,6 +36,8 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $tstamp;
 
     /**
+     * This contains the representative of the raw XML / IIIF data of the document.
+     *
      * @var \Kitodo\Dlf\Common\Doc|null
      */
     protected $doc = null;

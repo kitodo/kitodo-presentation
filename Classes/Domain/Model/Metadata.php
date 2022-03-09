@@ -13,9 +13,15 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 use TYPO3\CMS\Extbase\Annotation as Extbase;
-use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
+/**
+ * Domain model of the 'Metadata'.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**

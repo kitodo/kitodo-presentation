@@ -12,6 +12,13 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+/**
+ * Domain model of the 'ActionLog' (Basket feature).
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class ActionLog extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**

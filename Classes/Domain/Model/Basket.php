@@ -12,6 +12,13 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+/**
+ * Domain model of the 'Basket'.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**

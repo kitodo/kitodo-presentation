@@ -14,7 +14,7 @@ namespace Kitodo\Dlf\Controller;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Controller for the plugin 'Statistics' for the 'dlf' extension
+ * Controller class for the plugin 'Statistics'.
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3

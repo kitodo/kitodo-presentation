@@ -12,6 +12,13 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+/**
+ * Domain model of 'Token' (OAI-PMH feature).
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class Token extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**

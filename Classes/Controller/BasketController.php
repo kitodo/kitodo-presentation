@@ -23,6 +23,14 @@ use Kitodo\Dlf\Domain\Repository\PrinterRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
+/**
+ * Controller class for the plugin 'Basket'.
+ *
+ * @author Christopher Timm <timm@effective-webwork.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class BasketController extends AbstractController
 {
     /**

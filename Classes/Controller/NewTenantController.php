@@ -33,8 +33,10 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 
 /**
- * Class for the NewTenant backend module
+ * Controller class for the backend module 'New Tenant'.
  *
+ * @author Christopher Timm <timm@effective-webwork.de>
+ * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public

@@ -35,7 +35,7 @@ Please run the following commands in your webroot where the TYPO3 :file:`compose
 
    .. code-block:: shell
 
-      composer require kitodo/presentation:^3.3
+      composer require kitodo/presentation:^4
 
 #. Install and Activate the Extension
 
@@ -89,6 +89,25 @@ Plugin Page Grid
 The plugin use the fluid widget.paginate viewhelper now. The markup has changed. You need to check and adopt your design.
 
 The pagination can be configured by TypoScript. The flexform setting `limit` is changed to default `paginate.itemsPerPage`.
+
+Plugin ListView
+---------------
+
+The ListView plugin works in a different manner now. It still can be used to render results from the Search plugin or the
+Collection plugin. Both plugins have their own "listview" which basically uses the same Fluid partials.
+
+With the ListView plugin, you still achieve the following situation:
+
+```
+page 1: Search Plugin (main column)
+   |
+   v
+   +--> page 2: ListView Plugin (main column) | Search Plugin (sidebar) e.g with forceAbsoluteUrlHttps
+   ^
+   |
+page 3: Collection Plugin (main column)
+```
+
 
 Version 3.2 -> 3.3
 ==================

@@ -20,12 +20,19 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Ubl\Iiif\Context\IRI;
 
+/**
+ * Controller class for the plugin 'Metadata'.
+ *
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class MetadataController extends AbstractController
 {
-    public $prefixId = 'tx_dlf';
-
-    protected $metadataRepository;
-
+    /**
+     * @var CollectionRepository
+     */
     protected $collectionRepository;
 
     /**
@@ -35,6 +42,11 @@ class MetadataController extends AbstractController
     {
         $this->collectionRepository = $collectionRepository;
     }
+
+    /**
+     * @var MetadataRepository
+     */
+    protected $metadataRepository;
 
     /**
      * @param MetadataRepository $metadataRepository

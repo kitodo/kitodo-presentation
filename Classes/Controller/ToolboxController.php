@@ -15,6 +15,14 @@ use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Controller class for plugin 'Toolbox'.
+ *
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class ToolboxController extends AbstractController
 {
     /**
