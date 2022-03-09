@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Model\MetadataFormat;
@@ -232,7 +233,8 @@ class NewTenantController extends AbstractController
         if ($this->solrCoreRepository->findOneByPid($this->pid) === null) {
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
             $newRecord->setLabel($this->getLanguageService()->getLL('flexform.solrcore') . ' (PID ' . $this->pid . ')');
-            $newRecord->setIndexName('');
+            $indexName = Solr::createCore('');
+            $newRecord->setIndexName($indexName);
 
             $this->solrCoreRepository->add($newRecord);
 
