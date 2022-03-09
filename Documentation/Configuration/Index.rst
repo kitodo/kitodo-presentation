@@ -161,7 +161,7 @@ Solr Installation
 This extension doesn't include Solr, but just a prepared configuration set.
 To setup Apache Solr, perform the following steps:
 
-1. Make sure you have Apache 8.11 and running.
+1. Make sure you have Apache Solr 8.11 and running.
 
    Download Solr from https://solr.apache.org/downloads.html.
    Other versions may work but are not tested.
