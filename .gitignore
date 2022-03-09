@@ -5,6 +5,7 @@
 .project
 .settings/
 .vscode
+.phpdoc
 composer.lock
 Documentation-GENERATED-temp/
 nbproject/
