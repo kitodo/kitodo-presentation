@@ -1,4 +1,8 @@
 {
+  "repositories": [
+		{ "type": "composer", "url": "https://composer.typo3.org/" },
+		{ "type": "git", "url": "https://github.com/beatrycze-volk/kitodo-presentation-3d-libraries.git" }
+	],
   "name": "kitodo/presentation",
   "description": "Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.",
   "type": "typo3-cms-extension",
@@ -17,6 +21,12 @@
       "email": "sebastian.meyer@slub-dresden.de",
       "homepage": "https://www.slub-dresden.de",
       "role": "maintainer"
+    },
+    {
+      "name": "Beatrycze Volk",
+      "email": "beatrycze.volk@slub-dresden.de",
+      "homepage": "https://www.slub-dresden.de",
+      "role": "developer"
     }
   ],
   "support": {
@@ -24,6 +34,8 @@
     "source": "https://github.com/kitodo/kitodo-presentation",
     "docs": "https://docs.typo3.org/p/kitodo/presentation/master/en-us/"
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "php": "^7.3|^7.4",
     "ext-curl": "*",
@@ -37,7 +49,8 @@
     "typo3/cms-tstemplate": "^9.5|^10.4",
     "caseyamcl/phpoaipmh": "^3.0",
     "ubl/php-iiif-prezi-reader": "0.3.0",
-    "solarium/solarium": "^4.2|^5.2"
+    "solarium/solarium": "^4.2|^5.2",
+    "kitodo/presentation-3d-libraries": "dev-master"
   },
   "require-dev": {
     "spatie/phpunit-watcher": "^1.23",
