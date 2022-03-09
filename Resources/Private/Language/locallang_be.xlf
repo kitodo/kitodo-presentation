@@ -449,30 +449,6 @@
             <trans-unit id="flash.wrongPageTypeMsg" approved="yes">
                 <source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
             </trans-unit>
-            <trans-unit id="flash.solrcoreOkay" approved="yes">
-                <source><![CDATA[Solr core found!]]></source>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreOkayMsg" approved="yes">
-                <source><![CDATA[There are configuration records for Solr cores. They can be edited in the list module.]]></source>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreMissing" approved="yes">
-                <source><![CDATA[No Solr core found!]]></source>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreMissingMsg" approved="yes">
-                <source><![CDATA[There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.]]></source>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreAdded" approved="yes">
-                <source><![CDATA[Solr core created!]]></source>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreAddedMsg" approved="yes">
-                <source><![CDATA[A new Solr core was created. It can be edited in the list module.]]></source>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreNotAdded" approved="yes">
-                <source><![CDATA[No Solr core created!]]></source>
-            </trans-unit>
-            <trans-unit id="flash.solrcoreNotAddedMsg" approved="yes">
-                <source><![CDATA[While creating a new Solr core an error occurred. The record should be checked in the list module!]]></source>
-            </trans-unit>
             <trans-unit id="flash.solrException" approved="yes">
                 <source><![CDATA[Apache Solr exception thrown:]]></source>
             </trans-unit>

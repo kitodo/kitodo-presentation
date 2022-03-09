@@ -15,6 +15,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Model\MetadataFormat;
+use Kitodo\Dlf\Domain\Model\SolrCore;
 use Kitodo\Dlf\Domain\Model\Structure;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
@@ -226,31 +227,26 @@ class NewTenantController extends AbstractController
      */
     public function addSolrCoreAction()
     {
-        // Build data array.
-        $data['tx_dlf_solrcores'][uniqid('NEW')] = [
-            'pid' => intval($this->pid),
-            'label' => $this->getLanguageService()->getLL('flexform.solrcore') . ' (PID ' . $this->pid . ')',
-            'index_name' => '',
-        ];
-        $_ids = Helper::processDBasAdmin($data);
-        // Check for failed inserts.
-        if (count($_ids) == 1) {
-            // Fine.
-            $this->addFlashMessage(
-                $this->getLanguageService()->getLL('flash.solrcoreAddedMsg'),
-                $this->getLanguageService()->getLL('flash.solrcoreAdded'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-            );
-        } else {
-            // Something went wrong.
-            $this->addFlashMessage(
-                $this->getLanguageService()->getLL('flash.solrcoreNotAddedMsg'),
-                $this->getLanguageService()->getLL('flash.solrcoreNotAdded'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
-            );
+        $doPersist = false;
+
+        if ($this->solrCoreRepository->findOneByPid($this->pid) === null) {
+            $newRecord = GeneralUtility::makeInstance(SolrCore::class);
+            $newRecord->setLabel($this->getLanguageService()->getLL('flexform.solrcore') . ' (PID ' . $this->pid . ')');
+            $newRecord->setIndexName('');
+
+            $this->solrCoreRepository->add($newRecord);
+
+            $doPersist = true;
+        }
+
+        // We must persist here, if we changed anything.
+        if ($doPersist === true) {
+            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+            $persistenceManager->persistAll();
         }
 
         $this->forward('index');
+
     }
 
     /**
@@ -336,24 +332,7 @@ class NewTenantController extends AbstractController
         $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->countByPid($this->pid);
         $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
 
-        $solrCore = $this->solrCoreRepository->countByPid($this->pid);
-
-        if ($solrCore) {
-            // Fine.
-            $this->addFlashMessage(
-                $this->getLanguageService()->getLL('flash.solrcoreOkayMsg'),
-                $this->getLanguageService()->getLL('flash.solrcoreOkay'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
-            );
-        } else {
-            // Solr core missing.
-            $this->addFlashMessage(
-                $this->getLanguageService()->getLL('flash.solrcoreMissingMsg'),
-                $this->getLanguageService()->getLL('flash.solrcoreMissing'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
-            );
-            $this->view->assign('solr', 1);
-        }
+        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->countByPid($this->pid);
 
         $this->view->assign('recordInfos', $recordInfos);
     }

@@ -71,12 +71,16 @@
 </div>
 
 <div style="padding: 5px;">
-    <f:if condition="{solr}">
+    <f:if condition="{recordInfos.solrcore.numCurrent} >= 1">
         <f:then>
-            <f:form action="addSolrCore" name="solr">
-                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createSolrCore')}" class="btn btn-primary"/>
-            </f:form>
+            <f:render partial="InfoBox" arguments="{title: '{f:translate(key: \'newTenant.solrcoreOkay\')}', message: '{f:translate(key: \'newTenant.solrcoreOkayMsg\')}', alert: 'success'}" />
         </f:then>
+        <f:else>
+            <f:render partial="InfoBox" arguments="{title: '{f:translate(key: \'newTenant.solrcoreNotOkay\')}', message: '{f:translate(key: \'newTenant.solrcoreNotOkayMsg\')}', alert: 'danger'}" />
+            <f:form action="addSolrCore" name="solr">
+                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createSolrCore')}" class="btn btn-primary" />
+            </f:form>
+        </f:else>
     </f:if>
 </div>
 

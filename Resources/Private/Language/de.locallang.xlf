@@ -509,6 +509,22 @@
                 <source><![CDATA[There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.]]></source>
                 <target><![CDATA[Es wurde keine Konfiguration für Metadaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
             </trans-unit>
+            <trans-unit id="newTenant.solrcoreOkay" approved="yes">
+                <source><![CDATA[Solr core found!]]></source>
+                <target><![CDATA[Solr Kern gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.solrcoreOkayMsg" approved="yes">
+                <source><![CDATA[There are configuration records for Solr cores. They can be edited in the list module.]]></source>
+                <target><![CDATA[Es wurde die Konfiguration für einen Solr Kern gefunden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.solrcoreNotOkay" approved="yes">
+                <source><![CDATA[No Solr core found!]]></source>
+                <target><![CDATA[Kein Solr Kern gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.solrcoreNotOkayMsg" approved="yes">
+                <source><![CDATA[There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.]]></source>
+                <target><![CDATA[Es wurde kein Solr Kern gefunden. Ohne Solr Kern kann das Plugin zur Recherche in den Meta- und Strukturdaten nicht verwendet werden. Ein Solr Kern kann automatisch angelegt werden.]]></target>
+            </trans-unit>
 
 		</body>
 	</file>
