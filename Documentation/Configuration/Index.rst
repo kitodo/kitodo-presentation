@@ -25,13 +25,20 @@ TYPO3 Setup
 Extension Configuration
 =======================
 
-This step is obligatory!
+You should check the extension configuration!
 
 * go to the Extension Configuration (:file:`ADMIN TOOLS -> Settings -> Extension Configuration`).
 * open dlf
 * check and save the configuration
 
-After this step, the require tx_dlf_formats records are created on the root page (uid=0).
+Tenant Configuration
+=======================
+
+You must create a data folder for some Kitodo.Presentation configuration records like metadata,
+structures, solrCore and formats (namespaces). This can be achieved easily with the 'New Tenant'
+backend module on the left side in section 'Tools'.
+
+Make sure, all fields are green. Then all necessary records are created.
 
 TYPO3 Configuration
 ===================
@@ -154,7 +161,7 @@ Solr Installation
 This extension doesn't include Solr, but just a prepared configuration set.
 To setup Apache Solr, perform the following steps:
 
-1. Make sure you have Apache Solr 7.7 or 8.8 and running.
+1. Make sure you have Apache 8.11 and running.
 
    Download Solr from https://solr.apache.org/downloads.html.
    Other versions may work but are not tested.

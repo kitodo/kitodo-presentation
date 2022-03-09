@@ -21,9 +21,6 @@ Kitodo Plugin Reference
 
 Common Settings
 ---------------
-pages
-^^^^^
-Startingpoint of this plugin. This is the Kitodo.Presentation data folder.
 
 Fluid Template Configuration
 ----------------------------
@@ -72,12 +69,6 @@ Properties
         Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
         excludeOther_
    :Data Type:
         :ref:`t3tsref:data-type-boolean`
@@ -114,12 +105,6 @@ Basket
        Data type
    :Default:
         Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        pregeneration
@@ -227,12 +212,6 @@ now.
         Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        initialDocument
    :Data Type:
        :ref:`t3tsref:data-type-integer`
@@ -262,12 +241,6 @@ The collection plugin shows one collection, all collections or selected collecti
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        collections
@@ -332,12 +305,6 @@ The TypoScript part is necessary to switch the page rendering to a different pag
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        collections
@@ -407,12 +374,6 @@ List View
        Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        limit
    :Data Type:
        :ref:`t3tsref:data-type-integer`
@@ -460,12 +421,6 @@ Metadata
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
         excludeOther_
@@ -531,12 +486,6 @@ Navigation
        Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        features
    :Data Type:
        :ref:`t3tsref:data-type-string`
@@ -573,12 +522,6 @@ OAI-PMH
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        library
@@ -631,12 +574,6 @@ Page Grid
        Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        paginate.itemsPerPage
    :Data Type:
        :ref:`t3tsref:data-type-integer`
@@ -670,12 +607,6 @@ Page View
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        excludeOther_
@@ -746,12 +677,6 @@ Search
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        fulltext
@@ -865,12 +790,6 @@ Statistics
        Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        collections
    :Data Type:
        :ref:`t3tsref:data-type-list`
@@ -897,12 +816,6 @@ Table Of Contents
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        excludeOther_
@@ -947,12 +860,6 @@ Toolbox
        Default
    :Values:
        Values
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        tools
