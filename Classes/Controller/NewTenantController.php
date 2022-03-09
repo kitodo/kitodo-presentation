@@ -21,6 +21,15 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 
+/**
+ * Controller class for the backend module 'New Tenant'.
+ *
+ * @author Christopher Timm <timm@effective-webwork.de>
+ * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class NewTenantController extends AbstractController
 {
     /**

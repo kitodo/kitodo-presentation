@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Controller for plugin 'Table Of Contents' for the 'dlf' extension
+ * Controller class for plugin 'Table Of Contents'.
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3

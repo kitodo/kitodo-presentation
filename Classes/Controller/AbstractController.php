@@ -25,7 +25,12 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 
 
 /**
+ * Abstract controller class for most of the plugin controller.
  *
+ * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  */
 abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController implements LoggerAwareInterface
 {

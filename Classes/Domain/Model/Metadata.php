@@ -12,6 +12,13 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+/**
+ * Domain model of the 'Metadata'.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**

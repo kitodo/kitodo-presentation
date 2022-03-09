@@ -19,9 +19,10 @@ use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
 
 /**
- * Controller for the plugin 'OAI-PMH Interface' for the 'dlf' extension
+ * Controller class for the plugin 'OAI-PMH Interface'.
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public

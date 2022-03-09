@@ -12,6 +12,13 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+/**
+ * Domain model of 'Structure'.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**

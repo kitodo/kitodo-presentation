@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
- * Controller for the plugin AudioPlayer for the 'dlf' extension
+ * Controller class for the plugin 'AudioPlayer'.
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3

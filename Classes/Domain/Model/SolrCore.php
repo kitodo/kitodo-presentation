@@ -12,6 +12,13 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+/**
+ * Domain model of 'SolrCore'. This holds especially the indexName of the used Solr core.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
+ */
 class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
