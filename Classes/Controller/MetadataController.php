@@ -18,6 +18,7 @@ use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Ubl\Iiif\Context\IRI;
 
 /**
@@ -54,6 +55,19 @@ class MetadataController extends AbstractController
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
         $this->metadataRepository = $metadataRepository;
+    }
+
+    /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
+     * @param StructureRepository $structureRepository
+     */
+    public function injectStructureRepository(StructureRepository $structureRepository)
+    {
+        $this->structureRepository = $structureRepository;
     }
 
     /**
@@ -270,7 +284,8 @@ class MetadataController extends AbstractController
                         $metadataArray[$i][$metadataName][0] = Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_libraries', $this->settings['storagePid']);
                     } elseif ($metadataName == 'type' && !empty($metadataValue)) {
                         // Translate document type.
-                        $metadataArray[$i][$metadataName][0] = Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_structures', $this->settings['storagePid']);
+                        $structure = $this->structureRepository->findOneByIndexName($metadataArray[$i][$metadataName][0]);
+                        $metadataArray[$i][$metadataName][0] = $structure->getLabel();
                     } elseif ($metadataName == 'collection' && !empty($metadataValue)) {
                         // Check if collections isn't hidden.
                         $j = 0;
