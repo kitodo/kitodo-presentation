@@ -187,7 +187,7 @@ class NewTenantController extends AbstractController
                 $newRecord->setLabel($this->getLanguageService()->getLL('metadata.' . $indexName));
                 $newRecord->setIndexName($indexName);
                 $newRecord->setDefaultValue($values['default_value']);
-                $newRecord->setWrap($values['wrap']);
+                $newRecord->setWrap($values['wrap'] ? : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']);
                 $newRecord->setIndexTokenized($values['index_tokenized']);
                 $newRecord->setIndexStored((int) $values['index_stored']);
                 $newRecord->setIndexIndexed((int) $values['index_indexed']);
