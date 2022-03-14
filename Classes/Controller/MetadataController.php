@@ -284,10 +284,12 @@ class MetadataController extends AbstractController
                                 ];
                             }
                         }
-                    } elseif ($metadataName == 'owner' && !empty($metadataValue)) {
-                        // Translate name of holding library.
-                        $library = $this->libraryRepository->findOneByIndexName($metadataArray[$i][$metadataName][0]);
-                        $metadataArray[$i][$metadataName][0] = $library->getLabel();
+                    } elseif ($metadataName == 'owner' && empty($metadataValue)) {
+                        // no owner is found by metadata records --> take the one associated to the document
+                        $library = $this->document->getOwner();
+                        if ($library) {
+                            $metadataArray[$i][$metadataName][0] = $library->getLabel();
+                        }
                     } elseif ($metadataName == 'type' && !empty($metadataValue)) {
                         // Translate document type.
                         $structure = $this->structureRepository->findOneByIndexName($metadataArray[$i][$metadataName][0]);
