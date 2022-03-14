@@ -229,7 +229,7 @@ CREATE TABLE tx_dlf_libraries (
     index_name varchar(255) DEFAULT '' NOT NULL,
     website varchar(255) DEFAULT '' NOT NULL,
     contact varchar(255) DEFAULT '' NOT NULL,
-    image mediumblob NOT NULL,
+    image varchar(255) DEFAULT '' NOT NULL,
     oai_label varchar(255) DEFAULT '' NOT NULL,
     oai_base varchar(255) DEFAULT '' NOT NULL,
     opac_label varchar(255) DEFAULT '' NOT NULL,
