@@ -140,7 +140,7 @@ return [
         ],
         'wrap' => [
             'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank', // deprecated in 8.7 but kept for upgrade wizard
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.wrap',
             'config' => [
                 'behaviour' => [

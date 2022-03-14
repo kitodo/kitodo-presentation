@@ -22,6 +22,11 @@ namespace Kitodo\Dlf\Domain\Model;
 class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @var Structure
+     */
+    protected $l18nParent;
+
+    /**
      * @var int
      */
     protected $toplevel;
@@ -50,6 +55,22 @@ class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var int
      */
     protected $status;
+
+    /**
+     * @return Structure
+     */
+    public function getL18nParent(): Structure
+    {
+        return $this->l18nParent;
+    }
+
+    /**
+     * @param int $l18nParent
+     */
+    public function setL18nParent(Structure $l18nParent): void
+    {
+        $this->l18nParent = $l18nParent;
+    }
 
     /**
      * @return int

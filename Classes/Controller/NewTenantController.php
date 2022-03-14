@@ -24,12 +24,17 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 
 
 /**
@@ -52,6 +57,13 @@ class NewTenantController extends AbstractController
      * @var array
      */
     protected $pageInfo;
+
+    /**
+     * All configured site languages
+     *
+     * @var array
+     */
+    protected $siteLanguages;
 
     /**
      * Backend Template Container
@@ -129,6 +141,13 @@ class NewTenantController extends AbstractController
         $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
         $this->configurationManager->setConfiguration($frameworkConfiguration);
+
+        try {
+            $this->site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($this->pid);
+        } catch (SiteNotFoundException $e) {
+            $this->site = new NullSite();
+        }
+        $this->siteLanguages = $this->site->getLanguages();
     }
 
 
@@ -183,6 +202,9 @@ class NewTenantController extends AbstractController
         foreach ($metadataDefaults as $indexName => $values) {
             // if default format record is not found, add it to the repository
             if ($this->metadataRepository->findOneByIndexName($indexName) === null) {
+                // switch (back) to default language
+                $this->getLanguageService()->init($this->siteLanguages[0]->getTypo3Language());
+
                 $newRecord = GeneralUtility::makeInstance(Metadata::class);
                 $newRecord->setLabel($this->getLanguageService()->getLL('metadata.' . $indexName));
                 $newRecord->setIndexName($indexName);
@@ -210,6 +232,24 @@ class NewTenantController extends AbstractController
                         }
                     }
                 }
+
+                foreach ($this->siteLanguages as $index => $siteLanguage) {
+                    if ($siteLanguage->getLanguageId() === 0) {
+                        // skip default language
+                        continue;
+                    }
+                    // change language to get the right translation
+                    $this->getLanguageService()->init($siteLanguage->getTypo3Language());
+                    $translatedRecord = GeneralUtility::makeInstance(Metadata::class);
+                    $translatedRecord->setL18nParent($newRecord);
+                    $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
+                    $translatedRecord->setLabel($this->getLanguageService()->getLL('metadata.' . $indexName));
+                    $translatedRecord->setIndexName($indexName);
+                    $translatedRecord->setWrap('');
+
+                    $this->metadataRepository->add($translatedRecord);
+                }
+
                 $this->metadataRepository->add($newRecord);
 
                 $doPersist = true;
@@ -265,12 +305,31 @@ class NewTenantController extends AbstractController
         foreach ($structureDefaults as $indexName => $values) {
             // if default format record is not found, add it to the repository
             if ($this->structureRepository->findOneByIndexName($indexName) === null) {
+                // switch (back) to default language
+                $this->getLanguageService()->init($this->siteLanguages[0]->getTypo3Language());
+
                 $newRecord = GeneralUtility::makeInstance(Structure::class);
                 $newRecord->setLabel($this->getLanguageService()->getLL('structure.' . $indexName));
                 $newRecord->setIndexName($indexName);
                 $newRecord->setToplevel($values['toplevel']);
                 $newRecord->setOaiName($values['oai_name']);
                 $this->structureRepository->add($newRecord);
+
+                foreach ($this->siteLanguages as $index => $siteLanguage) {
+                    if ($siteLanguage->getLanguageId() === 0) {
+                        // skip default language
+                        continue;
+                    }
+                    // change language to get the right translation
+                    $this->getLanguageService()->init($siteLanguage->getTypo3Language());
+                    $translatedRecord = GeneralUtility::makeInstance(Structure::class);
+                    $translatedRecord->setL18nParent($newRecord);
+                    $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
+                    $translatedRecord->setLabel($this->getLanguageService()->getLL('structure.' . $indexName));
+                    $translatedRecord->setIndexName($indexName);
+
+                    $this->structureRepository->add($translatedRecord);
+                }
 
                 $doPersist = true;
             }
