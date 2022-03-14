@@ -17,7 +17,6 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
-use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Ubl\Iiif\Context\IRI;
@@ -43,19 +42,6 @@ class MetadataController extends AbstractController
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
         $this->collectionRepository = $collectionRepository;
-    }
-
-    /**
-     * @var LibraryRepository
-     */
-    protected $libraryRepository;
-
-    /**
-     * @param LibraryRepository $libraryRepository
-     */
-    public function injectLibraryRepository(LibraryRepository $libraryRepository)
-    {
-        $this->libraryRepository = $libraryRepository;
     }
 
     /**
