@@ -573,38 +573,6 @@
                 <source><![CDATA[File "%s" could not be loaded.]]></source>
                 <target><![CDATA[Datei "%s" konnte nicht eingelesen werden.]]></target>
             </trans-unit>
-            <trans-unit id="flash.structureOkay" approved="yes">
-                <source><![CDATA[Structures found!]]></source>
-                <target><![CDATA[Strukturdaten gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.structureOkayMsg" approved="yes">
-                <source><![CDATA[There are configuration records for structural metadata. They can be edited in the list module.]]></source>
-                <target><![CDATA[Es ist eine Konfiguration für Strukturdaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
-            </trans-unit>
-            <trans-unit id="flash.structureNotOkay" approved="yes">
-                <source><![CDATA[No structures found!]]></source>
-                <target><![CDATA[Keine Strukturdaten gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.structureNotOkayMsg" approved="yes">
-                <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
-                <target><![CDATA[Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
-            </trans-unit>
-            <trans-unit id="flash.structureAdded" approved="yes">
-                <source><![CDATA[Basic configuration added!]]></source>
-                <target><![CDATA[Grundkonfiguration angelegt!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.structureAddedMsg" approved="yes">
-                <source><![CDATA[Basic configuration records for structural metadata were added. The records should be checked in the list module!]]></source>
-                <target><![CDATA[Es wurde eine Grundkonfiguration für Strukturdaten angelegt. Die Datensätze sollten über das Listenmodul kontrolliert und ggf. angepasst werden!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.structureNotAdded" approved="yes">
-                <source><![CDATA[No configuration added!]]></source>
-                <target><![CDATA[Keine Grundkonfiguration angelegt!]]></target>
-            </trans-unit>
-            <trans-unit id="flash.structureNotAddedMsg" approved="yes">
-                <source><![CDATA[While adding the configuration records an error occurred. The records should be checked in the list module!]]></source>
-                <target><![CDATA[Beim Anlegen der Grundkonfiguration für Strukturdaten ist ein Fehler aufgetreten. Die Konfiguration wurde nicht oder unvollständig angelegt und sollte über das Listenmodul kontrolliert werden!]]></target>
-            </trans-unit>
             <trans-unit id="flash.solrException" approved="yes">
                 <source><![CDATA[Apache Solr exception thrown:]]></source>
                 <target><![CDATA[Apache Solr meldet Ausnahmefehler:]]></target>

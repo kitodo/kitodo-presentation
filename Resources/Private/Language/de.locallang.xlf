@@ -533,6 +533,22 @@
                 <source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
                 <target><![CDATA[Die Konfigurationsdatensätze von Kitodo.Presentation müssen in Ordnern abgelegt werden.]]></target>
             </trans-unit>
+            <trans-unit id="newTenant.structureOkay" approved="yes">
+                <source><![CDATA[Structures found!]]></source>
+                <target><![CDATA[Strukturdaten gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureOkayMsg" approved="yes">
+                <source><![CDATA[There are configuration records for structural metadata. They can be edited in the list module.]]></source>
+                <target><![CDATA[Es ist eine Konfiguration für Strukturdaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureNotOkay" approved="yes">
+                <source><![CDATA[No structures found!]]></source>
+                <target><![CDATA[Keine Strukturdaten gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureNotOkayMsg" approved="yes">
+                <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
+                <target><![CDATA[Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
+            </trans-unit>
 
 		</body>
 	</file>
