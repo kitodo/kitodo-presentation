@@ -144,11 +144,11 @@ class NewTenantController extends AbstractController
         $this->languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
 
         try {
-            $this->site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($this->pid);
+            $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($this->pid);
         } catch (SiteNotFoundException $e) {
-            $this->site = new NullSite();
+            $site = new NullSite();
         }
-        $this->siteLanguages = $this->site->getLanguages();
+        $this->siteLanguages = $site->getLanguages();
     }
 
 
