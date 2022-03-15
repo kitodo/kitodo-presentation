@@ -214,7 +214,7 @@
 				<target><![CDATA[Solr Kern anlegen]]></target>
 			</trans-unit>
 			<trans-unit id="newTenant.createStructure" approved="yes">
-				<source><![CDATA[Create structure]]></source>
+				<source><![CDATA[Create structures]]></source>
 				<target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
 			</trans-unit>
 			<trans-unit id="newTenant.module" approved="yes">
