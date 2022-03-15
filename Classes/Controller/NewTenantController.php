@@ -245,7 +245,7 @@ class NewTenantController extends AbstractController
                     $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
                     $translatedRecord->setLabel($this->getLLL('metadata.' . $indexName, $siteLanguage->getTypo3Language(), $metadataLabels));
                     $translatedRecord->setIndexName($indexName);
-                    $translatedRecord->setWrap('');
+                    $translatedRecord->setWrap($newRecord->getWrap());
 
                     $this->metadataRepository->add($translatedRecord);
                 }
