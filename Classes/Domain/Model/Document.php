@@ -108,7 +108,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $thumbnail;
 
     /**
-     * @var int
+     * @var \Kitodo\Dlf\Domain\Model\Structure
      */
     protected $structure;
 
@@ -428,17 +428,17 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return int
+     * @return \Kitodo\Dlf\Domain\Model\Structure
      */
-    public function getStructure(): int
+    public function getStructure(): Structure
     {
         return $this->structure;
     }
 
     /**
-     * @param int $structure
+     * @param \Kitodo\Dlf\Domain\Model\Structure $structure
      */
-    public function setStructure(int $structure): void
+    public function setStructure(Structure $structure): void
     {
         $this->structure = $structure;
     }
@@ -647,7 +647,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return \Kitodo\Dlf\Domain\Model\Library
      */
-    public function getOwner(): \Kitodo\Dlf\Domain\Model\Library
+    public function getOwner(): Library
     {
         return $this->owner instanceof LazyLoadingProxy
             ? $this->owner->_loadRealInstance()
@@ -657,7 +657,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @param \Kitodo\Dlf\Domain\Model\Library $owner
      */
-    public function setOwner(\Kitodo\Dlf\Domain\Model\Library $owner): void
+    public function setOwner(Library $owner): void
     {
         $this->owner = $owner;
     }
