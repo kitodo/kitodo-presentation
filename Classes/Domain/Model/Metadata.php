@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
-     * @var Metadata
+     * @var \Kitodo\Dlf\Domain\Model\Metadata
      */
     protected $l18nParent;
 
@@ -121,7 +121,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return Metadata
+     * @return \Kitodo\Dlf\Domain\Model\Metadata
      */
     public function getL18nParent(): Metadata
     {
