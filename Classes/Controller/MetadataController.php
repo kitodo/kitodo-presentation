@@ -18,6 +18,7 @@ use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Ubl\Iiif\Context\IRI;
 
 /**
@@ -54,6 +55,19 @@ class MetadataController extends AbstractController
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
         $this->metadataRepository = $metadataRepository;
+    }
+
+    /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
+     * @param StructureRepository $structureRepository
+     */
+    public function injectStructureRepository(StructureRepository $structureRepository)
+    {
+        $this->structureRepository = $structureRepository;
     }
 
     /**
@@ -230,15 +244,6 @@ class MetadataController extends AbstractController
                 'is_listed' => !$this->settings['showFull'],
             ]);
 
-            // Get collections to check if they are hidden
-            $collections = $this->collectionRepository->getCollectionForMetadata($this->settings['storagePid']);
-
-            $collList = [];
-            /** @var Collection $collection */
-            foreach ($collections as $collection) {
-                $collList[] = $collection->getIndexName();
-            }
-
             $buildUrl = [];
             $i = 0;
             foreach ($metadataArray as $metadataSection) {
@@ -265,22 +270,22 @@ class MetadataController extends AbstractController
                                 ];
                             }
                         }
-                    } elseif ($metadataName == 'owner' && !empty($metadataValue)) {
-                        // Translate name of holding library.
-                        $metadataArray[$i][$metadataName][0] = Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_libraries', $this->settings['storagePid']);
+                    } elseif ($metadataName == 'owner' && empty($metadataValue)) {
+                        // no owner is found by metadata records --> take the one associated to the document
+                        $library = $this->document->getOwner();
+                        if ($library) {
+                            $metadataArray[$i][$metadataName][0] = $library->getLabel();
+                        }
                     } elseif ($metadataName == 'type' && !empty($metadataValue)) {
                         // Translate document type.
-                        $metadataArray[$i][$metadataName][0] = Helper::translate($metadataArray[$i][$metadataName][0], 'tx_dlf_structures', $this->settings['storagePid']);
+                        $structure = $this->structureRepository->findOneByIndexName($metadataArray[$i][$metadataName][0]);
+                        $metadataArray[$i][$metadataName][0] = $structure->getLabel();
                     } elseif ($metadataName == 'collection' && !empty($metadataValue)) {
                         // Check if collections isn't hidden.
                         $j = 0;
                         foreach ($metadataValue as $metadataEntry) {
-                            if (in_array($metadataEntry, $collList)) {
-                                // Translate collection.
-                                $metadataArray[$i][$metadataName][$j] = Helper::translate($metadataArray[$i][$metadataName][$j], 'tx_dlf_collections', $this->settings['storagePid']);
-                            } else {
-                                $metadataArray[$i][$metadataName][$j] = '';
-                            }
+                            $collection = $this->collectionRepository->findOneByIndexName($metadataEntry);
+                            $metadataArray[$i][$metadataName][$j] = $collection->getLabel() ? : '';
                             $j++;
                         }
                     } elseif ($metadataName == 'language' && !empty($metadataValue)) {

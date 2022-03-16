@@ -25,6 +25,11 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @var \Kitodo\Dlf\Domain\Model\Metadata
+     */
+    protected $l18nParent;
+
+    /**
      * @var int
      */
     protected $sorting;
@@ -102,11 +107,6 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $status;
 
     /**
-     * @var int
-     */
-    protected $sysLanguageUid;
-
-    /**
      * constructor
      */
     public function __construct()
@@ -118,6 +118,22 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected function initStorageObjects()
     {
         $this->format = new ObjectStorage();
+    }
+
+    /**
+     * @return \Kitodo\Dlf\Domain\Model\Metadata
+     */
+    public function getL18nParent(): Metadata
+    {
+        return $this->l18nParent;
+    }
+
+    /**
+     * @param int $l18nParent
+     */
+    public function setL18nParent(Metadata $l18nParent): void
+    {
+        $this->l18nParent = $l18nParent;
     }
 
     /**
@@ -382,22 +398,6 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setStatus(int $status): void
     {
         $this->status = $status;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSysLanguageUid(): int
-    {
-        return $this->sysLanguageUid;
-    }
-
-    /**
-     * @param int $sysLanguageUid
-     */
-    public function setSysLanguageUid(int $sysLanguageUid): void
-    {
-        $this->sysLanguageUid = $sysLanguageUid;
     }
 
 }
