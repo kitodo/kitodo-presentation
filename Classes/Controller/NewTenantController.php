@@ -11,7 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Model\Metadata;
@@ -24,13 +23,17 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * Controller class for the backend module 'New Tenant'.
@@ -52,6 +55,20 @@ class NewTenantController extends AbstractController
      * @var array
      */
     protected $pageInfo;
+
+    /**
+     * All configured site languages
+     *
+     * @var array
+     */
+    protected $siteLanguages;
+
+    /**
+     * LanguageFactory to get language key/values by our own.
+     *
+     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory
+     */
+    protected $languageFactory;
 
     /**
      * Backend Template Container
@@ -118,17 +135,20 @@ class NewTenantController extends AbstractController
      */
     protected function initializeAction()
     {
-        // Load backend localization file.
-        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
-        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf');
-        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_structure.xlf');
-        $this->getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf');
-
         $this->pid = (int) GeneralUtility::_GP('id');
 
         $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
         $this->configurationManager->setConfiguration($frameworkConfiguration);
+
+        $this->languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
+
+        try {
+            $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($this->pid);
+        } catch (SiteNotFoundException $e) {
+            $site = new NullSite();
+        }
+        $this->siteLanguages = $site->getLanguages();
     }
 
 
@@ -180,14 +200,18 @@ class NewTenantController extends AbstractController
 
         $doPersist = false;
 
+        // load language file in own array
+        $metadataLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf', $this->siteLanguages[0]->getTypo3Language());
+
         foreach ($metadataDefaults as $indexName => $values) {
             // if default format record is not found, add it to the repository
             if ($this->metadataRepository->findOneByIndexName($indexName) === null) {
+
                 $newRecord = GeneralUtility::makeInstance(Metadata::class);
-                $newRecord->setLabel($this->getLanguageService()->getLL('metadata.' . $indexName));
+                $newRecord->setLabel($this->getLLL('metadata.' . $indexName, $this->siteLanguages[0]->getTypo3Language(), $metadataLabels));
                 $newRecord->setIndexName($indexName);
                 $newRecord->setDefaultValue($values['default_value']);
-                $newRecord->setWrap($values['wrap']);
+                $newRecord->setWrap($values['wrap'] ? : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']);
                 $newRecord->setIndexTokenized($values['index_tokenized']);
                 $newRecord->setIndexStored((int) $values['index_stored']);
                 $newRecord->setIndexIndexed((int) $values['index_indexed']);
@@ -210,6 +234,22 @@ class NewTenantController extends AbstractController
                         }
                     }
                 }
+
+                foreach ($this->siteLanguages as $index => $siteLanguage) {
+                    if ($siteLanguage->getLanguageId() === 0) {
+                        // skip default language
+                        continue;
+                    }
+                    $translatedRecord = GeneralUtility::makeInstance(Metadata::class);
+                    $translatedRecord->setL18nParent($newRecord);
+                    $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
+                    $translatedRecord->setLabel($this->getLLL('metadata.' . $indexName, $siteLanguage->getTypo3Language(), $metadataLabels));
+                    $translatedRecord->setIndexName($indexName);
+                    $translatedRecord->setWrap($newRecord->getWrap());
+
+                    $this->metadataRepository->add($translatedRecord);
+                }
+
                 $this->metadataRepository->add($newRecord);
 
                 $doPersist = true;
@@ -232,9 +272,12 @@ class NewTenantController extends AbstractController
     {
         $doPersist = false;
 
+        // load language file in own array
+        $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getTypo3Language());
+
         if ($this->solrCoreRepository->findOneByPid($this->pid) === null) {
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
-            $newRecord->setLabel($this->getLanguageService()->getLL('flexform.solrcore') . ' (PID ' . $this->pid . ')');
+            $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getTypo3Language(), $beLabels). ' (PID ' . $this->pid . ')');
             $indexName = Solr::createCore('');
             $newRecord->setIndexName($indexName);
 
@@ -262,15 +305,32 @@ class NewTenantController extends AbstractController
 
         $doPersist = false;
 
+        // load language file in own array
+        $structLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getTypo3Language());
+
         foreach ($structureDefaults as $indexName => $values) {
             // if default format record is not found, add it to the repository
             if ($this->structureRepository->findOneByIndexName($indexName) === null) {
                 $newRecord = GeneralUtility::makeInstance(Structure::class);
-                $newRecord->setLabel($this->getLanguageService()->getLL('structure.' . $indexName));
+                $newRecord->setLabel($this->getLLL('structure.' . $indexName, $this->siteLanguages[0]->getTypo3Language(), $structLabels));
                 $newRecord->setIndexName($indexName);
                 $newRecord->setToplevel($values['toplevel']);
                 $newRecord->setOaiName($values['oai_name']);
                 $this->structureRepository->add($newRecord);
+
+                foreach ($this->siteLanguages as $index => $siteLanguage) {
+                    if ($siteLanguage->getLanguageId() === 0) {
+                        // skip default language
+                        continue;
+                    }
+                    $translatedRecord = GeneralUtility::makeInstance(Structure::class);
+                    $translatedRecord->setL18nParent($newRecord);
+                    $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
+                    $translatedRecord->setLabel($this->getLLL('structure.' . $indexName, $siteLanguage->getTypo3Language(), $structLabels));
+                    $translatedRecord->setIndexName($indexName);
+
+                    $this->structureRepository->add($translatedRecord);
+                }
 
                 $doPersist = true;
             }
@@ -345,4 +405,21 @@ class NewTenantController extends AbstractController
     {
     }
 
+    /**
+     * Get language label for given key and language.
+     *
+     * @param string $index
+     * @param string $lang
+     * @param array $langArray
+     *
+     * @access public
+     */
+    protected function getLLL($index, $lang, $langArray)
+    {
+        if (isset($langArray[$lang][$index][0]['target'])) {
+            return $langArray[$lang][$index][0]['target'];
+        } else {
+            return $langArray['default'][$index][0]['target'];
+        }
+    }
 }

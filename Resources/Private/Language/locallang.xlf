@@ -348,7 +348,7 @@
 				<source><![CDATA[Create solr core]]></source>
 			</trans-unit>
 			<trans-unit id="newTenant.createStructure">
-				<source><![CDATA[Create structure]]></source>
+				<source><![CDATA[Create structures]]></source>
 			</trans-unit>
 			<trans-unit id="newTenant.createMetadata">
 				<source><![CDATA[Create metadata]]></source>

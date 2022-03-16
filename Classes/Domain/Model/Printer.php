@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of 'Mail' (Basket feature).
+ * Domain model of 'Printer' (Basket feature).
  *
  * @package TYPO3
  * @subpackage dlf
