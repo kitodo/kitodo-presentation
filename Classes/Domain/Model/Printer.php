@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of 'Printer' (Basket feature).
+ * (Basket Plugin) External printers for sending documents.
  *
  * @package TYPO3
  * @subpackage dlf

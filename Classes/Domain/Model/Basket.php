@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of the 'Basket'.
+ * (Basket Plugin) A basket that is bound to a frontend session.
  *
  * @package TYPO3
  * @subpackage dlf

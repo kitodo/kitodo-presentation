@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * Domain model of 'Token' (OAI-PMH feature).
+ * Resumption tokens for OAI-PMH interface.
  *
  * @package TYPO3
  * @subpackage dlf
@@ -22,16 +22,22 @@ namespace Kitodo\Dlf\Domain\Model;
 class Token extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * The resumption token string.
+     *
      * @var string
      */
     protected $token;
 
     /**
+     * Data that is used to resume the previous request.
+     *
      * @var string
      */
     protected $options;
 
     /**
+     * Originally an identifier for the kind of token ('oai'). Not used at the moment.
+     *
      * @var string
      */
     protected $ident;
