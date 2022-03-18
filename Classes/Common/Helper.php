@@ -556,58 +556,6 @@ class Helper
     }
 
     /**
-     * Get the UID for a given "index_name"
-     *
-     * @access public
-     *
-     * @param int $index_name: The index_name of the record
-     * @param string $table: Get the "index_name" from this table
-     * @param int $pid: Get the "index_name" from this page
-     *
-     * @return int "uid" for the given index_name
-     */
-    public static function getUidFromIndexName($index_name, $table, $pid = -1)
-    {
-        if (
-            !$index_name
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
-        ) {
-            self::log('Invalid UID ' . $index_name . ' or table "' . $table . '"', LOG_SEVERITY_ERROR);
-            return 0;
-        }
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
-
-        $where = '';
-        // Should we check for a specific PID, too?
-        if ($pid !== -1) {
-            $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
-        }
-        // Get index_name from database.
-        $result = $queryBuilder
-            ->select($table . '.uid AS uid')
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($index_name)),
-                $where,
-                self::whereExpression($table)
-            )
-            ->setMaxResults(1)
-            ->execute();
-
-        $allResults = $result->fetchAll();
-
-        if (count($allResults) == 1) {
-            return (int) $allResults[0]['uid'];
-        } else {
-            self::log('No UID for given index_name "' . $index_name . '" and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
-            return 0;
-        }
-    }
-
-    /**
      * Get the URN of an object
      * @see http://www.persistent-identifier.de/?link=316
      *

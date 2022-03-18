@@ -18,6 +18,7 @@ use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Command\Command;
@@ -55,6 +56,11 @@ class BaseCommand extends Command
     protected $libraryRepository;
 
     /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
      * @var int
      */
     protected $storagePid;
@@ -88,6 +94,7 @@ class BaseCommand extends Command
             $this->collectionRepository = $objectManager->get(CollectionRepository::class);
             $this->documentRepository = $objectManager->get(DocumentRepository::class);
             $this->libraryRepository = $objectManager->get(LibraryRepository::class);
+            $this->structureRepository = $objectManager->get(StructureRepository::class);
         } else {
             return false;
         }
@@ -212,7 +219,8 @@ class BaseCommand extends Command
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
         $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
-        $document->setStructure(Helper::getUidFromIndexName($metadata['type'][0], 'tx_dlf_structures') ? : 0);
+        $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0], 'tx_dlf_structures');
+        $document->setStructure($structure);
 
         $collections = $this->collectionRepository->findCollectionsBySettings(['index_name' => $metadata['collection']]);
         if ($collections) {
