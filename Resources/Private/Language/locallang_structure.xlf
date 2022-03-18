@@ -104,6 +104,9 @@
 			<trans-unit id="structure.file">
 				<source><![CDATA[File]]></source>
 			</trans-unit>
+			<trans-unit id="structure.figure">
+				<source><![CDATA[Figure]]></source>
+			</trans-unit>
 			<trans-unit id="structure.folder">
 				<source><![CDATA[Folder]]></source>
 			</trans-unit>

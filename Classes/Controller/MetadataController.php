@@ -279,14 +279,18 @@ class MetadataController extends AbstractController
                     } elseif ($metadataName == 'type' && !empty($metadataValue)) {
                         // Translate document type.
                         $structure = $this->structureRepository->findOneByIndexName($metadataArray[$i][$metadataName][0]);
-                        $metadataArray[$i][$metadataName][0] = $structure->getLabel();
+                        if ($structure) {
+                            $metadataArray[$i][$metadataName][0] = $structure->getLabel();
+                        }
                     } elseif ($metadataName == 'collection' && !empty($metadataValue)) {
                         // Check if collections isn't hidden.
                         $j = 0;
                         foreach ($metadataValue as $metadataEntry) {
                             $collection = $this->collectionRepository->findOneByIndexName($metadataEntry);
-                            $metadataArray[$i][$metadataName][$j] = $collection->getLabel() ? : '';
-                            $j++;
+                            if ($collection) {
+                                $metadataArray[$i][$metadataName][$j] = $collection->getLabel() ? : '';
+                                $j++;
+                            }
                         }
                     } elseif ($metadataName == 'language' && !empty($metadataValue)) {
                         // Translate ISO 639 language code.
