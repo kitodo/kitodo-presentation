@@ -249,7 +249,6 @@ RST);
 
             $section->addTable($rows, $header);
         }
-
         return $page;
     }
 }

@@ -318,7 +318,7 @@ class NewTenantController extends AbstractController
                 $newRecord->setOaiName($values['oai_name']);
                 $this->structureRepository->add($newRecord);
 
-                foreach ($this->siteLanguages as $index => $siteLanguage) {
+                foreach ($this->siteLanguages as $siteLanguage) {
                     if ($siteLanguage->getLanguageId() === 0) {
                         // skip default language
                         continue;
