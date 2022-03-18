@@ -126,10 +126,10 @@
             <f:if condition="{viewData.requestData.double}">
                 <f:form.hidden name="tx_dlf[double]" value="{viewData.requestData.double}"/>
             </f:if>
-            <label for="{uniqueId}">
+            <label for="tx-dlf-page-{viewData.uniqueId}">
                 <f:translate key="selectPage"/>
             </label>
-            <f:form.select id="{uniqueId}" name="tx_dlf[page]"
+            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" name="tx_dlf[page]"
                 options="{pageOptions}"
                 value="{viewData.requestData.page}"
                 additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">

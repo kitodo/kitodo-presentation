@@ -98,6 +98,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
         $this->viewData = [
             'pageUid' => $GLOBALS['TSFE']->id,
+            'uniqueId'=> uniqid(),
             'requestData' => $this->requestData
         ];
     }
