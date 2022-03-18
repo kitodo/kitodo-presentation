@@ -235,7 +235,7 @@ class NewTenantController extends AbstractController
                     }
                 }
 
-                foreach ($this->siteLanguages as $index => $siteLanguage) {
+                foreach ($this->siteLanguages as $siteLanguage) {
                     if ($siteLanguage->getLanguageId() === 0) {
                         // skip default language
                         continue;

@@ -440,7 +440,7 @@ A library institution with the following use cases:
                                 Contact email address of the library (used as ``adminEmail`` in responses
                                 to OAI ``Identify`` requests).
 
-   - :field:                    image  *blob*
+   - :field:                    image  *string*
      :description:              *Logo*
                                 
                                 image
