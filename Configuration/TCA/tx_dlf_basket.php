@@ -23,14 +23,9 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfbasket.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => '',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,doc_ids,session_id',
-    ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
     ],
     'columns' => [
         'label' => [

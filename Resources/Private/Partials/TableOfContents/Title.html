@@ -1,0 +1,27 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<span class="tx-dlf-toc-title">
+    <f:if condition="{child.title}">
+        <f:then>
+            <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false">{child.title}</f:format.htmlspecialchars></f:format.crop>
+        </f:then>
+        <f:else>
+            <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false">{child.type}</f:format.htmlspecialchars><f:if condition="{entry.volume}"> &nbsp;<f:format.htmlspecialchars doubleEncode="false">{child.volume}</f:format.htmlspecialchars></f:if></f:format.crop>
+        </f:else>
+    </f:if>
+</span>
+
+<span class="tx-dlf-toc-pagination"><f:format.htmlspecialchars doubleEncode="false">{child.pagination}</f:format.htmlspecialchars></span>

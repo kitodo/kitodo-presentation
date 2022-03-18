@@ -77,7 +77,9 @@ Additional OpenLayers controls may be configured in TypoScript:
 .. code-block:: typoscript
 
    plugin.tx_dlf_pageview {
-       features = OverviewMap,ZoomPanel
+       settings {
+           features = OverviewMap,ZoomPanel
+       }
    }
 
 These are created in ``dlfViewer::createControls_()``.
@@ -85,28 +87,37 @@ These are created in ``dlfViewer::createControls_()``.
 Tools for Basket Plugin
 -----------------------
 
+There are additional tools for the basket plugin:
+
+*   **Magnifier**: Show zoomed page at mouse location in a separate panel.
+*   **Cropping Tool**: Select a region that should be added to the baseket.
+
+To insert links for activating these tools into the default PageView template, the following settings may be used:
+
+.. code-block:: typoscript
+
+   plugin.tx_dlf_pageview {
+       settings {
+           basket {
+               magnifier = 1
+               crop = 1
+           }
+
+           // The basket must be configured for these settings to take effect
+           basketButton = 1
+           targetBasket = 123
+       }
+   }
+
 Magnifier
 ~~~~~~~~~
 
-*  To use the magnifier, the page must contain an element with the id ``ov_map``.
-
-   .. code-block:: typoscript
-
-      <div id="ov_map" style="height: 200px;"></div>
-
-*  Insert a link for activating the magnifier to the page:
-
-   .. code-block:: typoscript
-
-      plugin.tx_dlf_pageview {
-          magnifier = 1
-      }
-
-   This presupposes that there is a target element on the page:
+*  To use the magnifier, the page must contain an element with the id ``ov_map``. It is included in the default PageView template.
 
    .. code-block:: html
 
-      <div class="tx-dlf-navigation-magnifier">###MAGNIFIER###</div>
+      <div id="ov_map" style="height: 200px;"></div>
+
 
 *  The magnifier can be activated manually via JavaScript:
 
@@ -117,24 +128,7 @@ Magnifier
 Cropping Tool
 ~~~~~~~~~~~~~
 
-The cropping tool is to select a region that should be added to the basket.
-
-*  Insert links to the page:
-
-   .. code-block:: typoscript
-
-      plugin.tx_dlf_pageview {
-          crop = 1
-      }
-
-   Add target elements:
-
-   .. code-block:: html
-
-      <div class="tx-dlf-navigation-edit">###EDITBUTTON###</div>
-      <div class="tx-dlf-navigation-editRemove">###EDITREMOVE###</div>
-
-*  Alternatively, activate and reset manually:
+*  Activate and reset manually:
 
    .. code-block:: javascript
 

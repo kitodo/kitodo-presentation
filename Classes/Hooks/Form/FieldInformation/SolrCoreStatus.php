@@ -41,7 +41,7 @@ class SolrCoreStatus extends AbstractNode
         if ($this->data['command'] !== 'new') {
             $core = $this->data['databaseRow']['index_name'];
             // Load localization file.
-            $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
+            Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Get Solr instance.
             $solr = Solr::getInstance($core);
             if ($solr->ready) {
@@ -55,13 +55,13 @@ class SolrCoreStatus extends AbstractNode
                     $uptimeInSeconds = floor($response->getUptime() / 1000);
                     $dateTimeFrom = new \DateTime('@0');
                     $dateTimeTo = new \DateTime("@$uptimeInSeconds");
-                    $uptime = $dateTimeFrom->diff($dateTimeTo)->format('%a ' . $GLOBALS['LANG']->getLL('flash.days') . ', %H:%I:%S');
+                    $uptime = $dateTimeFrom->diff($dateTimeTo)->format('%a ' . Helper::getLanguageService()->getLL('flash.days') . ', %H:%I:%S');
                     $numDocuments = $response->getNumberOfDocuments();
                     $startTime = $response->getStartTime() ? strftime('%c', $response->getStartTime()->getTimestamp()) : 'N/A';
                     $lastModified = $response->getLastModified() ? strftime('%c', $response->getLastModified()->getTimestamp()) : 'N/A';
                     // Create flash message.
                     Helper::addMessage(
-                        sprintf($GLOBALS['LANG']->getLL('flash.coreStatus'), $startTime, $uptime, $lastModified, $numDocuments),
+                        sprintf(Helper::getLanguageService()->getLL('flash.coreStatus'), $startTime, $uptime, $lastModified, $numDocuments),
                         '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                         \TYPO3\CMS\Core\Messaging\FlashMessage::INFO
                     );
@@ -69,7 +69,7 @@ class SolrCoreStatus extends AbstractNode
             } else {
                 // Could not fetch core status.
                 Helper::addMessage(
-                    htmlspecialchars($GLOBALS['LANG']->getLL('solr.error')),
+                    Helper::getLanguageService()->getLL('solr.error'),
                     '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                     \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );

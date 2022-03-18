@@ -1,10 +1,19 @@
-config {
-  # concatenate all JavaScript files by default
-  concatenateJs = 1
-  # concatenate all CSS files by default
-  concatenateCss = 1
+# Model database table mapping
+plugin.tx_dlf {
+    persistence {
+        storagePid = {$plugin.tx_dlf.persistence.storagePid}
+    }
+    settings {
+        storagePid = {$plugin.tx_dlf.persistence.storagePid}
+    }
 }
 
+config {
+    # concatenate all JavaScript files by default
+    concatenateJs = 1
+    # concatenate all CSS files by default
+    concatenateCss = 1
+}
 
 page {
   includeCSS {
@@ -12,7 +21,7 @@ page {
     openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.css
   }
 
-  includeJSFooterlibs {
+  includeJS {
     jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-3.5.1.min.js
     jQuery.forceOnTop = 1
     jQueryJPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js
@@ -39,5 +48,58 @@ page {
     kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
+    kitodo-search-suggest = EXT:dlf/Resources/Public/Javascript/Search/Suggester.js
+
   }
+}
+
+plugin.tx_dlf_pagegrid {
+    settings {
+        paginate {
+            itemsPerPage = 10
+            insertAbove = 1
+            insertBelow = 1
+            lessPages = 1
+            forcedNumberOfLinks = 5
+            pagesBefore = 3
+            pagesAfter = 3
+            section =
+        }
+    }
+}
+
+plugin.tx_dlf_listview {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
+}
+
+plugin.tx_dlf_collection {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
+}
+
+plugin.tx_dlf_search {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
 }

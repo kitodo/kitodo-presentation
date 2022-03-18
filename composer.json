@@ -32,11 +32,17 @@
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "~9.5.26",
-    "typo3/cms-tstemplate": "~9.5.26",
+    "typo3/cms-core": "^9.5|^10.4",
+    "typo3/cms-extbase": "^9.5|^10.4",
+    "typo3/cms-tstemplate": "^9.5|^10.4",
     "caseyamcl/phpoaipmh": "^3.0",
     "ubl/php-iiif-prezi-reader": "0.3.0",
     "solarium/solarium": "^4.2|^5.2"
+  },
+  "require-dev": {
+    "typo3/cms-backend": "^9.5|^10.4",
+    "typo3/cms-fluid": "^9.5|^10.4",
+    "typo3/cms-frontend": "^9.5|^10.4"
   },
   "replace": {
     "typo3-ter/dlf": "self.version"
@@ -46,9 +52,26 @@
       "Kitodo\\Dlf\\": "Classes/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Kitodo\\DbDocs\\": "Build/Documentation/dbdocs"
+    }
+  },
   "extra": {
     "typo3/cms": {
       "extension-key": "dlf"
+    }
+  },
+  "scripts": {
+	"docs:db": "./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst",
+	"docs:setup": "./Build/Documentation/sphinx.sh install",
+	"docs:serve": "./Build/Documentation/sphinx.sh serve",
+	"docs:t3": "docker-compose -f ./Build/Documentation/docker-compose.t3docs.yml run --rm t3docs"
+  },
+  "config": {
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
     }
   }
 }

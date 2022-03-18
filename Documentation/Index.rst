@@ -64,3 +64,4 @@ Table of Contents
     User/Index
     Features/Index
     Community/Index
+    Developers/Index

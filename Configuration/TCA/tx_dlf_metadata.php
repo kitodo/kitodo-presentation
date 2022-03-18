@@ -27,27 +27,22 @@ return [
         ],
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfmetadata.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => 'label,index_name',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'label,index_name,is_sortable,is_facet,is_listed,index_autocomplete',
     ],
     'columns' => [
         'sys_language_uid' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'sys_language',
                 'foreign_table_where' => 'ORDER BY sys_language.title',
                 'items' => [
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
                 ],
                 'default' => 0,
             ],
@@ -55,7 +50,7 @@ return [
         'l18n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -74,7 +69,7 @@ return [
         ],
         'hidden' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'default' => 0,
@@ -145,7 +140,6 @@ return [
         ],
         'wrap' => [
             'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank', // deprecated in 8.7 but kept for upgrade wizard
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.wrap',
             'config' => [
                 'behaviour' => [
@@ -257,6 +251,6 @@ return [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab1,label,--palette--;;1,format,default_value,wrap,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab3,hidden,status'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'index_name, --linebreak--, index_tokenized, index_stored, index_indexed, index_boost, --linebreak--, is_sortable, is_facet, is_listed, index_autocomplete', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'index_name, --linebreak--, index_tokenized, index_stored, index_indexed, index_boost, --linebreak--, is_sortable, is_facet, is_listed, index_autocomplete'],
     ],
 ];

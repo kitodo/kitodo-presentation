@@ -1,0 +1,36 @@
+plugin.tx_dlf_feeds {
+	view {
+		templateRootPaths {
+			0 = EXT:dlf/Resources/Private/Templates/Feeds
+			1 = {$plugin.tx_dlf.feed.templateRootPath}
+		}
+	}
+  settings {
+    title = fake title
+  }
+}
+
+page = PAGE
+page.10 < styles.content.get
+
+config {
+   # deactivate Standard-Header
+   disableAllHeaderCode = 1
+   # no xhtml tags
+   xhtml_cleaning = none
+   admPanel = 0
+   config.debug = 0
+
+   # define charset
+   metaCharset = utf-8
+   additionalHeaders.10.header = Content-Type:application/rss+xml;charset=utf-8
+   disablePrefixComment = 1
+   linkVars >
+}
+
+# delete content wrap
+tt_content.stdWrap >
+tt_content.stdWrap.editPanel = 0
+
+# Use custom template for List.html of EXT:fluid_styled_content
+lib.contentElement.templateRootPaths.5 = EXT:dlf/Resources/Private/fluid_styled_content/Templates

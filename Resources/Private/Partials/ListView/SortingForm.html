@@ -1,0 +1,61 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+    <f:if condition="{{sortableMetadata}">
+        <f:variable name="currentPage" value="{widgetPage.currentPage - 1}" />
+        <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
+        <f:variable name="allDocuments" value="{documents->f:count()}" />
+        <f:variable name="numDocuments" value="{pageOffset + settings.list.paginate.itemsPerPage}" />
+
+        <p class="tx-dlf-sortinfo">
+            <f:translate
+                key="listview.count"
+                arguments="{0:'{pageOffset + 1}', 1:'{f:if(condition: \'{numDocuments} > {allDocuments}\', then: \'{allDocuments}\', else: \'{numDocuments}\')}', 2:'{allDocuments}'}" />
+        </p>
+
+        <f:form section="showResults" action="{action}" controller="{Controller}" name="searchParameter" method="post" class="tx-dlf-search-form">
+            <div>
+                <label for="form-orderBy-{viewData.uniqueId}">
+                    <f:translate key="listview.form.orderBy"/>
+                </label>
+                <f:form.select id="form-orderBy-{viewData.uniqueId}" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
+                    <f:form.select.option value="score">
+                        <f:translate key="listview.form.relevance" />
+                    </f:form.select.option>
+                    <f:for each="{sortableMetadata}" as="meta">
+                        <f:form.select.option value="{meta.indexName}_sorting">
+                            <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{meta.indexName}' />
+                        </f:form.select.option>
+                    </f:for>
+                </f:form.select>
+                <label for="form-order-{viewData.uniqueId}">
+                    <f:translate key="listview.form.order"/>
+                </label>
+                <f:form.select id="form-order-{viewData.uniqueId}" property="order" value="{lastSearch.order}" onclick="javascript:this.form.submit();">
+                    <f:form.select.option value="asc">
+                    <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.asc' extensionName='slub_digitalcollections' />
+                    </f:form.select.option>
+                    <f:form.select.option value="desc">
+                    <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.desc' extensionName='slub_digitalcollections' />
+                    </f:form.select.option>
+                </f:form.select>
+                <f:form.hidden property="collection" value="{lastSearch.collection}" />
+                <f:form.hidden property="collections" value="{settings.collections}" />
+                <f:form.hidden property="query" value="{lastSearch.query}" />
+                <f:form.hidden property="fulltext" value="{lastSearch.fulltext}" />
+            </div>
+        </f:form>
+    </f:if>
+</html>

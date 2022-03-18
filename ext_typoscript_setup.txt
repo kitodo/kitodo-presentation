@@ -1,0 +1,71 @@
+config.tx_extbase {
+    persistence {
+        classes {
+            Kitodo\Dlf\Domain\Model\ActionLog {
+                mapping {
+                    tableName = tx_dlf_actionlog
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Basket {
+                mapping {
+                    tableName = tx_dlf_basket
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Collection {
+                mapping {
+                    tableName = tx_dlf_collections
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Document {
+                mapping {
+                    tableName = tx_dlf_documents
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Format {
+                mapping {
+                    tableName = tx_dlf_formats
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Library {
+                mapping {
+                    tableName = tx_dlf_libraries
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Mail {
+                mapping {
+                    tableName = tx_dlf_mail
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Metadata {
+                mapping {
+                    tableName = tx_dlf_metadata
+                }
+            }
+            Kitodo\Dlf\Domain\Model\MetadataFormat {
+                mapping {
+                    tableName = tx_dlf_metadataformat
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Printer {
+                mapping {
+                    tableName = tx_dlf_printer
+                }
+            }
+            Kitodo\Dlf\Domain\Model\SolrCore {
+                mapping {
+                    tableName = tx_dlf_solrcores
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Structure {
+                mapping {
+                    tableName = tx_dlf_structures
+                }
+            }
+            Kitodo\Dlf\Domain\Model\Token {
+                mapping {
+                    tableName = tx_dlf_tokens
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,58 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<div class="tx-dlf-collection">
+    <ul class="tx-dlf-collection-list">
+        <f:for each="{collections}" as="item">
+            <li class="tx-dlf-collection-item">
+                <h2>
+                    <f:link.action action="show"
+                                   arguments="{collection : item.collection}"
+                                   pageUid="{pageUid}">
+                        {item.collection.label}
+                    </f:link.action>
+
+                    <f:if condition="{settings.targetFeed}">
+                        <span class="tx-dlf-collection-thumbnail">
+                            <f:link.page
+                                pageUid="{settings.targetFeed}"
+                                additionalParams="{'tx_dlf_feeds[collection]': item.collection.uid}"
+                                target="_blank">
+                                <f:image src="EXT:dlf/Resources/Public/Icons/txdlffeeds.png"
+                                        title="{f:translate(key:' item.collection.feed.title')}"
+                                        alt="{f:translate(key:' item.collection.feed.alt')}" />
+                            </f:link.page>
+                        </span>
+                    </f:if>
+                </h2>
+                <div class="tx-dlf-collection-thumbnail">
+                    <f:if condition="{item.collection.thumbnail}">
+                        <f:image image="{item.collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {item.collection.label}" title="{item.collection.label}" maxWidth="250" />
+                     </f:if>
+                </div>
+                <div class="tx-dlf-collection-description">
+                    <f:format.html>{item.collection.description}</f:format.html>
+                </div>
+                <p class="tx-dlf-collection-counts">
+                    ({item.info.titles -> f:count()}
+                    <f:translate key="{f:if(condition:'{item.info.titles -> f:count()} > 1', then: 'titles', else: 'title')}" />
+                    /
+                    {item.info.volumes -> f:count()}
+                    <f:translate key="{f:if(condition:'{item.info.volumes -> f:count()} > 1', then: 'volumes', else: 'volume')}" />)
+                </p>
+            </li>
+        </f:for>
+    </ul>
+</div>

@@ -1,0 +1,107 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<div class="tx-dlf-calendar">
+    <div class="meta-header">
+        <div class="year-anchor">
+            <div class="year-anchor">
+                <f:link.page additionalParams="{'tx_dlf[id]': parentDocumentId}">
+                    <f:translate key="calendar.allYears" /> {allYearDocTitle}
+                </f:link.page>
+            </div>
+        </div>
+        <div class="year">
+            <f:link.page additionalParams="{'tx_dlf[id]': documentId}">
+                {yearLinkTitle}
+            </f:link.page>
+        </div>
+        <div class="calendar-list-selection">
+            <a class="select-calendar-view {f:if(condition:'calendarData->f:count() > 5', then : 'active')}">
+                <f:translate key="calendar.view_calendar" />
+            </a>
+            <a class="select-list-view {f:if(condition:'calendarData->f:count() < 6', then : 'active')}">
+                <f:translate key="calendar.view_list" />
+            </a>
+        </div>
+    </div>
+    <div class="calendar-view">
+
+        <f:for each="{calendarData}" as="month">
+            <f:if condition="{month.CALYEAR}">
+                <f:then>
+                    <div class="year">
+                        {month.CALYEAR}
+                    </div>
+                </f:then>
+            </f:if>
+            <table class="month">
+                <caption>{month.MONTHNAME}</caption>
+                <tr>
+                    <th class="">{month.DAYMON_NAME}</th>
+                    <th class="">{month.DAYTUE_NAME}</th>
+                    <th class="">{month.DAYWED_NAME}</th>
+                    <th class="">{month.DAYTHU_NAME}</th>
+                    <th class="">{month.DAYFRI_NAME}</th>
+                    <th class="">{month.DAYSAT_NAME}</th>
+                    <th class="">{month.DAYSUN_NAME}</th>
+                </tr>
+
+                <f:for each="{month.week}" as="week">
+                    <tr>
+                        <td class="">
+                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYMON}'}"></f:render>
+                        </td>
+                        <td class="">
+                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTUE}'}"></f:render>
+                        </td>
+                        <td class="">
+                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYWED}'}"></f:render>
+                        </td>
+                        <td class="">
+                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTHU}'}"></f:render>
+                        </td>
+                        <td class="">
+                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYFRI}'}"></f:render>
+                        </td>
+                        <td class="">
+                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSAT}'}"></f:render>
+                        </td>
+                        <td class="">
+                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSUN}'}"></f:render>
+                        </td>
+                    </tr>
+                </f:for>
+            </table>
+        </f:for>
+    </div>
+
+    <div class="list-view">
+        <ul>
+            <f:for each="{issueData}" as="issueDay">
+                <li>
+                    <span class="listview-date">{issueDay.dateString}</span>
+                    <f:for each="{issueDay.items}" as="item">
+                        <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
+                            {item.text}
+                        </f:link.page>
+                    </f:for>
+                </li>
+            </f:for>
+        </ul>
+    </div>
+
+</div>
+
+</html>

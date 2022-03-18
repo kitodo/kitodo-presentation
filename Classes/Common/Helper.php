@@ -12,9 +12,15 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Helper class for the 'dlf' extension
@@ -417,59 +423,6 @@ class Helper
     }
 
     /**
-     * Get the "label" for an UID
-     *
-     * @access public
-     *
-     * @param int $uid: The UID of the record
-     * @param string $table: Get the "label" from this table
-     * @param int $pid: Get the "label" from this page
-     *
-     * @return string "label" for the given UID
-     */
-    public static function getLabelFromUid($uid, $table, $pid = -1)
-    {
-        // Sanitize input.
-        $uid = max(intval($uid), 0);
-        if (
-            !$uid
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
-        ) {
-            self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
-            return '';
-        }
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
-
-        $where = '';
-        // Should we check for a specific PID, too?
-        if ($pid !== -1) {
-            $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
-        }
-
-        // Get label from database.
-        $result = $queryBuilder
-            ->select($table . '.label AS label')
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq($table . '.uid', $uid),
-                $where,
-                self::whereExpression($table)
-            )
-            ->setMaxResults(1)
-            ->execute();
-
-        if ($resArray = $result->fetch()) {
-            return $resArray['label'];
-        } else {
-            self::log('No "label" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
-            return '';
-        }
-    }
-
-    /**
      * Get language name from ISO code
      *
      * @access public
@@ -490,16 +443,17 @@ class Helper
             // No ISO code, return unchanged.
             return $code;
         }
+        $languageService = GeneralUtility::makeInstance(LanguageService::class);
         // Load ISO table and get localized full name of language.
         if (\TYPO3_MODE === 'FE') {
-            $iso639 = $GLOBALS['TSFE']->readLLfile($file);
+            $iso639 = $languageService->includeLLFile($file);
             if (!empty($iso639['default'][$isoCode])) {
-                $lang = $GLOBALS['TSFE']->getLLL($isoCode, $iso639);
+                $lang = $languageService->getLLL($isoCode, $iso639);
             }
         } elseif (\TYPO3_MODE === 'BE') {
-            $iso639 = $GLOBALS['LANG']->includeLLFile($file, false, true);
+            $iso639 = $languageService->includeLLFile($file, false, true);
             if (!empty($iso639['default'][$isoCode])) {
-                $lang = $GLOBALS['LANG']->getLLL($isoCode, $iso639);
+                $lang = $languageService->getLLL($isoCode, $iso639);
             }
         } else {
             self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
@@ -514,98 +468,40 @@ class Helper
     }
 
     /**
-     * Wrapper function for getting localized messages in frontend and backend
+     * Get all document structures as array
      *
-     * @access public
+     * @param int $pid: Get the "index_name" from this page only
      *
-     * @param string $key: The locallang key to translate
-     * @param bool $hsc: Should the result be htmlspecialchar()'ed?
-     * @param string $default: Default return value if no translation is available
-     *
-     * @return string The translated string or the given key on failure
+     * @return array
      */
-    public static function getMessage($key, $hsc = false, $default = '')
+    public static function getDocumentStructures($pid = -1)
     {
-        // Set initial output to default value.
-        $translated = (string) $default;
-        // Load common messages file.
-        if (empty(self::$messages)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey, 'Resources/Private/Language/FlashMessages.xml');
-            if (\TYPO3_MODE === 'FE') {
-                self::$messages = $GLOBALS['TSFE']->readLLfile($file);
-            } elseif (\TYPO3_MODE === 'BE') {
-                self::$messages = $GLOBALS['LANG']->includeLLFile($file, false, true);
-            } else {
-                self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            }
-        }
-        // Get translation.
-        if (!empty(self::$messages['default'][$key])) {
-            if (\TYPO3_MODE === 'FE') {
-                $translated = $GLOBALS['TSFE']->getLLL($key, self::$messages);
-            } elseif (\TYPO3_MODE === 'BE') {
-                $translated = $GLOBALS['LANG']->getLLL($key, self::$messages);
-            } else {
-                self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            }
-        }
-        // Escape HTML characters if applicable.
-        if ($hsc) {
-            $translated = htmlspecialchars($translated);
-        }
-        return $translated;
-    }
-
-    /**
-     * Get the UID for a given "index_name"
-     *
-     * @access public
-     *
-     * @param int $index_name: The index_name of the record
-     * @param string $table: Get the "index_name" from this table
-     * @param int $pid: Get the "index_name" from this page
-     *
-     * @return string "uid" for the given index_name
-     */
-    public static function getUidFromIndexName($index_name, $table, $pid = -1)
-    {
-        if (
-            !$index_name
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
-        ) {
-            self::log('Invalid UID ' . $index_name . ' or table "' . $table . '"', LOG_SEVERITY_ERROR);
-            return '';
-        }
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_structures');
 
         $where = '';
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
             $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
+            $where = $queryBuilder->expr()->eq('tx_dlf_structures.pid', $pid);
         }
-        // Get index_name from database.
-        $result = $queryBuilder
-            ->select($table . '.uid AS uid')
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($index_name)),
-                $where,
-                self::whereExpression($table)
+
+        // Fetch document info for UIDs in $documentSet from DB
+        $kitodoStructures = $queryBuilder
+            ->select(
+                'tx_dlf_structures.uid AS uid',
+                'tx_dlf_structures.index_name AS indexName'
             )
-            ->setMaxResults(1)
+            ->from('tx_dlf_structures')
+            ->where($where)
             ->execute();
 
-        $allResults = $result->fetchAll();
+        $allStructures = $kitodoStructures->fetchAll();
 
-        if (count($allResults) == 1) {
-            return $allResults[0]['uid'];
-        } else {
-            self::log('No UID for given index_name "' . $index_name . '" and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
-            return '';
-        }
+        // make lookup-table indexName -> uid
+        $allStructures = array_column($allStructures, 'indexName', 'uid');
+
+        return $allStructures;
     }
 
     /**
@@ -713,34 +609,6 @@ class Helper
     }
 
     /**
-     * Load value from user's session.
-     *
-     * @access public
-     *
-     * @param string $key: Session data key for retrieval
-     *
-     * @return mixed Session value for given key or null on failure
-     */
-    public static function loadFromSession($key)
-    {
-        // Cast to string for security reasons.
-        $key = (string) $key;
-        if (!$key) {
-            self::log('Invalid key "' . $key . '" for session data retrieval', LOG_SEVERITY_WARNING);
-            return;
-        }
-        // Get the session data.
-        if (\TYPO3_MODE === 'FE') {
-            return $GLOBALS['TSFE']->fe_user->getKey('ses', $key);
-        } elseif (\TYPO3_MODE === 'BE') {
-            return $GLOBALS['BE_USER']->getSessionData($key);
-        } else {
-            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            return;
-        }
-    }
-
-    /**
      * Merges two arrays recursively and actually returns the modified array.
      * @see \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule()
      *
@@ -761,56 +629,6 @@ class Helper
     }
 
     /**
-     * Process a data and/or command map with TYPO3 core engine as admin.
-     *
-     * @access public
-     *
-     * @param array $data: Data map
-     * @param array $cmd: Command map
-     * @param bool $reverseOrder: Should the data map be reversed?
-     * @param bool $cmdFirst: Should the command map be processed first?
-     *
-     * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
-     */
-    public static function processDBasAdmin(array $data = [], array $cmd = [], $reverseOrder = false, $cmdFirst = false)
-    {
-        if (
-            \TYPO3_MODE === 'BE'
-            && $GLOBALS['BE_USER']->isAdmin()
-        ) {
-            // Instantiate TYPO3 core engine.
-            $dataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-            // We do not use workspaces and have to bypass restrictions in DataHandler.
-            $dataHandler->bypassWorkspaceRestrictions = true;
-            // Load data and command arrays.
-            $dataHandler->start($data, $cmd);
-            // Process command map first if default order is reversed.
-            if (
-                !empty($cmd)
-                && $cmdFirst
-            ) {
-                $dataHandler->process_cmdmap();
-            }
-            // Process data map.
-            if (!empty($data)) {
-                $dataHandler->reverseOrder = $reverseOrder;
-                $dataHandler->process_datamap();
-            }
-            // Process command map if processing order is not reversed.
-            if (
-                !empty($cmd)
-                && !$cmdFirst
-            ) {
-                $dataHandler->process_cmdmap();
-            }
-            return $dataHandler->substNEWwithIDs;
-        } else {
-            self::log('Current backend user has no admin privileges', LOG_SEVERITY_ERROR);
-            return [];
-        }
-    }
-
-    /**
      * Fetches and renders all available flash messages from the queue.
      *
      * @access public
@@ -827,38 +645,6 @@ class Helper
         $content = GeneralUtility::makeInstance(\Kitodo\Dlf\Common\KitodoFlashMessageRenderer::class)
             ->render($flashMessages);
         return $content;
-    }
-
-    /**
-     * Save given value to user's session.
-     *
-     * @access public
-     *
-     * @param mixed $value: Value to save
-     * @param string $key: Session data key for saving
-     *
-     * @return bool true on success, false on failure
-     */
-    public static function saveToSession($value, $key)
-    {
-        // Cast to string for security reasons.
-        $key = (string) $key;
-        if (!$key) {
-            self::log('Invalid key "' . $key . '" for session data saving', LOG_SEVERITY_WARNING);
-            return false;
-        }
-        // Save value in session data.
-        if (\TYPO3_MODE === 'FE') {
-            $GLOBALS['TSFE']->fe_user->setKey('ses', $key, $value);
-            $GLOBALS['TSFE']->fe_user->storeSessionData();
-            return true;
-        } elseif (\TYPO3_MODE === 'BE') {
-            $GLOBALS['BE_USER']->setAndSaveSessionData($key, $value);
-            return true;
-        } else {
-            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            return false;
-        }
     }
 
     /**
@@ -882,6 +668,11 @@ class Helper
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $index_name;
         }
+        /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+
+        $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
+
         // Check if "index_name" is an UID.
         if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
             $index_name = self::getIndexNameFromUid($index_name, $table, $pid);
@@ -920,7 +711,7 @@ class Helper
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
                     $queryBuilder->expr()->eq($table . '.uid', $resArray['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content)),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId())),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
@@ -935,15 +726,15 @@ class Helper
         }
 
         // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
+        if (empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
-                if ($GLOBALS['TSFE']->sys_language_content > 0) {
+                if ($languageAspect->getContentId() > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($GLOBALS['TSFE']->sys_language_content))
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId()))
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
@@ -964,11 +755,11 @@ class Helper
                 if ($result->rowCount() > 0) {
                     while ($resArray = $result->fetch()) {
                         // Overlay localized labels if available.
-                        if ($GLOBALS['TSFE']->sys_language_content > 0) {
-                            $resArray = $GLOBALS['TSFE']->sys_page->getRecordOverlay($table, $resArray, $GLOBALS['TSFE']->sys_language_content, $GLOBALS['TSFE']->sys_language_contentOL);
+                        if ($languageAspect->getContentId() > 0) {
+                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageAspect->getContentId(), $languageAspect->getLegacyOverlayType());
                         }
                         if ($resArray) {
-                            $labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$resArray['index_name']] = $resArray['label'];
+                            $labels[$table][$pid][$languageAspect->getContentId()][$resArray['index_name']] = $resArray['label'];
                         }
                     }
                 } else {
@@ -979,8 +770,8 @@ class Helper
             }
         }
 
-        if (!empty($labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name])) {
-            return $labels[$table][$pid][$GLOBALS['TSFE']->sys_language_content][$index_name];
+        if (!empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
+            return $labels[$table][$pid][$languageAspect->getContentId()][$index_name];
         } else {
             return $index_name;
         }
@@ -1004,7 +795,10 @@ class Helper
             if ($showHidden) {
                 $ignoreHide = 1;
             }
-            $expression = $GLOBALS['TSFE']->sys_page->enableFields($table, $ignoreHide);
+            /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
+            $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+
+            $expression = $pageRepository->enableFields($table, $ignoreHide);
             if (!empty($expression)) {
                 return substr($expression, 5);
             } else {
@@ -1029,5 +823,88 @@ class Helper
     private function __construct()
     {
         // This is a static class, thus no instances should be created.
+    }
+
+    /**
+     * Returns the LanguageService
+     *
+     * @return LanguageService
+     */
+    public static function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
+    }
+
+    /**
+     * Make classname configuration from `Classes.php` available in contexts
+     * where it normally isn't, and where the classical way via TypoScript won't
+     * work either.
+     *
+     * This transforms the structure used in `Classes.php` to that used in
+     * `ext_typoscript_setup.txt`. See commit 5e6110fb for a similar approach.
+     *
+     * @deprecated Remove once we drop support for TYPO3v9
+     *
+     * @access public
+     */
+    public static function polyfillExtbaseClassesForTYPO3v9()
+    {
+        $classes = require __DIR__ . '/../../Configuration/Extbase/Persistence/Classes.php';
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationManager = $objectManager->get(ConfigurationManager::class);
+        $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+
+        $extbaseClassmap = &$frameworkConfiguration['persistence']['classes'];
+        if ($extbaseClassmap === null) {
+            $extbaseClassmap = [];
+        }
+
+        foreach ($classes as $className => $classConfig) {
+            $extbaseClass = &$extbaseClassmap[$className];
+            if ($extbaseClass === null) {
+                $extbaseClass = [];
+            }
+            if (!isset($extbaseClass['mapping'])) {
+                $extbaseClass['mapping'] = [];
+            }
+            $extbaseClass['mapping']['tableName'] = $classConfig['tableName'];
+        }
+
+        $configurationManager->setConfiguration($frameworkConfiguration);
+    }
+
+    /**
+     * Replacement for the TYPO3 GeneralUtility::getUrl().
+     *
+     * This method respects the User Agent settings from extConf
+     *
+     * @access public
+     *
+     * @param string $url
+     *
+     * @return string|bool
+     */
+    public static function getUrl(string $url)
+    {
+        if (!Helper::isValidHttpUrl($url)) {
+            return false;
+        }
+
+        // Get extension configuration.
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+
+        /** @var RequestFactory $requestFactory */
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $configuration = [
+            'timeout' => 30,
+            'headers' => [
+                'User-Agent' => $extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+            ],
+        ];
+        $response = $requestFactory->request($url, 'GET', $configuration);
+        $content  = $response->getBody()->getContents();
+
+        return $content;
     }
 }

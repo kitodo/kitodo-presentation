@@ -30,27 +30,22 @@ return [
         ],
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfcollections.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => 'label,description,thumbnail,documents',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'label,index_name,oai_name,fe_cruser_id',
     ],
     'columns' => [
         'sys_language_uid' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'sys_language',
                 'foreign_table_where' => 'ORDER BY sys_language.title',
                 'items' => [
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
                 ],
                 'default' => 0,
                 'onchange' => 'reload',
@@ -59,7 +54,7 @@ return [
         'l18n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -78,7 +73,7 @@ return [
         ],
         'hidden' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'default' => 0,
@@ -86,15 +81,15 @@ return [
         ],
         'fe_group' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'fe_groups',
                 'items' => [
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', '-1'],
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.any_login', '-2'],
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', '-1'],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', '-2'],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
                 ],
                 'size' => 5,
                 'autoSizeMax' => 15,
@@ -176,15 +171,20 @@ return [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.thumbnail',
-            'config' => [
-                'type' => 'group',
-                'internal_type' => 'file_reference',
-                'allowed' => 'gif,jpg,png',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
-                'default' => '',
-            ],
+            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+                'image',
+                [
+                    'appearance' => [
+                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
+                    ],
+                    'foreign_match_fields' => [
+                        'fieldname' => 'thumbnail',
+                        'tablenames' => 'tx_dlf_collections',
+                        'table_local' => 'sys_file',
+                    ],
+                ],
+                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
+            )
         ],
         'priority' => [
             'exclude' => 1,
@@ -294,8 +294,8 @@ return [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab1,label,--palette--;;1,description,--palette--;;2,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab3,hidden,fe_group,status,owner,fe_cruser_id,--palette--;;3'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'index_name, --linebreak--, index_search, --linebreak--, oai_name', 'canNotCollapse' => 1],
-        '2' => ['showitem' => 'thumbnail, priority', 'canNotCollapse' => 1],
-        '3' => ['showitem' => 'fe_admin_lock', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'index_name, --linebreak--, index_search, --linebreak--, oai_name'],
+        '2' => ['showitem' => 'thumbnail, priority'],
+        '3' => ['showitem' => 'fe_admin_lock'],
     ],
 ];

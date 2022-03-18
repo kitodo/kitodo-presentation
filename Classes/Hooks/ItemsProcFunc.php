@@ -15,6 +15,8 @@ namespace Kitodo\Dlf\Hooks;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Helper for Flexform's custom "itemsProcFunc"
@@ -27,7 +29,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ItemsProcFunc
 {
     /**
-     * Helper to get flexform's items array for plugin "Collection"
+     * @var int
+     */
+    protected $storagePid;
+
+    /**
+     * Helper to get flexform's items array for plugin "Toolbox"
      *
      * @access public
      *
@@ -35,14 +42,27 @@ class ItemsProcFunc
      *
      * @return void
      */
-    public function collectionList(&$params)
+    public function toolList(&$params)
     {
-        $this->generateList(
-            $params,
-            'label,uid',
-            'tx_dlf_collections',
-            'label'
-        );
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
+            $params['items'][] = [Helper::getLanguageService()->getLL($label), $class];
+        }
+    }
+
+    /**
+     * The constructor to access TypoScript configuration
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationManager = $objectManager->get(ConfigurationManager::class);
+        // we must get the storagePid from full TypoScript setup at this point.
+        $fullTyposcriptSetup = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        $this->storagePid = $fullTyposcriptSetup["plugin."]["tx_dlf."]["persistence."]["storagePid"];
     }
 
     /**
@@ -60,7 +80,7 @@ class ItemsProcFunc
             $params,
             'label,index_name',
             'tx_dlf_metadata',
-            'sorting',
+            'label',
             'index_indexed=1'
         );
     }
@@ -71,16 +91,14 @@ class ItemsProcFunc
      * @access public
      *
      * @param array &$params: An array with parameters
-     *
-     * @return void
      */
-    public function facetsList(&$params)
+    public function getFacetsList(array &$params): void
     {
         $this->generateList(
             $params,
             'label,index_name',
             'tx_dlf_metadata',
-            'sorting',
+            'label',
             'is_facet=1'
         );
     }
@@ -100,88 +118,25 @@ class ItemsProcFunc
      */
     protected function generateList(&$params, $fields, $table, $sorting, $andWhere = '')
     {
-        $pages = $params['row']['pages'];
-        if (!empty($pages)) {
-            if (!is_array($pages)) {
-                $pages = [['uid' => $pages]];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+
+        // Get $fields from $table on given pid.
+        $result = $queryBuilder
+            ->select(...explode(',', $fields))
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq($table . '.pid', intval($this->storagePid)),
+                $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
+                $andWhere
+            )
+            ->orderBy($sorting)
+            ->execute();
+
+        while ($resArray = $result->fetch(\PDO::FETCH_NUM)) {
+            if ($resArray) {
+                $params['items'][] = $resArray;
             }
-            foreach ($pages as $page) {
-                if ($page['uid'] > 0) {
-                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                        ->getQueryBuilderForTable($table);
-
-                    // Get $fields from $table on given pid.
-                    $result = $queryBuilder
-                        ->select(...explode(',', $fields))
-                        ->from($table)
-                        ->where(
-                            $queryBuilder->expr()->eq($table . '.pid', intval($page['uid'])),
-                            $andWhere
-                        )
-                        ->orderBy($sorting)
-                        ->execute();
-
-                    while ($resArray = $result->fetch(\PDO::FETCH_NUM)) {
-                        if ($resArray) {
-                            $params['items'][] = $resArray;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Helper to get flexform's items array for plugin "OaiPmh"
-     *
-     * @access public
-     *
-     * @param array &$params: An array with parameters
-     *
-     * @return void
-     */
-    public function libraryList(&$params)
-    {
-        $this->generateList(
-            $params,
-            'label,uid',
-            'tx_dlf_libraries',
-            'label'
-        );
-    }
-
-    /**
-     * Helper to get flexform's items array for plugin "Search"
-     *
-     * @access public
-     *
-     * @param array &$params: An array with parameters
-     *
-     * @return void
-     */
-    public function solrList(&$params)
-    {
-        $this->generateList(
-            $params,
-            'label,uid',
-            'tx_dlf_solrcores',
-            'label'
-        );
-    }
-
-    /**
-     * Helper to get flexform's items array for plugin "Toolbox"
-     *
-     * @access public
-     *
-     * @param array &$params: An array with parameters
-     *
-     * @return void
-     */
-    public function toolList(&$params)
-    {
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
-            $params['items'][] = [$GLOBALS['LANG']->sL($label), $class];
         }
     }
 }

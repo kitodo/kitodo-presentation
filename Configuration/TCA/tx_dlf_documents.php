@@ -27,29 +27,40 @@ return [
         ],
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfdocuments.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
-        'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn',
-    ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
+        'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,record_id,oai_id,opac_id,union_id,urn',
     ],
     'interface' => [
-        'showRecordFieldList' => 'title,volume,author,year,place,uid,prod_id,location,oai_id,opac_id,union_id,urn,document_format',
         'maxDBListItems' => 25,
         'maxSingleDBListItems' => 50,
     ],
     'columns' => [
         'hidden' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'default' => 0,
             ],
         ],
+        'tstamp' => [
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.timestamp',
+            'config' => [
+                'type' => 'input',
+                'renderType' => 'inputDateTime',
+                'eval' => 'datetime',
+            ]
+        ],
+        'crdate' => [
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.creationDate',
+            'config' => [
+                'type' => 'input',
+                'renderType' => 'inputDateTime',
+                'eval' => 'datetime',
+            ]
+        ],
         'starttime' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
@@ -60,7 +71,7 @@ return [
         ],
         'endtime' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
@@ -71,14 +82,14 @@ return [
         ],
         'fe_group' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => [
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', '-1'],
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.any_login', '-2'],
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', '-1'],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', '-2'],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
                 ],
                 'foreign_table' => 'fe_groups',
                 'size' => 5,
@@ -226,19 +237,7 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.thumbnail',
             'config' => [
                 'type' => 'user',
-                'userFunc' => \Kitodo\Dlf\Hooks\UserFunc::class . '->displayThumbnail',
-            ],
-        ],
-        'metadata' => [
-            'config' => [
-                'type' => 'passthrough',
-                'default' => '',
-            ],
-        ],
-        'metadata_sorting' => [
-            'config' => [
-                'type' => 'passthrough',
-                'default' => '',
+                'renderType' => 'thumbnailCustomElement'
             ],
         ],
         'structure' => [
@@ -380,7 +379,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
-                'enableMultiSelectFilterTextfield' => 1,
                 'foreign_table' => 'tx_dlf_collections',
                 'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0) ORDER BY tx_dlf_collections.label',
                 'size' => 5,
@@ -443,20 +441,20 @@ return [
                 'minitems' => 1,
                 'maxitems' => 1,
             ],
-        ],
+        ]
     ],
     'types' => [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab1,--palette--;;1,author,--palette--;;2,structure,--palette--;;3,collections,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab2,--palette--;;4,--palette--;;5,--palette--;;6,--palette--;;7,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_documents.tab3,--palette--;;8,hidden,--palette--;;9,fe_group,status,owner,license,'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'title, title_sorting, --linebreak--, mets_label, thumbnail', 'canNotCollapse' => 1],
-        '2' => ['showitem' => 'year, place', 'canNotCollapse' => 1],
-        '3' => ['showitem' => 'partof, mets_orderlabel, --linebreak--, volume, volume_sorting', 'canNotCollapse' => 1],
-        '4' => ['showitem' => 'location, document_format', 'canNotCollapse' => 1],
-        '5' => ['showitem' => 'record_id, prod_id', 'canNotCollapse' => 1],
-        '6' => ['showitem' => 'opac_id, union_id', 'canNotCollapse' => 1],
-        '7' => ['showitem' => 'urn, purl', 'canNotCollapse' => 1],
-        '8' => ['showitem' => 'license, terms, --linebreak--, restrictions, rights_info, --linebreak--, out_of_print', 'canNotCollapse' => 1],
-        '9' => ['showitem' => 'starttime, endtime', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'title, title_sorting, --linebreak--, mets_label, thumbnail'],
+        '2' => ['showitem' => 'year, place'],
+        '3' => ['showitem' => 'partof, mets_orderlabel, --linebreak--, volume, volume_sorting'],
+        '4' => ['showitem' => 'location, document_format'],
+        '5' => ['showitem' => 'record_id, prod_id'],
+        '6' => ['showitem' => 'opac_id, union_id'],
+        '7' => ['showitem' => 'urn, purl'],
+        '8' => ['showitem' => 'license, terms, --linebreak--, restrictions, rights_info, --linebreak--, out_of_print'],
+        '9' => ['showitem' => 'starttime, endtime'],
     ]
 ];
