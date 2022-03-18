@@ -18,6 +18,7 @@ use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Command\Command;
@@ -55,6 +56,11 @@ class BaseCommand extends Command
     protected $libraryRepository;
 
     /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
      * @var int
      */
     protected $storagePid;
@@ -88,6 +94,7 @@ class BaseCommand extends Command
             $this->collectionRepository = $objectManager->get(CollectionRepository::class);
             $this->documentRepository = $objectManager->get(DocumentRepository::class);
             $this->libraryRepository = $objectManager->get(LibraryRepository::class);
+            $this->structureRepository = $objectManager->get(StructureRepository::class);
         } else {
             return false;
         }
@@ -146,38 +153,6 @@ class BaseCommand extends Command
     }
 
     /**
-     * Load XML file / IIIF resource from URL
-     *
-     * @access protected
-     *
-     * @param string $location: The URL of the file to load
-     *
-     * @return string|bool the found xml as string or false on failure
-     */
-    protected function loadLocation($location)
-    {
-        // Load XML / JSON-LD file.
-        if (GeneralUtility::isValidUrl($location)) {
-            // Load extension configuration
-            // $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            // // Set user-agent to identify self when fetching XML / JSON-LD data.
-            // if (!empty($extConf['useragent'])) {
-            //     @ini_set('user_agent', $extConf['useragent']);
-            // }
-            $fileResource = GeneralUtility::getUrl($location);
-            if ($fileResource !== false) {
-                $xml = Helper::getXmlFileAsString($fileResource);
-                if ($xml !== false) {
-                    return $xml;
-                }
-            }
-        } else {
-            $this->logger->error('Invalid file location "' . $location . '" for document loading');
-        }
-        return false;
-    }
-
-    /**
      * Update or insert document to database
      *
      * @param int|string $doc The document uid from DB OR the location of a mets document.
@@ -212,7 +187,8 @@ class BaseCommand extends Command
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
         $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
-        $document->setStructure(Helper::getUidFromIndexName($metadata['type'][0], 'tx_dlf_structures') ? : 0);
+        $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0], 'tx_dlf_structures');
+        $document->setStructure($structure);
 
         $collections = $this->collectionRepository->findCollectionsBySettings(['index_name' => $metadata['collection']]);
         if ($collections) {

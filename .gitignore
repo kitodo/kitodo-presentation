@@ -12,5 +12,5 @@ Build/Documentation/dbdocs/var
 composer.lock
 Documentation-GENERATED-temp/
 nbproject/
-public/typo3/
+public/
 vendor/

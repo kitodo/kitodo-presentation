@@ -661,7 +661,7 @@ final class MetsDocument extends Doc
      */
     protected function loadLocation($location)
     {
-        $fileResource = GeneralUtility::getUrl($location);
+        $fileResource = Helper::getUrl($location);
         if ($fileResource !== false) {
             $xml = Helper::getXmlFileAsString($fileResource);
             // Set some basic properties.

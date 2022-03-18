@@ -133,6 +133,10 @@
 				<source><![CDATA[Fascicle]]></source>
 				<target><![CDATA[Faszikel]]></target>
 			</trans-unit>
+			<trans-unit id="structure.figure" approved="yes">
+				<source><![CDATA[Figure]]></source>
+				<target><![CDATA[Abbildung]]></target>
+			</trans-unit>
 			<trans-unit id="structure.file" approved="yes">
 				<source><![CDATA[File]]></source>
 				<target><![CDATA[Akte]]></target>

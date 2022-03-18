@@ -27,10 +27,10 @@
 
         <f:form section="showResults" action="{action}" controller="{Controller}" name="searchParameter" method="post" class="tx-dlf-search-form">
             <div>
-                <label for="form-orderBy">
+                <label for="form-orderBy-{viewData.uniqueId}">
                     <f:translate key="listview.form.orderBy"/>
                 </label>
-                <f:form.select id="form-orderBy" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
+                <f:form.select id="form-orderBy-{viewData.uniqueId}" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
                     <f:form.select.option value="score">
                         <f:translate key="listview.form.relevance" />
                     </f:form.select.option>
@@ -40,10 +40,10 @@
                         </f:form.select.option>
                     </f:for>
                 </f:form.select>
-                <label for="form-order">
+                <label for="form-order-{viewData.uniqueId}">
                     <f:translate key="listview.form.order"/>
                 </label>
-                <f:form.select id="form-order" property="order" value="{lastSearch.order}" onclick="javascript:this.form.submit();">
+                <f:form.select id="form-order-{viewData.uniqueId}" property="order" value="{lastSearch.order}" onclick="javascript:this.form.submit();">
                     <f:form.select.option value="asc">
                     <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.asc' extensionName='slub_digitalcollections' />
                     </f:form.select.option>

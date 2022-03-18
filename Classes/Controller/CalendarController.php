@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,6 +28,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CalendarController extends AbstractController
 {
+    /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
+     * @param StructureRepository $structureRepository
+     */
+    public function injectStructureRepository(StructureRepository $structureRepository)
+    {
+        $this->structureRepository = $structureRepository;
+    }
+
     /**
      * This holds all issues for the list view.
      *
@@ -101,7 +115,7 @@ class CalendarController extends AbstractController
             return;
         }
 
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), 'issue');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
 
         $issues = [];
 
@@ -206,7 +220,7 @@ class CalendarController extends AbstractController
         }
 
         // Get all children of anchor. This should be the year anchor documents
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), 'year');
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('year'));
 
         $years = [];
         // Process results.

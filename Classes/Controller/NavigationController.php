@@ -76,7 +76,6 @@ class NavigationController extends AbstractController
         for ($i = 1; $i <= $this->document->getDoc()->numPages; $i++) {
             $pageOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel']) : '');
         }
-        $this->view->assign('uniqueId', uniqid(Helper::getUnqualifiedClassName(get_class($this)) . '-'));
         $this->view->assign('pageOptions', $pageOptions);
 
         // prepare feature array for fluid

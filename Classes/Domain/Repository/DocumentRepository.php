@@ -117,14 +117,14 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * @param int $partOf
-     * @param string $structure
+     * @param  \Kitodo\Dlf\Domain\Model\Structure $structure
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function getChildrenOfYearAnchor($partOf, $structure)
     {
         $query = $this->createQuery();
 
-        $query->matching($query->equals('structure', Helper::getUidFromIndexName($structure, 'tx_dlf_structures')));
+        $query->matching($query->equals('structure', $structure));
         $query->matching($query->equals('partof', $partOf));
 
         $query->setOrderings([

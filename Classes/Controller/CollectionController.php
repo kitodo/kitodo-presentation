@@ -183,6 +183,7 @@ class CollectionController extends AbstractController
         // get all documents of given collection
         $documents = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
 
+        $this->view->assign('viewData', $this->viewData);
         $this->view->assign('documents', $documents['documents']);
         $this->view->assign('collection', $collection);
         $this->view->assign('widgetPage', $widgetPage);

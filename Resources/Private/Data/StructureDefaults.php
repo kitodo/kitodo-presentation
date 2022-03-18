@@ -141,6 +141,10 @@ return [
         'toplevel' => 0,
         'oai_name' => ''
     ],
+    'figure' => [
+        'toplevel' => 0,
+        'oai_name' => '',
+    ],
     'file' => [
         'toplevel' => 1,
         'oai_name' => '',
