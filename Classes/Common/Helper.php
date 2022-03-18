@@ -884,10 +884,10 @@ class Helper
      * @param string $url
      *
      * @return string|bool
-    */
+     */
     public static function getUrl(string $url)
     {
-        if (! Helper::isValidHttpUrl($url)) {
+        if (!Helper::isValidHttpUrl($url)) {
             return false;
         }
 
@@ -906,5 +906,5 @@ class Helper
         $content  = $response->getBody()->getContents();
 
         return $content;
-   }
+    }
 }
