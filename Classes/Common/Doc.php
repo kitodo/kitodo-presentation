@@ -425,11 +425,8 @@ abstract class Doc
         if (GeneralUtility::isValidUrl($location)) {
             // Load extension configuration
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            // Set user-agent to identify self when fetching XML data.
-            if (!empty($extConf['useragent'])) {
-                @ini_set('user_agent', $extConf['useragent']);
-            }
-            $content = GeneralUtility::getUrl($location);
+
+            $content = Helper::getUrl($location);
             if ($content !== false) {
                 $xml = Helper::getXmlFileAsString($content);
                 if ($xml !== false) {
@@ -808,12 +805,6 @@ abstract class Doc
     {
         // Load XML / JSON-LD file.
         if (GeneralUtility::isValidUrl($location)) {
-            // Load extension configuration
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            // Set user-agent to identify self when fetching XML / JSON-LD data.
-            if (!empty($extConf['useragent'])) {
-                @ini_set('user_agent', $extConf['useragent']);
-            }
             // the actual loading is format specific
             return $this->loadLocation($location);
         } else {

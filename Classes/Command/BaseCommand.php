@@ -153,38 +153,6 @@ class BaseCommand extends Command
     }
 
     /**
-     * Load XML file / IIIF resource from URL
-     *
-     * @access protected
-     *
-     * @param string $location: The URL of the file to load
-     *
-     * @return string|bool the found xml as string or false on failure
-     */
-    protected function loadLocation($location)
-    {
-        // Load XML / JSON-LD file.
-        if (GeneralUtility::isValidUrl($location)) {
-            // Load extension configuration
-            // $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            // // Set user-agent to identify self when fetching XML / JSON-LD data.
-            // if (!empty($extConf['useragent'])) {
-            //     @ini_set('user_agent', $extConf['useragent']);
-            // }
-            $fileResource = GeneralUtility::getUrl($location);
-            if ($fileResource !== false) {
-                $xml = Helper::getXmlFileAsString($fileResource);
-                if ($xml !== false) {
-                    return $xml;
-                }
-            }
-        } else {
-            $this->logger->error('Invalid file location "' . $location . '" for document loading');
-        }
-        return false;
-    }
-
-    /**
      * Update or insert document to database
      *
      * @param int|string $doc The document uid from DB OR the location of a mets document.

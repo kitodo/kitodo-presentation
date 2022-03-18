@@ -12,10 +12,12 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -421,59 +423,6 @@ class Helper
     }
 
     /**
-     * Get the "label" for an UID
-     *
-     * @access public
-     *
-     * @param int $uid: The UID of the record
-     * @param string $table: Get the "label" from this table
-     * @param int $pid: Get the "label" from this page
-     *
-     * @return string "label" for the given UID
-     */
-    public static function getLabelFromUid($uid, $table, $pid = -1)
-    {
-        // Sanitize input.
-        $uid = max(intval($uid), 0);
-        if (
-            !$uid
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
-        ) {
-            self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
-            return '';
-        }
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
-
-        $where = '';
-        // Should we check for a specific PID, too?
-        if ($pid !== -1) {
-            $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
-        }
-
-        // Get label from database.
-        $result = $queryBuilder
-            ->select($table . '.label AS label')
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq($table . '.uid', $uid),
-                $where,
-                self::whereExpression($table)
-            )
-            ->setMaxResults(1)
-            ->execute();
-
-        if ($resArray = $result->fetch()) {
-            return $resArray['label'];
-        } else {
-            self::log('No "label" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
-            return '';
-        }
-    }
-
-    /**
      * Get language name from ISO code
      *
      * @access public
@@ -660,34 +609,6 @@ class Helper
     }
 
     /**
-     * Load value from user's session.
-     *
-     * @access public
-     *
-     * @param string $key: Session data key for retrieval
-     *
-     * @return mixed Session value for given key or null on failure
-     */
-    public static function loadFromSession($key)
-    {
-        // Cast to string for security reasons.
-        $key = (string) $key;
-        if (!$key) {
-            self::log('Invalid key "' . $key . '" for session data retrieval', LOG_SEVERITY_WARNING);
-            return;
-        }
-        // Get the session data.
-        if (\TYPO3_MODE === 'FE') {
-            return $GLOBALS['TSFE']->fe_user->getKey('ses', $key);
-        } elseif (\TYPO3_MODE === 'BE') {
-            return $GLOBALS['BE_USER']->getSessionData($key);
-        } else {
-            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            return;
-        }
-    }
-
-    /**
      * Merges two arrays recursively and actually returns the modified array.
      * @see \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule()
      *
@@ -724,38 +645,6 @@ class Helper
         $content = GeneralUtility::makeInstance(\Kitodo\Dlf\Common\KitodoFlashMessageRenderer::class)
             ->render($flashMessages);
         return $content;
-    }
-
-    /**
-     * Save given value to user's session.
-     *
-     * @access public
-     *
-     * @param mixed $value: Value to save
-     * @param string $key: Session data key for saving
-     *
-     * @return bool true on success, false on failure
-     */
-    public static function saveToSession($value, $key)
-    {
-        // Cast to string for security reasons.
-        $key = (string) $key;
-        if (!$key) {
-            self::log('Invalid key "' . $key . '" for session data saving', LOG_SEVERITY_WARNING);
-            return false;
-        }
-        // Save value in session data.
-        if (\TYPO3_MODE === 'FE') {
-            $GLOBALS['TSFE']->fe_user->setKey('ses', $key, $value);
-            $GLOBALS['TSFE']->fe_user->storeSessionData();
-            return true;
-        } elseif (\TYPO3_MODE === 'BE') {
-            $GLOBALS['BE_USER']->setAndSaveSessionData($key, $value);
-            return true;
-        } else {
-            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            return false;
-        }
     }
 
     /**
@@ -984,4 +873,40 @@ class Helper
 
         $configurationManager->setConfiguration($frameworkConfiguration);
     }
+
+    /**
+     * Replacement for the TYPO3 GeneralUtility::getUrl().
+     *
+     * This method respects the User Agent settings from extConf
+     *
+     * @access public
+     *
+     * @param string $url
+     *
+     * @return string|bool
+    */
+   public static function getUrl(string $url)
+   {
+        if (! Helper::isValidHttpUrl($url)) {
+            return false;
+        }
+
+        // Get extension configuration.
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+
+        /** @var RequestFactory $requestFactory */
+        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $configuration = [
+            'timeout' => 30,
+            'headers' => [
+                'User-Agent' => $extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+            ],
+        ];
+        $response = $requestFactory->request($url, 'GET', $configuration);
+        $content  = $response->getBody()->getContents();
+
+        return $content;
+
+   }
+
 }
