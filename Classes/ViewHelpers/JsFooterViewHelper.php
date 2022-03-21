@@ -30,7 +30,7 @@ class JsFooterViewHelper extends AbstractViewHelper
         $this->registerArgument('inlineCode', 'string', 'Inline JavaScript', true);
     }
 
-   /**
+    /**
      *
      * @param array $arguments
      * @param \Closure $renderChildrenClosure
