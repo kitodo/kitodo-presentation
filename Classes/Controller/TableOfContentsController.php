@@ -280,7 +280,8 @@ class TableOfContentsController extends AbstractController
 
         if ($entry['children'] == NULL) {
             $entryArray['description'] = $entry['description'];
-            $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['THUMBS']);
+            $id = str_replace("LOG", "PHYS", $entry['id']);
+            $entryArray['image'] = $this->doc->getFileLocation($this->doc->physicalStructureInfo[$id]['files']['THUMBS']);
             $entryArray['doNotLinkIt'] = 0;
             // index.php?tx_dlf%5Bid%5D=http%3A%2F%2Flink_to_METS_file.xml
             $entryArray['_OVERRIDE_HREF'] = '/index.php?id=' . GeneralUtility::_GET('id') . '&tx_dlf%5Bid%5D=' . urlencode($entry['points']);
