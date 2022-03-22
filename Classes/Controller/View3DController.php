@@ -21,7 +21,7 @@ use Kitodo\Dlf\Common\Doc;
  * @subpackage dlf
  * @access public
  */
- class View3DController extends AbstractController
+class View3DController extends AbstractController
 {
     /**
      * @return string|void
