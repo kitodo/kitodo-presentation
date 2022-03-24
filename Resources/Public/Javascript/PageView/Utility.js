@@ -261,28 +261,68 @@ dlfUtils.fetchImageData = function (imageSourceObjs) {
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchStaticImageData = function (imageSourceObj) {
+    // Load the image while trying to reconcile the following constraints:
+    //
+    // - Determine width/height of the image before passing it to OpenLayers.
+    //   -> This is used in `createOlLayers` to calculate the image extent.
+    //
+    // - Pass a URL to OpenLayers.
+    //   -> OL apparently won't let us pass the Image object directly.
+    //      ("imageLoadFunction" wants us to modify a given image object as well.)
+    //
+    // - Avoid duplicate image loading.
+    //   -> When we just pass the original URL to OL, the image may be loaded twice depending on browser cache behavior.
+    //   -> This constraint may be violated in a non-CORS or mixed content scenario.
+    //
+    // - Don't fail in non-CORS or mixed content scenarios.
+    //   -> When loading the image into a Blob (via XHR),
+    //      a) the image becomes active content (which is blocked in a mixed context), and
+    //      b) we now "read" instead of merely "embed" the image (which is blocked in non-CORS scenarios).
+    //
+    // TODO: Revisit this. Perhaps we find a way to pass the Image directly to OpenLayers.
+    //       Even so, loading via XHR is beneficial in that it will allow implementing a loading indicator.
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred();
 
-    // Create new Image object.
-    var image = new Image();
-
-    // Register onload handler.
-    image.onload = function () {
-
-        var imageDataObj = {
-            src: this.src,
-            mimetype: imageSourceObj.mimetype,
-            width: this.width,
-            height: this.height
-        };
-
-        deferredResponse.resolve(imageDataObj);
+    var loadFailed = function () {
+        deferredResponse.reject();
     };
 
-    // Initialize image loading.
-    image.src = imageSourceObj.url;
+    var makeImage = function (src, mimetype) {
+        var image = new Image();
+        image.onload = function () {
+            var imageDataObj = {
+                src: this.src,
+                mimetype: mimetype,
+                width: this.width,
+                height: this.height
+            };
+
+            deferredResponse.resolve(imageDataObj);
+        };
+        image.onerror = loadFailed;
+        image.src = src;
+    };
+
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = function () {
+        if (200 <= xhr.status && xhr.status < 300) {
+            var blob = xhr.response;
+            var objectUrl = URL.createObjectURL(blob);
+
+            makeImage(objectUrl, imageSourceObj.mimetype);
+        } else {
+            loadFailed();
+        }
+    };
+    xhr.onerror = function () {
+        // Mixed content or bad CORS headers? Try again using passive content.
+        makeImage(imageSourceObj.url, imageSourceObj.mimetype);
+    };
+    xhr.open('GET', imageSourceObj.url);
+    xhr.send();
 
     return deferredResponse;
 };
