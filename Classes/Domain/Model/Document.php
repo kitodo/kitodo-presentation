@@ -645,9 +645,9 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Domain\Model\Library
+     * @return \Kitodo\Dlf\Domain\Model\Library|null
      */
-    public function getOwner(): Library
+    public function getOwner(): ?Library
     {
         return $this->owner instanceof LazyLoadingProxy
             ? $this->owner->_loadRealInstance()
