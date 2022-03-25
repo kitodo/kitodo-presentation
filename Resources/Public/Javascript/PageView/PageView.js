@@ -187,18 +187,12 @@ dlfViewer.prototype.addCustomControls = function() {
     //
     // Add image manipulation tool if container is added.
     //
-    // It is important to know that the image manipulation tool uses a webgl renderer as basis. Therefor the
-    // application has as first to check if the renderer is active. Further it has to check if cors supported through
-    // image.
-    //
-    if ($('#tx-dlf-tools-imagetools').length > 0 && dlfUtils.isWebGLEnabled() && this.isCorsEnabled) {
+    if ($('#tx-dlf-tools-imagetools').length > 0) {
 
         // should be called if cors is enabled
         imageManipulationControl = new dlfViewerImageManipulationControl({
             controlTarget: $('.tx-dlf-tools-imagetools')[0],
-            layers: dlfUtils.createOl3Layers(images, '*'),
             map: this.map,
-            view: dlfUtils.createOl3View(images)
         });
 
         // bind behavior of both together
@@ -213,11 +207,6 @@ dlfViewer.prototype.addCustomControls = function() {
 
         // set on object scope
         this.imageManipulationControl = imageManipulationControl;
-
-    } else if ($('#tx-dlf-tools-imagetools').length > 0) {
-
-        // hide the element because the functionality is not supported through missing webgl or cors support.
-        $('#tx-dlf-tools-imagetools').addClass('deactivate');
 
     }
 };
@@ -248,7 +237,7 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
 };
 
 /**
- * Creates OL3 controls
+ * Creates OpenLayers controls
  * @param {Array.<string>} controlNames
  * @param {Array.<ol.layer.Layer>} layers
  * @return {Array.<ol.control.Control>}
@@ -266,7 +255,29 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
 
                 case "OverviewMap":
 
-                    controls.push(new ol.control.OverviewMap({layers}));
+                    var extent = ol.extent.createEmpty();
+                    for (let i = 0; i < this.images.length; i++) {
+                        ol.extent.extend(extent, [0, -this.images[i].height, this.images[i].width, 0]);
+                    }
+
+                    var ovExtent = ol.extent.buffer(
+                        extent,
+                        1 * Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent))
+                    );
+
+                    controls.push(new ol.control.OverviewMap({
+                        layers: layers.map(dlfUtils.cloneOlLayer),
+                        view: new ol.View({
+                            center: ol.extent.getCenter(extent),
+                            extent: ovExtent,
+                            projection: new ol.proj.Projection({
+                                code: 'kitodo-image',
+                                units: 'pixels',
+                                extent: ovExtent
+                            }),
+                            showFullExtent: false
+                        })
+                    }));
                     break;
 
                 case "ZoomPanel":
@@ -297,7 +308,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
 
         this.highlightLayer = new ol.layer.Vector({
             'source': new ol.source.Vector(),
-            'style': dlfViewerOL3Styles.wordStyle
+            'style': dlfViewerOLStyles.wordStyle
         });
 
         this.map.addLayer(this.highlightLayer);
@@ -355,7 +366,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
                 for (var i = 0; i < features.length; i++) {
                     this.highlightLayer.getSource().addFeatures([features[i]]);
                 }
-            };
+            }
         }, this));
     };
 };
@@ -371,17 +382,7 @@ dlfViewer.prototype.init = function(controlNames) {
     if (this.imageUrls.length <= 0)
         throw new Error('Missing image source objects.');
 
-    /**
-     * Is cors enabled. Important information for correct renderer and layer initialization
-     * @type {boolean}
-     */
-     if (this.useInternalProxy) {
-       this.isCorsEnabled = true;
-     } else {
-       this.isCorsEnabled = dlfUtils.isCorsEnabled(this.imageUrls);
-     }
-
-    this.initLayer(this.imageUrls, this.isCorsEnabled)
+    this.initLayer(this.imageUrls)
         .done($.proxy(function(layers){
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
@@ -410,15 +411,18 @@ dlfViewer.prototype.init = function(controlNames) {
                 ],
                 // necessary for proper working of the keyboard events
                 keyboardEventTarget: document,
-                view: dlfUtils.createOl3View(this.images),
-                renderer: 'canvas'
+                view: dlfUtils.createOlView(this.images),
             });
 
             // Position image according to user preferences
-            var lon = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
-              lat = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
-              zoom = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
-            if (!dlfUtils.isNullEmptyUndefinedOrNoNumber(lon) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(lat) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoom)) {
+            var lonCk = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
+              latCk = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
+              zoomCk = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
+            if (!dlfUtils.isNullEmptyUndefinedOrNoNumber(lonCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(latCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoomCk)) {
+                var lon = Number(lonCk),
+                  lat = Number(latCk),
+                  zoom = Number(zoomCk);
+
                 // make sure, zoom center is on viewport
                 var center = this.map.getView().getCenter();
                 if ((lon < (2.2 * center[0])) && (lat < (-0.2 * center[1])) && (lat > (2.2 * center[1]))) {
@@ -466,14 +470,13 @@ dlfViewer.prototype.init = function(controlNames) {
 };
 
 /**
- * Function generate the ol3 layer objects for given image sources. Returns a promise.
+ * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
  * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
- * @param {boolean} isCorsEnabled
  * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
  * @private
  */
-dlfViewer.prototype.initLayer = function(imageSourceObjs, isCorsEnabled) {
+dlfViewer.prototype.initLayer = function(imageSourceObjs) {
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred(),
@@ -484,12 +487,11 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs, isCorsEnabled) {
       resolveCallback = $.proxy(function(imageSourceData, layers) {
             this.images = imageSourceData;
             deferredResponse.resolve(layers);
-        }, this),
-      origin = isCorsEnabled ? '*' : undefined;
+        }, this);
 
     dlfUtils.fetchImageData(imageSourceObjs)
       .done(function(imageSourceData) {
-          resolveCallback(imageSourceData, dlfUtils.createOl3Layers(imageSourceData, origin));
+          resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
       });
 
     return deferredResponse;
@@ -541,14 +543,16 @@ dlfViewer.prototype.initCropping = function () {
     value = 'LineString';
     maxPoints = 2;
     geometryFunction = function(coordinates, geometry) {
-        if (!geometry) {
-            geometry = new ol.geom.Polygon(null);
-        }
         var start = coordinates[0];
         var end = coordinates[1];
-        geometry.setCoordinates([
+        var geomCoordinates = [
             [start, [start[0], end[1]], end, [end[0], start[1]], start]
-        ]);
+        ];
+        if (geometry) {
+            geometry.setCoordinates(geomCoordinates);
+        } else {
+            geometry = new ol.geom.Polygon(geomCoordinates);
+        }
 
         // add to basket button
         var extent = geometry.getExtent();
@@ -607,6 +611,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
     });
 
     this.ov_view = new ol.View({
+        constrainRotation: false,
         projection: layerProj,
         center: ol.extent.getCenter(extent),
         zoom: 3,
@@ -620,7 +625,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
         interactions: []
     });
 
-    this.ov_map.addLayer(this.map.getLayers().getArray()[0]);
+    this.ov_map.addLayer(dlfUtils.cloneOlLayer(this.map.getLayers().getArray()[0]));
 
     var mousePosition = null;
     var dlfViewer = this;
@@ -636,7 +641,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
             var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
 
             if (rotateDiff || centerDiff) {
-                destMap.getView().rotate(sourceView.getRotation());
+                destMap.getView().setRotation(sourceView.getRotation());
             }
         },
         adjustViewHandler = function(event) {

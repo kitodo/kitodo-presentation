@@ -18,14 +18,9 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfemail.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => 'label,name,mail',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,name,mail',
-    ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
     ],
     'columns' => [
         'label' => [

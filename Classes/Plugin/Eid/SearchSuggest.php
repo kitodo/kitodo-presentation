@@ -16,7 +16,9 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -33,7 +35,7 @@ class SearchSuggest
     /**
      * The main method of the eID script
      *
-     *  @param ServerRequestInterface $request
+     * @param ServerRequestInterface $request
      * @return ResponseInterface XML response of search suggestions
      */
     public function main(ServerRequestInterface $request)
@@ -41,13 +43,13 @@ class SearchSuggest
         $output = [];
         // Get input parameters and decrypt core name.
         $parameters = $request->getParsedBody();
-        $encrypted = (string) $parameters['encrypted'];
-        if (empty($encrypted)) {
+        $solrCore = (string) $parameters['solrcore'];
+        $uHash = (string) $parameters['uHash'];
+        if (hash_equals(GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'), $uHash) === false) {
             throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
-        $core = Helper::decrypt($encrypted);
         // Perform Solr query.
-        $solr = Solr::getInstance($core);
+        $solr = Solr::getInstance($solrCore);
         if ($solr->ready) {
             $query = $solr->service->createSelect();
             $query->setHandler('suggest');

@@ -35,7 +35,7 @@ Please run the following commands in your webroot where the TYPO3 :file:`compose
 
    .. code-block:: shell
 
-      composer require kitodo/presentation:^3.3
+      composer require kitodo/presentation:^4
 
 #. Install and Activate the Extension
 
@@ -66,6 +66,48 @@ Upgrade
 *******
 
 This section contains version specific instructions on upgrading an existing Kitodo.Presentation installation.
+
+Version 3.3 -> 4.0
+==================
+
+Plugin Feeds
+------------
+
+The plugin feeds uses the fluid template engine to render XML now. To enable this output format, you must create
+a TypoScript extension template on the page with the feed plugin and include the template "RSS Feed Plugin Configuration".
+
+Plugin OAI-PMH
+--------------
+
+The plugin oai-pmh uses the fluid template engine to render XML now. To enable this output format, you must create
+a TypoScript extension template on the page with the oai-pmh plugin and include the template "OAI-PMH Plugin Configuration".
+
+
+Plugin Page Grid
+----------------
+
+The plugin use the fluid widget.paginate viewhelper now. The markup has changed. You need to check and adopt your design.
+
+The pagination can be configured by TypoScript. The flexform setting `limit` is changed to default `paginate.itemsPerPage`.
+
+Plugin ListView
+---------------
+
+The ListView plugin works in a different manner now. It still can be used to render results from the Search plugin or the
+Collection plugin. Both plugins have their own "listview" which basically uses the same Fluid partials.
+
+With the ListView plugin, you still achieve the following situation:
+
+```
+page 1: Search Plugin (main column)
+   |
+   v
+   +--> page 2: ListView Plugin (main column) | Search Plugin (sidebar) e.g with forceAbsoluteUrlHttps
+   ^
+   |
+page 3: Collection Plugin (main column)
+```
+
 
 Version 3.2 -> 3.3
 ==================

@@ -1,0 +1,32 @@
+<f:comment>
+    <!--
+     * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+     *
+     * This file is part of the Kitodo and TYPO3 projects.
+     *
+     * @license GNU General Public License version 3 or later.
+     * For the full copyright and license information, please read the
+     * LICENSE.txt file that was distributed with this source code.
+    -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<div class="typo3-messages">
+    <div class="alert alert-{alert}">
+        <div class="media">
+            <div class="media-left">
+                <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-check fa-stack-1x"></i>
+                </span>
+            </div>
+            <div class="media-body">
+                <h4 class="alert-title">{title}</h4>
+                <p class="alert-message">{message}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

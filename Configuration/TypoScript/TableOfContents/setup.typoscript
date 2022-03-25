@@ -1,0 +1,3 @@
+plugin.tx_dlf_tableofcontents.menuConf {
+    expAll = 0
+}

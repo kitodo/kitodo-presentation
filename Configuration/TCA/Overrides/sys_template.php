@@ -21,11 +21,6 @@ if (!defined('TYPO3_MODE')) {
 );
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
-    'Configuration/TypoScript/Search/',
-    'Search Facets Configuration'
-);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'dlf',
     'Configuration/TypoScript/TableOfContents/',
     'Table of Contents Menu Configuration'
 );
@@ -33,4 +28,16 @@ if (!defined('TYPO3_MODE')) {
     'dlf',
     'Configuration/TypoScript/Toolbox/',
     'Toolbox Default Tool Templates'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'Configuration/TypoScript/Plugins/Feeds/',
+    'RSS Feed Plugin Configuration'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
+    'Configuration/TypoScript/Plugins/OaiPmh/',
+    'OAI-PMH Plugin Configuration'
 );

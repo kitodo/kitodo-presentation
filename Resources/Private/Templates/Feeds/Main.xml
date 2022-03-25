@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+    <rss version="2.0"
+         xmlns:content="http://purl.org/rss/1.0/modules/content/"
+         xmlns:atom="http://www.w3.org/2005/Atom">
+         <channel>
+            <title>{settings.title}</title>
+            <description>{settings.description}</description>
+            <link><f:uri.action addQueryString="1" absolute="1" /></link>
+            <f:if condition="{feedMeta.copyright}">
+                <copyright>{feedMeta.copyright}</copyright>
+            </f:if>
+            <pubDate><f:format.date format="r">now</f:format.date></pubDate>
+            <generator>Kitodo.Presentation</generator>
+            <f:for each="{documents}" as="document">
+                <item>
+                    <title>{document.title}</title>
+                    <link><f:uri.action pageUid="{settings.targetPid}" absolute="1" additionalParams="{tx_dlf: {'id': '{document.uid}'}}" /></link>
+                    <f:if condition="{document.author}">
+                        <author>{document.author}</author>
+                    </f:if>
+                    <pubDate><f:format.date format="r">{document.crdate}</f:format.date></pubDate>
+                    <guid>{document.recordId}</guid>
+                </item>
+            </f:for>
+         </channel>
+    </rss>
+</html>

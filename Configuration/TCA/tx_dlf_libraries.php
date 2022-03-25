@@ -24,27 +24,22 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlflibraries.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => 'label,website,contact',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'label,website,contact',
     ],
     'columns' => [
         'sys_language_uid' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.language',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'sys_language',
                 'foreign_table_where' => 'ORDER BY sys_language.title',
                 'items' => [
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
+                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
                 ],
                 'default' => 0
             ],
@@ -52,7 +47,7 @@ return [
         'l18n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -82,6 +77,7 @@ return [
         ],
         'index_name' => [
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.index_name',
             'config' => [
                 'type' => 'input',
@@ -120,18 +116,13 @@ return [
         ],
         'image' => [
             'exclude' => 1,
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.image',
-            'config' => [
-                'type' => 'group',
-                'internal_type' => 'file',
-                'allowed' => $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
-                'max_size' => 256,
-                'uploadfolder' => 'uploads/tx_dlf',
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
-                'default' => '',
-            ],
+            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('image', [
+                'appearance' => [
+                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
+                ],
+            ], $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']),
         ],
         'oai_label' => [
             'exclude' => 1,
@@ -201,9 +192,9 @@ return [
         '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab1,label,--palette--;;1,website,contact,image,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab3,oai_label,--palette--;;2,opac_label,--palette--;;3,union_label,--palette--;;4'],
     ],
     'palettes' => [
-        '1' => ['showitem' => 'index_name', 'canNotCollapse' => 1],
-        '2' => ['showitem' => 'oai_base', 'canNotCollapse' => 1],
-        '3' => ['showitem' => 'opac_base', 'canNotCollapse' => 1],
-        '4' => ['showitem' => 'union_base', 'canNotCollapse' => 1],
+        '1' => ['showitem' => 'index_name'],
+        '2' => ['showitem' => 'oai_base'],
+        '3' => ['showitem' => 'opac_base'],
+        '4' => ['showitem' => 'union_base'],
     ],
 ];

@@ -1,0 +1,90 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<p class="tx-dlf-basket-counts">
+    <f:if condition="{countDocs} > 0">
+        <f:then>
+            <f:if condition="{countDocs} == 1">
+                <f:then>
+                    <f:translate key="basket.one_entry" />
+                </f:then>
+                <f:else>
+                    <f:translate key="basket.count" arguments="{0: '{countDocs}'}" />
+                </f:else>
+            </f:if>
+        </f:then>
+        <f:else>
+            <f:translate key="basket.no_entries" />
+        </f:else>
+    </f:if>
+</p>
+<f:form pageUid="{settings.targetBasket}" action="basket" fieldNamePrefix="tx_dlf">
+    <ol class="tx-dlf-basket-list">
+        <f:for each="{entries}" as="entry">
+            <li value="{entry.NUMBER}">
+                <dl>
+                    <dt>
+                        <f:link.typolink parameter="{entry.BASKETDATA.downloadUrl}">
+                            {entry.BASKETDATA.title}
+                        </f:link.typolink>
+                        <f:if condition="{entry.BASKETDATA.info}">
+                            <f:then>
+                                ({entry.BASKETDATA.info})
+                            </f:then>
+                        </f:if>
+                    </dt>
+                    <dd>
+                        <div>
+                            <f:form.checkbox name="selected[{entry.key}][id]" value="{entry.id}" />
+                            <f:for each="{entry.CONTROLS}" as="controlField" key="controlKey">
+                                <f:form.hidden name="selected[{entry.key}][{controlKey}]" value="{controlField}" />
+                            </f:for>
+                        </div>
+                    </dd>
+                </dl>
+            </li>
+        </f:for>
+    </ol>
+    <div>
+        <div>
+            <f:form.select name="basket_action"
+                options="{0: '{f:translate(key: \'basket.chooseAction\')}',
+                'download': '{f:translate(key: \'basket.download\')}',
+                'remove': '{f:translate(key: \'basket.remove\')}'}" />
+        </div>
+        <div>
+            <f:form.select options="{mailSelect}" name="mail_action"/>
+        </div>
+        <div>
+            <f:form.select options="{printSelect}" name="print_action"/>
+        </div>
+        <f:form.submit value="Send"/>
+    </div>
+</f:form>
+
+<f:format.raw>
+    {pregenerateJs}
+</f:format.raw>
+
+<f:if condition="{settings.basketGoToButton}">
+    <f:then>
+        <div class="tx-dlf-goto-basket">
+            <f:link.page pageUid="{settings.targetBasket}">
+                <f:translate key="basket.goBasket"/>
+            </f:link.page>
+        </div>
+    </f:then>
+</f:if>
+
+</html>

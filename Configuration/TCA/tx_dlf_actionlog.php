@@ -20,16 +20,11 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfreport.png',
         'rootLevel' => 0,
-        'dividers2tabs' => 2,
         'searchFields' => 'label,name,crdate',
     ],
     'interface' => [
-        'showRecordFieldList' => 'label,name,crdate',
         'maxDBListItems' => 25,
         'maxSingleDBListItems' => 50,
-    ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
     ],
     'columns' => [
         'label' => [

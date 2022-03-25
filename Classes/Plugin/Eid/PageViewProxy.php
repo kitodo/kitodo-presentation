@@ -12,12 +12,22 @@
 
 namespace Kitodo\Dlf\Plugin\Eid;
 
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\StdOutStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * eID image proxy for plugin 'Page View' of the 'dlf' extension
+ *
+ * Supported query parameters:
+ * - `url` (mandatory): The URL to be proxied
+ * - `uHash` (mandatory): HMAC of the URL
  *
  * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
@@ -26,6 +36,134 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageViewProxy
 {
+    /**
+     * @var RequestFactory
+     */
+    protected $requestFactory;
+
+    /**
+     * @var mixed
+     */
+    protected $extConf;
+
+    public function __construct()
+    {
+        $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+    }
+
+    /**
+     * Return a response that is derived from $response and contains CORS
+     * headers to be sent to the client.
+     *
+     * @return ResponseInterface $response
+     * @return ServerRequestInterface $request The incoming request.
+     * @return ResponseInterface
+     */
+    protected function withCorsResponseHeaders(
+        ResponseInterface $response,
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        $origin = (string) ($request->getHeaderLine('Origin') ? : '*');
+
+        return $response
+            ->withHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            ->withHeader('Access-Control-Allow-Origin', $origin)
+            ->withHeader('Access-Control-Max-Age', '86400');
+    }
+
+    /**
+     * Takes headers listed in $headerNames from $fromResponse, adds them to
+     * $toResponse and returns the result.
+     *
+     * @param ResponseInterface $fromResponse
+     * @param ResponseInterface $toResponse
+     * @param array $headerNames
+     * @return ResponseInterface
+     */
+    protected function copyHeaders(
+        ResponseInterface $fromResponse,
+        ResponseInterface $toResponse,
+        array $headerNames
+    ) {
+        $result = $toResponse;
+
+        foreach ($headerNames as $headerName) {
+            $headerValues = $fromResponse->getHeader($headerName);
+            $result = $result->withAddedHeader($headerName, $headerValues);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Handle an OPTIONS request.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    protected function handleOptions(ServerRequestInterface $request): ResponseInterface
+    {
+        // 204 No Content
+        $response = GeneralUtility::makeInstance(Response::class)
+            ->withStatus(204);
+        return $this->withCorsResponseHeaders($response, $request);
+    }
+
+    /**
+     * Handle a GET request.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    protected function handleGet(ServerRequestInterface $request): ResponseInterface
+    {
+        $queryParams = $request->getQueryParams();
+
+        $url = (string) ($queryParams['url'] ?? '');
+        if (!Helper::isValidHttpUrl($url)) {
+            return new JsonResponse(['message' => 'Did not receive a valid URL.'], 400);
+        }
+
+        // get and verify the uHash
+        $uHash = (string) ($queryParams['uHash'] ?? '');
+        if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
+            return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
+        }
+
+        try {
+            $targetResponse = $this->requestFactory->request($url, 'GET', [
+                'headers' => [
+                    'User-Agent' => $this->extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                ],
+
+                // For performance, don't download content up-front. Rather, we'll
+                // download and upload simultaneously.
+                // https://docs.guzzlephp.org/en/6.5/request-options.html#stream
+                'stream' => true,
+
+                // Don't throw exceptions when a non-success status code is
+                // received. We handle these manually.
+                'http_errors' => false,
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => 'Could not fetch resource of given URL.'], 500);
+        }
+
+        $body = new StdOutStream($targetResponse->getBody());
+
+        $clientResponse = GeneralUtility::makeInstance(Response::class)
+            ->withStatus($targetResponse->getStatusCode())
+            ->withBody($body);
+
+        $clientResponse = $this->copyHeaders($targetResponse, $clientResponse, [
+            'Content-Length',
+            'Content-Type',
+            'Last-Modified',
+        ]);
+
+        return $this->withCorsResponseHeaders($clientResponse, $request);
+    }
 
     /**
      * The main method of the eID script
@@ -37,46 +175,17 @@ class PageViewProxy
      */
     public function main(ServerRequestInterface $request)
     {
-        // header parameter for getUrl(); allowed values 0,1,2; default 0
-        $header = (int) $request->getQueryParams()['header'];
-        $header = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($header, 0, 2, 0);
+        switch ($request->getMethod()) {
+            case 'OPTIONS':
+                return $this->handleOptions($request);
 
-        // the URI to fetch data or header from
-        $url = (string) $request->getQueryParams()['url'];
-        if (!GeneralUtility::isValidUrl($url)) {
-            throw new \InvalidArgumentException('No valid url passed!', 1580482805);
-        }
+            case 'GET':
+                return $this->handleGet($request);
 
-        // fetch the requested data or header
-        $fetchedData = GeneralUtility::getUrl($url, $header);
-
-        // Fetch header data separately to get "Last-Modified" info
-        if ($header === 0) {
-            $fetchedHeaderString = GeneralUtility::getUrl($url, 2);
-            if (!empty($fetchedHeaderString)) {
-                $fetchedHeader = explode("\n", $fetchedHeaderString);
-                foreach ($fetchedHeader as $headerline) {
-                    if (stripos($headerline, 'Last-Modified:') !== false) {
-                        $lastModified = trim(substr($headerline, strpos($headerline, ':') + 1));
-                        break;
-                    }
-                }
-            }
+            default:
+                // 405 Method Not Allowed
+                return GeneralUtility::makeInstance(Response::class)
+                    ->withStatus(405);
         }
-
-        // create response object
-        /** @var Response $response */
-        $response = GeneralUtility::makeInstance(Response::class);
-        if ($fetchedData) {
-            $response->getBody()->write($fetchedData);
-            $response = $response->withHeader('Access-Control-Allow-Methods', 'GET');
-            $response = $response->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin') ? : '*');
-            $response = $response->withHeader('Access-Control-Max-Age', '86400');
-            $response = $response->withHeader('Content-Type', finfo_buffer(finfo_open(FILEINFO_MIME), $fetchedData));
-        }
-        if ($header === 0 && !empty($lastModified)) {
-            $response = $response->withHeader('Last-Modified', $lastModified);
-        }
-        return $response;
     }
 }

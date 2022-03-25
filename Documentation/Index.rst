@@ -62,4 +62,6 @@ Table of Contents
     Configuration/Index
     Plugins/Index
     User/Index
+    Features/Index
     Community/Index
+    Developers/Index

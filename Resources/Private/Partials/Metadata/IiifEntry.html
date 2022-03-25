@@ -1,0 +1,27 @@
+<f:comment>
+    <!--
+     * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+     *
+     * This file is part of the Kitodo and TYPO3 projects.
+     *
+     * @license GNU General Public License version 3 or later.
+     * For the full copyright and license information, please read the
+     * LICENSE.txt file that was distributed with this source code.
+    -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:if condition="{buildUrl}">
+    <f:then>
+        <dt>{entryData.label}</dt>
+        <dd>
+            <f:link.external uri="{entryData.value}">{entryData.value}</f:link.external>
+        </dd>
+    </f:then>
+    <f:else>
+        <dt>{entryData.label}</dt>
+        <dd>{entryData.value}</dd>
+    </f:else>
+</f:if>

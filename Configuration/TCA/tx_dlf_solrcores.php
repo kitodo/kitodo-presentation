@@ -21,14 +21,9 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfsolrcores.png',
         'rootLevel' => -1,
-        'dividers2tabs' => 2,
         'searchFields' => 'label,index_name',
     ],
-    'feInterface' => [
-        'fe_admin_fieldList' => '',
-    ],
     'interface' => [
-        'showRecordFieldList' => 'label,index_name',
     ],
     'columns' => [
         'label' => [

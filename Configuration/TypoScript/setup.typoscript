@@ -1,0 +1,105 @@
+# Model database table mapping
+plugin.tx_dlf {
+    persistence {
+        storagePid = {$plugin.tx_dlf.persistence.storagePid}
+    }
+    settings {
+        storagePid = {$plugin.tx_dlf.persistence.storagePid}
+    }
+}
+
+config {
+    # concatenate all JavaScript files by default
+    concatenateJs = 1
+    # concatenate all CSS files by default
+    concatenateCss = 1
+}
+
+page {
+  includeCSS {
+    jPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
+    openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.css
+  }
+
+  includeJSFooterlibs {
+    jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-3.6.0.min.js
+    jQuery.forceOnTop = 1
+    jQueryJPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js
+    jQueryUiMouseSlider = EXT:dlf/Resources/Public/Javascript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
+  }
+
+  includeJSFooter {
+    # AudioPlayer plugin
+    kitodo-audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
+
+    # PageView plugin
+    kitodo-openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.js
+
+    kitodo-pageView-utility = EXT:dlf/Resources/Public/Javascript/PageView/Utility.js
+    kitodo-pageView-ol = EXT:dlf/Resources/Public/Javascript/PageView/OL.js
+    kitodo-pageView-olStyles = EXT:dlf/Resources/Public/Javascript/PageView/OLStyles.js
+    kitodo-pageView-olSources = EXT:dlf/Resources/Public/Javascript/PageView/OLSources.js
+    kitodo-pageView-altoParser = EXT:dlf/Resources/Public/Javascript/PageView/AltoParser.js
+    kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationParser.js
+    kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationControl.js
+    kitodo-pageView-imageManipulationControl = EXT:dlf/Resources/Public/Javascript/PageView/ImageManipulationControl.js
+    kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextDownloadControl.js
+    kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextControl.js
+    kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
+    kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
+    kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
+    kitodo-search-suggest = EXT:dlf/Resources/Public/Javascript/Search/Suggester.js
+
+  }
+}
+
+plugin.tx_dlf_pagegrid {
+    settings {
+        paginate {
+            itemsPerPage = 10
+            insertAbove = 1
+            insertBelow = 1
+            lessPages = 1
+            forcedNumberOfLinks = 5
+            pagesBefore = 3
+            pagesAfter = 3
+            section =
+        }
+    }
+}
+
+plugin.tx_dlf_listview {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
+}
+
+plugin.tx_dlf_collection {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
+}
+
+plugin.tx_dlf_search {
+    settings {
+        list.paginate {
+            itemsPerPage = 25
+            insertAbove = 1
+            insertBelow = 1
+            maximumNumberOfLinks = 10
+            section = showResults
+        }
+    }
+}

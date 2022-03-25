@@ -1,5 +1,5 @@
-# cat=Basic; type=user[Kitodo\Dlf\Hooks\ConfigurationForm->checkMetadataFormats]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.metadataFormats
-metadataFormats = 0
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.enableInternalProxy
+enableInternalProxy = 0
 # cat=Basic; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.useragent
 useragent = Kitodo.Presentation
 # cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.forceAbsoluteUrl

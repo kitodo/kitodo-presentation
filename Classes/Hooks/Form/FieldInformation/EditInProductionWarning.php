@@ -38,10 +38,10 @@ class EditInProductionWarning extends AbstractNode
         // Show warning only when editing existing records.
         if ($this->data['command'] !== 'new') {
             // Load localization file.
-            $GLOBALS['LANG']->includeLLFile('EXT:dlf/Resources/Private/Language/FlashMessages.xml');
+            Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Create flash message.
             Helper::addMessage(
-                htmlspecialchars($GLOBALS['LANG']->getLL('flash.editInProductionWarning')),
+                htmlspecialchars(Helper::getLanguageService()->getLL('flash.editInProductionWarning')),
                 '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                 \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );

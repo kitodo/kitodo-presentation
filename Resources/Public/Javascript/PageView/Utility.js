@@ -45,19 +45,33 @@ dlfUtils.CUSTOM_MIMETYPE = {
 dlfUtils.RUNNING_INDEX = 99999999;
 
 /**
+ * Clone OpenLayers layer for dlfViewer (only properties used there are
+ * considered).
+ *
+ * @param {ol.layer.Layer} layer
+ * @returns {ol.layer.Layer}
+ */
+dlfUtils.cloneOlLayer = function (layer) {
+    // Get a fresh instance of layer's class (ol.layer.Tile or ol.layer.Image)
+    var LayerClass = layer.constructor;
+
+    return new LayerClass({
+        source: layer.getSource()
+    });
+};
+
+/**
  * @param imageSourceObjs
- * @param {string} opt_origin
+ * @param {string=} origin
  * @return {Array.<ol.layer.Layer>}
  */
-dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
+dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
 
-    var origin = opt_origin !== undefined ? opt_origin : null,
-        widthSum = 0,
+    var widthSum = 0,
         offsetWidth = 0,
         layers = [];
 
     imageSourceObjs.forEach(function (imageSourceObj) {
-        var tileSize = void 0;
         if (widthSum > 0) {
             // set offset width in case of multiple images
             offsetWidth = widthSum;
@@ -69,62 +83,43 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
         var extent = [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0],
             layer = void 0;
 
-        if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
+        // OL's Zoomify source also supports IIP; we just need to make sure
+        // the url is a proper template.
+        if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
+            || imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
+        ) {
             // create zoomify layer
+            var url = imageSourceObj.src;
+
+            if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
+                && url.indexOf('JTL') === -1
+            ) {
+                url += '&JTL={z},{tileIndex}';
+            }
+
             layer = new ol.layer.Tile({
                 source: new ol.source.Zoomify({
-                    url: imageSourceObj.src,
+                    url,
                     size: [imageSourceObj.width, imageSourceObj.height],
                     crossOrigin: origin,
-                    offset: [offsetWidth, 0]
-                }),
-                zDirection: -1
+                    extent,
+                    zDirection: -1
+                })
             });
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
-
-            var quality = imageSourceObj.qualities !== undefined && imageSourceObj.qualities.length > 0
-                ? $.inArray('color', imageSourceObj.qualities) >= 0
-                    ? 'color'
-                    : $.inArray('native', imageSourceObj.qualities) >= 0
-                        ? 'native'
-                        : 'default'
-                : 'default';
+            var options = $.extend({
+                projection: new ol.proj.Projection({
+                    code: 'kitodo-image',
+                    units: 'pixels',
+                    extent
+                }),
+                crossOrigin: origin,
+                extent,
+                zDirection: -1
+            }, imageSourceObj.iiifSourceOptions);
 
             layer = new ol.layer.Tile({
-                source: new dlfViewerSource.IIIF({
-                    url: imageSourceObj.src,
-                    version: imageSourceObj.version,
-                    size: [imageSourceObj.width, imageSourceObj.height],
-                    crossOrigin: origin,
-                    resolutions: imageSourceObj.resolutions,
-                    tileSize: imageSourceObj.tilesize,
-                    sizes: imageSourceObj.sizes,
-                    format: 'jpg',
-                    quality,
-                    supports: imageSourceObj.supports,
-                    offset: [offsetWidth, 0],
-                    projection: new ol.proj.Projection({
-                        code: 'kitodo-image',
-                        units: 'pixels',
-                        extent: extent
-                    })
-                }),
-                zDirection: -1
-            });
-        } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
-            tileSize = imageSourceObj.tilesize !== undefined && imageSourceObj.tilesize.length > 0
-                ? imageSourceObj.tilesize[0]
-                : 256;
-
-            layer = new ol.layer.Tile({
-                source: new dlfViewerSource.IIP({
-                    url: imageSourceObj.src,
-                    size: [imageSourceObj.width, imageSourceObj.height],
-                    crossOrigin: origin,
-                    tileSize,
-                    offset: [offsetWidth, 0]
-                }),
-                zDirection: -1
+                source: new ol.source.IIIF(options)
             });
         } else {
 
@@ -135,7 +130,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
                     projection: new ol.proj.Projection({
                         code: 'kitodo-image',
                         units: 'pixels',
-                        extent: extent
+                        extent
                     }),
                     imageExtent: extent,
                     crossOrigin: origin
@@ -155,7 +150,7 @@ dlfUtils.createOl3Layers = function (imageSourceObjs, opt_origin) {
  * @param {Array.<{src: *, width: *, height: *}>} images
  * @return {ol.View}
  */
-dlfUtils.createOl3View = function (images) {
+dlfUtils.createOlView = function (images) {
 
     //
     // Calculate map extent
@@ -169,7 +164,7 @@ dlfUtils.createOl3View = function (images) {
         extent = [0, -maxLatY, maxLonX, 0];
 
     // globally define max zoom
-    window.OL3_MAX_ZOOM = 8;
+    window.DLF_MAX_ZOOM = 8;
 
     // define map projection
     var proj = new ol.proj.Projection({
@@ -183,8 +178,10 @@ dlfUtils.createOl3View = function (images) {
         projection: proj,
         center: ol.extent.getCenter(extent),
         zoom: 1,
-        maxZoom: window.OL3_MAX_ZOOM,
-        extent
+        maxZoom: window.DLF_MAX_ZOOM,
+        extent,
+        constrainOnlyCenter: true,
+        constrainRotation: false
     };
 
     return new ol.View(viewParams);
@@ -305,297 +302,22 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
     }).done(cb);
 
     function cb(data) {
-        var mimetype = imageSourceObj.mimetype,
-            uri,
-            imageResource;
-        if (dlfUtils.supportsIIIF(data)) {
-            if (data['@context'] && data['@context'] === 'http://iiif.io/api/image/2/context.json') {
-                uri = decodeURI(data['@id']);
-                uri = dlfUtils.removeInfoJson(uri);
-                imageResource = dlfUtils.buildImageV2(mimetype, uri, data);
-                deferredResponse.resolve(imageResource);
-            } else if (data['@context'] &&
-                (data['@context'] === 'http://iiif.io/api/image/3/context.json' ||
-                Array.isArray(data['@context']) && data['@context'].includes('http://iiif.io/api/image/3/context.json'))) {
-                uri = decodeURI(data['id']);
-                uri = dlfUtils.removeInfoJson(uri);
-                imageResource = dlfUtils.buildImageV3(mimetype, uri, data);
-                deferredResponse.resolve(imageResource);
-            } else {
-                uri = imageSourceObj.url;
-                uri = dlfUtils.removeInfoJson(uri);
-                imageResource = dlfUtils.buildImageV1(mimetype, uri, data);
-                deferredResponse.resolve(imageResource);
-            }
+        var format = new ol.format.IIIFInfo(data);
+        var options = format.getTileSourceOptions();
+
+        if (options === undefined || options.version === undefined) {
+            deferredResponse.reject();
+        } else {
+            deferredResponse.resolve({
+                mimetype: dlfUtils.CUSTOM_MIMETYPE.IIIF,
+                width: options.size[0],
+                height: options.size[1],
+                iiifSourceOptions: options
+            });
         }
     }
 
     return deferredResponse;
-};
-
-/**
- * @param uri
- * @returns {*}
- */
-dlfUtils.removeInfoJson = function removeInfoJson(uri) {
-    if (uri.endsWith('/info.json')) {
-        uri = uri.substr(0, uri.lastIndexOf('/'));
-    }
-    return uri;
-};
-
-/**
- *
- * @param data
- * @param data.protocol
- * @param data.identifier
- * @param data.width
- * @param data.height
- * @param data.profile
- * @param data.documentElement
- * @returns {boolean}
- */
-dlfUtils.supportsIIIF = function supportsIIIF(data) {
-    // Version 2.0 and forwards
-    if (data.protocol && data.protocol === 'http://iiif.io/api/image' ||
-        data['@context'] && data['@context'] === "http://iiif.io/api/image/2/context.json") {
-        return true;
-        // Version 1.1
-    } else if (data['@context'] && (
-        data['@context'] === "http://library.stanford.edu/iiif/image-api/1.1/context.json" ||
-        data['@context'] === "http://iiif.io/api/image/1/context.json")) {
-        return true;
-        // Version 1.0
-    } else if (data.profile &&
-        data.profile.indexOf("http://library.stanford.edu/iiif/image-api/compliance.html") === 0) {
-        return true;
-    } else if (data.identifier && data.width && data.height) {
-        return true;
-    } else return data.documentElement && "info" === data.documentElement.tagName &&
-    "http://library.stanford.edu/iiif/image-api/ns/" === data.documentElement.namespaceURI;
-};
-
-dlfUtils.iiifProfiles = {
-    version1: {
-        level0: {
-            supports: [],
-            formats: [],
-            qualities: ['native']
-        },
-        level1: {
-            supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
-            formats: ['jpg'],
-            qualities: ['native']
-        },
-        level2: {
-            supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
-                'sizeByConfinedWh', 'sizeByWh'],
-            formats: ['jpg', 'png'],
-            qualities: ['native', 'color', 'grey', 'bitonal']
-        }
-    },
-    version2: {
-        level0: {
-            supports: [],
-            formats: ['jpg'],
-            qualities: ['default']
-        },
-        level1: {
-            supports: ['regionByPx', 'sizeByW', 'sizeByH', 'sizeByPct'],
-            formats: ['jpg'],
-            qualities: ['default']
-        },
-        level2: {
-            supports: ['regionByPx', 'regionByPct', 'sizeByW', 'sizeByH', 'sizeByPct',
-                'sizeByConfinedWh', 'sizeByDistortedWh', 'sizeByWh'],
-            formats: ['jpg', 'png'],
-            qualities: ['default', 'bitonal']
-        }
-    },
-    version3: {
-        level0: {
-            supports: [],
-            formats: ['jpg'],
-            qualities: ['default']
-        },
-        level1: {
-            supports: ['regionByPx', 'regionSquare', 'sizeByW', 'sizeByH'],
-            formats: ['jpg'],
-            qualities: ['default']
-        },
-        level2: {
-            supports: ['regionByPx', 'regionSquare', 'regionByPct',
-                'sizeByW', 'sizeByH', 'sizeByPct', 'sizeByConfinedWh', 'sizeByWh'],
-            formats: ['jpg'],
-            qualities: ['default', 'bitonal']
-        }
-    },
-    none: {
-        none: {
-            supports: [],
-            formats: [],
-            qualities: []
-        }
-    }
-};
-
-/**
- *
- * @param mimetype
- * @param uri
- * @param jsonld
- * @param jsonld.width
- * @param jsonld.height
- * @param jsonld.tiles
- * @param jsonld.extraFormats
- * @param jsonld.extraQualities
- * @param jsonld.extraFeatures
- * @param jsonld.profile
- * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
- */
-dlfUtils.buildImageV3 = function buildImageV2(mimetype, uri, jsonld) {
-    var levelProfile = this.getIiifComplianceLevelProfile(jsonld, 'version3');
-    return {
-        src: uri,
-        version: 'version3',
-        width: jsonld.width,
-        height: jsonld.height,
-        tilesize: jsonld.tiles !== undefined ? [jsonld.tiles.map(function(a) {
-            return a.width;
-        })[0], jsonld.tiles.map(function (a) {
-            return a.height === undefined ? a.width : a.height;
-        })[0]] : undefined,
-        sizes: jsonld.sizes === undefined ? undefined : jsonld.sizes.map(function(size) {
-            return [size.width, size.height];
-        }),
-        qualities: ['default'].concat(levelProfile.qualities).concat(jsonld.extraQualities === undefined ? [] : jsonld.extraQualities),
-        formats: ['jpg'].concat(levelProfile.formats).concat(jsonld.extraFormats === undefined ? [] : jsonld.extraFormats),
-        supports: levelProfile.supports.concat(jsonld.extraFeatures === undefined ? [] : jsonld.extraFeatures),
-        resolutions: jsonld.tiles !== undefined ? jsonld.tiles.map(function (a) {
-            return a.scaleFactors;
-        })[0] : [],
-        mimetype: mimetype
-    };
-};
-
-/**
- *
- * @param mimetype
- * @param uri
- * @param jsonld
- * @param jsonld.tiles
- * @param jsonld.width
- * @param jsonld.height
- * @param jsonld.profile
- * @param jsonld.scaleFactors
- * @returns {{src: *, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
- */
-dlfUtils.buildImageV2 = function buildImageV2(mimetype, uri, jsonld) {
-    if (typeof jsonld.profile === "string") {
-        jsonld.profile = [jsonld.profile, {}];
-    }
-    if (jsonld.profile !== undefined && jsonld.profile.length < 2) {
-        jsonld.profile.push({});
-    }
-    var levelProfile = this.getIiifComplianceLevelProfile(jsonld, 'version2');
-    return {
-        src: uri,
-        version: 'version2',
-        width: jsonld.width,
-        height: jsonld.height,
-        tilesize: jsonld.tiles !== undefined ? [jsonld.tiles.map(function(a) {
-            return a.width;
-        })[0], jsonld.tiles.map(function (a) {
-            return a.height === undefined ? a.width : a.height;
-        })[0]] : undefined,
-        sizes: jsonld.sizes === undefined ? undefined : jsonld.sizes.map(function(size) {
-            return [size.width, size.height];
-        }),
-        qualities: ['default'].concat(levelProfile.qualities).concat(jsonld.profile[1].qualities === undefined ? [] : jsonld.profile[1].qualities),
-        formats: ['jpg'].concat(levelProfile.formats).concat(jsonld.profile[1].formats === undefined ? [] : jsonld.profile[1].formats),
-        supports: levelProfile.supports.concat(jsonld.profile[1].supports === undefined ? [] : jsonld.profile[1].supports),
-        resolutions: jsonld.tiles !== undefined ? jsonld.tiles.map(function (a) {
-            return a.scaleFactors;
-        })[0] : [],
-        mimetype: mimetype
-    };
-};
-
-/**
- *
- * @param mimetype
- * @param uri
- * @param jsonld
- * @param jsonld.width
- * @param jsonld.height
- * @param jsonld.scale_factors
- * @param jsonld.tile_width
- * @param jsonld.tile_height
- * @param jsonld.qualities
- * @param jsonld.formats
- * @returns {{src: *, version, width, height, tilesize: [*,*], qualities: *, formats: *, resolutions: *, mimetype: *}}
- */
-dlfUtils.buildImageV1 = function buildImageV1(mimetype, uri, jsonld) {
-    var levelProfile = this.getIiifComplianceLevelProfile(jsonld, 'version1');
-    return {
-        src: uri,
-        version: 'version1',
-        width: jsonld.width,
-        height: jsonld.height,
-        tilesize: jsonld.tile_width === undefined ? jsonld.tile_height === undefined ? undefined : jsonld.tile_height :
-            jsonld.tile_height === undefined ? jsonld.tile_width : [jsonld.tile_width, jsonld.tile_height],
-        qualities: ['native'].concat(levelProfile.qualities).concat(jsonld.qualities === undefined ? [] : jsonld.qualities),
-        formats: ['jpg'].concat(levelProfile.formats).concat(jsonld.formats === undefined ? [] : jsonld.formats),
-        supports:levelProfile.supports,
-        resolutions: jsonld.scale_factors,
-        mimetype
-    };
-};
-
-/**
- *
- * @param jsonld
- * @param jsonld.profile
- * @param version
- * @returns string
- */
-dlfUtils.getIiifComplianceLevelProfile = function(jsonld, version) {
-    var regexVersion1 = new RegExp('^https?\\:\\/\\/library\\.stanford\\.edu\\/iiif\\/image-api\\/(1\\.1\\/)?compliance\\.html#level[0-2]$'),
-        regexVersion2 = new RegExp('^https?\\:\\/\\/iiif\\.io\\/api\\/image\\/2\\/level[0-2](\\.json)?$'),
-        regexVersion3 = new RegExp('(^https?\\:\\/\\/iiif\\.io\\/api\\/image\\/3\\/level[0-2](\\.json)?$)|(^level[0-2]$)'),
-        level;
-    if (jsonld.profile === undefined) {
-        return dlfUtils.iiifProfiles.none.none;
-    }
-    switch (version) {
-        case 'version1':
-            if (regexVersion1.test(jsonld.profile)) {
-                level = jsonld.profile;
-            }
-            break;
-        case 'version2':
-            if (typeof jsonld.profile === 'string' && regexVersion2.test(jsonld.profile)) {
-                level = jsonld.profile;
-            }
-            if (Array.isArray(jsonld.profile) && jsonld.profile.length >= 1 && typeof jsonld.profile[0] === 'string' && regexVersion2.test(jsonld.profile[0])) {
-                level = jsonld.profile[0];
-            }
-            break;
-        case 'version3':
-            if (regexVersion3.test(jsonld.profile)) {
-                level = jsonld.profile;
-            }
-            break;
-        default:
-    }
-    if (level !== undefined) {
-        level = level.match(/level[0-2](\.json)?$/);
-        level = Array.isArray(level) ? level[0].replace('.json', '') : undefined;
-        if (level !== undefined) {
-            return dlfUtils.iiifProfiles[version][level];
-        }
-    }
-    return dlfUtils.iiifProfiles.none.none;
 };
 
 /**
@@ -717,45 +439,6 @@ dlfUtils.isNullEmptyUndefinedOrNoNumber = function (val) {
 };
 
 /**
- * @param {Array.<{url: *, mimetype: *}>} imageObjs
- * @return {boolean}
- */
-dlfUtils.isCorsEnabled = function (imageObjs) {
-    // fix for proper working with ie
-    if (!window.location.origin) {
-        window.location.origin = window.location.protocol + '//' + window.location.hostname +
-            (window.location.port ? ':' + window.location.port : '');
-    }
-
-    // fetch data from server
-    // with access control allowed
-    var response = true;
-
-    imageObjs.forEach(function (imageObj) {
-        var url = imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
-            ? imageObj.url.replace('ImageProperties.xml', 'TileGroup0/0-0-0.jpg')
-            :
-            imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF
-                ? dlfViewerSource.IIIF.getMetdadataURL(imageObj.url)
-                : imageObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
-                ? dlfViewerSource.IIP.getMetdadataURL(imageObj.url)
-                : imageObj.url;
-
-        url = window.location.origin + window.location.pathname + '?eID=tx_dlf_pageview_proxy&url=' + encodeURIComponent(url) + '&header=2';
-
-        $.ajax({
-            url: url,
-            async: false
-        }).done(function (data, type) {
-            response = type === 'success' && data.indexOf('Access-Control-Allow-Origin') !== -1;
-        }).fail(function (data, type) {
-            response = false;
-        });
-    });
-    return response;
-};
-
-/**
  * Checks if {@link obj} is a valid object describing the location of a
  * fulltext (@see PageView::getFulltext in PageView.php).
  *
@@ -769,36 +452,6 @@ dlfUtils.isFulltextDescriptor = function (obj) {
         && 'url' in obj
         && obj.url !== ''
     );
-};
-
-/**
- * Functions checks if WebGL is enabled in the browser
- * @return {boolean}
- */
-dlfUtils.isWebGLEnabled = function () {
-    if (!!window.WebGLRenderingContext) {
-        var canvas = document.createElement("canvas"),
-            rendererNames = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
-            context = false;
-
-        for (var i = 0; i < rendererNames.length; i++) {
-            try {
-                context = canvas.getContext(rendererNames[i]);
-                if (context && typeof context.getParameter === "function") {
-                    // WebGL is enabled;
-                    return true;
-                }
-            } catch (e) {
-                /* eslint no-console: ["error", { allow: ["info"] }] */
-                console.info(e);
-            }
-        }
-        // WebGL not supported
-        return false;
-    }
-
-    // WebGL not supported
-    return false;
 };
 
 /**

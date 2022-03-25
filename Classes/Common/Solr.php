@@ -389,89 +389,19 @@ class Solr implements LoggerAwareInterface
     }
 
     /**
-     * Processes a search request.
-     *
-     * @access public
-     *
-     * @return \Kitodo\Dlf\Common\DocumentList The result list
-     */
-    public function search()
-    {
-        $toplevel = [];
-        // Take over query parameters.
-        $params = $this->params;
-        $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : [];
-        // Set some query parameters.
-        $params['start'] = 0;
-        $params['rows'] = 0;
-        // Perform search to determine the total number of hits without fetching them.
-        $selectQuery = $this->service->createSelect($params);
-        $results = $this->service->select($selectQuery);
-        $this->numberOfHits = $results->getNumFound();
-        // Restore query parameters
-        $params = $this->params;
-        $params['filterquery'] = isset($params['filterquery']) ? $params['filterquery'] : [];
-        // Restrict the fields to the required ones.
-        $params['fields'] = 'uid,id';
-        // Set filter query to just get toplevel documents.
-        $params['filterquery'][] = ['query' => 'toplevel:true'];
-        // Set join query to get all documents with the same uids.
-        $params['query'] = '{!join from=uid to=uid}' . $params['query'];
-        // Perform search to determine the total number of toplevel hits and fetch the required rows.
-        $selectQuery = $this->service->createSelect($params);
-        $results = $this->service->select($selectQuery);
-        $numberOfToplevelHits = $results->getNumFound();
-        // Process results.
-        foreach ($results as $doc) {
-            $toplevel[$doc->id] = [
-                'u' => $doc->uid,
-                'h' => '',
-                's' => '',
-                'p' => []
-            ];
-        }
-        // Save list of documents.
-        $list = GeneralUtility::makeInstance(DocumentList::class);
-        $list->reset();
-        $list->add(array_values($toplevel));
-        // Set metadata for search.
-        $list->metadata = [
-            'label' => '',
-            'description' => '',
-            'options' => [
-                'source' => 'search',
-                'engine' => 'solr',
-                'select' => $this->params['query'],
-                'userid' => 0,
-                'params' => $this->params,
-                'core' => $this->core,
-                'pid' => $this->cPid,
-                'order' => 'score',
-                'order.asc' => true,
-                'numberOfHits' => $this->numberOfHits,
-                'numberOfToplevelHits' => $numberOfToplevelHits
-            ]
-        ];
-        return $list;
-    }
-
-    /**
      * Processes a search request and returns the raw Apache Solr Documents.
      *
      * @access public
      *
-     * @param string $query: The search query
      * @param array $parameters: Additional search parameters
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw($query = '', $parameters = [])
+    public function search_raw($parameters = [])
     {
         // Set additional query parameters.
         $parameters['start'] = 0;
         $parameters['rows'] = $this->limit;
-        // Set query.
-        $parameters['query'] = $query;
         // Calculate cache identifier.
         $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true));
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');

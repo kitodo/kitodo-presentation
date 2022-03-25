@@ -16,14 +16,14 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
+                    <settings.pages>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
+                            <label>LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
@@ -39,13 +39,14 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </pages>
-                    <tools>
+                    </settings.pages>
+                    <settings.tools>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.pi_flexform.tools</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.tools</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <items type="array"></items>
                                 <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->toolList</itemsProcFunc>
                                 <size>5</size>
@@ -55,25 +56,26 @@
                                 <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </tools>
-                    <solrcore>
+                    </settings.tools>
+                    <settings.solrcore>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.solrcore</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->solrList</itemsProcFunc>
+                                <renderType>selectSingle</renderType>
+                                <foreign_table>tx_dlf_solrcores</foreign_table>
+                                <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </solrcore>
-                    <fileGrpsImageDownload>
+                    </settings.solrcore>
+                    <settings.fileGrpsImageDownload>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.pi_flexform.fileGrps</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.fileGrps</label>
                             <config>
                                 <type>input</type>
                                 <size>30</size>
@@ -81,22 +83,7 @@
                                 <default>DEFAULT,MAX</default>
                             </config>
                         </TCEforms>
-                    </fileGrpsImageDownload>
-                    <templateFile>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Toolbox.xml:tt_content.pi_flexform.templateFile</label>
-                            <config>
-                                <type>group</type>
-                                <internal_type>file_reference</internal_type>
-                                <allowed>tmpl,tpl,html,htm,txt</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>0</minitems>
-                                <disable_controls>upload</disable_controls>
-                            </config>
-                        </TCEforms>
-                    </templateFile>
+                    </settings.fileGrpsImageDownload>
                 </el>
             </ROOT>
         </sDEF>

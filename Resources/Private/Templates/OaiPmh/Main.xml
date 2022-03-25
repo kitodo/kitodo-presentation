@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:if condition="{settings.stylesheet}">
+    <f:then>
+        <?xml-stylesheet type="text/xsl" href="{f:uri.typolink(parameter:'{settings.stylesheet}', absolute:'1')}"?>
+    </f:then>
+    <f:else>
+        <?xml-stylesheet type="text/xsl" href="{f:uri.resource(path:'Stylesheets/OaiPmh.xsl', absolute:'1')}"?>
+    </f:else>
+</f:if>
+<OAI-PMH
+    xmlns="http://www.openarchives.org/OAI/2.0/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate><f:format.date format="Y-m-d\TH:i:s\Z">now</f:format.date></responseDate>
+    <f:comment>As per the specification, don't show arguments on badVerb or badArgument.</f:comment>
+    {f:if(condition: '{error} == "badVerb" || {error} == "badArgument"', then: '{}', else: '{parameters}') -> f:variable(name: 'shownParameters')}
+    <request{f:if(condition: i.isFirst, then: ' {key}="{value}"', else: ' {key}="{value}"') -> f:for(each:'{shownParameters}', as:'value', key:'key', iteration:'i')}><f:uri.page absolute="1" /></request>
+    <f:if condition="{error}">
+        <f:then>
+            <error code="{error}">
+                <f:translate key="oaipmh.{error}" />
+            </error>
+        </f:then>
+        <f:else>
+            <f:switch expression="{parameters.verb}">
+                <f:case value="Identify"><f:render section="Identify" arguments="{oaiIdentifyInfo: oaiIdentifyInfo}"/></f:case>
+                <f:case value="GetRecord"><f:render section="GetRecord" arguments="{record: record, parameters: parameters}"/></f:case>
+                <f:case value="ListIdentifiers"><f:render section="ListIdentifiers" arguments="{listIdentifiers: listIdentifiers, resumptionToken: resumptionToken}"/></f:case>
+                <f:case value="ListMetadataFormats"><f:render section="ListMetadataFormats" arguments="{metadataFormats: metadataFormats}"/></f:case>
+                <f:case value="ListRecords"><f:render section="ListRecords" arguments="{listRecords: listRecords, parameters: parameters, resumptionToken: resumptionToken}"/></f:case>
+                <f:case value="ListSets"><f:render section="ListSets" arguments="{oaiSets: oaiSets}" /></f:case>
+                <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
+            </f:switch>
+        </f:else>
+    </f:if>
+</OAI-PMH>
+</html>
+
+<f:section name="Identify">
+    <Identify>
+        <repositoryName>{oaiIdentifyInfo.oai_label}</repositoryName>
+        <baseURL><f:uri.page absolute="1" /></baseURL>
+        <protocolVersion>2.0</protocolVersion>
+        <adminEmail>{oaiIdentifyInfo.contact}</adminEmail>
+        <earliestDatestamp>{oaiIdentifyInfo.earliestDatestamp}</earliestDatestamp>
+        <deletedRecord>transient</deletedRecord>
+        <granularity>YYYY-MM-DDThh:mm:ssZ</granularity>
+    </Identify>
+</f:section>
+
+<f:section name="GetRecord">
+    <GetRecord>
+        <record>
+        <f:if condition="{record.deleted} || {record.hidden}">
+            <f:then>
+                <header status="deleted">
+                    <identifier>{record.record_id}</identifier>
+                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                </header>
+            </f:then>
+            <f:else>
+                <header>
+                    <identifier>{record.record_id}</identifier>
+                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                    <f:for each="{record.collections}" as="collection">
+                        <f:if condition="{collection}">
+                            <setSpec>{collection}</setSpec>
+                        </f:if>
+                    </f:for>
+                </header>
+                <metadata>
+                    <f:render section="recordMetadata" arguments="{record: record, parameters: parameters}" />
+                </metadata>
+            </f:else>
+        </f:if>
+        </record>
+    </GetRecord>
+</f:section>
+
+<f:section name="ListSets">
+    <f:if condition="{oaiSets -> f:count()} >= 1 ">
+        <f:then>
+            <ListSets>
+                <f:for each="{oaiSets}" as="set">
+                    <set>
+                        <setSpec>{set.oaiName}</setSpec>
+                        <setName>{set.label}</setName>
+                    </set>
+                </f:for>
+            </ListSets>
+        </f:then>
+        <f:else>
+            <error code="noSetHierarchy"><f:translate key="oaipmh.noSetHierarchy" /></error>
+        </f:else>
+    </f:if>
+</f:section>
+
+<f:section name="ListIdentifiers">
+    <f:if condition="{listIdentifiers -> f:count()} >= 1 ">
+        <f:then>
+            <ListIdentifiers>
+                <f:for each="{listIdentifiers}" as="record">
+                    <f:if condition="{record.deleted} || {record.hidden}">
+                        <f:then>
+                            <header status="deleted">
+                                <identifier>{record.record_id}</identifier>
+                                <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                            </header>
+                        </f:then>
+                        <f:else>
+                            <header>
+                                <identifier>{record.record_id}</identifier>
+                                <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                                <f:for each="{record.collections}" as="collection">
+                                    <f:if condition="{collection}">
+                                        <setSpec>{collection}</setSpec>
+                                    </f:if>
+                                </f:for>
+                            </header>
+                        </f:else>
+                    </f:if>
+                </f:for>
+                <f:render section="resumptionToken" arguments="{resumptionToken: resumptionToken}" />
+            </ListIdentifiers>
+        </f:then>
+    </f:if>
+</f:section>
+
+<f:section name="ListRecords">
+    <f:if condition="{listRecords -> f:count()} >= 1 ">
+        <f:then>
+            <ListRecords>
+                <f:for each="{listRecords}" as="record">
+                    <record>
+                        <f:if condition="{record.deleted} || {record.hidden}">
+                            <f:then>
+                                <header status="deleted">
+                                    <identifier>{record.record_id}</identifier>
+                                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                                </header>
+                            </f:then>
+                            <f:else>
+                                <header>
+                                    <identifier>{record.record_id}</identifier>
+                                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                                    <f:for each="{record.collections}" as="collection">
+                                        <f:if condition="{collection}">
+                                            <setSpec>{collection}</setSpec>
+                                        </f:if>
+                                    </f:for>
+                                </header>
+                                <metadata>
+                                    <f:render section="recordMetadata" arguments="{record: record, parameters: parameters}" />
+                                </metadata>
+                            </f:else>
+                        </f:if>
+                    </record>
+                </f:for>
+                <f:render section="resumptionToken" arguments="{resumptionToken: resumptionToken}" />
+            </ListRecords>
+        </f:then>
+    </f:if>
+</f:section>
+
+<f:section name="ListMetadataFormats">
+    <f:if condition="{metadataFormats -> f:count()} >= 1 ">
+        <f:then>
+            <ListMetadataFormats>
+                <f:for each="{metadataFormats}" as="record">
+                    <metadataFormat>
+                        <metadataPrefix>{record.prefix}</metadataPrefix>
+                        <schema>{record.schema}</schema>
+                        <metadataNamespace>{record.namespace}</metadataNamespace>
+                    </metadataFormat>
+                </f:for>
+            </ListMetadataFormats>
+        </f:then>
+    </f:if>
+</f:section>
+
+
+<f:section name="recordMetadata">
+    <f:switch expression="{parameters.metadataPrefix}">
+        <f:case value="oai_dc">
+            <oai_dc:dc
+                xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                xmlns:dc="http://purl.org/dc/elements/1.1/"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/
+                http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+                    <f:for each="{record.metadata}" as="metadata">
+                        <f:for each="{metadata}" as="value" key="key">
+                            <{key}>{value}</{key}>
+                        </f:for>
+                    </f:for>
+            </oai_dc:dc>
+        </f:case>
+        <f:case value="mets">
+            <f:if condition="{record.metadata}">
+                <f:then>
+                    <f:format.raw>
+                        {record.metadata}
+                    </f:format.raw>
+                </f:then>
+                <f:else>
+                    <f:variable name="kitodoerror" value="kitodo:error" />
+                    <{kitodoerror} xmlns="http://kitodo.org/">
+                        <f:translate key="oaipmh.error" />
+                    </{kitodoerror}>
+                </f:else>
+            </f:if>
+        </f:case>
+        <f:case value="epicur">
+            <epicur
+                xmlns="urn:nbn:de:1111-2004033116"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="urn:nbn:de:1111-2004033116
+                http://www.persistent-identifier.de/xepicur/version1.0/xepicur.xsd">
+
+                <administrative_data>
+                    <delivery><f:comment>Do we update an URN or register a new one?</f:comment>
+                        <update_status type="{f:if(condition:'{record.crdate} == {record.tstamp}', then: 'urn_new', else: 'url_update_general')}"/>
+                        <transfer type="http"/>
+                    </delivery>
+                </administrative_data>
+                <record>
+                    <identifier scheme="urn:nbn:de">{record.urn}</identifier>
+                    <resource>
+                        <identifier scheme="url" type="frontpage" role="primary">{record.purl}</identifier>
+                        <format scheme="imt">text/html</format>
+                    </resource>
+                </record>
+            </epicur>
+        </f:case>
+        <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
+    </f:switch>
+</f:section>
+
+<f:section name="resumptionToken">
+    <f:if condition="{resumptionToken}">
+        <f:if condition="{resumptionToken.token}">
+            <f:then>
+                <resumptionToken cursor="{resumptionToken.cursor}" completeListSize="{resumptionToken.completeListSize}" expirationDate="<f:format.date format="Y-m-d\TH:i:s\Z">{resumptionToken.expired}</f:format.date>">{resumptionToken.token}</resumptionToken>
+            </f:then>
+            <f:else>
+                <resumptionToken cursor="{resumptionToken.cursor}" completeListSize="{resumptionToken.completeListSize}" />
+            </f:else>
+        </f:if>
+    </f:if>
+</f:section>

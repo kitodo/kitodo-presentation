@@ -16,45 +16,23 @@
         <sDEF>
             <ROOT>
                 <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <pages>
-                        <TCEforms>
-                            <onChange>reload</onChange>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.startingpoint</label>
-                            <onChange>reload</onChange>
-                            <config>
-                                <type>group</type>
-                                <internal_type>db</internal_type>
-                                <allowed>pages</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>1</minitems>
-                                <show_thumbs>1</show_thumbs>
-                                <wizards>
-                                    <suggest>
-                                        <type>suggest</type>
-                                    </suggest>
-                                </wizards>
-                            </config>
-                        </TCEforms>
-                    </pages>
-                    <fulltext>
+                    <settings.fulltext>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.fulltext</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.fulltext</label>
                             <config>
                                 <type>radio</type>
                                 <items type="array">
                                     <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.fulltext.yes</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.yes</numIndex>
                                         <numIndex index="1">1</numIndex>
                                     </numIndex>
                                     <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.fulltext.no</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.no</numIndex>
                                         <numIndex index="1">0</numIndex>
                                     </numIndex>
                                 </items>
@@ -62,27 +40,26 @@
                                 <minitems>1</minitems>
                             </config>
                         </TCEforms>
-                    </fulltext>
-                    <solrcore>
+                    </settings.fulltext>
+                    <settings.solrcore>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.solrcore</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->solrList</itemsProcFunc>
+                                <renderType>selectSingle</renderType>
+                                <foreign_table>tx_dlf_solrcores</foreign_table>
+                                <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </solrcore>
-                    <extendedSlotCount>
+                    </settings.solrcore>
+                    <settings.extendedSlotCount>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.extSearch.slotCount</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.slotCount</label>
                             <config>
                                 <type>input</type>
                                 <eval>num,int</eval>
@@ -93,45 +70,45 @@
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </extendedSlotCount>
-                    <extendedFields>
+                    </settings.extendedSlotCount>
+                    <settings.extendedFields>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.extSearch.fields</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.fields</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <items type="array"></items>
                                 <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->extendedSearchList</itemsProcFunc>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>10</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </extendedFields>
-                    <searchIn>
+                    </settings.extendedFields>
+                    <settings.searchIn>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <items type="array">
                                     <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn.none</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.none</numIndex>
                                         <numIndex index="1">none</numIndex>
                                     </numIndex>
                                     <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn.document</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn.document</numIndex>
                                         <numIndex index="1">document</numIndex>
                                     </numIndex>
                                     <numIndex index="2" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn.collection</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn.collection</numIndex>
                                         <numIndex index="1">collection</numIndex>
                                     </numIndex>
                                     <numIndex index="3" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.searchIn.all</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn.all</numIndex>
                                         <numIndex index="1">all</numIndex>
                                     </numIndex>
                                 </items>
@@ -140,63 +117,65 @@
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </searchIn>
-                    <collections>
+                    </settings.searchIn>
+                    <settings.collections>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.collections</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.collections</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"/>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->collectionList</itemsProcFunc>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <foreign_table>tx_dlf_collections</foreign_table>
+                                <foreign_table_where>AND tx_dlf_collections.hidden = 0 AND tx_dlf_collections.sys_language_uid IN (-1,0)
+                                    ORDER BY tx_dlf_collections.label ASC
+                                </foreign_table_where>
                                 <size>5</size>
-                                <autoSizeMax>15</autoSizeMax>
+                                <autoSizeMax>15</autoSizeMax>                                <items type="array"></items>
+                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->getFacetsList</itemsProcFunc>
+
                                 <maxitems>1024</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </collections>
-                    <facets>
+                    </settings.collections>
+                    <settings.facets>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.facets</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->facetsList</itemsProcFunc>
+                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->getFacetsList</itemsProcFunc>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </facets>
-                    <facetCollections>
+                    </settings.facets>
+                    <settings.facetCollections>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.facetCollections</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.collections</label>
                             <config>
                                 <type>select</type>
-                                <items type="array"/>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->collectionList</itemsProcFunc>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <foreign_table>tx_dlf_collections</foreign_table>
+                                <foreign_table_where>AND tx_dlf_collections.hidden = 0 AND tx_dlf_collections.sys_language_uid IN (-1,0)
+                                    ORDER BY tx_dlf_collections.label ASC
+                                </foreign_table_where>
                                 <size>5</size>
                                 <autoSizeMax>15</autoSizeMax>
                                 <maxitems>1024</maxitems>
                                 <minitems>0</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
                             </config>
                         </TCEforms>
-                    </facetCollections>
-                    <limitFacets>
+                    </settings.facetCollections>
+                    <settings.limitFacets>
                         <TCEforms>
-                            <displayCond>FIELD:pages:REQ:true</displayCond>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.limitFacets</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.limit</label>
                             <config>
                                 <type>input</type>
                                 <eval>num,int</eval>
@@ -207,30 +186,31 @@
                                 <default>15</default>
                             </config>
                         </TCEforms>
-                    </limitFacets>
-                    <resetFacets>
+                    </settings.limitFacets>
+                    <settings.resetFacets>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.resetFacets</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.reset</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </resetFacets>
-                    <sortingFacets>
+                    </settings.resetFacets>
+                    <settings.sortingFacets>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.sortingFacets</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectSingle</renderType>
                                 <items type="array">
                                     <numIndex index="0" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.sortingFacets.count</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting.count</numIndex>
                                         <numIndex index="1">count</numIndex>
                                     </numIndex>
                                     <numIndex index="1" type="array">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.sortingFacets.index</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting.index</numIndex>
                                         <numIndex index="1">index</numIndex>
                                     </numIndex>
                                 </items>
@@ -239,49 +219,49 @@
                                 <minitems>0</minitems>
                             </config>
                         </TCEforms>
-                    </sortingFacets>
-                    <suggest>
+                    </settings.sortingFacets>
+                    <settings.suggest>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.suggest</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.suggest</label>
                             <config>
                                 <type>check</type>
                                 <default>1</default>
                             </config>
                         </TCEforms>
-                    </suggest>
-                    <showLogicalPageField>
+                    </settings.suggest>
+                    <settings.showLogicalPageField>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.showLogicalPageField</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.showLogicalPageField</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </showLogicalPageField>
-                    <showSingleResult>
+                    </settings.showLogicalPageField>
+                    <settings.showSingleResult>
                         <TCEforms>
                             <onChange>reload</onChange>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.showSingleResult</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.showSingleResult</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </showSingleResult>
-                    <targetPid>
+                    </settings.showSingleResult>
+                    <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.targetPid</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
                                 <allowed>pages</allowed>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
-                                <minitems>1</minitems>
+                                <minitems>0</minitems>
                                 <show_thumbs>1</show_thumbs>
                                 <wizards>
                                     <suggest>
@@ -290,37 +270,21 @@
                                 </wizards>
                             </config>
                         </TCEforms>
-                    </targetPid>
-                    <targetPidPageView>
-                        <TCEforms>
-                            <displayCond>FIELD:showSingleResult:=:1</displayCond>
+                    </settings.targetPid>
+                    <settings.targetPidPageView>
+                        <TCEforms>0
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.targetPidPageView</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
                                 <allowed>pages</allowed>
                                 <size>1</size>
                                 <maxitems>1</maxitems>
-                                <minitems>1</minitems>
-                            </config>
-                        </TCEforms>
-                    </targetPidPageView>
-                    <templateFile>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/Search.xml:tt_content.pi_flexform.templateFile</label>
-                            <config>
-                                <type>group</type>
-                                <internal_type>file_reference</internal_type>
-                                <allowed>tmpl,tpl,html,htm,txt</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
                                 <minitems>0</minitems>
-                                <disable_controls>upload</disable_controls>
                             </config>
                         </TCEforms>
-                    </templateFile>
+                    </settings.targetPidPageView>
                 </el>
             </ROOT>
         </sDEF>

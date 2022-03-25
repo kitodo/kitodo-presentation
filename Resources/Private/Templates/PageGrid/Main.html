@@ -1,0 +1,45 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+      <div class="tx-dlf-pagegrid">
+        <f:widget.paginate objects="{pageGridEntries}" as="paginatedEntries" configuration="{settings.paginate}">
+            <ol class="tx-dlf-pagegrid-list">
+                <f:for each="{paginatedEntries}" as="entry" iteration="iterator">
+                    <li class="tx-dlf-pagegrid-{entry.state}" value="{entry.page}">
+                        <div class="tx-dlf-pagegrid-thumbnail">
+                            <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': docUid, 'tx_dlf[page]': entry.page}">
+                                <f:if condition="{entry.thumbnail}">
+                                    <f:then>
+                                        <img src="{entry.thumbnail}" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" />
+                                    </f:then>
+                                    <f:else>
+                                        <f:if condition="{settings.placeholder}">
+                                            <f:then>
+                                                <f:image src="{settings.placeholder}" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" maxWidth="250" />
+                                            </f:then>
+                                            <f:else>
+                                                <f:image src="EXT:dlf/Resources/Public/Images/PageGridPlaceholder.jpg" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" maxWidth="250" />
+                                            </f:else>
+                                        </f:if>
+                                    </f:else>
+                                </f:if>
+                                <div class="tx-dlf-pagegrid-pagination">{entry.pagination}</div>
+                            </f:link.page>
+                        </div>
+                    </li>
+                </f:for>
+            </ol>
+        </f:widget.paginate>
+    </div>
+</html>

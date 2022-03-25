@@ -21,14 +21,32 @@ Kitodo Plugin Reference
 
 Common Settings
 ---------------
-pages
-^^^^^
-Startingpoint of this plugin. This is the Kitodo.Presentation data folder.
 
-templateFile
-^^^^^^^^^^^^
-The used template file of this plugin.
+Fluid Template Configuration
+----------------------------
 
+As of Kitodo.Presentation 4.0 the Fluid rendering engine is used. The former
+marker templates for plugins are not supported anymore.
+
+Now, all HTML markup is done in Fluid. To use different templates, you have
+to overload the templates by the common TYPO3 way.
+
+The following TypoScript defines addition paths inside a "example" extenion::
+
+   plugin.tx_dlf {
+      view {
+         templateRootPaths {
+            10 = EXT:example/Resources/Private/Plugins/Kitodo/Templates
+         }
+         partialRootPaths {
+            10 = EXT:example/Resources/Private/Plugins/Kitodo/Partials
+         }
+      }
+   }
+
+In this example, you place the customized fluid template into this file::
+
+   EXT:example/Resources/Private/Plugins/Kitodo/Partials/Navigation/Main.html
 
 
 Audioplayer
@@ -51,12 +69,6 @@ Properties
         Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
         excludeOther_
    :Data Type:
         :ref:`t3tsref:data-type-boolean`
@@ -69,14 +81,6 @@ Properties
        :ref:`t3tsref:data-type-string`
    :Default:
         tx-dlf-audio
-
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-        AudioPlayer.tmpl
-
 
 
 excludeOther
@@ -101,12 +105,6 @@ Basket
        Data type
    :Default:
         Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        pregeneration
@@ -159,13 +157,6 @@ Basket
    :Data Type:
        :ref:`t3tsref:data-type-page-id`
    :Default:
-
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       Basket.tmpl
 
 
 Calendar
@@ -221,12 +212,6 @@ now.
         Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        initialDocument
    :Data Type:
        :ref:`t3tsref:data-type-integer`
@@ -239,12 +224,6 @@ now.
    :Default:
        1
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       Calendar.tmpl
 
 Collection
 ----------
@@ -262,12 +241,6 @@ The collection plugin shows one collection, all collections or selected collecti
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        collections
@@ -307,16 +280,19 @@ The collection plugin shows one collection, all collections or selected collecti
        :ref:`t3tsref:data-type-page-id`
    :Default:
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       Collection.tmpl
-
 
 Feeds
 -----
+
+The feeds plugin renders a RSS 2.0 feed of last updated documents of all or a specific collection.
+
+The following steps are necessary to activate the plugin:
+
+a. Create a new page "Feed" with slug "feed".
+b. Create an extension template on this page and include the TypoScript template of the feeds plugin.
+c. Place the "Kitodo Feeds" plugin on it and configure it for your needs.
+
+The TypoScript part is necessary to switch the page rendering to a different page object.
 
 :typoscript:`plugin.tx_dlf_feeds.`
 
@@ -331,19 +307,13 @@ Feeds
        Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        collections
    :Data Type:
        :ref:`t3tsref:data-type-list`
    :Default:
 
  - :Property:
-        excludeOther_
+       excludeOtherCollections
    :Data Type:
         :ref:`t3tsref:data-type-boolean`
    :Default:
@@ -404,12 +374,6 @@ List View
        Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        limit
    :Data Type:
        :ref:`t3tsref:data-type-integer`
@@ -442,13 +406,6 @@ List View
        :ref:`t3tsref:data-type-page-id`
    :Default:
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       ListView.tmpl
-
 
 Metadata
 --------
@@ -464,12 +421,6 @@ Metadata
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
         excludeOther_
@@ -519,13 +470,6 @@ Metadata
    :Default:
        `#`
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       Metadata.tmpl
-
 Navigation
 ----------
 
@@ -542,10 +486,13 @@ Navigation
        Default
 
  - :Property:
-       pages_
+       features
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       :ref:`t3tsref:data-type-string`
    :Default:
+      By default all features are activated. The selection is stored as comma separated list.
+
+       doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation
 
  - :Property:
        pageStep
@@ -560,12 +507,6 @@ Navigation
        :ref:`t3tsref:data-type-page-id`
    :Default:
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       Navigation.tmpl
 
 OAI-PMH
 -------
@@ -581,12 +522,6 @@ OAI-PMH
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        library
@@ -622,12 +557,6 @@ OAI-PMH
    :Default:
        0
 
- - :Property:
-       unqualified_epicur
-   :Data Type:
-       :ref:`t3tsref:data-type-boolean`
-   :Default:
-       0
 
 Page Grid
 ---------
@@ -645,13 +574,7 @@ Page Grid
        Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
-       limit
+       paginate.itemsPerPage
    :Data Type:
        :ref:`t3tsref:data-type-integer`
    :Default:
@@ -670,13 +593,6 @@ Page Grid
        :ref:`t3tsref:data-type-page-id`
    :Default:
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       PageGrid.tmpl
-
 Page View
 ---------
 
@@ -691,12 +607,6 @@ Page View
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        excludeOther_
@@ -753,13 +663,6 @@ Page View
        :ref:`t3tsref:data-type-page-id`
    :Default:
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       PageView.tmpl
-
 Search
 ------
 
@@ -774,12 +677,6 @@ Search
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        fulltext
@@ -877,14 +774,6 @@ Search
        :ref:`t3tsref:data-type-page-id`
    :Default:
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       Search.tmpl
-
-
 Statistics
 ----------
 
@@ -899,12 +788,6 @@ Statistics
        Data type
    :Default:
        Default
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        collections
@@ -935,12 +818,6 @@ Table Of Contents
        Default
 
  - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
        excludeOther_
    :Data Type:
        :ref:`t3tsref:data-type-boolean`
@@ -966,14 +843,6 @@ Table Of Contents
        :ref:`t3tsref:data-type-page-id`
    :Default:
 
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       TableOfContents.tmpl
-
-
 Toolbox
 -------
 
@@ -991,12 +860,6 @@ Toolbox
        Default
    :Values:
        Values
-
- - :Property:
-       pages_
-   :Data Type:
-       :ref:`t3tsref:data-type-page-id`
-   :Default:
 
  - :Property:
        tools
@@ -1024,14 +887,6 @@ Toolbox
        :ref:`t3tsref:data-type-list`
    :Default:
        MIN,DEFAULT,MAX
-
- - :Property:
-       templateFile_
-   :Data Type:
-       :ref:`t3tsref:data-type-resource`
-   :Default:
-       Toolbox.tmpl
-
 
 Fulltext Tool
 ^^^^^^^^^^^^^
@@ -1151,4 +1006,3 @@ This plugin adds an possibility to search all appearances of the phrase in curre
        :ref:`t3tsref:data-type-string`
    :Default:
        tx_dlf[encrypted]
-
