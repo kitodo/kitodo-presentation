@@ -165,8 +165,7 @@ class PageViewController extends AbstractController
     protected function addViewerJS()
     {
         // Viewer configuration.
-        $viewerConfiguration = '<script>
-            $(document).ready(function() {
+        $viewerConfiguration = '$(document).ready(function() {
                 if (dlfUtils.exists(dlfViewer)) {
                     tx_dlf_viewer = new dlfViewer({
                         controls: ["' . implode('", "', $this->controls) . '"],
@@ -177,8 +176,7 @@ class PageViewController extends AbstractController
                         useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
                     });
                 }
-            });
-        </script>';
+            });';
         $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
 

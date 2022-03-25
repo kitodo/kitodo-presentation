@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
-      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:if condition="{settings.stylesheet}">
