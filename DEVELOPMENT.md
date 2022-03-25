@@ -35,11 +35,13 @@ https://docs.typo3.org/m/typo3/reference-coreapi/10.4/en-us/ApiOverview/Paginati
 Before running any of the tests, please install the project dependencies. Choose which version of TYPO3 you would like to test against.
 
 ```bash
-# (a)
+# If you use PHP 7.3 or 7.4 (supported by Kitodo)
 composer update --with=typo3/cms-core:^9.5
-
-# (b)
 composer update --with=typo3/cms-core:^10.4
+
+# If you use PHP 8
+composer install-via-docker -- -t 9.5
+composer install-via-docker -- -t 10.4
 ```
 
 ### Quick Start
@@ -50,6 +52,7 @@ composer test
 
 # Run specific kind of tests
 composer test:unit
+composer test:unit:local  # Run using locally installed PHP
 composer test:func
 
 # Run tests in watch mode
