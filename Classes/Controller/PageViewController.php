@@ -136,7 +136,7 @@ class PageViewController extends AbstractController
                         ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
                         ->setArguments([
                             'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => urlencode($fulltext['url']),
+                            'url' => $fulltext['url'],
                             'uHash' => GeneralUtility::hmac($fulltext['url'], 'PageViewProxy')
                             ])
                         ->build();
@@ -262,7 +262,7 @@ class PageViewController extends AbstractController
                         ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
                         ->setArguments([
                             'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => urlencode($image['url']),
+                            'url' => $image['url'],
                             'uHash' => GeneralUtility::hmac($image['url'], 'PageViewProxy')
                             ])
                         ->build();
