@@ -30,6 +30,88 @@ As of TYPO3 10 a new pagination API has been introduced. This could be used as r
 
 https://docs.typo3.org/m/typo3/reference-coreapi/10.4/en-us/ApiOverview/Pagination/Index.html
 
+## Testing
+
+Before running any of the tests, please install the project dependencies. Choose which version of TYPO3 you would like to test against.
+
+```bash
+# If you use PHP 7.3 or 7.4 (supported by Kitodo)
+composer update --with=typo3/cms-core:^9.5
+composer update --with=typo3/cms-core:^10.4
+
+# If you use PHP 8
+composer install-via-docker -- -t 9.5
+composer install-via-docker -- -t 10.4
+```
+
+### Quick Start
+
+```bash
+# Run all tests
+composer test
+
+# Run specific kind of tests
+composer test:unit
+composer test:unit:local  # Run using locally installed PHP
+composer test:func
+
+# Run tests in watch mode
+composer test:unit:watch
+composer test:func:watch
+```
+
+### Run Tests Manually
+
+Unit tests may be run either via a locally installed Composer / PHP setup, or within a Docker container.
+
+```bash
+# Run locally
+vendor/bin/phpunit -c Build/Test/UnitTests.xml
+
+# Run in Docker
+Build/Test/runTests.sh
+Build/Test/runTests.sh -w  # Watch mode
+```
+
+Functional tests may only be run in Docker as they require more infrastructure to be set up.
+
+```bash
+Build/Test/runTests.sh -s functional
+Build/Test/runTests.sh -s functional -w  # Watch mode
+```
+
+To learn about available options (e.g., to select the PHP version), check the usage info:
+
+```bash
+Build/Test/runTests.sh -h
+```
+
+You may also interact with the Docker containers directly:
+
+```bash
+cd Build/Test/
+vim .env  # Edit configuration
+docker-compose run unit
+docker-compose run functional
+docker-compose down
+```
+
+### Fixtures
+
+- When writing datasets, please use `uid`s that are easy to search (`grep`) for.
+
+### File Structure
+
+- `Build/Test/`: Test-related setup files (e.g. configuration for PHPUnit and testing container)
+- `Tests/`: Test cases. In unit tests, namespacing follows the structure of `Classes/`.
+- `Tests/Fixtures`: Datasets to use in functional tests.
+
+### External Links
+
+- [TYPO3 Testing Framework](https://github.com/TYPO3/testing-framework)
+- [TYPO3 Explained: Extension testing](https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/Testing/ExtensionTesting.html)
+- [typo3/cms-styleguide](https://github.com/TYPO3/styleguide)
+
 ## Documentation
 
 Following TYPO3's practices, the main documentation of the extension is located in `Documentation` and written in [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText). The build system is [Sphinx](https://en.wikipedia.org/wiki/Sphinx_(documentation_generator)).

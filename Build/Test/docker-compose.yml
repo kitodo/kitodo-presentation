@@ -1,0 +1,156 @@
+# Adopted/reduced from https://github.com/TYPO3/typo3/blob/608f238a8b7696a49a47e1e73ce8e2845455f0f5/Build/testing-docker/local/docker-compose.yml
+
+version: "2.3"
+services:
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: funcp
+    tmpfs:
+      - /var/lib/mysql/:rw,noexec,nosuid
+
+  mariadb:
+    image: mariadb:${MARIADB_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: funcp
+    tmpfs:
+      - /var/lib/mysql/:rw,noexec,nosuid
+
+  web:
+    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    user: "${HOST_UID}:${HOST_GID}"
+    stop_grace_period: 1s
+    volumes:
+      - ${DLF_ROOT}:${DLF_ROOT}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
+    # NOTE: For testing PageViewProxy, we need another web server web:8001 that
+    #       can be requested from TYPO3 running on web:8000.
+    #       Setting PHP_CLI_SERVER_WORKERS wouldn't seem to work consistently.
+    command: >
+      /bin/sh -c "
+        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
+          XDEBUG_MODE=\"off\" \
+          php -S web:8000 -t ${DLF_ROOT} ${DLF_ROOT}/Tests/routeFunctionalInstance.php &
+          php -S web:8001 -t ${DLF_ROOT}
+        else
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=host.docker.internal\" \
+          php -S web:8000 -t ${DLF_ROOT} ${DLF_ROOT}/Tests/routeFunctionalInstance.php &
+          php -S web:8001 -t ${DLF_ROOT}
+        fi
+      "
+
+  solr:
+    image: solr:8
+    volumes:
+      - ${DLF_ROOT}/Configuration/ApacheSolr/configsets:/var/solr/data/configsets
+      - ./solr/contrib/ocrsearch:/opt/solr/contrib/ocrsearch
+
+  composer_install:
+    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    user: "${HOST_UID}:${HOST_GID}"
+    volumes:
+      - ${DLF_ROOT}:${DLF_ROOT}
+    working_dir: ${DLF_ROOT}
+    environment:
+      COMPOSER_CACHE_DIR: ".cache/composer"
+    command: >
+      /bin/sh -c "
+        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
+          set -x
+        fi
+        if [ -z ${TYPO3_VERSION} ]; then
+          composer install --no-progress --no-interaction;
+        else
+          composer update --with=typo3/cms-core:^${TYPO3_VERSION} --no-progress --no-interaction;
+        fi
+      "
+
+  functional:
+    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    links:
+      - ${DBMS}
+      - web
+      - solr
+    user: "${HOST_UID}:${HOST_GID}"
+    volumes:
+      - ${DLF_ROOT}:${DLF_ROOT}
+    environment:
+      typo3DatabaseDriver: "${DATABASE_DRIVER}"
+      typo3DatabaseName: func_test
+      typo3DatabaseUsername: root
+      typo3DatabasePassword: funcp
+      typo3DatabaseHost: ${DBMS}
+      dlfTestingSolrHost: solr
+    working_dir: ${DLF_ROOT}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: >
+      /bin/sh -c "
+        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
+          set -x
+        fi
+        echo Waiting for database start...;
+        while ! nc -z ${DBMS} 3306; do
+          sleep 1;
+        done;
+        echo Database is up;
+        echo Waiting for Solr start...;
+        while ! nc -z solr 8983; do
+          sleep 1;
+        done;
+        echo Solr is up;
+
+        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
+          set -x
+        fi
+        php -v | grep '^PHP'
+        if [ ${PHPUNIT_WATCH} -eq 0 ]; then
+          PHPUNIT_BIN=\"vendor/bin/phpunit\"
+        else
+          PHPUNIT_BIN=\"vendor/bin/phpunit-watcher watch\"
+        fi
+        COMMAND=\"$${PHPUNIT_BIN} -c Build/Test/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE}\"
+        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
+          XDEBUG_MODE=\"off\" $${COMMAND};
+        else
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=host.docker.internal\" \
+          $${COMMAND};
+        fi
+      "
+
+  unit:
+    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    user: "${HOST_UID}:${HOST_GID}"
+    volumes:
+      - ${DLF_ROOT}:${DLF_ROOT}
+    working_dir: ${DLF_ROOT}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: >
+      /bin/sh -c "
+        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
+          set -x
+        fi
+        php -v | grep '^PHP'
+        if [ ${PHPUNIT_WATCH} -eq 0 ]; then
+          PHPUNIT_BIN=\"vendor/bin/phpunit\"
+        else
+          PHPUNIT_BIN=\"vendor/bin/phpunit-watcher watch\"
+        fi
+        if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
+          XDEBUG_MODE=\"off\" \
+          $${PHPUNIT_BIN} -c Build/Test/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+        else
+          XDEBUG_MODE=\"debug,develop\" \
+          XDEBUG_TRIGGER=\"foo\" \
+          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=host.docker.internal\" \
+          $${PHPUNIT_BIN} -c Build/Test/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
+        fi
+      "

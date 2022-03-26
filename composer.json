@@ -40,9 +40,12 @@
     "solarium/solarium": "^4.2|^5.2"
   },
   "require-dev": {
+    "spatie/phpunit-watcher": "^1.23",
     "typo3/cms-backend": "^9.5|^10.4",
     "typo3/cms-fluid": "^9.5|^10.4",
-    "typo3/cms-frontend": "^9.5|^10.4"
+    "typo3/cms-fluid-styled-content": "^9.5|^10.4",
+    "typo3/cms-frontend": "^9.5|^10.4",
+    "typo3/testing-framework": "^4.15.5|^6.16.2"
   },
   "replace": {
     "typo3-ter/dlf": "self.version"
@@ -54,15 +57,32 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Kitodo\\DbDocs\\": "Build/Documentation/dbdocs"
+      "Kitodo\\DbDocs\\": "Build/Documentation/dbdocs",
+      "Kitodo\\Dlf\\Tests\\": "Tests/"
     }
   },
   "extra": {
     "typo3/cms": {
-      "extension-key": "dlf"
+      "extension-key": "dlf",
+      "web-dir": "public"
     }
   },
   "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p public/typo3conf/ext/",
+      "rm -f public/typo3conf/ext/dlf",
+      "ln -s ../../../ public/typo3conf/ext/dlf"
+    ],
+    "test": [
+      "@test:unit",
+      "@test:func"
+    ],
+	"install-via-docker": "Build/Test/runTests.sh -s composerInstall",
+    "test:unit": "Build/Test/runTests.sh -s unit",
+    "test:unit:local": "phpunit -c Build/Test/UnitTests.xml",
+    "test:unit:watch": "phpunit-watcher watch -c Build/Test/UnitTests.xml",
+    "test:func": "Build/Test/runTests.sh -s functional",
+    "test:func:watch": "@test:func -w",
 	"docs:db": "./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst",
 	"docs:setup": "./Build/Documentation/sphinx.sh install",
 	"docs:serve": "./Build/Documentation/sphinx.sh serve",
