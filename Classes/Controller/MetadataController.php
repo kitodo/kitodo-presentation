@@ -104,50 +104,7 @@ class MetadataController extends AbstractController
             }
         }
         $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->document->getDoc() instanceof IiifManifest;
-        $metadata = [];
-        if ($this->settings['rootline'] < 2) {
-            // Get current structure's @ID.
-            $ids = [];
-            if (!empty($this->document->getDoc()->physicalStructure[$this->requestData['page']]) && !empty($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]])) {
-                foreach ($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]] as $logId) {
-                    $count = $this->document->getDoc()->getStructureDepth($logId);
-                    $ids[$count][] = $logId;
-                }
-            }
-            ksort($ids);
-            reset($ids);
-            // Check if we should display all metadata up to the root.
-            if ($this->settings['rootline'] == 1) {
-                foreach ($ids as $id) {
-                    foreach ($id as $sid) {
-                        if ($useOriginalIiifManifestMetadata) {
-                            $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['storagePid']);
-                        } else {
-                            $data = $this->document->getDoc()->getMetadata($sid, $this->settings['storagePid']);
-                        }
-                        if (!empty($data)) {
-                            $data['_id'] = $sid;
-                            $metadata[] = $data;
-                        }
-                    }
-                }
-            } else {
-                $id = array_pop($ids);
-                if (is_array($id)) {
-                    foreach ($id as $sid) {
-                        if ($useOriginalIiifManifestMetadata) {
-                            $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['storagePid']);
-                        } else {
-                            $data = $this->document->getDoc()->getMetadata($sid, $this->settings['storagePid']);
-                        }
-                        if (!empty($data)) {
-                            $data['_id'] = $sid;
-                            $metadata[] = $data;
-                        }
-                    }
-                }
-            }
-        }
+        $metadata = $this->getMetadata();
         // Get titledata?
         if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->document->getDoc()->toplevelId)) {
             $data = $useOriginalIiifManifestMetadata ? $this->document->getDoc()->getManifestMetadata($this->document->getDoc()->toplevelId, $this->settings['storagePid']) : $this->document->getDoc()->getTitleData($this->settings['storagePid']);
@@ -315,5 +272,66 @@ class MetadataController extends AbstractController
             $this->view->assign('separator', $this->settings['separator']);
 
         }
+    }
+
+    /**
+     * Get metadata for given id array.
+     *
+     * @access private
+     *
+     * @return array metadata
+     */
+    private function getMetadata() {
+        $metadata = [];
+        if ($this->settings['rootline'] < 2) {
+            // Get current structure's @ID.
+            $ids = [];
+            if (!empty($this->document->getDoc()->physicalStructure[$this->requestData['page']]) && !empty($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]])) {
+                foreach ($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]] as $logId) {
+                    $count = $this->document->getDoc()->getStructureDepth($logId);
+                    $ids[$count][] = $logId;
+                }
+            }
+            ksort($ids);
+            reset($ids);
+            // Check if we should display all metadata up to the root.
+            if ($this->settings['rootline'] == 1) {
+                foreach ($ids as $id) {
+                    $metadata = $this->getMetadataForIds($id, $metadata);
+                }
+            } else {
+                $id = array_pop($ids);
+                if (is_array($id)) {
+                    $metadata = $this->getMetadataForIds($id, $metadata);
+                }
+            }
+        }
+        return $metadata;
+    }
+
+    /**
+     * Get metadata for given id array.
+     *
+     * @access private
+     *
+     * @param array $id: An array with ids
+     * @param array $metadata: An array with metadata
+     *
+     * @return array metadata
+     */
+    private function getMetadataForIds($id, $metadata) {
+        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->document->getDoc() instanceof IiifManifest;
+        foreach ($id as $sid) {
+            if ($useOriginalIiifManifestMetadata) {
+                $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['storagePid']);
+            } else {
+                $data = $this->document->getDoc()->getMetadata($sid, $this->settings['storagePid']);
+            }
+            if (!empty($data)) {
+                $data['_id'] = $sid;
+                $metadata[] = $data;
+            }
+        }
+        return $metadata;
     }
 }
