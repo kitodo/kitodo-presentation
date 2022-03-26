@@ -315,7 +315,7 @@ class Indexer
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
         if (!empty($metadata)) {
-        $metadata['author'] = self::removeAppendsFromAuthor($metadata['author']);
+            $metadata['author'] = self::removeAppendsFromAuthor($metadata['author']);
             // set Owner if available
             if ($document->getOwner()) {
                 $metadata['owner'][0] = $document->getOwner()->getIndexName();
