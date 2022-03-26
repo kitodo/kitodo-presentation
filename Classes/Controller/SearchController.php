@@ -153,16 +153,12 @@ class SearchController extends AbstractController
         // Get additional fields for extended search.
         $this->addExtendedSearch();
 
-        // Add the current document if present to fluid. This way, we can limit further searches to this document.
-        if (isset($this->requestData['id'])) {
-            $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
-            $this->view->assign('currentDocument', $currentDocument);
-        }
-
         // Add uHash parameter to suggest parameter to make a basic protection of this form.
         if ($this->settings['suggest']) {
             $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
+
+        $this->view->assign('viewData', $this->viewData);
     }
 
     /**
