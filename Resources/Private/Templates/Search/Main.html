@@ -46,8 +46,8 @@
     </f:if>
 
     <f:if condition="{settings.searchIn} == 'document' || {settings.searchIn} == 'all'">
-        <f:form.hidden property="documentId" value="{viewData.requestData.uid}" />
-        <input type="hidden" name="tx_dlf[id]" value="{viewData.requestData.uid}" />
+        <f:form.hidden property="documentId" value="{currentDocument.uid}" />
+        <input type="hidden" name="tx_dlf[id]" value="{currentDocument.uid}" />
     </f:if>
 
     <!-- Add current collection if using on collection single view -->
