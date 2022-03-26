@@ -90,7 +90,10 @@ class PageViewProxy
 
         foreach ($headerNames as $headerName) {
             $headerValues = $fromResponse->getHeader($headerName);
-            $result = $result->withAddedHeader($headerName, $headerValues);
+            // Don't include empty header field when not present
+            if (!empty($headerValues)) {
+                $result = $result->withAddedHeader($headerName, $headerValues);
+            }
         }
 
         return $result;

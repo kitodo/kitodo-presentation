@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tx_dlf_documents>
+        <uid>1001</uid>
+        <pid>20000</pid>
+        <tstamp>1631775000</tstamp>
+        <crdate>1631775000</crdate>
+        <cruser_id>2</cruser_id>
+        <deleted>0</deleted>
+        <hidden>0</hidden>
+        <starttime>0</starttime>
+        <endtime>0</endtime>
+        <fe_group />
+        <prod_id />
+        <location>https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_mets.xml</location>
+        <record_id>oai:de:slub-dresden:db:id-476251419</record_id>
+        <opac_id>476251419</opac_id>
+        <union_id>476251419</union_id>
+        <urn>urn:nbn:de:bsz:14-db-id4762514197</urn>
+        <purl>http://digital.slub-dresden.de/id476251419</purl>
+        <title>10 Keyboard pieces - Go. S. 658</title>
+        <title_sorting>10 Keyboard pieces - Go. S. 658</title_sorting>
+        <author />
+        <year>[1759-1800]</year>
+        <place>[S.l.]</place>
+        <thumbnail>https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000003.tif.thumbnail.jpg</thumbnail>
+        <structure>59</structure>
+        <partof>0</partof>
+        <volume />
+        <volume_sorting />
+        <license />
+        <terms />
+        <restrictions />
+        <out_of_print />
+        <rights_info />
+        <collections />
+        <mets_label>10 Keyboard pieces - Go. S. 658</mets_label>
+        <mets_orderlabel>10 Keyboard pieces - Go. S. 658</mets_orderlabel>
+        <owner>10001</owner>
+        <solrcore>1</solrcore> <!-- may be overridden in test -->
+        <status>0</status>
+        <document_format>METS</document_format>
+    </tx_dlf_documents>
+
+    <tx_dlf_documents>
+        <uid>1002</uid>
+        <pid>20000</pid>
+        <tstamp>1631774000</tstamp>
+        <crdate>1631774000</crdate>
+        <cruser_id>2</cruser_id>
+        <deleted>0</deleted>
+        <hidden>0</hidden>
+        <starttime>0</starttime>
+        <endtime>0</endtime>
+        <fe_group />
+        <prod_id />
+        <location>https://digital.slub-dresden.de/data/kitodo/6Saso_476248086/6Saso_476248086_mets.xml</location>
+        <record_id>oai:de:slub-dresden:db:id-476248086</record_id>
+        <opac_id>476248086</opac_id>
+        <union_id>476248086</union_id>
+        <urn>urn:nbn:de:bsz:14-db-id4762480864</urn>
+        <purl>http://digital.slub-dresden.de/id476248086</purl>
+        <title>6 Sacred songs - Go. S. 591</title>
+        <title_sorting>6 Sacred songs - Go. S. 591</title_sorting>
+        <author />
+        <year>[1840-1860]</year>
+        <place>[S.l.]</place>
+        <thumbnail>https://digital.slub-dresden.de/data/kitodo/6Saso_476248086/6Saso_476248086_tif/jpegs/00000001.tif.thumbnail.jpg</thumbnail>
+        <structure>59</structure>
+        <partof>0</partof>
+        <volume />
+        <volume_sorting />
+        <license />
+        <terms />
+        <restrictions />
+        <out_of_print />
+        <rights_info />
+        <collections />
+        <mets_label>6 Sacred songs - Go. S. 591</mets_label>
+        <mets_orderlabel>6 Sacred songs - Go. S. 591</mets_orderlabel>
+        <owner>10001</owner>
+        <solrcore>1</solrcore>
+        <status>0</status>
+        <document_format>METS</document_format>
+    </tx_dlf_documents>
+
+    <tx_dlf_documents>
+        <uid>1003</uid>
+        <pid>20000</pid>
+        <tstamp>1631776000</tstamp>
+        <crdate>1631776000</crdate>
+        <cruser_id>2</cruser_id>
+        <deleted>0</deleted>
+        <hidden>0</hidden>
+        <starttime>0</starttime>
+        <endtime>0</endtime>
+        <fe_group />
+        <prod_id />
+        <location>https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_mets.xml</location>
+        <record_id>oai:de:slub-dresden:db:id-476251729</record_id>
+        <opac_id>476251729</opac_id>
+        <union_id>476251729</union_id>
+        <urn>urn:nbn:de:bsz:14-db-id4762517292</urn>
+        <purl>http://digital.slub-dresden.de/id476251729</purl>
+        <title>6 Fugues - Go. S. 317</title>
+        <title_sorting>6 Fugues - Go. S. 317</title_sorting>
+        <author />
+        <year>[um 1820]</year>
+        <place>[S.l.]</place>
+        <thumbnail>https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000001.tif.thumbnail.jpg</thumbnail>
+        <structure>59</structure>
+        <partof>0</partof>
+        <volume />
+        <volume_sorting />
+        <license />
+        <terms />
+        <restrictions />
+        <out_of_print />
+        <rights_info />
+        <collections>3</collections>
+        <mets_label>6 Fugues - Go. S. 317</mets_label>
+        <mets_orderlabel>6 Fugues - Go. S. 317</mets_orderlabel>
+        <owner>10001</owner>
+        <solrcore>1</solrcore>
+        <status>0</status>
+        <document_format>METS</document_format>
+    </tx_dlf_documents>
+
+    <tx_dlf_collections>
+        <uid>1101</uid>
+        <pid>20000</pid>
+        <tstamp>1631279509</tstamp>
+        <crdate>1631279509</crdate>
+        <cruser_id>2</cruser_id>
+        <deleted>0</deleted>
+        <sys_language_uid>0</sys_language_uid>
+        <l18n_parent>0</l18n_parent>
+        <l18n_diffsource>a:8:{s:5:"label";N;s:10:"index_name";N;s:8:"oai_name";N;s:11:"description";N;s:9:"documents";N;s:5:"owner";N;s:6:"status";N;s:16:"sys_language_uid";N;}</l18n_diffsource>
+        <hidden>0</hidden>
+        <fe_group />
+        <l10n_state />
+        <fe_cruser_id>0</fe_cruser_id>
+        <fe_admin_lock>0</fe_admin_lock>
+        <label>Musik</label>
+        <index_name>Musik</index_name>
+        <index_search />
+        <oai_name>music</oai_name>
+        <description />
+        <thumbnail />
+        <priority>3</priority>
+        <documents>0</documents>
+        <owner>0</owner>
+        <status>0</status>
+    </tx_dlf_collections>
+
+    <tx_dlf_collections>
+        <uid>1102</uid>
+        <pid>20000</pid>
+        <tstamp>1631279509</tstamp>
+        <crdate>1631279509</crdate>
+        <cruser_id>2</cruser_id>
+        <deleted>0</deleted>
+        <sys_language_uid>0</sys_language_uid>
+        <l18n_parent>0</l18n_parent>
+        <l18n_diffsource>a:8:{s:5:"label";N;s:10:"index_name";N;s:8:"oai_name";N;s:11:"description";N;s:9:"documents";N;s:5:"owner";N;s:6:"status";N;s:16:"sys_language_uid";N;}</l18n_diffsource>
+        <hidden>0</hidden>
+        <fe_group />
+        <l10n_state />
+        <fe_cruser_id>0</fe_cruser_id>
+        <fe_admin_lock>0</fe_admin_lock>
+        <label>Collection with single document</label>
+        <index_name>collection-with-single-document</index_name>
+        <index_search />
+        <oai_name>collection-with-single-document</oai_name>
+        <description />
+        <thumbnail />
+        <priority>4</priority>
+        <documents>0</documents>
+        <owner>0</owner>
+        <status>0</status>
+    </tx_dlf_collections>
+
+    <tx_dlf_relations>
+        <uid>1201</uid>
+        <uid_local>1001</uid_local>
+        <uid_foreign>1101</uid_foreign>
+        <tablenames />
+        <sorting />
+        <sorting_foreign />
+        <ident>docs_colls</ident>
+    </tx_dlf_relations>
+
+    <tx_dlf_relations>
+        <uid>1202</uid>
+        <uid_local>1002</uid_local>
+        <uid_foreign>1101</uid_foreign>
+        <tablenames />
+        <sorting />
+        <sorting_foreign />
+        <ident>docs_colls</ident>
+    </tx_dlf_relations>
+
+    <tx_dlf_relations>
+        <uid>1203</uid>
+        <uid_local>1003</uid_local>
+        <uid_foreign>1101</uid_foreign>
+        <tablenames />
+        <sorting />
+        <sorting_foreign />
+        <ident>docs_colls</ident>
+    </tx_dlf_relations>
+
+    <tx_dlf_relations>
+        <uid>1204</uid>
+        <uid_local>1001</uid_local>
+        <uid_foreign>1102</uid_foreign>
+        <tablenames />
+        <sorting />
+        <sorting_foreign />
+        <ident>docs_colls</ident>
+    </tx_dlf_relations>
+</dataset>
