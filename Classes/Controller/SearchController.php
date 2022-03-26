@@ -176,7 +176,7 @@ class SearchController extends AbstractController
      */
     protected function addFacetsMenu()
     {
-        // Quit without doing anything if no facets are selected.
+        // Quit without doing anything if no facets are configured.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
             return '';
         }
@@ -205,6 +205,7 @@ class SearchController extends AbstractController
         $menuArray = [];
         // Set default value for facet search.
         $search = [
+            'query' => '*:*',
             'params' => [
                 'component' => [
                     'facetset' => [
