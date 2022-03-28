@@ -20,7 +20,8 @@
         </f:if>
     </label>
 
-    <f:form.textfield id="tx-dlf-search-query-{viewData.uniqueId}" property="query" value="{lastSearch.query}" />
+    <f:comment><!-- Never change the @id of this input field! Otherwise search suggestions won't work! --></f:comment>
+    <f:form.textfield id="tx-dlf-search-query" property="query" value="{lastSearch.query}" />
 
     <f:if condition="{showLogicalPageField}">
         <f:then>
