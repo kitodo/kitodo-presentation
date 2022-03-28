@@ -246,6 +246,8 @@ class SearchController extends AbstractController
             !empty($searchParams['extQuery'])
             && is_array($searchParams['extQuery'])
         ) {
+            // If the search query is already set by the simple search field, we have to reset it.
+            $search['query'] = '';
             $allowedOperators = ['AND', 'OR', 'NOT'];
             $numberOfExtQueries = count($searchParams['extQuery']);
             for ($i = 0; $i < $numberOfExtQueries; $i++) {
