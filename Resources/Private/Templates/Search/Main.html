@@ -12,14 +12,15 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:form action="search" controller="Search" name="searchParameter" method="get">
-    <label for="tx-dlf-search-query">
+<f:form action="search" controller="Search" name="searchParameter" method="get" class="tx-dlf-search-form">
+    <label for="tx-dlf-search-query-{viewData.uniqueId}">
         <f:if condition="{lastSearch.query}">
             <f:then>{lastSearch.query -> f:format.htmlspecialchars()}</f:then>
             <f:else><f:translate key="search.query"/></f:else>
         </f:if>
     </label>
 
+    <f:comment><!-- Never change the @id of this input field! Otherwise search suggestions won't work! --></f:comment>
     <f:form.textfield id="tx-dlf-search-query" property="query" value="{lastSearch.query}" />
 
     <f:if condition="{showLogicalPageField}">
@@ -36,10 +37,10 @@
     <f:form.submit value="{f:translate(key: 'search.submit')}" />
 
     <!-- Fulltext switch -->
-    <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
-    <label for="tx-dlf-search-fulltext-no"><f:translate key="search.inMetadata"/></label>
-    <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
-    <label for="tx-dlf-search-fulltext-yes"><f:translate key="search.inFulltext"/></label>
+    <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
+    <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
+    <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
+    <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
 
     <f:if condition="{settings.searchIn} == 'collection' || {settings.searchIn} == 'all'">
         <f:form.hidden property="collections" value="{settings.collections}" />

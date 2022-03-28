@@ -163,6 +163,8 @@ class SearchController extends AbstractController
         if ($this->settings['suggest']) {
             $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
+
+        $this->view->assign('viewData', $this->viewData);
     }
 
     /**
@@ -174,7 +176,7 @@ class SearchController extends AbstractController
      */
     protected function addFacetsMenu()
     {
-        // Quit without doing anything if no facets are selected.
+        // Quit without doing anything if no facets are configured.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
             return '';
         }
@@ -203,6 +205,7 @@ class SearchController extends AbstractController
         $menuArray = [];
         // Set default value for facet search.
         $search = [
+            'query' => '*:*',
             'params' => [
                 'component' => [
                     'facetset' => [
@@ -243,6 +246,8 @@ class SearchController extends AbstractController
             !empty($searchParams['extQuery'])
             && is_array($searchParams['extQuery'])
         ) {
+            // If the search query is already set by the simple search field, we have to reset it.
+            $search['query'] = '';
             $allowedOperators = ['AND', 'OR', 'NOT'];
             $numberOfExtQueries = count($searchParams['extQuery']);
             for ($i = 0; $i < $numberOfExtQueries; $i++) {
