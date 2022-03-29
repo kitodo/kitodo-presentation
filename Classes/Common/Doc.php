@@ -302,7 +302,7 @@ abstract class Doc
     protected $thumbnailLoaded = false;
 
     /**
-     * This holds the toplevel structure's ID (METS) or the manifest's id (IIIF)
+     * This holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
      *
      * @var string
      * @access protected
