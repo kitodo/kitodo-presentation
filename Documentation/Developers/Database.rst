@@ -552,7 +552,7 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
      :description:              *Hide*
 
    - :field:                    sorting  *integer*
-     :description:              
+     :description:              Order (relative position) of this entry in metadata plugin and backend list.
 
    - :field:                    label  *string*
      :description:              *Display Label*
@@ -562,6 +562,8 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
 
    - :field:                    format  *integer*
      :description:              *Data Format*
+                                
+                                The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
 
    - :field:                    default_value  *string*
      :description:              *Default Value*

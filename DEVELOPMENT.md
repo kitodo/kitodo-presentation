@@ -98,6 +98,7 @@ docker-compose down
 
 ### Fixtures
 
+- Datasets may be created, for example, by exporting records from [MySQL Workbench](https://www.mysql.com/de/products/workbench/).
 - When writing datasets, please use `uid`s that are easy to search (`grep`) for.
 
 ### File Structure
