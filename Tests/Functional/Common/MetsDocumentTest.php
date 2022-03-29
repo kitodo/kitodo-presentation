@@ -33,6 +33,13 @@ class MetsDocumentTest extends FunctionalTestCase
         $titledata = $doc->getTitledata(20000);
 
         $this->assertEquals(['Odol-Mundwasser, 3 Werbespots'], $titledata['title']);
+        $this->assertEquals(['24'], $titledata['frame_rate']);
+        $this->assertEquals(['Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden'], $titledata['dvrights_owner']);
+        $this->assertEquals(['https://katalog.slub-dresden.de/id/0-1703800435'], $titledata['dvlinks_reference']);
+
+        $this->assertEquals([
+            'DMDLOG_0000' => $doc->mdSec['DMDLOG_0000'],
+        ], $doc->dmdSec);
     }
 
     /**
@@ -46,22 +53,27 @@ class MetsDocumentTest extends FunctionalTestCase
 
         $this->assertArrayMatches([
             'dmdId' => 'DMDLOG_0000',
+            'admId' => 'AMD',
             'children' => [
                 [
                     'id' => 'LOG_0001',
                     'dmdId' => '',
+                    'admId' => '',
                 ],
                 [
                     'id' => 'LOG_0002',
                     'dmdId' => '',
+                    'admId' => '',
                 ],
                 [
                     'id' => 'LOG_0003',
                     'dmdId' => '',
+                    'admId' => '',
                 ],
                 [
                     'id' => 'LOG_0004',
                     'dmdId' => '',
+                    'admId' => '',
                 ],
             ],
         ], $toc, 'Expected TOC to contain the specified values');
