@@ -46,7 +46,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read array $smLinks This holds the smLinks between logical and physical structMap
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
- * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
+ * @property-read string $toplevelId This holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @abstract
  */
 abstract class Doc
@@ -302,7 +302,7 @@ abstract class Doc
     protected $thumbnailLoaded = false;
 
     /**
-     * This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
+     * This holds the toplevel structure's ID (METS) or the manifest's id (IIIF)
      *
      * @var string
      * @access protected
@@ -363,7 +363,7 @@ abstract class Doc
      *
      * @abstract
      *
-     * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
+     * @param string $id: The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
      *
      * @return string    The file's location as URL
      */
@@ -376,7 +376,7 @@ abstract class Doc
      *
      * @abstract
      *
-     * @param string $id: The @ID attribute of the file node (METS) or the @id property of the IIIF resource
+     * @param string $id: The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
      *
      * @return string The file's location as URL
      */
@@ -389,7 +389,7 @@ abstract class Doc
      *
      * @abstract
      *
-     * @param string $id: The @ID attribute of the file node
+     * @param string $id: The "@ID" attribute of the file node
      *
      * @return string The file's MIME type
      */
@@ -472,8 +472,8 @@ abstract class Doc
      *
      * @abstract
      *
-     * @param string $id: The @ID attribute of the logical structure node (METS) or
-     * the @id property of the Manifest / Range (IIIF)
+     * @param string $id: The "@ID" attribute of the logical structure node (METS) or
+     * the "@id" property of the Manifest / Range (IIIF)
      * @param bool $recursive: Whether to include the child elements / resources
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
@@ -487,7 +487,7 @@ abstract class Doc
      *
      * @abstract
      *
-     * @param string $id: The @ID attribute of the logical structure node (METS) or the @id property
+     * @param string $id: The "@ID" attribute of the logical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
      * @param int $cPid: The PID for the metadata definitions
      *                       (defaults to $this->cPid or $this->pid)
@@ -534,7 +534,7 @@ abstract class Doc
      *
      * @abstract
      *
-     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
+     * @param string $id: The "@ID" attribute of the physical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
      *
      * @return string The OCR full text
@@ -546,7 +546,7 @@ abstract class Doc
      * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
      * to be given in the Canvas' / Manifest's "seeAlso" property.
      *
-     * @param string $id: The @ID attribute of the physical structure node (METS) or the @id property
+     * @param string $id: The "@ID" attribute of the physical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
      *
      * @return string The OCR full text
@@ -996,7 +996,7 @@ abstract class Doc
      * @abstract
      *
      * @return array Array of physical elements' id, type, label and file representations ordered
-     * by @ORDER attribute / IIIF Sequence's Canvases
+     * by "@ORDER" attribute / IIIF Sequence's Canvases
      */
     protected abstract function _getPhysicalStructure();
 
@@ -1005,7 +1005,7 @@ abstract class Doc
      *
      * @access protected
      *
-     * @return array Array of elements' type, label and file representations ordered by @ID attribute / Canvas order
+     * @return array Array of elements' type, label and file representations ordered by "@ID" attribute / Canvas order
      */
     protected function _getPhysicalStructureInfo()
     {
