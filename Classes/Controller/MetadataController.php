@@ -107,7 +107,7 @@ class MetadataController extends AbstractController
         $metadata = $this->getMetadata();
         // Get titledata?
         if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->document->getDoc()->toplevelId)) {
-            $data = $useOriginalIiifManifestMetadata ? $this->document->getDoc()->getManifestMetadata($this->document->getDoc()->toplevelId, $this->settings['storagePid']) : $this->document->getDoc()->getTitleData($this->settings['storagePid']);
+            $data = $useOriginalIiifManifestMetadata ? $this->document->getDoc()->getManifestMetadata($this->document->getDoc()->toplevelId, $this->settings['storagePid']) : $this->document->getDoc()->getTitledata($this->settings['storagePid']);
             $data['_id'] = $this->document->getDoc()->toplevelId;
             array_unshift($metadata, $data);
         }

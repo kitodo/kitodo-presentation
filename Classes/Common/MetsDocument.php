@@ -1061,7 +1061,7 @@ final class MetsDocument extends Doc
             // Rebuild the unserializable properties.
             $this->init('');
         } else {
-            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
             $this->logger->error('Could not load XML after deserialization');
         }
     }

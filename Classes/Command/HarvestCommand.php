@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use Phpoaipmh\Endpoint;
-use Phpoaipmh\Exception\BaseoaipmhException;
+use Phpoaipmh\Exception\BaseOaipmhException;
 
 /**
  * CLI Command for harvesting OAI-PMH interfaces into database and Solr.
