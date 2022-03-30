@@ -255,7 +255,11 @@ class PageViewController extends AbstractController
             // Get image link.
             if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages])) {
                 $image['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
-                if ($this->settings['useInternalProxy']) {
+                $image['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
+
+                // Only deliver static images via the internal PageViewProxy.
+                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL`.)
+                if ($this->settings['useInternalProxy'] && strpos($image['mimetype'], 'image/') === 0) {
                     // Configure @action URL for form.
                     $uri = $this->uriBuilder->reset()
                         ->setTargetPageUid($GLOBALS['TSFE']->id)
@@ -268,7 +272,6 @@ class PageViewController extends AbstractController
                         ->build();
                     $image['url'] = $uri;
                 }
-                $image['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
                 break;
             } else {
                 $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
