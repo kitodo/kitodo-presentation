@@ -295,13 +295,15 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                 ->values($fields)
                 ->execute();
 
+            // Update referencing table's original field to now contain the count of references,
+            // which is "1" in our case.
             $queryBuilder = $connectionPool->getQueryBuilderForTable($table);
             $queryBuilder->update($table)->where(
                 $queryBuilder->expr()->eq(
                     'uid',
                     $queryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
                 )
-            )->set($this->fieldsToMigrate[$table])->execute();
+            )->set($this->fieldsToMigrate[$table], 1)->execute();
         }
     }
 }

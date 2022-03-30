@@ -1,0 +1,10 @@
+watch:
+  directories:
+    - Tests/
+notifications:
+  passingTests: false
+  failingTests: false
+phpunit:
+  binaryPath: vendor/bin/phpunit
+  arguments: '--stop-on-failure'
+  timeout: 180

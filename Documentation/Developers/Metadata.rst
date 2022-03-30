@@ -2,7 +2,7 @@
 Metadata
 ========
 
-Kitodo.Presentation allows a per-tenant configuration of which metadata is extracted from documents, and how it is displayed.
+Kitodo.Presentation allows a per-tenant configuration of which metadata is extracted from documents, and how it is indexed and displayed.
 
 Formats
 =======

@@ -202,16 +202,23 @@ class Helper
     }
 
     /**
-     * Get content of XML file as string or false if there is nothing.
+     * Try to parse $content into a `SimpleXmlElement`. If $content is not a
+     * string or does not contain valid XML, `false` is returned.
      *
      * @access public
      *
      * @param string $content: content of file to read
      *
-     * @return mixed
+     * @return \SimpleXMLElement|false
      */
     public static function getXmlFileAsString($content)
     {
+        // Don't make simplexml_load_string throw (when $content is an array
+        // or object)
+        if (!is_string($content)) {
+            return false;
+        }
+
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(true);
         // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept

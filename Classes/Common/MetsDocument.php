@@ -123,7 +123,7 @@ final class MetsDocument extends Doc
      * @access	public
      *
      * @param	array	&$metadata: The metadata array to extend
-     * @param	string	$id: The @ID attribute of the logical structure node
+     * @param	string	$id: The "@ID" attribute of the logical structure node
      *
      * @return  void
      */
@@ -1061,7 +1061,7 @@ final class MetsDocument extends Doc
             // Rebuild the unserializable properties.
             $this->init('');
         } else {
-            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger();
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
             $this->logger->error('Could not load XML after deserialization');
         }
     }

@@ -70,6 +70,18 @@ This section contains version specific instructions on upgrading an existing Kit
 Version 3.3 -> 4.0
 ==================
 
+Upgrade-Wizards
+---------------
+
+There are two upgrade wizards available. If you upgrade an existing installation, you should use them. Without, you have to
+configure all plugins from scratch and the collection record images won't be visible.
+
+Set the Storage Pid
+-------------------
+
+The Kitodo.Presentation configuration folder must be set by TypoScript constnat `plugin.tx_dlf.persistence.storagePid` now.
+This setting is available for all plugins in the page tree. The plugin specific `pages` has been removed.
+
 Plugin Feeds
 ------------
 
