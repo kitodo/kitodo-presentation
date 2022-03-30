@@ -123,7 +123,7 @@ final class MetsDocument extends Doc
      * @access	public
      *
      * @param	array	&$metadata: The metadata array to extend
-     * @param	string	$id: The @ID attribute of the logical structure node
+     * @param	string	$id: The "@ID" attribute of the logical structure node
      *
      * @return  void
      */

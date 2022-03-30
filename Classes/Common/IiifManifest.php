@@ -55,7 +55,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read string $thumbnail This holds the document's thumbnail location
  * @property-read string $toplevelId This holds the toplevel manifest's @id
  */
-final class IiifManifest extends Document
+final class IiifManifest extends Doc
 {
     /**
      * This holds the manifest file as string for serialization purposes
