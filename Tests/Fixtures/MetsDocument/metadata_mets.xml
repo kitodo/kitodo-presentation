@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tx_dlf_metadata>
+        <uid>793462399</uid>
+        <pid>20000</pid>
+        <sys_language_uid>0</sys_language_uid>
+        <l18n_parent>0</l18n_parent>
+        <l18n_diffsource></l18n_diffsource>
+        <label>Test Value</label>
+        <index_name>test_value</index_name>
+        <format>1</format>
+        <wrap></wrap>
+    </tx_dlf_metadata>
+
+    <tx_dlf_metadataformat>
+        <uid>569124173</uid>
+        <pid>20000</pid>
+        <parent_id>793462399</parent_id>
+        <encoded>5202</encoded>
+        <xpath>./dv:test</xpath>
+        <xpath_sorting></xpath_sorting>
+    </tx_dlf_metadataformat>
+</dataset>
