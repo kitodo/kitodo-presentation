@@ -65,7 +65,7 @@ dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
     if (type === 'printspace' || type === 'textblock' || type === 'textline' || node.hasAttribute('WIDTH')) {
         feature = this.parseFeatureWithGeometry_(node);
     } else {
-        var feature = new ol.Feature();
+        feature = new ol.Feature();
         feature.setProperties({'type': node.nodeName.toLowerCase()});
     }
 

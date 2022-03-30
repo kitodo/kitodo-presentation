@@ -145,10 +145,11 @@ function DlfAnnotationControl(map, image, annotationContainers) {
             }
 
             // Handle Annotation elements
-            var activeHoverAnnotationListEl = hoverSourceAnnotation.getFeatures().length > 0 ?
-                    hoverSourceAnnotation.getFeatures()[0] : undefined,
-                isFeatureEqualToOldHoverFeature = activeHoverAnnotationListEl !== undefined && annotationFeature !== undefined &&
-                activeHoverAnnotationListEl.getId() === annotationFeature.getId() ? true : false;
+            activeHoverAnnotationListEl = hoverSourceAnnotation.getFeatures().length > 0 ?
+                hoverSourceAnnotation.getFeatures()[0] : undefined;
+            isFeatureEqualToOldHoverFeature = activeHoverAnnotationListEl !== undefined &&
+            annotationFeature !== undefined && activeHoverAnnotationListEl.getId() === annotationFeature.getId() ?
+                true : false;
 
             if (!isFeatureEqualToOldHoverFeature) {
 

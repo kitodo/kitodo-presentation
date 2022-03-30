@@ -16,6 +16,7 @@ use Flow\JSONPath\JSONPath;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationInterface;
@@ -55,7 +56,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read string $thumbnail This holds the document's thumbnail location
  * @property-read string $toplevelId This holds the toplevel manifest's @id
  */
-final class IiifManifest extends Document
+final class IiifManifest extends Doc
 {
     /**
      * This holds the manifest file as string for serialization purposes
@@ -155,7 +156,11 @@ final class IiifManifest extends Document
             while ($resArray = $result->fetch()) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
-                    $this->recordId = $this->iiif->jsonPath($recordIdPath);
+                    try {
+                        $this->recordId = $this->iiif->jsonPath($recordIdPath);
+                    } catch (\Exception $e) {
+                        $this->logger->warning('Could not evaluate JSONPath to get IIIF record ID');
+                    }
                 }
             }
             // For now, it's a hardcoded ID, not only as a fallback
@@ -844,7 +849,7 @@ final class IiifManifest extends Document
      */
     protected function init($location)
     {
-        // Nothing to do here, at the moment
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
     }
 
     /**
@@ -984,6 +989,7 @@ final class IiifManifest extends Document
             $this->iiif = $resource;
             $this->init('');
         } else {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
             $this->logger->error('Could not load IIIF after deserialization');
         }
     }
