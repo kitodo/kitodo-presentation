@@ -16,6 +16,7 @@ use Flow\JSONPath\JSONPath;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationInterface;
@@ -844,7 +845,7 @@ final class IiifManifest extends Doc
      */
     protected function init($location)
     {
-        // Nothing to do here, at the moment
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
     }
 
     /**
@@ -984,6 +985,7 @@ final class IiifManifest extends Doc
             $this->iiif = $resource;
             $this->init('');
         } else {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
             $this->logger->error('Could not load IIIF after deserialization');
         }
     }
