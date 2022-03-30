@@ -156,7 +156,11 @@ final class IiifManifest extends Doc
             while ($resArray = $result->fetch()) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
-                    $this->recordId = $this->iiif->jsonPath($recordIdPath);
+                    try {
+                        $this->recordId = $this->iiif->jsonPath($recordIdPath);
+                    } catch (\Exception $e) {
+                        $this->logger->warning('Could not evaluate JSONPath to get IIIF record ID');
+                    }
                 }
             }
             // For now, it's a hardcoded ID, not only as a fallback
