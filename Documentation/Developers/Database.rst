@@ -873,7 +873,7 @@ Resumption tokens for OAI-PMH interface.
      :description:              Data that is used to resume the previous request.
 
    - :field:                    ident  *string*
-     :description:              
+     :description:              Originally an identifier for the kind of token ('oai'). Not used at the moment.
 
 
 
