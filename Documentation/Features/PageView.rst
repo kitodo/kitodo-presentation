@@ -22,6 +22,7 @@ The viewer supports various image formats. Each of them should work in single pa
    *  https://digital.slub-dresden.de/data/kitodo/aufdesun_351357262/aufdesun_351357262_mets.xml
    *  `Single page view <https://ddev-kitodo-presentation.ddev.site/workview?tx_dlf[id]=https%3A%2F%2Fdigital.slub-dresden.de%2Fdata%2Fkitodo%2Faufdesun_351357262%2Faufdesun_351357262_mets.xml&tx_dlf[page]=4>`__
    *  `Single page view with word highlighting <https://ddev-kitodo-presentation.ddev.site/workview?tx_dlf[id]=https%3A%2F%2Fdigital.slub-dresden.de%2Fdata%2Fkitodo%2Faufdesun_351357262%2Faufdesun_351357262_mets.xml&tx_dlf[page]=4&tx_dlf[highlight_word]=Dresden>`__
+   *  `Double page view with word highlighting <https://ddev-kitodo-presentation.ddev.site/workview?tx_dlf[id]=https%3A%2F%2Fdigital.slub-dresden.de%2Fdata%2Fkitodo%2Faufdesun_351357262%2Faufdesun_351357262_mets.xml&tx_dlf[page]=4&tx_dlf[double]=1&tx_dlf[highlight_word]=Dresden>`__
 
 *  IIIF Image API
 
@@ -67,7 +68,13 @@ In the *Digital Collections* template, activate the tool by clicking the slider 
 Full Text
 ---------
 
-In the *Digital Collections* template, click the reading-glass icon.
+In the *Digital Collections* template, the following full text features are available:
+
+*  Click the reading-glass icon on the left to toggle the fulltext overlay.
+   When hovering a text line on the image, the corresponding part should be highlighted in the overlay.
+
+*  When showing an indexed document, click the search icon on the right to toggle in-document search.
+   Search results should be highlighted on the page.
 
 Overview Map and Zoom Buttons
 -----------------------------

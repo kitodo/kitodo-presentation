@@ -164,6 +164,15 @@ var dlfViewer = function(settings){
 };
 
 /**
+ * Get number of shown pages. Typically 1 (single page) or 2 (double page mode).
+ *
+ * @returns {number}
+ */
+dlfViewer.prototype.countPages = function () {
+    return this.imageUrls.length;
+};
+
+/**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
  * fulltext and the image manipulation control
  *
@@ -328,11 +337,11 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         this.map.addLayer(this.highlightLayer);
     }
 
+    // clear in case of old displays
+    this.highlightLayer.getSource().clear();
+
     // check if highlight by coords should be activate
     if (this.highlightFields.length > 0) {
-        // clear in case of old displays
-        this.highlightLayer.getSource().clear();
-
         // create features and scale it down
         for (var i = 0; i < this.highlightFields.length; i++) {
 
