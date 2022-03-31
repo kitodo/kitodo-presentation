@@ -289,7 +289,7 @@ function addImageHighlight(data) {
         var highlights = [];
 
         data['documents'].forEach(function (element, i) {
-            if(page <= element['page'] && element['page'] < page + tx_dlf_viewer.countPages()) {
+            if(page <= element['page'] && element['page'] < page + tx_dlf_viewer.countPages()) { // eslint-disable-line camelcase
                 if (element['highlight'].length > 0) {
                     highlights.push(getHighlights(element['highlight']));
                 }
@@ -297,7 +297,7 @@ function addImageHighlight(data) {
             }
         });
 
-        tx_dlf_viewer.displayHighlightWord(encodeURIComponent(highlights.join(';')));
+        tx_dlf_viewer.displayHighlightWord(encodeURIComponent(highlights.join(';'))); // eslint-disable-line camelcase
     } else {
         setTimeout(addImageHighlight, 500, data);
     }

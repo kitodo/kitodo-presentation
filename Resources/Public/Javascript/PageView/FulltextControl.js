@@ -35,7 +35,7 @@ var dlfFulltextSegments = function () {
      * @private
      */
     this.segments_ = [];
-}
+};
 
 /**
  * Add {@link features} to the list of segments.
@@ -47,7 +47,7 @@ dlfFulltextSegments.prototype.populate = function (features) {
         var feature = features[i];
 
         this.segments_.push({
-            feature: feature,
+            feature,
             extent: feature.getGeometry().getExtent()
         });
     }
@@ -243,7 +243,7 @@ dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
         this.selectedFeature_ = textblockFeatures[0];
         this.showFulltext(textblockFeatures);
     }
-}
+};
 
 /**
  * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.

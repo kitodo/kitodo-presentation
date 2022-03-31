@@ -316,7 +316,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
         image.onload = function () {
             var imageDataObj = {
                 src: this.src,
-                mimetype: mimetype,
+                mimetype,
                 width: this.width,
                 height: this.height
             };

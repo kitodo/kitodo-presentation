@@ -60,7 +60,7 @@ dlfFullTextUtils.fetchFullTextDataFromServer = function(url, image, optOffset) {
                 result.resolve(fulltext);
             }
         } catch (e) {
-            console.error(e);
+            console.error(e); // eslint-disable-line no-console
             result.reject();
         }
     });
