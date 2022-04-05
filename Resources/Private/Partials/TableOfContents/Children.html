@@ -63,7 +63,7 @@
         </span>
     </f:if>
 
-    <f:if condition="{child._SUB_MENU} && ({child.ITEM_STATE} == 'ACTIFSUB' || {child.ITEM_STATE} == 'CURIFSUB')">
+    <f:if condition="{child._SUB_MENU} && ({child.ITEM_STATE} == 'IFSUB' || {child.ITEM_STATE} == 'ACTIFSUB' || {child.ITEM_STATE} == 'CURIFSUB')">
         <ul>
             <f:render partial="TableOfContents/Children" arguments="{children: child._SUB_MENU}"/>
         </ul>

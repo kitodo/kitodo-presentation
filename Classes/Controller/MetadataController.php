@@ -116,14 +116,7 @@ class MetadataController extends AbstractController
             return '';
         }
         ksort($metadata);
-        // Get hook objects.
-        $this->hookObjects = Helper::getHookObjects($this->scriptRelPath);
-        // Hook for getting a customized title bar (requested by SBB).
-        foreach ($this->hookObjects as $hookObj) {
-            if (method_exists($hookObj, 'main_customizeTitleBarGetCustomTemplate')) {
-                $hookObj->main_customizeTitleBarGetCustomTemplate($this, $metadata);
-            }
-        }
+
         $this->printMetadata($metadata, $useOriginalIiifManifestMetadata);
     }
 
@@ -270,7 +263,6 @@ class MetadataController extends AbstractController
             $this->view->assign('documentMetadataSections', $metadataArray);
             $this->view->assign('configMetadata', $metadataResult);
             $this->view->assign('separator', $this->settings['separator']);
-
         }
     }
 
@@ -281,7 +273,8 @@ class MetadataController extends AbstractController
      *
      * @return array metadata
      */
-    private function getMetadata() {
+    private function getMetadata()
+    {
         $metadata = [];
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
@@ -319,7 +312,8 @@ class MetadataController extends AbstractController
      *
      * @return array metadata
      */
-    private function getMetadataForIds($id, $metadata) {
+    private function getMetadataForIds($id, $metadata)
+    {
         $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->document->getDoc() instanceof IiifManifest;
         foreach ($id as $sid) {
             if ($useOriginalIiifManifestMetadata) {
