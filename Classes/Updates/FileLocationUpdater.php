@@ -74,7 +74,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      */
     public function getTitle(): string
     {
-        return 'Migrate file references used in EXT:dlf';
+        return 'Migrate Kitodo.Presentation file references';
     }
 
     /**

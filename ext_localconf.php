@@ -77,10 +77,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/MetsDocument.php']['hookClass'][] = \Kitodo\Dlf\Hooks\KitodoProductionHacks::class;
 // Register AJAX eID handlers.
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = \Kitodo\Dlf\Plugin\Eid\SearchSuggest::class . '::main';
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_in_document'] = \Kitodo\Dlf\Plugin\Eid\SearchInDocument::class . '::main';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = \Kitodo\Dlf\Eid\SearchSuggest::class . '::main';
+$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_in_document'] = \Kitodo\Dlf\Eid\SearchInDocument::class . '::main';
 if ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['dlf']['enableInternalProxy'] ?? false) {
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_pageview_proxy'] = \Kitodo\Dlf\Plugin\Eid\PageViewProxy::class . '::main';
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_pageview_proxy'] = \Kitodo\Dlf\Eid\PageViewProxy::class . '::main';
 }
 // Use Caching Framework for Solr queries
 if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr'])) {
@@ -300,36 +300,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     ]
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptSetup(
-    'module.tx_dlf {
-        view {
-            templateRootPaths {
-                0 = EXT:dlf/Resources/Private/Backend/Templates/
-                1 = {$module.tx_dlf.view.templateRootPath}
-            }
-            partialRootPaths {
-                0 = EXT:dlf/Resources/Private/Backend/Partials/
-                1 = {$module.tx_dlf.view.partialRootPath}
-            }
-            layoutRootPaths {
-                0 = EXT:dlf/Resources/Private/Backend/Layouts/
-                1 = {$module.tx_dlf.view.layoutRootPath}
-            }
-        }
-    }'
-);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptConstants(
-    'module.tx_dlf {
-        view {
-            # cat=module.tx_dlf/file; type=string; label=Path to template root (BE)
-            templateRootPath = EXT:dlf/Resources/Private/Backend/Templates/
-            # cat=module.tx_dlf/file; type=string; label=Path to template partials (BE)
-            partialRootPath = EXT:dlf/Resources/Private/Backend/Partials/
-            # cat=module.tx_dlf/file; type=string; label=Path to template layouts (BE)
-            layoutRootPath = EXT:dlf/Resources/Private/Backend/Layouts/
-        }
-    }'
-);
 
 // Register a node in ext_localconf.php
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1638809996] = [
