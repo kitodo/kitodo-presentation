@@ -9,9 +9,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Controller;
+namespace Kitodo\Dlf\Controller\Backend;
 
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Model\MetadataFormat;
