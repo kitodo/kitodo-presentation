@@ -9,6 +9,14 @@
  */
 
 /**
+ * @typedef {ol.Feature & {
+ *  getStringFeatures: () => any[];
+ *  getTextblocks: () => any[];
+ *  getTextlines: () => any[];
+ * }} FullTextFeature
+ */
+
+/**
  * @constructor
  * @param {Object=} opt_imageObj
  * @param {number=} opt_width
@@ -105,7 +113,7 @@ dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
 
 /**
  * @param {XMLDocument|string} document
- * @return {Array.<ol.Feature>}
+ * @return {Array.<FullTextFeature>}
  */
 dlfAltoParser.prototype.parseFeatures = function(document) {
     var parsedDoc = this.parseXML_(document),

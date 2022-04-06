@@ -25,13 +25,56 @@ jQuery.fn.scrollTo = function(elem, speed) {
 };
 
 /**
+ * Represents segments on the fulltext plane that are addressable by coordinate.
+ *
+ * This assumes that the segments are rectangles parallel to the page.
+ */
+var dlfFulltextSegments = function () {
+    /**
+     * @type {{ feature: ol.Feature; extent: ol.Extent }}
+     * @private
+     */
+    this.segments_ = [];
+};
+
+/**
+ * Add {@link features} to the list of segments.
+ *
+ * @param {ol.Feature[]} features
+ */
+dlfFulltextSegments.prototype.populate = function (features) {
+    for (var i = 0; i < features.length; i++) {
+        var feature = features[i];
+
+        this.segments_.push({
+            feature,
+            extent: feature.getGeometry().getExtent()
+        });
+    }
+};
+
+/**
+ * Returns the feature at a given {@link coordinate}, or `undefined` if no such feature is found.
+ *
+ * @param {ol.Coordinate} coordinate
+ * @returns {ol.Feature | undefined}
+ */
+dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
+    for (var i = 0; i < this.segments_.length; i++) {
+        var segment = this.segments_[i];
+
+        if (ol.extent.containsCoordinate(segment.extent, coordinate)) {
+            return segment.feature;
+        }
+    }
+};
+
+/**
  * Encapsulates especially the fulltext behavior
  * @constructor
  * @param {ol.Map} map
- * @param {Object} image
- * @param {string} fulltextUrl
  */
-var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
+var dlfViewerFullTextControl = function(map) {
 
     /**
      * @private
@@ -43,22 +86,11 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      * @type {Object}
      * @private
      */
-    this.image = image;
-
-    /**
-     * @type {string}
-     * @private
-     */
-    this.url = fulltextUrl;
-
-    /**
-     * @type {Object}
-     * @private
-     */
     this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
         {
             'fulltext':'Fulltext',
+            'fulltext-loading':'Loading full text...',
             'fulltext-on':'Activate Fulltext',
             'fulltext-off':'Deactivate Fulltext',
             'activate-full-text-initially':'0',
@@ -75,12 +107,6 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
      * @private
      */
     this.fullTextScrollElement = this.dic['full-text-scroll-element'];
-
-    /**
-     * @type {ol.Feature|undefined}
-     * @private
-     */
-    this.fulltextData_ = undefined;
 
     /**
      * @type {Object}
@@ -116,20 +142,44 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
     this.selectedFeature_ = undefined;
 
     /**
+     * @type {ol.Feature[] | undefined}
+     * @private
+     */
+    this.lastRenderedFeatures_ = undefined;
+
+    /**
+     * @type {dlfFulltextSegments}
+     * @private
+     */
+    this.textlines_ = new dlfFulltextSegments();
+
+    /**
+     * @type {dlfFulltextSegments}
+     * @private
+     */
+    this.textblocks_ = new dlfFulltextSegments();
+
+    /**
      * @type {Object}
      * @private
      */
     this.handlers_ = {
+        // On some systems in Firefox, the call to forEachFeatureAtPixel takes very long when no feature is found.
+        // For now, we thus replace this with manual bounds checking in dlfFulltextSegments.
+        //
+        // Inspiration from https://stackoverflow.com/a/47101658
+        // Issues:
+        // - https://github.com/openlayers/openlayers/issues/4232
+        // - https://github.com/openlayers/openlayers/issues/8592#issuecomment-419817607
+        // - https://stackoverflow.com/questions/45710306/firefox-very-slow-with-foreachfeatureatpixel
+        // - https://stackoverflow.com/questions/33246093/very-slow-hover-interactions-in-openlayers-3-with-any-browser-except-chrome
         mapClick: $.proxy(function(event) {
                 // the click handler adds the clicked feature to a
                 // select layer which could be used to create a highlight
                 // effect on the map
 
-                var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                    if (feature.get('type') === 'textblock') {
-                        return feature;
-                    }
-                });
+                var mouseCoordinate = this.map.getCoordinateFromPixel(event['pixel']);
+                var feature = this.textblocks_.coordinateToFeature(mouseCoordinate);
 
                 // deselect all
                 if (feature === undefined) {
@@ -159,18 +209,9 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
                 var hoverSourceTextblock_ = this.layers_.hoverTextblock.getSource(),
                     hoverSourceTextline_ = this.layers_.hoverTextline.getSource(),
                     selectSource_ = this.layers_.select.getSource(),
-                    map_ = this.map,
-                    textblockFeature,
-                    textlineFeature;
-
-                map_.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
-                    if (feature.get('type') === 'textblock') {
-                        textblockFeature = feature;
-                    }
-                    if (feature.get('type') === 'textline') {
-                        textlineFeature = feature;
-                    }
-                });
+                    mouseCoordinate = this.map.getCoordinateFromPixel(event['pixel']),
+                    textblockFeature = this.textblocks_.coordinateToFeature(mouseCoordinate),
+                    textlineFeature = this.textlines_.coordinateToFeature(mouseCoordinate);
 
                 this.handleTextBlockElements(textblockFeature, selectSource_, hoverSourceTextblock_);
                 this.handleTextLineElements(textlineFeature, hoverSourceTextline_);
@@ -178,7 +219,30 @@ var dlfViewerFullTextControl = function(map, image, fulltextUrl) {
         this)
     };
 
+    $('#tx-dlf-fulltextselection').text(this.dic['fulltext-loading']);
+
     this.changeActiveBehaviour();
+};
+
+/**
+ * @param {FullTextFeature} fulltextData
+ */
+dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
+    // add features to fulltext layer
+    const textblockFeatures = fulltextData.getTextblocks();
+    this.layers_.textblock.getSource().addFeatures(textblockFeatures);
+    this.textblocks_.populate(textblockFeatures);
+
+    const textlineFeatures = fulltextData.getTextlines();
+    this.layers_.textline.getSource().addFeatures(textlineFeatures);
+    this.textlines_.populate(textlineFeatures);
+
+    // add first feature of textBlockFeatures to map
+    if (textblockFeatures.length > 0) {
+        this.layers_.select.getSource().addFeature(textblockFeatures[0]);
+        this.selectedFeature_ = textblockFeatures[0];
+        this.showFulltext(textblockFeatures);
+    }
 };
 
 /**
@@ -363,25 +427,6 @@ dlfViewerFullTextControl.prototype.activate = function() {
 
     var controlEl = $('#tx-dlf-tools-fulltext');
 
-    // if the activate method is called for the first time fetch
-    // fulltext data from server
-    if (this.fulltextData_ === undefined)  {
-        this.fulltextData_ = dlfFullTextUtils.fetchFullTextDataFromServer(this.url, this.image);
-
-        if (this.fulltextData_ !== undefined) {
-            // add features to fulltext layer
-            this.layers_.textblock.getSource().addFeatures(this.fulltextData_.getTextblocks());
-            this.layers_.textline.getSource().addFeatures(this.fulltextData_.getTextlines());
-
-            // add first feature of textBlockFeatures to map
-            if (this.fulltextData_.getTextblocks().length > 0) {
-                this.layers_.select.getSource().addFeature(this.fulltextData_.getTextblocks()[0]);
-                this.selectedFeature_ = this.fulltextData_.getTextblocks()[0];
-                this.showFulltext(this.fulltextData_.getTextblocks());
-            }
-        }
-    }
-
     // now activate the fulltext overlay and map behavior
     this.enableFulltextSelect();
     dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
@@ -472,21 +517,47 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
 };
 
 /**
+ * Template elements to be used via cloneNode when rendering fulltext.
+ */
+var dlfTmplFulltext = {
+    word: document.createElement('span'),
+    textline: document.createElement('span'),
+    space: document.createElement('span'),
+};
+
+dlfTmplFulltext.textline.className = "textline";
+dlfTmplFulltext.space.className = "sp";
+
+/**
  * Show full text
  *
  * @param {Array.<ol.Feature>|undefined} features
  */
 dlfViewerFullTextControl.prototype.showFulltext = function(features) {
+    if (features === undefined) {
+        return;
+    }
 
-    if (features !== undefined) {
-        $('#tx-dlf-fulltextselection').children().remove();
+    // Don't rerender when it's the same features as last time
+    if (this.lastRenderedFeatures_ !== undefined
+        && dlfUtils.arrayEqualsByIdentity(features, this.lastRenderedFeatures_)
+    ) {
+        return;
+    }
+
+    var target = document.getElementById('tx-dlf-fulltextselection');
+    if (target !== null) {
+        target.innerHTML = "";
         for (var feature of features) {
             var textLines = feature.get('textlines');
             for (var textLine of textLines) {
-                this.appendTextLineSpan(textLine);
+                var textLineSpan = this.getTextLineSpan(textLine);
+                target.append(textLineSpan);
             }
-            $('#tx-dlf-fulltextselection').append('<br /><br />');
+            target.append(document.createElement('br'), document.createElement('br'));
         }
+
+        this.lastRenderedFeatures_ = features;
     }
 };
 
@@ -495,16 +566,19 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
  *
  * @param {Object} textLine
  */
-dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
-    var textLineSpan = $('<span class="textline" id="' + textLine.getId() + '">');
+dlfViewerFullTextControl.prototype.getTextLineSpan = function(textLine) {
+    var textLineSpan = dlfTmplFulltext.textline.cloneNode();
+    textLineSpan.id = textLine.getId();
+
     var content = textLine.get('content');
 
     for (var item of content) {
         textLineSpan.append(this.getItemForTextLineSpan(item));
     }
 
-    textLineSpan.append('<span class="sp"> </span>');
-    $('#tx-dlf-fulltextselection').append(textLineSpan);
+    textLineSpan.append(dlfTmplFulltext.space.cloneNode());
+
+    return textLineSpan;
 };
 
 /**
@@ -513,14 +587,14 @@ dlfViewerFullTextControl.prototype.appendTextLineSpan = function(textLine) {
  *
  * @param {Object} item
  *
- * @return {string}
+ * @return {HTMLElement}
  */
 dlfViewerFullTextControl.prototype.getItemForTextLineSpan = function(item) {
-    var span = '';
-    if (item.get('type') === 'string') {
-        span = $('<span class="' + item.get('type') + '" id="' + item.getId() + '"/>');
-    } else {
-        span = $('<span class="' + item.get('type') + '"/>');
+    var type = item.get('type');
+    var span = dlfTmplFulltext.word.cloneNode();
+    span.className = type;
+    if (type === 'string') {
+        span.id = item.getId();
     }
 
     var spanText = item.get('fulltext');
@@ -528,8 +602,9 @@ dlfViewerFullTextControl.prototype.getItemForTextLineSpan = function(item) {
     for (const [i, spanTextLine] of spanTextLines.entries()) {
         span.append(document.createTextNode(spanTextLine));
         if (i < spanTextLines.length - 1) {
-            span.append($('<br />'));
+            span.append(document.createElement('br'));
         }
     }
+
     return span;
 };
