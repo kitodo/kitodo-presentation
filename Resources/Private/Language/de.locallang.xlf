@@ -373,6 +373,10 @@
 				<source><![CDATA[Full text]]></source>
 				<target><![CDATA[Volltext]]></target>
 			</trans-unit>
+			<trans-unit id="tools.fulltext.loading" approved="yes">
+				<source><![CDATA[Loading full text...]]></source>
+				<target><![CDATA[Volltext wird geladen...]]></target>
+			</trans-unit>
 			<trans-unit id="tools.fulltext.not-available" approved="yes">
 				<source><![CDATA[No full text available]]></source>
 				<target><![CDATA[Keine Volltexte vorhanden]]></target>

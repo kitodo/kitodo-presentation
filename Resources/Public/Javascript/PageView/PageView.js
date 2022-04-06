@@ -9,12 +9,26 @@
  */
 
 /**
+ * @typedef {{
+ *  url: string;
+ *  mimetype: string;
+ * }} ResourceLocator
+ *
+ * @typedef {ResourceLocator} ImageDesc
+ *
+ * @typedef {ResourceLocator} FulltextDesc
+ *
+ * @typedef {{
+ *  div: string;
+ *  images?: ImageDesc[] | [];
+ *  fulltexts?: FulltextDesc[] | [];
+ *  controls?: ('OverviewMap' | 'ZoomPanel')[];
+ * }} DlfViewerConfig
+ */
+
+/**
  * @TODO Trigger resize map event after fullscreen is toggled
- * @param {Object} settings
- *      {string=} div
- *      {Array.<?>} images
- *      {Array.<?>} fulltexts
- *      {Array.<?>} controls
+ * @param {DlfViewerConfig} settings
  * @constructor
  */
 var dlfViewer = function(settings){
@@ -35,7 +49,7 @@ var dlfViewer = function(settings){
 
     /**
      * Contains image information (e.g. URL, width, height)
-     * @type {Array.<string>}
+     * @type {DlfViewerConfig['images']}
      * @private
      */
     this.imageUrls = dlfUtils.exists(settings.images) ? settings.images : [];
@@ -53,6 +67,13 @@ var dlfViewer = function(settings){
      * @private
      */
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
+
+    /**
+     * Loaded fulltexts (as jQuery deferred object).
+     * @type {JQueryStatic.Deferred[]}
+     * @private
+     */
+    this.fulltextsLoaded_ = [];
 
     /**
      * IIIF annotation lists URLs for the current canvas
@@ -150,6 +171,15 @@ var dlfViewer = function(settings){
 };
 
 /**
+ * Get number of shown pages. Typically 1 (single page) or 2 (double page mode).
+ *
+ * @returns {number}
+ */
+dlfViewer.prototype.countPages = function () {
+    return this.imageUrls.length;
+};
+
+/**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
  * fulltext and the image manipulation control
  *
@@ -164,9 +194,18 @@ dlfViewer.prototype.addCustomControls = function() {
 
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
-    if (dlfUtils.isFulltextDescriptor(this.fulltexts[0]) && this.images.length === 1) {
-        fulltextControl = new dlfViewerFullTextControl(this.map, this.images[0], this.fulltexts[0].url);
-        fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map, this.images[0], this.fulltexts[0].url);
+    if (this.fulltextsLoaded_[0] !== undefined && this.images.length === 1) {
+        fulltextControl = new dlfViewerFullTextControl(this.map);
+        fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map);
+
+        this.fulltextsLoaded_[0]
+            .then(function (fulltextData) {
+                fulltextControl.loadFulltextData(fulltextData);
+                fulltextDownloadControl.setFulltextData(fulltextData);
+            })
+            .catch(function () {
+                fulltextControl.deactivate();
+            });
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
@@ -314,11 +353,11 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         this.map.addLayer(this.highlightLayer);
     }
 
+    // clear in case of old displays
+    this.highlightLayer.getSource().clear();
+
     // check if highlight by coords should be activate
     if (this.highlightFields.length > 0) {
-        // clear in case of old displays
-        this.highlightLayer.getSource().clear();
-
         // create features and scale it down
         for (var i = 0; i < this.highlightFields.length; i++) {
 
@@ -342,32 +381,29 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         }
     }
 
-    if (dlfUtils.isFulltextDescriptor(this.fulltexts[0]) && this.images.length > 0) {
-        var values = [],
-            fulltextData = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[0].url, this.images[0]),
-            fulltextDataImageTwo = undefined;
+    if (this.highlightWords !== null) {
+        var self = this;
+        var values = decodeURIComponent(this.highlightWords).split(';');
 
-        if(this.highlightWords != null) {
-            values = decodeURIComponent(this.highlightWords).split(';');
-        }
+        $.when.apply($, this.fulltextsLoaded_)
+            .done(function (fulltextData, fulltextDataImageTwo) {
+                var stringFeatures = [];
 
-        // check if there is another image / fulltext to look for
-        if (this.images.length === 2 && dlfUtils.isFulltextDescriptor(this.fulltexts[1])) {
-            var image = $.extend({}, this.images[1]);
-            image.width = image.width + this.images[0].width;
-            fulltextDataImageTwo = dlfFullTextUtils.fetchFullTextDataFromServer(this.fulltexts[1].url, this.images[1], this.images[0].width);
-        }
+                [fulltextData, fulltextDataImageTwo].forEach(function (data) {
+                    if (data !== undefined) {
+                        Array.prototype.push.apply(stringFeatures, data.getStringFeatures());
+                    }
+                });
 
-        var stringFeatures = fulltextDataImageTwo === undefined ? fulltextData.getStringFeatures() :
-          fulltextData.getStringFeatures().concat(fulltextDataImageTwo.getStringFeatures());
-        values.forEach($.proxy(function(value) {
-            var features = dlfUtils.searchFeatureCollectionForCoordinates(stringFeatures, value);
-            if (features !== undefined) {
-                for (var i = 0; i < features.length; i++) {
-                    this.highlightLayer.getSource().addFeatures([features[i]]);
-                }
-            }
-        }, this));
+                values.forEach(function(value) {
+                    var features = dlfUtils.searchFeatureCollectionForCoordinates(stringFeatures, value);
+                    if (features !== undefined) {
+                        for (var i = 0; i < features.length; i++) {
+                            self.highlightLayer.getSource().addFeatures([features[i]]);
+                        }
+                    }
+                });
+            });
     };
 };
 
@@ -384,6 +420,9 @@ dlfViewer.prototype.init = function(controlNames) {
 
     this.initLayer(this.imageUrls)
         .done($.proxy(function(layers){
+
+            // Initiate loading fulltexts
+            this.initLoadFulltexts();
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
@@ -472,7 +511,7 @@ dlfViewer.prototype.init = function(controlNames) {
 /**
  * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
- * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
+ * @param {ImageDesc[]} imageSourceObjs
  * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
  * @private
  */
@@ -495,6 +534,26 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
       });
 
     return deferredResponse;
+};
+
+/**
+ * Start loading fulltexts and store them to `fulltextsLoaded_` (as jQuery deferred objects).
+ *
+ * @private
+ */
+dlfViewer.prototype.initLoadFulltexts = function () {
+    var cnt = Math.min(this.fulltexts.length, this.images.length);
+    var xOffset = 0;
+    for (var i = 0; i < cnt; i++) {
+        var fulltext = this.fulltexts[i];
+        var image = this.images[i];
+
+        if (dlfUtils.isFulltextDescriptor(fulltext)) {
+            this.fulltextsLoaded_[i] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
+        }
+
+        xOffset += image.width;
+    }
 };
 
 dlfViewer.prototype.degreeToRadian = function (degree) {

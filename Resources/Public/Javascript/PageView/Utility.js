@@ -45,6 +45,28 @@ dlfUtils.CUSTOM_MIMETYPE = {
 dlfUtils.RUNNING_INDEX = 99999999;
 
 /**
+ * Check if arrays {@link lhs} and {@link rhs} contain exactly the same elements (compared via `===`).
+ *
+ * @template {T}
+ * @param {T[]} lhs
+ * @param {T[]} rhs
+ * @returns {boolean}
+ */
+dlfUtils.arrayEqualsByIdentity = function (lhs, rhs) {
+    if (lhs.length !== rhs.length) {
+        return false;
+    }
+
+    for (let i = 0; i < lhs.length; i++) {
+        if (lhs[i] !== rhs[i]) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+/**
  * Clone OpenLayers layer for dlfViewer (only properties used there are
  * considered).
  *
@@ -199,7 +221,7 @@ dlfUtils.exists = function (val) {
 /**
  * Fetch image data for given image sources.
  *
- * @param {Array.<{url: *, mimetype: *}>} imageSourceObjs
+ * @param {ImageDesc[]} imageSourceObjs
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchImageData = function (imageSourceObjs) {
@@ -257,32 +279,72 @@ dlfUtils.fetchImageData = function (imageSourceObjs) {
 /**
  * Fetches the image data for static images source.
  *
- * @param {{url: *, mimetype: *}} imageSourceObj
+ * @param {ImageDesc} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchStaticImageData = function (imageSourceObj) {
+    // Load the image while trying to reconcile the following constraints:
+    //
+    // - Determine width/height of the image before passing it to OpenLayers.
+    //   -> This is used in `createOlLayers` to calculate the image extent.
+    //
+    // - Pass a URL to OpenLayers.
+    //   -> OL apparently won't let us pass the Image object directly.
+    //      ("imageLoadFunction" wants us to modify a given image object as well.)
+    //
+    // - Avoid duplicate image loading.
+    //   -> When we just pass the original URL to OL, the image may be loaded twice depending on browser cache behavior.
+    //   -> This constraint may be violated in a non-CORS or mixed content scenario.
+    //
+    // - Don't fail in non-CORS or mixed content scenarios.
+    //   -> When loading the image into a Blob (via XHR),
+    //      a) the image becomes active content (which is blocked in a mixed context), and
+    //      b) we now "read" instead of merely "embed" the image (which is blocked in non-CORS scenarios).
+    //
+    // TODO: Revisit this. Perhaps we find a way to pass the Image directly to OpenLayers.
+    //       Even so, loading via XHR is beneficial in that it will allow implementing a loading indicator.
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred();
 
-    // Create new Image object.
-    var image = new Image();
-
-    // Register onload handler.
-    image.onload = function () {
-
-        var imageDataObj = {
-            src: this.src,
-            mimetype: imageSourceObj.mimetype,
-            width: this.width,
-            height: this.height
-        };
-
-        deferredResponse.resolve(imageDataObj);
+    var loadFailed = function () {
+        deferredResponse.reject();
     };
 
-    // Initialize image loading.
-    image.src = imageSourceObj.url;
+    var makeImage = function (src, mimetype) {
+        var image = new Image();
+        image.onload = function () {
+            var imageDataObj = {
+                src: this.src,
+                mimetype,
+                width: this.width,
+                height: this.height
+            };
+
+            deferredResponse.resolve(imageDataObj);
+        };
+        image.onerror = loadFailed;
+        image.src = src;
+    };
+
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = function () {
+        if (200 <= xhr.status && xhr.status < 300) {
+            var blob = xhr.response;
+            var objectUrl = URL.createObjectURL(blob);
+
+            makeImage(objectUrl, imageSourceObj.mimetype);
+        } else {
+            loadFailed();
+        }
+    };
+    xhr.onerror = function () {
+        // Mixed content or bad CORS headers? Try again using passive content.
+        makeImage(imageSourceObj.url, imageSourceObj.mimetype);
+    };
+    xhr.open('GET', imageSourceObj.url);
+    xhr.send();
 
     return deferredResponse;
 };
@@ -323,7 +385,7 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
 /**
  * Fetches the image data for iip images source.
  *
- * @param {{url: *, mimetype: *}} imageSourceObj
+ * @param {ImageDesc} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchIIPData = function (imageSourceObj) {
@@ -351,7 +413,7 @@ dlfUtils.fetchIIPData = function (imageSourceObj) {
 /**
  * Fetch image data for zoomify source.
  *
- * @param {{url: *, mimetype: *}} imageSourceObj
+ * @param {ImageDesc} imageSourceObj
  * @return {JQueryStatic.Deferred}
  */
 dlfUtils.fetchZoomifyData = function (imageSourceObj) {
@@ -443,7 +505,7 @@ dlfUtils.isNullEmptyUndefinedOrNoNumber = function (val) {
  * fulltext (@see PageView::getFulltext in PageView.php).
  *
  * @param {any} obj The object to test.
- * @return {boolean}
+ * @return {obj is FulltextDesc}
  */
 dlfUtils.isFulltextDescriptor = function (obj) {
     return (
