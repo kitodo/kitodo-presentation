@@ -25,7 +25,7 @@
     </f:then>
     <f:else>
         <f:for each="{documentMetadataSections}" as="documentMetadataSection" iteration="sectionIterator">
-            <dl>
+            <dl class="tx-dlf-metadata-titledata">
                 <f:for each="{configMetadata}" as="configObject">
                     <f:if condition="{documentMetadataSection.{configObject.indexName}}">
                         <f:render partial="Metadata/Entries" arguments="{_all}" />

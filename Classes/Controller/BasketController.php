@@ -535,7 +535,7 @@ class BasketController extends AbstractController
         $pdfUrl = trim($pdfUrl, $this->settings['pdfparamseparator']);
         $mailBody = $mailText . $pdfUrl;
         // Get hook objects.
-        $hookObjects = Helper::getHookObjects($this->scriptRelPath);
+        $hookObjects = Helper::getHookObjects('Classes/Controller/BasketController.php');
         // Hook for getting a customized mail body.
         foreach ($hookObjects as $hookObj) {
             if (method_exists($hookObj, 'customizeMailBody')) {
