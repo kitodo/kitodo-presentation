@@ -34,23 +34,6 @@ class TableOfContentsController extends AbstractController
     protected $activeEntries = [];
 
     /**
-     * @var array
-     */
-    protected $pluginConf;
-
-    /**
-     * SearchController constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        // Read plugin TS configuration.
-        // TODO: This is more or less obsolete - the table of document plugin does not use the TypoScript anymore
-        $this->pluginConf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_dlf_tableofcontents.'];
-        $this->initialize();
-    }
-
-    /**
      * This builds an array for one menu entry
      *
      * @access protected
@@ -120,13 +103,11 @@ class TableOfContentsController extends AbstractController
             && !empty($entry['children'])
         ) {
             // Build sub-menu only if one of the following conditions apply:
-            // 1. "expAll" is set for menu
-            // 2. Current menu node is in rootline
-            // 3. Current menu node points to another file
-            // 4. Current menu node has no corresponding images
+            // 1. Current menu node is in rootline
+            // 2. Current menu node points to another file
+            // 3. Current menu node has no corresponding images
             if (
-                !empty($this->pluginConf['menuConf.']['expAll'])
-                || $entryArray['ITEM_STATE'] == 'CUR'
+                $entryArray['ITEM_STATE'] == 'CUR'
                 || is_string($entry['points'])
                 || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
             ) {
@@ -152,11 +133,6 @@ class TableOfContentsController extends AbstractController
      */
     public function mainAction()
     {
-        // Check for typoscript configuration to prevent fatal error.
-        if (empty($this->settings['menuConf'])) {
-            $this->logger->warning('Incomplete plugin configuration');
-        }
-
         $this->view->assign('toc', $this->makeMenuArray());
     }
 
