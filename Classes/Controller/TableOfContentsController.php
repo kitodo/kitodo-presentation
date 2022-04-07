@@ -140,7 +140,7 @@ class TableOfContentsController extends AbstractController
             || $this->document->getDoc() === null
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             if ($this->document->getDoc()->metadataArray['LOG_0000']['type'][0] != 'collection') {
                 $this->view->assign('toc', $this->makeMenuArray());
@@ -238,10 +238,10 @@ class TableOfContentsController extends AbstractController
      *
      * @return array HMENU array
      */
-    public function makeMenuFor3DObjects($content, $conf)
+    public function makeMenuFor3DObjects()
     {
         if (!empty($this->requestData['logicalPage'])) {
-            $this->requestData['page'] = $this->doc->getPhysicalPage($this->requestData['logicalPage']);
+            $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
             // The logical page parameter should not appear again
             unset($this->requestData['logicalPage']);
         }
