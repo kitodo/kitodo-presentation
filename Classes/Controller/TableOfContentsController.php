@@ -276,6 +276,7 @@ class TableOfContentsController extends AbstractController
         $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['doNotLinkIt'] = 1;
+        $entryArray['ITEM_STATE'] = 'HEADER';
 
         if ($entry['children'] == NULL) {
             $entryArray['description'] = $entry['description'];
@@ -283,41 +284,26 @@ class TableOfContentsController extends AbstractController
             $entryArray['doNotLinkIt'] = 0;
             // index.php?tx_dlf%5Bid%5D=http%3A%2F%2Flink_to_METS_file.xml
             $entryArray['_OVERRIDE_HREF'] = '/index.php?id=' . GeneralUtility::_GET('id') . '&tx_dlf%5Bid%5D=' . urlencode($entry['points']);
+            $entryArray['ITEM_STATE'] = 'ITEM';
         }
 
-        $entryArray['ITEM_STATE'] = 'NO';
-
-        // Set "ITEM_STATE" to "CUR" if this entry points to current page.
-        if (in_array($entry['id'], $this->activeEntries)) {
-            $entryArray['ITEM_STATE'] = 'CUR';
-        }
         // Build sub-menu if available and called recursively.
         if (
             $recursive == true
             && !empty($entry['children'])
         ) {
             // Build sub-menu only if one of the following conditions apply:
-            // 1. "expAll" is set for menu
-            // 2. Current menu node is in rootline
-            // 3. Current menu node points to another file
-            // 4. Current menu node has no corresponding images
+            // 1. Current menu node points to another file
+            // 2. Current menu node has no corresponding images
             if (
-                !empty($this->pluginConf['previewConf.']['expAll'])
-                || $entryArray['ITEM_STATE'] == 'CUR'
-                || is_string($entry['points'])
+                is_string($entry['points'])
                 || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
             ) {
                 $entryArray['_SUB_MENU'] = [];
                 foreach ($entry['children'] as $child) {
-                    // Set "ITEM_STATE" to "ACT" if this entry points to current page and has sub-entries pointing to the same page.
-                    if (in_array($child['id'], $this->activeEntries)) {
-                        $entryArray['ITEM_STATE'] = 'ACT';
-                    }
-                    $entryArray['_SUB_MENU'][] = $this->getMenuEntryWithImage($child, true);
+                    $entryArray['_SUB_MENU'][] = $this->getMenuEntryWithImage($child);
                 }
             }
-            // Append "IFSUB" to "ITEM_STATE" if this entry has sub-entries.
-            $entryArray['ITEM_STATE'] = ($entryArray['ITEM_STATE'] == 'NO' ? 'IFSUB' : $entryArray['ITEM_STATE'] . 'IFSUB');
         }
         return $entryArray;
     }
