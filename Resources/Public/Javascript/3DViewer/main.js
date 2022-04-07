@@ -300,6 +300,11 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 	}
 }
 
+function render() {
+	controls.update();
+	renderer.render( scene, camera );
+}
+
 function setupClippingPlanes (_geometry, _size, _distance) {	
 	clippingPlanes[ 0 ].constant = _distance.x;
 	clippingPlanes[ 1 ].constant = _distance.y;
@@ -444,11 +449,6 @@ function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit 
 	setupClippingPlanes(object.geometry, gridSize, distance);
 }
 
-function render() {
-	controls.update();
-	renderer.render( scene, camera );
-}
-
 function setupCamera (_object, _camera, _light, _data, _controls) {
 	if (typeof (_data) != "undefined") {
 		if (typeof (_data["cameraPosition"]) != "undefined") {
@@ -529,7 +529,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			showToast("No settings " + filename + "_viewer found");
 		}
 		})
-	.then(data => {
+	.then((data) => {
 		var tempArray = [];
 		const hierarchyMain = gui.addFolder( 'Hierarchy' ).close();
 		if (object.name === "Scene" || object.children.length > 0 ) {
@@ -540,10 +540,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					metadata['faces'] += fetchMetadata (child, 'faces');
 					var shortChildName = truncateString(child.name, GUILength);
 					if (child.name === '') {
-						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id)}, 'id': child.id};
+						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id);}, 'id': child.id};
 					}
 					else {
-						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id)}, 'id': child.id};
+						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id);}, 'id': child.id};
 					}
 					hierarchyFolder = hierarchyMain.addFolder(shortChildName).close();
 					hierarchyFolder.add(tempArray, shortChildName);
@@ -552,10 +552,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 						if ( children.isMesh &&  children.name !== child.name) {
 							var shortChildrenName = truncateString(children.name, GUILength);
 							if (children.name === '') {
-								tempArray = {["Mesh"] (){selectObjectHierarchy(children.id)}, 'id': children.id};
+								tempArray = {["Mesh"] (){selectObjectHierarchy(children.id);}, 'id': children.id};
 							}
 							else {
-								tempArray = { [shortChildrenName] (){selectObjectHierarchy(children.id)}, 'id': children.id};
+								tempArray = { [shortChildrenName] (){selectObjectHierarchy(children.id);}, 'id': children.id};
 							}
 							clippingGeometry.push(children.geometry);
 							hierarchyFolder.add(tempArray, shortChildrenName);
@@ -571,11 +571,11 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			metadata['vertices'] += fetchMetadata (object, 'vertices');
 			metadata['faces'] += fetchMetadata (object, 'faces');
 			if (object.name === '') {
-				tempArray = {["Mesh"] (){selectObjectHierarchy(object.id)}, 'id': object.id};
+				tempArray = {["Mesh"] (){selectObjectHierarchy(object.id);}, 'id': object.id};
 				object.name = object.id;
 			}
 			else {
-				tempArray = {[object.name] (){selectObjectHierarchy(object.id)}, 'id': object.id};
+				tempArray = {[object.name] (){selectObjectHierarchy(object.id);}, 'id': object.id};
 			}
 			//hierarchy.push(tempArray);
 			clippingGeometry.push(object.geometry);
@@ -808,7 +808,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 							child.castShadow = true;
 							child.receiveShadow = true;
 							child.geometry.computeVertexNormals();
-							if(child.material.map) { child.material.map.anisotropy = 16 };
+							if(child.material.map) { child.material.map.anisotropy = 16; }
 							child.material.side = THREE.DoubleSide;
 							/*for ( let i = 0; i < 3; i ++ ) {
 
@@ -1075,12 +1075,12 @@ function init() {
 	const editorFolder = gui.addFolder('Editor').close();
 	editorFolder.add(transformText, 'Transform 3D Object', { None: '', Move: 'translate', Rotate: 'rotate', Scale: 'scale' } ).onChange(function (value)
 	{ 
-		if (value === '') transformControl.detach(); else { transformControl.mode = value; transformControl.attach( helperObjects[0] ); }
+		if (value === '') { transformControl.detach(); } else { transformControl.mode = value; transformControl.attach( helperObjects[0] ); }
 	});
 	const lightFolder = editorFolder.addFolder('Lights').close();
 	lightFolder.add(transformText, 'Transform Light', { None: '', Move: 'translate', Rotate: 'rotate', Scale: 'scale' } ).onChange(function (value)
 	{ 
-		if (value === '') transformControlLight.detach(); else { transformControlLight.mode = value; transformControlLight.attach( lightObjects[0] ); }
+		if (value === '') { transformControlLight.detach(); } else { transformControlLight.mode = value; transformControlLight.attach( lightObjects[0] ); }
 	});
 	lightFolder.addColor ( colors, 'Light1' ).onChange(function (value) {
 		const tempColor = new THREE.Color( value );
