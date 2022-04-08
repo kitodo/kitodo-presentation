@@ -909,7 +909,12 @@ class Helper
                 'User-Agent' => $extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
             ],
         ];
-        $response = $requestFactory->request($url, 'GET', $configuration);
+        try {
+            $response = $requestFactory->request($url, 'GET', $configuration);
+        } catch (\Exception $e) {
+            self::log('Could not fetch data from URL "' . $url . '". Error: ' . $e->getMessage() . '.', LOG_SEVERITY_WARNING);
+            return false;
+        }
         $content  = $response->getBody()->getContents();
 
         return $content;
