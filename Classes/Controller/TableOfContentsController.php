@@ -189,7 +189,10 @@ class TableOfContentsController extends AbstractController
         if (!MathUtility::canBeInterpretedAsInteger($this->document->getDoc()->uid)) {
             // Go through table of contents and create all menu entries.
             foreach ($this->doc->tableOfContents as $entry) {
-                $menuArray[] = $this->getMenuEntryWithImage($entry, true);
+                $menuEntry = $this->getMenuEntryWithImage($entry, true);
+                if (!empty($menuEntry)) {
+                    $menuArray[] = $menuEntry;
+                }
             }
         }
         return $menuArray;
@@ -320,6 +323,16 @@ class TableOfContentsController extends AbstractController
     protected function getMenuEntryWithImage(array $entry, $recursive = false)
     {
         $entryArray = [];
+
+        // don't filter if the entry type is collection or search params are empty
+        if ($entry['type'] != 'collection' && is_array($this->searchParams) && !empty($this->searchParams)) {
+            // currently only title filtering is defined
+            // TODO: add more logic here after another fields are defined
+            if (!str_contains($entry['label'], $this->searchParams[0])) {
+                return $entryArray;
+            }
+        }
+
         // Set "title", "volume", "type" and "pagination" from $entry array.
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
