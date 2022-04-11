@@ -35,6 +35,26 @@ class TableOfContentsController extends AbstractController
     protected $activeEntries = [];
 
     /**
+     * @var array $this->filterParams: The current filter parameter
+     * @access protected
+     */
+    protected $filterParams;
+
+    /**
+     * Filter Action
+     *
+     * @return void
+     */
+    public function filterAction()
+    {
+        // if filter was triggered, get filter parameters from POST variables
+        $this->filterParams = $this->getParametersSafely('filterParameter');
+
+        // output is done by main action
+        $this->forward('main', null, null, ['filterParameter' => $this->filterParams]);
+    }
+
+    /**
      * The main method of the plugin
      *
      * @return void
