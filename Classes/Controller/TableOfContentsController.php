@@ -61,10 +61,10 @@ class TableOfContentsController extends AbstractController
     /**
      * This builds a menu array for HMENU
      *
-     * @access public
+     * @access protected
      * @return array HMENU array
      */
-    public function makeMenuArray()
+    protected function makeMenuArray()
     {
         if (!empty($this->requestData['logicalPage'])) {
              $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
@@ -139,14 +139,14 @@ class TableOfContentsController extends AbstractController
     /**
      * This builds a menu for list of 3D objects
      *
-     * @access public
+     * @access protected
      *
      * @param string $content: The PlugIn content
      * @param array $conf: The PlugIn configuration
      *
      * @return array HMENU array
      */
-    public function makeMenuFor3DObjects()
+    protected function makeMenuFor3DObjects()
     {
         if (!empty($this->requestData['logicalPage'])) {
             $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
