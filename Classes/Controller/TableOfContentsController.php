@@ -35,128 +35,6 @@ class TableOfContentsController extends AbstractController
     protected $activeEntries = [];
 
     /**
-     * This builds an array for one menu entry
-     *
-     * @access protected
-     *
-     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
-     * @param bool $recursive : Whether to include the child entries
-     *
-     * @return array HMENU array for menu entry
-     */
-    protected function getMenuEntry(array $entry, $recursive = false)
-    {
-        $entry = $this->resolveMenuEntry($entry);
-
-        $entryArray = [];
-        // Set "title", "volume", "type" and "pagination" from $entry array.
-        $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
-        $entryArray['volume'] = $entry['volume'];
-        $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
-        $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
-        $entryArray['_OVERRIDE_HREF'] = '';
-        $entryArray['doNotLinkIt'] = 1;
-        $entryArray['ITEM_STATE'] = 'NO';
-        // Build menu links based on the $entry['points'] array.
-        if (
-            !empty($entry['points'])
-            && MathUtility::canBeInterpretedAsInteger($entry['points'])
-        ) {
-            $entryArray['page'] = $entry['points'];
-
-            $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
-                $entryArray['basketButton'] = [
-                    'logId' => $entry['id'],
-                    'startpage' => $entry['points']
-                ];
-            }
-        } elseif (
-            !empty($entry['points'])
-            && is_string($entry['points'])
-        ) {
-            $entryArray['id'] = $entry['points'];
-            $entryArray['page'] = 1;
-            $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
-                $entryArray['basketButton'] = [
-                    'logId' => $entry['id'],
-                    'startpage' => $entry['points']
-                ];
-            }
-        } elseif (!empty($entry['targetUid'])) {
-            $entryArray['id'] = $entry['targetUid'];
-            $entryArray['page'] = 1;
-            $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
-                $entryArray['basketButton'] = [
-                    'logId' => $entry['id'],
-                    'startpage' => $entry['targetUid']
-                ];
-            }
-        }
-        // Set "ITEM_STATE" to "CUR" if this entry points to current page.
-        if (in_array($entry['id'], $this->activeEntries)) {
-            $entryArray['ITEM_STATE'] = 'CUR';
-        }
-        // Build sub-menu if available and called recursively.
-        if (
-            $recursive === true
-            && !empty($entry['children'])
-        ) {
-            // Build sub-menu only if one of the following conditions apply:
-            // 1. Current menu node is in rootline
-            // 2. Current menu node points to another file
-            // 3. Current menu node has no corresponding images
-            if (
-                $entryArray['ITEM_STATE'] == 'CUR'
-                || is_string($entry['points'])
-                || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
-            ) {
-                $entryArray['_SUB_MENU'] = [];
-                foreach ($entry['children'] as $child) {
-                    // Set "ITEM_STATE" to "ACT" if this entry points to current page and has sub-entries pointing to the same page.
-                    if (in_array($child['id'], $this->activeEntries)) {
-                        $entryArray['ITEM_STATE'] = 'ACT';
-                    }
-                    $entryArray['_SUB_MENU'][] = $this->getMenuEntry($child, true);
-                }
-            }
-            // Append "IFSUB" to "ITEM_STATE" if this entry has sub-entries.
-            $entryArray['ITEM_STATE'] = ($entryArray['ITEM_STATE'] == 'NO' ? 'IFSUB' : $entryArray['ITEM_STATE'] . 'IFSUB');
-        }
-        return $entryArray;
-    }
-
-    /**
-     * If $entry references an external METS file (as mptr),
-     * try to resolve its database UID and return an updated $entry.
-     *
-     * This is so that when linking from a child document back to its parent,
-     * that link is via UID, so that subsequently the parent's TOC is built from database.
-     *
-     * @param array $entry
-     * @return array
-     */
-    protected function resolveMenuEntry($entry)
-    {
-        // If the menu entry points to the parent document,
-        // resolve to the parent UID set on indexation.
-        $doc = $this->document->getDoc();
-        if (
-            $doc instanceof MetsDocument
-            && $entry['points'] === $doc->parentHref
-            && !empty($this->document->getPartof())
-        ) {
-            unset($entry['points']);
-            $entry['targetUid'] = $this->document->getPartof();
-        }
-
-        return $entry;
-    }
-
-    /**
      * The main method of the plugin
      *
      * @return void
@@ -295,6 +173,128 @@ class TableOfContentsController extends AbstractController
             }
         }
         return $menuArray;
+    }
+
+    /**
+     * This builds an array for one menu entry
+     *
+     * @access protected
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     * @param bool $recursive : Whether to include the child entries
+     *
+     * @return array HMENU array for menu entry
+     */
+    protected function getMenuEntry(array $entry, $recursive = false)
+    {
+        $entry = $this->resolveMenuEntry($entry);
+
+        $entryArray = [];
+        // Set "title", "volume", "type" and "pagination" from $entry array.
+        $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
+        $entryArray['volume'] = $entry['volume'];
+        $entryArray['orderlabel'] = $entry['orderlabel'];
+        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
+        $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
+        $entryArray['_OVERRIDE_HREF'] = '';
+        $entryArray['doNotLinkIt'] = 1;
+        $entryArray['ITEM_STATE'] = 'NO';
+        // Build menu links based on the $entry['points'] array.
+        if (
+            !empty($entry['points'])
+            && MathUtility::canBeInterpretedAsInteger($entry['points'])
+        ) {
+            $entryArray['page'] = $entry['points'];
+
+            $entryArray['doNotLinkIt'] = 0;
+            if ($this->settings['basketButton']) {
+                $entryArray['basketButton'] = [
+                    'logId' => $entry['id'],
+                    'startpage' => $entry['points']
+                ];
+            }
+        } elseif (
+            !empty($entry['points'])
+            && is_string($entry['points'])
+        ) {
+            $entryArray['id'] = $entry['points'];
+            $entryArray['page'] = 1;
+            $entryArray['doNotLinkIt'] = 0;
+            if ($this->settings['basketButton']) {
+                $entryArray['basketButton'] = [
+                    'logId' => $entry['id'],
+                    'startpage' => $entry['points']
+                ];
+            }
+        } elseif (!empty($entry['targetUid'])) {
+            $entryArray['id'] = $entry['targetUid'];
+            $entryArray['page'] = 1;
+            $entryArray['doNotLinkIt'] = 0;
+            if ($this->settings['basketButton']) {
+                $entryArray['basketButton'] = [
+                    'logId' => $entry['id'],
+                    'startpage' => $entry['targetUid']
+                ];
+            }
+        }
+        // Set "ITEM_STATE" to "CUR" if this entry points to current page.
+        if (in_array($entry['id'], $this->activeEntries)) {
+            $entryArray['ITEM_STATE'] = 'CUR';
+        }
+        // Build sub-menu if available and called recursively.
+        if (
+            $recursive === true
+            && !empty($entry['children'])
+        ) {
+            // Build sub-menu only if one of the following conditions apply:
+            // 1. Current menu node is in rootline
+            // 2. Current menu node points to another file
+            // 3. Current menu node has no corresponding images
+            if (
+                $entryArray['ITEM_STATE'] == 'CUR'
+                || is_string($entry['points'])
+                || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
+            ) {
+                $entryArray['_SUB_MENU'] = [];
+                foreach ($entry['children'] as $child) {
+                    // Set "ITEM_STATE" to "ACT" if this entry points to current page and has sub-entries pointing to the same page.
+                    if (in_array($child['id'], $this->activeEntries)) {
+                        $entryArray['ITEM_STATE'] = 'ACT';
+                    }
+                    $entryArray['_SUB_MENU'][] = $this->getMenuEntry($child, true);
+                }
+            }
+            // Append "IFSUB" to "ITEM_STATE" if this entry has sub-entries.
+            $entryArray['ITEM_STATE'] = ($entryArray['ITEM_STATE'] == 'NO' ? 'IFSUB' : $entryArray['ITEM_STATE'] . 'IFSUB');
+        }
+        return $entryArray;
+    }
+
+    /**
+     * If $entry references an external METS file (as mptr),
+     * try to resolve its database UID and return an updated $entry.
+     *
+     * This is so that when linking from a child document back to its parent,
+     * that link is via UID, so that subsequently the parent's TOC is built from database.
+     *
+     * @param array $entry
+     * @return array
+     */
+    protected function resolveMenuEntry($entry)
+    {
+        // If the menu entry points to the parent document,
+        // resolve to the parent UID set on indexation.
+        $doc = $this->document->getDoc();
+        if (
+            $doc instanceof MetsDocument
+            && $entry['points'] === $doc->parentHref
+            && !empty($this->document->getPartof())
+        ) {
+            unset($entry['points']);
+            $entry['targetUid'] = $this->document->getPartof();
+        }
+
+        return $entry;
     }
 
     protected function getMenuEntryWithImage(array $entry, $recursive = false)
