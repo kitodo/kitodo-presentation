@@ -90,17 +90,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $document;
     }
 
-
-    public function findByUidAndPartOf($uid, $partOf)
-    {
-        $query = $this->createQuery();
-
-        $query->matching($query->equals('uid', $uid));
-        $query->matching($query->equals('partof', $partOf));
-
-        return $query->execute();
-    }
-
     /**
      * Find the oldest document
      *
@@ -216,84 +205,140 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
-     * Find all the titles
+     * Count the titles and volumes for statistics
      *
-     * documents with partof == 0
-     *
+     * Volumes are documents that are both
+     *  a) "leaf" elements i.e. partof != 0
+     *  b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
+
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return int
      */
-    public function findAllTitles($settings = [])
+    public function getStatisticsForSelectedCollection($settings)
     {
-        $query = $this->createQuery();
-
-        $constraints = [];
-        $constraints[] = $query->equals('partof', 0);
-
         if ($settings['collections']) {
-            $constraints[] = $query->in('collections.uid', GeneralUtility::intExplode(',', $settings['collections']));
-        }
-
-        if (count($constraints)) {
-            $query->matching(
-                $query->logicalAnd($constraints)
-            );
-        }
-
-        return $query->execute();
-    }
-
-    /**
-     * Count the titles
-     *
-     * documents with partof == 0
-     *
-     * @param array $settings
-     *
-     * @return int
-     */
-    public function countAllTitles($settings = [])
-    {
-        return $this->findAllTitles($settings)->count();
-    }
-
-    /**
-     * Count the volumes
-     *
-     * documents with partof != 0
-     *
-     * @param array $settings
-     *
-     * @return int
-     */
-    public function countAllVolumes($settings = [])
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
-        $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            // Include only selected collections.
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
-        $subQuery = $subQueryBuilder
-            ->select('tx_dlf_documents.partof')
-            ->from('tx_dlf_documents')
-            ->where(
-                $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
-            )
-            ->groupBy('tx_dlf_documents.partof')
-            ->getSQL();
+            $countTitles = $queryBuilder
+                ->count('tx_dlf_documents.uid')
+                ->from('tx_dlf_documents')
+                ->innerJoin(
+                    'tx_dlf_documents',
+                    'tx_dlf_relations',
+                    'tx_dlf_relations_joins',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_relations_joins.uid_local',
+                        'tx_dlf_documents.uid'
+                    )
+                )
+                ->innerJoin(
+                    'tx_dlf_relations_joins',
+                    'tx_dlf_collections',
+                    'tx_dlf_collections_join',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_relations_joins.uid_foreign',
+                        'tx_dlf_collections_join.uid'
+                    )
+                )
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
+                    $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($settings['storagePid'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
+                    $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
+                    $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
+                )
+                ->execute()
+                ->fetchColumn(0);
 
-        $countVolumes = $queryBuilder
-            ->count('tx_dlf_documents.uid')
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
-                $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
-            )
-            ->execute()
-            ->fetchColumn(0);
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
+                $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_documents');
 
-        return $countVolumes;
+                $subQuery = $subQueryBuilder
+                    ->select('tx_dlf_documents.partof')
+                    ->from('tx_dlf_documents')
+                    ->where(
+                        $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
+                    )
+                    ->groupBy('tx_dlf_documents.partof')
+                    ->getSQL();
+
+                $countVolumes = $queryBuilder
+                    ->count('tx_dlf_documents.uid')
+                    ->from('tx_dlf_documents')
+                    ->innerJoin(
+                        'tx_dlf_documents',
+                        'tx_dlf_relations',
+                        'tx_dlf_relations_joins',
+                        $queryBuilder->expr()->eq(
+                            'tx_dlf_relations_joins.uid_local',
+                            'tx_dlf_documents.uid'
+                        )
+                    )
+                    ->innerJoin(
+                        'tx_dlf_relations_joins',
+                        'tx_dlf_collections',
+                        'tx_dlf_collections_join',
+                        $queryBuilder->expr()->eq(
+                            'tx_dlf_relations_joins.uid_foreign',
+                            'tx_dlf_collections_join.uid'
+                        )
+                    )
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
+                        $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($settings['storagePid'])),
+                        $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery),
+                        $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
+                        $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
+                    )
+                    ->execute()
+                    ->fetchColumn(0);
+        } else {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            // Include all collections.
+            $countTitles = $queryBuilder
+                ->count('tx_dlf_documents.uid')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
+                    Helper::whereExpression('tx_dlf_documents')
+                )
+                ->execute()
+                ->fetchColumn(0);
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+            $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+
+            $subQuery = $subQueryBuilder
+                ->select('tx_dlf_documents.partof')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
+                )
+                ->groupBy('tx_dlf_documents.partof')
+                ->getSQL();
+
+            $countVolumes = $queryBuilder
+                ->count('tx_dlf_documents.uid')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
+                    $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
+                )
+                ->execute()
+                ->fetchColumn(0);
+        }
+
+        return ['titles' => $countTitles, 'volumes' => $countVolumes];
     }
 
     /**
