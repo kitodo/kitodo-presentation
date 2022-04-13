@@ -26,6 +26,7 @@
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.collections</label>
                             <config>
                                 <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
                                 <foreign_table>tx_dlf_collections</foreign_table>
                                 <foreign_table_where>AND tx_dlf_collections.hidden = 0 AND tx_dlf_collections.sys_language_uid IN (-1,0)
                                     ORDER BY tx_dlf_collections.label ASC
