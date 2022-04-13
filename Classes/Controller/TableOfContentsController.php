@@ -176,7 +176,7 @@ class TableOfContentsController extends AbstractController
         // Does the document have physical elements or is it an external file?
         if (
             !empty($this->document->getDoc()->physicalStructure)
-            || !MathUtility::canBeInterpretedAsInteger($this->document->getDoc()->uid)
+            || !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
         ) {
             // Get all logical units the current page or track is a part of.
             if (
