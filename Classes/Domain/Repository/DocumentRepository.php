@@ -703,8 +703,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         if ($listedMetadata) {
             foreach ($listedMetadata as $metadata) {
-                if ($metadata->getIndexIndexed()) {
-                    $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
+                if ($metadata->getIndexStored() || $metadata->getIndexIndexed()) {
+                    $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . ($metadata->getIndexIndexed() ? 'i' : 'u');
                     $params['fields'] .= ',' . $listMetadataRecord;
                     $params['listMetadataRecords'][$metadata->getIndexName()] = $listMetadataRecord;
                 }
