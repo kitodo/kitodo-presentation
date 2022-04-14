@@ -213,7 +213,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
      * @param array $settings
      *
-     * @return int
+     * @return array
      */
     public function getStatisticsForSelectedCollection($settings)
     {
