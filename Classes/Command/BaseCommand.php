@@ -19,9 +19,11 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Command\Command;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -71,6 +73,12 @@ class BaseCommand extends Command
     protected $owner;
 
     /**
+     * @var array
+     * @access protected
+     */
+    protected $extConf;
+
+    /**
      * Initialize the extbase repository based on the given storagePid.
      *
      * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependancy Injection.
@@ -95,6 +103,9 @@ class BaseCommand extends Command
             $this->documentRepository = $objectManager->get(DocumentRepository::class);
             $this->libraryRepository = $objectManager->get(LibraryRepository::class);
             $this->structureRepository = $objectManager->get(StructureRepository::class);
+
+            // Get extension configuration.
+            $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
         } else {
             return false;
         }
@@ -190,10 +201,22 @@ class BaseCommand extends Command
         $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0], 'tx_dlf_structures');
         $document->setStructure($structure);
 
-        $collections = $this->collectionRepository->findCollectionsBySettings(['index_name' => $metadata['collection']]);
-        if ($collections) {
-            foreach ($collections as $collection) {
-                $document->addCollection($collection);
+        if (is_array($metadata['collection'])) {
+            foreach ($metadata['collection'] as $collection) {
+                $documentCollection = $this->collectionRepository->findOneByIndexName($collection);
+                if (!$documentCollection) {
+                    // create new Collection object
+                    $documentCollection = GeneralUtility::makeInstance(Collection::class);
+                    $documentCollection->setIndexName($collection);
+                    $documentCollection->setLabel($collection);
+                    $documentCollection->setOaiName((!empty($this->extConf['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
+                    $documentCollection->setIndexSearch('');
+                    $documentCollection->setDescription('');
+                    // add to CollectionRepository
+                    $this->collectionRepository->add($documentCollection);
+                }
+                // add to document
+                $document->addCollection($documentCollection);
             }
         }
 
