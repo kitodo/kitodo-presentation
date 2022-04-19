@@ -70,10 +70,17 @@ class TableOfContentsController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return;
         } else {
-            if ($this->document->getDoc()->metadataArray['LOG_0000']['type'][0] != 'collection') {
-                $this->view->assign('toc', $this->makeMenuArray());
-            } else {
+            if (!empty($this->requestData['logicalPage'])) {
+                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
+                // The logical page parameter should not appear again
+                unset($this->requestData['logicalPage']);
+            }
+            if ($this->document->getDoc()->tableOfContents[0]['type'] == 'collection') {
+                $this->view->assign('type', 'collection');
                 $this->view->assign('toc', $this->makeMenuFor3DObjects());
+            } else {
+                $this->view->assign('type', 'other');
+                $this->view->assign('toc', $this->makeMenuArray());
             }
         }
     }
@@ -86,11 +93,6 @@ class TableOfContentsController extends AbstractController
      */
     protected function makeMenuArray()
     {
-        if (!empty($this->requestData['logicalPage'])) {
-             $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-            // The logical page parameter should not appear again
-            unset($this->requestData['logicalPage']);
-        }
         // Set default values for page if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
         if (
@@ -168,11 +170,6 @@ class TableOfContentsController extends AbstractController
      */
     protected function makeMenuFor3DObjects()
     {
-        if (!empty($this->requestData['logicalPage'])) {
-            $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-            // The logical page parameter should not appear again
-            unset($this->requestData['logicalPage']);
-        }
         // Set default values for page if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
         if (
@@ -186,9 +183,9 @@ class TableOfContentsController extends AbstractController
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Is the document an external file?
-        if (!MathUtility::canBeInterpretedAsInteger($this->document->getDoc()->uid)) {
+        if (!MathUtility::canBeInterpretedAsInteger($this->requestData['id'])) {
             // Go through table of contents and create all menu entries.
-            foreach ($this->doc->tableOfContents as $entry) {
+            foreach ($this->document->getDoc()->tableOfContents as $entry) {
                 $menuEntry = $this->getMenuEntryWithImage($entry, true);
                 if (!empty($menuEntry)) {
                     $menuArray[] = $menuEntry;
@@ -343,10 +340,13 @@ class TableOfContentsController extends AbstractController
 
         if ($entry['children'] == NULL) {
             $entryArray['description'] = $entry['description'];
-            $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['THUMBS']);
+            var_dump($entryArray['description']);
+            $id = str_replace("LOG", "PHYS", $entry['id']);
+            $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$id]['files']['THUMBS']);
             $entryArray['doNotLinkIt'] = 0;
             // index.php?tx_dlf%5Bid%5D=http%3A%2F%2Flink_to_METS_file.xml
-            $entryArray['_OVERRIDE_HREF'] = '/index.php?id=' . GeneralUtility::_GET('id') . '&tx_dlf%5Bid%5D=' . urlencode($entry['points']);
+            $entryArray['urlId'] = GeneralUtility::_GET('id');
+            $entryArray['urlXml'] = urlencode($entry['points']);
             $entryArray['ITEM_STATE'] = 'ITEM';
         }
 
