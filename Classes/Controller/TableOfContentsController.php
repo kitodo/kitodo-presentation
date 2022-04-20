@@ -340,7 +340,6 @@ class TableOfContentsController extends AbstractController
 
         if ($entry['children'] == NULL) {
             $entryArray['description'] = $entry['description'];
-            var_dump($entryArray['description']);
             $id = str_replace("LOG", "PHYS", $entry['id']);
             $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$id]['files']['THUMBS']);
             $entryArray['doNotLinkIt'] = 0;

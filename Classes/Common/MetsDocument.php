@@ -433,7 +433,10 @@ final class MetsDocument extends Doc
             $cPid = ($this->cPid ? $this->cPid : $this->pid);
         } elseif (!$cPid) {
             $this->logger->warning('Invalid PID ' . $cPid . ' for metadata definitions');
-            return [];
+            // check if method is called by 3D object
+            if (empty($this->logicalUnits["LOG_0000"]) || $this->logicalUnits["LOG_0000"]["type"] != 'collection') {
+                return [];
+            }
         }
         // Get metadata from parsed metadata array if available.
         if (
