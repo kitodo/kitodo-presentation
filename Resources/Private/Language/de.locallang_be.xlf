@@ -373,6 +373,10 @@
 				<source><![CDATA[Activate magnifier]]></source>
 				<target><![CDATA[Lupenfunktion aktivieren]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.progressElementId" approved="yes">
+				<source><![CDATA[@ID value of the <progress> element used for loading indicator]]></source>
+				<target><![CDATA[@ID-Wert des für den Ladebalken genutzen <progress>-Elements]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.pageview.flexform.useInternalProxy" approved="yes">
 				<source><![CDATA[Use Internal Proxy]]></source>
 				<target><![CDATA[Internen Proxy verwenden]]></target>

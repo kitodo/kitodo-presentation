@@ -233,6 +233,9 @@
 			<trans-unit id="plugins.pageview.flexform.magnifier">
 				<source><![CDATA[Activate magnifier]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.progressElementId">
+				<source><![CDATA[@ID value of the <progress> element used for loading indicator]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.pageview.flexform.useInternalProxy">
 				<source><![CDATA[Use Internal Proxy]]></source>
 			</trans-unit>

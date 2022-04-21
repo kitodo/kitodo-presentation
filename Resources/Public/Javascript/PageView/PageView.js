@@ -9,6 +9,13 @@
  */
 
 /**
+ * @typedef {object} LoadingIndicator
+ * @property {(value: number) => void} progress
+ * @property {() => void} indeterminate
+ * @property {() => void} done
+ */
+
+/**
  * @typedef {{
  *  url: string;
  *  mimetype: string;
@@ -20,6 +27,7 @@
  *
  * @typedef {{
  *  div: string;
+ *  progressElementId?: string;
  *  images?: ImageDesc[] | [];
  *  fulltexts?: FulltextDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
@@ -60,6 +68,13 @@ var dlfViewer = function(settings){
      * @private
      */
     this.images = [];
+
+    /**
+     * The <progress> element for loading indicator.
+     * @type {LoadingIndicator}
+     * @private
+     */
+    this.loadingIndicator = this.makeLoadingIndicator(settings.progressElementId);
 
     /**
      * Fulltext information (e.g. URL)
@@ -168,6 +183,37 @@ var dlfViewer = function(settings){
     this.useInternalProxy = dlfUtils.exists(settings.useInternalProxy) ? settings.useInternalProxy : false;
 
     this.init(dlfUtils.exists(settings.controls) ? settings.controls : []);
+};
+
+/**
+ *
+ * @param {string | undefined}
+ * @returns {LoadingIndicator}
+ */
+dlfViewer.prototype.makeLoadingIndicator = function (progressElementId) {
+    // Query progress element on demand because it may only become available at a later point (Zeitungsportal)
+    return {
+        indeterminate() {
+            var progressElement = document.getElementById(progressElementId);
+            if (progressElement instanceof HTMLProgressElement) {
+                progressElement.classList.add('loading');
+                progressElement.removeAttribute("value");
+            }
+        },
+        progress(value) {
+            var progressElement = document.getElementById(progressElementId);
+            if (progressElement instanceof HTMLProgressElement) {
+                progressElement.classList.add('loading');
+                progressElement.value = value * progressElement.max;
+            }
+        },
+        done() {
+            var progressElement = document.getElementById(progressElementId);
+            if (progressElement instanceof HTMLProgressElement) {
+                progressElement.classList.remove('loading');
+            }
+        },
+    };
 };
 
 /**
@@ -528,7 +574,7 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
             deferredResponse.resolve(layers);
         }, this);
 
-    dlfUtils.fetchImageData(imageSourceObjs)
+    dlfUtils.fetchImageData(imageSourceObjs, this.loadingIndicator)
       .done(function(imageSourceData) {
           resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
       });
