@@ -132,7 +132,10 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                 'useGroupsThumbnail' => 'THUMBS',
                 'useGroupsDownload' => 'DOWNLOAD',
                 'useGroupsFulltext' => 'FULLTEXT',
-                'useGroupsAudio' => 'AUDIO'
+                'useGroupsAudio' => 'AUDIO',
+                'useGroupsVideo' => 'VIDEO,DEFAULT',
+                'useGroupsVideo' => 'VIDEO,DEFAULT,VIDEO_ALT1',
+                'useGroupsWaveform' => 'WAVEFORM'
             ],
             'solr' => [
                 'host' => getenv('dlfTestingSolrHost'),
