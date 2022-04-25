@@ -185,6 +185,7 @@
             <label index="config.fileGrpDownload">Download fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</label>
             <label index="config.fileGrpFulltext">Fulltext fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "FULLTEXT")</label>
             <label index="config.fileGrpAudio">Audio fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</label>
+            <label index="config.fileGrpVideo">Video fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DEFAULT")</label>
             <label index="config.indexAnnotations">Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are indexed (default is "FALSE")</label>
             <label index="config.iiifThumbnailWidth">Maximum thumbnail width for IIIF images: Only for images without a thumbnail declaration (default is "150")</label>
             <label index="config.iiifThumbnailHeight">Maximum thumbnail height for IIIF images: Only for images without a thumbnail declaration (default is "150")</label>
@@ -394,6 +395,7 @@
             <label index="config.fileGrpDownload">Download fileGrp: Komma-getrennte Liste der @USE Attributwerte der Downloads nach absteigender Priorität sortiert (Standard ist "DOWNLOAD")</label>
             <label index="config.fileGrpFulltext">Volltext fileGrp: Komma-getrennte Liste der @USE Attributwerte der Volltexte nach absteigender Priorität sortiert (Standard ist "FULLTEXT")</label>
             <label index="config.fileGrpAudio">Audio fileGrp: Komma-getrennte Liste der @USE Attributwerte der Audiodateien nach absteigender Priorität sortiert (Standard ist "AUDIO")</label>
+            <label index="config.fileGrpVideo">Video fileGrp: Komma-getrennte Liste der @USE Attributwerte der Audiodateien nach absteigender Priorität sortiert (Standard ist "VIDEO,DEFAULT")</label>
             <label index="config.indexAnnotations">IIIF-Annotationen mit Motivation "painting" als Volltext behandeln?: Als Volltext behandelte Annotationen werden im Suchindex indexiert (Standard ist "FALSE")</label>
             <label index="config.iiifThumbnailWidth">Maximale Thumbnail-Breite für IIIF-Images: Gilt nur für Bilder ohne Thumbnail-Angaben (Standard ist "150")</label>
             <label index="config.iiifThumbnailHeight">Maximale Thumbnail-Höhe für IIIF-Images: Gilt nur für Bilder ohne Thumbnail-Angaben (Standard ist "150")</label>

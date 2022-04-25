@@ -103,6 +103,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             'fileGrpDownload' => 'DOWNLOAD',
             'fileGrpFulltext' => 'FULLTEXT',
             'fileGrpAudio' => 'AUDIO',
+            'fileGrpVideo' => 'VIDEO,DEFAULT',
 
             'solrFieldAutocomplete' => 'autocomplete',
             'solrFieldCollection' => 'collection',
@@ -129,6 +130,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             'solrFieldUid' => 'uid',
             'solrFieldUrn' => 'urn',
             'solrFieldVolume' => 'volume',
+
+            'fileGrpVideo' => 'VIDEO,DEFAULT,VIDEO_ALT1',
 
             'solrHost' => getenv('dlfTestingSolrHost'),
         ];
