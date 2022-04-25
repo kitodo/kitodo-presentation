@@ -37,6 +37,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_feeds'] 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_listview'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_listview'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_listview', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/ListView.xml');
+// Plugin "mediaplayer".
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_mediaplayer'] = 'layout,select_key,pages,recursive';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_mediaplayer'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_mediaplayer', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/MediaPlayer.xml');
 // Plugin "metadata".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_metadata'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_metadata'] = 'pi_flexform';
@@ -170,6 +174,13 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_toolbox'
     'Collection',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-collection.svg'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'MediaPlayer',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-mediaplayer.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(

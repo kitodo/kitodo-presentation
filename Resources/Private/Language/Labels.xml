@@ -163,6 +163,7 @@
             <label index="tt_content.dlf_calendar">DLF: Calendar</label>
             <label index="tt_content.dlf_collection">DLF: Collection</label>
             <label index="tt_content.dlf_listview">DLF: List View</label>
+            <label index="tt_content.dlf_mediaplayer">DLF: A/V-Player</label>
             <label index="tt_content.dlf_metadata">DLF: Metadata</label>
             <label index="tt_content.dlf_navigation">DLF: Navigation</label>
             <label index="tt_content.dlf_oaipmh">DLF: OAI-PMH Interface</label>
@@ -371,6 +372,7 @@
             <label index="tt_content.dlf_calendar">DLF: Kalender</label>
             <label index="tt_content.dlf_collection">DLF: Kollektion</label>
             <label index="tt_content.dlf_listview">DLF: Listenansicht</label>
+            <label index="tt_content.dlf_mediaplayer">DLF: A/V-Player</label>
             <label index="tt_content.dlf_metadata">DLF: Metadaten</label>
             <label index="tt_content.dlf_navigation">DLF: Navigation</label>
             <label index="tt_content.dlf_oaipmh">DLF: OAI-PMH-Schnittstelle</label>
