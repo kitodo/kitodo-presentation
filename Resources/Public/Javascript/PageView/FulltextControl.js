@@ -97,6 +97,12 @@ var dlfViewerFullTextControl = function(map) {
             'full-text-scroll-element':'html, body'};
 
     /**
+     * @private
+     * @type {boolean}
+     */
+    this.isActive = false;
+
+    /**
      * @type {number}
      * @private
      */
@@ -247,7 +253,10 @@ dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
         this.layers_.select.getSource().addFeature(this.textblockFeatures_[0]);
         this.selectedFeature_ = this.textblockFeatures_[0];
 
-        this.showFulltext(this.textblockFeatures_);
+        // If the control is *not* yet active, the fulltext is instead rendered on activation.
+        if (this.isActive) {
+            this.showFulltext(this.textblockFeatures_);
+        }
     }
 };
 
@@ -433,10 +442,13 @@ dlfViewerFullTextControl.prototype.activate = function() {
 
     var controlEl = $('#tx-dlf-tools-fulltext');
 
+    this.showFulltext(this.textblockFeatures_);
+
     // now activate the fulltext overlay and map behavior
     this.enableFulltextSelect();
     dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
     $(controlEl).addClass('active');
+    this.isActive = true;
 
     // trigger event
     $(this).trigger("activate-fulltext", this);
@@ -453,6 +465,7 @@ dlfViewerFullTextControl.prototype.deactivate = function() {
     this.disableFulltextSelect();
     dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
     $(controlEl).removeClass('active');
+    this.isActive = false;
 
     // trigger event
     $(this).trigger("deactivate-fulltext", this);
