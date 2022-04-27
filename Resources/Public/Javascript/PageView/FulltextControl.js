@@ -136,6 +136,11 @@ var dlfViewerFullTextControl = function(map) {
     };
 
     /**
+     * @private
+     */
+    this.textblockFeatures_ = undefined;
+
+    /**
      * @type {ol.Feature}
      * @private
      */
@@ -185,7 +190,7 @@ var dlfViewerFullTextControl = function(map) {
                 if (feature === undefined) {
                     this.layers_.select.getSource().clear();
                     this.selectedFeature_ = undefined;
-                    this.showFulltext(undefined);
+                    this.showFulltext(this.textblockFeatures_);
                     return;
                 }
 
@@ -229,19 +234,20 @@ var dlfViewerFullTextControl = function(map) {
  */
 dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
     // add features to fulltext layer
-    const textblockFeatures = fulltextData.getTextblocks();
-    this.layers_.textblock.getSource().addFeatures(textblockFeatures);
-    this.textblocks_.populate(textblockFeatures);
+    this.textblockFeatures_ = fulltextData.getTextblocks();
+    this.layers_.textblock.getSource().addFeatures(this.textblockFeatures_);
+    this.textblocks_.populate(this.textblockFeatures_);
 
     const textlineFeatures = fulltextData.getTextlines();
     this.layers_.textline.getSource().addFeatures(textlineFeatures);
     this.textlines_.populate(textlineFeatures);
 
     // add first feature of textBlockFeatures to map
-    if (textblockFeatures.length > 0) {
-        this.layers_.select.getSource().addFeature(textblockFeatures[0]);
-        this.selectedFeature_ = textblockFeatures[0];
-        this.showFulltext(textblockFeatures);
+    if (this.textblockFeatures_.length > 0) {
+        this.layers_.select.getSource().addFeature(this.textblockFeatures_[0]);
+        this.selectedFeature_ = this.textblockFeatures_[0];
+
+        this.showFulltext(this.textblockFeatures_);
     }
 };
 
