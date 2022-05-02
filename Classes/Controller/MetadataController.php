@@ -194,11 +194,21 @@ class MetadataController extends AbstractController
                 'is_listed' => !$this->settings['showFull'],
             ]);
 
+            // Collect raw metadata into an array that will be passed as data to cObj.
+            // This lets metadata wraps reference (own or foreign) values via TypoScript "field".
+            $metaCObjData = [];
+
             $buildUrl = [];
             $i = 0;
             foreach ($metadataArray as $metadataSection) {
+                $metaCObjData[$i] = [];
+
                 foreach ($metadataSection as $metadataName => $metadataValue) {
                     // NOTE: Labels are to be escaped in Fluid template
+
+                    $metaCObjData[$i][$metadataName] = is_array($metadataValue)
+                        ? implode($this->settings['separator'], $metadataValue)
+                        : $metadataValue;
 
                     if ($metadataName == 'title') {
                         // Get title of parent document if needed.
@@ -263,6 +273,7 @@ class MetadataController extends AbstractController
             $this->view->assign('documentMetadataSections', $metadataArray);
             $this->view->assign('configMetadata', $metadataResult);
             $this->view->assign('separator', $this->settings['separator']);
+            $this->view->assign('metaCObjData', $metaCObjData);
         }
     }
 
