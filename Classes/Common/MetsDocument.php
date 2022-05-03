@@ -760,19 +760,13 @@ final class MetsDocument extends Doc
         if (!$this->fileGrpsLoaded) {
             // Get configured USE attributes.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            $useGrps = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
-            if (!empty($extConf['fileGrpThumbs'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']));
-            }
-            if (!empty($extConf['fileGrpDownload'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']));
-            }
-            if (!empty($extConf['fileGrpFulltext'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']));
-            }
-            if (!empty($extConf['fileGrpAudio'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']));
-            }
+			$grpKeys = [ 'fileGrpImages', 'fileGrpThumbs', 'fileGrpDownload', 'fileGrpFulltext',
+				'fileGrpAudio', 'fileGrpScore' ];
+			$useGrps = [];
+			foreach ($grpKeys as $grpKey) {
+				$useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf[$grpKey]));
+			}
+
             // Get all file groups.
             $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
             if (!empty($fileGrps)) {
@@ -785,6 +779,7 @@ final class MetsDocument extends Doc
                     }
                 }
             }
+
             // Are there any fulltext files available?
             if (
                 !empty($extConf['fileGrpFulltext'])
