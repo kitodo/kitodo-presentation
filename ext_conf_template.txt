@@ -20,6 +20,8 @@ fileGrpThumbs = THUMBS
 fileGrpDownload = DOWNLOAD
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpFulltext
 fileGrpFulltext = FULLTEXT
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpScore
+fileGrpScore = SCORE
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpAudio
 fileGrpAudio = AUDIO
 # cat=IIIF; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.indexAnnotations
