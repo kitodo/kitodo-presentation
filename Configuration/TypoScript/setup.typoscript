@@ -32,6 +32,9 @@ page {
     # AudioPlayer plugin
     kitodo-audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
 
+    # Verovio plugin
+    kitodo-verovio = EXT:dlf/Resources/Public/Javascript/Verovio/verovio-toolkit.js
+
     # PageView plugin
     kitodo-openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.js
 
@@ -46,6 +49,8 @@ page {
     kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextDownloadControl.js
     kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextControl.js
     kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
+	kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/Javascript/PageView/ScoreControl.js
+	kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/Javascript/PageView/ScoreUtility.js
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
     kitodo-search-suggest = EXT:dlf/Resources/Public/Javascript/Search/Suggester.js
