@@ -152,6 +152,7 @@
             <label index="tx_dlf_mail.mail">Address</label>
             <label index="tx_dlf_mail.name">Name</label>
             <label index="tx_dlf_toolbox.fulltexttool">Fulltext</label>
+            <label index="tx_dlf_toolbox.scoretool">Score</label>
             <label index="tx_dlf_toolbox.annotationtool">IIIF Annotations</label>
             <label index="tx_dlf_toolbox.fulltextdownloadtool">Fulltext Download</label>
             <label index="tx_dlf_toolbox.imagedownloadtool">Image Download</label>
@@ -183,6 +184,7 @@
             <label index="config.fileGrpThumbs">Thumbnail fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</label>
             <label index="config.fileGrpDownload">Download fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</label>
             <label index="config.fileGrpFulltext">Fulltext fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "FULLTEXT")</label>
+            <label index="config.fileGrpScore">Score fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "SCORE")</label>
             <label index="config.fileGrpAudio">Audio fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</label>
             <label index="config.indexAnnotations">Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are indexed (default is "FALSE")</label>
             <label index="config.iiifThumbnailWidth">Maximum thumbnail width for IIIF images: Only for images without a thumbnail declaration (default is "150")</label>
@@ -360,6 +362,7 @@
             <label index="tx_dlf_mail.mail">Adresse</label>
             <label index="tx_dlf_mail.name">Name</label>
             <label index="tx_dlf_toolbox.fulltexttool">Volltext</label>
+            <label index="tx_dlf_toolbox.scoretool">Notentext</label>
             <label index="tx_dlf_toolbox.annotationtool">IIIF-Annotationen</label>
             <label index="tx_dlf_toolbox.fulltextdownloadtool">Volltext-Download</label>
             <label index="tx_dlf_toolbox.imagedownloadtool">Bild-Download</label>

@@ -45,6 +45,14 @@ class PageViewController extends AbstractController
     protected $images = [];
 
     /**
+     * Holds the current scores' URL and MIME types
+     *
+     * @var array
+     * @access protected
+     */
+    protected $scores = [];
+
+    /**
      * Holds the current fulltexts' URLs
      *
      * @var array
@@ -99,6 +107,7 @@ class PageViewController extends AbstractController
             $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
             $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
         }
+        $this->scores = $this->getScore();
 
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
@@ -110,6 +119,63 @@ class PageViewController extends AbstractController
         $this->view->assign('images', $this->images);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $this->requestData['page']);
+    }
+
+    /**
+     * Get score URL and MIME type
+     *
+     * @access protected
+     *
+     * @return array URL and MIME type of fulltext file
+     */
+    protected function getScore()
+    {
+        $score = [];
+		$doc = $this->document->getDoc();
+        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
+
+		foreach ($doc->physicalStructureInfo as $page) {
+			// look for files section in page
+			if (isset($page['files'])) {
+				$files = $page['files'];
+			} else {
+				continue;
+			}
+			// look for score file group in files section
+			foreach ($fileGrpsScores as $fileGrpScore) {
+				if (isset($files[$fileGrpScore])) {
+					$loc = $files[$fileGrpScore];
+					break;
+				}
+			}
+			if ($loc) {
+				break;
+			}
+		}
+
+		$score['mimetype'] = $doc->getFileMimeType($loc);
+		$score['url'] = $this->document
+			->getDoc()
+			->getFileLocation($loc);
+		if ($this->settings['useInternalProxy']) {
+			// Configure @action URL for form.
+			$uri = $this->uriBuilder->reset()
+				->setTargetPageUid($GLOBALS['TSFE']->id)
+				->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+				->setArguments([
+					'eID' => 'tx_dlf_pageview_proxy',
+					'url' => $score['url'],
+					'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
+					])
+				->build();
+
+			$score['url'] = $uri;
+		}
+
+        if (empty($score)) {
+            $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpScore'] . '"');
+        }
+        return $score;
     }
 
     /**
@@ -172,6 +238,7 @@ class PageViewController extends AbstractController
                         div: "' . $this->settings['elementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
+						score: ' . json_encode($this->scores['url']) . ',
                         annotationContainers: ' . json_encode($this->annotationContainers) . ',
                         useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
                     });

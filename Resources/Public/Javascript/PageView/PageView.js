@@ -17,11 +17,14 @@
  * @typedef {ResourceLocator} ImageDesc
  *
  * @typedef {ResourceLocator} FulltextDesc
+*
+ * @typedef {ResourceLocator} ScoreDesc
  *
  * @typedef {{
  *  div: string;
  *  images?: ImageDesc[] | [];
  *  fulltexts?: FulltextDesc[] | [];
+ *  scores?: ScoreDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
  * }} DlfViewerConfig
  */
@@ -62,11 +65,25 @@ var dlfViewer = function(settings){
     this.images = [];
 
     /**
+     * Score information (e.g. URL)
+     * @type {string}
+     * @private
+     */
+    this.score = dlfUtils.exists(settings.score) ? settings.score : '';
+
+    /**
      * Fulltext information (e.g. URL)
      * @type {Array.<string|?>}
      * @private
      */
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
+
+    /**
+     * Loaded scores (as jQuery deferred object).
+     * @type {svg}
+     * @private
+     */
+    this.scoresLoaded_ = null;
 
     /**
      * Loaded fulltexts (as jQuery deferred object).
@@ -181,13 +198,14 @@ dlfViewer.prototype.countPages = function () {
 
 /**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
- * fulltext and the image manipulation control
+ * fulltext, score, and the image manipulation control
  *
  * @param {Array.<string>} controlNames
  */
 dlfViewer.prototype.addCustomControls = function() {
     var fulltextControl = undefined,
         fulltextDownloadControl = undefined,
+		scoreControl = undefined,
         annotationControl = undefined,
         imageManipulationControl = undefined,
         images = this.images;
@@ -209,6 +227,20 @@ dlfViewer.prototype.addCustomControls = function() {
     } else {
         $('#tx-dlf-tools-fulltext').remove();
     }
+
+	if (this.scoresLoaded_ !== null) {
+		scoreControl = new dlfViewerScoreControl();
+
+		this.scoresLoaded_
+			.then(function (scoreData) {
+				scoreControl.loadScoreData(scoreData);
+			})
+			.catch(function () {
+				scoreControl.deactivate();
+			});
+	} else {
+		$('#tx-dlf-tools-score').remove();
+	}
 
     if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
         && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
@@ -423,6 +455,7 @@ dlfViewer.prototype.init = function(controlNames) {
 
             // Initiate loading fulltexts
             this.initLoadFulltexts();
+            this.initLoadScores();
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
@@ -534,6 +567,15 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
       });
 
     return deferredResponse;
+};
+
+/**
+ * Start loading scores and store them to `scoresLoaded_` (as jQuery deferred objects).
+ *
+ * @private
+ */
+dlfViewer.prototype.initLoadScores = function () {
+	this.scoresLoaded_ = dlfScoreUtils.fetchScoreDataFromServer(this.score);
 };
 
 /**
