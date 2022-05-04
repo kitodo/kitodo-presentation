@@ -130,9 +130,15 @@ class SolrIndexingTest extends FunctionalTestCase
         // No query: Only list toplevel result(s) in collection(s)
         $musikResults = $this->documentRepository->findSolrByCollection($musik, $settings, []);
         $dresdnerHefteResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, []);
+        $multiCollectionResults = $this->documentRepository->findSolrByCollection($collections, $settings, []);
         $this->assertGreaterThanOrEqual(1, $musikResults['solrResults']['numFound']);
         $this->assertGreaterThanOrEqual(1, $dresdnerHefteResults['solrResults']['numFound']);
         $this->assertEquals('533223312LOG_0000', $dresdnerHefteResults['solrResults']['documents'][0]['id']);
+        $this->assertEquals(
+            // Assuming there's no overlap
+            $dresdnerHefteResults['solrResults']['numFound'] + $musikResults['solrResults']['numFound'],
+            $multiCollectionResults['solrResults']['numFound']
+        );
 
         // With query: List all results
         $metadataResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden']);
