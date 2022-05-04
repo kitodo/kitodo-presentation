@@ -527,6 +527,7 @@ final class MetsDocument extends Doc
                 ->getRestrictions()
                 ->removeByType(HiddenRestriction::class);
             // Get all metadata with configured xpath and applicable format first.
+            // Exclude metadata with subentries, we will fetch them later.
             $resultWithFormat = $queryBuilder
                 ->select(
                     'tx_dlf_metadata.index_name AS index_name',
@@ -559,6 +560,7 @@ final class MetsDocument extends Doc
                     $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
                     $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', intval($cPid)),
+                    //$queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.subentries', 0),
                     $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
                 )
                 ->execute();
@@ -586,8 +588,53 @@ final class MetsDocument extends Doc
                 ->execute();
             // Merge both result sets.
             $allResults = array_merge($resultWithFormat->fetchAll(), $resultWithoutFormat->fetchAll());
+            // Get subentries separately.
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_metadata');
+            // Get hidden records, too.
+            $queryBuilder
+                ->getRestrictions()
+                ->removeByType(HiddenRestriction::class);
+            $subentries = $queryBuilder
+                ->select(
+                    'tx_dlf_subentries_joins.index_name AS index_name',
+                    'tx_dlf_metadata.index_name AS parent_index_name',
+                    'tx_dlf_subentries_joins.xpath AS xpath',
+                    'tx_dlf_subentries_joins.default_value AS default_value'
+                )
+                ->from('tx_dlf_metadata')
+                ->innerJoin(
+                    'tx_dlf_metadata',
+                    'tx_dlf_metadataformat',
+                    'tx_dlf_metadataformat_joins',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_metadataformat_joins.parent_id',
+                        'tx_dlf_metadata.uid'
+                    )
+                )
+                ->innerJoin(
+                    'tx_dlf_metadataformat_joins',
+                    'tx_dlf_metadata_subentries',
+                    'tx_dlf_subentries_joins',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_subentries_joins.parent_id',
+                        'tx_dlf_metadataformat_joins.uid'
+                    )
+                )
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
+                    // $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
+                    // $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', intval($cPid)),
+                    $queryBuilder->expr()->gt('tx_dlf_metadataformat_joins.subentries', 0),
+                    $queryBuilder->expr()->eq('tx_dlf_subentries_joins.l18n_parent', 0),
+                    $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', intval($cPid))
+                    // $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->dmdSec[$dmdId]['type']))
+                )
+                ->execute();
+            $subentriesResult = $subentries->fetchAll();
+            $metadata = $this->getXPathQueries($dmdId, $allResults, $subentriesResult, $metadata);
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
-            $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
+            $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
             $this->registerNamespaces($domXPath);
             // OK, now make the XPath queries.
@@ -604,10 +651,15 @@ final class MetsDocument extends Doc
                     ) {
                         $metadata[$resArray['index_name']] = [];
                         foreach ($values as $value) {
-                            $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
+                            if ($subentries = $this->getSubentries($subentriesResult, $resArray['index_name'], $value))
+                            {
+                                $metadata[$resArray['index_name']][] = $subentries;
+                            } else {
+                                $metadata[$resArray['index_name']][] = trim((string)$value->nodeValue);
+                            }
                         }
                     } elseif (!($values instanceof \DOMNodeList)) {
-                        $metadata[$resArray['index_name']] = [trim((string) $values)];
+                        $metadata[$resArray['index_name']] = [trim((string)$values->nodeValue)];
                     }
                 }
                 // Set default value if applicable.
@@ -624,16 +676,16 @@ final class MetsDocument extends Doc
                 ) {
                     if (
                         $resArray['format'] > 0
-                        && !empty($resArray['xpath_sorting'])
+                        && !empty($resArray['xpath_sorting']) // TODO: will fail, for subentries
                         && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))
                     ) {
                         if (
                             $values instanceof \DOMNodeList
                             && $values->length > 0
                         ) {
-                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
+                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string)$values->item(0)->nodeValue);
                         } elseif (!($values instanceof \DOMNodeList)) {
-                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values);
+                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string)$values);
                         }
                     }
                     if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
@@ -641,8 +693,9 @@ final class MetsDocument extends Doc
                     }
                 }
             }
-
-            $hasMetadataSection[$mdSectionType] = true;
+            // Extract metadata only from first supported dmdSec.
+            $hasSupportedMetadata = true;
+            break;
         }
         // Set title to empty string if not present.
         if (empty($metadata['title'][0])) {
@@ -664,6 +717,53 @@ final class MetsDocument extends Doc
             $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
             return [];
         }
+    }
+
+    /**
+     * @param array $allSubentries
+     * @param string $parentIndex
+     * @param \DOMNode parentNode
+     * @return array
+     */
+    private function getSubentries($allSubentries, string $parentIndex, \DOMNode $parentNode)
+    {
+        $domXPath = new \DOMXPath($parentNode->ownerDocument);
+        $this->registerNamespaces($domXPath);
+        $theseSubentries = [];
+        foreach ($allSubentries as $subentry)
+        {
+            if ($subentry['parent_index_name'] == $parentIndex)
+            {
+                if (
+                    !empty($subentry['xpath'])
+                    && ($values = $domXPath->evaluate($subentry['xpath'], $parentNode))
+                ) {
+                    if (
+                        $values instanceof \DOMNodeList
+                        && $values->length > 0
+                    ) {
+                        $theseSubentries[$subentry['index_name']] = [];
+                        foreach ($values as $value) {
+                            $theseSubentries[$subentry['index_name']][] = trim((string)$value->nodeValue);
+                        }
+                    } elseif (!($values instanceof \DOMNodeList)) {
+                        $theseSubentries[$subentry['index_name']] = [trim((string)$values->nodeValue)];
+                    }
+                }
+                // Set default value if applicable.
+                if (
+                    empty($theseSubentries[$subEntry['index_name']][0])
+                    && strlen($subentry['default_value']) > 0
+                ) {
+                    $theseSubentries[$subentry['index_name']] = [$subentry['default_value']];
+                }
+            }
+        }
+        if (empty($theseSubentries))
+        {
+            return false;
+        }
+        return $theseSubentries;
     }
 
     /**
