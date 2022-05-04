@@ -14,8 +14,9 @@
       data-namespace-typo3-fluid="true">
 
 {configObject.wrap -> kitodo:metadataWrapVariable(name: 'metadataWrap')}
-<kitodo:stdWrap wrap="{metadataWrap.all}">
-    <kitodo:stdWrap wrap="{metadataWrap.key}">{configObject.label}</kitodo:stdWrap>
+<f:variable name="metaSectionCObj" value="{metaCObjData.{sectionIterator.index}}" />
+<kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaSectionCObj}">
+    <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaSectionCObj}">{configObject.label}</kitodo:stdWrap>
     <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
         <f:variable name="buildUrlVariable" value="{buildUrl.{sectionIterator.index}}" />
         <f:if condition="{buildUrlVariable.{configObject.indexName}}">
@@ -23,7 +24,7 @@
                 <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
             </f:then>
             <f:else>
-                <kitodo:stdWrap wrap="{metadataWrap.value}">{value}</kitodo:stdWrap>
+                <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionCObj}">{value}</kitodo:stdWrap>
             </f:else>
         </f:if>
     </f:for>
