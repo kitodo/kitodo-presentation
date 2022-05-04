@@ -45,7 +45,7 @@ class PageGridController extends AbstractController
 
         $numPages = $this->document->getDoc()->numPages;
         // Iterate through visible page set and display thumbnails.
-        for ($i = 1; $i < $numPages; $i++) {
+        for ($i = 1; $i <= $numPages; $i++) {
             $foundEntry = $this->getEntry($i, $this->extConf['fileGrpThumbs']);
             $foundEntry['state'] = ($i == $this->requestData['page']) ? 'cur' : 'no';
             $entryArray[] = $foundEntry;

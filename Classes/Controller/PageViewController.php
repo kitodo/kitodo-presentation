@@ -150,7 +150,7 @@ class PageViewController extends AbstractController
             }
         }
         if (empty($fulltext)) {
-            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpFulltext'] . '"');
+            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->extConf['fileGrpFulltext'] . '"');
         }
         return $fulltext;
     }
@@ -278,7 +278,7 @@ class PageViewController extends AbstractController
             }
         }
         if (empty($image)) {
-            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpImages'] . '"');
+            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->extConf['fileGrpImages'] . '"');
         }
         return $image;
     }
