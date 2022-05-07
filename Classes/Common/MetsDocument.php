@@ -1417,7 +1417,8 @@ final class MetsDocument extends AbstractDocument
                 'fileGrpFulltext',
                 'fileGrpAudio',
                 'fileGrpScore',
-                'fileGrpVideo'
+                'fileGrpVideo',
+                'fileGrpWaveform'
             ];
 
             foreach ($configKeys as $key) {
