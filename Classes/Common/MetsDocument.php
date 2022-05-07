@@ -964,6 +964,9 @@ final class MetsDocument extends Doc
             if (!empty($extConf['fileGrpVideo'])) {
                 $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpVideo']));
             }
+            if (!empty($extConf['fileGrpWaveform'])) {
+                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpWaveform']));
+            }
             // Get all file groups.
             $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
             if (!empty($fileGrps)) {

@@ -104,6 +104,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             'fileGrpFulltext' => 'FULLTEXT',
             'fileGrpAudio' => 'AUDIO',
             'fileGrpVideo' => 'VIDEO,DEFAULT',
+            'fileGrpWaveform' => 'WAVEFORM',
 
             'solrFieldAutocomplete' => 'autocomplete',
             'solrFieldCollection' => 'collection',

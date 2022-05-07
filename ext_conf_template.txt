@@ -24,6 +24,8 @@ fileGrpFulltext = FULLTEXT
 fileGrpAudio = AUDIO
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpVideo
 fileGrpVideo = VIDEO,DEFAULT
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpWaveform
+fileGrpWaveform = WAVEFORM
 # cat=IIIF; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.indexAnnotations
 indexAnnotations = 0
 # cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.iiifThumbnailWidth
