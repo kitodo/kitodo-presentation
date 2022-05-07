@@ -533,6 +533,9 @@
 			<trans-unit id="config.files.fileGrpVideo">
 				<source>Video fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "VIDEO,DEFAULT")</source>
 			</trans-unit>
+			<trans-unit id="config.files.fileGrpWaveform">
+				<source>Waveform fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "WAVEFORM")</source>
+			</trans-unit>
 			<trans-unit id="config.files.useGroupsModel">
 				<source>Model file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DEFAULT")</source>
 			</trans-unit>
