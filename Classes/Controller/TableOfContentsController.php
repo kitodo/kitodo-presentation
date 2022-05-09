@@ -345,7 +345,7 @@ class TableOfContentsController extends AbstractController
             $entryArray['doNotLinkIt'] = 0;
             // index.php?tx_dlf%5Bid%5D=http%3A%2F%2Flink_to_METS_file.xml
             $entryArray['urlId'] = GeneralUtility::_GET('id');
-            $entryArray['urlXml'] = urlencode($entry['points']);
+            $entryArray['urlXml'] = $entry['points'];
             $entryArray['ITEM_STATE'] = 'ITEM';
         }
 
