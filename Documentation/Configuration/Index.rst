@@ -18,6 +18,17 @@ System Setup
 
 
 
+**********
+Web Server
+**********
+
+Content Security Policy
+=======================
+
+In case a Content Security Policy is set on the Kitodo.Presentation instance, make sure that ``blob:`` URLs are allowed as ``img-src``.
+Otherwise, the page view may remain blank.
+
+
 ***********
 TYPO3 Setup
 ***********
