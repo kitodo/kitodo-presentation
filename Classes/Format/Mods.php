@@ -133,7 +133,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         $descriptions = $xml->xpath('./mods:recordInfo/mods:recordInfoNote/text()');
         if (!empty($descriptions)) {
             foreach ($descriptions as $description) {
-                $metadata['description'] = (string) $description;
+                $metadata['description'][0] = (string) $description;
             }
         }
     }
