@@ -137,7 +137,7 @@ var options = {
     duration: 6500,
 	gravity: "bottom",
 	close: true,
-    callback: function(){
+    callback() {
         this.remove();
         Toastify.reposition();
     }
@@ -214,381 +214,10 @@ function createClippingPlaneGroup( geometry, plane, renderOrder ) {
 
 }
 
-function loadModel ( path, basename, filename, extension, org_extension ) {
-	if (!imported) {
-		circle.show();
-		circle.set(0, 100);
-		switch(extension) {
-			case 'obj':
-			case 'OBJ':
-				const manager = new THREE.LoadingManager();
-				manager.onLoad = function ( ) { showToast ("OBJ model has been loaded"); };
-				manager.addHandler( /\.dds$/i, new DDSLoader() );
-				// manager.addHandler( /\.tga$/i, new TGALoader() );
-				new MTLLoader( manager )
-					.setPath( path )
-					.load( basename + '.mtl', function ( materials ) {
-						materials.preload();
-						new OBJLoader( manager )
-							.setMaterials( materials )
-							.setPath( path )
-							.load( filename, function ( object ) {
-								object.position.set (0, 0, 0);
-								scene.add( object );
-								fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, org_extension, extension );
-								mainObject.push(object);
-							}, onProgress, onError );
-					} );
-			break;
-			
-			case 'fbx':
-			case 'FBX':
-				var FBXloader = new FBXLoader();
-				FBXloader.load( path + filename, function ( object ) {
-					object.traverse( function ( child ) {
-						if ( child.isMesh ) {
-							child.castShadow = true;
-							child.receiveShadow = true;
-						}
-					} );
-					object.position.set (0, 0, 0);
-					scene.add( object );
-					fetchSettings (path.replace("gltf/", ""), basename, filename, object.children, camera, controls, org_extension, extension );
-					mainObject.push(object);
-				}, onProgress, onError );
-			break;
-			
-			case 'ply':
-			case 'PLY':
-				loader = new PLYLoader();
-				loader.load( path + filename, function ( geometry ) {
-					geometry.computeVertexNormals();
-					const material = new THREE.MeshStandardMaterial( { color: 0x0055ff, flatShading: true } );
-					const object = new THREE.Mesh( geometry, material );
-					object.position.set (0, 0, 0);
-					object.castShadow = true;
-					object.receiveShadow = true;
-					scene.add( object );
-					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, org_extension, extension );
-					mainObject.push(object);
-				}, onProgress, onError );
-			break;
-			
-			case 'dae':
-			case 'DAE':
-				const loadingManager = new THREE.LoadingManager( function () {
-					scene.add( object );
-				} );
-				loader = new ColladaLoader( loadingManager );
-				loader.load( path + filename, function ( object ) {
-					object = object.scene;
-					object.position.set (0, 0, 0);
-					scene.add( object );
-					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, org_extension, extension );
-					mainObject.push(object);
-				}, onProgress, onError );
-			break;
-			
-			case 'ifc':
-			case 'IFC':
-				const ifcLoader = new IFCLoader();
-				ifcLoader.ifcManager.setWasmPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/ifc/' );
-				ifcLoader.load( path + filename, function ( object ) {
-					//object.position.set (0, 300, 0);
-					scene.add( object );
-					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, org_extension, extension );
-					mainObject.push(object);
-				}, onProgress, onError );
-			break;
-			
-			case 'stl':
-			case 'STL':
-				loader = new STLLoader();
-				loader.load( path + filename, function ( geometry ) {
-					let meshMaterial = new THREE.MeshPhongMaterial( { color: 0xff5533, specular: 0x111111, shininess: 200 } );
-					if ( geometry.hasColors ) {
-						meshMaterial = new THREE.MeshPhongMaterial( { opacity: geometry.alpha, vertexColors: true } );
-					}
-					const object = new THREE.Mesh( geometry, meshMaterial );
-					object.position.set (0, 0, 0);
-					object.castShadow = true;
-					object.receiveShadow = true;
-					scene.add( object );
-					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, org_extension, extension );
-					mainObject.push(object);
-				}, onProgress, onError );
-			break;
-
-			case 'xyz':
-			case 'XYZ':
-				loader = new XYZLoader();
-				loader.load( path + filename, function ( geometry ) {
-					geometry.center();
-					const vertexColors = ( geometry.hasAttribute( 'color' ) === true );
-					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: vertexColors } );
-					object = new THREE.Points( geometry, material );
-					object.position.set (0, 0, 0);
-					scene.add( object );
-					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, org_extension, extension );
-					mainObject.push(object);
-				}, onProgress, onError );
-			break;
-
-			case 'json':
-			case 'JSON':
-				loader = new THREE.ObjectLoader();
-				loader.load(
-					path + filename, function ( object ) {
-						object.position.set (0, 0, 0);
-						scene.add( object );
-						fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, org_extension, extension );
-						mainObject.push(object);
-					}, onProgress, onError );
-			break;
-
-			case '3ds':
-			case '3DS':
-				loader = new TDSLoader( );
-				loader.setResourcePath( path );
-				loader.load( path + filename, function ( object ) {
-					object.traverse( function ( child ) {
-						if ( child.isMesh ) {
-							//child.material.specular.setScalar( 0.1 );
-							//child.material.normalMap = normal;
-						}
-					} );
-					scene.add( object );
-					mainObject.push(object);
-				} );
-			break;
-
-			case 'zip':
-			case 'ZIP':
-			case 'rar':
-			case 'RAR':
-			case 'tar':
-			case 'TAR':
-			case 'gz':
-			case 'GZ':
-			case 'xz':
-			case 'XZ':
-				showToast("Model is being loaded from compressed archive.");
-			break;
-			
-			case 'glb':
-			case 'GLB':
-			case 'gltf':
-			case 'GLTF':
-				const dracoLoader = new DRACOLoader();
-				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/libs/draco/' );
-				dracoLoader.preload();
-				const gltf = new GLTFLoader();
-				gltf.setDRACOLoader(dracoLoader);
-				showToast("Trying to load model from " + extension + " representation.");
-
-				const glbPath = path + basename + "." + extension;
-				gltf.load(glbPath, function(gltf) {
-					gltf.scene.traverse( function ( child ) {
-						if ( child.isMesh ) {
-							child.castShadow = true;
-							child.receiveShadow = true;
-							child.geometry.computeVertexNormals();
-							if(child.material.map) child.material.map.anisotropy = 16;
-							child.material.side = THREE.DoubleSide;
-							/*for ( let i = 0; i < 3; i ++ ) {
-
-								const poGroup = new THREE.Group();
-								const plane = clippingPlanes[ i ];
-								const stencilGroup = createClippingPlaneGroup( child.geometry, plane, i + 1 );
-
-								// plane is clipped by the other clipping planes
-								const planeMat =
-									new THREE.MeshStandardMaterial( {
-
-										color: 0xE91E63,
-										metalness: 0.1,
-										roughness: 0.75,
-										clippingPlanes: clippingPlanes.filter( p => p !== plane ),
-
-										stencilWrite: true,
-										stencilRef: 0,
-										stencilFunc: THREE.NotEqualStencilFunc,
-										stencilFail: THREE.ReplaceStencilOp,
-										stencilZFail: THREE.ReplaceStencilOp,
-										stencilZPass: THREE.ReplaceStencilOp,
-
-									} );
-								const po = new THREE.Mesh( planeGeom, planeMat );
-								po.onAfterRender = function ( renderer ) {
-									renderer.clearStencil();
-								};
-
-								po.renderOrder = i + 1.1;
-
-								clippingObject.add( stencilGroup );
-								poGroup.add( po );
-								planeObjects.push( po );
-								scene.add( poGroup );
-
-							}*/
-							child.material.clippingPlanes = clippingPlanes;
-							child.material.clipIntersection = false;
-							mainObject.push(child);	
-						}
-					});
-					fetchSettings (path.replace("gltf/", ""), basename, filename, gltf.scene, camera, lightObjects[0], controls, org_extension, extension );
-					scene.add( gltf.scene );
-				},
-					function ( xhr ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						if (percentComplete !== Infinity) {
-							circle.set(percentComplete, 100);
-							if (percentComplete >= 100) {
-								circle.hide();
-								showToast("Model " + filename + " has been loaded.");
-							}
-						}
-					},
-					function ( ) {						
-							showToast("GLTF representation not found, trying original file " + path.replace("gltf/", "") + filename + " [" + org_extension + "]");
-							loadModel(path.replace("gltf/", ""), basename, filename, org_extension, org_extension);
-							imported = true;
-					}
-				);
-			break;
-			default:
-				showToast("Extension not supported yet");
-		}
-	}
-	else {
-		showToast("File " + path + basename + " not found.");
-		//circle.set(100, 100);
-		circle.hide();
-	}
-	
-	scene.updateMatrixWorld();
-}
-
-function fetchSettings ( path, basename, filename, object, camera, light, controls, org_extension, extension ) {
-	var metadata = {'vertices': 0, 'faces': 0};
-	var hierarchy = [];
-	var geometry;
-	fetch(path + "metadata/" + filename + "_viewer", {cache: "no-cache"})
-	.then(response => {
-		if (response['status'] != "404") {
-			showToast("Settings " + filename + "_viewer found");
-			return response.json();
-		}
-		else if (response['status'] == "404") {
-			showToast("No settings " + filename + "_viewer found");
-		}
-		})
-	.then(data => {
-		var tempArray = [];
-		const hierarchyMain = gui.addFolder( 'Hierarchy' ).close();
-		if (object.name === "Scene" || object.children.length > 0 ) {
-			setupObject(object, camera, light, data, controls);
-			object.traverse( function ( child ) {
-				if ( child.isMesh ) {
-					metadata['vertices'] += fetchMetadata (child, 'vertices');
-					metadata['faces'] += fetchMetadata (child, 'faces');
-					var shortChildName = truncateString(child.name, GUILength);
-					if (child.name === '')
-						tempArray = {["Mesh"]: function(){selectObjectHierarchy(child.id)}, 'id': child.id};
-					else
-						tempArray = { [shortChildName]: function(){selectObjectHierarchy(child.id)}, 'id': child.id};
-					hierarchyFolder = hierarchyMain.addFolder(shortChildName).close();
-					hierarchyFolder.add(tempArray, shortChildName);
-					clippingGeometry.push(child.geometry);
-					child.traverse( function ( children ) {
-						if ( children.isMesh &&  children.name !== child.name) {
-							var shortChildrenName = truncateString(children.name, GUILength);
-							if (children.name === '')
-								tempArray = {["Mesh"]: function(){selectObjectHierarchy(children.id)}, 'id': children.id};
-							else
-								tempArray = { [shortChildrenName]: function(){selectObjectHierarchy(children.id)}, 'id': children.id}; 
-							clippingGeometry.push(children.geometry);
-							hierarchyFolder.add(tempArray, shortChildrenName);
-						}
-					});
-				}
-			});
-			setupCamera (object, camera, light, data, controls);				
-		}
-		else {
-			setupObject(object, camera, light, data, controls);
-			setupCamera (object, camera, light, data, controls);
-			metadata['vertices'] += fetchMetadata (object, 'vertices');
-			metadata['faces'] += fetchMetadata (object, 'faces');
-			if (object.name === '')
-				tempArray = {["Mesh"]: function(){selectObjectHierarchy(object.id)}, 'id': object.id};
-			else
-				tempArray = {[object.name]: function(){selectObjectHierarchy(object.id)}, 'id': object.id};
-			//hierarchy.push(tempArray);
-			clippingGeometry.push(object.geometry);
-			hierarchyFolder = hierarchyMain.addFolder(object.name).close();
-			hierarchyFolder.add(tempArray, 'name' ).name(object.name);
-			metadata['vertices'] += fetchMetadata (object, 'vertices');
-			metadata['faces'] += fetchMetadata (object, 'faces');
-		}
-		var loadedFile = basename + "." + extension;
-		var metadataText =
-		{
-			'Original extension': org_extension.toUpperCase(),
-			'Loaded file': loadedFile,
-			Vertices: metadata['vertices'],
-			Faces: metadata['faces']
-		}
-		hierarchyMain.domElement.classList.add("hierarchy");
-
-		metadataFolder.add(metadataText, 'Original extension' );
-		metadataFolder.add(metadataText, 'Loaded file' );
-		metadataFolder.add(metadataText, 'Vertices' );
-		metadataFolder.add(metadataText, 'Faces' );
-		//hierarchyFolder.add(hierarchyText, 'Faces' );
-	});
-	helperObjects.push (object);
-
-	//lightObjects.push (object);
-}
-
-function selectObjectHierarchy (_id) {
-	let search = true;
-	for (let i = 0; i < selectedObjects.length && search === true; i++ ) {
-		if (selectedObjects[i].id === _id) {
-			search = false;
-			if (selectedObjects[i].selected === true) {
-				scene.getObjectById(_id).material = selectedObjects[i].originalMaterial;
-				scene.getObjectById(_id).material.needsUpdate = true;
-				selectedObjects[i].selected = false;
-				selectedObjects.splice(selectedObjects.indexOf(selectedObjects[i]), 1);		
-			}
-		}
-	}
-	if (search) {
-		selectedObjects.push({id: _id, selected: true, originalMaterial: scene.getObjectById(_id).material.clone()});
-		const tempMaterial = scene.getObjectById(_id).material.clone();
-		tempMaterial.color.setHex("0x00FF00");
-		scene.getObjectById(_id).material = tempMaterial;
-		scene.getObjectById(_id).material.needsUpdate = true;
-
-	}
-}
-
-function fetchMetadata (_object, _type) {
-	switch (_type) {
-		case 'vertices':
-			if (typeof (_object.geometry.index) !== "undefined" && _object.geometry.index !== null)
-				return _object.geometry.index.count;
-			else if (typeof (_object.attributes) !== "undefined" && _object.attributes !== null)
-				return _object.attributes.position.count;
-		case 'faces':
-			if (typeof (_object.geometry.index) !== "undefined" && _object.geometry.index !== null)
-				return _object.geometry.index.count/3;
-			else if (typeof (_object.attributes) !== "undefined" && _object.attributes !== null)
-				return _object.attributes.position.count/3;
-		break;
-	}
+function showToast (_str) {
+	var myToast = Toastify(options);
+	myToast.options.text = _str;
+	myToast.showToast();
 }
 
 function setupObject (_object, _camera, _light, _data, _controls) {
@@ -628,86 +257,84 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 
 }
 
-function setupCamera (_object, _camera, _light, _data, _controls) {
-	if (typeof (_data) !== "undefined") {
-		if (typeof (_data["cameraPosition"]) !== "undefined") {
-			_camera.position.set (_data["cameraPosition"][0], _data["cameraPosition"][1], _data["cameraPosition"][2]);
-			_controls.target.set (_data["controlsTarget"][0], _data["controlsTarget"][1], _data["controlsTarget"][2]);
-		}
-		if (typeof (_data["lightPosition"]) !== "undefined") {
-			_light.position.set( _data["lightPosition"][0], _data["lightPosition"][1], _data["lightPosition"][2] );
-			_light.color = new THREE.Color( _data["lightColor"][0] );
-			_light.intensity = _data["lightIntensity"][0];
-		}
-		_camera.updateProjectionMatrix();
-		_controls.update();
-		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls, true );
+function fetchMetadata (_object, _type) {
+	switch (_type) {
+		case 'vertices':
+			if (typeof (_object.geometry.index) !== "undefined" && _object.geometry.index !== null) {
+				return _object.geometry.index.count;
+			} else if (typeof (_object.attributes) !== "undefined" && _object.attributes !== null) {
+				return _object.attributes.position.count;
+			}
+			break;
+		case 'faces':
+			if (typeof (_object.geometry.index) !== "undefined" && _object.geometry.index !== null) {
+				return _object.geometry.index.count/3;
+			} else if (typeof (_object.attributes) !== "undefined" && _object.attributes !== null) {
+				return _object.attributes.position.count/3;
+			}
+			break;
 	}
-	else {
-		var boundingBox = new THREE.Box3();
-		if (Array.isArray(_object)) {
-			for (var i = 0; i < _object.length; i++) {
-				boundingBox.setFromObject( _object[i] );
+}
+
+function selectObjectHierarchy (_id) {
+	let search = true;
+	for (let i = 0; i < selectedObjects.length && search === true; i++ ) {
+		if (selectedObjects[i].id === _id) {
+			search = false;
+			if (selectedObjects[i].selected === true) {
+				scene.getObjectById(_id).material = selectedObjects[i].originalMaterial;
+				scene.getObjectById(_id).material.needsUpdate = true;
+				selectedObjects[i].selected = false;
+				selectedObjects.splice(selectedObjects.indexOf(selectedObjects[i]), 1);		
 			}
 		}
-		else {
-			boundingBox.setFromObject( _object );
-		}
-		var size = new THREE.Vector3();
-		boundingBox.getSize(size);
-		camera.position.set(size.x, size.y, size.z);
-		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls, false );
+	}
+	if (search) {
+		selectedObjects.push({id: _id, selected: true, originalMaterial: scene.getObjectById(_id).material.clone()});
+		const tempMaterial = scene.getObjectById(_id).material.clone();
+		tempMaterial.color.setHex("0x00FF00");
+		scene.getObjectById(_id).material = tempMaterial;
+		scene.getObjectById(_id).material.needsUpdate = true;
+
 	}
 }
 
-function pickFaces(_id) {
-	var sphere = new THREE.Mesh(new THREE.SphereGeometry(0.1, 7, 7), new THREE.MeshNormalMaterial({
-				transparent : true,
-				opacity : 0.8
-			}));
-	sphere.position.set(_id[0].point.x, _id[0].point.y, _id[0].point.z);
-	scene.add(sphere);
-	/*if (mainObject.name == "Scene" || mainObject.children.length > 0)
-		mainObject.traverse( function ( child ) {
-			if (child.isMesh) {
-				child.traverse( function ( children ) {
-				});
-			}
-		});
-	else
-		var intersects = raycaster.intersectObjects( mainObject, false );*/
-}
-
-function onWindowResize() {
-	camera.aspect = canvasDimensions.x / canvasDimensions.y;
-	camera.updateProjectionMatrix();
-	renderer.setSize( canvasDimensions.x, canvasDimensions.y );
-	render();
-}
-
-//
-
-function animate() {
-	requestAnimationFrame( animate );
-	const delta = clock.getDelta();
-	if ( mixer ) mixer.update( delta );
-	TWEEN.update();
-	for ( let i = 0; i < clippingPlanes.length; i ++ ) {
-
-		const plane = clippingPlanes[ i ];
-		const po = planeObjects[ i ];
-		if (po !== undefined ) {
-			plane.coplanarPoint( po.position );
-			po.lookAt(
-				po.position.x - plane.normal.x,
-				po.position.y - plane.normal.y,
-				po.position.z - plane.normal.z,
-			);
-		}
-
-	}
+function render() {
+	controls.update();
 	renderer.render( scene, camera );
-	stats.update();
+}
+
+function setupClippingPlanes (_geometry, _size, _distance) {	
+	clippingPlanes[ 0 ].constant = _distance.x;
+	clippingPlanes[ 1 ].constant = _distance.y;
+	clippingPlanes[ 2 ].constant = _distance.z;
+
+	planeHelpers = clippingPlanes.map( (p) => new THREE.PlaneHelper( p, _size*2, 0xffffff ) );
+	planeHelpers.forEach( (ph) => {
+		ph.visible = false;
+		ph.name = "PlaneHelper";
+		scene.add( ph );
+	} );
+
+	clippingFolder.add( planeParams.planeX, 'displayHelperX' ).onChange( (v) => planeHelpers[ 0 ].visible = v );
+	clippingFolder.add( planeParams.planeX, 'constant' ).min( - _distance.x ).max( _distance.x ).setValue(_distance.x).step(_size/100).onChange(function (value) {
+		clippingPlanes[ 0 ].constant = value;
+		render();
+	});
+
+
+	clippingFolder.add( planeParams.planeY, 'displayHelperY' ).onChange( (v) => planeHelpers[ 1 ].visible = v );
+	clippingFolder.add( planeParams.planeY, 'constant' ).min( - _distance.y ).max( _distance.y ).setValue(_distance.y).step(_size/100).onChange(function (value) {
+		clippingPlanes[ 1 ].constant = value;
+		render();
+	});
+
+
+	clippingFolder.add( planeParams.planeZ, 'displayHelperZ' ).onChange( (v) => planeHelpers[ 2 ].visible = v );
+	clippingFolder.add( planeParams.planeZ, 'constant' ).min( - _distance.z ).max( _distance.z ).setValue(_distance.z).step(_size/100).onChange(function (value) {
+		clippingPlanes[ 2 ].constant = value;
+		render();
+	});
 }
 
 function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit ) {
@@ -784,10 +411,10 @@ function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit 
     let dx = size.z / 2 + Math.abs( size.x / 2 / Math.tan( fovh / 2 ) );
     let dy = size.z / 2 + Math.abs( size.y / 2 / Math.tan( fov / 2 ) );
     let cameraZ = Math.max(dx, dy);
-	if (_fit) cameraZ = camera.position.z;
+	if (_fit) {cameraZ = camera.position.z;}
 
     // offset the camera, if desired (to avoid filling the whole canvas)
-    if( offset !== undefined && offset !== 0 ) cameraZ *= offset;
+    if( offset !== undefined && offset !== 0 ) {cameraZ *= offset;}
 	const coords = {x: camera.position.x, y: camera.position.y, z: cameraZ*0.8};
     new TWEEN.Tween(coords)
 		.to({ z: cameraZ }, 800)
@@ -821,42 +448,443 @@ function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit 
 	setupClippingPlanes(object.geometry, gridSize, distance);
 }
 
-function setupClippingPlanes (_geometry, _size, _distance) {	
-	clippingPlanes[ 0 ].constant = _distance.x;
-	clippingPlanes[ 1 ].constant = _distance.y;
-	clippingPlanes[ 2 ].constant = _distance.z;
-
-	planeHelpers = clippingPlanes.map( (p) => new THREE.PlaneHelper( p, _size*2, 0xffffff ) );
-	planeHelpers.forEach( (ph) => {
-		ph.visible = false;
-		ph.name = "PlaneHelper";
-		scene.add( ph );
-	} );
-
-	clippingFolder.add( planeParams.planeX, 'displayHelperX' ).onChange( (v) => planeHelpers[ 0 ].visible = v );
-	clippingFolder.add( planeParams.planeX, 'constant' ).min( - _distance.x ).max( _distance.x ).setValue(_distance.x).step(_size/100).onChange(function (value) {
-		clippingPlanes[ 0 ].constant = value;
-		render();
-	});
-
-
-	clippingFolder.add( planeParams.planeY, 'displayHelperY' ).onChange( (v) => planeHelpers[ 1 ].visible = v );
-	clippingFolder.add( planeParams.planeY, 'constant' ).min( - _distance.y ).max( _distance.y ).setValue(_distance.y).step(_size/100).onChange(function (value) {
-		clippingPlanes[ 1 ].constant = value;
-		render();
-	});
-
-
-	clippingFolder.add( planeParams.planeZ, 'displayHelperZ' ).onChange( (v) => planeHelpers[ 2 ].visible = v );
-	clippingFolder.add( planeParams.planeZ, 'constant' ).min( - _distance.z ).max( _distance.z ).setValue(_distance.z).step(_size/100).onChange(function (value) {
-		clippingPlanes[ 2 ].constant = value;
-		render();
-	});
+function setupCamera (_object, _camera, _light, _data, _controls) {
+	if (typeof (_data) !== "undefined") {
+		if (typeof (_data["cameraPosition"]) !== "undefined") {
+			_camera.position.set (_data["cameraPosition"][0], _data["cameraPosition"][1], _data["cameraPosition"][2]);
+			_controls.target.set (_data["controlsTarget"][0], _data["controlsTarget"][1], _data["controlsTarget"][2]);
+		}
+		if (typeof (_data["lightPosition"]) !== "undefined") {
+			_light.position.set( _data["lightPosition"][0], _data["lightPosition"][1], _data["lightPosition"][2] );
+			_light.color = new THREE.Color( _data["lightColor"][0] );
+			_light.intensity = _data["lightIntensity"][0];
+		}
+		_camera.updateProjectionMatrix();
+		_controls.update();
+		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls, true );
+	}
+	else {
+		var boundingBox = new THREE.Box3();
+		if (Array.isArray(_object)) {
+			for (var i = 0; i < _object.length; i++) {
+				boundingBox.setFromObject( _object[i] );
+			}
+		}
+		else {
+			boundingBox.setFromObject( _object );
+		}
+		var size = new THREE.Vector3();
+		boundingBox.getSize(size);
+		camera.position.set(size.x, size.y, size.z);
+		fitCameraToCenteredObject ( _camera, _object, 1.7, _controls, false );
+	}
 }
 
-function render() {
-	controls.update();
+function truncateString(str, n) {
+	if (str.length === 0) {return str;}
+	else if (str.length > n) {
+		return str.substring(0, n) + "...";
+	} else {
+		return str;
+	}
+}
+
+function fetchSettings ( path, basename, filename, object, camera, light, controls, orgExtension, extension ) {
+	var metadata = {'vertices': 0, 'faces': 0};
+	var hierarchy = [];
+	var geometry;
+	fetch(path + "metadata/" + filename + "_viewer", {cache: "no-cache"})
+	.then((response) => {
+		if (response['status'] != "404") {
+			showToast("Settings " + filename + "_viewer found");
+			return response.json();
+		}
+		else if (response['status'] == "404") {
+			showToast("No settings " + filename + "_viewer found");
+		}
+		})
+	.then((data) => {
+		var tempArray = [];
+		const hierarchyMain = gui.addFolder( 'Hierarchy' ).close();
+		if (object.name === "Scene" || object.children.length > 0 ) {
+			setupObject(object, camera, light, data, controls);
+			object.traverse( function ( child ) {
+				if ( child.isMesh ) {
+					metadata['vertices'] += fetchMetadata (child, 'vertices');
+					metadata['faces'] += fetchMetadata (child, 'faces');
+					var shortChildName = truncateString(child.name, GUILength);
+					if (child.name === '') {
+						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id);}, 'id': child.id};
+					} else {
+						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id);}, 'id': child.id};
+					}
+					hierarchyFolder = hierarchyMain.addFolder(shortChildName).close();
+					hierarchyFolder.add(tempArray, shortChildName);
+					clippingGeometry.push(child.geometry);
+					child.traverse( function ( children ) {
+						if ( children.isMesh &&  children.name !== child.name) {
+							var shortChildrenName = truncateString(children.name, GUILength);
+							if (children.name === '') {
+								tempArray = {["Mesh"]() {selectObjectHierarchy(children.id);}, 'id': children.id};
+							} else {
+								tempArray = { [shortChildrenName]() {selectObjectHierarchy(children.id);}, 'id': children.id};
+							}
+							clippingGeometry.push(children.geometry);
+							hierarchyFolder.add(tempArray, shortChildrenName);
+						}
+					});
+				}
+			});
+			setupCamera (object, camera, light, data, controls);				
+		}
+		else {
+			setupObject(object, camera, light, data, controls);
+			setupCamera (object, camera, light, data, controls);
+			metadata['vertices'] += fetchMetadata (object, 'vertices');
+			metadata['faces'] += fetchMetadata (object, 'faces');
+			if (object.name === '') {
+				tempArray = {["Mesh"]() {selectObjectHierarchy(object.id);}, 'id': object.id};
+			} else {
+				tempArray = {[object.name]() {selectObjectHierarchy(object.id);}, 'id': object.id};
+			}
+			//hierarchy.push(tempArray);
+			clippingGeometry.push(object.geometry);
+			hierarchyFolder = hierarchyMain.addFolder(object.name).close();
+			hierarchyFolder.add(tempArray, 'name' ).name(object.name);
+			metadata['vertices'] += fetchMetadata (object, 'vertices');
+			metadata['faces'] += fetchMetadata (object, 'faces');
+		}
+		var loadedFile = basename + "." + extension;
+		var metadataText =
+		{
+			'Original extension': orgExtension.toUpperCase(),
+			'Loaded file': loadedFile,
+			Vertices: metadata['vertices'],
+			Faces: metadata['faces']
+		};
+		hierarchyMain.domElement.classList.add("hierarchy");
+
+		metadataFolder.add(metadataText, 'Original extension' );
+		metadataFolder.add(metadataText, 'Loaded file' );
+		metadataFolder.add(metadataText, 'Vertices' );
+		metadataFolder.add(metadataText, 'Faces' );
+		//hierarchyFolder.add(hierarchyText, 'Faces' );
+	});
+	helperObjects.push (object);
+
+	//lightObjects.push (object);
+}
+
+const onProgress = function ( xhr ) {
+	var percentComplete = xhr.loaded / xhr.total * 100;
+	circle.set(percentComplete, 100);
+	if (percentComplete >= 100) {
+		circle.hide();
+		showToast("Model has been loaded.");
+	}
+};
+
+function loadModel ( path, basename, filename, extension, orgExtension ) {
+	if (!imported) {
+		circle.show();
+		circle.set(0, 100);
+		switch(extension) {
+			case 'obj':
+			case 'OBJ':
+				const manager = new THREE.LoadingManager();
+				manager.onLoad = function ( ) { showToast ("OBJ model has been loaded"); };
+				manager.addHandler( /\.dds$/i, new DDSLoader() );
+				// manager.addHandler( /\.tga$/i, new TGALoader() );
+				new MTLLoader( manager )
+					.setPath( path )
+					.load( basename + '.mtl', function ( materials ) {
+						materials.preload();
+						new OBJLoader( manager )
+							.setMaterials( materials )
+							.setPath( path )
+							.load( filename, function ( object ) {
+								object.position.set (0, 0, 0);
+								scene.add( object );
+								fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
+								mainObject.push(object);
+							}, onProgress, onError );
+					} );
+			break;
+			
+			case 'fbx':
+			case 'FBX':
+				var FBXloader = new FBXLoader();
+				FBXloader.load( path + filename, function ( object ) {
+					object.traverse( function ( child ) {
+						if ( child.isMesh ) {
+							child.castShadow = true;
+							child.receiveShadow = true;
+						}
+					} );
+					object.position.set (0, 0, 0);
+					scene.add( object );
+					fetchSettings (path.replace("gltf/", ""), basename, filename, object.children, camera, controls, orgExtension, extension );
+					mainObject.push(object);
+				}, onProgress, onError );
+			break;
+			
+			case 'ply':
+			case 'PLY':
+				loader = new PLYLoader();
+				loader.load( path + filename, function ( geometry ) {
+					geometry.computeVertexNormals();
+					const material = new THREE.MeshStandardMaterial( { color: 0x0055ff, flatShading: true } );
+					const object = new THREE.Mesh( geometry, material );
+					object.position.set (0, 0, 0);
+					object.castShadow = true;
+					object.receiveShadow = true;
+					scene.add( object );
+					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
+					mainObject.push(object);
+				}, onProgress, onError );
+			break;
+			
+			case 'dae':
+			case 'DAE':
+				const loadingManager = new THREE.LoadingManager( function () {
+					scene.add( object );
+				} );
+				loader = new ColladaLoader( loadingManager );
+				loader.load( path + filename, function ( object ) {
+					object = object.scene;
+					object.position.set (0, 0, 0);
+					scene.add( object );
+					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
+					mainObject.push(object);
+				}, onProgress, onError );
+			break;
+			
+			case 'ifc':
+			case 'IFC':
+				const ifcLoader = new IFCLoader();
+				ifcLoader.ifcManager.setWasmPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/ifc/' );
+				ifcLoader.load( path + filename, function ( object ) {
+					//object.position.set (0, 300, 0);
+					scene.add( object );
+					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
+					mainObject.push(object);
+				}, onProgress, onError );
+			break;
+			
+			case 'stl':
+			case 'STL':
+				loader = new STLLoader();
+				loader.load( path + filename, function ( geometry ) {
+					let meshMaterial = new THREE.MeshPhongMaterial( { color: 0xff5533, specular: 0x111111, shininess: 200 } );
+					if ( geometry.hasColors ) {
+						meshMaterial = new THREE.MeshPhongMaterial( { opacity: geometry.alpha, vertexColors: true } );
+					}
+					const object = new THREE.Mesh( geometry, meshMaterial );
+					object.position.set (0, 0, 0);
+					object.castShadow = true;
+					object.receiveShadow = true;
+					scene.add( object );
+					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
+					mainObject.push(object);
+				}, onProgress, onError );
+			break;
+
+			case 'xyz':
+			case 'XYZ':
+				loader = new XYZLoader();
+				loader.load( path + filename, function ( geometry ) {
+					geometry.center();
+					const vertexColors = ( geometry.hasAttribute( 'color' ) === true );
+					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: vertexColors } );
+					object = new THREE.Points( geometry, material );
+					object.position.set (0, 0, 0);
+					scene.add( object );
+					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
+					mainObject.push(object);
+				}, onProgress, onError );
+			break;
+
+			case 'json':
+			case 'JSON':
+				loader = new THREE.ObjectLoader();
+				loader.load(
+					path + filename, function ( object ) {
+						object.position.set (0, 0, 0);
+						scene.add( object );
+						fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
+						mainObject.push(object);
+					}, onProgress, onError );
+			break;
+
+			case '3ds':
+			case '3DS':
+				loader = new TDSLoader( );
+				loader.setResourcePath( path );
+				loader.load( path + filename, function ( object ) {
+					object.traverse( function ( child ) {
+						if ( child.isMesh ) {
+							//child.material.specular.setScalar( 0.1 );
+							//child.material.normalMap = normal;
+						}
+					} );
+					scene.add( object );
+					mainObject.push(object);
+				} );
+			break;
+
+			case 'zip':
+			case 'ZIP':
+			case 'rar':
+			case 'RAR':
+			case 'tar':
+			case 'TAR':
+			case 'gz':
+			case 'GZ':
+			case 'xz':
+			case 'XZ':
+				showToast("Model is being loaded from compressed archive.");
+			break;
+			
+			case 'glb':
+			case 'GLB':
+			case 'gltf':
+			case 'GLTF':
+				const dracoLoader = new DRACOLoader();
+				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/libs/draco/' );
+				dracoLoader.preload();
+				const gltf = new GLTFLoader();
+				gltf.setDRACOLoader(dracoLoader);
+				showToast("Trying to load model from " + extension + " representation.");
+
+				const glbPath = path + basename + "." + extension;
+				gltf.load(glbPath, function(gltf) {
+					gltf.scene.traverse( function ( child ) {
+						if ( child.isMesh ) {
+							child.castShadow = true;
+							child.receiveShadow = true;
+							child.geometry.computeVertexNormals();
+							if(child.material.map) {child.material.map.anisotropy = 16;}
+							child.material.side = THREE.DoubleSide;
+							/*for ( let i = 0; i < 3; i ++ ) {
+
+								const poGroup = new THREE.Group();
+								const plane = clippingPlanes[ i ];
+								const stencilGroup = createClippingPlaneGroup( child.geometry, plane, i + 1 );
+
+								// plane is clipped by the other clipping planes
+								const planeMat =
+									new THREE.MeshStandardMaterial( {
+
+										color: 0xE91E63,
+										metalness: 0.1,
+										roughness: 0.75,
+										clippingPlanes: clippingPlanes.filter( p => p !== plane ),
+
+										stencilWrite: true,
+										stencilRef: 0,
+										stencilFunc: THREE.NotEqualStencilFunc,
+										stencilFail: THREE.ReplaceStencilOp,
+										stencilZFail: THREE.ReplaceStencilOp,
+										stencilZPass: THREE.ReplaceStencilOp,
+
+									} );
+								const po = new THREE.Mesh( planeGeom, planeMat );
+								po.onAfterRender = function ( renderer ) {
+									renderer.clearStencil();
+								};
+
+								po.renderOrder = i + 1.1;
+
+								clippingObject.add( stencilGroup );
+								poGroup.add( po );
+								planeObjects.push( po );
+								scene.add( poGroup );
+
+							}*/
+							child.material.clippingPlanes = clippingPlanes;
+							child.material.clipIntersection = false;
+							mainObject.push(child);	
+						}
+					});
+					fetchSettings (path.replace("gltf/", ""), basename, filename, gltf.scene, camera, lightObjects[0], controls, orgExtension, extension );
+					scene.add( gltf.scene );
+				},
+					function ( xhr ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						if (percentComplete !== Infinity) {
+							circle.set(percentComplete, 100);
+							if (percentComplete >= 100) {
+								circle.hide();
+								showToast("Model " + filename + " has been loaded.");
+							}
+						}
+					},
+					function ( ) {						
+							showToast("GLTF representation not found, trying original file " + path.replace("gltf/", "") + filename + " [" + orgExtension + "]");
+							loadModel(path.replace("gltf/", ""), basename, filename, orgExtension, orgExtension);
+							imported = true;
+					}
+				);
+			break;
+			default:
+				showToast("Extension not supported yet");
+		}
+	}
+	else {
+		showToast("File " + path + basename + " not found.");
+		//circle.set(100, 100);
+		circle.hide();
+	}
+	
+	scene.updateMatrixWorld();
+}
+
+function pickFaces(_id) {
+	var sphere = new THREE.Mesh(new THREE.SphereGeometry(0.1, 7, 7), new THREE.MeshNormalMaterial({
+				transparent : true,
+				opacity : 0.8
+			}));
+	sphere.position.set(_id[0].point.x, _id[0].point.y, _id[0].point.z);
+	scene.add(sphere);
+	/*if (mainObject.name == "Scene" || mainObject.children.length > 0)
+		mainObject.traverse( function ( child ) {
+			if (child.isMesh) {
+				child.traverse( function ( children ) {
+				});
+			}
+		});
+	else
+		var intersects = raycaster.intersectObjects( mainObject, false );*/
+}
+
+function onWindowResize() {
+	camera.aspect = canvasDimensions.x / canvasDimensions.y;
+	camera.updateProjectionMatrix();
+	renderer.setSize( canvasDimensions.x, canvasDimensions.y );
+	render();
+}
+
+function animate() {
+	requestAnimationFrame( animate );
+	const delta = clock.getDelta();
+	if ( mixer ) { mixer.update( delta );}
+	TWEEN.update();
+	for ( let i = 0; i < clippingPlanes.length; i ++ ) {
+
+		const plane = clippingPlanes[ i ];
+		const po = planeObjects[ i ];
+		if (po !== undefined ) {
+			plane.coplanarPoint( po.position );
+			po.lookAt(
+				po.position.x - plane.normal.x,
+				po.position.y - plane.normal.y,
+				po.position.z - plane.normal.z,
+			);
+		}
+
+	}
 	renderer.render( scene, camera );
+	stats.update();
 }
 
 function updateObject () {
@@ -887,8 +915,9 @@ function onPointerUp( e ) {
 		else {
 			intersects = raycaster.intersectObjects( mainObject[0], false );
 		}
-		if (intersects.length > 0)
+		if (intersects.length > 0) {
 			pickFaces(intersects);
+		}
 	}
 }
 
@@ -922,30 +951,6 @@ const onError = function () {
 	circle.set(100, 100);
 	circle.hide();	
 };
-
-const onProgress = function ( xhr ) {
-	var percentComplete = xhr.loaded / xhr.total * 100;
-	circle.set(percentComplete, 100);
-	if (percentComplete >= 100) {
-		circle.hide();
-		showToast("Model has been loaded.");
-	}
-};
-
-function truncateString(str, n) {
-	if (str.length === 0) {return str;}
-	else if (str.length > n) {
-		return str.substring(0, n) + "...";
-	} else {
-		return str;
-	}
-}
-
-function showToast (_str) {
-	var myToast = Toastify(options);
-	myToast.options.text = _str;
-	myToast.showToast();
-}
 
 function init() {
 	// model
@@ -1054,12 +1059,12 @@ function init() {
 	const editorFolder = gui.addFolder('Editor').close();
 	editorFolder.add(transformText, 'Transform 3D Object', { None: '', Move: 'translate', Rotate: 'rotate', Scale: 'scale' } ).onChange(function (value)
 	{ 
-		if (value === '') transformControl.detach(); else { transformControl.mode = value; transformControl.attach( helperObjects[0] ); }
+		if (value === '') {transformControl.detach();} else { transformControl.mode = value; transformControl.attach( helperObjects[0] ); }
 	});
 	const lightFolder = editorFolder.addFolder('Lights').close();
 	lightFolder.add(transformText, 'Transform Light', { None: '', Move: 'translate', Rotate: 'rotate', Scale: 'scale' } ).onChange(function (value)
 	{ 
-		if (value === '') transformControlLight.detach(); else { transformControlLight.mode = value; transformControlLight.attach( lightObjects[0] ); }
+		if (value === '') {transformControlLight.detach();} else { transformControlLight.mode = value; transformControlLight.attach( lightObjects[0] ); }
 	});
 	lightFolder.addColor ( colors, 'Light1' ).onChange(function (value) {
 		const tempColor = new THREE.Color( value );
@@ -1073,8 +1078,8 @@ function init() {
 	propertiesFolder.add( saveProperties, 'Camera' ); 
 	propertiesFolder.add( saveProperties, 'Light' ); 
 
-	if (editor)
-		editorFolder.add({["Save"]: function(){
+	if (editor) {
+		editorFolder.add({["Save"]() {
 			var xhr = new XMLHttpRequest(),
 				jsonArr,
 				method = "POST",
@@ -1084,14 +1089,19 @@ function init() {
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			var rotateMetadata = new THREE.Vector3(THREE.Math.radToDeg(helperObjects[0].rotation.x),THREE.Math.radToDeg(helperObjects[0].rotation.y),THREE.Math.radToDeg(helperObjects[0].rotation.z));
 			var newMetadata = ({"objPosition": [ helperObjects[0].position.x, helperObjects[0].position.y, helperObjects[0].position.z ], "objScale": [ helperObjects[0].scale.x, helperObjects[0].scale.y, helperObjects[0].scale.z ], "objRotation": [ rotateMetadata.x, rotateMetadata.y, rotateMetadata.z ] });
-			if (saveProperties.Camera)
+			if (saveProperties.Camera) {
 				newMetadata = Object.assign(newMetadata, {"cameraPosition": [ camera.position.x, camera.position.y, camera.position.z ], "controlsTarget": [ controls.target.x, controls.target.y, controls.target.z ]});
-			if (saveProperties.Light)
+			}
+			if (saveProperties.Light) {
 				newMetadata = Object.assign(newMetadata, {"lightPosition": [ dirLight.position.x, dirLight.position.y, dirLight.position.z ], "lightColor": [ "#" + (dirLight.color.getHexString()).toUpperCase() ], "lightIntensity": [ dirLight.intensity ] });
-			if (compressedFile !== '')
-				var params = "5MJQTqB7W4uwBPUe="+JSON.stringify(newMetadata, null, '\t')+"&path="+uri+basename+compressedFile+"&filename="+filename;
-			else
-				var params = "5MJQTqB7W4uwBPUe="+JSON.stringify(newMetadata, null, '\t')+"&path="+uri+"&filename="+filename;
+			}
+			
+			var params;
+			if (compressedFile !== '') {
+				params = "5MJQTqB7W4uwBPUe="+JSON.stringify(newMetadata, null, '\t')+"&path="+uri+basename+compressedFile+"&filename="+filename;
+			} else {
+				params = "5MJQTqB7W4uwBPUe="+JSON.stringify(newMetadata, null, '\t')+"&path="+uri+"&filename="+filename;
+			}
 			xhr.onreadystatechange = function()
 			{
 				if(xhr.readyState === XMLHttpRequest.DONE) {
@@ -1103,12 +1113,13 @@ function init() {
 			};
 			xhr.send(params);
 		}}, 'Save');
-		editorFolder.add({["Picking"]: function(){
+		editorFolder.add({["Picking"]() {
 			EDITOR=!EDITOR;
 			var _str;
 			EDITOR ? _str = "enabled" : _str = "disabled";
 			showToast ("Face picking is " + _str);
 		}}, 'Picking');
+	}
 }
 
 init();
