@@ -36,16 +36,20 @@
                         </span>
                     </f:if>
                 </h2>
-                <f:if condition="{item.collection.thumbnail}"><div class="tx-dlf-collection-thumbnail">
-                    <f:link.action action="show"
-                                   arguments="{collection : item.collection}"
-                                   pageUid="{pageUid}">
-                        <f:image image="{item.collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {item.collection.label}" title="{item.collection.label}" maxWidth="250" />
-                    </f:link.action>
-                </div></f:if>
-                <f:if condition="{item.collection.description}"><div class="tx-dlf-collection-description">
-                    <f:format.html>{item.collection.description}</f:format.html>
-                </div></f:if>
+                <f:if condition="{item.collection.thumbnail}">
+                    <div class="tx-dlf-collection-thumbnail">
+                        <f:link.action action="show"
+                                       arguments="{collection : item.collection}"
+                                       pageUid="{pageUid}">
+                            <f:image image="{item.collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {item.collection.label}" title="{item.collection.label}" maxWidth="250" />
+                        </f:link.action>
+                    </div>
+                </f:if>
+                <f:if condition="{item.collection.description}">
+                    <div class="tx-dlf-collection-description">
+                        <f:format.html>{item.collection.description}</f:format.html>
+                    </div>
+                </f:if>
                 <p class="tx-dlf-collection-counts">
                     ({item.info.titles -> f:count()}
                     <f:translate key="{f:if(condition:'{item.info.titles -> f:count()} > 1', then: 'titles', else: 'title')}" />
