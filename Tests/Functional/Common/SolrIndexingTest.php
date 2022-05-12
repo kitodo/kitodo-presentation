@@ -133,6 +133,11 @@ class SolrIndexingTest extends FunctionalTestCase
         $this->assertGreaterThanOrEqual(1, $musikResults['solrResults']['numFound']);
         $this->assertGreaterThanOrEqual(1, $dresdnerHefteResults['solrResults']['numFound']);
         $this->assertEquals('533223312LOG_0000', $dresdnerHefteResults['solrResults']['documents'][0]['id']);
+
+        // With query: List all results
+        $metadataResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden']);
+        $fulltextResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden', 'fulltext' => '1']);
+        $this->assertGreaterThan($metadataResults['solrResults']['numFound'], $fulltextResults['solrResults']['numFound']);
     }
 
     protected function createSolrCore(): object
