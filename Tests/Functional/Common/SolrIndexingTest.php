@@ -5,7 +5,9 @@ namespace Kitodo\Dlf\Tests\Functional\Common;
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\SolrCore;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
@@ -18,6 +20,9 @@ class SolrIndexingTest extends FunctionalTestCase
 {
     /** @var PersistenceManager */
     protected $persistenceManager;
+
+    /** @var CollectionRepository */
+    protected $collectionRepository;
 
     /** @var DocumentRepository */
     protected $documentRepository;
@@ -34,6 +39,7 @@ class SolrIndexingTest extends FunctionalTestCase
 
         $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
+        $this->collectionRepository = $this->initializeRepository(CollectionRepository::class, 20000);
         $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 20000);
         $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, 20000);
 
@@ -97,6 +103,36 @@ class SolrIndexingTest extends FunctionalTestCase
 
         // $result['documents'] is hydrated from the database model
         $this->assertEquals($document->getTitle(), $result['documents'][$document->getUid()]['title']);
+    }
+
+    /**
+     * @test
+     */
+    public function canSearchInCollections()
+    {
+        $core = $this->createSolrCore();
+
+        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/documents_fulltext.xml');
+        $this->importSolrDocuments($core->solr, __DIR__ . '/../../Fixtures/Common/documents_1.solr.json');
+        $this->importSolrDocuments($core->solr, __DIR__ . '/../../Fixtures/Common/documents_fulltext.solr.json');
+
+        $collections = $this->collectionRepository->findCollectionsBySettings([
+            'index_name' => ['Musik', 'Projekt: Dresdner Hefte'],
+        ]);
+        $musik = $collections[0];
+        $dresdnerHefte = $collections[1];
+
+        $settings = [
+            'solrcore' => $core->solr->core,
+            'storagePid' => 20000,
+        ];
+
+        // No query: Only list toplevel result(s) in collection(s)
+        $musikResults = $this->documentRepository->findSolrByCollection($musik, $settings, []);
+        $dresdnerHefteResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, []);
+        $this->assertGreaterThanOrEqual(1, $musikResults['solrResults']['numFound']);
+        $this->assertGreaterThanOrEqual(1, $dresdnerHefteResults['solrResults']['numFound']);
+        $this->assertEquals('533223312LOG_0000', $dresdnerHefteResults['solrResults']['documents'][0]['id']);
     }
 
     protected function createSolrCore(): object
