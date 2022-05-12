@@ -244,7 +244,7 @@ class CalendarController extends AbstractController
         }
 
         $this->view->assign('documentId', $this->document->getUid());
-        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()));
+        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getUid()));
     }
 
     /**
