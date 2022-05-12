@@ -76,11 +76,47 @@ Upgrade-Wizards
 There are two upgrade wizards available. If you upgrade an existing installation, you should use them. Without, you have to
 configure all plugins from scratch and the collection record images won't be visible.
 
+Database Upgrade
+----------------
+
+Run the database upgrade (``Maintenance > Analyze Database Structure``) and *delete* the columns ``metadata`` and ``metadata_sorting``.
+(These columns are not used anymore by Kitodo.Presentation 4. If they are not removed, indexing new documents may fail.)
+
 Set the Storage Pid
 -------------------
 
-The Kitodo.Presentation configuration folder must be set by TypoScript constnat `plugin.tx_dlf.persistence.storagePid` now.
+The Kitodo.Presentation configuration folder must be set by TypoScript constant `plugin.tx_dlf.persistence.storagePid` now.
 This setting is available for all plugins in the page tree. The plugin specific `pages` has been removed.
+
+Migrate Plugin Settings
+-----------------------
+
+When plugins are configured in TypoScript, the values must now be wrapped in a ``settings`` key.
+
+.. code-block:: typoscript
+
+   // Before
+   plugin.tx_dlf_pageview {
+     features = OverviewMap
+   }
+
+   // After
+   plugin.tx_dlf_pageview {
+     settings {
+       features = OverviewMap
+     }
+   }
+
+Fluid Rendering
+---------------
+
+All plugins now use the Fluid Template Engine instead of marker templates for outputting HTML.
+
+*  If you override a ``.tmpl`` file, it needs to be migrated to an HTML/Fluid template.
+
+*  The TypoScript setting ``templateFile`` has been removed.
+
+See the :ref:`Plugin Reference <fluidplugins>` for more information.
 
 Plugin Feeds
 ------------
@@ -110,21 +146,46 @@ Collection plugin. Both plugins have their own "listview" which basically uses t
 
 With the ListView plugin, you still achieve the following situation:
 
-```
-page 1: Search Plugin (main column)
-   |
-   v
-   +--> page 2: ListView Plugin (main column) | Search Plugin (sidebar) e.g with forceAbsoluteUrlHttps
-   ^
-   |
-page 3: Collection Plugin (main column)
-```
+::
+
+   page 1: Search Plugin (main column)
+      |
+      v
+      +--> page 2: ListView Plugin (main column) | Search Plugin (sidebar) e.g with forceAbsoluteUrlHttps
+      ^
+      |
+   page 3: Collection Plugin (main column)
+
+The setting ``targetPid`` has been renamed to ``targetPidPageView``.
+
+Toolbox Plugins
+---------------
+
+Previously, the toolbox plugins (located in namespace ``Kitodo\Dlf\Plugin\Tools``) could be used directly.
+This is not possible anymore, but instead they must be included via the overarching ``Toolbox`` plugin.
+
+.. code-block:: typoscript
+
+   // Before
+   lib.imagemanipulation < tt_content.list.20.dlf_imagemanipulationtool
+
+   // After
+   lib.imagemanipulation < tt_content.list.20.dlf_toolbox {
+     settings {
+       tools = imagemanipulationtool
+     }
+   }
 
 Update CSP
 ----------
 
 In Kitodo.Presentation 4.0, the way how static images are loaded has changed.
 Plase make sure that ``blob:`` URLs are not forbidden by your Content Security Policy.
+
+Other Changes
+-------------
+
+*  jQuery and OpenLayers have been updated. If you manually include them, update the paths.
 
 
 Version 3.2 -> 3.3
