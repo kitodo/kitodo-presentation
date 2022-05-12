@@ -24,11 +24,17 @@
                 </f:else>
             </f:if>
             <div class="dayLinkList">
-                <f:for each="{day.issues}" as="item">
-                    <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
-                        {item.text}
-                    </f:link.page>
-                </f:for>
+                <f:if condition="{day.issues}">
+                    <ul>
+                        <f:for each="{day.issues}" as="item">
+                            <li>
+                                <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
+                                    {item.text}
+                                </f:link.page>
+                            </li>
+                        </f:for>
+                    </ul>
+                </f:if>
             </div>
         </div>
     </f:then>
