@@ -15,11 +15,9 @@
 <div class="tx-dlf-calendar">
     <div class="meta-header">
         <div class="year-anchor">
-            <div class="year-anchor">
-                <f:link.page additionalParams="{'tx_dlf[id]': parentDocumentId}">
-                    <f:translate key="calendar.allYears" /> {allYearDocTitle}
-                </f:link.page>
-            </div>
+            <f:link.page additionalParams="{'tx_dlf[id]': parentDocumentId}">
+                <f:translate key="calendar.allYears" /> {allYearDocTitle}
+            </f:link.page>
         </div>
         <div class="year">
             <f:link.page additionalParams="{'tx_dlf[id]': documentId}">
@@ -45,44 +43,46 @@
                     </div>
                 </f:then>
             </f:if>
-            <table class="month">
-                <caption>{month.MONTHNAME}</caption>
-                <tr>
-                    <th class="">{month.DAYMON_NAME}</th>
-                    <th class="">{month.DAYTUE_NAME}</th>
-                    <th class="">{month.DAYWED_NAME}</th>
-                    <th class="">{month.DAYTHU_NAME}</th>
-                    <th class="">{month.DAYFRI_NAME}</th>
-                    <th class="">{month.DAYSAT_NAME}</th>
-                    <th class="">{month.DAYSUN_NAME}</th>
-                </tr>
-
-                <f:for each="{month.week}" as="week">
+            <div class="month">
+                <table>
+                    <caption>{month.MONTHNAME}</caption>
                     <tr>
-                        <td class="">
-                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYMON}'}"></f:render>
-                        </td>
-                        <td class="">
-                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTUE}'}"></f:render>
-                        </td>
-                        <td class="">
-                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYWED}'}"></f:render>
-                        </td>
-                        <td class="">
-                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTHU}'}"></f:render>
-                        </td>
-                        <td class="">
-                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYFRI}'}"></f:render>
-                        </td>
-                        <td class="">
-                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSAT}'}"></f:render>
-                        </td>
-                        <td class="">
-                            <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSUN}'}"></f:render>
-                        </td>
+                        <th class="">{month.DAYMON_NAME}</th>
+                        <th class="">{month.DAYTUE_NAME}</th>
+                        <th class="">{month.DAYWED_NAME}</th>
+                        <th class="">{month.DAYTHU_NAME}</th>
+                        <th class="">{month.DAYFRI_NAME}</th>
+                        <th class="">{month.DAYSAT_NAME}</th>
+                        <th class="">{month.DAYSUN_NAME}</th>
                     </tr>
-                </f:for>
-            </table>
+
+                    <f:for each="{month.week}" as="week">
+                        <tr>
+                            <td class="">
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYMON}'}"></f:render>
+                            </td>
+                            <td class="">
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTUE}'}"></f:render>
+                            </td>
+                            <td class="">
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYWED}'}"></f:render>
+                            </td>
+                            <td class="">
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTHU}'}"></f:render>
+                            </td>
+                            <td class="">
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYFRI}'}"></f:render>
+                            </td>
+                            <td class="">
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSAT}'}"></f:render>
+                            </td>
+                            <td class="">
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSUN}'}"></f:render>
+                            </td>
+                        </tr>
+                    </f:for>
+                </table>
+            </div>
         </f:for>
     </div>
 
