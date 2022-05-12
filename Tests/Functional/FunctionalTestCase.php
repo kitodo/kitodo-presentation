@@ -3,6 +3,7 @@
 namespace Kitodo\Dlf\Tests\Functional;
 
 use GuzzleHttp\Client as HttpClient;
+use Kitodo\Dlf\Common\Solr;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -144,5 +145,25 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $repository->setDefaultQuerySettings($querySettings);
 
         return $repository;
+    }
+
+    protected function importSolrDocuments(Solr $solr, string $path)
+    {
+        $jsonDocuments = json_decode(file_get_contents($path), true);
+
+        $updateQuery = $solr->service->createUpdate();
+        $documents = array_map(function ($jsonDoc) use ($updateQuery) {
+            $document = $updateQuery->createDocument();
+            foreach ($jsonDoc as $key => $value) {
+                $document->setField($key, $value);
+            }
+            if (isset($jsonDoc['collection'])) {
+                $document->setField('collection_faceting', $jsonDoc['collection']);
+            }
+            return $document;
+        }, $jsonDocuments);
+        $updateQuery->addDocuments($documents);
+        $updateQuery->addCommit();
+        $solr->service->update($updateQuery);
     }
 }
