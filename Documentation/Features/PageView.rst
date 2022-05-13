@@ -86,9 +86,9 @@ Additional OpenLayers controls may be configured in TypoScript:
 .. code-block:: typoscript
 
    plugin.tx_dlf_pageview {
-       settings {
-           features = OverviewMap,ZoomPanel
-       }
+     settings {
+       features = OverviewMap,ZoomPanel
+     }
    }
 
 These are created in ``dlfViewer::createControls_()``.
@@ -106,16 +106,16 @@ To insert links for activating these tools into the default PageView template, t
 .. code-block:: typoscript
 
    plugin.tx_dlf_pageview {
-       settings {
-           basket {
-               magnifier = 1
-               crop = 1
-           }
-
-           // The basket must be configured for these settings to take effect
-           basketButton = 1
-           targetBasket = 123
+     settings {
+       basket {
+         magnifier = 1
+         crop = 1
        }
+
+       // The basket must be configured for these settings to take effect
+       basketButton = 1
+       targetBasket = 123
+     }
    }
 
 Magnifier
