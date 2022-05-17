@@ -41,6 +41,7 @@ class View3DController extends AbstractController
             return '';
         } else {
             $url = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['DEFAULT']);
+            $proxy = '';
             if ($this->settings['useInternalProxy']) {
                 // Configure @action URL for form.
                 $uri = $this->uriBuilder->reset()
@@ -48,14 +49,15 @@ class View3DController extends AbstractController
                     ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
                     ->setArguments([
                         'eID' => 'tx_dlf_pageview_proxy',
-                        'url' => urlencode($url),
-                        'uHash' => GeneralUtility::hmac($url, 'PageViewProxy')
+                        'url' => $url,
+                        'uHash' => 'View3DController'
                         ])
                     ->build();
-                    $url = $uri;
+                    $proxy = $uri;
             }
 
             $this->view->assign('url', $url);
+            $this->view->assign('proxy', $proxy);
             $this->view->assign('scriptMain', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/main.js');
             $this->view->assign('scriptToastify', '/typo3conf/ext/dlf/Resources/Public/Javascript/Toastify/toastify.js');
             $this->view->assign('scriptSpinner', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/spinner/main.js');
