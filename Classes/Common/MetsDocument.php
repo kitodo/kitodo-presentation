@@ -203,6 +203,23 @@ final class MetsDocument extends Doc
         }
     }
 
+	/**
+	 * {@inheritDoc}
+	 * @see \Kitodo\Dlf\Common\Doc::getPageBeginning()
+	 */
+
+	public function getPageBeginning($pageId, $fileId)
+	{
+		$mets = $this->mets
+			->xpath(
+				'./mets:structMap[@TYPE="PHYSICAL"]' .
+				'//mets:div[@ID="' .  $pageId .  '"]' .
+				'/mets:fptr[@FILEID="' .  $fileId .  '"]' .
+				'/mets:area/@BEGIN'
+			);
+		return empty($mets) ? '' : $mets[0]->__toString();
+	}
+
     /**
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Doc::getFileMimeType()

@@ -45,7 +45,8 @@ class PageViewController extends AbstractController
     protected $images = [];
 
     /**
-     * Holds the current scores' URL and MIME types
+     * Holds the current scores' URL, MIME types and the
+	 * id of the current page
      *
      * @var array
      * @access protected
@@ -107,7 +108,7 @@ class PageViewController extends AbstractController
             $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
             $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
         }
-        $this->scores = $this->getScore();
+        $this->scores = $this->getScore($this->requestData['page']);
 
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
@@ -126,34 +127,28 @@ class PageViewController extends AbstractController
      *
      * @access protected
      *
+     * @param int $page: Page number
+	 *
      * @return array URL and MIME type of fulltext file
      */
-    protected function getScore()
+    protected function getScore(int $page)
     {
         $score = [];
 		$doc = $this->document->getDoc();
         $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
 
-		foreach ($doc->physicalStructureInfo as $page) {
-			// look for files section in page
-			if (isset($page['files'])) {
-				$files = $page['files'];
-			} else {
-				continue;
-			}
-			// look for score file group in files section
-			foreach ($fileGrpsScores as $fileGrpScore) {
-				if (isset($files[$fileGrpScore])) {
-					$loc = $files[$fileGrpScore];
-					break;
-				}
-			}
-			if ($loc) {
+		$pageId = $this->document->getDoc()->physicalStructure[$page];
+		$files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
+
+		foreach ($fileGrpsScores as $fileGrpScore) {
+			if (isset($files[$fileGrpScore])) {
+				$loc = $files[$fileGrpScore];
 				break;
 			}
 		}
 
 		$score['mimetype'] = $doc->getFileMimeType($loc);
+		$score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
 		$score['url'] = $this->document
 			->getDoc()
 			->getFileLocation($loc);
@@ -238,7 +233,7 @@ class PageViewController extends AbstractController
                         div: "' . $this->settings['elementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
-						score: ' . json_encode($this->scores['url']) . ',
+						score: ' . json_encode($this->scores) . ',
                         annotationContainers: ' . json_encode($this->annotationContainers) . ',
                         useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
                     });
