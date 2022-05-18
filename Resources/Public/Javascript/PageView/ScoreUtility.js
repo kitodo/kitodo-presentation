@@ -35,6 +35,11 @@ const verovioSettings = {
 dlfScoreUtils.fetchScoreDataFromServer = function(url) {
     const result = new $.Deferred();
 
+	if (url === '') {
+		result.reject();
+		return result;
+	}
+
     $.ajax({ url }).done(function (data, status, jqXHR) {
         try {
 			const tk = new verovio.toolkit();

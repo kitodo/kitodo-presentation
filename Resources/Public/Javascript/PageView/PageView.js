@@ -69,7 +69,14 @@ var dlfViewer = function(settings){
      * @type {string}
      * @private
      */
-    this.score = dlfUtils.exists(settings.score) ? settings.score : '';
+    this.score = dlfUtils.exists(settings.score['url']) ? settings.score['url'] : '';
+
+    /**
+     * Id of pagebeginning in score
+     * @type {string}
+     * @private
+     */
+    this.pagebeginning = dlfUtils.exists(settings.score['pagebeginning']) ? settings.score['pagebeginning'] : '';
 
     /**
      * Fulltext information (e.g. URL)
@@ -229,11 +236,13 @@ dlfViewer.prototype.addCustomControls = function() {
     }
 
 	if (this.scoresLoaded_ !== null) {
-		scoreControl = new dlfViewerScoreControl();
+		const scoreControl = new dlfViewerScoreControl(this.pagebeginning);
 
+		const pagebeginning = this.pagebeginning;
 		this.scoresLoaded_
 			.then(function (scoreData) {
 				scoreControl.loadScoreData(scoreData);
+				scoreControl.scrollToPagebeginning();
 			})
 			.catch(function () {
 				scoreControl.deactivate();

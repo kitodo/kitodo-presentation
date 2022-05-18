@@ -9,12 +9,25 @@
  */
 
 const className = 'score-visible';
+const scrollOffset = 100;
 /**
  * Encapsulates especially the score behavior
  * @constructor
  * @param {ol.Map} map
  */
-const dlfViewerScoreControl = function() {
+const dlfViewerScoreControl = function(pagebeginning) {
+
+	/**
+	 * @type {number}
+	 * @private
+	 */
+	this.position = 0;
+
+	/**
+	 * @type {string}
+	 * @private
+	 */
+	this.pagebeginning = pagebeginning;
 
     /**
      * @type {Object}
@@ -196,5 +209,18 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function() {
     $('#tx-dlf-score').addClass(className);
     $('#tx-dlf-score').show();
     $('body').addClass(className);
+	this.scrollToPagebeginning();
+};
+
+/**
+ * Scroll to Element with given ID
+ */
+dlfViewerScoreControl.prototype.scrollToPagebeginning = function() {
+	// get current position of pb element
+	const currentPosition = $('#tx-dlf-score svg g#' + this.pagebeginning).parent().position()?.top ?? 0;
+	// set target position if zero
+	this.position = this.position == 0 ? currentPosition : this.position;
+	// trigger scroll
+	$('#tx-dlf-score').scrollTop(this.position - scrollOffset);
 };
 
