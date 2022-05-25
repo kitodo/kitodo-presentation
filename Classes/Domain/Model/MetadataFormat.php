@@ -12,6 +12,9 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+//use TYPO3\CMS\Extbase\Annotation as Extbase; // TODO: Remove if not needed
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 /**
  * This specifies a way how a metadatum (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
  *
@@ -56,12 +59,35 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $xpathSorting;
 
     /**
+     * Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry. 
+     * 
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataSubentry>
+     * @Extbase\ORM\Lazy
+     * @Extbase\ORM\Cascade("remove")
+     */
+    protected $subentries;
+    
+    /**
      * Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
      *
      * @var int
      */
     protected $mandatory;
 
+    /**
+     * constructor
+     */
+    public function __construct()
+    {
+        // Do not remove the next line: It would break the functionality
+        $this->initStorageObjects();
+    }
+
+    protected function initStorageObjects()
+    {
+        $this->subentries = new ObjectStorage();
+    }
+    
     /**
      * @return int
      */
@@ -126,6 +152,40 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->xpathSorting = $xpathSorting;
     }
 
+    public function getSubentries() 
+    {
+        return $this->subentries;
+    }
+    
+    public function setSubentries(ObjectStorage $subentries): void
+    {
+        $this->subentries = $subentries;
+    }
+
+    /**
+     * Adds a Subentry
+     *
+     * @param \Kitodo\Dlf\Domain\Model\MetadataSubentry $subentry
+     *
+     * @return void
+     */
+    public function addSubentry(MetadataSubentry $subentry)
+    {
+        $this->subentries->attach($subentry);
+    }
+
+    /**
+     * Removes a Subentry
+     *
+     * @param \Kitodo\Dlf\Domain\Model\MetadataSubentry $subentryToRemove
+     *
+     * @return void
+     */
+    public function removeSubentry(MetadataSubentry $subentryToRemove)
+    {
+        $this->subentries->detach($subentryToRemove);
+    }
+    
     /**
      * @return int
      */

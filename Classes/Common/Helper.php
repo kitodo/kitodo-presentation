@@ -393,7 +393,7 @@ class Helper
         $uid = max(intval($uid), 0);
         if (
             !$uid
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
+            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries','tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
             self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
             return '';
@@ -735,7 +735,7 @@ class Helper
         // Check if we already got a translation.
         if (empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
             // Check if this table is allowed for translation.
-            if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
+            if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
                 if ($languageAspect->getContentId() > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
