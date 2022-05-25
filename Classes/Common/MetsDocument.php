@@ -614,7 +614,7 @@ final class MetsDocument extends Doc
                 )
                 ->innerJoin(
                     'tx_dlf_metadataformat_joins',
-                    'tx_dlf_metadata_subentries',
+                    'tx_dlf_metadatasubentries',
                     'tx_dlf_subentries_joins',
                     $queryBuilder->expr()->eq(
                         'tx_dlf_subentries_joins.parent_id',

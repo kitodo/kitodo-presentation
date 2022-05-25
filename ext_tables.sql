@@ -141,9 +141,9 @@ CREATE TABLE tx_dlf_metadataformat (
 );
 
 --
--- Table structure for table 'tx_dlf_metadata_subentries'
+-- Table structure for table 'tx_dlf_metadatasubentries'
 --
-CREATE TABLE tx_dlf_metadata_subentries (
+CREATE TABLE tx_dlf_metadatasubentries (
     uid int(11) NOT NULL auto_increment,
     pid int(11) DEFAULT '0' NOT NULL,
     parent_id int(11) DEFAULT '0' NOT NULL,

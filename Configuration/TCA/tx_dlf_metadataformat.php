@@ -114,7 +114,7 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.subentries',
             'config' => [
                 'type' => 'inline',
-                'foreign_table' => 'tx_dlf_metadata_subentries',
+                'foreign_table' => 'tx_dlf_metadatasubentries',
                 'foreign_field' => 'parent_id',
                 'appearance' => [
                     'expandSingle' => 1,
