@@ -1,3 +1,5 @@
+# TODO: This whole file can get discarded when support for TYPO3 9.5 ends.
+
 config.tx_extbase {
     persistence {
         classes {
