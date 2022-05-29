@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
-//use TYPO3\CMS\Extbase\Annotation as Extbase; // TODO: Remove if not needed
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -59,14 +59,14 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $xpathSorting;
 
     /**
-     * Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry. 
-     * 
+     * Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry.
+     *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataSubentry>
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")
      */
     protected $subentries;
-    
+
     /**
      * Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
      *
@@ -87,7 +87,7 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->subentries = new ObjectStorage();
     }
-    
+
     /**
      * @return int
      */
@@ -152,11 +152,11 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
         $this->xpathSorting = $xpathSorting;
     }
 
-    public function getSubentries() 
+    public function getSubentries()
     {
         return $this->subentries;
     }
-    
+
     public function setSubentries(ObjectStorage $subentries): void
     {
         $this->subentries = $subentries;
@@ -185,7 +185,7 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->subentries->detach($subentryToRemove);
     }
-    
+
     /**
      * @return int
      */
