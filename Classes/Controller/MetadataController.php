@@ -207,6 +207,13 @@ class MetadataController extends AbstractController
                         ? implode($this->settings['separator'], $value)
                         : $value;
 
+                    if ($metaCObjData[$i][$name] === 'Array') {
+                        $metaCObjData[$i][$name] = [];
+                        foreach ($value as $subKey => $subValue) {
+                            $metaCObjData[$i][$name][$subKey] = $subValue;
+                        }
+                    }
+
                     if ($name == 'title') {
                         // Get title of parent document if needed.
                         if (empty(implode('', $value)) && $this->settings['getTitle'] && $this->document->getPartof()) {

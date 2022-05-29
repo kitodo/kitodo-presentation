@@ -48,6 +48,11 @@ config.tx_extbase {
                     tableName = tx_dlf_metadataformat
                 }
             }
+            Kitodo\Dlf\Domain\Model\MetadataSubentry {
+                mapping {
+                    tableName = tx_dlf_metadatasubentries
+                }
+            }
             Kitodo\Dlf\Domain\Model\Printer {
                 mapping {
                     tableName = tx_dlf_printer
