@@ -104,3 +104,43 @@ plugin.tx_dlf_search {
         }
     }
 }
+
+
+# Required for TYPO3 9.5
+config.tx_extbase.persistence.classes {
+  Kitodo\Dlf\Domain\Model\MetadataSubentry {
+    mapping {
+      tableName = tx_dlf_metadatasubentries
+    }
+  }
+  Kitodo\Dlf\Domain\Model\Format {
+    mapping {
+      tableName = tx_dlf_formats
+    }
+  }
+  Kitodo\Dlf\Domain\Model\Document {
+    mapping {
+      tableName = tx_dlf_documents
+    }
+  }
+  Kitodo\Dlf\Domain\Model\Collection {
+    mapping {
+      tableName = tx_dlf_collections
+    }
+  }
+  Kitodo\Dlf\Domain\Model\SolrCore {
+    mapping {
+      tableName = tx_dlf_solrcores
+    }
+  }
+  Kitodo\Dlf\Domain\Model\Structure {
+    mapping {
+      tableName = tx_dlf_structures
+    }
+  }
+  Kitodo\Dlf\Domain\Model\Token {
+    mapping {
+      tableName = tx_dlf_tokens
+    }
+  }
+}
