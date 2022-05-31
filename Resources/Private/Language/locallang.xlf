@@ -122,6 +122,9 @@
 			<trans-unit id="downloadWork">
 				<source><![CDATA[Download whole work]]></source>
 			</trans-unit>
+			<trans-unit id="filter.submit">
+				<source><![CDATA[Filter]]></source>
+			</trans-unit>
 			<trans-unit id="firstPage">
 				<source><![CDATA[First Page]]></source>
 			</trans-unit>
@@ -256,6 +259,9 @@
 			</trans-unit>
 			<trans-unit id="search.submit">
 				<source><![CDATA[Search]]></source>
+			</trans-unit>
+			<trans-unit id="type" approved="yes">
+				<source><![CDATA[type]]></source>
 			</trans-unit>
 			<trans-unit id="volume">
 				<source><![CDATA[volume]]></source>

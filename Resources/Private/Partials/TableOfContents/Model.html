@@ -19,9 +19,10 @@
         title="{f:if(condition:'{model.title}', then: '{model.title}', else: '{model.type}')}">
         <span class="tx-dlf-toc-title">{model.title}</span>
         <br>
-        <span class="tx-dlf-toc-type">{model.identifier}</span>
-        <br>
         <img class="tx-dlf-toc-preview-image" src="{model.image}" alt="{model.title}">
-        <span class="tx-dlf-toc-description">{model.description}</span>
+        <br>
+        <span class="tx-dlf-toc-preview-type">{model.identifier}</span>
+        <br>
+        <span class="tx-dlf-toc-preview-description"><f:format.crop maxCharacters="115" append="&nbsp;...">{model.description}</f:format.crop></span>
     </f:link.page>
 </div>

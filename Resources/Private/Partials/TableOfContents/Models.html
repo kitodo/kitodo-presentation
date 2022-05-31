@@ -18,7 +18,7 @@
             <h2>
                 <f:render partial="TableOfContents/Title" arguments="{child: model}"/>
             </h2>
-            <f:render partial="TableOfContents/Filter"/>
+            <f:render partial="TableOfContents/Filter" arguments="{currentList: currentList, types: types}"/>
             <div class="tx-dlf-toc-preview-items">
                 <f:render partial="TableOfContents/Models" arguments="{models: model._SUB_MENU}"/>
             </div>

@@ -35,26 +35,6 @@ class TableOfContentsController extends AbstractController
     protected $activeEntries = [];
 
     /**
-     * @var array $this->filterParams: The current filter parameter
-     * @access protected
-     */
-    protected $filterParams;
-
-    /**
-     * Filter Action
-     *
-     * @return void
-     */
-    public function filterAction()
-    {
-        // if filter was triggered, get filter parameters from POST variables
-        $this->filterParams = $this->getParametersSafely('filterParameter');
-
-        // output is done by main action
-        $this->forward('main', null, null, ['filterParameter' => $this->filterParams]);
-    }
-
-    /**
      * The main method of the plugin
      *
      * @return void
@@ -76,7 +56,9 @@ class TableOfContentsController extends AbstractController
                 unset($this->requestData['logicalPage']);
             }
             if ($this->document->getDoc()->tableOfContents[0]['type'] == 'collection') {
+                $this->view->assign('currentList', $this->requestData['id']);
                 $this->view->assign('type', 'collection');
+                $this->view->assign('types', $this->getTypes($this->document->getDoc()->tableOfContents));
                 $this->view->assign('toc', $this->makeMenuFor3DObjects());
             } else {
                 $this->view->assign('type', 'other');
@@ -174,10 +156,7 @@ class TableOfContentsController extends AbstractController
 
         // Go through table of contents and create all menu entries.
         foreach ($this->document->getDoc()->tableOfContents as $entry) {
-            $menuEntry = $this->getMenuEntryWithImage($entry, true);
-            if (!empty($menuEntry)) {
-                $menuArray[] = $menuEntry;
-            }
+            $menuArray[] = $this->getMenuEntryWithImage($entry, true);
         }
         return $menuArray;
     }
@@ -309,11 +288,24 @@ class TableOfContentsController extends AbstractController
         $entryArray = [];
 
         // don't filter if the entry type is collection or search params are empty
-        if ($entry['type'] !== 'collection' && is_array($this->filterParams) && !empty($this->filterParams)) {
+        if ($entry['type'] != 'collection') {
             // currently only title filtering is defined
-            // TODO: add more logic here after another fields are defined
-            if (!str_contains($entry['label'], $this->filterParams[0])) {
-                return $entryArray;
+            if (!empty($this->requestData['title']) && !empty($this->requestData['types'])) {
+                $label = strtolower($entry['label']);
+                $title = strtolower($this->requestData['title']);
+                if (!str_contains($label, $title) && !str_contains($entry['identifier'], $this->requestData['types'])) {
+                    return $entryArray;
+                }
+            } else if (!empty($this->requestData['title'])) {
+                $label = strtolower($entry['label']);
+                $title = strtolower($this->requestData['title']);
+                if (!str_contains($label, $title)) {
+                    return $entryArray;
+                }
+            }  else if (!empty($this->requestData['types'])) {
+                if (!str_contains($entry['identifier'], $this->requestData['types'])) {
+                    return $entryArray;
+                }
             }
         }
 
@@ -350,10 +342,38 @@ class TableOfContentsController extends AbstractController
             ) {
                 $entryArray['_SUB_MENU'] = [];
                 foreach ($entry['children'] as $child) {
-                    $entryArray['_SUB_MENU'][] = $this->getMenuEntryWithImage($child);
+                    $menuEntry = $this->getMenuEntryWithImage($child);
+                    if (!empty($menuEntry)) {
+                        $entryArray['_SUB_MENU'][] = $menuEntry;
+                    }
                 }
             }
         }
         return $entryArray;
+    }
+
+    private function getTypes($entry) {
+        $types = [];
+        $index = 0;
+
+        if (!empty($entry[0]['children'])) {
+            foreach ($entry[0]['children'] as $child) {
+                $type = $this->getType($child);
+                if (!(in_array($type, $types)) && $type != NULL) {
+                    $types[$index] = $type;
+                    $index++;
+                }
+            }
+        }
+
+        return $types;
+    }
+
+    private function getType($entry) {
+        $type = $entry['identifier'];
+        if (!empty($type)) {
+            return strtok($type, ',');
+        }
+        return $type;
     }
 }

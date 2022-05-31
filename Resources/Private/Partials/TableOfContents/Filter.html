@@ -9,9 +9,20 @@
  * LICENSE.txt file that was distributed with this source code.
 -->
 </f:comment>
-<f:form action="filter" controller="TableOfContents" name="filterParameter" method="get" class="tx-dlf-filter-form">
+<form action="{f:uri.page(pageUid='{viewData.requestData.pageUid}')}" name="filterParameter" method="get" class="tx-dlf-filter-form">
+    <input type="hidden" id="tx-dlf-filter-id" name="tx_dlf[id]" value="{currentList}" />
     <label for="tx-dlf-filter-title">
         {f:translate(key: 'title')}
     </label>
-    <f:form.textfield id="tx-dlf-filter-title" name="tx_dlf[title]" />
-</f:form>
+    <input id="tx-dlf-filter-title" name="tx_dlf[title]" />
+    <label for="tx-dlf-filter-type">
+        {f:translate(key: 'type')}
+    </label>
+    <select id="tx-dlf-filter-type" name="tx_dlf[types]" >
+        <option value=""></option>
+        <f:for each="{types}" as="type">
+            <option value="{type}">{type}</option>
+        </f:for>
+    </select>
+    <f:form.submit value="{f:translate(key: 'filter.submit')}" />
+</form>

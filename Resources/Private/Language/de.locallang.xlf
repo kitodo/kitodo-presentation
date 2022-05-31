@@ -129,6 +129,10 @@
 				<source><![CDATA[Download whole work]]></source>
 				<target><![CDATA[Ganzes Werk herunterladen]]></target>
 			</trans-unit>
+			<trans-unit id="filter.submit">
+				<source><![CDATA[Filter]]></source>
+				<target><![CDATA[Filtern]]></target>
+			</trans-unit>
 			<trans-unit id="firstPage" approved="yes">
 				<source><![CDATA[First Page]]></source>
 				<target><![CDATA[Erste Seite]]></target>
@@ -452,6 +456,10 @@
 			<trans-unit id="tools.searchindocument.searchInDocument" approved="yes">
 				<source><![CDATA[Search in document]]></source>
 				<target><![CDATA[Im Dokument suchen]]></target>
+			</trans-unit>
+			<trans-unit id="type" approved="yes">
+				<source><![CDATA[type]]></source>
+				<target><![CDATA[Typ]]></target>
 			</trans-unit>
 			<trans-unit id="volume" approved="yes">
 				<source><![CDATA[volume]]></source>
