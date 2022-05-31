@@ -345,11 +345,7 @@ final class MetsDocument extends Doc
         }
         $details['pagination'] = '';
         $details['type'] = $attributes['TYPE'];
-        // add description for 3D objects
-        if ($details['type'] == 'object') {
-            $metadata = $this->getMetadata($details['id']);
-            $details['description'] = $metadata['description'][0] ?? '';
-        }
+        $details = $this->getLogicalStructureFor3D($details);
         $details['thumbnailId'] = '';
         // Load smLinks.
         $this->_getSmLinks();
@@ -412,6 +408,16 @@ final class MetsDocument extends Doc
                 // Repeat for all children.
                 $details['children'][] = $this->getLogicalStructureInfo($child, true);
             }
+        }
+        return $details;
+    }
+
+    private function getLogicalStructureFor3D($details) {
+        // add description and identifier for 3D objects
+        if ($details['type'] == 'collection' || $details['type'] == 'object') {
+            $metadata = $this->getMetadata($details['id']);
+            $details['description'] = $metadata['description'][0];
+            $details['identifier'] = $metadata['identifier'][0];
         }
         return $details;
     }
