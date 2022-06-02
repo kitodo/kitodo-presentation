@@ -367,6 +367,7 @@ class Indexer
             }
             $autocomplete = [];
             foreach ($metadata as $index_name => $data) {
+                // TODO: Include also subentries if available.
                 if (
                     !empty($data)
                     && substr($index_name, -8) !== '_sorting'
@@ -464,6 +465,7 @@ class Indexer
             $solrDoc->setField('fulltext', $fullText);
             if (is_array($doc->metadataArray[$doc->toplevelId])) {
                 // Add faceting information to physical sub-elements if applicable.
+                // TODO: Include also subentries if available.
                 foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
                     if (
                         !empty($data)
@@ -472,9 +474,9 @@ class Indexer
 
                         if (in_array($index_name, self::$fields['facets'])) {
                             // Remove appended "valueURI" from authors' names for indexing.
-                            if ($index_name == 'author') {
-                                $data = self::removeAppendsFromAuthor($data);
-                            }
+                            //if ($index_name == 'author') {
+                                //$data = self::removeAppendsFromAuthor($data);
+                            //}
                             // Add facets to index.
                             $solrDoc->setField($index_name . '_faceting', $data);
                         }
