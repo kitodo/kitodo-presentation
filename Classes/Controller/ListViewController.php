@@ -83,6 +83,8 @@ class ListViewController extends AbstractController
         }
 
         // get all sortable metadata records
+        // TODO: Sebastian fragen
+        // TODO: Include also subentries if available.
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         // get all metadata records to be shown in results

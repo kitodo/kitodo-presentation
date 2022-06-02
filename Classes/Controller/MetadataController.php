@@ -210,6 +210,7 @@ class MetadataController extends AbstractController
                         ? implode($this->settings['separator'], $metadataValue)
                         : $metadataValue;
 
+                    // TODO: This might not be necessary for subentries or needs to be typecasted correctly. 
                     if ($metaCObjData[$i][$metadataName] === 'Array') {
                         $metaCObjData[$i][$metadataName] = [];
                         foreach ($metadataValue as $subKey => $subValue) {
@@ -263,6 +264,7 @@ class MetadataController extends AbstractController
                         // Translate ISO 639 language code.
                         $metadataArray[$i][$metadataName][0] = Helper::getLanguageName($metadataArray[$i][$metadataName][0]);
                     } elseif (!empty($metadataValue)) {
+                        // TODO: Might need to be extended for the case of two or more metadata nodes with subentries.
                         $metadataArray[$i][$metadataName][0] = $metadataArray[$i][$metadataName][0];
                     }
 
