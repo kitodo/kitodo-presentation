@@ -32,14 +32,11 @@
                                     <f:for each="{configObject.format.0.subentries}" as="subentry">
                                         <f:if condition="{subentry.indexName} === {key}">
                                             <f:variable name="subConfigObject">{subentry}</f:variable>
-                                            <li>
-                                                <strong>{subConfigObject.label}: </strong> {val.0}
-                                            </li>
-                                            <f:comment>
-                                            <!-- TODO Make the <ul><li> structure, configurable -->
-                                            <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaSectionCObj}">{subConfigObject.label}</kitodo:stdWrap>
-                                            <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionCObj}">{val.0}</kitodo:stdWrap>
-                                            </f:comment>
+                                            {subConfigObject.wrap -> kitodo:metadataWrapVariable(name: 'subMetadataWrap')}
+                                            <kitodo:stdWrap wrap="{subMetadataWrap.all}" data="{metaSectionCObj}">
+                                                <kitodo:stdWrap wrap="{subMetadataWrap.key}" data="{metaSectionCObj}">{subConfigObject.label}</kitodo:stdWrap>
+                                                <kitodo:stdWrap wrap="{subMetadataWrap.value}" data="{metaSectionCObj}">{val.0}</kitodo:stdWrap>
+                                            </kitodo:stdWrap>
                                         </f:if>
                                     </f:for>
                                 </f:for>

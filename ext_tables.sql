@@ -158,6 +158,7 @@ CREATE TABLE tx_dlf_metadatasubentries (
     index_name varchar(255) DEFAULT '' NOT NULL,
     xpath varchar(1024) DEFAULT '' NOT NULL,
     default_value varchar(255) DEFAULT '' NOT NULL,
+    wrap text NOT NULL,
 
     PRIMARY KEY (uid),
     KEY parent (pid),

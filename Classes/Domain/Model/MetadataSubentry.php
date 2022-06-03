@@ -62,6 +62,11 @@ class MetadataSubentry extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $defaultValue;
     
     /**
+     * @var string
+     */
+    protected $wrap;
+
+    /**
      * @return \Kitodo\Dlf\Domain\Model\MetadataSubentry
      */
     public function getL18nParent(): MetadataSubentry
@@ -155,5 +160,21 @@ class MetadataSubentry extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     public function setDefaultValue(string $defaultValue): void
     {
         $this->defaultValue = $defaultValue;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getWrap(): string
+    {
+        return $this->wrap;
+    }
+
+    /**
+     * @param string $wrap
+     */
+    public function setWrap(string $wrap): void
+    {
+        $this->wrap = $wrap;
     }
 }
