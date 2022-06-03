@@ -82,8 +82,25 @@ return [
                 'default' => '',
             ],
         ],
+        'wrap' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.wrap',
+            'config' => [
+                'behaviour' => [
+                    'allowLanguageSynchronization' => true
+                ],
+                'type' => 'text',
+                'cols' => 48,
+                'rows' => 20,
+                'wrap' => 'off',
+                'eval' => 'trim',
+                'default' => "key.wrap = <strong>|:</strong>\nvalue.required = 1\nvalue.wrap = <span>|</span>\nall.wrap = <li>|</li>",
+                'fixedFont' => true,
+                'enableTabulator' => true
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab1,label,index_name,xpath,default_value'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadata.tab1,label,index_name,xpath,default_value,wrap'],
     ],
 ];
