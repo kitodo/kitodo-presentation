@@ -104,7 +104,9 @@
     <f:for each="{facetsMenu}" as="facet">
         <ul>
             <li class="tx-dlf-search-no {f:if(condition: '{facet._SUB_MENU}', then: 'tx-dlf-search-ifsub')}">
-                {facet.title}
+                <span class="tx-dlf-facet-title">
+                    <f:translate key="LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{facet.field}" />
+                </span>
                 <f:if condition="{facet._SUB_MENU}">
                     <f:then>
                         <ul>
