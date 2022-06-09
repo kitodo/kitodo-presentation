@@ -65,7 +65,7 @@ class CalendarController extends AbstractController
         $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
 
         $metadata = $this->document->getDoc()->getTitledata();
@@ -112,7 +112,7 @@ class CalendarController extends AbstractController
         $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
 
         $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
@@ -216,7 +216,7 @@ class CalendarController extends AbstractController
         $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
 
         // Get all children of anchor. This should be the year anchor documents
