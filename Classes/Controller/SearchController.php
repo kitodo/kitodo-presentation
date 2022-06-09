@@ -138,8 +138,7 @@ class SearchController extends AbstractController
 
             $documents = $solrResults['documents'] ? : [];
             $this->view->assign('documents', $documents);
-            $rawResults = $solrResults['solrResults']['documents'] ? : [];
-            $this->view->assign('numResults', count($rawResults));
+            $this->view->assign('numResults', $solrResults['solrResults']['numFound'] ?? 0);
             $this->view->assign('widgetPage', $widgetPage);
             $this->view->assign('lastSearch', $this->searchParams);
             $this->view->assign('listedMetadata', $listedMetadata);
