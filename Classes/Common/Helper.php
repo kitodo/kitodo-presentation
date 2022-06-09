@@ -393,40 +393,48 @@ class Helper
         $uid = max(intval($uid), 0);
         if (
             !$uid
+            // NOTE: Only use tables that don't have too many entries!
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
             self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
             return '';
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
+        $makeCacheKey = function ($pid, $uid) {
+            return $pid . '.' . $uid;
+        };
 
-        $where = '';
-        // Should we check for a specific PID, too?
-        if ($pid !== -1) {
-            $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
+        static $cache = [];
+        if (!isset($cache[$table])) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table);
+
+            $result = $queryBuilder
+                ->select(
+                    $table . '.index_name AS index_name',
+                    $table . '.uid AS uid',
+                    $table . '.pid AS pid',
+                )
+                ->from($table)
+                ->execute();
+
+            $cache[$table] = [];
+
+            while ($row = $result->fetch()) {
+                $cache[$table][$makeCacheKey($row['pid'], $row['uid'])]
+                    = $cache[$table][$makeCacheKey(-1, $row['uid'])]
+                    = $row['index_name'];
+            }
         }
 
-        // Get index_name from database.
-        $result = $queryBuilder
-            ->select($table . '.index_name AS index_name')
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq($table . '.uid', $uid),
-                $where,
-                self::whereExpression($table)
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $cacheKey = $makeCacheKey($pid, $uid);
+        $result = $cache[$table][$cacheKey] ?? '';
 
-        if ($resArray = $result->fetch()) {
-            return $resArray['index_name'];
-        } else {
+        if ($result === '') {
             self::log('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
-            return '';
         }
+
+        return $result;
     }
 
     /**
@@ -483,6 +491,8 @@ class Helper
      */
     public static function getDocumentStructures($pid = -1)
     {
+        // TODO: Against redundancy with getIndexNameFromUid
+
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_structures');
 
