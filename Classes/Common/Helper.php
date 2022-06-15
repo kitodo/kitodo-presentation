@@ -655,8 +655,10 @@ class Helper
      * - `hh:mm:ss`
      * - `mm:ss`
      * - `ss`
+     *
+     * Floating point values may be used.
      */
-    public static function timecodeToSeconds(string $timecode): int
+    public static function timecodeToSeconds(string $timecode): float
     {
         $parts = explode(":", $timecode);
 
@@ -665,7 +667,7 @@ class Helper
 
         // Iterate through $parts reversely
         for ($i = count($parts) - 1; $i >= 0; $i--) {
-            $totalSeconds += $factor * $parts[$i];
+            $totalSeconds += $factor * (float) $parts[$i];
             $factor *= 60;
         }
 
