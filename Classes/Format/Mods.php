@@ -101,6 +101,16 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
                 }
             }
         }
+        $prodPlaces = $xml->xpath('./mods:relatedItem[@type="original"]/mods:originInfo[@eventType="production"]/mods:place/mods:placeTerm');
+        foreach ($prodPlaces as $prodPlace) {
+            $prodPlaceMd = (string) $prodPlace;
+
+            if (isset($prodPlace['valueURI'])) {
+                $prodPlaceMd .= chr(31) . (string) $prodPlace['valueURI'];
+            }
+
+            $metadata['production_place'][] = $prodPlaceMd;
+        }
         // Get "year_sorting".
         if (($years_sorting = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]'))) {
             foreach ($years_sorting as $year_sorting) {
