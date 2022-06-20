@@ -748,11 +748,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     if (empty($documents[$doc['uid']]['metadata'])) {
                         $documents[$doc['uid']]['metadata'] = $this->fetchMetadataFromSolr($doc['uid'], $listedMetadata);
                     }
-                    // get title of parent if empty
+                    // get title of parent/grandparent/... if empty
                     if (empty($documents[$doc['uid']]['title']) && ($documents[$doc['uid']]['partOf'] > 0)) {
-                        $parentDocument = $this->findByUid($documents[$doc['uid']]['partOf']);
-                        if ($parentDocument) {
-                            $documents[$doc['uid']]['title'] = '[' . $parentDocument->getTitle() . ']';
+                        $superiorTitle = Doc::getTitle($documents[$doc['uid']]['partOf'], true);
+                        if (!empty($superiorTitle)) {
+                            $documents[$doc['uid']]['title'] = '[' . $superiorTitle . ']';
                         }
                     }
                 }
