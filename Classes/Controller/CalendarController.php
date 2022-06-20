@@ -154,6 +154,7 @@ class CalendarController extends AbstractController
         // Sort by years.
         ksort($calendarIssuesByYear);
         // Build calendar for year (default) or season.
+        $calendarData = [];
         $iteration = 1;
         foreach ($calendarIssuesByYear as $year => $calendarIssuesByMonth) {
             // Sort by months.
@@ -173,7 +174,7 @@ class CalendarController extends AbstractController
                     $lastMonth = (int) key($calendarIssuesByMonth);
                 }
             }
-            $this->getCalendarYear($calendarIssuesByMonth, $year, $firstMonth, $lastMonth);
+            $this->getCalendarYear($calendarData, $calendarIssuesByMonth, $year, $firstMonth, $lastMonth);
             $iteration++;
         }
         // Prepare list as alternative view.
@@ -191,6 +192,7 @@ class CalendarController extends AbstractController
         $linkTitleData = $this->document->getDoc()->getTitledata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
+        $this->view->assign('calendarData', $calendarData);
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
         $this->view->assign('parentDocumentId', $this->document->getPartof());
@@ -252,6 +254,7 @@ class CalendarController extends AbstractController
      *
      * @access protected
      *
+     * @param array $calendarData Output array containing the result calendar data that is passed to Fluid template
      * @param array $calendarIssuesByMonth All issues sorted by month => day
      * @param int $year Gregorian year
      * @param int $firstMonth 1 for January, 2 for February, ... 12 for December
@@ -259,9 +262,8 @@ class CalendarController extends AbstractController
      *
      * @return string Content for template subpart
      */
-    protected function getCalendarYear($calendarIssuesByMonth, $year, $firstMonth = 1, $lastMonth = 12)
+    protected function getCalendarYear(&$calendarData, $calendarIssuesByMonth, $year, $firstMonth = 1, $lastMonth = 12)
     {
-        $calendarData = [];
         for ($i = $firstMonth; $i <= $lastMonth; $i++) {
             $calendarData[$i] = [
                 'DAYMON_NAME' => strftime('%a', strtotime('last Monday')),
@@ -372,6 +374,5 @@ class CalendarController extends AbstractController
                 }
             }
         }
-        $this->view->assign('calendarData', $calendarData);
     }
 }
