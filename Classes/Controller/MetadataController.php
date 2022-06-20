@@ -254,7 +254,9 @@ class MetadataController extends AbstractController
                         }
                     } elseif ($metadataName == 'language' && !empty($metadataValue)) {
                         // Translate ISO 639 language code.
-                        $metadataArray[$i][$metadataName][0] = Helper::getLanguageName($metadataArray[$i][$metadataName][0]);
+                        foreach ($metadataArray[$i][$metadataName] as &$langValue) {
+                            $langValue = Helper::getLanguageName($langValue);
+                        }
                     } elseif (!empty($metadataValue)) {
                         $metadataArray[$i][$metadataName][0] = $metadataArray[$i][$metadataName][0];
                     }
