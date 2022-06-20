@@ -41,6 +41,14 @@ var dlfViewer = function(settings){
     this.div = dlfUtils.exists(settings.div) ? settings.div : "tx-dlf-map";
 
     /**
+     * @type {Record<'overview-map', string>}
+     * @private
+     */
+    this.dic = $.extend({
+      'overview-map': 'Overview Map',
+    }, dlfUtils.parseDataDic(document.getElementById(this.div)));
+
+    /**
      * Openlayers map object
      * @type {ol.Map|null}
      * @private
@@ -305,6 +313,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
                     );
 
                     controls.push(new ol.control.OverviewMap({
+                        tipLabel: this.dic['overview-map'],
                         layers: layers.map(dlfUtils.cloneOlLayer),
                         view: new ol.View({
                             center: ol.extent.getCenter(extent),
