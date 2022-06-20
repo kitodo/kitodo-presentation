@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Helper class for the 'dlf' extension
@@ -451,29 +452,14 @@ class Helper
         // Analyze code and set appropriate ISO table.
         $isoCode = strtolower(trim($code));
         if (preg_match('/^[a-z]{3}$/', $isoCode)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey) . 'Resources/Private/Data/iso-639-2b.xml';
+            $file = 'EXT:dlf/Resources/Private/Data/iso-639-2b.xml';
         } elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey) . 'Resources/Private/Data/iso-639-1.xml';
+            $file = 'EXT:dlf/Resources/Private/Data/iso-639-1.xml';
         } else {
             // No ISO code, return unchanged.
             return $code;
         }
-        $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        // Load ISO table and get localized full name of language.
-        if (\TYPO3_MODE === 'FE') {
-            $iso639 = $languageService->includeLLFile($file);
-            if (!empty($iso639['default'][$isoCode])) {
-                $lang = $languageService->getLLL($isoCode, $iso639);
-            }
-        } elseif (\TYPO3_MODE === 'BE') {
-            $iso639 = $languageService->includeLLFile($file, false, true);
-            if (!empty($iso639['default'][$isoCode])) {
-                $lang = $languageService->getLLL($isoCode, $iso639);
-            }
-        } else {
-            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            return $code;
-        }
+        $lang = LocalizationUtility::translate('LLL:' . $file . ':' . $code);
         if (!empty($lang)) {
             return $lang;
         } else {

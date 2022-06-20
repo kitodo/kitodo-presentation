@@ -4,6 +4,7 @@ namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 class HelperTest extends FunctionalTestCase
 {
@@ -62,5 +63,35 @@ class HelperTest extends FunctionalTestCase
                 Helper::getIndexNameFromUid(123456, 'tx_dlf_libraries')
             );
         }
+    }
+
+    /**
+     * @test
+     * @group getLanguageName
+     */
+    public function canTranslateLanguageNameToEnglish()
+    {
+        // NOTE: This only tests in BE mode
+
+        $GLOBALS['LANG'] = LanguageService::create('default');
+        $this->assertEquals('German', Helper::getLanguageName('de')); // ISO 639-1
+        $this->assertEquals('German', Helper::getLanguageName('ger')); // ISO 639-2
+        $this->assertEquals('abcde', Helper::getLanguageName('abcde')); // doesn't match ISO code regex
+        $this->assertEquals('abc', Helper::getLanguageName('abc')); // matches ISO code regex, but not an ISO code
+    }
+
+    /**
+     * @test
+     * @group getLanguageName
+     */
+    public function canTranslateLanguageNameToGerman()
+    {
+        // NOTE: This only tests in BE mode
+
+        $GLOBALS['LANG'] = LanguageService::create('de');
+        $this->assertEquals('Deutsch', Helper::getLanguageName('de')); // ISO 639-1
+        $this->assertEquals('Deutsch', Helper::getLanguageName('ger')); // ISO 639-2
+        $this->assertEquals('abcde', Helper::getLanguageName('abcde')); // doesn't match ISO code regex
+        $this->assertEquals('abc', Helper::getLanguageName('abc')); // matches ISO code regex, but not an ISO code
     }
 }
