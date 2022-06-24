@@ -191,27 +191,62 @@ var dlfViewer = function(settings){
  * @returns {LoadingIndicator}
  */
 dlfViewer.prototype.makeLoadingIndicator = function (progressElementId) {
+    // Show progress bar only if total loading time is expected to be at least 1 second
+    const MAX_SECONDS = 1;
+
     // Query progress element on demand because it may only become available at a later point (Zeitungsportal)
     return {
-        indeterminate() {
+        startTime: null,
+        isSlow: false,
+        /**
+         *
+         * @param {'ended' | 'indeterminate' | number} value
+         */
+        update(value) {
             var progressElement = document.getElementById(progressElementId);
-            if (progressElement instanceof HTMLProgressElement) {
-                progressElement.classList.add('loading');
-                progressElement.removeAttribute("value");
+            if (!(progressElement instanceof HTMLProgressElement)) {
+                return;
             }
+
+            if (value === 'ended') {
+                this.startTime = null;
+                this.isSlow = false;
+                progressElement.classList.remove('loading');
+                return;
+            }
+
+            let pseudoValue = value;
+            if (pseudoValue === 'indeterminate') {
+                progressElement.removeAttribute('value');
+                pseudoValue = 0;
+            } else {
+                progressElement.value = pseudoValue * progressElement.max;
+            }
+
+            if (this.startTime === null) {
+                this.startTime = window.performance.now();
+            } else {
+                const diffMs = window.performance.now() - this.startTime;
+                const expectedSeconds = (diffMs / 1000) / pseudoValue;
+                if (expectedSeconds > MAX_SECONDS) {
+                    this.isSlow = true;
+                }
+
+                if (this.isSlow) {
+                    progressElement.classList.add('loading');
+                } else {
+                    progressElement.classList.remove('loading');
+                }
+            }
+        },
+        indeterminate() {
+            this.update('indeterminate');
         },
         progress(value) {
-            var progressElement = document.getElementById(progressElementId);
-            if (progressElement instanceof HTMLProgressElement) {
-                progressElement.classList.add('loading');
-                progressElement.value = value * progressElement.max;
-            }
+            this.update(value);
         },
         done() {
-            var progressElement = document.getElementById(progressElementId);
-            if (progressElement instanceof HTMLProgressElement) {
-                progressElement.classList.remove('loading');
-            }
+            this.update('ended');
         },
     };
 };
