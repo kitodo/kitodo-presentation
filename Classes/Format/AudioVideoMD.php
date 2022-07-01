@@ -49,5 +49,9 @@ class AudioVideoMD implements \Kitodo\Dlf\Common\MetadataInterface
         }
 
         $metadata['duration'] = $metadata['video_duration'] ?: $metadata['audio_duration'] ?: [];
+
+        if (!empty($videoFrameRate = (string) $xml->xpath('./videomd:fileData/videomd:frameRate[@mode="Fixed"]')[0])) {
+            $metadata['video_frame_rate'] = [$videoFrameRate];
+        }
     }
 }
