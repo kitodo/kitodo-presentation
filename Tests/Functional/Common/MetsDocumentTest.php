@@ -45,6 +45,22 @@ class MetsDocumentTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function canReadFileMetadata()
+    {
+        $doc = $this->doc('av_beispiel.xml');
+
+        $thumbsMeta = $doc->getMetadata('FILE_0000_THUMBS', 20000);
+        $this->assertEquals($thumbsMeta, []);
+
+        $videoMeta = $doc->getMetadata('FILE_0000_DEFAULT', 20000);
+        $this->assertArrayMatches([
+            'frame_rate' => ['24'],
+        ], $videoMeta);
+    }
+
+    /**
+     * @test
+     */
     public function canGetLogicalStructure()
     {
         $doc = $this->doc('av_beispiel.xml');

@@ -164,7 +164,7 @@
     </mets:amdSec>
     <mets:fileSec>
         <mets:fileGrp USE="DEFAULT">
-            <mets:file ID="FILE_0000_DEFAULT" MIMETYPE="video/quicktime">
+            <mets:file ADMID="AMD" ID="FILE_0000_DEFAULT" MIMETYPE="video/quicktime">
                 <mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/1703800435/video.mov"/>
             </mets:file>
         </mets:fileGrp>

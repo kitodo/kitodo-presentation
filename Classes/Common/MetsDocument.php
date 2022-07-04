@@ -32,6 +32,7 @@ use TYPO3\CMS\Core\Log\LogManager;
  * @property-read array $mdSec Associative array of METS metadata sections indexed by their IDs.
  * @property-read array $dmdSec Subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
  * @property-read array $fileGrps This holds the file ID -> USE concordance
+ * @property-read array $fileInfos Additional information about files (e.g., ADMID), indexed by ID.
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
@@ -128,6 +129,16 @@ final class MetsDocument extends Doc
      * @access protected
      */
     protected $fileGrpsLoaded = false;
+
+    /**
+     * Additional information about files (e.g., ADMID), indexed by ID.
+     * TODO: Consider using this for `getFileMimeType()` and `getFileLocation()`.
+     * @see _getFileInfos()
+     *
+     * @var array
+     * @access protected
+     */
+    protected $fileInfos = [];
 
     /**
      * This holds the XML file's METS part as \SimpleXMLElement object
@@ -620,7 +631,8 @@ final class MetsDocument extends Doc
             $metadata['title'][0] = '';
             $metadata['title_sorting'][0] = '';
         }
-        if (isset($hasMetadataSection['dmdSec'])) {
+        // Files are not expected to reference a dmdSec
+        if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
             return $metadata;
         } else {
             $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
@@ -630,7 +642,8 @@ final class MetsDocument extends Doc
 
     /**
      * Get IDs of (descriptive and administrative) metadata sections
-     * referenced by logical structure node of given $id.
+     * referenced by node of given $id. The $id may refer to either
+     * a logical structure node or to a file.
      *
      * @access protected
      * @param string $id: The "@ID" attribute of the file node
@@ -640,6 +653,7 @@ final class MetsDocument extends Doc
     {
         // ­Load amdSecChildIds concordance
         $this->_getMdSec();
+        $this->_getFileInfos();
 
         // Get DMDID and ADMID of logical structure node
         if (!empty($this->logicalUnits[$id])) {
@@ -650,6 +664,9 @@ final class MetsDocument extends Doc
             if ($mdSec) {
                 $dmdIds = (string) $mdSec->attributes()->DMDID;
                 $admIds = (string) $mdSec->attributes()->ADMID;
+            } else if (isset($this->fileInfos[$id])) {
+                $dmdIds = $this->fileInfos[$id]['dmdId'];
+                $admIds = $this->fileInfos[$id]['admId'];
             } else {
                 $dmdIds = '';
                 $admIds = '';
@@ -916,7 +933,13 @@ final class MetsDocument extends Doc
                 foreach ($fileGrps as $fileGrp) {
                     if (in_array((string) $fileGrp['USE'], $useGrps)) {
                         foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
-                            $this->fileGrps[(string) $file->attributes()->ID] = (string) $fileGrp['USE'];
+                            $fileId = (string) $file->attributes()->ID;
+                            $this->fileGrps[$fileId] = (string) $fileGrp['USE'];
+                            $this->fileInfos[$fileId] = [
+                                'fileGrp' => (string) $fileGrp['USE'],
+                                'admId' => (string) $file->attributes()->ADMID,
+                                'dmdId' => (string) $file->attributes()->DMDID,
+                            ];
                         }
                     }
                 }
@@ -931,6 +954,17 @@ final class MetsDocument extends Doc
             $this->fileGrpsLoaded = true;
         }
         return $this->fileGrps;
+    }
+
+    /**
+     *
+     * @access protected
+     * @return array
+     */
+    protected function _getFileInfos()
+    {
+        $this->_getFileGrps();
+        return $this->fileInfos;
     }
 
     /**
