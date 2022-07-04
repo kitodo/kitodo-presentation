@@ -96,6 +96,12 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     protected function getDlfConfiguration()
     {
         return [
+            'fileGrpImages' => 'DEFAULT,MAX',
+            'fileGrpThumbs' => 'THUMBS',
+            'fileGrpDownload' => 'DOWNLOAD',
+            'fileGrpFulltext' => 'FULLTEXT',
+            'fileGrpAudio' => 'AUDIO',
+
             'solrFieldAutocomplete' => 'autocomplete',
             'solrFieldCollection' => 'collection',
             'solrFieldDefault' => 'default',
