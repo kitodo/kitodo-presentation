@@ -414,25 +414,47 @@ final class MetsDocument extends Doc
         return $details;
     }
 
+    /**
+     * Get timecode and file IDs that link to first matching fileGrp/USE.
+     *
+     * Returns either `null` or an array with the following keys:
+     * - `fileIds`: Array of linked file IDs
+     * - `fileIdsJoin`: String where all `fileIds` are joined using ','.
+     *    This is for convenience when passing `fileIds` in a Fluid template or similar.
+     * - `timecode`: Time code specified in first matching `<mets:area>`
+     *
+     * @param array $logInfo
+     * @param array $fileGrps
+     * @return ?array
+     */
     protected function getTimecode($logInfo, $fileGrps)
     {
         foreach ($fileGrps as $fileGrp) {
             $physInfo = $this->physicalStructureInfo[$this->smLinks['l2p'][$logInfo['id']][0]];
+            $fileIds = $physInfo['all_files'][$fileGrp] ?? [];
 
-            $fileId = $physInfo['all_files'][$fileGrp][0] ?? '';
-            if (empty($fileId)) {
-                continue;
+            $chapter = null;
+
+            foreach ($fileIds as $fileId) {
+                $fileArea = $physInfo['fileInfos'][$fileId]['area'] ?? '';
+                if (empty($fileArea) || $fileArea['betype'] !== 'TIME') {
+                    continue;
+                }
+
+                if ($chapter === null) {
+                    $chapter = [
+                        'fileIds' => [],
+                        'timecode' => Helper::timecodeToSeconds($fileArea['begin']),
+                    ];
+                }
+
+                $chapter['fileIds'][] = $fileId;
             }
 
-            $fileArea = $physInfo['fileInfos'][$fileId]['area'] ?? '';
-            if (empty($fileArea) || $fileArea['betype'] !== 'TIME') {
-                continue;
+            if ($chapter !== null) {
+                $chapter['fileIdsJoin'] = implode(',', $chapter['fileIds']);
+                return $chapter;
             }
-
-            return [
-                'fileId' => $fileId,
-                'timecode' => Helper::timecodeToSeconds($fileArea['begin']),
-            ];
         }
     }
 
