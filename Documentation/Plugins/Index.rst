@@ -876,6 +876,13 @@ Table Of Contents
        0
 
  - :Property:
+        showFull
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
        targetBasket
    :Data Type:
        :ref:`t3tsref:data-type-page-id`
