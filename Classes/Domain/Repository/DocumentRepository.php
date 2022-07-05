@@ -64,8 +64,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $document = $this->findOneByRecordId($parameters['recordId']);
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
-
-            $doc = Doc::getInstance($parameters['location'], [], true);
+            if (!empty($parameters['transform'])) {
+                $doc = Doc::getInstance($parameters['location'], [], true, $parameters['transform']);
+            } else {
+                $doc = Doc::getInstance($parameters['location'], [], true);
+            }
 
             if ($doc->recordId) {
                 $document = $this->findOneByRecordId($doc->recordId);

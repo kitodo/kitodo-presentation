@@ -161,7 +161,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
             } else if (GeneralUtility::isValidUrl($requestData['id'])) {
 
-                $doc = Doc::getInstance($requestData['id'], ['storagePid' => $pid], true);
+                if (!empty($requestData['transform'])) {
+                    $doc = Doc::getInstance($requestData['id'], ['storagePid' => $pid], true, $requestData['transform']);
+                } else {
+                    $doc = Doc::getInstance($requestData['id'], ['storagePid' => $pid], true);
+                }
 
                 if ($doc !== null) {
                     if ($doc->recordId) {

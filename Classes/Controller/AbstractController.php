@@ -128,8 +128,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                     $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
                 }
             } else if (GeneralUtility::isValidUrl($requestData['id'])) {
-
-                $doc = Doc::getInstance($requestData['id'], $this->settings, true);
+                if (!empty($requestData['transform'])) {
+                    $doc = Doc::getInstance($requestData['id'], $this->settings, true, $requestData['transform']);
+                } else {
+                    $doc = Doc::getInstance($requestData['id'], $this->settings, true);
+                }
 
                 if ($doc !== null) {
                     if ($doc->recordId) {

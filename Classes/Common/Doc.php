@@ -405,10 +405,11 @@ abstract class Doc
      * @param string $location: The URL of XML file or the IRI of the IIIF resource
      * @param array $settings
      * @param bool $forceReload: Force reloading the document instead of returning the cached instance
+     * @param string|null $transform: The URL of XSLT file for transformation to METS
      *
      * @return \Kitodo\Dlf\Common\Doc|null Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance($location, $settings = [], $forceReload = false)
+    public static function &getInstance($location, $settings = [], $forceReload = false, $transform = null)
     {
         // Create new instance depending on format (METS or IIIF) ...
         $documentFormat = null;
@@ -434,6 +435,17 @@ abstract class Doc
                     $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
                     $xpathResult = $xml->xpath('//mets:mets');
                     $documentFormat = !empty($xpathResult) ? 'METS' : null;
+                    // if document format is not METS and transform file is given
+                    // run XSLT transformation to get METS document
+                    if ($documentFormat == null && $transform != null) {
+                        $xsl = simplexml_load_file($transform);
+                        $xslt = new \XSLTProcessor();
+                        $xslt->importStyleSheet($xsl);
+                        $xml = simplexml_load_string($xslt->transformToXML($xml));
+                        $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
+                        $xpathResult = $xml->xpath('//mets:mets');
+                        $documentFormat = !empty($xpathResult) ? 'METS' : null;
+                    }
                 } else {
                     // Try to load file as IIIF resource instead.
                     $contentAsJsonArray = json_decode($content, true);
