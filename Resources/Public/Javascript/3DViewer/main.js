@@ -27,12 +27,15 @@ import { TDSLoader } from './js/jsm/loaders/TDSLoader.js';
 	return
 }*/
 
-let camera, scene, renderer, stats, controls, loader;
+let camera, scene, renderer, stats, controls, loader, ambientLight, dirLight, dirLightTarget;
 let imported;
 var mainObject = [];
+var metadataContentTech;
+var distanceGeometry = new THREE.Vector3();
 
 const clock = new THREE.Clock();
 const editor = true;
+var FULLSCREEN = false;
 
 let mixer;
 
@@ -48,14 +51,22 @@ const extension = filename.substring(filename.lastIndexOf('.') + 1);
 const path = container.getAttribute("3d").substring(0, container.getAttribute("3d").lastIndexOf(filename));
 const domain = "https://3d-repository.hs-mainz.de";
 const uri = path.replace(domain+"/", "");
-const COPYRIGHTS = false;
+const loadedFile = basename + "." + extension;
+var COPYRIGHTS = false;
+const allowedFormats = ['obj', 'fbx', 'ply', 'dae', 'ifc', 'stl', 'xyz', 'pcd', 'json', '3ds'];
+var EXIT_CODE=1;
+var gridSize;
+var clippingMode=false;
+
+var canvasText;
 
 var spinnerContainer = document.createElement("div");
 spinnerContainer.id = 'spinnerContainer';
 spinnerContainer.className = 'spinnerContainer';
 spinnerContainer.style.position = 'absolute';
-spinnerContainer.style.left = '45%';
+spinnerContainer.style.left = '40%';
 spinnerContainer.style.marginTop = '10px';
+spinnerContainer.style.zIndex = '100';
 var spinnerElement = document.createElement("div");
 spinnerElement.id = 'spinner';
 spinnerElement.className = 'lv-determinate_circle lv-mid md';
@@ -94,10 +105,11 @@ const onUpPosition = new THREE.Vector2();
 const onDownPosition = new THREE.Vector2();
 
 const geometry = new THREE.BoxGeometry( 20, 20, 20 );
-let transformControl, transformControlLight;
+let transformControl, transformControlLight, transformControlLightTarget;
 
 const helperObjects = [];
 const lightObjects = [];
+var lightHelper, lightHelperTarget;
 
 var selectedObject = false;
 var selectedObjects = [];
@@ -116,10 +128,11 @@ var transformText =
 };
 
 const colors = {
-	Light1: '0xFFFFFF'
+	DirectionalLight: '0xFFFFFF',
+	AmbientLight: '0x404040'
 };
 
-const intensity = { startIntensity: 1 };
+const intensity = { startIntensityDir: 1 , startIntensityAmbient: 1};
 
 const saveProperties = {
 	Camera: true,
@@ -129,10 +142,12 @@ const saveProperties = {
 var EDITOR = false;
 
 const gui = new GUI({ container: guiContainer });
-const metadataFolder = gui.addFolder('Metadata');
 //const mainHierarchyFolder = gui.addFolder('Hierarchy');
 var hierarchyFolder;
 const GUILength = 35;
+
+let zoomImage = 1;
+const ZOOM_SPEED_IMAGE = 0.1;
 
 var canvasDimensions;
 var compressedFile = '';
@@ -177,16 +192,14 @@ var propertiesFolder;
 var planeObjects = [];
 
 var clippingGeometry = [];
-let clippingObject = new THREE.Group();
-const planeGeom = new THREE.PlaneGeometry( 4, 4 );
 
 var textMesh;
 
 function readWissKI () {
 	const xmlhttp = new XMLHttpRequest();
 	xmlhttp.onload = function() {
-		//console.log(this.responseText);
-	};
+		console.log(this.responseText);
+	}
 	xmlhttp.open("GET", "php/fetchWissKI.php?q=");
 	xmlhttp.send();
 }
@@ -241,8 +254,8 @@ function showToast (_str) {
 function addTextWatermark (_text, _scale) {
 	var textGeo;
 	var materials = [
-		new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: false, side: THREE.DoubleSide, depthTest: false, depthWrite: false, transparent: true, opacity: 0.7 } ), // front
-		new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: false, side: THREE.DoubleSide, depthTest: false } ) // side
+		new THREE.MeshStandardMaterial( { color: 0xffffff, flatShading: true, side: THREE.DoubleSide, depthTest: false, depthWrite: false, transparent: true, opacity: 0.4 } ), // front
+		new THREE.MeshStandardMaterial( { color: 0xffffff, flatShading: true, side: THREE.DoubleSide, depthTest: false, depthWrite: false, transparent: true, opacity: 0.4 } ) // side
 	];
 	const loader = new FontLoader();
 
@@ -259,7 +272,6 @@ function addTextWatermark (_text, _scale) {
 			bevelOffset: 0,
 			bevelSegments: 1
 		} );
-		//console.log(textGeo);
 		textGeo.computeBoundingBox();
 
 		const centerOffset = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
@@ -368,23 +380,23 @@ function setupClippingPlanes (_geometry, _size, _distance) {
 		ph.name = "PlaneHelper";
 		scene.add( ph );
 	} );
-
-	clippingFolder.add( planeParams.planeX, 'displayHelperX' ).onChange( (v) => planeHelpers[ 0 ].visible = v );
-	clippingFolder.add( planeParams.planeX, 'constant' ).min( - _distance.x ).max( _distance.x ).setValue(_distance.x).step(_size/100).onChange(function (value) {
+	distanceGeometry = _distance;
+	clippingFolder.add( planeParams.planeX, 'displayHelperX' ).onChange( (v) => { planeHelpers[ 0 ].visible = v; renderer.localClippingEnabled = v; } );
+	clippingFolder.add( planeParams.planeX, 'constant' ).min( - distanceGeometry.x ).max( distanceGeometry.x ).setValue(distanceGeometry.x).step(_size/100).listen().onChange(function (value) {
 		clippingPlanes[ 0 ].constant = value;
 		render();
 	});
 
 
-	clippingFolder.add( planeParams.planeY, 'displayHelperY' ).onChange( (v) => planeHelpers[ 1 ].visible = v );
-	clippingFolder.add( planeParams.planeY, 'constant' ).min( - _distance.y ).max( _distance.y ).setValue(_distance.y).step(_size/100).onChange(function (value) {
+	clippingFolder.add( planeParams.planeY, 'displayHelperY' ).onChange( (v) => { planeHelpers[ 1 ].visible = v; renderer.localClippingEnabled = v; } );
+	clippingFolder.add( planeParams.planeY, 'constant' ).min( - distanceGeometry.y ).max( distanceGeometry.y ).setValue(distanceGeometry.y).step(_size/100).listen().onChange(function (value) {
 		clippingPlanes[ 1 ].constant = value;
 		render();
 	});
 
 
-	clippingFolder.add( planeParams.planeZ, 'displayHelperZ' ).onChange( (v) => planeHelpers[ 2 ].visible = v );
-	clippingFolder.add( planeParams.planeZ, 'constant' ).min( - _distance.z ).max( _distance.z ).setValue(_distance.z).step(_size/100).onChange(function (value) {
+	clippingFolder.add( planeParams.planeZ, 'displayHelperZ' ).onChange( (v) => { planeHelpers[ 2 ].visible = v; renderer.localClippingEnabled = v; } );
+	clippingFolder.add( planeParams.planeZ, 'constant' ).min( - distanceGeometry.z ).max( distanceGeometry.z ).setValue(distanceGeometry.z).step(_size/100).listen().onChange(function (value) {
 		clippingPlanes[ 2 ].constant = value;
 		render();
 	});
@@ -406,7 +418,20 @@ function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit 
     boundingBox.getSize(size);
 	// ground
 	var distance = new THREE.Vector3(Math.abs(boundingBox.max.x - boundingBox.min.x), Math.abs(boundingBox.max.y - boundingBox.min.y), Math.abs(boundingBox.max.z - boundingBox.min.z));
-	var gridSize = Math.max(distance.x, distance.y, distance.z);
+	gridSize = Math.max(distance.x, distance.y, distance.z);
+	
+	dirLightTarget = new THREE.Object3D();
+	dirLightTarget.position.set(0,0,0);
+
+	lightHelper = new THREE.DirectionalLightHelper( dirLight, gridSize );
+	scene.add( lightHelper );
+	lightHelper.visible = false;
+
+	scene.add(dirLightTarget);
+	dirLight.target = dirLightTarget;
+	dirLight.target.updateMatrixWorld();
+	
+
 	var gridSizeScale = gridSize*1.5;
 	const mesh = new THREE.Mesh( new THREE.PlaneGeometry( gridSizeScale, gridSizeScale ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false, transparent: true, opacity: 0.85 } ) );
 	mesh.rotation.x = - Math.PI / 2;
@@ -499,19 +524,39 @@ function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit 
 	controls.update();
 	
 	setupClippingPlanes(object.geometry, gridSize, distance);
-	if (COPYRIGHTS) { addTextWatermark("©", gridSize/10); }
+	
+}
+
+function render() {
+	controls.update();
+	renderer.render( scene, camera );
 }
 
 function setupCamera (_object, _camera, _light, _data, _controls) {
 	if (typeof (_data) != "undefined") {
 		if (typeof (_data["cameraPosition"]) != "undefined") {
 			_camera.position.set (_data["cameraPosition"][0], _data["cameraPosition"][1], _data["cameraPosition"][2]);
+		}
+		if (typeof (_data["controlsTarget"]) != "undefined") {
 			_controls.target.set (_data["controlsTarget"][0], _data["controlsTarget"][1], _data["controlsTarget"][2]);
 		}
 		if (typeof (_data["lightPosition"]) != "undefined") {
 			_light.position.set( _data["lightPosition"][0], _data["lightPosition"][1], _data["lightPosition"][2] );
+		}
+		if (typeof (_data["lightTarget"]) != "undefined") {
+			_light.rotation.set( _data["lightTarget"][0], _data["lightTarget"][1], _data["lightTarget"][2] );
+		}
+		if (typeof (_data["lightColor"]) != "undefined") {
 			_light.color = new THREE.Color( _data["lightColor"][0] );
+		}
+		if (typeof (_data["lightIntensity"]) != "undefined") {
 			_light.intensity = _data["lightIntensity"][0];
+		}
+		if (typeof (_data["lightAmbientColor"]) != "undefined") {
+			ambientLight.color = new THREE.Color( _data["lightAmbientColor"][0] );
+		}
+		if (typeof (_data["lightAmbientIntensity"]) != "undefined") {
+			ambientLight.intensity = _data["lightAmbientIntensity"][0];
 		}
 		_camera.updateProjectionMatrix();
 		_controls.update();
@@ -552,16 +597,69 @@ function pickFaces(_id) {
 		var intersects = raycaster.intersectObjects( mainObject, false );*/
 }
 
-function render() {
-	controls.update();
-	renderer.render( scene, camera );
-}
-
 function onWindowResize() {
+	if (FULLSCREEN)
+		canvasDimensions = {x: screen.width, y: screen.height};
+	else
+		canvasDimensions = {x: window.innerWidth*0.65, y: window.innerHeight*0.55};
+	container.setAttribute("width", canvasDimensions.x);
+	container.setAttribute("height", canvasDimensions.y);
+	renderer.setPixelRatio( window.devicePixelRatio );
 	camera.aspect = canvasDimensions.x / canvasDimensions.y;
 	camera.updateProjectionMatrix();
 	renderer.setSize( canvasDimensions.x, canvasDimensions.y );
+	controls.update();
 	render();
+}
+
+function addWissKIMetadata(label, value) {
+	if ((typeof (label) !== "undefined") && (typeof (value) !== "undefined")) {
+		var _str = "";
+		label = label.replace("wisski_path_3d_model__", "");
+		switch (label) {
+			case "title":
+				_str = "Title";
+			break;
+			case "author_name":
+				_str = "Author";
+			break;
+			/*case "reconstructed_period_start":
+				_str = "period";
+			break;
+			case "reconstructed_period_end":
+				_str = "-";
+			break;*/
+			case "author_affiliation":
+				_str = "Author affiliation";
+			break;
+			case "license":
+				_str = "License";
+				switch (value) {
+					case "CC0 1.0":
+					case "CC-BY Attribution":
+					case "CC-BY-SA Attribution-ShareAlike":
+					case "CC-BY-ND Attribution-NoDerivs":
+					case "CC-BY-NC Attribution-NonCommercial":
+					case "CC-BY-NC-SA Attribution-NonCommercial-ShareAlike":
+					case "CC BY-NC-ND Attribution-NonCommercial-NoDerivs":
+						//addTextWatermark("©", gridSize/10);
+					break;
+				}
+			break;
+			default:
+				_str = ""
+			break;
+		}
+		if (_str == "period") {
+			return "Reconstruction period: <b>"+value+" - ";
+		}
+		else if (_str == "-") {
+			return value+"</b><br>";
+		}
+		else if (_str !== "") {
+			return _str+": <b>"+value+"</b><br>";
+		}
+	}
 }
 
 function truncateString(str, n) {
@@ -578,11 +676,39 @@ function getProxyPath(url) {
 	return tempPath.replace(originalPath, encodeURIComponent(url));
 }
 
+function expandMetadata () {
+   const el = document.getElementById("metadata-content");
+   el.classList.toggle('expanded');
+   const elm = document.getElementById("metadata-collapse");
+   elm.classList.toggle('metadata-collapsed');
+}
+
+function fullscreen() {
+	FULLSCREEN=!FULLSCREEN;
+	var _container = document.getElementById("MainCanvas");
+	if (_container.requestFullscreen && FULLSCREEN) {
+		_container.requestFullscreen();
+	} 
+	else if (_container.webkitRequestFullscreen && FULLSCREEN) { /* Safari */
+		_container.webkitRequestFullscreen();
+	}
+	else if (_container.msRequestFullscreen && FULLSCREEN) { /* IE11 */
+		_container.msRequestFullscreen();
+	}
+	else if (_container.mozRequestFullScreen && FULLSCREEN) { /* IE11 */
+		_container.mozRequestFullScreen();
+	}
+	else {
+		document.exitFullscreen();
+		FULLSCREEN=false;
+	}
+	onWindowResize();
+}
+
 function fetchSettings ( path, basename, filename, object, camera, light, controls, orgExtension, extension ) {
 	var metadata = {'vertices': 0, 'faces': 0};
 	var hierarchy = [];
 	var geometry;
-
 	var metadataUrl = path + "metadata/" + filename + "_viewer";
 	if (proxyPath) {
 		metadataUrl = getProxyPath(metadataUrl);
@@ -597,7 +723,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			showToast("No settings " + filename + "_viewer found");
 		}
 		})
-	.then((data) => {
+	.then(data => {
 		var tempArray = [];
 		const hierarchyMain = gui.addFolder( 'Hierarchy' ).close();
 		if (object.name === "Scene" || object.children.length > 0 ) {
@@ -608,9 +734,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					metadata['faces'] += fetchMetadata (child, 'faces');
 					var shortChildName = truncateString(child.name, GUILength);
 					if (child.name === '') {
-						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id);}, 'id': child.id};
-					} else {
-						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id);}, 'id': child.id};
+						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id)}, 'id': child.id};
+					}
+					else {
+						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id)}, 'id': child.id};
 					}
 					hierarchyFolder = hierarchyMain.addFolder(shortChildName).close();
 					hierarchyFolder.add(tempArray, shortChildName);
@@ -619,9 +746,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 						if ( children.isMesh &&  children.name !== child.name) {
 							var shortChildrenName = truncateString(children.name, GUILength);
 							if (children.name === '') {
-								tempArray = {["Mesh"]() {selectObjectHierarchy(children.id);}, 'id': children.id};
-							} else {
-								tempArray = { [shortChildrenName]() {selectObjectHierarchy(children.id);}, 'id': children.id};
+								tempArray = {["Mesh"] (){selectObjectHierarchy(children.id)}, 'id': children.id};
+							}
+							else {
+								tempArray = { [shortChildrenName] (){selectObjectHierarchy(children.id)}, 'id': children.id};
 							}
 							clippingGeometry.push(children.geometry);
 							hierarchyFolder.add(tempArray, shortChildrenName);
@@ -637,11 +765,11 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			metadata['vertices'] += fetchMetadata (object, 'vertices');
 			metadata['faces'] += fetchMetadata (object, 'faces');
 			if (object.name === '') {
-				tempArray = {["Mesh"]() {selectObjectHierarchy(object.id);}, 'id': object.id};
+				tempArray = {["Mesh"] (){selectObjectHierarchy(object.id)}, 'id': object.id};
 				object.name = object.id;
 			}
 			else {
-				tempArray = {[object.name]() {selectObjectHierarchy(object.id);}, 'id': object.id};
+				tempArray = {[object.name] (){selectObjectHierarchy(object.id)}, 'id': object.id};
 			}
 			//hierarchy.push(tempArray);
 			clippingGeometry.push(object.geometry);
@@ -650,20 +778,67 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			metadata['vertices'] += fetchMetadata (object, 'vertices');
 			metadata['faces'] += fetchMetadata (object, 'faces');
 		}
-		var loadedFile = basename + "." + extension;
-		var metadataText =
-		{
-			'Original extension': orgExtension.toUpperCase(),
-			'Loaded file': loadedFile,
-			Vertices: metadata['vertices'],
-			Faces: metadata['faces']
-		};
-		hierarchyMain.domElement.classList.add("hierarchy");
 
-		metadataFolder.add(metadataText, 'Original extension' );
-		metadataFolder.add(metadataText, 'Loaded file' );
-		metadataFolder.add(metadataText, 'Vertices' );
-		metadataFolder.add(metadataText, 'Faces' );
+		hierarchyMain.domElement.classList.add("hierarchy");
+		
+		var metadataContainer = document.createElement('div');
+		metadataContainer.setAttribute('id', 'metadata-container');
+		var metadataContent = '<div id="metadata-collapse" class="metadata-collapse">METADATA </div><div id="metadata-content" class="metadata-content">';
+		metadataContentTech = '<hr class="metadataSeparator">';
+		metadataContentTech += 'Uploaded file name: <b>' + basename + "." + orgExtension + '</b><br>';
+		metadataContentTech += 'Loaded format: <b>' + extension + '</b><br>';
+		metadataContentTech += 'Vertices: <b>' + metadata['vertices'] + '</b><br>';
+		metadataContentTech += 'Faces: <b>' + metadata['faces'] + '</b><br>';
+		//TODO: discuss how it should be done
+		/*var elementsURL = window.location.pathname;
+		elementsURL = elementsURL.match("/wisski/navigate/(.*)/view");
+		const wisskiID = elementsURL[1];*/
+		const wisskiID = 240;
+		var xmlPath = 'https://3d-repository.hs-mainz.de/export_xml_single/' + wisskiID + '?page=0&amp;_format=xml';
+		if (proxyPath) {
+			xmlPath = getProxyPath(xmlPath);
+		}
+		var req = new XMLHttpRequest();
+		req.responseType = 'xml';
+		req.open('GET', xmlPath, true);
+		req.onreadystatechange = function (aEvt) {
+			if (req.readyState == 4) {
+				if(req.status == 200) {
+					const parser = new DOMParser();
+					const doc = parser.parseFromString(req.responseText, "application/xml");
+					var data = doc.documentElement.childNodes[0].childNodes;
+					if (typeof (data) !== undefined) {
+						for(var i = 0; i < data.length; i++) {
+							var fetchedValue = addWissKIMetadata(data[i].tagName, data[i].textContent);
+							if (typeof(fetchedValue) !== "undefined") {
+								metadataContent += fetchedValue;
+							}
+						}
+					}
+					metadataContent += metadataContentTech + '</div>';
+					canvasText.innerHTML = metadataContent;
+					metadataContainer.appendChild( canvasText );
+					var downloadModel = document.createElement('div');
+					downloadModel.setAttribute('id', 'downloadModel');
+					var c_path = "";
+					if (compressedFile === '') { c_path = path; }
+					downloadModel.innerHTML = "<a href='" + c_path + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
+					metadataContainer.appendChild( downloadModel );
+					var fullscreenMode = document.createElement('div');
+					fullscreenMode.setAttribute('id', 'fullscreenMode');
+					fullscreenMode.setAttribute('style', 'top:' + Math.round(canvasDimensions.y-12) + 'px');
+					fullscreenMode.innerHTML = "<img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/fullscreen.png' alt='Fullscreen' width=20 height=20 title='Fullscreen mode'/>";
+					metadataContainer.appendChild(fullscreenMode);
+					//var _container = document.getElementById("MainCanvas");
+					container.appendChild(metadataContainer);
+					document.getElementById ("metadata-collapse").addEventListener ("click", expandMetadata, false);
+					document.getElementById ("fullscreenMode").addEventListener ("click", fullscreen, false);
+				}
+				else
+					console.log("Error during loading metadata content\n");
+				}
+		};
+		req.send(null);
 		//hierarchyFolder.add(hierarchyText, 'Faces' );
 	});
 	helperObjects.push (object);
@@ -672,16 +847,19 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 }
 
 const onError = function () {
-	circle.set(100, 100);
-	circle.hide();	
+	//circle.set(100, 100);
+	circle.hide();
+	EXIT_CODE=1;
 };
 
 const onProgress = function ( xhr ) {
 	var percentComplete = xhr.loaded / xhr.total * 100;
+	circle.show();
 	circle.set(percentComplete, 100);
 	if (percentComplete >= 100) {
 		circle.hide();
 		showToast("Model has been loaded.");
+		EXIT_CODE=0;
 	}
 };
 
@@ -690,6 +868,9 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 		circle.show();
 		circle.set(0, 100);
 		var modelPath = path + filename;
+		if (proxyPath) {
+			modelPath = getProxyPath(modelPath);
+		}
 		switch(extension) {
 			case 'obj':
 			case 'OBJ':
@@ -716,10 +897,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'fbx':
 			case 'FBX':
 				var FBXloader = new FBXLoader();
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
-				}
-				FBXloader.load(modelPath, function ( object ) {
+				FBXloader.load( modelPath, function ( object ) {
 					object.traverse( function ( child ) {
 						if ( child.isMesh ) {
 							child.castShadow = true;
@@ -736,10 +914,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'ply':
 			case 'PLY':
 				loader = new PLYLoader();
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
-				}
-				loader.load(modelPath, function ( geometry ) {
+				loader.load( modelPath, function ( geometry ) {
 					geometry.computeVertexNormals();
 					const material = new THREE.MeshStandardMaterial( { color: 0x0055ff, flatShading: true } );
 					const object = new THREE.Mesh( geometry, material );
@@ -758,7 +933,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 					scene.add( object );
 				} );
 				loader = new ColladaLoader( loadingManager );
-				loader.load( path + filename, function ( object ) {
+				loader.load( modelPath, function ( object ) {
 					object = object.scene;
 					object.position.set (0, 0, 0);
 					scene.add( object );
@@ -771,10 +946,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'IFC':
 				const ifcLoader = new IFCLoader();
 				ifcLoader.ifcManager.setWasmPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/ifc/' );
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
-				}
-				ifcLoader.load(modelPath, function ( object ) {
+				ifcLoader.load( modelPath, function ( object ) {
 					//object.position.set (0, 300, 0);
 					scene.add( object );
 					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
@@ -785,10 +957,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'stl':
 			case 'STL':
 				loader = new STLLoader();
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
-				}
-				loader.load(modelPath, function ( geometry ) {
+				loader.load( modelPath, function ( geometry ) {
 					let meshMaterial = new THREE.MeshPhongMaterial( { color: 0xff5533, specular: 0x111111, shininess: 200 } );
 					if ( geometry.hasColors ) {
 						meshMaterial = new THREE.MeshPhongMaterial( { opacity: geometry.alpha, vertexColors: true } );
@@ -806,10 +975,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'xyz':
 			case 'XYZ':
 				loader = new XYZLoader();
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
-				}
-				loader.load(modelPath, function ( geometry ) {
+				loader.load( modelPath, function ( geometry ) {
 					geometry.center();
 					const hasVertexColors = ( geometry.hasAttribute( 'color' ) === true );
 					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: hasVertexColors } );
@@ -824,10 +990,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'pcd':
 			case 'PCD':
 				loader = new PCDLoader();
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
-				}
-				loader.load(modelPath, function ( mesh ) {
+				loader.load( modelPath, function ( mesh ) {
 					scene.add( mesh );
 					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
 					mainObject.push(object);
@@ -837,10 +1000,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'json':
 			case 'JSON':
 				loader = new THREE.ObjectLoader();
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
-				}
-				loader.load(modelPath, function ( object ) {
+				loader.load( modelPath, function ( object ) {
 						object.position.set (0, 0, 0);
 						scene.add( object );
 						fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
@@ -850,12 +1010,13 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 
 			case '3ds':
 			case '3DS':
-				loader = new TDSLoader();
-				loader.setResourcePath(path);
+				loader = new TDSLoader( );
+				loader.setResourcePath( path );
+				modelPath = path + basename + "." + extension;
 				if (proxyPath) {
 					modelPath = getProxyPath(modelPath);
 				}
-				loader.load(modelPath, function ( object ) {
+				loader.load( modelPath, function ( object ) {
 					object.traverse( function ( child ) {
 						if ( child.isMesh ) {
 							//child.material.specular.setScalar( 0.1 );
@@ -863,8 +1024,9 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 						}
 					} );
 					scene.add( object );
+					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
 					mainObject.push(object);
-				} );
+				}, onProgress, onError );
 			break;
 
 			case 'zip':
@@ -894,42 +1056,15 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 				if (proxyPath) {
 					modelPath = getProxyPath(modelPath);
 				}
-				gltf.load(modelPath, function(gltf) {
+				const glbPath = modelPath;
+				gltf.load(glbPath, function(gltf) {
 					gltf.scene.traverse( function ( child ) {
 						if ( child.isMesh ) {
 							child.castShadow = true;
 							child.receiveShadow = true;
 							child.geometry.computeVertexNormals();
-							if(child.material.map) { child.material.map.anisotropy = 16; }
+							if(child.material.map) { child.material.map.anisotropy = 16 };
 							child.material.side = THREE.DoubleSide;
-							/*for ( let i = 0; i < 3; i ++ ) {
-								const poGroup = new THREE.Group();
-								const plane = clippingPlanes[ i ];
-								const stencilGroup = createClippingPlaneGroup( child.geometry, plane, i + 1 );
-								// plane is clipped by the other clipping planes
-								const planeMat =
-									new THREE.MeshStandardMaterial( {
-										color: 0xE91E63,
-										metalness: 0.1,
-										roughness: 0.75,
-										clippingPlanes: clippingPlanes.filter( p => p !== plane ),
-										stencilWrite: true,
-										stencilRef: 0,
-										stencilFunc: THREE.NotEqualStencilFunc,
-										stencilFail: THREE.ReplaceStencilOp,
-										stencilZFail: THREE.ReplaceStencilOp,
-										stencilZPass: THREE.ReplaceStencilOp,
-									} );
-								const po = new THREE.Mesh( planeGeom, planeMat );
-								po.onAfterRender = function ( renderer ) {
-									renderer.clearStencil();
-								};
-								po.renderOrder = i + 1.1;
-								clippingObject.add( stencilGroup );
-								poGroup.add( po );
-								planeObjects.push( po );
-								scene.add( poGroup );
-							}*/
 							child.material.clippingPlanes = clippingPlanes;
 							child.material.clipIntersection = false;
 							mainObject.push(child);	
@@ -950,7 +1085,10 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 					},
 					function ( ) {						
 							showToast("GLTF representation not found, trying original file " + path.replace("gltf/", "") + filename + " [" + orgExtension + "]");
-							loadModel(path.replace("gltf/", ""), basename, filename, orgExtension, orgExtension);
+							allowedFormats.forEach(function(item, index, array) {
+								if (EXIT_CODE != 0) { loadModel(path.replace("gltf/", ""), basename, filename, item, orgExtension); }
+							});
+							//loadModel(path.replace("gltf/", ""), basename, filename, orgExtension, orgExtension);
 							imported = true;
 					}
 				);
@@ -968,14 +1106,15 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 	scene.updateMatrixWorld();
 }
 
+//
+
 function animate() {
 	requestAnimationFrame( animate );
 	const delta = clock.getDelta();
 	if ( mixer ) mixer.update( delta ); {
 		TWEEN.update();
 	}
-	for ( let i = 0; i < clippingPlanes.length; i ++ ) {
-
+	for ( let i = 0; i < clippingPlanes.length && clippingMode; i ++ ) {
 		const plane = clippingPlanes[ i ];
 		const po = planeObjects[ i ];
 		if (po !== undefined ) {
@@ -986,7 +1125,6 @@ function animate() {
 				po.position.z - plane.normal.z,
 			);
 		}
-
 	}
 	if (textMesh !== undefined) { textMesh.lookAt(camera.position); }
 	renderer.render( scene, camera );
@@ -1021,9 +1159,7 @@ function onPointerUp( e ) {
 		else {
 			intersects = raycaster.intersectObjects( mainObject[0], false );
 		}
-		if (intersects.length > 0) {
-			pickFaces(intersects);
-		}
+		if (intersects.length > 0) {pickFaces(intersects); }
 	}
 }
 
@@ -1052,25 +1188,81 @@ function onPointerMove( event ) {
 	}*/
 }
 
+function changeScale () {
+	if (transformControl.getMode() === "scale") {
+		switch (transformControl.axis) {
+			case 'X':
+			case 'XY':
+				helperObjects[0].scale.set(helperObjects[0].scale.x,helperObjects[0].scale.x,helperObjects[0].scale.x);
+			break;
+			case 'Y':
+			case 'YZ':
+				helperObjects[0].scale.set(helperObjects[0].scale.y,helperObjects[0].scale.y,helperObjects[0].scale.y);
+			break;
+			case 'Z':
+			case 'XZ':
+				helperObjects[0].scale.set(helperObjects[0].scale.x,helperObjects[0].scale.x,helperObjects[0].scale.x);
+			break;
+		}
+	}
+}
+
+function calculateObjectScale () {
+	const boundingBox = new THREE.Box3();
+	if (Array.isArray(helperObjects[0])) {
+		for (var i = 0; i < helperObjects[0].length; i++) {			
+			boundingBox.setFromObject( object[i] );
+		}
+	}
+	else {
+		boundingBox.setFromObject( helperObjects[0] );
+	}
+
+    var middle = new THREE.Vector3();
+    var size = new THREE.Vector3();
+    boundingBox.getSize(size);
+	// ground
+	var _distance = new THREE.Vector3(Math.abs(boundingBox.max.x - boundingBox.min.x), Math.abs(boundingBox.max.y - boundingBox.min.y), Math.abs(boundingBox.max.z - boundingBox.min.z));
+	distanceGeometry = _distance;
+	planeParams.planeX.constant = clippingFolder.controllers[1]._max = clippingPlanes[ 0 ].constant = _distance.x;
+	clippingFolder.controllers[1]._min = -clippingFolder.controllers[1]._max;
+	planeParams.planeY.constant = clippingFolder.controllers[3]._max = clippingPlanes[ 1 ].constant = _distance.y;
+	clippingFolder.controllers[3]._min = -clippingFolder.controllers[3]._max;
+	planeParams.planeZ.constant = clippingFolder.controllers[5]._max = clippingPlanes[ 2 ].constant = _distance.z;
+	clippingFolder.controllers[5]._min = -clippingFolder.controllers[5]._max;
+	clippingFolder.controllers[1].updateDisplay();
+	clippingFolder.controllers[3].updateDisplay();
+	clippingFolder.controllers[5].updateDisplay();
+	var _maxDistance = Math.max(_distance.x, _distance.y, _distance.z);
+	planeHelpers[0].size = planeHelpers[1].size = planeHelpers[2].size = _maxDistance;
+}
+
+function changeLightRotation () {
+	lightHelper.update();
+}
+
 function init() {
 	// model
 	//canvasDimensions = {x: container.getBoundingClientRect().width, y: container.getBoundingClientRect().bottom};
-	canvasDimensions = {x: window.self.innerWidth*0.8, y: window.self.innerHeight*0.55};
+	canvasDimensions = {x: window.self.innerWidth*0.65, y: window.self.innerHeight*0.55};
 	container.setAttribute("width", canvasDimensions.x);
 	container.setAttribute("height", canvasDimensions.y);
 
-	camera = new THREE.PerspectiveCamera( 45, canvasDimensions.x / canvasDimensions.y, 0.1, 200000 );
+	camera = new THREE.PerspectiveCamera( 45, canvasDimensions.x / canvasDimensions.y, 0.1, 999000000 );
 	camera.position.set( 0, 0, 0 );
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0xa0a0a0 );
-	scene.fog = new THREE.Fog( 0xa0a0a0, 90000, 1000000 );
+	//scene.fog = new THREE.Fog( 0xa0a0a0, 90000, 1000000 );
 
 	const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
 	hemiLight.position.set( 0, 200, 0 );
 	scene.add( hemiLight );
+	
+	ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white light
+	scene.add( ambientLight );
 
-	const dirLight = new THREE.DirectionalLight( 0xffffff );
+	dirLight = new THREE.DirectionalLight( 0xffffff );
 	dirLight.position.set( 0, 100, 50 );
 	dirLight.castShadow = true;
 	dirLight.shadow.camera.top = 180;
@@ -1083,50 +1275,108 @@ function init() {
 	scene.add( dirLight );
 	lightObjects.push( dirLight );
 
-	// scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
 	renderer = new THREE.WebGLRenderer( { antialias: true, logarithmicDepthBuffer: true, colorManagement: true, sortObjects: true, preserveDrawingBuffer: true, powerPreference: "high-performance" } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( canvasDimensions.x, canvasDimensions.y );
 	renderer.shadowMap.enabled = true;
-	renderer.localClippingEnabled = true;
+	renderer.localClippingEnabled = false;
 	renderer.setClearColor( 0x263238 );
 	renderer.domElement.id = 'MainCanvas';
 	container.appendChild( renderer.domElement );
-	/*var canvas = document.getElementById("MainCanvas");
-	canvas.style.position = "absolute";
-	canvas.width = canvasDimensions.x;
-	canvas.height = canvasDimensions.y;
-	canvas.style.zIndex = 1;*/
 	
-	var canvasText = document.createElement('div');
+	canvasText = document.createElement('div');
 	canvasText.id = "TextCanvas";
 	canvasText.width = canvasDimensions.x;
 	canvasText.height = canvasDimensions.y;
-	canvasText.style.position = "absolute";
-	canvasText.style.zIndex = 8;
-	container.appendChild( canvasText );
-	
-	/*var ctx = canvas.getContext("2d");
-	ctx.font = "30px Arial";
-	ctx.fillText("Hello World", 10, 50);*/
+
+	//DRUPAL WissKI [start]
+
+	/*var fileElement = document.getElementsByClassName("field--type-file");
+	fileElement[0].style.height = canvasDimensions.y*1.1 + "px";
+	var mainElement = document.getElementById("block-bootstrap5-content");
+	var imageElements = document.getElementsByClassName("field--type-image");
+	var imageList = document.createElement("div");
+	imageList.setAttribute('id', 'image-list');
+	var modalGallery = document.createElement('div');
+	var modalImage = document.createElement('img');
+	modalImage.setAttribute('class', 'modalImage');
+	modalGallery.addEventListener("wheel", function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		if(e.deltaY > 0 && zoomImage < 5) {    
+			modalImage.style.transform = `scale(${zoomImage += ZOOM_SPEED_IMAGE})`;  
+		}
+		else if (e.deltaY < 0 && zoomImage > 0.15) {    
+			modalImage.style.transform = `scale(${zoomImage -= ZOOM_SPEED_IMAGE})`;
+		}
+		return false;
+	});
+	var modalClose = document.createElement('span');
+	modalGallery.setAttribute('id', 'modalGallery');
+	modalGallery.setAttribute('class', 'modalGallery');
+	modalClose.setAttribute('class', 'closeGallery');
+	modalClose.setAttribute('title', 'Close');
+	modalClose.innerHTML = "&times";
+	modalClose.onclick = function() {
+		modalGallery.style.display = "none";
+	}
+
+	document.addEventListener('click', function(event) {
+		if (!modalGallery.contains(event.target) && !imageList.contains(event.target)) {
+			modalGallery.style.display = "none";
+			zoomImage = 1.0;
+			modalImage.style.transform = `scale(1.0)`;
+		}
+	});
+
+	modalGallery.appendChild(modalImage);
+	modalGallery.appendChild(modalClose);
+	for (var i = 0; imageElements.length - i; imageList.firstChild === imageElements[0] && i++) {
+		imageElements[i].className += " image-list-item";
+		imageElements[i].getElementsByTagName("a")[0].setAttribute("href", "#");
+		imageElements[i].getElementsByTagName("img")[0].onclick = function(){
+			modalGallery.style.display = "block";
+			modalImage.src = this.src;
+		};
+		imageList.appendChild(imageElements[i]);
+	}
+
+	//DRUPAL WissKI [end]
+	fileElement[0].insertAdjacentElement('beforebegin', modalGallery);
+	mainElement.insertBefore(imageList, fileElement[0]);*/
 
 	controls = new OrbitControls( camera, renderer.domElement );
 	controls.target.set( 0, 100, 0 );
 	controls.update();
 	
 	transformControl = new TransformControls( camera, renderer.domElement );
+	transformControl.rotationSnap = THREE.Math.degToRad(5);
+	transformControl.space = "local";
 	transformControl.addEventListener( 'change', render );
+	transformControl.addEventListener( 'objectChange', changeScale );
+	transformControl.addEventListener( 'mouseUp', calculateObjectScale );
 	transformControl.addEventListener( 'dragging-changed', function ( event ) {
-		controls.enabled = ! event.value;
+		controls.enabled = ! event.value
 	} );
 	scene.add( transformControl );
 	
 	transformControlLight = new TransformControls( camera, renderer.domElement );
+	transformControlLight.space = "local";
 	transformControlLight.addEventListener( 'change', render );
+	//transformControlLight.addEventListener( 'objectChange', changeLightRotation );
 	transformControlLight.addEventListener( 'dragging-changed', function ( event ) {
 		controls.enabled = ! event.value;
 	} );
 	scene.add( transformControlLight );
+
+	transformControlLightTarget = new TransformControls( camera, renderer.domElement );
+	transformControlLightTarget.space = "global";
+	transformControlLightTarget.addEventListener( 'change', render );
+	transformControlLightTarget.addEventListener( 'objectChange', changeLightRotation );
+	transformControlLightTarget.addEventListener( 'dragging-changed', function ( event ) {
+		controls.enabled = ! event.value;
+	} );
+	scene.add( transformControlLightTarget );
 
 	/*try {
 	} catch (e) {
@@ -1176,27 +1426,52 @@ function init() {
 	const editorFolder = gui.addFolder('Editor').close();
 	editorFolder.add(transformText, 'Transform 3D Object', { None: '', Move: 'translate', Rotate: 'rotate', Scale: 'scale' } ).onChange(function (value)
 	{ 
-		if (value === '') {transformControl.detach();} else { transformControl.mode = value; transformControl.attach( helperObjects[0] ); }
+		if (value === '') { transformControl.detach(); } 
+		else { 
+			transformControl.mode = value; 
+			transformControl.attach( helperObjects[0] );
+		}
 	});
-	const lightFolder = editorFolder.addFolder('Lights').close();
-	lightFolder.add(transformText, 'Transform Light', { None: '', Move: 'translate', Rotate: 'rotate', Scale: 'scale' } ).onChange(function (value)
+	const lightFolder = editorFolder.addFolder('Directional Light').close();
+	lightFolder.add(transformText, 'Transform Light', { None: '', Move: 'translate', Target: 'rotate' } ).onChange(function (value)
 	{ 
-		if (value === '') {transformControlLight.detach();} else { transformControlLight.mode = value; transformControlLight.attach( lightObjects[0] ); }
+		if (value === '') { transformControlLight.detach(); transformControlLightTarget.detach(); lightHelper.visible = false; } else {
+			if (value === "translate") {
+				transformControlLight.mode = "translate";
+				transformControlLight.attach( dirLight );
+				lightHelper.visible = true;
+			}
+			else {
+				lightHelper.visible = true;
+				transformControlLightTarget.mode = "translate";
+				transformControlLightTarget.attach( dirLightTarget );
+				//lightHelperTarget.visible = true;
+			}
+		}
 	});
-	lightFolder.addColor ( colors, 'Light1' ).onChange(function (value) {
+	lightFolder.addColor ( colors, 'DirectionalLight' ).onChange(function (value) {
 		const tempColor = new THREE.Color( value );
 		lightObjects[0].color = tempColor ;
 	});
-	lightFolder.add( intensity, 'startIntensity', 0, 10 ).onChange(function (value) {
+	lightFolder.add( intensity, 'startIntensityDir', 0, 10 ).onChange(function (value) {
 		lightObjects[0].intensity = value;
 	});
-	clippingFolder = editorFolder.addFolder('Clipping Planes').close();
+
+	const lightFolderAmbient = editorFolder.addFolder('Ambient Light').close();
+	lightFolderAmbient.addColor ( colors, 'AmbientLight' ).onChange(function (value) {
+		const tempColor = new THREE.Color( value );
+		ambientLight.color = tempColor ;
+	});
+	lightFolderAmbient.add( intensity, 'startIntensityAmbient', 0, 10 ).onChange(function (value) {
+		ambientLight.intensity = value;
+	});
+
 	propertiesFolder = editorFolder.addFolder('Save properties').close();
 	propertiesFolder.add( saveProperties, 'Camera' ); 
 	propertiesFolder.add( saveProperties, 'Light' ); 
 
 	if (editor) {
-		editorFolder.add({["Save"]() {
+		editorFolder.add({["Save"] (){
 			var xhr = new XMLHttpRequest(),
 				jsonArr,
 				method = "POST",
@@ -1208,7 +1483,7 @@ function init() {
 			var rotateMetadata = new THREE.Vector3(THREE.Math.radToDeg(helperObjects[0].rotation.x),THREE.Math.radToDeg(helperObjects[0].rotation.y),THREE.Math.radToDeg(helperObjects[0].rotation.z));
 			var newMetadata = ({"objPosition": [ helperObjects[0].position.x, helperObjects[0].position.y, helperObjects[0].position.z ], "objScale": [ helperObjects[0].scale.x, helperObjects[0].scale.y, helperObjects[0].scale.z ], "objRotation": [ rotateMetadata.x, rotateMetadata.y, rotateMetadata.z ] });
 			if (saveProperties.Camera) { newMetadata = Object.assign(newMetadata, {"cameraPosition": [ camera.position.x, camera.position.y, camera.position.z ], "controlsTarget": [ controls.target.x, controls.target.y, controls.target.z ]}); }
-			if (saveProperties.Light) { newMetadata = Object.assign(newMetadata, {"lightPosition": [ dirLight.position.x, dirLight.position.y, dirLight.position.z ], "lightColor": [ "#" + (dirLight.color.getHexString()).toUpperCase() ], "lightIntensity": [ dirLight.intensity ] }); }
+			if (saveProperties.Light) { newMetadata = Object.assign(newMetadata, {"lightPosition": [ dirLight.position.x, dirLight.position.y, dirLight.position.z ], "lightTarget": [ dirLight.rotation._x, dirLight.rotation._y, dirLight.rotation._z ], "lightColor": [ "#" + (dirLight.color.getHexString()).toUpperCase() ], "lightIntensity": [ dirLight.intensity ], "lightAmbientColor": [ "#" + (ambientLight.color.getHexString()).toUpperCase() ], "lightAmbientIntensity": [ ambientLight.intensity ] }); }
 			if (compressedFile !== '') { params = "5MJQTqB7W4uwBPUe="+JSON.stringify(newMetadata, null, '\t')+"&path="+uri+basename+compressedFile+"&filename="+filename; }
 			else { params = "5MJQTqB7W4uwBPUe="+JSON.stringify(newMetadata, null, '\t')+"&path="+uri+"&filename="+filename; }
 			xhr.onreadystatechange = function()
@@ -1222,12 +1497,13 @@ function init() {
 			};
 			xhr.send(params);
 		}}, 'Save');
-		editorFolder.add({["Picking"]() {
+		/*editorFolder.add({["Picking"] (){
 			EDITOR=!EDITOR;
 			var _str;
 			EDITOR ? _str = "enabled" : _str = "disabled";
 			showToast ("Face picking is " + _str);
-		}}, 'Picking');
+		}}, 'Picking');*/
+		clippingFolder = editorFolder.addFolder('Clipping Planes').close();
 	}
 }
 
