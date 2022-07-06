@@ -179,6 +179,8 @@ class ReindexCommand extends BaseCommand
                 // add to index
                 Indexer::add($document);
             }
+            // Clear document registry to prevent memory exhaustion.
+            Doc::clearRegistry();
         }
 
         $io->success('All done!');
