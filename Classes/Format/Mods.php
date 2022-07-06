@@ -111,6 +111,22 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
 
             $metadata['production_place'][] = $prodPlaceMd;
         }
+        $namePersonal = $xml->xpath('./mods:name[@type="personal"]');
+        foreach ($namePersonal as $person) {
+            $roleCode = (string) $person->xpath('./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]')[0];
+            if (empty($roleCode)) {
+                continue;
+            }
+
+            $personMd = implode(chr(31), [
+                (string) $person->xpath('./mods:displayForm')[0],
+                (string) $person['valueURI'],
+                (string) $person->xpath('./mods:role/mods:roleTerm[@type="text"]')[0],
+                $roleCode,
+            ]);
+
+            $metadata['name_personal_' . $roleCode][] = $personMd;
+        }
         // Get "year_sorting".
         if (($years_sorting = $xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]'))) {
             foreach ($years_sorting as $year_sorting) {
