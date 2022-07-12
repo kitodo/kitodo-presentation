@@ -32,6 +32,7 @@ let imported;
 var mainObject = [];
 var metadataContentTech;
 var distanceGeometry = new THREE.Vector3();
+let wisskiID = '';
 
 const clock = new THREE.Clock();
 const editor = true;
@@ -45,6 +46,7 @@ container.setAttribute("height", window.self.innerHeight);
 const supportedFormats = [ 'OBJ', 'DAE', 'FBX', 'PLY', 'IFC', 'STL', 'XYZ', 'PCD', 'JSON', '3DS', 'GLFT' ];
 const originalPath = container.getAttribute("3d");
 const proxyPath = container.getAttribute("proxy");
+const wisskiUrl = container.getAttribute("wisski_url");
 const filename = container.getAttribute("3d").split("/").pop();
 const basename = filename.substring(0, filename.lastIndexOf('.'));
 const extension = filename.substring(filename.lastIndexOf('.') + 1);	
@@ -57,6 +59,9 @@ const allowedFormats = ['obj', 'fbx', 'ply', 'dae', 'ifc', 'stl', 'xyz', 'pcd', 
 var EXIT_CODE=1;
 var gridSize;
 var clippingMode=false;
+var elementsURL = wisskiUrl;
+elementsURL = elementsURL.match("/export_xml_single/(.*)?page");
+wisskiID = elementsURL[1];
 
 var canvasText;
 
@@ -527,6 +532,60 @@ function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit 
 	
 }
 
+function buildGallery() {
+	var fileElement = document.getElementsByClassName("field--type-file");
+	fileElement[0].style.height = canvasDimensions.y*1.1 + "px";
+	var mainElement = document.getElementById("block-bootstrap5-content");
+	var imageElements = document.getElementsByClassName("field--type-image");
+	var imageList = document.createElement("div");
+	imageList.setAttribute('id', 'image-list');
+	var modalGallery = document.createElement('div');
+	var modalImage = document.createElement('img');
+	modalImage.setAttribute('class', 'modalImage');
+	modalGallery.addEventListener("wheel", function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		if(e.deltaY > 0 && zoomImage > 0.15) {    
+			modalImage.style.transform = `scale(${zoomImage -= ZOOM_SPEED_IMAGE})`;  
+		}
+		else if (e.deltaY < 0 && zoomImage < 5) {    
+			modalImage.style.transform = `scale(${zoomImage += ZOOM_SPEED_IMAGE})`;
+		}
+		return false;
+	});
+	var modalClose = document.createElement('span');
+	modalGallery.setAttribute('id', 'modalGallery');
+	modalGallery.setAttribute('class', 'modalGallery');
+	modalClose.setAttribute('class', 'closeGallery');
+	modalClose.setAttribute('title', 'Close');
+	modalClose.innerHTML = "&times";
+	modalClose.onclick = function() {
+		modalGallery.style.display = "none";
+	}
+
+	document.addEventListener('click', function(event) {
+		if (!modalGallery.contains(event.target) && !imageList.contains(event.target)) {
+			modalGallery.style.display = "none";
+			zoomImage = 1.0;
+			modalImage.style.transform = `scale(1.0)`;
+		}
+	});
+
+	modalGallery.appendChild(modalImage);
+	modalGallery.appendChild(modalClose);
+	for (var i = 0; imageElements.length - i; imageList.firstChild === imageElements[0] && i++) {
+		imageElements[i].className += " image-list-item";
+		imageElements[i].getElementsByTagName("a")[0].setAttribute("href", "#");
+		imageElements[i].getElementsByTagName("img")[0].onclick = function(){
+			modalGallery.style.display = "block";
+			modalImage.src = this.src;
+		};
+		imageList.appendChild(imageElements[i]);
+	}
+	fileElement[0].insertAdjacentElement('beforebegin', modalGallery);
+	mainElement.insertBefore(imageList, fileElement[0]);
+}
+
 function render() {
 	controls.update();
 	renderer.render( scene, camera );
@@ -608,6 +667,7 @@ function onWindowResize() {
 	camera.aspect = canvasDimensions.x / canvasDimensions.y;
 	camera.updateProjectionMatrix();
 	renderer.setSize( canvasDimensions.x, canvasDimensions.y );
+	fullscreenMode.setAttribute('style', 'bottom:' + (-canvasDimensions.y*1.65 + 25) + 'px');
 	controls.update();
 	render();
 }
@@ -789,12 +849,8 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 		metadataContentTech += 'Loaded format: <b>' + extension + '</b><br>';
 		metadataContentTech += 'Vertices: <b>' + metadata['vertices'] + '</b><br>';
 		metadataContentTech += 'Faces: <b>' + metadata['faces'] + '</b><br>';
-		//TODO: discuss how it should be done
-		/*var elementsURL = window.location.pathname;
-		elementsURL = elementsURL.match("/wisski/navigate/(.*)/view");
-		const wisskiID = elementsURL[1];*/
-		const wisskiID = 240;
-		var xmlPath = 'https://3d-repository.hs-mainz.de/export_xml_single/' + wisskiID + '?page=0&amp;_format=xml';
+
+		var xmlPath = wisskiUrl;
 		if (proxyPath) {
 			xmlPath = getProxyPath(xmlPath);
 		}
@@ -820,13 +876,18 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					metadataContainer.appendChild( canvasText );
 					var downloadModel = document.createElement('div');
 					downloadModel.setAttribute('id', 'downloadModel');
-					var c_path = "";
-					if (compressedFile === '') { c_path = path; }
+					var viewEntity = document.createElement('div');
+					viewEntity.setAttribute('id', 'viewEntity');
+					var c_path = path;
+					if (compressedFile !== '') { c_path = domain + '/' +uri; }
+					console.log(domain + uri);
 					downloadModel.innerHTML = "<a href='" + c_path + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
+					viewEntity.innerHTML = "<a href='" + domain + "/wisski/navigate/" + wisskiID + "/view' target='_blank'><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/share.svg' alt='View Entity' width=22 height=22 title='View Entity'/></a>";
 					metadataContainer.appendChild( downloadModel );
+					metadataContainer.appendChild( viewEntity );
 					var fullscreenMode = document.createElement('div');
 					fullscreenMode.setAttribute('id', 'fullscreenMode');
-					fullscreenMode.setAttribute('style', 'top:' + Math.round(canvasDimensions.y-12) + 'px');
+					fullscreenMode.setAttribute('style', 'bottom:' + Math.round(-canvasDimensions.y * 1.05 + 26) + 'px');
 					fullscreenMode.innerHTML = "<img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/fullscreen.png' alt='Fullscreen' width=20 height=20 title='Fullscreen mode'/>";
 					metadataContainer.appendChild(fullscreenMode);
 					//var _container = document.getElementById("MainCanvas");
@@ -842,6 +903,12 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 		//hierarchyFolder.add(hierarchyText, 'Faces' );
 	});
 	helperObjects.push (object);
+	if (proxyPath) {
+		circle.set(100, 100);
+		circle.hide();
+		showToast("Model has been loaded.");
+		EXIT_CODE=0;
+	}
 	//addTextWatermark("©", object.scale.x);
 	//lightObjects.push (object);
 }
@@ -1056,8 +1123,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 				if (proxyPath) {
 					modelPath = getProxyPath(modelPath);
 				}
-				const glbPath = modelPath;
-				gltf.load(glbPath, function(gltf) {
+				gltf.load(modelPath, function(gltf) {
 					gltf.scene.traverse( function ( child ) {
 						if ( child.isMesh ) {
 							child.castShadow = true;
@@ -1290,60 +1356,8 @@ function init() {
 	canvasText.height = canvasDimensions.y;
 
 	//DRUPAL WissKI [start]
-
-	/*var fileElement = document.getElementsByClassName("field--type-file");
-	fileElement[0].style.height = canvasDimensions.y*1.1 + "px";
-	var mainElement = document.getElementById("block-bootstrap5-content");
-	var imageElements = document.getElementsByClassName("field--type-image");
-	var imageList = document.createElement("div");
-	imageList.setAttribute('id', 'image-list');
-	var modalGallery = document.createElement('div');
-	var modalImage = document.createElement('img');
-	modalImage.setAttribute('class', 'modalImage');
-	modalGallery.addEventListener("wheel", function(e){
-		e.preventDefault();
-		e.stopPropagation();
-		if(e.deltaY > 0 && zoomImage < 5) {    
-			modalImage.style.transform = `scale(${zoomImage += ZOOM_SPEED_IMAGE})`;  
-		}
-		else if (e.deltaY < 0 && zoomImage > 0.15) {    
-			modalImage.style.transform = `scale(${zoomImage -= ZOOM_SPEED_IMAGE})`;
-		}
-		return false;
-	});
-	var modalClose = document.createElement('span');
-	modalGallery.setAttribute('id', 'modalGallery');
-	modalGallery.setAttribute('class', 'modalGallery');
-	modalClose.setAttribute('class', 'closeGallery');
-	modalClose.setAttribute('title', 'Close');
-	modalClose.innerHTML = "&times";
-	modalClose.onclick = function() {
-		modalGallery.style.display = "none";
-	}
-
-	document.addEventListener('click', function(event) {
-		if (!modalGallery.contains(event.target) && !imageList.contains(event.target)) {
-			modalGallery.style.display = "none";
-			zoomImage = 1.0;
-			modalImage.style.transform = `scale(1.0)`;
-		}
-	});
-
-	modalGallery.appendChild(modalImage);
-	modalGallery.appendChild(modalClose);
-	for (var i = 0; imageElements.length - i; imageList.firstChild === imageElements[0] && i++) {
-		imageElements[i].className += " image-list-item";
-		imageElements[i].getElementsByTagName("a")[0].setAttribute("href", "#");
-		imageElements[i].getElementsByTagName("img")[0].onclick = function(){
-			modalGallery.style.display = "block";
-			modalImage.src = this.src;
-		};
-		imageList.appendChild(imageElements[i]);
-	}
-
+	//buildGallery();
 	//DRUPAL WissKI [end]
-	fileElement[0].insertAdjacentElement('beforebegin', modalGallery);
-	mainElement.insertBefore(imageList, fileElement[0]);*/
 
 	controls = new OrbitControls( camera, renderer.domElement );
 	controls.target.set( 0, 100, 0 );
@@ -1440,12 +1454,13 @@ function init() {
 				transformControlLight.mode = "translate";
 				transformControlLight.attach( dirLight );
 				lightHelper.visible = true;
+				transformControlLightTarget.detach();
 			}
 			else {
-				lightHelper.visible = true;
 				transformControlLightTarget.mode = "translate";
 				transformControlLightTarget.attach( dirLightTarget );
-				//lightHelperTarget.visible = true;
+				lightHelper.visible = true;
+				transformControlLight.detach();
 			}
 		}
 	});
@@ -1475,7 +1490,7 @@ function init() {
 			var xhr = new XMLHttpRequest(),
 				jsonArr,
 				method = "POST",
-				jsonRequestURL = "https://3d-repository.hs-mainz.de/editor.php";
+				jsonRequestURL = domain + "/editor.php";
 
 			xhr.open(method, jsonRequestURL, true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
