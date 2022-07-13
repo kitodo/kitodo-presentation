@@ -44,7 +44,7 @@ class Client implements LoggerAwareInterface
     private $level = 'pub';
 
     /**
-     * The login/registration page ORCID
+     * The ORCID to search for
      *
      * @var string
      **/

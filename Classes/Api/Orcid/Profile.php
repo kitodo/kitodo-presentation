@@ -34,7 +34,7 @@ class Profile implements LoggerAwareInterface
 
     /**
      * Constructs client instance
-     * 
+     *
      * @param string $orcid: the ORCID to search for
      *
      * @return void
@@ -47,7 +47,7 @@ class Profile implements LoggerAwareInterface
     /**
      * Get the ORCID profile data
      *
-     * @return  object
+     * @return object
      **/
     public function getData()
     {
@@ -66,8 +66,8 @@ class Profile implements LoggerAwareInterface
 
     /**
      * Get the address
-     * 
-     * @return  string
+     *
+     * @return string
      **/
     public function getAddress()
     {
@@ -83,8 +83,8 @@ class Profile implements LoggerAwareInterface
 
     /**
      * Get the email
-     * 
-     * @return  string
+     *
+     * @return string
      **/
     public function getEmail()
     {
@@ -100,7 +100,7 @@ class Profile implements LoggerAwareInterface
 
     /**
      * Get the full name
-     * 
+     *
      * @return  string
      **/
     public function getFullName()
@@ -119,6 +119,8 @@ class Profile implements LoggerAwareInterface
 
     /**
      * Get the ORCID part of profile data for given endpoint
+     *
+     * @param string $endpoint: the endpoint for search URL
      *
      * @return void
      **/

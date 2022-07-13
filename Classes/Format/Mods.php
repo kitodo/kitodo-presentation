@@ -146,7 +146,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             for ($i = 0, $j = count($holders); $i < $j; $i++) {
                 $holders[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-                $identifier = $holders[$i]->xpath('./mods:nameIdentifier');
+                //$identifier = $holders[$i]->xpath('./mods:nameIdentifier');
                 if (1 != 1) {
                     //TODO: reading VIAF API
                 } else {
