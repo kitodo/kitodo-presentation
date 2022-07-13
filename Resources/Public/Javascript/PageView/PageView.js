@@ -10,9 +10,9 @@
 
 /**
  * @typedef {object} LoadingIndicator
- * @property {(value: number) => void} progress
- * @property {() => void} indeterminate
- * @property {() => void} done
+ * @property {(key: string, value: number, total: number) => void} progress
+ * @property {(key: string) => void} indeterminate
+ * @property {(key: string) => void} done
  */
 
 /**
@@ -197,56 +197,63 @@ dlfViewer.prototype.makeLoadingIndicator = function (progressElementId) {
     // Query progress element on demand because it may only become available at a later point (Zeitungsportal)
     return {
         startTime: null,
-        isSlow: false,
-        /**
-         *
-         * @param {'ended' | 'indeterminate' | number} value
-         */
-        update(value) {
+        values: {},
+        finishedTotal: 0,
+        update() {
             var progressElement = document.getElementById(progressElementId);
             if (!(progressElement instanceof HTMLProgressElement)) {
                 return;
             }
 
-            if (value === 'ended') {
+            var downloads = Object.values(this.values);
+            if (downloads.length === 0) {
+                // Download has finished
                 this.startTime = null;
-                this.isSlow = false;
+                this.values = {};
+                this.finishedTotal = 0;
                 progressElement.classList.remove('loading');
                 return;
             }
 
-            let pseudoValue = value;
-            if (pseudoValue === 'indeterminate') {
+            var valueAbs = 0;
+            var total = 0;
+            downloads.forEach(function (entry) {
+                valueAbs += entry.value;
+                total += entry.total;
+            });
+
+            if (total === 0) {
+                // All running downloads are indeterminate, so make progress bar indeterminate
                 progressElement.removeAttribute('value');
-                pseudoValue = 0;
+                progressElement.classList.add('loading');
             } else {
-                progressElement.value = pseudoValue * progressElement.max;
-            }
+                var valueRel = (valueAbs + this.finishedTotal) / (total + this.finishedTotal);
+                progressElement.value = valueRel * progressElement.max;
 
-            if (this.startTime === null) {
-                this.startTime = window.performance.now();
-            } else {
-                const diffMs = window.performance.now() - this.startTime;
-                const expectedSeconds = (diffMs / 1000) / pseudoValue;
-                if (expectedSeconds > MAX_SECONDS) {
-                    this.isSlow = true;
-                }
-
-                if (this.isSlow) {
-                    progressElement.classList.add('loading');
+                if (this.startTime === null) {
+                    this.startTime = window.performance.now();
                 } else {
-                    progressElement.classList.remove('loading');
+                    const diffMs = window.performance.now() - this.startTime;
+                    const expectedSeconds = (diffMs / 1000) / valueRel;
+                    if (expectedSeconds > MAX_SECONDS) {
+                        progressElement.classList.add('loading');
+                    }
                 }
             }
         },
-        indeterminate() {
-            this.update('indeterminate');
+        indeterminate(key) {
+            this.progress(key, 0, 0);
         },
-        progress(value) {
-            this.update(value);
+        progress(key, value, total) {
+            this.values[key] = { value, total };
+            this.update();
         },
-        done() {
-            this.update('ended');
+        done(key) {
+            if (this.values[key]) {
+                this.finishedTotal += this.values[key].total;
+                delete this.values[key];
+                this.update();
+            }
         },
     };
 };

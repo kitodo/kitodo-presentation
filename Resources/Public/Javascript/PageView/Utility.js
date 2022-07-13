@@ -311,6 +311,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred();
+    var imageKey = imageSourceObj.url;
 
     var loadFailed = function () {
         loadingIndicator.done();
@@ -325,7 +326,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
     var makeImage = function (src, mimetype) {
         var image = new Image();
         image.onload = function () {
-            loadingIndicator.done();
+            loadingIndicator.done(imageKey);
 
             var imageDataObj = {
                 src: this.src,
@@ -364,9 +365,9 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
     xhr.responseType = 'blob';
     xhr.onprogress = function (e) {
         if (e.lengthComputable) {
-            loadingIndicator.progress(e.loaded / e.total);
+            loadingIndicator.progress(imageKey, e.loaded, e.total);
         } else {
-            loadingIndicator.indeterminate();
+            loadingIndicator.indeterminate(imageKey);
         }
     };
     xhr.onload = function () {
@@ -379,7 +380,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
     };
     xhr.onerror = function () {
         // Mixed content or bad CORS headers? Try again using passive content.
-        loadingIndicator.indeterminate();
+        loadingIndicator.indeterminate(imageKey);
         makeImage(imageSourceObj.url, imageSourceObj.mimetype);
     };
     xhr.open('GET', imageSourceObj.url);
