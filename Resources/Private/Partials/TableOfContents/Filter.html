@@ -11,6 +11,11 @@
 </f:comment>
 <form action="{f:uri.page(pageUid='{viewData.requestData.pageUid}')}" name="filterParameter" method="get" class="tx-dlf-filter-form">
     <input type="hidden" id="tx-dlf-filter-id" name="tx_dlf[id]" value="{currentList}" />
+    <f:if condition="{transform} != ''">
+        <f:then>
+            <input type="hidden" id="tx-dlf-filter-transform" name="tx_dlf[transform]" value="{transform}" />
+        </f:then>
+    </f:if>
     <label for="tx-dlf-filter-title">
         {f:translate(key: 'title')}
     </label>

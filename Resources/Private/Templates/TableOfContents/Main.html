@@ -15,7 +15,7 @@
 <f:if condition="{type} == 'collection'">
     <f:then>
         <div class="tx-dlf-toc-preview">
-            <f:render partial="TableOfContents/Models" arguments="{currentList: currentList, models: toc, types: types}"/>
+            <f:render partial="TableOfContents/Models" arguments="{currentList: currentList, models: toc, types: types, , transform: transform}"/>
         </div>
     </f:then>
     <f:else>

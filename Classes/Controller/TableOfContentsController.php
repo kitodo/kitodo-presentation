@@ -57,6 +57,11 @@ class TableOfContentsController extends AbstractController
             }
             if ($this->document->getDoc()->tableOfContents[0]['type'] == 'collection') {
                 $this->view->assign('currentList', $this->requestData['id']);
+                if (isset($this->requestData['transform'])) {
+                    $this->view->assign('transform', $this->requestData['transform']);
+                } else {
+                    $this->view->assign('transform', 'something');
+                }
                 $this->view->assign('type', 'collection');
                 $this->view->assign('types', $this->getTypes($this->document->getDoc()->tableOfContents));
                 $this->view->assign('toc', $this->makeMenuFor3DObjects());
