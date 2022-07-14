@@ -314,7 +314,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
     var imageKey = imageSourceObj.url;
 
     var loadFailed = function () {
-        loadingIndicator.done();
+        loadingIndicator.done(imageKey);
         deferredResponse.reject();
     };
 
