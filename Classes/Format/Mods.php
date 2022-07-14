@@ -85,7 +85,13 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
                 $identifier = $authors[$i]->xpath('./mods:nameIdentifier');
                 if ($identifier[0]['type'] == 'orcid' && !empty((string) $identifier[0])) {
                     $orcidIdParts = explode('/', (string) $identifier[0]);
-                    $profile = new Profile(trim(end($orcidIdParts)));
+                    $orcidId = trim(end($orcidIdParts));
+                    $orcidEqual = 'orcid=';
+                    if (str_contains($orcidId, $orcidEqual)) {
+                        $orcidIdParts = explode($orcidEqual, $orcidId);
+                        $orcidId = trim(end($orcidIdParts));
+                    }
+                    $profile = new Profile($orcidId);
                     $this->metadata['author'][$i] = $profile->getFullName();
                 } else {
                     // Check if there is a display form.
