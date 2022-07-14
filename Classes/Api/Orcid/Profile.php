@@ -13,17 +13,22 @@
 namespace Kitodo\Dlf\Api\Orcid;
 
 use Kitodo\Dlf\Common\Helper;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * ORCID profile API class
  **/
-class Profile implements LoggerAwareInterface
+class Profile
 {
-    use LoggerAwareTrait;
+    /**
+     * This holds the logger
+     *
+     * @var LogManager
+     * @access protected
+     */
+    protected $logger;
 
     /**
      * The raw ORCID profile
@@ -41,6 +46,7 @@ class Profile implements LoggerAwareInterface
      **/
     public function __construct($orcid)
     {
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->client = new Client($orcid, GeneralUtility::makeInstance(RequestFactory::class));
     }
 

@@ -12,22 +12,28 @@
 
 namespace Kitodo\Dlf\Api\Orcid;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * ORCID API Client class
  **/
-class Client implements LoggerAwareInterface
+class Client
 {
-    use LoggerAwareTrait;
-
     /**
      * constants for API endpoint
      **/
     const HOSTNAME  = 'orcid.org';
     const VERSION   = '3.0';
+
+    /**
+     * This holds the logger
+     *
+     * @var LogManager
+     * @access protected
+     */
+    protected $logger;
 
     /**
      * The ORCID API endpoint
@@ -66,6 +72,7 @@ class Client implements LoggerAwareInterface
      **/
     public function __construct($orcid, RequestFactory $requestFactory)
     {
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->orcid = $orcid;
         $this->requestFactory = $requestFactory;
     }
