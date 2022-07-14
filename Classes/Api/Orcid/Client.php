@@ -12,12 +12,18 @@
 
 namespace Kitodo\Dlf\Api\Orcid;
 
+use Psr\Http\Message\RequestFactoryInterface;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * ORCID API Client class
+ *
+ * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
+ * @package TYPO3
+ * @subpackage dlf
+ * @access public
  **/
 class Client
 {
@@ -87,8 +93,7 @@ class Client
     /**
      * Get the profile data
      *
-     * @return object
-     * @throws Exception
+     * @return object|bool
      **/
     public function getData()
     {
@@ -105,7 +110,6 @@ class Client
     /**
      * Creates the qualified API endpoint for retrieving the desired data
      *
-     * @param string  $endpoint the shortname of the endpoint
      * @return string
      **/
     private function getApiEndpoint()
