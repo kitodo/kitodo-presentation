@@ -50,8 +50,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     public function current()
     {
-        $idx = $this->result['document_keys'][$this->position];
-        return $this->result['documents'][$idx];
+        return $this[$this->position];
     }
 
     public function key()
@@ -83,7 +82,29 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     public function offsetGet($offset)
     {
         $idx = $this->result['document_keys'][$offset];
-        return $this->result['documents'][$idx];
+        $document = $this->result['documents'][$idx] ?? null;
+
+        if ($document !== null) {
+            foreach ($document['children'] ?? [] as $childUid => $childDoc) {
+                if (empty($document['children'][$childUid]['metadata'])) {
+                    $document['children'][$childUid]['metadata'] = $this->fetchMetadataFromSolr($childUid);
+                }
+            }
+
+            if (empty($document['metadata'])) {
+                $document['metadata'] = $this->fetchMetadataFromSolr($document['uid']);
+            }
+
+            // get title of parent/grandparent/... if empty
+            if (empty($document['title']) && $document['partOf'] > 0) {
+                $superiorTitle = Doc::getTitle($document['partOf'], true);
+                if (!empty($superiorTitle)) {
+                    $document['title'] = '[' . $superiorTitle . ']';
+                }
+            }
+        }
+
+        return $document;
     }
 
     public function offsetSet($offset, $value)
@@ -305,20 +326,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                                     'structure' => $docChild['structure'],
                                     'metsOrderlabel' => $docChild['metsOrderlabel'],
                                     'uid' => $docChild['uid'],
-                                    'metadata' => $this->fetchMetadataFromSolr($docChild['uid']),
+                                    'metadata' => [],
                                 ];
                                 $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
                             }
-                        }
-                    }
-                    if (empty($documents[$doc['uid']]['metadata'])) {
-                        $documents[$doc['uid']]['metadata'] = $this->fetchMetadataFromSolr($doc['uid']);
-                    }
-                    // get title of parent/grandparent/... if empty
-                    if (empty($documents[$doc['uid']]['title']) && ($documents[$doc['uid']]['partOf'] > 0)) {
-                        $superiorTitle = Doc::getTitle($documents[$doc['uid']]['partOf'], true);
-                        if (!empty($superiorTitle)) {
-                            $documents[$doc['uid']]['title'] = '[' . $superiorTitle . ']';
                         }
                     }
                 }

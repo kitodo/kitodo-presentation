@@ -107,7 +107,9 @@ class SolrIndexingTest extends FunctionalTestCase
 
         // Test ArrayAccess and Iterator implementation
         $this->assertTrue(isset($solrSearch[0]));
-        $this->assertEquals($solrSearch[0], $result['documents'][$document->getUid()]);
+        $solrSearch0WithoutMetadata = $solrSearch[0];
+        unset($solrSearch0WithoutMetadata['metadata']);
+        $this->assertEquals($solrSearch0WithoutMetadata, $result['documents'][$document->getUid()]);
         $this->assertFalse(isset($solrSearch[1]));
         $this->assertNull($solrSearch[1]);
         $this->assertFalse(isset($solrSearch[$document->getUid()]));
