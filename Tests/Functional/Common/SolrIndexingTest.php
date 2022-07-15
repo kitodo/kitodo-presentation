@@ -86,7 +86,7 @@ class SolrIndexingTest extends FunctionalTestCase
             'storagePid' => $document->getPid(),
         ];
 
-        $result = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
+        $result = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*'])->getResult();
         $this->assertEquals(1, $result['numberOfToplevels']);
         $this->assertEquals(15, count($result['solrResults']['documents']));
 
@@ -128,9 +128,9 @@ class SolrIndexingTest extends FunctionalTestCase
         ];
 
         // No query: Only list toplevel result(s) in collection(s)
-        $musikResults = $this->documentRepository->findSolrByCollection($musik, $settings, []);
-        $dresdnerHefteResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, []);
-        $multiCollectionResults = $this->documentRepository->findSolrByCollection($collections, $settings, []);
+        $musikResults = $this->documentRepository->findSolrByCollection($musik, $settings, [])->getResult();
+        $dresdnerHefteResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, [])->getResult();
+        $multiCollectionResults = $this->documentRepository->findSolrByCollection($collections, $settings, [])->getResult();
         $this->assertGreaterThanOrEqual(1, $musikResults['solrResults']['numFound']);
         $this->assertGreaterThanOrEqual(1, $dresdnerHefteResults['solrResults']['numFound']);
         $this->assertEquals('533223312LOG_0000', $dresdnerHefteResults['solrResults']['documents'][0]['id']);
@@ -141,8 +141,8 @@ class SolrIndexingTest extends FunctionalTestCase
         );
 
         // With query: List all results
-        $metadataResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden']);
-        $fulltextResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden', 'fulltext' => '1']);
+        $metadataResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden'])->getResult();
+        $fulltextResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden', 'fulltext' => '1'])->getResult();
         $this->assertGreaterThan($metadataResults['solrResults']['numFound'], $fulltextResults['solrResults']['numFound']);
     }
 

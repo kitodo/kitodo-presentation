@@ -554,6 +554,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         $search = new SolrSearch($this, $collection, $settings, $searchParams, $listedMetadata);
         $search->submit();
-        return $search->getResult();
+        return $search;
     }
 }

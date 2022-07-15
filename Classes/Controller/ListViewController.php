@@ -90,7 +90,8 @@ class ListViewController extends AbstractController
 
         $solrResults = [];
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
+            $solrSearch = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
+            $solrResults = $solrSearch->getResult();
         }
 
         $this->view->assign('viewData', $this->viewData);

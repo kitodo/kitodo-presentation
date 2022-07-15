@@ -133,7 +133,8 @@ class SearchController extends AbstractController
             $solrResults = [];
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
-                $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
+                $solrSearch = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
+                $solrResults = $solrSearch->getResult();
             }
 
             $documents = $solrResults['documents'] ? : [];
