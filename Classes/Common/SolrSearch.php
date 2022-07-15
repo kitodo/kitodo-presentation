@@ -11,9 +11,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
-class SolrSearch implements \Countable
+/**
+ * Notes on implementation:
+ * - `Countable`: `count()` returns the number of toplevel documents.
+ * - `ArrayAccess`/`Iterator`: Access toplevel documents indexed in order of their ranking.
+ */
+class SolrSearch implements \Countable, \Iterator, \ArrayAccess
 {
     protected $result;
+    protected $position = 0;
 
     /**
      *
@@ -38,7 +44,55 @@ class SolrSearch implements \Countable
             return 0;
         }
 
-        return count($this->result['documents']);
+        return count($this->result['document_keys']);
+    }
+
+    public function current()
+    {
+        $idx = $this->result['document_keys'][$this->position];
+        return $this->result['documents'][$idx];
+    }
+
+    public function key()
+    {
+        return $this->position;
+    }
+
+    public function next()
+    {
+        $this->position++;
+    }
+
+    public function rewind()
+    {
+        $this->position = 0;
+    }
+
+    public function valid()
+    {
+        return isset($this[$this->position]);
+    }
+
+    public function offsetExists($offset)
+    {
+        $idx = $this->result['document_keys'][$offset];
+        return isset($this->result['documents'][$idx]);
+    }
+
+    public function offsetGet($offset)
+    {
+        $idx = $this->result['document_keys'][$offset];
+        return $this->result['documents'][$idx];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        throw new \Exception("SolrSearch: Modifying result list is not supported");
+    }
+
+    public function offsetUnset($offset)
+    {
+        throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
 
     public function getResult()
@@ -179,7 +233,7 @@ class SolrSearch implements \Countable
 
             if (empty($documentSet)) {
                 // return nothing found
-                $this->result = ['solrResults' => [], 'documents' => []];
+                $this->result = ['solrResults' => [], 'documents' => [], 'document_keys' => []];
                 return;
             }
 
@@ -255,7 +309,7 @@ class SolrSearch implements \Countable
             }
         }
 
-        $this->result = ['solrResults' => $result, 'numberOfToplevels' => $numberOfToplevels, 'documents' => $documents];
+        $this->result = ['solrResults' => $result, 'numberOfToplevels' => $numberOfToplevels, 'documents' => $documents, 'document_keys' => array_keys($documents)];
     }
 
     /**

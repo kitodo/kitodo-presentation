@@ -104,6 +104,20 @@ class SolrIndexingTest extends FunctionalTestCase
 
         // $result['documents'] is hydrated from the database model
         $this->assertEquals($document->getTitle(), $result['documents'][$document->getUid()]['title']);
+
+        // Test ArrayAccess and Iterator implementation
+        $this->assertTrue(isset($solrSearch[0]));
+        $this->assertEquals($solrSearch[0], $result['documents'][$document->getUid()]);
+        $this->assertFalse(isset($solrSearch[1]));
+        $this->assertNull($solrSearch[1]);
+        $this->assertFalse(isset($solrSearch[$document->getUid()]));
+
+        $iter = [];
+        foreach ($solrSearch as $key => $value) {
+            $iter[$key] = $value;
+        }
+        $this->assertEquals(1, count($iter));
+        $this->assertEquals($solrSearch[0], $iter[0]);
     }
 
     /**
