@@ -10,13 +10,14 @@ use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Notes on implementation:
  * - `Countable`: `count()` returns the number of toplevel documents.
  * - `ArrayAccess`/`Iterator`: Access toplevel documents indexed in order of their ranking.
  */
-class SolrSearch implements \Countable, \Iterator, \ArrayAccess
+class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInterface
 {
     protected $result;
     protected $position = 0;
@@ -98,6 +99,21 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess
     public function getResult()
     {
         return $this->result;
+    }
+
+    public function getQuery()
+    {
+        return new SolrSearchQuery($this);
+    }
+
+    public function getFirst()
+    {
+        return $this[0];
+    }
+
+    public function toArray()
+    {
+        return array_values($this->result['documents']);
     }
 
     public function submit()

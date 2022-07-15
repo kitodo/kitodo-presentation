@@ -88,7 +88,7 @@
 
 </f:form>
 
-<f:if condition="{settings.targetPid} == '' && {documents}">
+<f:if condition="{settings.targetPid} == '' && {solrSearch}">
 
     <div class="tx-dlf-listview">
         <f:render partial="ListView/SearchHits" arguments="{_all}" />

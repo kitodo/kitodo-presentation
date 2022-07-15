@@ -13,7 +13,7 @@
       xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-    <f:widget.paginate objects="{documents}" as="paginatedDocuments" configuration="{settings.list.paginate}">
+    <f:widget.paginate objects="{solrSearch}" as="paginatedDocuments" configuration="{settings.list.paginate}">
         <f:variable name="currentPage" value="{widgetPage.currentPage - 1}" />
         <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
         <ol class="tx-dlf-abstracts">
