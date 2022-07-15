@@ -86,8 +86,9 @@ class SolrIndexingTest extends FunctionalTestCase
             'storagePid' => $document->getPid(),
         ];
 
-        $result = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*'])->getResult();
-        $this->assertEquals(1, $result['numberOfToplevels']);
+        $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
+        $result = $solrSearch->getResult();
+        $this->assertEquals(1, count($solrSearch));
         $this->assertEquals(15, count($result['solrResults']['documents']));
 
         // Check that the title stored in Solr matches the title of database entry

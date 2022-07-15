@@ -185,6 +185,7 @@ class CollectionController extends AbstractController
         $documents = $solrSearch->getResult();
 
         $this->view->assign('viewData', $this->viewData);
+        $this->view->assign('solrSearch', $solrSearch);
         $this->view->assign('documents', $documents['documents']);
         $this->view->assign('collection', $collection);
         $this->view->assign('widgetPage', $widgetPage);

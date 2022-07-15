@@ -137,6 +137,7 @@ class SearchController extends AbstractController
                 $solrResults = $solrSearch->getResult();
             }
 
+            $this->view->assign('solrSearch', $solrSearch);
             $documents = $solrResults['documents'] ? : [];
             $this->view->assign('documents', $documents);
             $this->view->assign('numResults', $solrResults['solrResults']['numFound'] ?? 0);

@@ -11,7 +11,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
-class SolrSearch
+class SolrSearch implements \Countable
 {
     protected $result;
 
@@ -30,6 +30,15 @@ class SolrSearch
         $this->settings = $settings;
         $this->searchParams = $searchParams;
         $this->listedMetadata = $listedMetadata;
+    }
+
+    public function count()
+    {
+        if ($this->result === null) {
+            return 0;
+        }
+
+        return count($this->result['documents']);
     }
 
     public function getResult()

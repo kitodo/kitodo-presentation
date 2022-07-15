@@ -95,6 +95,7 @@ class ListViewController extends AbstractController
         }
 
         $this->view->assign('viewData', $this->viewData);
+        $this->view->assign('solrSearch', $solrSearch);
         $documents = $solrResults['documents'] ? : [];
         $this->view->assign('documents', $documents);
         $this->view->assign('numResults', $solrResults['solrResults']['numFound'] ?? 0);
