@@ -87,13 +87,12 @@ class SolrIndexingTest extends FunctionalTestCase
         ];
 
         $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
-        $result = $solrSearch->getResult();
         $this->assertEquals(1, count($solrSearch));
-        $this->assertEquals(15, count($result['solrResults']['documents']));
+        $this->assertEquals(15, $solrSearch->getNumHits());
 
         // Check that the title stored in Solr matches the title of database entry
         $docTitleInSolr = false;
-        foreach ($result['solrResults']['documents'] as $solrDoc) {
+        foreach ($solrSearch->getSolrResults()['documents'] as $solrDoc) {
             if ($solrDoc['toplevel'] && $solrDoc['uid'] === $document->getUid()) {
                 $this->assertEquals($document->getTitle(), $solrDoc['title']);
                 $docTitleInSolr = true;
@@ -102,14 +101,11 @@ class SolrIndexingTest extends FunctionalTestCase
         }
         $this->assertTrue($docTitleInSolr);
 
-        // $result['documents'] is hydrated from the database model
-        $this->assertEquals($document->getTitle(), $result['documents'][$document->getUid()]['title']);
+        // $solrSearch[0] is hydrated from the database model
+        $this->assertEquals($document->getTitle(), $solrSearch[0]['title']);
 
         // Test ArrayAccess and Iterator implementation
         $this->assertTrue(isset($solrSearch[0]));
-        $solrSearch0WithoutMetadata = $solrSearch[0];
-        unset($solrSearch0WithoutMetadata['metadata']);
-        $this->assertEquals($solrSearch0WithoutMetadata, $result['documents'][$document->getUid()]);
         $this->assertFalse(isset($solrSearch[1]));
         $this->assertNull($solrSearch[1]);
         $this->assertFalse(isset($solrSearch[$document->getUid()]));
@@ -145,22 +141,22 @@ class SolrIndexingTest extends FunctionalTestCase
         ];
 
         // No query: Only list toplevel result(s) in collection(s)
-        $musikResults = $this->documentRepository->findSolrByCollection($musik, $settings, [])->getResult();
-        $dresdnerHefteResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, [])->getResult();
-        $multiCollectionResults = $this->documentRepository->findSolrByCollection($collections, $settings, [])->getResult();
-        $this->assertGreaterThanOrEqual(1, $musikResults['solrResults']['numFound']);
-        $this->assertGreaterThanOrEqual(1, $dresdnerHefteResults['solrResults']['numFound']);
-        $this->assertEquals('533223312LOG_0000', $dresdnerHefteResults['solrResults']['documents'][0]['id']);
+        $musikSearch = $this->documentRepository->findSolrByCollection($musik, $settings, []);
+        $dresdnerHefteSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, []);
+        $multiCollectionSearch = $this->documentRepository->findSolrByCollection($collections, $settings, []);
+        $this->assertGreaterThanOrEqual(1, $musikSearch->getNumHits());
+        $this->assertGreaterThanOrEqual(1, $dresdnerHefteSearch->getNumHits());
+        $this->assertEquals('533223312LOG_0000', $dresdnerHefteSearch->getSolrResults()['documents'][0]['id']);
         $this->assertEquals(
             // Assuming there's no overlap
-            $dresdnerHefteResults['solrResults']['numFound'] + $musikResults['solrResults']['numFound'],
-            $multiCollectionResults['solrResults']['numFound']
+            $dresdnerHefteSearch->getNumHits() + $musikSearch->getNumHits(),
+            $multiCollectionSearch->getNumHits()
         );
 
         // With query: List all results
-        $metadataResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden'])->getResult();
-        $fulltextResults = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden', 'fulltext' => '1'])->getResult();
-        $this->assertGreaterThan($metadataResults['solrResults']['numFound'], $fulltextResults['solrResults']['numFound']);
+        $metadataSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden']);
+        $fulltextSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden', 'fulltext' => '1']);
+        $this->assertGreaterThan($metadataSearch->getNumHits(), $fulltextSearch->getNumHits());
     }
 
     protected function createSolrCore(): object

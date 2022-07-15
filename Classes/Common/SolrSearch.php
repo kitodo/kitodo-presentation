@@ -117,9 +117,14 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
 
-    public function getResult()
+    public function getSolrResults()
     {
-        return $this->result;
+        return $this->result['solrResults'];
+    }
+
+    public function getByUid($uid)
+    {
+        return $this->result['documents'][$uid];
     }
 
     public function getQuery()
@@ -135,6 +140,16 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     public function toArray()
     {
         return array_values($this->result['documents']);
+    }
+
+    /**
+     * Get total number of hits.
+     *
+     * This can be accessed in Fluid template using `.numHits`.
+     */
+    public function getNumHits()
+    {
+        return $this->result['solrResults']['numFound'];
     }
 
     public function submit()
