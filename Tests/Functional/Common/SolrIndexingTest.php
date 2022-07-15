@@ -87,6 +87,7 @@ class SolrIndexingTest extends FunctionalTestCase
         ];
 
         $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
+        $solrSearch->getQuery()->execute();
         $this->assertEquals(1, count($solrSearch));
         $this->assertEquals(15, $solrSearch->getNumHits());
 

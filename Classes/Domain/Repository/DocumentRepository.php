@@ -553,7 +553,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $this->settings = $settings;
 
         $search = new SolrSearch($this, $collection, $settings, $searchParams, $listedMetadata);
-        $search->submit();
+        $search->prepare();
         return $search;
     }
 }

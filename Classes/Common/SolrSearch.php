@@ -13,9 +13,12 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
+ * Targeted towards being used in ``PaginateController`` (``<f:widget.paginate>``).
+ *
  * Notes on implementation:
  * - `Countable`: `count()` returns the number of toplevel documents.
- * - `ArrayAccess`/`Iterator`: Access toplevel documents indexed in order of their ranking.
+ * - `getNumLoadedDocuments()`: Number of toplevel documents that have been fetched from Solr.
+ * - `ArrayAccess`/`Iterator`: Access *fetched* toplevel documents indexed in order of their ranking.
  */
 class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInterface
 {
@@ -37,6 +40,11 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $this->settings = $settings;
         $this->searchParams = $searchParams;
         $this->listedMetadata = $listedMetadata;
+    }
+
+    public function getNumLoadedDocuments()
+    {
+        return count($this->result['documents']);
     }
 
     public function count()
@@ -152,7 +160,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $this->result['numHits'];
     }
 
-    public function submit()
+    public function prepare()
     {
         // Prepare query parameters.
         $params = [];
@@ -241,8 +249,6 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // Set some query parameters.
         $params['query'] = !empty($query) ? $query : '*';
-        $params['start'] = 0;
-        $params['rows'] = 10000;
 
         // order the results as given or by title as default
         if (!empty($this->searchParams['orderBy'])) {
@@ -272,13 +278,25 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
         }
 
+        $this->params = $params;
+
+        // Send off query to get total number of search results in advance
+        $this->submit(0, 1, false);
+    }
+
+    public function submit($start, $rows, $processResults = true)
+    {
+        $params = $this->params;
+        $params['start'] = $start;
+        $params['rows'] = $rows;
+
         // Perform search.
         $result = $this->searchSolr($params, true);
 
         // Initialize values
         $documents = [];
 
-        if ($result['numHits'] > 0) {
+        if ($processResults && $result['numHits'] > 0) {
             // flat array with uids from Solr search
             $documentSet = array_unique(array_column($result['documents'], 'uid'));
 
@@ -410,8 +428,6 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     protected function searchSolr($parameters = [], $enableCache = true)
     {
-        // Set additional query parameters.
-        $parameters['start'] = 0;
         // Set query.
         $parameters['query'] = isset($parameters['query']) ? $parameters['query'] : '*';
         $parameters['filterquery'] = isset($parameters['filterquery']) ? $parameters['filterquery'] : [];

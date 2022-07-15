@@ -24,9 +24,12 @@ class SolrSearchQuery implements QueryInterface
 
     public function execute($returnRawQueryResult = false)
     {
+        $this->solrSearch->submit($this->offset, $this->limit);
+
+        // solrSearch now only contains the results in range, indexed in [0, n)
         $result = [];
-        $end = min($this->offset + $this->limit, count($this->solrSearch));
-        for ($i = $this->offset; $i < $end; $i++) {
+        $limit = min($this->limit, $this->solrSearch->getNumLoadedDocuments());
+        for ($i = 0; $i < $limit; $i++) {
             $result[] = $this->solrSearch[$i];
         }
         return $result;
