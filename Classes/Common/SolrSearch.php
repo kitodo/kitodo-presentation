@@ -45,7 +45,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             return 0;
         }
 
-        return count($this->result['document_keys']);
+        return $this->result['numberOfToplevels'];
     }
 
     public function current()
@@ -149,7 +149,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     public function getNumHits()
     {
-        return $this->result['solrResults']['numFound'];
+        return $this->result['numHits'];
     }
 
     public function submit()
@@ -276,16 +276,15 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $result = $this->searchSolr($params, true);
 
         // Initialize values
-        $numberOfToplevels = 0;
         $documents = [];
 
-        if ($result['numFound'] > 0) {
+        if ($result['numHits'] > 0) {
             // flat array with uids from Solr search
             $documentSet = array_unique(array_column($result['documents'], 'uid'));
 
             if (empty($documentSet)) {
                 // return nothing found
-                $this->result = ['solrResults' => [], 'documents' => [], 'document_keys' => []];
+                $this->result = ['solrResults' => [], 'documents' => [], 'document_keys' => [], 'numHits' => 0];
                 return;
             }
 
@@ -324,7 +323,6 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                             $documents[$doc['uid']]['searchResults'][] = $searchResult;
                         }
                     } else if ($doc['toplevel'] === true) {
-                        $numberOfToplevels++;
                         foreach ($params['listMetadataRecords'] as $indexName => $solrField) {
                             if (isset($doc['metadata'][$indexName])) {
                                 $documents[$doc['uid']]['metadata'][$indexName] = $doc['metadata'][$indexName];
@@ -351,7 +349,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
         }
 
-        $this->result = ['solrResults' => $result, 'numberOfToplevels' => $numberOfToplevels, 'documents' => $documents, 'document_keys' => array_keys($documents)];
+        $this->result = ['solrResults' => $result, 'numberOfToplevels' => $result['numberOfToplevels'], 'documents' => $documents, 'document_keys' => array_keys($documents), 'numHits' => $result['numHits']];
     }
 
     /**
@@ -391,7 +389,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // Perform search.
         $result = $this->searchSolr($params, true);
 
-        if ($result['numFound'] > 0) {
+        if ($result['numHits'] > 0) {
             // There is only one result found because of toplevel:true.
             if (isset($result['documents'][0]['metadata'])) {
                 $metadataArray = $result['documents'][0]['metadata'];
@@ -423,7 +421,11 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             Helper::log('Apache Solr not available', LOG_SEVERITY_ERROR);
-            return [];
+            return [
+                'documents' => [],
+                'numberOfToplevels' => 0,
+                'numHits' => 0,
+            ];
         }
 
         $cacheIdentifier = '';
@@ -435,10 +437,16 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         }
         $resultSet = [
             'documents' => [],
-            'numFound' => 0,
+            'numberOfToplevels' => 0,
+            'numHits' => 0,
         ];
         if ($enableCache === false || ($entry = $cache->get($cacheIdentifier)) === false) {
             $selectQuery = $solr->service->createSelect($parameters);
+
+            $grouping = $selectQuery->getGrouping();
+            $grouping->addField('uid');
+            $grouping->setLimit(100); // Results in group (TODO: check)
+            $grouping->setNumberOfGroups(true);
 
             if ($parameters['fulltext'] === true) {
                 // get highlighting component and apply settings
@@ -464,8 +472,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $response = $solr->service->executeRequest($solrRequest);
             $result = $solr->service->createResult($selectQuery, $response);
 
-            /** @scrutinizer ignore-call */
-            $resultSet['numFound'] = $result->getNumFound();
+            $uidGroup = $result->getGrouping()->getGroup('uid');
+            $resultSet['numberOfToplevels'] = $uidGroup->getNumberOfGroups();
+            $resultSet['numHits'] = $uidGroup->getMatches();
             $highlighting = [];
             if ($parameters['fulltext'] === true) {
                 $data = $result->getData();
@@ -473,26 +482,28 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
             $fields = Solr::getFields();
 
-            foreach ($result as $record) {
-                $resultDocument = new ResultDocument($record, $highlighting, $fields);
+            foreach ($uidGroup as $group) {
+                foreach ($group as $record) {
+                    $resultDocument = new ResultDocument($record, $highlighting, $fields);
 
-                $document = [
-                    'id' => $resultDocument->getId(),
-                    'page' => $resultDocument->getPage(),
-                    'snippet' => $resultDocument->getSnippets(),
-                    'thumbnail' => $resultDocument->getThumbnail(),
-                    'title' => $resultDocument->getTitle(),
-                    'toplevel' => $resultDocument->getToplevel(),
-                    'type' => $resultDocument->getType(),
-                    'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
-                    'highlight' => $resultDocument->getHighlightsIds(),
-                ];
-                foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
-                    if (!empty($record->$solrField)) {
-                        $document['metadata'][$indexName] = $record->$solrField;
+                    $document = [
+                        'id' => $resultDocument->getId(),
+                        'page' => $resultDocument->getPage(),
+                        'snippet' => $resultDocument->getSnippets(),
+                        'thumbnail' => $resultDocument->getThumbnail(),
+                        'title' => $resultDocument->getTitle(),
+                        'toplevel' => $resultDocument->getToplevel(),
+                        'type' => $resultDocument->getType(),
+                        'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+                        'highlight' => $resultDocument->getHighlightsIds(),
+                    ];
+                    foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
+                        if (!empty($record->$solrField)) {
+                            $document['metadata'][$indexName] = $record->$solrField;
+                        }
                     }
+                    $resultSet['documents'][] = $document;
                 }
-                $resultSet['documents'][] = $document;
             }
 
             // Save value in cache.
