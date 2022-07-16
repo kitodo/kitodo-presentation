@@ -93,16 +93,6 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $document = $this->result['documents'][$idx] ?? null;
 
         if ($document !== null) {
-            foreach ($document['children'] ?? [] as $childUid => $childDoc) {
-                if (empty($document['children'][$childUid]['metadata'])) {
-                    $document['children'][$childUid]['metadata'] = $this->fetchMetadataFromSolr($childUid);
-                }
-            }
-
-            if (empty($document['metadata'])) {
-                $document['metadata'] = $this->fetchMetadataFromSolr($document['uid']);
-            }
-
             // get title of parent/grandparent/... if empty
             if (empty($document['title']) && $document['partOf'] > 0) {
                 $superiorTitle = Doc::getTitle($document['partOf'], true);
@@ -349,6 +339,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                         if ($this->searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $childrenOf[$doc['uid']] ?? [];
+                            $metadataOf = $this->fetchChildrenMetadataFromSolr($doc['uid']);
                             foreach ($children as $docChild) {
                                 // We need only a few fields from the children, but we need them as array.
                                 $childDocument = [
@@ -357,7 +348,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                                     'structure' => $docChild['structure'],
                                     'metsOrderlabel' => $docChild['metsOrderlabel'],
                                     'uid' => $docChild['uid'],
-                                    'metadata' => [],
+                                    'metadata' => $metadataOf[$docChild['uid']],
                                 ];
                                 $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
                             }
@@ -371,22 +362,21 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     }
 
     /**
-     * Find all listed metadata for given document
+     * Find all listed metadata of children of given document
      *
      * @param int $uid the uid of the document
      * @return array
      */
-    protected function fetchMetadataFromSolr($uid)
+    protected function fetchChildrenMetadataFromSolr($uid)
     {
         // Prepare query parameters.
         $params = [];
         $metadataArray = [];
 
         // Set some query parameters.
-        $params['query'] = 'uid:' . $uid;
+        $params['query'] = 'partof:' . $uid;
         $params['start'] = 0;
-        $params['rows'] = 1;
-        $params['sort'] = ['score' => 'desc'];
+        $params['rows'] = 100;
         $params['listMetadataRecords'] = [];
 
         // Restrict the fields to the required ones.
@@ -407,12 +397,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // Perform search.
         $result = $this->searchSolr($params, true);
 
-        if ($result['numHits'] > 0) {
-            // There is only one result found because of toplevel:true.
-            if (isset($result['documents'][0]['metadata'])) {
-                $metadataArray = $result['documents'][0]['metadata'];
-            }
+        foreach ($result['documents'] as $doc) {
+            $metadataArray[$doc['uid']] = $doc['metadata'];
         }
+
         return $metadataArray;
     }
 
