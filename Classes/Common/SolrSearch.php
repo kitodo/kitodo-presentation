@@ -339,18 +339,20 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                         if ($this->searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $childrenOf[$doc['uid']] ?? [];
-                            $metadataOf = $this->fetchChildrenMetadataFromSolr($doc['uid']);
-                            foreach ($children as $docChild) {
-                                // We need only a few fields from the children, but we need them as array.
-                                $childDocument = [
-                                    'thumbnail' => $docChild['thumbnail'],
-                                    'title' => $docChild['title'],
-                                    'structure' => $docChild['structure'],
-                                    'metsOrderlabel' => $docChild['metsOrderlabel'],
-                                    'uid' => $docChild['uid'],
-                                    'metadata' => $metadataOf[$docChild['uid']],
-                                ];
-                                $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
+                            if (!empty($children)) {
+                                $metadataOf = $this->fetchChildrenMetadataFromSolr($doc['uid']);
+                                foreach ($children as $docChild) {
+                                    // We need only a few fields from the children, but we need them as array.
+                                    $childDocument = [
+                                        'thumbnail' => $docChild['thumbnail'],
+                                        'title' => $docChild['title'],
+                                        'structure' => $docChild['structure'],
+                                        'metsOrderlabel' => $docChild['metsOrderlabel'],
+                                        'uid' => $docChild['uid'],
+                                        'metadata' => $metadataOf[$docChild['uid']],
+                                    ];
+                                    $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
+                                }
                             }
                         }
                     }
