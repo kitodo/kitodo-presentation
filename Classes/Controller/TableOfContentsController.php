@@ -307,7 +307,7 @@ class TableOfContentsController extends AbstractController
                 if (!str_contains($label, $title)) {
                     return $entryArray;
                 }
-            }  else if (!empty($this->requestData['types'])) {
+            } else if (!empty($this->requestData['types'])) {
                 if (!str_contains($entry['identifier'], $this->requestData['types'])) {
                     return $entryArray;
                 }
