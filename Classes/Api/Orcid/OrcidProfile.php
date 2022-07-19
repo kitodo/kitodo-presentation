@@ -20,12 +20,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * ORCID API Profile class
  *
-* @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
+ * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  **/
-class Profile
+class OrcidProfile
 {
     /**
      * This holds the logger
@@ -35,10 +35,10 @@ class Profile
      */
     protected $logger;
 
-     /**
+    /**
      * This holds the client
      *
-     * @var Client
+     * @var OrcidClient
      * @access protected
      */
     protected $client;
@@ -46,7 +46,7 @@ class Profile
     /**
      * The raw ORCID profile
      *
-     * @var SimpleXmlElement
+     * @var \SimpleXmlElement
      **/
     private $raw = null;
 
@@ -60,13 +60,13 @@ class Profile
     public function __construct($orcid)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-        $this->client = new Client($orcid, GeneralUtility::makeInstance(RequestFactory::class));
+        $this->client = new OrcidClient($orcid, GeneralUtility::makeInstance(RequestFactory::class));
     }
 
     /**
      * Get the ORCID profile data
      *
-     * @return array|bool
+     * @return  array|bool
      **/
     public function getData()
     {
@@ -86,7 +86,7 @@ class Profile
     /**
      * Get the address
      *
-     * @return string|bool
+     * @return  string|bool
      **/
     public function getAddress()
     {
@@ -103,7 +103,7 @@ class Profile
     /**
      * Get the email
      *
-     * @return string|bool
+     * @return  string|bool
      **/
     public function getEmail()
     {
@@ -120,7 +120,7 @@ class Profile
     /**
      * Get the full name
      *
-     * @return string|bool
+     * @return  string|bool
      **/
     public function getFullName()
     {
@@ -138,8 +138,6 @@ class Profile
 
     /**
      * Get the ORCID part of profile data for given endpoint
-     *
-     * @param string $endpoint: the endpoint for search URL
      *
      * @return void
      **/

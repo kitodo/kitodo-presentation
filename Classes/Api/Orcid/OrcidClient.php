@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  **/
-class Client
+class OrcidClient
 {
     /**
      * constants for API endpoint
@@ -56,7 +56,7 @@ class Client
     private $level = 'pub';
 
     /**
-     * The ORCID to search for
+     * The login/registration page ORCID
      *
      * @var string
      **/
@@ -110,14 +110,14 @@ class Client
     /**
      * Creates the qualified API endpoint for retrieving the desired data
      *
+     * @param string  $endpoint the shortname of the endpoint
      * @return string
      **/
     private function getApiEndpoint()
     {
         $url  = 'https://' . $this->level . '.' . self::HOSTNAME;
         $url .= '/v' . self::VERSION . '/';
-        $url .= '0000-0001-9483-5161';
-        //$url .= $this->orcid;
+        $url .= $this->orcid;
         $url .= '/' . $this->endpoint;
         return $url;
     }
