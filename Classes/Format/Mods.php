@@ -12,7 +12,8 @@
 
 namespace Kitodo\Dlf\Format;
 
-use Kitodo\Dlf\Api\Orcid\Profile;
+use Kitodo\Dlf\Api\Orcid\OrcidProfile;
+use Kitodo\Dlf\Api\Viaf\ViafProfile;
 
 /**
  * Metadata MODS format class for the 'dlf' extension
@@ -84,7 +85,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
 
                 $identifier = $authors[$i]->xpath('./mods:name/mods:nameIdentifier[@type="orcid"]');
                 if (!empty((string) $identifier[0])) {
-                    $profile = new Profile((string) $identifier[0]);
+                    $profile = new OrcidProfile((string) $identifier[0]);
                     $this->metadata['author'][$i] = $profile->getFullName();
                 } else {
                     // Check if there is a display form.
@@ -145,35 +146,43 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             for ($i = 0, $j = count($holders); $i < $j; $i++) {
                 $holders[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-                // Check if there is a display form.
-                if (($displayForm = $holders[$i]->xpath('./mods:displayForm'))) {
-                    $this->metadata['holder'][$i] = (string) $displayForm[0];
-                } elseif (($nameParts = $holders[$i]->xpath('./mods:namePart'))) {
-                    $name = [];
-                    $k = 4;
-                    foreach ($nameParts as $namePart) {
-                        if (
-                            isset($namePart['type'])
-                            && (string) $namePart['type'] == 'family'
-                        ) {
-                            $name[0] = (string) $namePart;
-                        } elseif (
-                            isset($namePart['type'])
-                            && (string) $namePart['type'] == 'given'
-                        ) {
-                            $name[1] = (string) $namePart;
-                        } elseif (
-                            isset($namePart['type'])
-                            && (string) $namePart['type'] == 'termsOfAddress'
-                        ) {
-                            $name[2] = (string) $namePart;
-                        } elseif (
-                            isset($namePart['type'])
-                            && (string) $namePart['type'] == 'date'
-                        ) {
-                            $name[3] = (string) $namePart;
-                        } else {
-                            $name[$k] = (string) $namePart;
+                $identifier = $holders[$i]->xpath('./mods:nameIdentifier');
+                if ($identifier[0]['type'] == 'viaf') {
+                    $viafUrl = (string) $identifier[0];
+                    $profile = new ViafProfile($viafUrl);
+                    $this->metadata['holder'][$i] = $profile->getFullName();
+                } else {
+                    // Check if there is a display form.
+                    if (($displayForm = $holders[$i]->xpath('./mods:displayForm'))) {
+                        $this->metadata['holder'][$i] = (string) $displayForm[0];
+                    } elseif (($nameParts = $holders[$i]->xpath('./mods:namePart'))) {
+                        $name = [];
+                        $k = 4;
+                        foreach ($nameParts as $namePart) {
+                            if (
+                                isset($namePart['type'])
+                                && (string) $namePart['type'] == 'family'
+                            ) {
+                                $name[0] = (string) $namePart;
+                            } elseif (
+                                isset($namePart['type'])
+                                && (string) $namePart['type'] == 'given'
+                            ) {
+                                $name[1] = (string) $namePart;
+                            } elseif (
+                                isset($namePart['type'])
+                                && (string) $namePart['type'] == 'termsOfAddress'
+                            ) {
+                                $name[2] = (string) $namePart;
+                            } elseif (
+                                isset($namePart['type'])
+                                && (string) $namePart['type'] == 'date'
+                            ) {
+                                $name[3] = (string) $namePart;
+                            } else {
+                                $name[$k] = (string) $namePart;
+                            }
+                            $k++;
                         }
                         $k++;
                     }
