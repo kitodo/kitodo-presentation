@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 /**
- * TODO 
  * This specifies a way how a metadatum (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
  *
  * For instance, the title of a document may be obtained from either the MODS
@@ -56,11 +55,11 @@ class MetadataSubentry extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $xpath;
 
-/**
+    /**
      * @var string
      */
     protected $defaultValue;
-    
+
     /**
      * @var string
      */
@@ -161,7 +160,7 @@ class MetadataSubentry extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     {
         $this->defaultValue = $defaultValue;
     }
-    
+
     /**
      * @return string
      */

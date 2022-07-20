@@ -210,7 +210,7 @@ class MetadataController extends AbstractController
                         ? implode($this->settings['separator'], $metadataValue)
                         : $metadataValue;
 
-                    // TODO: This might not be necessary for subentries or needs to be typecasted correctly. 
+                    // TODO: This might not be necessary for subentries or needs to be typecasted correctly.
                     if ($metaCObjData[$i][$metadataName] === 'Array') {
                         $metaCObjData[$i][$metadataName] = [];
                         foreach ($metadataValue as $subKey => $subValue) {

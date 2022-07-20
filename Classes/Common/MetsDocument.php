@@ -587,7 +587,7 @@ final class MetsDocument extends Doc
         }
     }
 
-/**
+    /**
      * @param array $allResults
      * @param array $allSubentries
      * @param array $metadata
@@ -613,8 +613,7 @@ final class MetsDocument extends Doc
                 ) {
                     $metadata[$resArray['index_name']] = [];
                     foreach ($values as $value) {
-                        if ($subentries = $this->getSubentries($allSubentries, $resArray['index_name'], $value))
-                        {
+                        if ($subentries = $this->getSubentries($allSubentries, $resArray['index_name'], $value)) {
                             $metadata[$resArray['index_name']][] = $subentries;
                         } else {
                             $metadata[$resArray['index_name']][] = trim((string)$value->nodeValue);
@@ -674,10 +673,8 @@ final class MetsDocument extends Doc
         $domXPath = new \DOMXPath($parentNode->ownerDocument);
         $this->registerNamespaces($domXPath);
         $theseSubentries = [];
-        foreach ($allSubentries as $subentry)
-        {
-            if ($subentry['parent_index_name'] == $parentIndex)
-            {
+        foreach ($allSubentries as $subentry) {
+            if ($subentry['parent_index_name'] == $parentIndex) {
                 if (
                     !empty($subentry['xpath'])
                     && ($values = $domXPath->evaluate($subentry['xpath'], $parentNode))
@@ -696,15 +693,14 @@ final class MetsDocument extends Doc
                 }
                 // Set default value if applicable.
                 if (
-                    empty($theseSubentries[$subEntry['index_name']][0])
+                    empty($theseSubentries[$subentry['index_name']][0])
                     && strlen($subentry['default_value']) > 0
                 ) {
                     $theseSubentries[$subentry['index_name']] = [$subentry['default_value']];
                 }
             }
         }
-        if (empty($theseSubentries))
-        {
+        if (empty($theseSubentries)) {
             return false;
         }
         return $theseSubentries;
