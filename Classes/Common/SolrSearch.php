@@ -154,11 +154,11 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     /**
      * Get total number of hits.
      *
-     * This can be accessed in Fluid template using `.numHits`.
+     * This can be accessed in Fluid template using `.numFound`.
      */
-    public function getNumHits()
+    public function getNumFound()
     {
-        return $this->result['numHits'];
+        return $this->result['numFound'];
     }
 
     public function prepare()
@@ -297,13 +297,13 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // Initialize values
         $documents = [];
 
-        if ($processResults && $result['numHits'] > 0) {
+        if ($processResults && $result['numFound'] > 0) {
             // flat array with uids from Solr search
             $documentSet = array_unique(array_column($result['documents'], 'uid'));
 
             if (empty($documentSet)) {
                 // return nothing found
-                $this->result = ['solrResults' => [], 'documents' => [], 'document_keys' => [], 'numHits' => 0];
+                $this->result = ['solrResults' => [], 'documents' => [], 'document_keys' => [], 'numFound' => 0];
                 return;
             }
 
@@ -374,7 +374,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
         }
 
-        $this->result = ['solrResults' => $result, 'numberOfToplevels' => $result['numberOfToplevels'], 'documents' => $documents, 'document_keys' => array_keys($documents), 'numHits' => $result['numHits']];
+        $this->result = ['solrResults' => $result, 'numberOfToplevels' => $result['numberOfToplevels'], 'documents' => $documents, 'document_keys' => array_keys($documents), 'numFound' => $result['numFound']];
     }
 
     /**
@@ -441,7 +441,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             return [
                 'documents' => [],
                 'numberOfToplevels' => 0,
-                'numHits' => 0,
+                'numFound' => 0,
             ];
         }
 
@@ -455,7 +455,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $resultSet = [
             'documents' => [],
             'numberOfToplevels' => 0,
-            'numHits' => 0,
+            'numFound' => 0,
         ];
         if ($enableCache === false || ($entry = $cache->get($cacheIdentifier)) === false) {
             $selectQuery = $solr->service->createSelect($parameters);
@@ -491,7 +491,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             $uidGroup = $result->getGrouping()->getGroup('uid');
             $resultSet['numberOfToplevels'] = $uidGroup->getNumberOfGroups();
-            $resultSet['numHits'] = $uidGroup->getMatches();
+            $resultSet['numFound'] = $uidGroup->getMatches();
             $highlighting = [];
             if ($parameters['fulltext'] === true) {
                 $data = $result->getData();

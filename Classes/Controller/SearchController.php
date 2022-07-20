@@ -130,12 +130,16 @@ class SearchController extends AbstractController
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
+            $solrResults = [];
+            $numResults = 0;
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
-                $solrSearch = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
+                $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
+                $numResults = $solrResults->getNumFound();
             }
 
-            $this->view->assign('solrSearch', $solrSearch ?? []);
+            $this->view->assign('documents', $solrResults);
+            $this->view->assign('numResults', $numResults);
             $this->view->assign('widgetPage', $widgetPage);
             $this->view->assign('lastSearch', $this->searchParams);
             $this->view->assign('listedMetadata', $listedMetadata);
