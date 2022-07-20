@@ -632,7 +632,6 @@ final class MetsDocument extends Doc
                 )
                 ->execute();
             $subentriesResult = $subentries->fetchAll();
-            $metadata = $this->getXPathQueries($dmdId, $allResults, $subentriesResult, $metadata);
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
@@ -651,8 +650,7 @@ final class MetsDocument extends Doc
                     ) {
                         $metadata[$resArray['index_name']] = [];
                         foreach ($values as $value) {
-                            if ($subentries = $this->getSubentries($subentriesResult, $resArray['index_name'], $value))
-                            {
+                            if ($subentries = $this->getSubentries($subentriesResult, $resArray['index_name'], $value)) {
                                 $metadata[$resArray['index_name']][] = $subentries;
                             } else {
                                 $metadata[$resArray['index_name']][] = trim((string)$value->nodeValue);
@@ -697,24 +695,10 @@ final class MetsDocument extends Doc
             $hasSupportedMetadata = true;
             break;
         }
-        // Set title to empty string if not present.
-        if (empty($metadata['title'][0])) {
-            $metadata['title'][0] = '';
-            $metadata['title_sorting'][0] = '';
-        }
-        // Set title_sorting to title as default.
-        if (empty($metadata['title_sorting'][0])) {
-            $metadata['title_sorting'][0] = $metadata['title'][0];
-        }
-        // Set date to empty string if not present.
-        if (empty($metadata['date'][0])) {
-            $metadata['date'][0] = '';
-        }
-        // Files are not expected to reference a dmdSec
-        if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
+        if ($hasSupportedMetadata) {
             return $metadata;
         } else {
-            $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
+            $this->logger->warning('No supported metadata found for logical structure with @ID "' . $id . '"');
             return [];
         }
     }
@@ -730,10 +714,8 @@ final class MetsDocument extends Doc
         $domXPath = new \DOMXPath($parentNode->ownerDocument);
         $this->registerNamespaces($domXPath);
         $theseSubentries = [];
-        foreach ($allSubentries as $subentry)
-        {
-            if ($subentry['parent_index_name'] == $parentIndex)
-            {
+        foreach ($allSubentries as $subentry) {
+            if ($subentry['parent_index_name'] == $parentIndex) {
                 if (
                     !empty($subentry['xpath'])
                     && ($values = $domXPath->evaluate($subentry['xpath'], $parentNode))
@@ -752,15 +734,14 @@ final class MetsDocument extends Doc
                 }
                 // Set default value if applicable.
                 if (
-                    empty($theseSubentries[$subEntry['index_name']][0])
+                    empty($theseSubentries[$subentry['index_name']][0])
                     && strlen($subentry['default_value']) > 0
                 ) {
                     $theseSubentries[$subentry['index_name']] = [$subentry['default_value']];
                 }
             }
         }
-        if (empty($theseSubentries))
-        {
+        if (empty($theseSubentries)) {
             return false;
         }
         return $theseSubentries;
