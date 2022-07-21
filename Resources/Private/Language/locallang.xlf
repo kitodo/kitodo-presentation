@@ -5,6 +5,9 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
+			<trans-unit id="author" approved="yes">
+				<source><![CDATA[author]]></source>
+			</trans-unit>
 			<trans-unit id="search.inFulltext">
 				<source><![CDATA[in fulltext]]></source>
 			</trans-unit>

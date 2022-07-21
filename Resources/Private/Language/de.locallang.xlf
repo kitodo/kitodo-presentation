@@ -5,6 +5,10 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
+			<trans-unit id="author" approved="yes">
+				<source><![CDATA[author]]></source>
+				<target><![CDATA[Autor]]></target>
+			</trans-unit>
 			<trans-unit id="backXPages" approved="yes">
 				<source><![CDATA[Back %s Pages]]></source>
 				<target><![CDATA[%s Seiten zurück]]></target>

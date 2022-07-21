@@ -288,29 +288,24 @@ class TableOfContentsController extends AbstractController
         return $entry;
     }
 
+    /**
+     * This builds an array for one 3D menu entry
+     *
+     * @access protected
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     * @param bool $recursive : Whether to include the child entries
+     *
+     * @return array HMENU array for 3D menu entry
+     */
     protected function getMenuEntryWithImage(array $entry, $recursive = false)
     {
         $entryArray = [];
 
-        // don't filter if the entry type is collection or search params are empty
+        // don't filter if the entry type is collection
         if ($entry['type'] != 'collection') {
-            // currently only title filtering is defined
-            if (!empty($this->requestData['title']) && !empty($this->requestData['types'])) {
-                $label = strtolower($entry['label']);
-                $title = strtolower($this->requestData['title']);
-                if (!str_contains($label, $title) && !str_contains($entry['identifier'], $this->requestData['types'])) {
-                    return $entryArray;
-                }
-            } else if (!empty($this->requestData['title'])) {
-                $label = strtolower($entry['label']);
-                $title = strtolower($this->requestData['title']);
-                if (!str_contains($label, $title)) {
-                    return $entryArray;
-                }
-            } else if (!empty($this->requestData['types'])) {
-                if (!str_contains($entry['identifier'], $this->requestData['types'])) {
-                    return $entryArray;
-                }
+            if (!$this->isFound($entry)) {
+                return $entryArray;
             }
         }
 
@@ -357,6 +352,78 @@ class TableOfContentsController extends AbstractController
         return $entryArray;
     }
 
+    /**
+     * Check or possible combinations of requested params.
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     *
+     * @return bool true if found, false otherwise
+     */
+    private function isFound($entry) {
+        if (!empty($this->requestData['title'] && !empty($this->requestData['types']) && !empty($this->requestData['author']))) {
+            return $this->isTitleFound($entry) && $this->isTypeFound($entry) && $this->isAuthorFound($entry);
+        } else if (!empty($this->requestData['title']) && !empty($this->requestData['author'])) {
+            return $this->isTitleFound($entry) && $this->isAuthorFound($entry);
+        } else if (!empty($this->requestData['title']) && !empty($this->requestData['types'])) {
+            return $this->isTitleFound($entry) && $this->isTypeFound($entry);
+        } else if (!empty($this->requestData['author']) && !empty($this->requestData['types'])) {
+            return $this->isAuthorFound($entry) && $this->isTypeFound($entry);
+        } else if (!empty($this->requestData['title'])) {
+            return $this->isTitleFound($entry);
+        } else if (!empty($this->requestData['types'])) {
+            return $this->isTypeFound($entry);
+        } else if (!empty($this->requestData['author'])) {
+            return $this->isAuthorFound($entry);
+        } else {
+            // no parameters so entry is matching
+            return true;
+        }
+    }
+
+    /**
+     * Check if author is found.
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     *
+     * @return bool true if found, false otherwise
+     */
+    private function isAuthorFound($entry) {
+        $value = strtolower($entry['author']);
+        $author = strtolower($this->requestData['author']);
+        return str_contains($value, $author);
+    }
+
+    /**
+     * Check if title is found.
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     *
+     * @return bool true if found, false otherwise
+     */
+    private function isTitleFound($entry) {
+        $value = strtolower($entry['label']);
+        $title = strtolower($this->requestData['title']);
+        return str_contains($value, $title);
+    }
+
+    /**
+     * Check if type is found.
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     *
+     * @return bool true if found, false otherwise
+     */
+    private function isTypeFound($entry) {
+        return str_contains($entry['identifier'], $this->requestData['types']);
+    }
+
+    /**
+     * Get all types.
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     *
+     * @return array of object types
+     */
     private function getTypes($entry) {
         $types = [];
         $index = 0;
@@ -374,6 +441,13 @@ class TableOfContentsController extends AbstractController
         return $types;
     }
 
+    /**
+     * Get single type for given entry.
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     *
+     * @return string type name without number
+     */
     private function getType($entry) {
         $type = $entry['identifier'];
         if (!empty($type)) {

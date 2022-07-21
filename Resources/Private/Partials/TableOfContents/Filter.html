@@ -29,5 +29,9 @@
             <option value="{type}">{type}</option>
         </f:for>
     </select>
+    <label for="tx-dlf-filter-author">
+        {f:translate(key: 'author')}
+    </label>
+    <input id="tx-dlf-filter-author" name="tx_dlf[author]" />
     <f:form.submit value="{f:translate(key: 'filter.submit')}" />
 </form>
