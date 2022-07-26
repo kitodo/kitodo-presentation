@@ -107,8 +107,10 @@ class Profile
     {
         $this->getRaw();
         if (!empty($this->raw->asXML())) {
-            $name = $this->raw->xpath('./ns1:mainHeadings/ns1:data/ns1:text');
-            return (string) $name[0];
+            $rawName = $this->raw->xpath('./ns1:mainHeadings/ns1:data/ns1:text');
+            $name = (string) $rawName[0];
+            $name = trim(trim(trim($name), ','), '.');
+            return $name;
         } else {
             $this->logger->warning('No name found for given VIAF URL');
             return false;
