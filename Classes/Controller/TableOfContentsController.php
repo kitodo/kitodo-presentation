@@ -35,6 +35,22 @@ class TableOfContentsController extends AbstractController
     protected $activeEntries = [];
 
     /**
+     * This holds the list of authors for autocomplete
+     *
+     * @var array
+     * @access protected
+     */
+    protected $authors = [];
+
+    /**
+     * This holds the list of titles for autocomplete
+     *
+     * @var array
+     * @access protected
+     */
+    protected $titles = [];
+
+    /**
      * The main method of the plugin
      *
      * @return void
@@ -65,6 +81,8 @@ class TableOfContentsController extends AbstractController
                 $this->view->assign('type', 'collection');
                 $this->view->assign('types', $this->getTypes($this->document->getDoc()->tableOfContents));
                 $this->view->assign('toc', $this->makeMenuFor3DObjects());
+                $this->view->assign('authors', $this->authors);
+                $this->view->assign('titles', $this->titles);
             } else {
                 $this->view->assign('type', 'other');
                 $this->view->assign('toc', $this->makeMenuArray());
@@ -326,6 +344,9 @@ class TableOfContentsController extends AbstractController
             $entryArray['urlId'] = GeneralUtility::_GET('id');
             $entryArray['urlXml'] = $entry['points'];
             $entryArray['ITEM_STATE'] = 'ITEM';
+
+            $this->addAuthorToAutocomplete($entryArray['author']);
+            $this->addTitleToAutocomplete($entryArray['title']);
         }
 
         // Build sub-menu if available and called recursively.
@@ -415,6 +436,42 @@ class TableOfContentsController extends AbstractController
      */
     private function isTypeFound($entry) {
         return str_contains($entry['identifier'], $this->requestData['types']);
+    }
+
+    /**
+     * Add author to the authors autocomplete array.
+     *
+     * @param string $author : author to be inserted to the authors autocomplete array
+     *
+     * @return void
+     */
+    private function addAuthorToAutocomplete($author) {
+        if ($author != NULL && !(in_array($author, $this->authors))) {
+            // additional check if actually not more than 1 author is included
+            if (strpos($author, ',') !== false) {
+                $authors = explode(",", $author);
+                foreach ($authors as $value) {
+                    if (!(in_array(trim($value), $this->authors))) {
+                        $this->authors[] = trim($value);
+                    }
+                }
+            } else {
+                $this->authors[] = $author;
+            }
+        }
+    }
+
+    /**
+     * Add title to the titles autocomplete array.
+     *
+     * @param string $title : title to be inserted to the titles autocomplete array
+     *
+     * @return void
+     */
+    private function addTitleToAutocomplete($title) {
+        if (!(in_array($title, $this->titles)) && $title != NULL) {
+            $this->titles[] = $title;
+        }
     }
 
     /**

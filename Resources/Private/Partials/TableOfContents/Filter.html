@@ -19,7 +19,12 @@
     <label for="tx-dlf-filter-title">
         {f:translate(key: 'title')}
     </label>
-    <input id="tx-dlf-filter-title" name="tx_dlf[title]" />
+    <input id="tx-dlf-filter-title" name="tx_dlf[title]" list="titles" />
+    <datalist id="titles" style="display: none;">
+        <f:for each="{titles}" as="title">
+            <option value="{title}">
+        </f:for>
+    </datalist>
     <label for="tx-dlf-filter-type">
         {f:translate(key: 'type')}
     </label>
@@ -32,6 +37,11 @@
     <label for="tx-dlf-filter-author">
         {f:translate(key: 'author')}
     </label>
-    <input id="tx-dlf-filter-author" name="tx_dlf[author]" />
+    <input id="tx-dlf-filter-author" name="tx_dlf[author]" list="authors" />
+    <datalist id="authors" style="display: none;">
+        <f:for each="{authors}" as="author">
+            <option value="{author}">
+        </f:for>
+    </datalist>
     <f:form.submit value="{f:translate(key: 'filter.submit')}" />
 </form>
