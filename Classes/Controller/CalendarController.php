@@ -226,12 +226,28 @@ class CalendarController extends AbstractController
 
         $years = [];
         // Process results.
-        /** @var Document $document */
-        foreach ($documents as $document) {
-            $years[] = [
-                'title' => !empty($document->getMetsLabel()) ? $document->getMetsLabel() : (!empty($document->getMetsOrderlabel()) ? $document->getMetsOrderlabel() : $document->getTitle()),
-                'uid' => $document->getUid()
-            ];
+        if (count($documents) === 0) {
+            foreach ($this->document->getDoc()->tableOfContents[0]['children'] as $id => $year) {
+                $yearLabel = empty($year['label']) ? $year['orderlabel'] : $year['label'];
+
+                if (empty($yearLabel)) {
+                    // if neither order nor orderlabel is set, use the id...
+                    $yearLabel = (string)$id;
+                }
+
+                $years[] = [
+                    'title' => $yearLabel,
+                    'uid' => $year['points'],
+                ];
+            }
+        } else {
+            /** @var Document $document */
+            foreach ($documents as $document) {
+                $years[] = [
+                    'title' => !empty($document->getMetsLabel()) ? $document->getMetsLabel() : (!empty($document->getMetsOrderlabel()) ? $document->getMetsOrderlabel() : $document->getTitle()),
+                    'uid' => $document->getUid()
+                ];
+            }
         }
 
         $yearArray = [];
