@@ -120,22 +120,45 @@ class CalendarController extends AbstractController
         $issues = [];
 
         // Process results.
-        /** @var Document $document */
-        foreach ($documents as $document) {
-            // Set title for display in calendar view.
-            if (!empty($document->getTitle())) {
-                $title = $document->getTitle();
-            } else {
-                $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
-                if (strtotime($title) !== false) {
-                    $title = strftime('%x', strtotime($title));
+        if ($documents->count() === 0) {
+            $toc = $this->document->getDoc()->tableOfContents;
+
+            foreach ($toc[0]['children'] as $year) {
+                foreach ($year['children'] as $month) {
+                    foreach ($month['children'] as $day) {
+                        foreach ($day['children'] as $issue) {
+                            $title = $issue['label'] ?: $issue['orderlabel'];
+                            if (strtotime($title) !== false) {
+                                $title = strftime('%x', strtotime($title));
+                            }
+
+                            $issues[] = [
+                                'uid' => $issue['points'],
+                                'title' => $title,
+                                'year' => $day['orderlabel'],
+                            ];
+                        }
+                    }
                 }
             }
-            $issues[] = [
-                'uid' => $document->getUid(),
-                'title' => $title,
-                'year' => $document->getYear()
-            ];
+        } else {
+            /** @var Document $document */
+            foreach ($documents as $document) {
+                // Set title for display in calendar view.
+                if (!empty($document->getTitle())) {
+                    $title = $document->getTitle();
+                } else {
+                    $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
+                    if (strtotime($title) !== false) {
+                        $title = strftime('%x', strtotime($title));
+                    }
+                }
+                $issues[] = [
+                    'uid' => $document->getUid(),
+                    'title' => $title,
+                    'year' => $document->getYear()
+                ];
+            }
         }
 
         //  We need an array of issues with year => month => day number as key.
