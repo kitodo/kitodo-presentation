@@ -2,7 +2,9 @@ name: Run the tests
 
 on:
   push:
-    branches: [master, dev-extbase-fluid, dev-testing]
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   test:
