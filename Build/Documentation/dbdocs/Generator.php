@@ -154,9 +154,16 @@ class Generator
             $dataMap = $this->dataMapper->getDataMap($className);
 
             foreach ($reflection->getProperties() as $property) {
+                // If the TCA doesn't list the column, DataMap won't know about it.
+                // In that case, try to guess the column name from the property name.
+
                 $column = $dataMap->getColumnMap($property->getName());
-                if ($column !== null) {
-                    $result->columns[$column->getColumnName()]->fieldComment = $this->parseDocComment($property->getDocComment());
+                $columnName = $column === null
+                    ? GeneralUtility::camelCaseToLowerCaseUnderscored($property->getName())
+                    : $column->getColumnName();
+
+                if (isset($result->columns[$columnName])) {
+                    $result->columns[$columnName]->fieldComment = $this->parseDocComment($property->getDocComment());
                 }
             }
 
