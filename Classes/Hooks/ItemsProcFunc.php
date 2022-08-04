@@ -60,7 +60,7 @@ class ItemsProcFunc
      */
     public function getTyposcriptConfigFromPluginSiteRoot($params) {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $pid = 2;
+        $pid = $params['flexParentDatabaseRow']['pid'];
         $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($pid);
         $siterootRow = [];
         foreach($rootline as $_uid=>$_row) {
