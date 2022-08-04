@@ -29,8 +29,10 @@ use TYPO3\CMS\Core\Log\LogManager;
  * @subpackage dlf
  * @access public
  * @property int $cPid This holds the PID for the configuration
- * @property-read array $dmdSec This holds the XML file's dmdSec parts with their IDs as array key
+ * @property-read array $mdSec Associative array of METS metadata sections indexed by their IDs.
+ * @property-read array $dmdSec Subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
  * @property-read array $fileGrps This holds the file ID -> USE concordance
+ * @property-read array $fileInfos Additional information about files (e.g., ADMID), indexed by ID.
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
@@ -51,6 +53,16 @@ use TYPO3\CMS\Core\Log\LogManager;
 final class MetsDocument extends Doc
 {
     /**
+     * Subsections / tags that may occur within `<mets:amdSec>`.
+     *
+     * @link https://www.loc.gov/standards/mets/docs/mets.v1-9.html#amdSec
+     * @link https://www.loc.gov/standards/mets/docs/mets.v1-9.html#mdSecType
+     *
+     * @var string[]
+     */
+    protected const ALLOWED_AMD_SEC = ['techMD', 'rightsMD', 'sourceMD', 'digiprovMD'];
+
+    /**
      * This holds the whole XML file as string for serialization purposes
      * @see __sleep() / __wakeup()
      *
@@ -60,21 +72,38 @@ final class MetsDocument extends Doc
     protected $asXML = '';
 
     /**
-     * This holds the XML file's dmdSec parts with their IDs as array key
+     * This maps the ID of each amdSec to the IDs of its children (techMD etc.).
+     * When an ADMID references an amdSec instead of techMD etc., this is used to iterate the child elements.
+     *
+     * @var string[]
+     * @access protected
+     */
+    protected $amdSecChildIds = [];
+
+    /**
+     * Associative array of METS metadata sections indexed by their IDs.
+     *
+     * @var array
+     * @access protected
+     */
+    protected $mdSec = [];
+
+    /**
+     * Are the METS file's metadata sections loaded?
+     * @see MetsDocument::$mdSec
+     *
+     * @var bool
+     * @access protected
+     */
+    protected $mdSecLoaded = false;
+
+    /**
+     * Subset of $mdSec storing only the dmdSec entries; kept for compatibility.
      *
      * @var array
      * @access protected
      */
     protected $dmdSec = [];
-
-    /**
-     * Are the METS file's dmdSecs loaded?
-     * @see $dmdSec
-     *
-     * @var bool
-     * @access protected
-     */
-    protected $dmdSecLoaded = false;
 
     /**
      * The extension key
@@ -101,6 +130,16 @@ final class MetsDocument extends Doc
      * @access protected
      */
     protected $fileGrpsLoaded = false;
+
+    /**
+     * Additional information about files (e.g., ADMID), indexed by ID.
+     * TODO: Consider using this for `getFileMimeType()` and `getFileLocation()`.
+     * @see _getFileInfos()
+     *
+     * @var array
+     * @access protected
+     */
+    protected $fileInfos = [];
 
     /**
      * This holds the XML file's METS part as \SimpleXMLElement object
@@ -288,6 +327,7 @@ final class MetsDocument extends Doc
         $details = [];
         $details['id'] = $attributes['ID'];
         $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
+        $details['admId'] = (isset($attributes['ADMID']) ? $attributes['ADMID'] : '');
         $details['order'] = (isset($attributes['ORDER']) ? $attributes['ORDER'] : '');
         $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
         $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
@@ -424,52 +464,52 @@ final class MetsDocument extends Doc
             'mets_orderlabel' => [],
             'document_format' => ['METS'],
         ];
-        // Get the logical structure node's @DMDID.
-        if (!empty($this->logicalUnits[$id])) {
-            $dmdIds = $this->logicalUnits[$id]['dmdId'];
-        } else {
-            $dmdIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@DMDID');
-            $dmdIds = (string) $dmdIds[0];
-        }
-        if (!empty($dmdIds)) {
-            // Handle multiple DMDIDs separately.
-            $dmdIds = explode(' ', $dmdIds);
-            $hasSupportedMetadata = false;
-        } else {
-            // There is no dmdSec for this structure node.
+        $mdIds = $this->getMetadataIds($id);
+        if (empty($mdIds)) {
+            // There is no metadata section for this structure node.
             return [];
         }
-        // Load available metadata formats and dmdSecs.
+        // Associative array used as set of available section types (dmdSec, techMD, ...)
+        $hasMetadataSection = [];
+        // Load available metadata formats and metadata sections.
         $this->loadFormats();
-        $this->_getDmdSec();
-        foreach ($dmdIds as $dmdId) {
+        $this->_getMdSec();
+        // Get the structure's type.
+        if (!empty($this->logicalUnits[$id])) {
+            $metadata['type'] = [$this->logicalUnits[$id]['type']];
+        } else {
+            $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@TYPE');
+            if (!empty($struct)) {
+                $metadata['type'] = [(string) $struct[0]];
+            }
+        }
+        foreach ($mdIds as $dmdId) {
+            $mdSectionType = $this->mdSec[$dmdId]['section'];
+
+            // To preserve behavior of previous Kitodo versions, extract metadata only from first supported dmdSec
+            // However, we want to extract, for example, all techMD sections (VIDEOMD, AUDIOMD)
+            if ($mdSectionType === 'dmdSec' && isset($hasMetadataSection['dmdSec'])) {
+                continue;
+            }
+
             // Is this metadata format supported?
-            if (!empty($this->formats[$this->dmdSec[$dmdId]['type']])) {
-                if (!empty($this->formats[$this->dmdSec[$dmdId]['type']]['class'])) {
-                    $class = $this->formats[$this->dmdSec[$dmdId]['type']]['class'];
+            if (!empty($this->formats[$this->mdSec[$dmdId]['type']])) {
+                if (!empty($this->formats[$this->mdSec[$dmdId]['type']]['class'])) {
+                    $class = $this->formats[$this->mdSec[$dmdId]['type']]['class'];
                     // Get the metadata from class.
                     if (
                         class_exists($class)
                         && ($obj = GeneralUtility::makeInstance($class)) instanceof MetadataInterface
                     ) {
-                        $obj->extractMetadata($this->dmdSec[$dmdId]['xml'], $metadata);
+                        $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata);
                     } else {
-                        $this->logger->warning('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->dmdSec[$dmdId]['type'] . '"');
+                        $this->logger->warning('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->mdSec[$dmdId]['type'] . '"');
                     }
                 }
             } else {
-                $this->logger->notice('Unsupported metadata format "' . $this->dmdSec[$dmdId]['type'] . '" in dmdSec with @ID "' . $dmdId . '"');
+                $this->logger->notice('Unsupported metadata format "' . $this->mdSec[$dmdId]['type'] . '" in ' . $mdSectionType . ' with @ID "' . $dmdId . '"');
                 // Continue searching for supported metadata with next @DMDID.
                 continue;
-            }
-            // Get the structure's type.
-            if (!empty($this->logicalUnits[$id])) {
-                $metadata['type'] = [$this->logicalUnits[$id]['type']];
-            } else {
-                $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@TYPE');
-                if (!empty($struct)) {
-                    $metadata['type'] = [(string) $struct[0]];
-                }
             }
             // Get the additional metadata from database.
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -511,7 +551,7 @@ final class MetsDocument extends Doc
                     $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
                     $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', intval($cPid)),
-                    $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->dmdSec[$dmdId]['type']))
+                    $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
                 )
                 ->execute();
             // Get all metadata without a format, but with a default value next.
@@ -539,7 +579,7 @@ final class MetsDocument extends Doc
             // Merge both result sets.
             $allResults = array_merge($resultWithFormat->fetchAll(), $resultWithoutFormat->fetchAll());
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
-            $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
+            $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
             $this->registerNamespaces($domXPath);
             // OK, now make the XPath queries.
@@ -593,21 +633,74 @@ final class MetsDocument extends Doc
                     }
                 }
             }
-            // Set title to empty string if not present.
-            if (empty($metadata['title'][0])) {
-                $metadata['title'][0] = '';
-                $metadata['title_sorting'][0] = '';
-            }
-            // Extract metadata only from first supported dmdSec.
-            $hasSupportedMetadata = true;
-            break;
+
+            $hasMetadataSection[$mdSectionType] = true;
         }
-        if ($hasSupportedMetadata) {
+        // Set title to empty string if not present.
+        if (empty($metadata['title'][0])) {
+            $metadata['title'][0] = '';
+            $metadata['title_sorting'][0] = '';
+        }
+        // Files are not expected to reference a dmdSec
+        if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
             return $metadata;
         } else {
-            $this->logger->warning('No supported metadata found for logical structure with @ID "' . $id . '"');
+            $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
             return [];
         }
+    }
+
+    /**
+     * Get IDs of (descriptive and administrative) metadata sections
+     * referenced by node of given $id. The $id may refer to either
+     * a logical structure node or to a file.
+     *
+     * @access protected
+     * @param string $id: The "@ID" attribute of the file node
+     * @return void
+     */
+    protected function getMetadataIds($id)
+    {
+        // ­Load amdSecChildIds concordance
+        $this->_getMdSec();
+        $this->_getFileInfos();
+
+        // Get DMDID and ADMID of logical structure node
+        if (!empty($this->logicalUnits[$id])) {
+            $dmdIds = $this->logicalUnits[$id]['dmdId'] ?? '';
+            $admIds = $this->logicalUnits[$id]['admId'] ?? '';
+        } else {
+            $mdSec = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]')[0];
+            if ($mdSec) {
+                $dmdIds = (string) $mdSec->attributes()->DMDID;
+                $admIds = (string) $mdSec->attributes()->ADMID;
+            } else if (isset($this->fileInfos[$id])) {
+                $dmdIds = $this->fileInfos[$id]['dmdId'];
+                $admIds = $this->fileInfos[$id]['admId'];
+            } else {
+                $dmdIds = '';
+                $admIds = '';
+            }
+        }
+
+        // Handle multiple DMDIDs/ADMIDs
+        $allMdIds = explode(' ', $dmdIds);
+
+        foreach (explode(' ', $admIds) as $admId) {
+            if (isset($this->mdSec[$admId])) {
+                // $admId references an actual metadata section such as techMD
+                $allMdIds[] = $admId;
+            } elseif (isset($this->amdSecChildIds[$admId])) {
+                // $admId references a <mets:amdSec> element. Resolve child elements.
+                foreach ($this->amdSecChildIds[$admId] as $childId) {
+                    $allMdIds[] = $childId;
+                }
+            }
+        }
+
+        return array_filter($allMdIds, function ($element) {
+            return !empty($element);
+        });
     }
 
     /**
@@ -720,42 +813,102 @@ final class MetsDocument extends Doc
     }
 
     /**
-     * This builds an array of the document's dmdSecs
+     * This builds an array of the document's metadata sections
      *
      * @access protected
      *
-     * @return array Array of dmdSecs with their IDs as array key
+     * @return array Array of metadata sections with their IDs as array key
      */
-    protected function _getDmdSec()
+    protected function _getMdSec()
     {
-        if (!$this->dmdSecLoaded) {
-            // Get available data formats.
+        if (!$this->mdSecLoaded) {
             $this->loadFormats();
-            // Get dmdSec nodes from METS.
-            $dmdIds = $this->mets->xpath('./mets:dmdSec/@ID');
-            if (!empty($dmdIds)) {
-                foreach ($dmdIds as $dmdId) {
-                    if ($type = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
-                        if (!empty($this->formats[(string) $type[0]])) {
-                            $type = (string) $type[0];
-                            $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
-                        }
-                    } elseif ($type = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
-                        if (!empty($this->formats[(string) $type[0]])) {
-                            $type = (string) $type[0];
-                            $xml = $this->mets->xpath('./mets:dmdSec[@ID="' . (string) $dmdId . '"]/mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
-                        }
-                    }
-                    if (!empty($xml)) {
-                        $this->dmdSec[(string) $dmdId]['type'] = $type;
-                        $this->dmdSec[(string) $dmdId]['xml'] = $xml[0];
-                        $this->registerNamespaces($this->dmdSec[(string) $dmdId]['xml']);
-                    }
+
+            foreach ($this->mets->xpath('./mets:dmdSec') as $dmdSecTag) {
+                $dmdSec = $this->processMdSec($dmdSecTag);
+
+                if ($dmdSec !== null) {
+                    $this->mdSec[$dmdSec['id']] = $dmdSec;
+                    $this->dmdSec[$dmdSec['id']] = $dmdSec;
                 }
             }
-            $this->dmdSecLoaded = true;
+
+            foreach ($this->mets->xpath('./mets:amdSec') as $amdSecTag) {
+                $childIds = [];
+
+                foreach ($amdSecTag->children('http://www.loc.gov/METS/') as $mdSecTag) {
+                    if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
+                        continue;
+                    }
+
+                    // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
+                    $mdSec = $this->processMdSec($mdSecTag);
+
+                    if ($mdSec !== null) {
+                        $this->mdSec[$mdSec['id']] = $mdSec;
+
+                        $childIds[] = $mdSec['id'];
+                    }
+                }
+
+                $amdSecId = (string) $amdSecTag->attributes()->ID;
+                if (!empty($amdSecId)) {
+                    $this->amdSecChildIds[$amdSecId] = $childIds;
+                }
+            }
+
+            $this->mdSecLoaded = true;
         }
+        return $this->mdSec;
+    }
+
+    protected function _getDmdSec()
+    {
+        $this->_getMdSec();
         return $this->dmdSec;
+    }
+
+    /**
+     * Processes an element of METS `mdSecType`.
+     *
+     * @access protected
+     *
+     * @param \SimpleXMLElement $element
+     *
+     * @return array|null The processed metadata section
+     */
+    protected function processMdSec($element)
+    {
+        $mdId = (string) $element->attributes()->ID;
+        if (empty($mdId)) {
+            return null;
+        }
+
+        $this->registerNamespaces($element);
+        if ($type = $element->xpath('./mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
+            if (!empty($this->formats[(string) $type[0]])) {
+                $type = (string) $type[0];
+                $xml = $element->xpath('./mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
+            }
+        } elseif ($type = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
+            if (!empty($this->formats[(string) $type[0]])) {
+                $type = (string) $type[0];
+                $xml = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
+            }
+        }
+
+        if (empty($xml)) {
+            return null;
+        }
+
+        $this->registerNamespaces($xml[0]);
+
+        return [
+            'id' => $mdId,
+            'section' => $element->getName(),
+            'type' => $type,
+            'xml' => $xml[0],
+        ];
     }
 
     /**
@@ -790,7 +943,13 @@ final class MetsDocument extends Doc
                 foreach ($fileGrps as $fileGrp) {
                     if (in_array((string) $fileGrp['USE'], $useGrps)) {
                         foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
-                            $this->fileGrps[(string) $file->attributes()->ID] = (string) $fileGrp['USE'];
+                            $fileId = (string) $file->attributes()->ID;
+                            $this->fileGrps[$fileId] = (string) $fileGrp['USE'];
+                            $this->fileInfos[$fileId] = [
+                                'fileGrp' => (string) $fileGrp['USE'],
+                                'admId' => (string) $file->attributes()->ADMID,
+                                'dmdId' => (string) $file->attributes()->DMDID,
+                            ];
                         }
                     }
                 }
@@ -805,6 +964,17 @@ final class MetsDocument extends Doc
             $this->fileGrpsLoaded = true;
         }
         return $this->fileGrps;
+    }
+
+    /**
+     *
+     * @access protected
+     * @return array
+     */
+    protected function _getFileInfos()
+    {
+        $this->_getFileGrps();
+        return $this->fileInfos;
     }
 
     /**
@@ -853,6 +1023,7 @@ final class MetsDocument extends Doc
                 $physSeq[0] = (string) $physNode[0]['ID'];
                 $this->physicalStructureInfo[$physSeq[0]]['id'] = (string) $physNode[0]['ID'];
                 $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
+                $this->physicalStructureInfo[$physSeq[0]]['admId'] = (isset($physNode[0]['ADMID']) ? (string) $physNode[0]['ADMID'] : '');
                 $this->physicalStructureInfo[$physSeq[0]]['order'] = (isset($physNode[0]['ORDER']) ? (string) $physNode[0]['ORDER'] : '');
                 $this->physicalStructureInfo[$physSeq[0]]['label'] = (isset($physNode[0]['LABEL']) ? (string) $physNode[0]['LABEL'] : '');
                 $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
@@ -870,6 +1041,7 @@ final class MetsDocument extends Doc
                     $elements[(int) $elementNode['ORDER']] = (string) $elementNode['ID'];
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = (string) $elementNode['ID'];
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['dmdId'] = (isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '');
+                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['admId'] = (isset($elementNode['ADMID']) ? (string) $elementNode['ADMID'] : '');
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['order'] = (isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '');
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['label'] = (isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '');
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['orderlabel'] = (isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '');
