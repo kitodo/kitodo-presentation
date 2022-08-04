@@ -73,7 +73,7 @@ class HelperTest extends FunctionalTestCase
     {
         // NOTE: This only tests in BE mode
 
-        $GLOBALS['LANG'] = LanguageService::create('default');
+        $this->initLanguageService('default');
         $this->assertEquals('German', Helper::getLanguageName('de')); // ISO 639-1
         $this->assertEquals('German', Helper::getLanguageName('ger')); // ISO 639-2
         $this->assertEquals('abcde', Helper::getLanguageName('abcde')); // doesn't match ISO code regex
@@ -88,7 +88,7 @@ class HelperTest extends FunctionalTestCase
     {
         // NOTE: This only tests in BE mode
 
-        $GLOBALS['LANG'] = LanguageService::create('de');
+        $this->initLanguageService('de');
         $this->assertEquals('Deutsch', Helper::getLanguageName('de')); // ISO 639-1
         $this->assertEquals('Deutsch', Helper::getLanguageName('ger')); // ISO 639-2
         $this->assertEquals('abcde', Helper::getLanguageName('abcde')); // doesn't match ISO code regex
