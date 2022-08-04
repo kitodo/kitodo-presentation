@@ -632,6 +632,13 @@ Page View
        tx-dlf-map
 
  - :Property:
+       progressElementId
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+       tx-dlf-page-progress
+
+ - :Property:
        crop
    :Data Type:
        :ref:`t3tsref:data-type-boolean`

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tx_dlf_metadata>
+        <uid>613174853</uid>
+        <pid>20000</pid>
+        <sys_language_uid>0</sys_language_uid>
+        <l18n_parent>0</l18n_parent>
+        <l18n_diffsource></l18n_diffsource>
+        <label>Frame Rate</label>
+        <index_name>frame_rate</index_name>
+        <format>1</format>
+        <wrap></wrap>
+    </tx_dlf_metadata>
+
+    <tx_dlf_metadata>
+        <uid>321913049</uid>
+        <pid>20000</pid>
+        <sys_language_uid>0</sys_language_uid>
+        <l18n_parent>0</l18n_parent>
+        <l18n_diffsource></l18n_diffsource>
+        <label>Owner</label>
+        <index_name>dvrights_owner</index_name>
+        <format>1</format>
+        <wrap></wrap>
+    </tx_dlf_metadata>
+
+    <tx_dlf_metadata>
+        <uid>249506784</uid>
+        <pid>20000</pid>
+        <sys_language_uid>0</sys_language_uid>
+        <l18n_parent>0</l18n_parent>
+        <l18n_diffsource></l18n_diffsource>
+        <label>Reference</label>
+        <index_name>dvlinks_reference</index_name>
+        <format>1</format>
+        <wrap></wrap>
+    </tx_dlf_metadata>
+
+    <tx_dlf_metadata>
+        <uid>793462399</uid>
+        <pid>20000</pid>
+        <sys_language_uid>0</sys_language_uid>
+        <l18n_parent>0</l18n_parent>
+        <l18n_diffsource></l18n_diffsource>
+        <label>Test Value</label>
+        <index_name>test_value</index_name>
+        <format>1</format>
+        <wrap></wrap>
+    </tx_dlf_metadata>
+
+    <tx_dlf_metadataformat>
+        <uid>525104468</uid>
+        <pid>20000</pid>
+        <parent_id>613174853</parent_id>
+        <encoded>689522348</encoded>
+        <xpath>./videomd:videoInfo/videomd:frame/videomd:frameRate</xpath>
+        <xpath_sorting></xpath_sorting>
+    </tx_dlf_metadataformat>
+
+    <tx_dlf_metadataformat>
+        <uid>403181441</uid>
+        <pid>20000</pid>
+        <parent_id>321913049</parent_id>
+        <encoded>142585035</encoded>
+        <xpath>./dv:owner</xpath>
+        <xpath_sorting></xpath_sorting>
+    </tx_dlf_metadataformat>
+
+    <tx_dlf_metadataformat>
+        <uid>257842913</uid>
+        <pid>20000</pid>
+        <parent_id>249506784</parent_id>
+        <encoded>933594800</encoded>
+        <xpath>./dv:reference</xpath>
+        <xpath_sorting></xpath_sorting>
+    </tx_dlf_metadataformat>
+
+    <tx_dlf_metadataformat>
+        <uid>569124173</uid>
+        <pid>20000</pid>
+        <parent_id>793462399</parent_id>
+        <encoded>5202</encoded>
+        <xpath>./dv:test</xpath>
+        <xpath_sorting></xpath_sorting>
+    </tx_dlf_metadataformat>
+
+    <tx_dlf_formats>
+        <uid>689522348</uid>
+        <pid>0</pid>
+        <type>VIDEOMD</type>
+        <root>VIDEOMD</root>
+        <namespace>http://www.loc.gov/videoMD/</namespace>
+    </tx_dlf_formats>
+
+    <tx_dlf_formats>
+        <uid>142585035</uid>
+        <pid>0</pid>
+        <type>DVRIGHTS</type>
+        <root>rights</root>
+        <namespace>http://dfg-viewer.de/</namespace>
+    </tx_dlf_formats>
+
+    <tx_dlf_formats>
+        <uid>933594800</uid>
+        <pid>0</pid>
+        <type>DVLINKS</type>
+        <root>links</root>
+        <namespace>http://dfg-viewer.de/</namespace>
+    </tx_dlf_formats>
+</dataset>

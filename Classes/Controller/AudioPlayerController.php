@@ -82,7 +82,7 @@ class AudioplayerController extends AbstractController
             || $this->document->getDoc()->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             // Set default values if not set.
             // $this->requestData['page'] may be integer or string (physical structure @ID)
@@ -111,7 +111,7 @@ class AudioplayerController extends AbstractController
             $this->addPlayerJS();
         } else {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
     }
 }
