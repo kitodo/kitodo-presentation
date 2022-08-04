@@ -89,7 +89,7 @@ class SolrIndexingTest extends FunctionalTestCase
         $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
         $solrSearch->getQuery()->execute();
         $this->assertEquals(1, count($solrSearch));
-        $this->assertEquals(15, $solrSearch->getNumHits());
+        $this->assertEquals(15, $solrSearch->getNumFound());
 
         // Check that the title stored in Solr matches the title of database entry
         $docTitleInSolr = false;
@@ -145,19 +145,19 @@ class SolrIndexingTest extends FunctionalTestCase
         $musikSearch = $this->documentRepository->findSolrByCollection($musik, $settings, []);
         $dresdnerHefteSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, []);
         $multiCollectionSearch = $this->documentRepository->findSolrByCollection($collections, $settings, []);
-        $this->assertGreaterThanOrEqual(1, $musikSearch->getNumHits());
-        $this->assertGreaterThanOrEqual(1, $dresdnerHefteSearch->getNumHits());
+        $this->assertGreaterThanOrEqual(1, $musikSearch->getNumFound());
+        $this->assertGreaterThanOrEqual(1, $dresdnerHefteSearch->getNumFound());
         $this->assertEquals('533223312LOG_0000', $dresdnerHefteSearch->getSolrResults()['documents'][0]['id']);
         $this->assertEquals(
             // Assuming there's no overlap
-            $dresdnerHefteSearch->getNumHits() + $musikSearch->getNumHits(),
-            $multiCollectionSearch->getNumHits()
+            $dresdnerHefteSearch->getNumFound() + $musikSearch->getNumFound(),
+            $multiCollectionSearch->getNumFound()
         );
 
         // With query: List all results
         $metadataSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden']);
         $fulltextSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden', 'fulltext' => '1']);
-        $this->assertGreaterThan($metadataSearch->getNumHits(), $fulltextSearch->getNumHits());
+        $this->assertGreaterThan($metadataSearch->getNumFound(), $fulltextSearch->getNumFound());
     }
 
     protected function createSolrCore(): object
