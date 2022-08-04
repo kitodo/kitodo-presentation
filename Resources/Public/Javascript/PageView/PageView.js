@@ -9,6 +9,13 @@
  */
 
 /**
+ * @typedef {object} LoadingIndicator
+ * @property {(key: string, value: number, total: number) => void} progress
+ * @property {(key: string) => void} indeterminate
+ * @property {(key: string) => void} done
+ */
+
+/**
  * @typedef {{
  *  url: string;
  *  mimetype: string;
@@ -20,6 +27,7 @@
  *
  * @typedef {{
  *  div: string;
+ *  progressElementId?: string;
  *  images?: ImageDesc[] | [];
  *  fulltexts?: FulltextDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
@@ -68,6 +76,13 @@ var dlfViewer = function(settings){
      * @private
      */
     this.images = [];
+
+    /**
+     * The <progress> element for loading indicator.
+     * @type {LoadingIndicator}
+     * @private
+     */
+    this.loadingIndicator = this.makeLoadingIndicator(settings.progressElementId);
 
     /**
      * Fulltext information (e.g. URL)
@@ -176,6 +191,79 @@ var dlfViewer = function(settings){
     this.useInternalProxy = dlfUtils.exists(settings.useInternalProxy) ? settings.useInternalProxy : false;
 
     this.init(dlfUtils.exists(settings.controls) ? settings.controls : []);
+};
+
+/**
+ *
+ * @param {string | undefined}
+ * @returns {LoadingIndicator}
+ */
+dlfViewer.prototype.makeLoadingIndicator = function (progressElementId) {
+    // Show progress bar only if total loading time is expected to be at least 1 second
+    const MAX_SECONDS = 1;
+
+    // Query progress element on demand because it may only become available at a later point (Zeitungsportal)
+    return {
+        startTime: null,
+        values: {},
+        finishedTotal: 0,
+        update() {
+            var progressElement = document.getElementById(progressElementId);
+            if (!(progressElement instanceof HTMLProgressElement)) {
+                return;
+            }
+
+            var downloads = Object.values(this.values);
+            if (downloads.length === 0) {
+                // Download has finished
+                this.startTime = null;
+                this.values = {};
+                this.finishedTotal = 0;
+                progressElement.classList.remove('loading');
+                return;
+            }
+
+            var valueAbs = 0;
+            var total = 0;
+            downloads.forEach(function (entry) {
+                valueAbs += entry.value;
+                total += entry.total;
+            });
+
+            if (total === 0) {
+                // All running downloads are indeterminate, so make progress bar indeterminate
+                progressElement.removeAttribute('value');
+                progressElement.classList.add('loading');
+            } else {
+                var valueRel = (valueAbs + this.finishedTotal) / (total + this.finishedTotal);
+                progressElement.value = valueRel * progressElement.max;
+
+                if (this.startTime === null) {
+                    this.startTime = window.performance.now();
+                } else {
+                    const diffMs = window.performance.now() - this.startTime;
+                    const expectedSeconds = (diffMs / 1000) / valueRel;
+                    if (expectedSeconds > MAX_SECONDS) {
+                        progressElement.classList.add('loading');
+                    }
+                }
+            }
+        },
+        indeterminate(key) {
+            this.progress(key, 0, 0);
+        },
+        progress(key, value, total) {
+            this.values[key] = { value, total };
+            this.update();
+        },
+        done(key) {
+            if (this.values[key]) {
+                this.finishedTotal += this.values[key].total;
+                delete this.values[key];
+                this.update();
+            }
+        },
+    };
 };
 
 /**
@@ -542,7 +630,7 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
             deferredResponse.resolve(layers);
         }, this);
 
-    dlfUtils.fetchImageData(imageSourceObjs)
+    dlfUtils.fetchImageData(imageSourceObjs, this.loadingIndicator)
       .done(function(imageSourceData) {
           resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
       });
