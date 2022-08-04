@@ -146,6 +146,9 @@
 			<trans-unit id="page">
 				<source><![CDATA[Page]]></source>
 			</trans-unit>
+			<trans-unit id="pageview.overview-map">
+				<source><![CDATA[Overview Map]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.feeds.new">
 				<source><![CDATA[NEW:]]></source>
 			</trans-unit>

@@ -49,6 +49,14 @@ var dlfViewer = function(settings){
     this.div = dlfUtils.exists(settings.div) ? settings.div : "tx-dlf-map";
 
     /**
+     * @type {Record<'overview-map', string>}
+     * @private
+     */
+    this.dic = $.extend({
+      'overview-map': 'Overview Map',
+    }, dlfUtils.parseDataDic(document.getElementById(this.div)));
+
+    /**
      * Openlayers map object
      * @type {ol.Map|null}
      * @private
@@ -371,56 +379,62 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
  * @private
  */
 dlfViewer.prototype.createControls_ = function(controlNames, layers) {
-
     var controls = [];
 
     for (var i in controlNames) {
-
-        if (controlNames[i] !== "") {
-
-            switch(controlNames[i]) {
-
-                case "OverviewMap":
-
-                    var extent = ol.extent.createEmpty();
-                    for (let i = 0; i < this.images.length; i++) {
-                        ol.extent.extend(extent, [0, -this.images[i].height, this.images[i].width, 0]);
-                    }
-
-                    var ovExtent = ol.extent.buffer(
-                        extent,
-                        1 * Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent))
-                    );
-
-                    controls.push(new ol.control.OverviewMap({
-                        layers: layers.map(dlfUtils.cloneOlLayer),
-                        view: new ol.View({
-                            center: ol.extent.getCenter(extent),
-                            extent: ovExtent,
-                            projection: new ol.proj.Projection({
-                                code: 'kitodo-image',
-                                units: 'pixels',
-                                extent: ovExtent
-                            }),
-                            showFullExtent: false
-                        })
-                    }));
-                    break;
-
-                case "ZoomPanel":
-
-                    controls.push(new ol.control.Zoom());
-                    break;
-
-                default:
-
-                    break;
-
-            }
+        var control = this.createControl(controlNames[i], layers);
+        if (control !== null) {
+            controls.push(control);
         }
     }
 
     return controls;
+};
+
+/**
+ * Create OpenLayers control of the specified key.
+ * If `null` is returned, the control is omitted.
+ *
+ * @param {string} controlName
+ * @param {Array.<ol.layer.Layer>} layers
+ * @return {ol.control.Control | null}
+ * @protected
+ */
+dlfViewer.prototype.createControl = function(controlName, layers) {
+    switch (controlName) {
+        case "OverviewMap": {
+            var extent = ol.extent.createEmpty();
+            for (let i = 0; i < this.images.length; i++) {
+                ol.extent.extend(extent, [0, -this.images[i].height, this.images[i].width, 0]);
+            }
+
+            var ovExtent = ol.extent.buffer(
+                extent,
+                1 * Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent))
+            );
+
+            return new ol.control.OverviewMap({
+                tipLabel: this.dic['overview-map'],
+                layers: layers.map(dlfUtils.cloneOlLayer),
+                view: new ol.View({
+                    center: ol.extent.getCenter(extent),
+                    extent: ovExtent,
+                    projection: new ol.proj.Projection({
+                        code: 'kitodo-image',
+                        units: 'pixels',
+                        extent: ovExtent
+                    }),
+                    showFullExtent: false
+                })
+            });
+        }
+
+        case "ZoomPanel":
+            return new ol.control.Zoom();
+
+        default:
+            return null;
+    }
 };
 
 /**
