@@ -26,14 +26,14 @@
             <f:if condition="{viewData.requestData.double}">
                 <f:then>
                     <div class="tx-dlf-navigation-double">
-                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'0'}">
+                        <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'0'}">
                             <f:translate key="doublePageOn"/>
                         </f:link.action>
                     </div>
                     <div class="tx-dlf-navigation-double+">
                         <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
                             <f:then>
-                                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}'}">
+                                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}'}">
                                     <f:translate key="doublePage+1"/>
                                 </f:link.action>
                             </f:then>
@@ -46,7 +46,7 @@
                     </div>
                 </f:then>
                 <f:else>
-                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'1'}">
+                    <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'1'}">
                         <f:translate key="doublePageOn"/>
                     </f:link.action>
                 </f:else>
@@ -66,7 +66,7 @@
     <div class="tx-dlf-navigation-first">
         <f:if condition="{viewData.requestData.page} > 1">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'1'}">
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'1'}">
                     <f:translate key="firstPage"/>
                 </f:link.action>
             </f:then>
@@ -83,7 +83,7 @@
     <div class="tx-dlf-navigation-back">
         <f:if condition="{viewData.requestData.page} > {pageSteps}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}'}">
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}'}">
                     <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
                 </f:link.action>
             </f:then>
@@ -100,7 +100,7 @@
     <div class="tx-dlf-navigation-prev">
         <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}'}">
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}'}">
                     <f:translate key="prevPage"/>
                 </f:link.action>
             </f:then>
@@ -158,7 +158,7 @@
         <div class="tx-dlf-navigation-fwd">
             <f:if condition="{viewData.requestData.page} <= {numPages - pageSteps}">
                 <f:then>
-                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}">
+                    <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}">
                         <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
                     </f:link.action>
                 </f:then>
@@ -175,7 +175,7 @@
     <div class="tx-dlf-navigation-last">
         <f:if condition="{viewData.requestData.page} < {numPages - viewData.requestData.double}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}'}">
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}'}">
                     <f:translate key="lastPage"/>
                 </f:link.action>
             </f:then>

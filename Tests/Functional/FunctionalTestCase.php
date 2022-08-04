@@ -5,6 +5,7 @@ namespace Kitodo\Dlf\Tests\Functional;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr;
 use Symfony\Component\Yaml\Yaml;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -95,6 +96,12 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     protected function getDlfConfiguration()
     {
         return [
+            'fileGrpImages' => 'DEFAULT,MAX',
+            'fileGrpThumbs' => 'THUMBS',
+            'fileGrpDownload' => 'DOWNLOAD',
+            'fileGrpFulltext' => 'FULLTEXT',
+            'fileGrpAudio' => 'AUDIO',
+
             'solrFieldAutocomplete' => 'autocomplete',
             'solrFieldCollection' => 'collection',
             'solrFieldDefault' => 'default',
@@ -165,5 +172,13 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $updateQuery->addDocuments($documents);
         $updateQuery->addCommit();
         $solr->service->update($updateQuery);
+    }
+
+    /**
+     * Assert that $sub is recursively contained within $super.
+     */
+    protected function assertArrayMatches(array $sub, array $super, string $message = '')
+    {
+        $this->assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
     }
 }

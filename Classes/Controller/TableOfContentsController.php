@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\MetsDocument;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,6 +46,8 @@ class TableOfContentsController extends AbstractController
      */
     protected function getMenuEntry(array $entry, $recursive = false)
     {
+        $entry = $this->resolveMenuEntry($entry);
+
         $entryArray = [];
         // Set "title", "volume", "type" and "pagination" from $entry array.
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
@@ -124,6 +127,33 @@ class TableOfContentsController extends AbstractController
             $entryArray['ITEM_STATE'] = ($entryArray['ITEM_STATE'] == 'NO' ? 'IFSUB' : $entryArray['ITEM_STATE'] . 'IFSUB');
         }
         return $entryArray;
+    }
+
+    /**
+     * If $entry references an external METS file (as mptr),
+     * try to resolve its database UID and return an updated $entry.
+     *
+     * This is so that when linking from a child document back to its parent,
+     * that link is via UID, so that subsequently the parent's TOC is built from database.
+     *
+     * @param array $entry
+     * @return array
+     */
+    protected function resolveMenuEntry($entry)
+    {
+        // If the menu entry points to the parent document,
+        // resolve to the parent UID set on indexation.
+        $doc = $this->document->getDoc();
+        if (
+            $doc instanceof MetsDocument
+            && $entry['points'] === $doc->parentHref
+            && !empty($this->document->getPartof())
+        ) {
+            unset($entry['points']);
+            $entry['targetUid'] = $this->document->getPartof();
+        }
+
+        return $entry;
     }
 
     /**
