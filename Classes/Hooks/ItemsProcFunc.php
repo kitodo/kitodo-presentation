@@ -50,19 +50,38 @@ class ItemsProcFunc
     }
 
     /**
-     * The constructor to access TypoScript configuration
+     * Extract typoscript configuration from site root of the plugin
      *
      * @access public
      *
+     * @param $params
+     *
      * @return void
      */
-    public function __construct()
-    {
+    public function getTyposcriptConfigFromPluginSiteRoot($params) {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get(ConfigurationManager::class);
-        // we must get the storagePid from full TypoScript setup at this point.
-        $fullTyposcriptSetup = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-        $this->storagePid = $fullTyposcriptSetup["plugin."]["tx_dlf."]["persistence."]["storagePid"];
+        $pid = 2;
+        $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($pid);
+        $siterootRow = [];
+        foreach($rootline as $_uid=>$_row) {
+            if($_row['is_siteroot'] == '1') {
+                $siterootRow = $_row;
+                break;
+            }
+        }
+
+        try {
+            $ts = $objectManager->get(\TYPO3\CMS\Core\TypoScript\TemplateService::class,[$siterootRow['uid']]);
+            $ts->rootLine = $rootline;
+            $ts->runThroughTemplates($rootline, 0);
+            $ts->generateConfig();
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
+
+        $typoscriptConfig = $ts->setup;
+        $this->storagePid = $typoscriptConfig["plugin."]["tx_dlf."]["persistence."]["storagePid"];
+
     }
 
     /**
@@ -118,6 +137,8 @@ class ItemsProcFunc
      */
     protected function generateList(&$params, $fields, $table, $sorting, $andWhere = '')
     {
+        $this->getTyposcriptConfigFromPluginSiteRoot($params);
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table);
 
