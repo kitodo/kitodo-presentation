@@ -543,11 +543,11 @@ dlfUtils.isFulltextDescriptor = function (obj) {
 };
 
 /**
- * @param {Element} element
+ * @param {Element | null} element
  * @return {Object}
  */
 dlfUtils.parseDataDic = function (element) {
-    var dataDicString = $(element).attr('data-dic'),
+    var dataDicString = $(element).attr('data-dic') || '',
         dataDicRecords = dataDicString.split(';'),
         dataDic = {};
 
