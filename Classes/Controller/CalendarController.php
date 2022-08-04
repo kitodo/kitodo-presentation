@@ -65,7 +65,7 @@ class CalendarController extends AbstractController
         $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
 
         $metadata = $this->document->getDoc()->getTitledata();
@@ -112,7 +112,7 @@ class CalendarController extends AbstractController
         $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
 
         $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
@@ -154,6 +154,7 @@ class CalendarController extends AbstractController
         // Sort by years.
         ksort($calendarIssuesByYear);
         // Build calendar for year (default) or season.
+        $calendarData = [];
         $iteration = 1;
         foreach ($calendarIssuesByYear as $year => $calendarIssuesByMonth) {
             // Sort by months.
@@ -173,7 +174,7 @@ class CalendarController extends AbstractController
                     $lastMonth = (int) key($calendarIssuesByMonth);
                 }
             }
-            $this->getCalendarYear($calendarIssuesByMonth, $year, $firstMonth, $lastMonth);
+            $this->getCalendarYear($calendarData, $calendarIssuesByMonth, $year, $firstMonth, $lastMonth);
             $iteration++;
         }
         // Prepare list as alternative view.
@@ -191,6 +192,7 @@ class CalendarController extends AbstractController
         $linkTitleData = $this->document->getDoc()->getTitledata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
+        $this->view->assign('calendarData', $calendarData);
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
         $this->view->assign('parentDocumentId', $this->document->getPartof());
@@ -216,7 +218,7 @@ class CalendarController extends AbstractController
         $this->loadDocument($this->requestData);
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
 
         // Get all children of anchor. This should be the year anchor documents
@@ -252,6 +254,7 @@ class CalendarController extends AbstractController
      *
      * @access protected
      *
+     * @param array $calendarData Output array containing the result calendar data that is passed to Fluid template
      * @param array $calendarIssuesByMonth All issues sorted by month => day
      * @param int $year Gregorian year
      * @param int $firstMonth 1 for January, 2 for February, ... 12 for December
@@ -259,11 +262,12 @@ class CalendarController extends AbstractController
      *
      * @return string Content for template subpart
      */
-    protected function getCalendarYear($calendarIssuesByMonth, $year, $firstMonth = 1, $lastMonth = 12)
+    protected function getCalendarYear(&$calendarData, $calendarIssuesByMonth, $year, $firstMonth = 1, $lastMonth = 12)
     {
-        $calendarData = [];
         for ($i = $firstMonth; $i <= $lastMonth; $i++) {
-            $calendarData[$i] = [
+            $key = $year . '-' . $i;
+
+            $calendarData[$key] = [
                 'DAYMON_NAME' => strftime('%a', strtotime('last Monday')),
                 'DAYTUE_NAME' => strftime('%a', strtotime('last Tuesday')),
                 'DAYWED_NAME' => strftime('%a', strtotime('last Wednesday')),
@@ -282,7 +286,7 @@ class CalendarController extends AbstractController
             for ($j = 0; $j <= 5; $j++) {
                 $firstDayOfWeek = strtotime('+ ' . $j . ' Week', $firstOfMonthStart);
 
-                $calendarData[$i]['week'][$j] = [
+                $calendarData[$key]['week'][$j] = [
                     'DAYMON' => ['dayValue' => '&nbsp;'],
                     'DAYTUE' => ['dayValue' => '&nbsp;'],
                     'DAYWED' => ['dayValue' => '&nbsp;'],
@@ -326,45 +330,45 @@ class CalendarController extends AbstractController
                         }
                         switch (strftime('%w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
                             case '0':
-                                $calendarData[$i]['week'][$j]['DAYSUN']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYSUN']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYSUN']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYSUN']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '1':
-                                $calendarData[$i]['week'][$j]['DAYMON']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYMON']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYMON']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYMON']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '2':
-                                $calendarData[$i]['week'][$j]['DAYTUE']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYTUE']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYTUE']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYTUE']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '3':
-                                $calendarData[$i]['week'][$j]['DAYWED']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYWED']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYWED']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYWED']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '4':
-                                $calendarData[$i]['week'][$j]['DAYTHU']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYTHU']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYTHU']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYTHU']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '5':
-                                $calendarData[$i]['week'][$j]['DAYFRI']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYFRI']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYFRI']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYFRI']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '6':
-                                $calendarData[$i]['week'][$j]['DAYSAT']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYSAT']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYSAT']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYSAT']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                         }
@@ -372,6 +376,5 @@ class CalendarController extends AbstractController
                 }
             }
         }
-        $this->view->assign('calendarData', $calendarData);
     }
 }

@@ -48,6 +48,7 @@ use TYPO3\CMS\Core\Log\LogManager;
  * @property-read array $tableOfContents This holds the logical structure
  * @property-read string $thumbnail This holds the document's thumbnail location
  * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
+ * @property-read string $parentHref URL of the parent document (determined via mptr element), or empty string if none is available
  */
 final class MetsDocument extends Doc
 {
@@ -155,6 +156,15 @@ final class MetsDocument extends Doc
      * @access protected
      */
     protected $xml;
+
+    /**
+     * URL of the parent document (determined via mptr element),
+     * or empty string if none is available
+     *
+     * @var string|null
+     * @access protected
+     */
+    protected $parentHref;
 
     /**
      * This adds metadata from METS structural map to metadata array.
@@ -1184,6 +1194,26 @@ final class MetsDocument extends Doc
             }
         }
         return $this->toplevelId;
+    }
+
+    /**
+     * Try to determine URL of parent document.
+     *
+     * @return string|null
+     */
+    public function _getParentHref()
+    {
+        if ($this->parentHref === null) {
+            $this->parentHref = '';
+
+            // Get the closest ancestor of the current document which has a MPTR child.
+            $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->toplevelId . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
+            if (!empty($parentMptr)) {
+                $this->parentHref = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+            }
+        }
+
+        return $this->parentHref;
     }
 
     /**
