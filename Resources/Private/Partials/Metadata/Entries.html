@@ -15,8 +15,8 @@
 
 {configObject.wrap -> kitodo:metadataWrapVariable(name: 'metadataWrap')}
 <f:variable name="metaSectionCObj" value="{metaCObjData.{sectionIterator.index}}" />
-<kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaSectionCObj}">
-    <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaSectionCObj}">{configObject.label}</kitodo:stdWrap>
+
+<f:variable name="wrappedValues"><f:spaceless>
     <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
         <f:variable name="buildUrlVariable" value="{buildUrl.{sectionIterator.index}}" />
         <f:if condition="{buildUrlVariable.{configObject.indexName}}">
@@ -28,4 +28,11 @@
             </f:else>
         </f:if>
     </f:for>
-</kitodo:stdWrap>
+</f:spaceless></f:variable>
+
+<f:if condition="{wrappedValues}">
+    <kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaSectionCObj}">
+        <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaSectionCObj}">{configObject.label}</kitodo:stdWrap>
+        {wrappedValues -> f:format.raw()}
+    </kitodo:stdWrap>
+</f:if>
