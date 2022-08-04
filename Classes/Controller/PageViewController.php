@@ -74,7 +74,7 @@ class PageViewController extends AbstractController
             || $this->document->getDoc()->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             if (!empty($this->requestData['logicalPage'])) {
                 $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
@@ -170,6 +170,7 @@ class PageViewController extends AbstractController
                     tx_dlf_viewer = new dlfViewer({
                         controls: ["' . implode('", "', $this->controls) . '"],
                         div: "' . $this->settings['elementId'] . '",
+                        progressElementId: "' . $this->settings['progressElementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
                         annotationContainers: ' . json_encode($this->annotationContainers) . ',

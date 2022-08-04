@@ -222,9 +222,10 @@ dlfUtils.exists = function (val) {
  * Fetch image data for given image sources.
  *
  * @param {ImageDesc[]} imageSourceObjs
+ * @param {LoadingIndicator} loadingIndicator
  * @return {JQueryStatic.Deferred}
  */
-dlfUtils.fetchImageData = function (imageSourceObjs) {
+dlfUtils.fetchImageData = function (imageSourceObjs, loadingIndicator) {
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred();
@@ -264,7 +265,7 @@ dlfUtils.fetchImageData = function (imageSourceObjs) {
             });
         } else {
             // In the worse case expect static image file
-            dlfUtils.fetchStaticImageData(imageSourceObj)
+            dlfUtils.fetchStaticImageData(imageSourceObj, loadingIndicator)
                 .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
@@ -280,9 +281,10 @@ dlfUtils.fetchImageData = function (imageSourceObjs) {
  * Fetches the image data for static images source.
  *
  * @param {ImageDesc} imageSourceObj
+ * @param {LoadingIndicator} loadingIndicator
  * @return {JQueryStatic.Deferred}
  */
-dlfUtils.fetchStaticImageData = function (imageSourceObj) {
+dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
     // Load the image while trying to reconcile the following constraints:
     //
     // - Determine width/height of the image before passing it to OpenLayers.
@@ -305,12 +307,14 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
     //   -> Fall back to a "data:" URL.
     //
     // TODO: Revisit this. Perhaps we find a way to pass the Image directly to OpenLayers.
-    //       Even so, loading via XHR is beneficial in that it will allow implementing a loading indicator.
+    //       Even so, loading via XHR is beneficial in that it allows implementing a loading indicator.
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred();
+    var imageKey = imageSourceObj.url;
 
     var loadFailed = function () {
+        loadingIndicator.done(imageKey);
         deferredResponse.reject();
     };
 
@@ -322,6 +326,8 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
     var makeImage = function (src, mimetype) {
         var image = new Image();
         image.onload = function () {
+            loadingIndicator.done(imageKey);
+
             var imageDataObj = {
                 src: this.src,
                 mimetype,
@@ -357,6 +363,13 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
 
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
+    xhr.onprogress = function (e) {
+        if (e.lengthComputable) {
+            loadingIndicator.progress(imageKey, e.loaded, e.total);
+        } else {
+            loadingIndicator.indeterminate(imageKey);
+        }
+    };
     xhr.onload = function () {
         if (200 <= xhr.status && xhr.status < 300) {
             var blob = xhr.response;
@@ -367,6 +380,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
     };
     xhr.onerror = function () {
         // Mixed content or bad CORS headers? Try again using passive content.
+        loadingIndicator.indeterminate(imageKey);
         makeImage(imageSourceObj.url, imageSourceObj.mimetype);
     };
     xhr.open('GET', imageSourceObj.url);
@@ -543,11 +557,11 @@ dlfUtils.isFulltextDescriptor = function (obj) {
 };
 
 /**
- * @param {Element} element
+ * @param {Element | null} element
  * @return {Object}
  */
 dlfUtils.parseDataDic = function (element) {
-    var dataDicString = $(element).attr('data-dic'),
+    var dataDicString = $(element).attr('data-dic') || '',
         dataDicRecords = dataDicString.split(';'),
         dataDic = {};
 

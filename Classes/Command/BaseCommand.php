@@ -296,6 +296,7 @@ class BaseCommand extends Command
         $doc = $document->getDoc();
 
         if ($doc !== null) {
+            // Same as MetsDocument::parentHref (TODO: Use it)
             // Get the closest ancestor of the current document which has a MPTR child.
             $parentMptr = $doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $doc->toplevelId . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
             if (!empty($parentMptr)) {

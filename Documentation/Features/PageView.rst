@@ -93,6 +93,40 @@ Additional OpenLayers controls may be configured in TypoScript:
 
 These are created in ``dlfViewer::createControls_()``.
 
+Loading Indicator
+-----------------
+
+A progress element may be configured to be used as loading indicator for static images.
+This requires CORS and possibly a non-mixed context, and the server must send a ``Content-Length`` header.
+
+In TypoScript, set ``progressElementId`` to the ID of the ``<progress>`` element:
+
+.. code-block:: typoscript
+
+   plugin.tx_dlf_pageview {
+       settings {
+           progressElementId = tx-dlf-page-progress
+       }
+   }
+
+The element may be placed anywhere on the page.
+
+.. code-block:: html
+
+   <progress id="tx-dlf-page-progress"></progress>
+
+For styling, the CSS class ``loading`` is added whenever the loading indicator is in use:
+
+.. code-block:: css
+
+   #tx-dlf-page-progress {
+       visibility: hidden;
+   }
+
+   #tx-dlf-page-progress.loading {
+       visibility: visible;
+   }
+
 Tools for Basket Plugin
 -----------------------
 

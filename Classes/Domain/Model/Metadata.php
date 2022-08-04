@@ -30,6 +30,8 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $l18nParent;
 
     /**
+     * Order (relative position) of this entry in metadata plugin and backend list.
+     *
      * @var int
      */
     protected $sorting;
@@ -45,6 +47,8 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     protected $indexName;
 
     /**
+     * The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
+     *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat>
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")
