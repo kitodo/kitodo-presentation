@@ -265,7 +265,9 @@ class CalendarController extends AbstractController
     protected function getCalendarYear(&$calendarData, $calendarIssuesByMonth, $year, $firstMonth = 1, $lastMonth = 12)
     {
         for ($i = $firstMonth; $i <= $lastMonth; $i++) {
-            $calendarData[$i] = [
+            $key = $year . '-' . $i;
+
+            $calendarData[$key] = [
                 'DAYMON_NAME' => strftime('%a', strtotime('last Monday')),
                 'DAYTUE_NAME' => strftime('%a', strtotime('last Tuesday')),
                 'DAYWED_NAME' => strftime('%a', strtotime('last Wednesday')),
@@ -284,7 +286,7 @@ class CalendarController extends AbstractController
             for ($j = 0; $j <= 5; $j++) {
                 $firstDayOfWeek = strtotime('+ ' . $j . ' Week', $firstOfMonthStart);
 
-                $calendarData[$i]['week'][$j] = [
+                $calendarData[$key]['week'][$j] = [
                     'DAYMON' => ['dayValue' => '&nbsp;'],
                     'DAYTUE' => ['dayValue' => '&nbsp;'],
                     'DAYWED' => ['dayValue' => '&nbsp;'],
@@ -328,45 +330,45 @@ class CalendarController extends AbstractController
                         }
                         switch (strftime('%w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
                             case '0':
-                                $calendarData[$i]['week'][$j]['DAYSUN']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYSUN']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYSUN']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYSUN']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '1':
-                                $calendarData[$i]['week'][$j]['DAYMON']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYMON']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYMON']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYMON']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '2':
-                                $calendarData[$i]['week'][$j]['DAYTUE']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYTUE']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYTUE']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYTUE']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '3':
-                                $calendarData[$i]['week'][$j]['DAYWED']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYWED']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYWED']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYWED']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '4':
-                                $calendarData[$i]['week'][$j]['DAYTHU']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYTHU']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYTHU']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYTHU']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '5':
-                                $calendarData[$i]['week'][$j]['DAYFRI']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYFRI']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYFRI']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYFRI']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                             case '6':
-                                $calendarData[$i]['week'][$j]['DAYSAT']['dayValue'] = strftime('%d', $currentDayTime);
+                                $calendarData[$key]['week'][$j]['DAYSAT']['dayValue'] = strftime('%d', $currentDayTime);
                                 if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$i]['week'][$j]['DAYSAT']['issues'] = $dayLinkDiv;
+                                    $calendarData[$key]['week'][$j]['DAYSAT']['issues'] = $dayLinkDiv;
                                 }
                                 break;
                         }

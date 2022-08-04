@@ -47,6 +47,7 @@ $iconArray = [
     'tx-dlf-statistics' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-statistics.svg',
     'tx-dlf-tableofcontents' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-tableofcontents.svg',
     'tx-dlf-toolbox' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-toolbox.svg',
+    'tx_dlf_view3d' => 'EXT:dlf/Resources/Public/Icons/tx_dlf_view3d.svg',
 ];
 $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     \TYPO3\CMS\Core\Imaging\IconRegistry::class
@@ -297,6 +298,17 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     // non-cacheable actions
     [
         Metadata::class => '',
+    ]
+);
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'View3D',
+    [
+        View3D::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        View3D::class => '',
     ]
 );
 

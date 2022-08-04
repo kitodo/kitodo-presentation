@@ -232,17 +232,20 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
     if (isNaN(width) || isNaN(height))
         return undefined;
 
-    // return geometry without rescale
-    if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_))
-        return new ol.geom.Polygon(coordinatesWithoutScale);
+    // If page dimensions are given in the ALTO, use them to rescale the coordinates
+    var scale = 1;
+    if (dlfUtils.exists(this.image_) && this.width_) { // width not 0, NaN, null, undefined
+        scale = this.image_.width / this.width_;
+    }
 
-    // rescale coordinates
-    var scale = this.image_.width / this.width_,
-        offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0,
+    // Rescale and translate coordinates
+    var offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0,
         coordinatesRescale = [];
 
     for (var i = 0; i < coordinatesWithoutScale[0].length; i++) {
         coordinatesRescale.push([offset + ( scale * coordinatesWithoutScale[0][i][0]),
+            // In ALTO, the y coordinate increases downwards;
+            // in OL, it increases upwards.
             0 - (scale * coordinatesWithoutScale[0][i][1])]);
     };
 
