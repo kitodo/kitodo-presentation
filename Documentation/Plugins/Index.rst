@@ -22,6 +22,8 @@ Kitodo Plugin Reference
 Common Settings
 ---------------
 
+.. _fluidplugins:
+
 Fluid Template Configuration
 ----------------------------
 

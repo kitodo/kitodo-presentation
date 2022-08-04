@@ -514,7 +514,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find all documents with given collection from Solr
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection $collection
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|\Kitodo\Dlf\Domain\Model\Collection $collection
      * @param array $settings
      * @param array $searchParams
      * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
@@ -594,10 +594,20 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         // if a collection is given, we prepare the collection query string
         if ($collection) {
-            $collecionsQueryString = $collection->getIndexName();
-            $params['filterquery'][]['query'] = 'toplevel:true';
-            $params['filterquery'][]['query'] = 'partof:0';
-            $params['filterquery'][]['query'] = 'collection_faceting:("' . $collecionsQueryString . '")';
+            if ($collection instanceof \Kitodo\Dlf\Domain\Model\Collection) {
+                $collectionsQueryString = '"' . $collection->getIndexName() . '"';
+            } else {
+                $collectionsQueryString = '';
+                foreach ($collection as $index => $collectionEntry) {
+                    $collectionsQueryString .= ($index > 0 ? ' OR ' : '') . '"' . $collectionEntry->getIndexName() . '"';
+                }
+            }
+
+            if (empty($query)) {
+                $params['filterquery'][]['query'] = 'toplevel:true';
+                $params['filterquery'][]['query'] = 'partof:0';
+            }
+            $params['filterquery'][]['query'] = 'collection_faceting:(' . $collectionsQueryString . ')';
         }
 
         // Set some query parameters.

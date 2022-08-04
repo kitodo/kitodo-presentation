@@ -71,23 +71,6 @@ class OaiPmhTest extends FunctionalTestCase
         $this->persistenceManager->persistAll();
     }
 
-    protected function importSolrDocuments(Solr $solr, string $path)
-    {
-        $jsonDocuments = json_decode(file_get_contents($path), true);
-
-        $updateQuery = $solr->service->createUpdate();
-        $documents = array_map(function ($jsonDoc) use ($updateQuery) {
-            $document = $updateQuery->createDocument();
-            foreach ($jsonDoc as $key => $value) {
-                $document->setField($key, $value);
-            }
-            return $document;
-        }, $jsonDocuments);
-        $updateQuery->addDocuments($documents);
-        $updateQuery->addCommit();
-        $solr->service->update($updateQuery);
-    }
-
     /**
      * @test
      */

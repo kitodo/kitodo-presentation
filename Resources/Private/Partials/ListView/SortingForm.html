@@ -29,7 +29,7 @@
                 <label for="form-orderBy-{viewData.uniqueId}">
                     <f:translate key="listview.form.orderBy"/>
                 </label>
-                <f:form.select id="form-orderBy-{viewData.uniqueId}" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
+                <f:form.select id="form-orderBy-{viewData.uniqueId}" property="orderBy" value="{lastSearch.orderBy}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
                     <f:form.select.option value="score">
                         <f:translate key="listview.form.relevance" />
                     </f:form.select.option>
@@ -42,13 +42,14 @@
                 <label for="form-order-{viewData.uniqueId}">
                     <f:translate key="listview.form.order"/>
                 </label>
-                <f:form.select id="form-order-{viewData.uniqueId}" property="order" value="{lastSearch.order}" onclick="javascript:this.form.submit();">
+                <f:form.select id="form-order-{viewData.uniqueId}" property="order" value="{lastSearch.order}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
                     <f:form.select.option value="asc">
-                    <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.asc' extensionName='slub_digitalcollections' />
+                    <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:listview.form.order.asc' />
                     </f:form.select.option>
                     <f:form.select.option value="desc">
-                    <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.desc' extensionName='slub_digitalcollections' />
+                    <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:listview.form.order.desc' />
                     </f:form.select.option>
+
                 </f:form.select>
                 <f:form.hidden property="collection" value="{lastSearch.collection}" />
                 <f:form.hidden property="collections" value="{settings.collections}" />

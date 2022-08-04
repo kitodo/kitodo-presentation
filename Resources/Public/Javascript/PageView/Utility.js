@@ -301,6 +301,9 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
     //      a) the image becomes active content (which is blocked in a mixed context), and
     //      b) we now "read" instead of merely "embed" the image (which is blocked in non-CORS scenarios).
     //
+    // - Don't fail when the CSP rejects "blob:" URLs.
+    //   -> Fall back to a "data:" URL.
+    //
     // TODO: Revisit this. Perhaps we find a way to pass the Image directly to OpenLayers.
     //       Even so, loading via XHR is beneficial in that it will allow implementing a loading indicator.
 
@@ -311,6 +314,11 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
         deferredResponse.reject();
     };
 
+    /**
+     *
+     * @param {string | Blob} src
+     * @param {string} mimetype
+     */
     var makeImage = function (src, mimetype) {
         var image = new Image();
         image.onload = function () {
@@ -323,8 +331,28 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
 
             deferredResponse.resolve(imageDataObj);
         };
-        image.onerror = loadFailed;
-        image.src = src;
+        if (src instanceof Blob) {
+            var objectUrl = URL.createObjectURL(src);
+
+            image.onerror = function () {
+                URL.revokeObjectURL(objectUrl);
+
+                // CSP rejects "blob:" URL? Try converting to "data:" URL.
+                var reader = new FileReader();
+                reader.onload = function () {
+                    // Don't get stuck in a retry loop if there's another error
+                    // (such as broken image or unsupported MIME type).
+                    image.onerror = loadFailed;
+                    image.src = reader.result;
+                };
+                reader.onerror = loadFailed;
+                reader.readAsDataURL(src);
+            };
+            image.src = objectUrl;
+        } else {
+            image.onerror = loadFailed;
+            image.src = src;
+        }
     };
 
     var xhr = new XMLHttpRequest();
@@ -332,9 +360,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj) {
     xhr.onload = function () {
         if (200 <= xhr.status && xhr.status < 300) {
             var blob = xhr.response;
-            var objectUrl = URL.createObjectURL(blob);
-
-            makeImage(objectUrl, imageSourceObj.mimetype);
+            makeImage(blob, imageSourceObj.mimetype);
         } else {
             loadFailed();
         }
