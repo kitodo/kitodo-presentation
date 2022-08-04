@@ -5,8 +5,10 @@ namespace Kitodo\Dlf\Tests\Functional;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr;
 use Symfony\Component\Yaml\Yaml;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
@@ -172,6 +174,20 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $updateQuery->addDocuments($documents);
         $updateQuery->addCommit();
         $solr->service->update($updateQuery);
+    }
+
+    protected function initLanguageService(string $locale)
+    {
+        if (class_exists(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)) {
+            $GLOBALS['LANG'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)->create($locale);
+        } else {
+            $typo3MajorVersion = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version())['version_main'];
+            $this->assertEquals(9, $typo3MajorVersion);
+
+            $lang = new LanguageService();
+            $lang->init($locale);
+            $GLOBALS['LANG'] = $lang;
+        }
     }
 
     /**
