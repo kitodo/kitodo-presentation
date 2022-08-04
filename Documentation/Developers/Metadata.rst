@@ -53,9 +53,9 @@ There are three objects that may be set, each of which is passed to ``stdWrap`` 
 
 -  ``key``: First, the (localized) *label* of the metadata entry, such as "Title" or "Year", is transformed using the ``key`` object.
 
--  ``value``: Each *value* of the entry is transformed using the ``value`` object and appended to the output.
+-  ``value``: Each *value* of the entry is transformed using the ``value`` object.
 
--  ``all``: The combined output (label and values) is processed using the ``all`` object.
+-  ``all``: The combined output (label and values) is processed using the ``all`` object and appended to the output (unless there is no value or all processed values are blank).
 
 Finally, all entries are wrapped in a definition list (``<dl>`` tag). If one of the objects is not specified, the unprocessed output is taken as-is.
 

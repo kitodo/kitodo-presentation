@@ -31,7 +31,7 @@
                     </f:comment>
                     <div class="tx-dlf-listview-thumbnail"><!--
                         --><f:if condition="{document.thumbnail}">
-                            <img src="{document.thumbnail}" alt="Vorschaubild von {docTitle}" />
+                            <img src="{document.thumbnail}" loading="lazy" alt="Vorschaubild von {docTitle}" />
                         </f:if><!--
                     --></div>
                     <dl>
@@ -93,7 +93,7 @@
                                     title="{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}">
                                         <div class="tx-dlf-listview-thumbnail"><!--
                                         --><f:if condition="{child.thumbnail}">
-                                            <img src="{child.thumbnail}" alt="Vorschaubild von {f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}" />
+                                            <img src="{child.thumbnail}" loading="lazy" alt="Vorschaubild von {f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}" />
                                         </f:if><!--
                                         --></div>
                                         <dl>
@@ -138,7 +138,7 @@
                                     title="{f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}, Seite {result.page}">
                                     <div class="tx-dlf-listview-thumbnail"><!--
                                         --><f:if condition="{result.thumbnail}">
-                                            <img src="{result.thumbnail}" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
+                                            <img src="{result.thumbnail}" loading="lazy" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
                                         </f:if><!--
                                     --></div>
                                     <dl>
