@@ -472,15 +472,23 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Finds all documents with given uids
      *
      * @param array $uids
+     * @param array $checkPartof Whether or not to also match $uids against partof.
      *
      * @return array
      */
-    private function findAllByUids($uids)
+    private function findAllByUids($uids, $checkPartof = false)
     {
         // get all documents from db we are talking about
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
         // Fetch document info for UIDs in $documentSet from DB
+        $exprDocumentMatchesUid = $queryBuilder->expr()->in('tx_dlf_documents.uid', $uids);
+        if ($checkPartof) {
+            $exprDocumentMatchesUid = $queryBuilder->expr()->orX(
+                $exprDocumentMatchesUid,
+                $queryBuilder->expr()->in('tx_dlf_documents.partof', $uids)
+            );
+        }
         $kitodoDocuments = $queryBuilder
             ->select(
                 'tx_dlf_documents.uid AS uid',
@@ -494,7 +502,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->from('tx_dlf_documents')
             ->where(
                 $queryBuilder->expr()->in('tx_dlf_documents.pid', $this->settings['storagePid']),
-                $queryBuilder->expr()->in('tx_dlf_documents.uid', $uids)
+                $exprDocumentMatchesUid
             )
             ->addOrderBy('tx_dlf_documents.volume_sorting', 'asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel', 'asc')
@@ -509,6 +517,26 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         return $allDocuments;
+    }
+
+    /**
+     *
+     *
+     * @param array $uids
+     *
+     * @return array
+     */
+    protected function findChildrenOfEach(array $uids)
+    {
+        $allDocuments = $this->findAllByUids($uids, true);
+
+        $result = [];
+        foreach ($allDocuments as $doc) {
+            if ($doc['partOf']) {
+                $result[$doc['partOf']][] = $doc;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -661,6 +689,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
             // get the Extbase document objects for all uids
             $allDocuments = $this->findAllByUids($documentSet);
+            $childrenOf = $this->findChildrenOfEach($documentSet);
 
             foreach ($result['documents'] as $doc) {
                 if (empty($documents[$doc['uid']]) && $allDocuments[$doc['uid']]) {
@@ -701,29 +730,29 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         }
                         if ($searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
-                            $children = $this->findByPartof($doc['uid']);
+                            $children = $childrenOf[$doc['uid']] ?? [];
                             foreach ($children as $docChild) {
                                 // We need only a few fields from the children, but we need them as array.
                                 $childDocument = [
-                                    'thumbnail' => $docChild->getThumbnail(),
-                                    'title' => $docChild->getTitle(),
-                                    'structure' => Helper::getIndexNameFromUid($docChild->getStructure(), 'tx_dlf_structures'),
-                                    'metsOrderlabel' => $docChild->getMetsOrderlabel(),
-                                    'uid' => $docChild->getUid(),
-                                    'metadata' => $this->fetchMetadataFromSolr($docChild->getUid(), $listedMetadata)
+                                    'thumbnail' => $docChild['thumbnail'],
+                                    'title' => $docChild['title'],
+                                    'structure' => $docChild['structure'],
+                                    'metsOrderlabel' => $docChild['metsOrderlabel'],
+                                    'uid' => $docChild['uid'],
+                                    'metadata' => $this->fetchMetadataFromSolr($docChild['uid'], $listedMetadata)
                                 ];
-                                $documents[$doc['uid']]['children'][$docChild->getUid()] = $childDocument;
+                                $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
                             }
                         }
                     }
                     if (empty($documents[$doc['uid']]['metadata'])) {
                         $documents[$doc['uid']]['metadata'] = $this->fetchMetadataFromSolr($doc['uid'], $listedMetadata);
                     }
-                    // get title of parent if empty
+                    // get title of parent/grandparent/... if empty
                     if (empty($documents[$doc['uid']]['title']) && ($documents[$doc['uid']]['partOf'] > 0)) {
-                        $parentDocument = $this->findByUid($documents[$doc['uid']]['partOf']);
-                        if ($parentDocument) {
-                            $documents[$doc['uid']]['title'] = '[' . $parentDocument->getTitle() . ']';
+                        $superiorTitle = Doc::getTitle($documents[$doc['uid']]['partOf'], true);
+                        if (!empty($superiorTitle)) {
+                            $documents[$doc['uid']]['title'] = '[' . $superiorTitle . ']';
                         }
                     }
                 }

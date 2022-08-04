@@ -1167,6 +1167,7 @@ abstract class Doc
      */
     protected function __construct($location, $pid, $preloadedDocument)
     {
+        $this->pid = $pid;
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location);
         $this->establishRecordId($pid);
