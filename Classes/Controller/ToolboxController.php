@@ -59,7 +59,7 @@ class ToolboxController extends AbstractController
             || $this->document->getDoc()->numPages < 1
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             if (!empty($this->requestData['logicalPage'])) {
                 $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
@@ -102,7 +102,7 @@ class ToolboxController extends AbstractController
             || empty($this->extConf['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             if (!empty($this->requestData['logicalPage'])) {
                 $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
@@ -148,7 +148,7 @@ class ToolboxController extends AbstractController
             || empty($this->extConf['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             if (!empty($this->requestData['logicalPage'])) {
                 $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
@@ -194,7 +194,7 @@ class ToolboxController extends AbstractController
             || empty($this->settings['fileGrpsImageDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             if (!empty($this->requestData['logicalPage'])) {
                 $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
@@ -287,7 +287,7 @@ class ToolboxController extends AbstractController
             || empty($this->extConf['fileGrpDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             if (!empty($this->requestData['logicalPage'])) {
                 $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
@@ -402,7 +402,7 @@ class ToolboxController extends AbstractController
             || empty($this->settings['solrcore'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             if (!empty($this->requestData['logicalPage'])) {
                 $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
