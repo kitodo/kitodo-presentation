@@ -181,10 +181,10 @@ class CollectionController extends AbstractController
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         // get all documents of given collection
-        $documents = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+        $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
 
         $this->view->assign('viewData', $this->viewData);
-        $this->view->assign('documents', $documents['documents']);
+        $this->view->assign('documents', $solrResults);
         $this->view->assign('collection', $collection);
         $this->view->assign('widgetPage', $widgetPage);
         $this->view->assign('lastSearch', $searchParams);

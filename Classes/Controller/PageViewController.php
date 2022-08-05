@@ -170,6 +170,7 @@ class PageViewController extends AbstractController
                     tx_dlf_viewer = new dlfViewer({
                         controls: ["' . implode('", "', $this->controls) . '"],
                         div: "' . $this->settings['elementId'] . '",
+                        progressElementId: "' . $this->settings['progressElementId'] . '",
                         images: ' . json_encode($this->images) . ',
                         fulltexts: ' . json_encode($this->fulltexts) . ',
                         annotationContainers: ' . json_encode($this->annotationContainers) . ',

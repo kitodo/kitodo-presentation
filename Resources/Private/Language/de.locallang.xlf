@@ -269,6 +269,10 @@
 				<source><![CDATA[Page]]></source>
 				<target><![CDATA[Seite]]></target>
 			</trans-unit>
+			<trans-unit id="pageview.overview-map" approved="yes">
+				<source><![CDATA[Overview Map]]></source>
+				<target><![CDATA[Miniaturansicht]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.feeds.new" approved="yes">
 				<source><![CDATA[NEW:]]></source>
 				<target><![CDATA[NEU:]]></target>
