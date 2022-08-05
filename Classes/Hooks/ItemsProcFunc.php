@@ -45,7 +45,7 @@ class ItemsProcFunc
     public function toolList(&$params)
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
-            $params['items'][] = [Helper::getLanguageService()->getLL($label), $class];
+            $params['items'][] = [Helper::getLanguageService()->sL($label), $class];
         }
     }
 
