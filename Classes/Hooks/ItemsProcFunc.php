@@ -80,7 +80,7 @@ class ItemsProcFunc
         }
 
         $typoscriptConfig = $ts->setup;
-        $this->storagePid = $typoscriptConfig["plugin."]["tx_dlf."]["persistence."]["storagePid"];
+        $this->storagePid = $typoscriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
 
     }
 
