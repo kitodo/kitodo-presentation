@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
@@ -26,8 +28,10 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * @subpackage dlf
  * @access public
  */
-class ItemsProcFunc
+class ItemsProcFunc implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var int
      */
@@ -76,7 +80,7 @@ class ItemsProcFunc
             $ts->runThroughTemplates($rootline, 0);
             $ts->generateConfig();
         } catch (\Exception $e) {
-            die($e->getMessage());
+            $this->logger->error($e->getMessage());
         }
 
         $typoscriptConfig = $ts->setup;
