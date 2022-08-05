@@ -67,15 +67,15 @@ class ItemsProcFunc implements LoggerAwareInterface
         $pid = $params['flexParentDatabaseRow']['pid'];
         $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($pid);
         $siterootRow = [];
-        foreach($rootline as $_uid=>$_row) {
-            if($_row['is_siteroot'] == '1') {
+        foreach ($rootline as $_row) {
+            if ($_row['is_siteroot'] == '1') {
                 $siterootRow = $_row;
                 break;
             }
         }
 
         try {
-            $ts = $objectManager->get(\TYPO3\CMS\Core\TypoScript\TemplateService::class,[$siterootRow['uid']]);
+            $ts = $objectManager->get(\TYPO3\CMS\Core\TypoScript\TemplateService::class, [$siterootRow['uid']]);
             $ts->rootLine = $rootline;
             $ts->runThroughTemplates($rootline, 0);
             $ts->generateConfig();
