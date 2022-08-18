@@ -133,6 +133,14 @@
 				<source><![CDATA[Download whole work]]></source>
 				<target><![CDATA[Ganzes Werk herunterladen]]></target>
 			</trans-unit>
+			<trans-unit id="mididownload" approved="yes">
+				<source><![CDATA[Download midi file]]></source>
+				<target><![CDATA[Midi Werk herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="scoredownload" approved="yes">
+				<source><![CDATA[Download score pdf file]]></source>
+				<target><![CDATA[Notentext herunterladen]]></target>
+			</trans-unit>
 			<trans-unit id="firstPage" approved="yes">
 				<source><![CDATA[First Page]]></source>
 				<target><![CDATA[Erste Seite]]></target>

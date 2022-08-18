@@ -137,6 +137,8 @@ class PageViewController extends AbstractController
 		$doc = $this->document->getDoc();
         $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
 
+
+
 		$pageId = $this->document->getDoc()->physicalStructure[$page];
 		$files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
 

@@ -34,6 +34,10 @@ page {
 
     # Verovio plugin
     kitodo-verovio = EXT:dlf/Resources/Public/Javascript/Verovio/verovio-toolkit.js
+    kitodo-svgtopdfkit = EXT:dlf/Resources/Public/Javascript/Verovio/svgtopdfkit.js
+    kitodo-pdfkit = EXT:dlf/Resources/Public/Javascript/Verovio/pdfkit.js
+    kitodo-pdfkit = EXT:dlf/Resources/Public/Javascript/Verovio/blobStream.js
+
 
     # PageView plugin
     kitodo-openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.js

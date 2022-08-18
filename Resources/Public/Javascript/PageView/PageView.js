@@ -236,7 +236,7 @@ dlfViewer.prototype.addCustomControls = function() {
     }
 
 	if (this.scoresLoaded_ !== null) {
-		const scoreControl = new dlfViewerScoreControl(this.pagebeginning);
+		const scoreControl = new dlfViewerScoreControl(this.pagebeginning, this.imageUrls.length);
 
 		const pagebeginning = this.pagebeginning;
 		this.scoresLoaded_

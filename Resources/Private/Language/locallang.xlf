@@ -125,6 +125,12 @@
 			<trans-unit id="downloadWork">
 				<source><![CDATA[Download whole work]]></source>
 			</trans-unit>
+			<trans-unit id="mididownload">
+				<source><![CDATA[Download midi file]]></source>
+			</trans-unit>
+			<trans-unit id="scoredownload">
+				<source><![CDATA[Download score pdf file]]></source>
+			</trans-unit>
 			<trans-unit id="firstPage">
 				<source><![CDATA[First Page]]></source>
 			</trans-unit>

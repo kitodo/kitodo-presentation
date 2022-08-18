@@ -15,7 +15,12 @@ const scrollOffset = 100;
  * @constructor
  * @param {ol.Map} map
  */
-const dlfViewerScoreControl = function(pagebeginning) {
+const dlfViewerScoreControl = function(pagebeginning, pagecount) {
+
+/**
+*@ type(number)
+*/
+this.pagecount = pagecount;
 
 	/**
 	 * @type {number}
@@ -65,23 +70,55 @@ const dlfViewerScoreControl = function(pagebeginning) {
  */
 dlfViewerScoreControl.prototype.loadScoreData = function (scoreData) {
 	const target = document.getElementById('tx-dlf-score');
-	if (target !== null) {
+  if (target !== null) {
 		target.innerHTML = scoreData;
 	}
+  const image = new Image();
+
+  const canvas = document.createElement("canvas");
+  canvas.innerHTML = scoreData
+  const clonedSvgElement = canvas.cloneNode(true);
+  const outerHTML = clonedSvgElement.outerHTML;
+  const blob = new Blob([outerHTML],{type:'image/svg+xml;charset=utf-8'});
+  const URL = window.URL || window.webkitURL || window;
+  const blobURL = URL.createObjectURL(blob);
+  let png = canvas.toDataURL();
+  image.src = blobURL;
+  image.width = 1000;
+  image.height = 1000;
+  image.style.backgroundColor= "black";
+
+
+  let context = canvas.getContext('2d');
+
+
+  context.drawImage(image, 0, 0, 1500, 1000 );
+
+  $(".fulltext-container").append(image);
+  console.log("this is the image source" +blobURL)
+
+  $("#tx_dlf_scoredownload").attr({
+    "href": png,
+    "download": "demo.png"
+  });
+  $("#tx_dlf_scoredownload").click();
+
 };
 
 /**
  * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.
  */
 dlfViewerScoreControl.prototype.changeActiveBehaviour = function() {
-    if (this.activateScoreInitially === 1) {
+    if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled' && this.pagecount == 1) {
         this.addActiveBehaviourForSwitchOn();
-    } else {
+    } else  {
         this.addActiveBehaviourForSwitchOff();
+        this.disableScoreSelect();
     }
 };
 
 dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function() {
+  console.log("addActiveBehaviourForSwitchOn")
     const anchorEl = $('#tx-dlf-tools-score');
     if (anchorEl.length > 0){
         const toggleScore = $.proxy(function(event) {
@@ -110,6 +147,7 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function() {
 };
 
 dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function() {
+  console.log("addActiveBehaviourForSwitchOff")
     const anchorEl = $('#tx-dlf-tools-score');
     if (anchorEl.length > 0){
         const toggleScore = $.proxy(function(event) {
@@ -143,7 +181,7 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function() {
  * Activate Score Features
  */
 dlfViewerScoreControl.prototype.activate = function() {
-
+  console.log("activate")
     const controlEl = $('#tx-dlf-tools-score');
 
     // now activate the score overlay and map behavior
@@ -159,7 +197,7 @@ dlfViewerScoreControl.prototype.activate = function() {
  * Activate Fulltext Features
  */
 dlfViewerScoreControl.prototype.deactivate = function() {
-
+  console.log("deactivate")
     const controlEl = $('#tx-dlf-tools-score');
 
     // deactivate fulltext
@@ -177,6 +215,7 @@ dlfViewerScoreControl.prototype.deactivate = function() {
  * @return void
  */
 dlfViewerScoreControl.prototype.disableScoreSelect = function() {
+  console.log("disable ScoreSelect  is selcted")
 
     $("#tx-dlf-tools-score").removeClass(className)
 
@@ -196,6 +235,8 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function() {
  * Activate Score Features
  */
 dlfViewerScoreControl.prototype.enableScoreSelect = function() {
+  console.log("enable score is selcted")
+
 
     // show score container
     $("#tx-dlf-tools-score").addClass(className);
@@ -217,10 +258,13 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function() {
  */
 dlfViewerScoreControl.prototype.scrollToPagebeginning = function() {
 	// get current position of pb element
-	const currentPosition = $('#tx-dlf-score svg g#' + this.pagebeginning).parent().position()?.top ?? 0;
-	// set target position if zero
-	this.position = this.position == 0 ? currentPosition : this.position;
-	// trigger scroll
-	$('#tx-dlf-score').scrollTop(this.position - scrollOffset);
+  if(this.pagebeginning){
+    const currentPosition = $('#tx-dlf-score svg g#' + this.pagebeginning)?.parent()?.position()?.top ?? 0;
+    // set target position if zero
+    this.position = this.position == 0 ? currentPosition : this.position;
+    // trigger scroll
+    $('#tx-dlf-score').scrollTop(this.position - scrollOffset);
+  }else{
+        $('#tx-dlf-tools-score').hide();
+  }
 };
-
