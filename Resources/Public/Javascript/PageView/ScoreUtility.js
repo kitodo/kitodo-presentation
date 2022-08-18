@@ -27,14 +27,14 @@ const verovioSettings = {
 	adjustPageHeight: true
 };
 
-dlfScoreUtils.get_play_midi = function (toolkit) {
-  return function (){
-    var base64midi = toolkit.renderToMIDI();
-    var song = 'data:audio/midi;base64,' + base64midi;
-    console.log($("#player").midiplayer)
-    $("#player").midiplayer.play(song);
-  }
-}
+// dlfScoreUtils.get_play_midi = function (toolkit) {
+//   return function (){
+//     var base64midi = toolkit.renderToMIDI();
+//     var song = 'data:audio/midi;base64,' + base64midi;
+//     console.log($("#player").midiplayer)
+//     $("#player").midiplayer.play(song);
+//   }
+// }
 
 
 
@@ -58,6 +58,7 @@ dlfScoreUtils.fetchScoreDataFromServer = function(url) {
 			const tk = new verovio.toolkit();
             const score = tk.renderData(jqXHR.responseText, verovioSettings);
             console.log(dlfScoreUtils.get_play_midi);
+						dlfScoreUtils.get_play_midi(tk);
             const midi = tk.renderToMIDI();
             const str2blob = new Blob([midi]);
 
@@ -144,3 +145,14 @@ function generate_pdf() {
 
       doc.end();
   }
+dlfScoreUtils.get_play_midi = function (toolkit) {
+  $("#tx-dlf-tools-midi").click(
+	function () {
+			var base64midi = toolkit.renderToMIDI();
+			var song = 'data:audio/midi;base64,' + base64midi;
+			$("#player").show();
+			$("#tx-dlf-tools-midi").hide();
+			$("#player").midiPlayer.seek(song);
+	})
+	return dlfScoreUtils
+}
