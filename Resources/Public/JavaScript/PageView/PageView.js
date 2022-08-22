@@ -31,8 +31,9 @@
  *  images?: ImageDesc[] | [];
  *  fulltexts?: FulltextDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
- *  document?: any;
  * }} DlfViewerConfig
+ *
+ * @typedef {any} DlfDocument
  */
 
 /**
@@ -172,7 +173,11 @@ var dlfViewer = function(settings){
      */
     this.ovView = null;
 
-    this.document = dlfUtils.exists(settings.document) ? settings.document : null;
+    /**
+     * @type {DlfDocument | null}
+     * @private
+     */
+    this.document = tx_dlf_loaded_document || null;
 
     /**
      * @type {Boolean|false}
@@ -625,6 +630,10 @@ dlfViewer.prototype.init = function(controlNames) {
 
 dlfViewer.prototype.registerEvents = function() {
     $(document.body).on('tx-dlf-pageChanged', e => {
+        if (this.document === undefined) {
+            return;
+        }
+
         const page = e.originalEvent.detail.page;
         const entry = this.document[page - 1];
         const url = entry.url;
