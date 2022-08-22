@@ -81,7 +81,7 @@
                                         <numIndex index="1">measureBack</numIndex>
                                     </numIndex>
                                 </items>
-                                <default>doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation,measureForward,measureBack</default>
+                                <default>doublePage,pageFirst,pageStepBack,pageBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation,measureForward,measureBack</default>
                                 <minitems>1</minitems>
                             </config>
                         </TCEforms>
