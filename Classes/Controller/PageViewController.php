@@ -480,6 +480,11 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
+        $config = [
+            'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']),
+            'useInternalProxy' => !empty($this->settings['useInternalProxy']),
+        ];
+
         if (is_array($this->documentArray) && count($this->documentArray) > 1) {
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
@@ -515,6 +520,7 @@ class PageViewController extends AbstractController
                         'div' => 'tx-dfgviewer-map-' . $i,
                         'progressElementId' => $this->settings['progressElementId'] ?? '',
                         'counter' => $i,
+                        'document' => $this->document->getCurrentDocument()->toArray($this->uriBuilder, $config),
                         'images' => $docImage,
                         'fulltexts' => $docFulltext,
                         'score' => $docScore,
@@ -550,7 +556,12 @@ class PageViewController extends AbstractController
             $viewer = [
                 'controls' => $this->controls,
                 'div' => $this->settings['elementId'],
+<<<<<<< HEAD
                 'progressElementId' => $this->settings['progressElementId'] ?? 'tx-dlf-page-progress',
+=======
+                'progressElementId' => $this->settings['progressElementId'],
+                'document' => $this->document->getCurrentDocument()->toArray($this->uriBuilder, $config),
+>>>>>>> 3043018a (Add Basic JSON Representation for Document and First Navigation Button)
                 'images' => $this->images,
                 'fulltexts' => $this->fulltexts,
                 'score' => $this->scores,
