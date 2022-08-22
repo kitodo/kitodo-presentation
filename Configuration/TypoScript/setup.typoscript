@@ -65,12 +65,14 @@ page {
     kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextDownloadControl.js
     kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextControl.js
     kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/JavaScript/PageView/FullTextUtility.js
+    kitodo-pageView-navigation = EXT:dlf/Resources/Public/JavaScript/PageView/Navigation.js
     kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreControl.js
     kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreUtility.js
     kitodo-pageView-syncControl = EXT:dlf/Resources/Public/JavaScript/PageView/SyncControl.js
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
     kitodo-pageView-teiParser = EXT:dlf/Resources/Public/JavaScript/PageView/TeiParser.js
+
     kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
   }
 }
