@@ -170,17 +170,6 @@ class TableOfContentsController extends AbstractController
      */
     protected function makeMenuFor3DObjects()
     {
-        // Set default values for page if not set.
-        // $this->requestData['page'] may be integer or string (physical structure @ID)
-        if (
-            (int) $this->requestData['page'] > 0
-            || empty($this->requestData['page'])
-        ) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-        } else {
-            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-        }
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Is the document an external file?
         if (!MathUtility::canBeInterpretedAsInteger($this->requestData['id'])) {
