@@ -142,7 +142,10 @@ class PageViewController extends AbstractController
             'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']),
             'useInternalProxy' => !empty($this->settings['useInternalProxy']),
         ];
+        // TODO: Rethink global tx_dlf_loaded_document
         $viewerConfiguration = '$(document).ready(function() {
+                tx_dlf_loaded_document = ' . json_encode($this->document->getDoc()->toArray($this->uriBuilder, $config)) . ';
+
                 if (dlfUtils.exists(dlfViewer)) {
                     tx_dlf_viewer = new dlfViewer({
                         controls: ["' . implode('", "', $this->controls) . '"],
@@ -152,7 +155,6 @@ class PageViewController extends AbstractController
                         fulltexts: ' . json_encode($this->fulltexts) . ',
                         annotationContainers: ' . json_encode($this->annotationContainers) . ',
                         useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
-                        document: ' . json_encode($this->document->getDoc()->toArray($this->uriBuilder, $config)) . '
                     });
                 }
             });';
