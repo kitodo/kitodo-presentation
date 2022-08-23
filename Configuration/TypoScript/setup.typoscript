@@ -74,6 +74,8 @@ page {
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
     kitodo-pageView-teiParser = EXT:dlf/Resources/Public/JavaScript/PageView/TeiParser.js
 
+    kitodo-controller = EXT:dlf/Resources/Public/JavaScript/PageView/Controller.js
+
     kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
   }
 }
