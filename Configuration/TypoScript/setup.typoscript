@@ -65,6 +65,7 @@ page {
     kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextDownloadControl.js
     kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextControl.js
     kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/JavaScript/PageView/FullTextUtility.js
+    kitodo-pageView-metadata = EXT:dlf/Resources/Public/JavaScript/PageView/Metadata.js
     kitodo-pageView-navigation = EXT:dlf/Resources/Public/JavaScript/PageView/Navigation.js
     kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreControl.js
     kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreUtility.js
