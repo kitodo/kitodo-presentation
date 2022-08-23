@@ -146,10 +146,13 @@ class PageViewController extends AbstractController
         $viewerConfiguration = '$(document).ready(function() {
                 tx_dlf_loaded = {
                     state: {
+                        documentId: ' . json_encode($this->requestData['id']) . ',
                         page: ' . $this->requestData['page'] . '
                     },
 					document: ' . json_encode($this->document->getDoc()->toArray($this->uriBuilder, $config)) . '
                 };
+
+                new dlfController();
 
                 if (dlfUtils.exists(dlfViewer)) {
                     tx_dlf_viewer = new dlfViewer({
