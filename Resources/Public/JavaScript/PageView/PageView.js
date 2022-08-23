@@ -334,9 +334,9 @@ dlfViewer.prototype.addCustomControls = function() {
         && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
         // Adds annotation behavior only if there are annotations available and view is single page
         annotationControl = new DlfAnnotationControl(this.map, this.images[0], this.annotationContainers[0]);
-        if (fulltextControl !== undefined) {
-            $(fulltextControl).on("activate-fulltext", $.proxy(annotationControl.deactivate, annotationControl));
-            $(annotationControl).on("activate-annotations", $.proxy(fulltextControl.deactivate, fulltextControl));
+        if (this.fulltextControl !== undefined) {
+            $(this.fulltextControl).on("activate-fulltext", $.proxy(annotationControl.deactivate, annotationControl));
+            $(annotationControl).on("activate-annotations", $.proxy(this.fulltextControl.deactivate, this.fulltextControl));
         }
     }
     else {
@@ -355,9 +355,9 @@ dlfViewer.prototype.addCustomControls = function() {
         });
 
         // bind behavior of both together
-        if (fulltextControl !== undefined) {
-            $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
-            $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
+        if (this.fulltextControl !== undefined) {
+            $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(this.fulltextControl.deactivate, this.fulltextControl));
+            $(this.fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
         }
         if (annotationControl !== undefined) {
             $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(annotationControl.deactivate, annotationControl));
