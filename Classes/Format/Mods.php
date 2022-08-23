@@ -57,11 +57,6 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         $this->getHolders();
         $this->getPlaces();
         $this->getYears();
-        $this->getDescription();
-        $this->getIdentifier();
-        $this->getLicense();
-        $this->getObjectNames();
-        $this->getObjectLocationMetadata();
 
         $metadata = $this->metadata;
     }
@@ -81,7 +76,6 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             // Get all names which do not have any role term assigned and assume these are authors.
             $authors = $this->xml->xpath('./mods:name[not(./mods:role)]');
         }
-
         if (!empty($authors)) {
             for ($i = 0, $j = count($authors); $i < $j; $i++) {
                 $authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
@@ -178,10 +172,6 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
                     ksort($name);
                     $this->metadata['holder'][$i] = trim(implode(', ', $name));
                 }
-                // Append "valueURI" to name using Unicode unit separator.
-                if (isset($authors[$i]['valueURI'])) {
-                    $this->metadata['holder'][$i] .= chr(31) . (string) $authors[$i]['valueURI'];
-                }
             }
         }
     }
@@ -244,90 +234,6 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
                     }
                     $this->metadata['year_sorting'][0] = intval($year_sorting);
                 }
-            }
-        }
-    }
-
-    /**
-     * Get "description" stored in recordInfoNote.
-     *
-     * @access private
-     *
-     * @return void
-     */
-    private function getDescription() {
-        $this->getSingleMetadata('description', './mods:recordInfo/mods:recordInfoNote/text()');
-    }
-
-    /**
-     * Get "identifier" - example: hotels (built public accommodations), AAT ID: 300007166.
-     *
-     * @access private
-     *
-     * @return void
-     */
-    private function getIdentifier() {
-        $this->getSingleMetadata('identifier', './mods:identifier/text()');
-    }
-
-    /**
-     * Get "license" - license on which object is published.
-     *
-     * @access private
-     *
-     * @return void
-     */
-    private function getLicense() {
-        $this->getSingleMetadata('license', './mods:accessCondition/text()');
-    }
-
-    /**
-     * Get names of the original object:
-     *   - main name
-     *   - alternative names
-     *
-     * @access private
-     *
-     * @return void
-     */
-    private function getObjectNames() {
-        $this->getSingleMetadata('object_name', './mods:relatedItem/mods:titleInfo[not(@displayLabel="alternative")]/mods:title/text()');
-        $this->getSingleMetadata('object_alternative_names', './mods:relatedItem/mods:titleInfo[@displayLabel="alternative"]/mods:title/text()');
-    }
-
-    /**
-     * Get location information about the original object:
-     *  - city (object_location)
-     *  - geonames
-     *  - wikidata
-     *  - wikipedia
-     *
-     * @access private
-     *
-     * @return void
-     */
-    private function getObjectLocationMetadata() {
-        $this->getSingleMetadata('object_location', './mods:relatedItem/mods:location/mods:physicalLocation/text()');
-        $this->getSingleMetadata('geonames', './mods:relatedItem/mods:location/mods:url[@displayLabel="geonames"]/text()');
-        $this->getSingleMetadata('wikidata', './mods:relatedItem/mods:location/mods:url[@displayLabel="wikidata"]/text()');
-        $this->getSingleMetadata('wikipedia', './mods:relatedItem/mods:location/mods:url[@displayLabel="wikipedia"]/text()');
-    }
-
-    /**
-     * Save to the metadata array the last found matching metadata.
-     *
-     * @access private
-     *
-     * @param string $metadataIndex: The index in the array by which metadata is going to be accessible
-     * @param string $xpath: The xpath for searching metadata in MODS
-     *
-     * @return void
-     */
-    private function getSingleMetadata($metadataIndex, $xpath) {
-        $results = $this->xml->xpath($xpath);
-        if (!empty($results)) {
-            foreach ($results as $result) {
-                $this->metadata[$metadataIndex][0] = (string) $result;
             }
         }
     }
