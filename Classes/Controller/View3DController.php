@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Doc;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'View3D' for the 'dlf' extension
@@ -56,7 +57,7 @@ class View3DController extends AbstractController
 
             $this->view->assign('url', $url);
             $this->view->assign('scriptMain', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/main.js');
-            $this->view->assign('scriptToastify', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/toastify.js');
+            $this->view->assign('scriptToastify', '/typo3conf/ext/dlf/Resources/Public/Javascript/Toastify/toastify.js');
             $this->view->assign('scriptSpinner', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/spinner/main.js');
         }
     }

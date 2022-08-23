@@ -1,27 +1,27 @@
 //Supported file formats: OBJ, DAE, FBX, PLY, IFC, STL, XYZ, JSON, 3DS, glTF
 
-import * as THREE from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/build/three.module.js';
-import { TWEEN } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/libs/tween.module.min.js';
+import * as THREE from './build/three.module.js';
+import { TWEEN } from './js/jsm/libs/tween.module.min.js';
 
-import Stats from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/libs/stats.module.js';
+import Stats from './js/jsm/libs/stats.module.js';
 
-import { OrbitControls } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/controls/OrbitControls.js';
-import { TransformControls } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/controls/TransformControls.js';
-import { GUI } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/node_modules/lil-gui/dist/lil-gui.esm.min.js';
-import { FBXLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/FBXLoader.js';
-import { DDSLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/DDSLoader.js';
-import { MTLLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/MTLLoader.js';
-import { OBJLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/OBJLoader.js';
-import { GLTFLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/DRACOLoader.js';
-import { KTX2Loader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/KTX2Loader.js';
-import { MeshoptDecoder } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/libs/meshopt_decoder.module.js';
-import { IFCLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/IFCLoader.js';
-import { PLYLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/PLYLoader.js';
-import { ColladaLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/ColladaLoader.js';
-import { STLLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/STLLoader.js';
-import { XYZLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/XYZLoader.js';
-import { TDSLoader } from '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/TDSLoader.js';
+import { OrbitControls } from './js/jsm/controls/OrbitControls.js';
+import { TransformControls } from './js/jsm/controls/TransformControls.js';
+import { GUI } from './node_modules/lil-gui/dist/lil-gui.esm.min.js';
+import { FBXLoader } from './js/jsm/loaders/FBXLoader.js';
+import { DDSLoader } from './js/jsm/loaders/DDSLoader.js';
+import { MTLLoader } from './js/jsm/loaders/MTLLoader.js';
+import { OBJLoader } from './js/jsm/loaders/OBJLoader.js';
+import { GLTFLoader } from './js/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from './js/jsm/loaders/DRACOLoader.js';
+import { KTX2Loader } from './js/jsm/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from './js/jsm/libs/meshopt_decoder.module.js';
+import { IFCLoader } from './js/jsm/loaders/IFCLoader.js';
+import { PLYLoader } from './js/jsm/loaders/PLYLoader.js';
+import { ColladaLoader } from './js/jsm/loaders/ColladaLoader.js';
+import { STLLoader } from './js/jsm/loaders/STLLoader.js';
+import { XYZLoader } from './js/jsm/loaders/XYZLoader.js';
+import { TDSLoader } from './js/jsm/loaders/TDSLoader.js';
 
 /*if (supportedFormats.indexOf(extension.toUpperCase()) < 0) {
 	return
@@ -495,11 +495,11 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 	var geometry;
 	fetch(path + "metadata/" + filename + "_viewer", {cache: "no-cache"})
 	.then((response) => {
-		if (response['status'] != "404") {
+		if (response['status'] !== 404) {
 			showToast("Settings " + filename + "_viewer found");
 			return response.json();
 		}
-		else if (response['status'] == "404") {
+		else if (response['status'] === 404) {
 			showToast("No settings " + filename + "_viewer found");
 		}
 		})
@@ -694,8 +694,8 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 				loader = new XYZLoader();
 				loader.load( path + filename, function ( geometry ) {
 					geometry.center();
-					const vertexColors = ( geometry.hasAttribute( 'color' ) === true );
-					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: vertexColors } );
+					const hasVertexColors = ( geometry.hasAttribute( 'color' ) === true );
+					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: hasVertexColors } );
 					object = new THREE.Points( geometry, material );
 					object.position.set (0, 0, 0);
 					scene.add( object );
