@@ -17,19 +17,10 @@
 
 /**
  * @typedef {{
- *  url: string;
- *  mimetype: string;
- * }} ResourceLocator
- *
- * @typedef {ResourceLocator} ImageDesc
- *
- * @typedef {ResourceLocator} FulltextDesc
- *
- * @typedef {{
  *  div: string;
  *  progressElementId?: string;
- *  images?: ImageDesc[] | [];
- *  fulltexts?: FulltextDesc[] | [];
+ *  images?: dlf.ImageDesc[] | [];
+ *  fulltexts?: dlf.FulltextDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
  * }} DlfViewerConfig
  *
@@ -653,11 +644,9 @@ dlfViewer.prototype.registerEvents = function() {
 
         const page = e.originalEvent.detail.page;
         const entry = this.document.pages[page - 1];
-        const url = entry.url;
-        const mimetype = entry.mimetype;
 
         // TODO don't forget double page mode
-        this.initLayer([entry])
+        this.initLayer([entry.image])
             .done(layers => {
                 this.map.setLayers(layers);
                 this.initLoadFulltexts(page, [entry]);
@@ -670,7 +659,7 @@ dlfViewer.prototype.registerEvents = function() {
 /**
  * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
- * @param {ImageDesc[]} imageSourceObjs
+ * @param {dlf.ImageDesc[]} imageSourceObjs
  * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
  * @private
  */
