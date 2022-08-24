@@ -485,13 +485,14 @@ class PageViewController extends AbstractController
             'useInternalProxy' => !empty($this->settings['useInternalProxy']),
         ];
 
-        $documentJson = json_encode($this->document->getCurrentDocument()->toArray($this->uriBuilder, $config));
+        $currentDocumentArray = $this->document->getCurrentDocument()->toArray($this->uriBuilder, $config);
 
         if (is_array($this->documentArray) && count($this->documentArray) > 1) {
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
             foreach ($this->documentArray as $document) {
                 if ($document !== null && array_key_exists($i, $this->requestData['docPage'])) {
+                    $currentDocumentArray = $document->toArray($this->uriBuilder, $config);
                     $docPage = $this->requestData['docPage'][$i];
                     $docImage = [];
                     $docFulltext = [];
@@ -532,8 +533,16 @@ class PageViewController extends AbstractController
                         'measureIdLinks' => $docMeasures['measureLinks']
                     ];
 
-                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer(' . json_encode($viewer) . ');
-                            ';
+                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer(' . json_encode($viewer) . ');';
+
+                    $tx_dlf_loaded = [
+                        'state' => [
+                            'documentId' => $this->requestData['id'],
+                            'page' => $docPage,
+                        ],
+                        'document' => $currentDocumentArray,
+                    ];
+
                     $i++;
                 }
             }
@@ -541,13 +550,7 @@ class PageViewController extends AbstractController
             // TODO: Rethink global tx_dlf_loaded
             // Viewer configuration.
             $viewerConfiguration = '$(document).ready(function() {
-                    tx_dlf_loaded = {
-                        state: {
-                            documentId: ' . json_encode($this->requestData['id']) . ',
-                            page: ' . $docPage . '
-                        },
-                        document: ' . $documentJson . '
-                    };
+                    tx_dlf_loaded = ' . $tx_dlf_loaded . ';
 
                     new dlfController();
 
@@ -557,6 +560,8 @@ class PageViewController extends AbstractController
                     }
                 });';
         } else {
+            $currentDocumentArray = $this->document->getCurrentDocument()->toArray($this->uriBuilder, $config);
+            
             $currentMeasureId = '';
             $docPage = $this->requestData['page'] ?? 0;
 
@@ -581,16 +586,18 @@ class PageViewController extends AbstractController
                 'measureIdLinks' => $docMeasures['measureLinks']
             ];
 
+            $tx_dlf_loaded = [
+                'state' => [
+                    'documentId' => $this->requestData['id'],
+                    'page' => $docPage,
+                ],
+                'document' => $currentDocumentArray
+            ];
+
             // TODO: Rethink global tx_dlf_loaded
             // Viewer configuration.
             $viewerConfiguration = '$(document).ready(function() {
-                    tx_dlf_loaded = {
-                        state: {
-                            documentId: ' . json_encode($this->requestData['id']) . ',
-                            page: ' . $docPage . '
-                        },
-                        document: ' . $documentJson . '
-                    };
+                    tx_dlf_loaded = ' . $tx_dlf_loaded . ';
 
                     new dlfController();
 
