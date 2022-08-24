@@ -73,6 +73,7 @@ page {
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
     kitodo-pageView-teiParser = EXT:dlf/Resources/Public/JavaScript/PageView/TeiParser.js
+    kitodo-pageView-toolbox = EXT:dlf/Resources/Public/JavaScript/PageView/Toolbox.js
 
     kitodo-controller = EXT:dlf/Resources/Public/JavaScript/PageView/Controller.js
 
