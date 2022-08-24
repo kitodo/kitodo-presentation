@@ -152,7 +152,8 @@ dlfScoreUtils.get_play_midi = function (toolkit) {
 			var song = 'data:audio/midi;base64,' + base64midi;
 			$("#player").show();
 			$("#tx-dlf-tools-midi").hide();
-			$("#player").midiPlayer.seek(song);
+      $("#player").midiPlayer();
+			$("#player").midiPlayer.play(song);
 	})
 	return dlfScoreUtils
 }
