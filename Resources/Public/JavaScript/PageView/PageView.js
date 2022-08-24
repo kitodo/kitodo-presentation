@@ -948,11 +948,7 @@ dlfViewer.prototype.init = function(controlNames) {
 };
 
 dlfViewer.prototype.registerEvents = function() {
-    $(document.body).on('tx-dlf-pageChanged', e => {
-        this.loadPages(tx_dlf_loaded.getVisiblePages());
-    });
-
-    $(document.body).on('tx-dlf-configChanged', () => {
+    $(document.body).on('tx-dlf-stateChanged', () => {
         this.loadPages(tx_dlf_loaded.getVisiblePages());
     });
 };
