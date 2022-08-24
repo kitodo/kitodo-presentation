@@ -138,14 +138,23 @@ class PageViewController extends AbstractController
     protected function addViewerJS(): void
     {
         // Viewer configuration.
+        $imageFileGroups = array_reverse(GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']));
+        $fulltextFileGroups = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         $config = [
             'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']),
-            'useInternalProxy' => !empty($this->settings['useInternalProxy']),
+            'proxyFileGroups' => !empty($this->settings['useInternalProxy'])
+                ? array_merge($imageFileGroups, $fulltextFileGroups)
+                : [],
         ];
         $tx_dlf_loaded = [
             'state' => [
                 'documentId' => $this->requestData['id'],
                 'page' => $this->requestData['page'],
+            ],
+            'fileGroups' => [
+                'images' => $imageFileGroups,
+                'fulltext' => $fulltextFileGroups,
+                'download' => GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']),
             ],
             'document' => $this->document->getDoc()->toArray($this->uriBuilder, $config),
         ];
