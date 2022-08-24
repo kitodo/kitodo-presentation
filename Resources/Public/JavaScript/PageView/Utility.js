@@ -235,6 +235,22 @@ dlfUtils.escapeHtml = function(html) {
 };
 
 /**
+ * Get the value in {@link map} of the first key in {@link keys} that is set.
+ *
+ * @template T
+ * @param {string[]} keys
+ * @param {Record<string, T>} map
+ * @returns {T}
+ */
+dlfUtils.findFirstSet = function (map, keys) {
+    for (const fileGrp of keys) {
+        if (map[fileGrp]) {
+            return map[fileGrp];
+        }
+    }
+};
+
+/**
  * Fetch image data for given image sources.
  *
  * @param {dlf.ImageDesc[]} imageSourceObjs
