@@ -344,6 +344,7 @@ class ToolboxController extends AbstractController
         }
 
         $this->view->assign('imageDownload', $imageArray);
+        $this->view->assign('fileGrpsImageDownload', $this->useGroupsConfiguration->getImage());
     }
 
     /**
@@ -352,6 +353,7 @@ class ToolboxController extends AbstractController
      * @access private
      *
      * @param int $page Page number
+     * @param string[] $fileGrps File groups to consider
      *
      * @return array Array of file information
      */
