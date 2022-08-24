@@ -150,6 +150,7 @@ class PageViewController extends AbstractController
             'state' => [
                 'documentId' => $this->requestData['id'],
                 'page' => $this->requestData['page'],
+                'simultaneousPages' => (int) $this->requestData['double'] + 1,
             ],
             'fileGroups' => [
                 'images' => $imageFileGroups,
@@ -159,9 +160,24 @@ class PageViewController extends AbstractController
             'document' => $this->document->getDoc()->toArray($this->uriBuilder, $config),
         ];
         // TODO: Rethink global tx_dlf_loaded
-        $viewerConfiguration = '$(document).ready(function() {
-                tx_dlf_loaded = ' . json_encode($tx_dlf_loaded) . ';
+        $viewerConfiguration = '
+            tx_dlf_loaded = ' . json_encode($tx_dlf_loaded) . ';
 
+            tx_dlf_loaded.getVisiblePages = function () {
+                const firstPageNo = tx_dlf_loaded.state.page;
+
+                const result = [];
+                for (let i = 0; i < tx_dlf_loaded.state.simultaneousPages; i++) {
+                    const pageNo = firstPageNo + i;
+                    const pageObj = tx_dlf_loaded.document.pages[pageNo - 1];
+                    if (pageObj !== undefined) {
+                        result.push({ pageNo, pageObj });
+                    }
+                }
+                return result;
+            };
+
+            $(document).ready(function() {
                 new dlfController();
 
                 if (dlfUtils.exists(dlfViewer)) {
