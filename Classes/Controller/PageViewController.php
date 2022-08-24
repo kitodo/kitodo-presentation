@@ -142,15 +142,16 @@ class PageViewController extends AbstractController
             'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']),
             'useInternalProxy' => !empty($this->settings['useInternalProxy']),
         ];
+        $tx_dlf_loaded = [
+            'state' => [
+                'documentId' => $this->requestData['id'],
+                'page' => $this->requestData['page'],
+            ],
+            'document' => $this->document->getDoc()->toArray($this->uriBuilder, $config),
+        ];
         // TODO: Rethink global tx_dlf_loaded
         $viewerConfiguration = '$(document).ready(function() {
-                tx_dlf_loaded = {
-                    state: {
-                        documentId: ' . json_encode($this->requestData['id']) . ',
-                        page: ' . $this->requestData['page'] . '
-                    },
-					document: ' . json_encode($this->document->getDoc()->toArray($this->uriBuilder, $config)) . '
-                };
+                tx_dlf_loaded = ' . json_encode($tx_dlf_loaded) . ';
 
                 new dlfController();
 
