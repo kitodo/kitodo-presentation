@@ -318,7 +318,7 @@ dlfViewer.prototype.addCustomControls = function() {
 
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
-	const currentFulltext = this.fulltextsLoaded_[`${tx_dlf_loaded.state.page}-0`];
+	const currentFulltext = this.fulltextsLoaded_[`${tx_dlf_loaded.getVisiblePages()[0].pageNo}-0`];
     this.updateFulltext(currentFulltext);
 
     if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
@@ -511,7 +511,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         var self = this;
         var values = decodeURIComponent(this.highlightWords).split(';');
 
-		const currentFulltext = this.fulltextsLoaded_[tx_dlf_loaded.state.page];
+		const currentFulltext = this.fulltextsLoaded_[tx_dlf_loaded.getVisiblePages()[0].pageNo];
         $.when.apply($, currentFulltext)
             .done(function (fulltextData, fulltextDataImageTwo) {
                 var stringFeatures = [];
@@ -549,8 +549,7 @@ dlfViewer.prototype.init = function(controlNames) {
         .done($.proxy(function(layers){
 
             // Initiate loading fulltexts
-            const pageNo = tx_dlf_loaded.state.page;
-            this.initLoadFulltexts(pageNo, [tx_dlf_loaded.document.pages[pageNo - 1]]);
+            this.initLoadFulltexts(tx_dlf_loaded.getVisiblePages());
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
@@ -638,27 +637,42 @@ dlfViewer.prototype.init = function(controlNames) {
 
 dlfViewer.prototype.registerEvents = function() {
     $(document.body).on('tx-dlf-pageChanged', e => {
-        if (this.document === undefined) {
-            return;
-        }
-
-        const page = e.originalEvent.detail.page;
-        const entry = this.document.pages[page - 1];
-
-        // TODO don't forget double page mode
-        const file = dlfUtils.findFirstSet(entry.files, tx_dlf_loaded.fileGroups['images']);
-        if (file === undefined) {
-            console.warn("No image file found");
-        } else {
-            this.initLayer([file])
-                .done(layers => {
-                    this.map.setLayers(layers);
-                    this.initLoadFulltexts(page, [entry]);
-                    const currentFulltext = this.fulltextsLoaded_[`${page}-0`];
-                    this.updateFulltext(currentFulltext);
-                });
-        }
+        this.loadPages(tx_dlf_loaded.getVisiblePages());
     });
+
+    $(document.body).on('tx-dlf-configChanged', () => {
+        this.loadPages(tx_dlf_loaded.getVisiblePages());
+    });
+};
+
+dlfViewer.prototype.loadPages = function (visiblePages) {
+    if (this.document === undefined) {
+        return;
+    }
+
+    const pages = [];
+    const files = [];
+    for (const page of visiblePages) {
+        const file = dlfUtils.findFirstSet(page.pageObj.files, tx_dlf_loaded.fileGroups['images']);
+        if (file === undefined){
+            console.warn(`No image file found on page ${page.pageNo}`);
+            continue;
+        }
+        pages.push(page);
+        files.push(file);
+    }
+
+    this.initLayer(files)
+        .done(layers => {
+            this.map.setLayers(layers);
+            this.initLoadFulltexts(pages);
+
+            let i = 0;
+            for (const page of pages) {
+                this.updateFulltext(this.fulltextsLoaded_[`${page.pageNo}-${i}`]);
+                i++;
+            }
+        });
 };
 
 /**
@@ -692,18 +706,17 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
 /**
  * Start loading fulltexts and store them to `fulltextsLoaded_` (as jQuery deferred objects).
  *
- * @param {number} firstPageNo
- * @param {dlf.PageObject[]} pageObjects
+ * @param {dlf.PageObject[]} visiblePages
  * @private
  */
-dlfViewer.prototype.initLoadFulltexts = function (firstPageNo, pageObjects) {
-    var cnt = Math.min(pageObjects.length, this.images.length);
+dlfViewer.prototype.initLoadFulltexts = function (visiblePages) {
+    var cnt = Math.min(visiblePages.length, this.images.length);
     var xOffset = 0;
     for (var i = 0; i < cnt; i++) {
         const image = this.images[i];
-        const key = `${firstPageNo + i}-${i}`;
+        const key = `${visiblePages[i].pageNo}-${i}`;
 
-        const fulltext = dlfUtils.findFirstSet(pageObjects[i].files, tx_dlf_loaded.fileGroups['fulltext']);
+        const fulltext = dlfUtils.findFirstSet(visiblePages[i].pageObj.files, tx_dlf_loaded.fileGroups['fulltext']);
         if (fulltext !== undefined) {
             if (!(key in this.fulltextsLoaded_) && dlfUtils.isFulltextDescriptor(fulltext)) {
                 fulltextEntry = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
