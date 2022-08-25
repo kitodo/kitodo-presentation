@@ -48,6 +48,7 @@
                 argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}"
                 addQueryString="untrusted"
                 section="{child.section}"
+                additionalAttributes="{'data-document-id':child.id, 'data-page':child.page, 'data-toc-link':1}"
                 title="{f:if(condition:'{child.title}', then: '{child.title}', else: '{child.type}')}">
                     <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
             </f:link.action>
