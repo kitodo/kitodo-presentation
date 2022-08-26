@@ -1369,14 +1369,19 @@ abstract class AbstractDocument
 
     public function toArray($uriBuilder, array $config = [])
     {
-        $proxyFileGroups = $config['proxyFileGroups'] ?? [];
-        $forceAbsoluteUrl = $config['forceAbsoluteUrl'] ?? false;
-
         $this->_getSmLinks();
         $this->_getPhysicalStructure();
 
+        $proxyFileGroups = $config['proxyFileGroups'] ?? [];
+        $forceAbsoluteUrl = $config['forceAbsoluteUrl'] ?? false;
+        $minPage = $config['minPage'] ?? 1;
+        $maxPage = $config['maxPage'] ?? $this->numPages;
+
         $result = [
             'pages' => [],
+            'query' => [
+                'minPage' => $minPage
+            ]
         ];
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         $fileGrpsImages = array_reverse(GeneralUtility::trimExplode(',', $extConf['fileGrpImages']));
@@ -1384,7 +1389,7 @@ abstract class AbstractDocument
 
         $allFiles = $this->getAllFiles();
 
-        for ($page = 1; $page <= $this->numPages; $page++) {
+        for ($page = $minPage; $page <= $maxPage; $page++) {
             $pageEntry = [
                 'logSections' => array_merge(...$this->getLogicalSectionsOnPage($page)),
                 'files' => [],
