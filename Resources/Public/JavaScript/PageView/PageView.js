@@ -22,6 +22,7 @@
  *  images?: dlf.ImageDesc[] | [];
  *  fulltexts?: dlf.FulltextDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
+ *  initDoc: dlf.Document;
  * }} DlfViewerConfig
  *
  * @typedef {any} DlfDocument
@@ -202,6 +203,17 @@ var dlfViewer = function(settings){
      */
     this.layersCache = {};
 
+    /**
+     * @private
+     */
+    this.initDoc = settings.initDoc;
+
+    /**
+     * @type {dlfController | null}
+     * @private
+     */
+    this.docController = null;
+
     this.registerEvents();
     this.init(dlfUtils.exists(settings.controls) ? settings.controls : []);
 };
@@ -330,7 +342,7 @@ dlfViewer.prototype.addCustomControls = function() {
 
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
-	const currentFulltext = this.fulltextsLoaded_[`${tx_dlf_loaded.getVisiblePages()[0].pageNo}-0`];
+	const currentFulltext = this.fulltextsLoaded_[`${this.getVisiblePages()[0].pageNo}-0`];
     this.updateFulltext(currentFulltext);
 
     if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
@@ -523,7 +535,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         var self = this;
         var values = decodeURIComponent(this.highlightWords).split(';');
 
-		const currentFulltext = this.fulltextsLoaded_[tx_dlf_loaded.getVisiblePages()[0].pageNo];
+		const currentFulltext = this.fulltextsLoaded_[this.getVisiblePages()[0].pageNo];
         $.when.apply($, currentFulltext)
             .done(function (fulltextData, fulltextDataImageTwo) {
                 var stringFeatures = [];
@@ -561,7 +573,7 @@ dlfViewer.prototype.init = function(controlNames) {
         .done($.proxy(function(layers){
 
             // Initiate loading fulltexts
-            this.initLoadFulltexts(tx_dlf_loaded.getVisiblePages());
+            this.initLoadFulltexts(this.getVisiblePages());
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
@@ -647,9 +659,24 @@ dlfViewer.prototype.init = function(controlNames) {
         this.initCropping();
 };
 
+dlfViewer.prototype.getVisiblePages = function () {
+    if (this.docController === null) {
+        return this.initDoc.pages.map( (page, i) => ({
+            pageNo: this.initDoc.query.minPage + i,
+            pageObj: page
+        }))
+    } else {
+        return this.docController.getVisiblePages();
+    }
+}
+
+dlfViewer.prototype.setDocController = function (docController) {
+    this.docController = docController;
+}
+
 dlfViewer.prototype.registerEvents = function () {
     $(document.body).on('tx-dlf-stateChanged', () => {
-        this.loadPages(tx_dlf_loaded.getVisiblePages());
+        this.loadPages(this.getVisiblePages());
     });
 };
 

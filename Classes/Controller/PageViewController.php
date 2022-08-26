@@ -137,22 +137,52 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
+        // TODO avoid redundancy to documentController
+        $imageFileGroups = array_reverse(GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']));
+        $fulltextFileGroups = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
+        $config = [
+            'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']),
+            'proxyFileGroups' => !empty($this->settings['useInternalProxy'])
+                ? array_merge($imageFileGroups, $fulltextFileGroups)
+                : [],
+            // toArray uses closed interval [minPage, maxPage]
+            'minPage' => $this->requestData['page'],
+            'maxPage' => $this->requestData['page'] + $this->requestData['double']
+        ];
+
+        $initDoc = $this->document->getDoc()->toArray($this->uriBuilder, $config);
+
         // Viewer configuration.
         $viewerConfiguration = '
-            $(document).ready(function() {
+            (function () {
+                let docController = null;
 
-                if (dlfUtils.exists(dlfViewer)) {
-                    tx_dlf_viewer = new dlfViewer({
-                        controls: ["' . implode('", "', $this->controls) . '"],
-                        div: "' . $this->settings['elementId'] . '",
-                        progressElementId: "' . $this->settings['progressElementId'] . '",
-                        images: ' . json_encode($this->images) . ',
-                        fulltexts: ' . json_encode($this->fulltexts) . ',
-                        annotationContainers: ' . json_encode($this->annotationContainers) . ',
-                        useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
-                    });
-                }
-            });';
+                window.addEventListener("tx-dlf-documentLoaded", e => {
+                    docController = e.detail.docController;
+                    if (typeof tx_dlf_viewer !== "undefined") {
+                        tx_dlf_viewer.setDocController(docController);
+                    }
+                });
+
+                $(document).ready(function() {
+
+                    if (dlfUtils.exists(dlfViewer)) {
+                        tx_dlf_viewer = new dlfViewer({
+                            controls: ["' . implode('", "', $this->controls) . '"],
+                            div: "' . $this->settings['elementId'] . '",
+                            progressElementId: "' . $this->settings['progressElementId'] . '",
+                            images: ' . json_encode($this->images) . ',
+                            fulltexts: ' . json_encode($this->fulltexts) . ',
+                            annotationContainers: ' . json_encode($this->annotationContainers) . ',
+                            useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
+                            initDoc: ' . json_encode($initDoc) . ',
+                        });
+                        tx_dlf_viewer.setDocController(docController);
+                    }
+                });
+            })();
+
+            ';
         $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
 
