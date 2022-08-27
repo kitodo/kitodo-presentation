@@ -382,6 +382,8 @@ final class MetsDocument extends AbstractDocument
             $details['description'] = $metadata['description'][0] ?? '';
         }
         $details['thumbnailId'] = '';
+        // Structure depth is determined and cached on demand
+        $details['structureDepth'] = null;
         // Load smLinks.
         $this->magicGetSmLinks();
         // Load physical structure.
@@ -799,12 +801,23 @@ final class MetsDocument extends AbstractDocument
      */
     public function getStructureDepth(string $logId)
     {
+        if (isset($this->logicalUnits[$logId]['structureDepth'])) {
+            return $this->logicalUnits[$logId]['structureDepth'];
+        }
+
         $ancestors = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*');
         if (!empty($ancestors)) {
-            return count($ancestors);
+            $structureDepth = count($ancestors);
         } else {
-            return 0;
+            $structureDepth = 0;
         }
+
+        // NOTE: Don't just set $this->logicalUnits[$logId] here, because it may not yet be loaded
+        if (isset($this->logicalUnits[$logId])) {
+            $this->logicalUnits[$logId]['structureDepth'] = $structureDepth;
+        }
+
+        return $structureDepth;
     }
 
     /**
