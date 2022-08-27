@@ -579,8 +579,10 @@ abstract class AbstractDocument
         $iiif = null;
 
         if (!$forceReload) {
-            $instance = self::getDocumentCache($location);
-            if ($instance !== false) {
+            if (isset(self::$registry[$location])) {
+                return self::$registry[$location];
+            } elseif ($instance = self::getDocumentCache($location)) {
+                self::$registry[$location] = $instance;
                 return $instance;
             }
         }
@@ -626,7 +628,7 @@ abstract class AbstractDocument
             $instance = new IiifManifest($pid, $location, $iiif);
         }
 
-        if ($instance !== null) {
+        if ($instance) {
             self::setDocumentCache($location, $instance);
         }
 
