@@ -84,7 +84,6 @@ var dlfViewer = function(settings){
      * @private
      */
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
-    //this.fulltextUrls = tx_dlf_loaded.fulltextUrls || null
 
     /**
      * Loaded fulltexts (as jQuery deferred object).
@@ -165,12 +164,6 @@ var dlfViewer = function(settings){
      * @private
      */
     this.ovView = null;
-
-    /**
-     * @type {DlfDocument | null}
-     * @private
-     */
-    this.document = tx_dlf_loaded.document || null;
 
     /**
      * @type {Boolean|false}
@@ -689,15 +682,21 @@ dlfViewer.prototype.setDocController = function (docController) {
     });
 }
 
+/**
+ *
+ * @param {any} visiblePages
+ * @private
+ * @returns
+ */
 dlfViewer.prototype.loadPages = function (visiblePages) {
-    if (this.document === undefined) {
+    if (this.docController === null) {
         return;
     }
 
     const pages = [];
     const files = [];
     for (const page of visiblePages) {
-        const file = dlfUtils.findFirstSet(page.pageObj.files, tx_dlf_loaded.fileGroups['images']);
+        const file = this.docController.findFileByKind(page.pageNo, 'images');
         if (file === undefined) {
             console.warn(`No image file found on page ${page.pageNo}`);
             continue;
@@ -761,13 +760,18 @@ dlfViewer.prototype.initLayer = function (imageSourceObjs) {
  * @private
  */
 dlfViewer.prototype.initLoadFulltexts = function (visiblePages) {
+    if (this.docController === null) {
+        // TODO: Make it work then docController === null
+        return;
+    }
+
     var cnt = Math.min(visiblePages.length, this.images.length);
     var xOffset = 0;
     for (var i = 0; i < cnt; i++) {
         const image = this.images[i];
         const key = `${visiblePages[i].pageNo}-${i}`;
 
-        const fulltext = dlfUtils.findFirstSet(visiblePages[i].pageObj.files, tx_dlf_loaded.fileGroups['fulltext']);
+        const fulltext = this.docController.findFileByKind(visiblePages[i].pageNo, 'fulltext');
         if (fulltext !== undefined) {
             if (!(key in this.fulltextsLoaded_) && dlfUtils.isFulltextDescriptor(fulltext)) {
                 fulltextEntry = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
