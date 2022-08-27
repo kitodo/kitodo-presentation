@@ -63,6 +63,19 @@ class DocumentController extends AbstractController
 
         $doc = $this->document->getDoc();
 
+        if (!empty($this->settings['targetPidMetadata'])) {
+            $metadataUrl = $this->uriBuilder
+                ->reset()
+                ->setTargetPageUid((int) $this->settings['targetPidMetadata'])
+                ->setCreateAbsoluteUri(true)
+                ->setArguments([
+                    'tx_dlf' => [
+                        'id' => $this->requestData['id'],
+                    ],
+                ])
+                ->build();
+        }
+
         $imageFileGroups = array_reverse(GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']));
         $fulltextFileGroups = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         $config = [
@@ -78,6 +91,7 @@ class DocumentController extends AbstractController
                 'simultaneousPages' => (int) $this->requestData['double'] + 1,
             ],
             'urlTemplate' => $this->getUrlTemplate(),
+            'metadataUrl' => $metadataUrl,
             'fileGroups' => [
                 'images' => $imageFileGroups,
                 'fulltext' => $fulltextFileGroups,
