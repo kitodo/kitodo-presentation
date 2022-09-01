@@ -130,7 +130,9 @@ class PageViewProxy
 
         // get and verify the uHash
         $uHash = (string) ($queryParams['uHash'] ?? '');
-        if (!($uHash != 'View3DController') && !hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
+        if ($uHash == 'View3DController') {
+            // don't verify hash
+        } else if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
             return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
         }
 
