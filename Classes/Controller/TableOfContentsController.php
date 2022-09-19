@@ -81,7 +81,9 @@ class TableOfContentsController extends AbstractController
                 $this->view->assign('type', 'collection');
                 $this->view->assign('types', $this->getTypes($this->document->getDoc()->tableOfContents));
                 $this->view->assign('toc', $this->makeMenuFor3DObjects());
+                $this->sortAuthors();
                 $this->view->assign('authors', $this->authors);
+                natcasesort($this->titles);
                 $this->view->assign('titles', $this->titles);
             } else {
                 $this->view->assign('type', 'other');
@@ -462,6 +464,19 @@ class TableOfContentsController extends AbstractController
     }
 
     /**
+     * Sort authors by surname - second part of the string
+     *
+     * @return void
+     */
+    private function sortAuthors() {
+        usort($this->authors, function($firstAuthor, $secondAuthor) {
+            $firstAuthor = substr(strrchr($firstAuthor, ' '), 1);
+            $secondAuthor = substr(strrchr($secondAuthor, ' '), 1);
+            return strcmp($firstAuthor, $secondAuthor);
+        });
+    }
+
+    /**
      * Add title to the titles autocomplete array.
      *
      * @param string $title : title to be inserted to the titles autocomplete array
@@ -494,7 +509,7 @@ class TableOfContentsController extends AbstractController
                 }
             }
         }
-
+        natcasesort($types);
         return $types;
     }
 
