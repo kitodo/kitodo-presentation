@@ -85,6 +85,7 @@ class TableOfContentsController extends AbstractController
                 $this->view->assign('authors', $this->authors);
                 natcasesort($this->titles);
                 $this->view->assign('titles', $this->titles);
+                $this->view->assign('softwares', $this->getSoftwares($this->document->getDoc()->tableOfContents));
             } else {
                 $this->view->assign('type', 'other');
                 $this->view->assign('toc', $this->makeMenuArray());
@@ -383,20 +384,24 @@ class TableOfContentsController extends AbstractController
      * @return bool true if found, false otherwise
      */
     private function isFound($entry) {
-        if (!empty($this->requestData['title'] && !empty($this->requestData['types']) && !empty($this->requestData['author']))) {
+        if (!empty($this->requestData['title'] && !empty($this->requestData['type']) && !empty($this->requestData['author']))) {
             return $this->isTitleFound($entry) && $this->isTypeFound($entry) && $this->isAuthorFound($entry);
         } else if (!empty($this->requestData['title']) && !empty($this->requestData['author'])) {
             return $this->isTitleFound($entry) && $this->isAuthorFound($entry);
-        } else if (!empty($this->requestData['title']) && !empty($this->requestData['types'])) {
+        } else if (!empty($this->requestData['title']) && !empty($this->requestData['type'])) {
             return $this->isTitleFound($entry) && $this->isTypeFound($entry);
-        } else if (!empty($this->requestData['author']) && !empty($this->requestData['types'])) {
+        } else if (!empty($this->requestData['author']) && !empty($this->requestData['type'])) {
             return $this->isAuthorFound($entry) && $this->isTypeFound($entry);
         } else if (!empty($this->requestData['title'])) {
             return $this->isTitleFound($entry);
-        } else if (!empty($this->requestData['types'])) {
-            return $this->isTypeFound($entry);
         } else if (!empty($this->requestData['author'])) {
-            return $this->isAuthorFound($entry);
+            return $this->isTypeFound($entry);
+        } else if (!empty($this->requestData['licence'])) {
+            return $this->isLicenceFound($entry);
+        } else if (!empty($this->requestData['type'])) {
+            return $this->isTypeFound($entry);
+        } else if (!empty($this->requestData['type'])) {
+            return $this->isSoftwareFound($entry);
         } else {
             // no parameters so entry is matching
             return true;
@@ -523,8 +528,48 @@ class TableOfContentsController extends AbstractController
     private function getType($entry) {
         $type = $entry['identifier'];
         if (!empty($type)) {
-            return strtok($type, ',');
+            $temp = strtok($type, ',');
+            return substr($temp, 0, strpos($temp, "(") - 2);
         }
         return $type;
+    }
+
+    /**
+     * Get all softwares.
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     *
+     * @return array of object softwares
+     */
+    private function getSoftwares($entry) {
+        $softwares = [];
+        $index = 0;
+
+        if (!empty($entry[0]['children'])) {
+            foreach ($entry[0]['children'] as $child) {
+                $software = $this->getSoftware($child);
+                if (!(in_array($software, $softwares)) && $software != NULL) {
+                    $softwares[$index] = $software;
+                    $index++;
+                }
+            }
+        }
+        natcasesort($softwares);
+        return $softwares;
+    }
+
+    /**
+     * Get single software for given entry.
+     *
+     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     *
+     * @return string software name split by commas
+     */
+    private function getSoftware($entry) {
+        $software = $entry['software'];
+        if (!empty($software)) {
+            return strtok($software, ',');
+        }
+        return $software;
     }
 }
