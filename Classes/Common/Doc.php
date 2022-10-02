@@ -714,7 +714,7 @@ abstract class Doc
     }
 
     /**
-     * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return it's depth.
+     * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return its depth.
      *
      * @access protected
      *
