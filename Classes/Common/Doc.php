@@ -767,7 +767,7 @@ abstract class Doc
     protected abstract function init($location);
 
     /**
-     * Reuse any document object that might have been already loaded to determine wether document is METS or IIIF
+     * Reuse any document object that might have been already loaded to determine whether document is METS or IIIF
      *
      * @access protected
      *

@@ -322,7 +322,7 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
         .text(this.dic['fulltext-on'])
         .attr('title', this.dic['fulltext-on']);
 
-    // if fulltext is activated via cookie than run activation methode
+    // if fulltext is activated via cookie then run activation method
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") === 'enabled') {
         // activate the fulltext behavior
         this.activate();
