@@ -455,7 +455,7 @@ dlfViewerFullTextControl.prototype.activate = function() {
 };
 
 /**
- * Activate Fulltext Features
+ * Deactivate Fulltext Features
  */
 dlfViewerFullTextControl.prototype.deactivate = function() {
 
