@@ -229,7 +229,7 @@ collections or even to reindex all documents on the given page.::
        amount of processed/all documents.
    :Example:
 
-Harvest OAI-OMH interface
+Harvest OAI-PMH interface
 -------------------------
 
 With the command `kitodo:harvest` it is possible to harvest an OAI-PMH
