@@ -406,7 +406,7 @@
 				<target><![CDATA[Diese Facetten anzeigen]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.facets.collections" approved="yes">
-				<source><![CDATA[Use only this collections as facet]]></source>
+				<source><![CDATA[Use only these collections as facet]]></source>
 				<target><![CDATA[Folgende Kollektionen als Facetten anzeigen]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.facets.limit" approved="yes">
