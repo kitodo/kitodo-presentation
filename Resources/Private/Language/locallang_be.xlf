@@ -81,7 +81,7 @@
 				<source><![CDATA[Search Plugin for Kitodo.Presentation]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.facets.collections">
-				<source><![CDATA[Use only this collections as facet]]></source>
+				<source><![CDATA[Use only these collections as facet]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.fulltext">
 				<source><![CDATA[Enable full text search?]]></source>
