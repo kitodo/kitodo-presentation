@@ -11,7 +11,7 @@ Usage: sphinx.sh <command> [options]
 
 Commands:
     i, install  Install Sphinx in a virtualenv
-    s, serve    Serve documentation. Options are forwared to sphinx-autobuild.
+    s, serve    Serve documentation. Options are forwarded to sphinx-autobuild.
         -H <host>   Server host
         -p <port>   Server port
         -a          Write all files (from sphinx-build)

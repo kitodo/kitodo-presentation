@@ -5,10 +5,6 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
-			<trans-unit id="AddToBasket" approved="yes">
-				<source><![CDATA[Add to basket]]></source>
-				<target><![CDATA[Zum Warenkorb hinzufügen]]></target>
-			</trans-unit>
 			<trans-unit id="backXPages" approved="yes">
 				<source><![CDATA[Back %s Pages]]></source>
 				<target><![CDATA[%s Seiten zurück]]></target>
