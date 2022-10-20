@@ -120,22 +120,45 @@ class CalendarController extends AbstractController
         $issues = [];
 
         // Process results.
-        /** @var Document $document */
-        foreach ($documents as $document) {
-            // Set title for display in calendar view.
-            if (!empty($document->getTitle())) {
-                $title = $document->getTitle();
-            } else {
-                $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
-                if (strtotime($title) !== false) {
-                    $title = strftime('%x', strtotime($title));
+        if ($documents->count() === 0) {
+            $toc = $this->document->getDoc()->tableOfContents;
+
+            foreach ($toc[0]['children'] as $year) {
+                foreach ($year['children'] as $month) {
+                    foreach ($month['children'] as $day) {
+                        foreach ($day['children'] as $issue) {
+                            $title = $issue['label'] ?: $issue['orderlabel'];
+                            if (strtotime($title) !== false) {
+                                $title = strftime('%x', strtotime($title));
+                            }
+
+                            $issues[] = [
+                                'uid' => $issue['points'],
+                                'title' => $title,
+                                'year' => $day['orderlabel'],
+                            ];
+                        }
+                    }
                 }
             }
-            $issues[] = [
-                'uid' => $document->getUid(),
-                'title' => $title,
-                'year' => $document->getYear()
-            ];
+        } else {
+            /** @var Document $document */
+            foreach ($documents as $document) {
+                // Set title for display in calendar view.
+                if (!empty($document->getTitle())) {
+                    $title = $document->getTitle();
+                } else {
+                    $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
+                    if (strtotime($title) !== false) {
+                        $title = strftime('%x', strtotime($title));
+                    }
+                }
+                $issues[] = [
+                    'uid' => $document->getUid(),
+                    'title' => $title,
+                    'year' => $document->getYear()
+                ];
+            }
         }
 
         //  We need an array of issues with year => month => day number as key.
@@ -195,8 +218,8 @@ class CalendarController extends AbstractController
         $this->view->assign('calendarData', $calendarData);
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
-        $this->view->assign('parentDocumentId', $this->document->getPartof());
-        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()));
+        $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getDoc()->tableOfContents[0]['points']);
+        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()) ?: $this->document->getDoc()->tableOfContents[0]['label']);
     }
 
     /**
@@ -226,12 +249,28 @@ class CalendarController extends AbstractController
 
         $years = [];
         // Process results.
-        /** @var Document $document */
-        foreach ($documents as $document) {
-            $years[] = [
-                'title' => !empty($document->getMetsLabel()) ? $document->getMetsLabel() : (!empty($document->getMetsOrderlabel()) ? $document->getMetsOrderlabel() : $document->getTitle()),
-                'uid' => $document->getUid()
-            ];
+        if (count($documents) === 0) {
+            foreach ($this->document->getDoc()->tableOfContents[0]['children'] as $id => $year) {
+                $yearLabel = empty($year['label']) ? $year['orderlabel'] : $year['label'];
+
+                if (empty($yearLabel)) {
+                    // if neither order nor orderlabel is set, use the id...
+                    $yearLabel = (string)$id;
+                }
+
+                $years[] = [
+                    'title' => $yearLabel,
+                    'uid' => $year['points'],
+                ];
+            }
+        } else {
+            /** @var Document $document */
+            foreach ($documents as $document) {
+                $years[] = [
+                    'title' => !empty($document->getMetsLabel()) ? $document->getMetsLabel() : (!empty($document->getMetsOrderlabel()) ? $document->getMetsOrderlabel() : $document->getTitle()),
+                    'uid' => $document->getUid()
+                ];
+            }
         }
 
         $yearArray = [];
