@@ -141,6 +141,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                         $this->document = GeneralUtility::makeInstance(Document::class);
                     }
 
+                    // Make sure configuration PID is set when applicable
+                    if ($doc->cPid == 0) {
+                        $doc->cPid = max(intval($this->settings['storagePid']), 0);
+                    }
+
                     $this->document->setLocation($requestData['id']);
                 } else {
                     $this->logger->error('Invalid location given "' . $requestData['id'] . '" for document loading');
