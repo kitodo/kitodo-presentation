@@ -180,7 +180,7 @@ Update CSP
 ----------
 
 In Kitodo.Presentation 4.0, the way how static images are loaded has changed.
-Plase make sure that ``blob:`` URLs are not forbidden by your Content Security Policy.
+Please make sure that ``blob:`` URLs are not forbidden by your Content Security Policy.
 
 Other Changes
 -------------
