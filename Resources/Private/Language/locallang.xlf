@@ -35,9 +35,6 @@
 			<trans-unit id="search.resetFacet">
 				<source><![CDATA[Reset selection (%s)]]></source>
 			</trans-unit>
-			<trans-unit id="AddToBasket">
-				<source><![CDATA[Add to basket]]></source>
-			</trans-unit>
 			<trans-unit id="backXPages">
 				<source><![CDATA[Back %s Pages]]></source>
 			</trans-unit>

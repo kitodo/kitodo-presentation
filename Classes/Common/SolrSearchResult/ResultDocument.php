@@ -17,7 +17,7 @@ use Kitodo\Dlf\Common\SolrSearchResult\Page;
 use Kitodo\Dlf\Common\SolrSearchResult\Region;
 
 /**
- * ResultDocument class for the 'dlf' extension. It keeps te result of the search in the SOLR index.
+ * ResultDocument class for the 'dlf' extension. It keeps the result of the search in the SOLR index.
  *
  * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3

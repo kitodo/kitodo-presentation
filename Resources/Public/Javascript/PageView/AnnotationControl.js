@@ -208,7 +208,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
         .text(this.dic['annotations-on'])
         .attr('title', this.dic['annotations-on']);
 
-    // if annotation is activated via cookie than run activation methode
+    // if annotation is activated via cookie then run activation method
     if (dlfUtils.getCookie("tx-dlf-pageview-annotation-select") === 'enabled') {
         // activate the annotation behavior
         this.activate(anchorEl);
