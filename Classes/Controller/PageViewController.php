@@ -202,7 +202,7 @@ class PageViewController extends AbstractController
                     $annotationContainers = [];
                     /*
                      *  TODO Analyzing the annotations on the server side requires loading the annotation lists / pages
-                     *  just to determine wether they contain text annotations for painting. This will take time and lead to a bad user experience.
+                     *  just to determine whether they contain text annotations for painting. This will take time and lead to a bad user experience.
                      *  It would be better to link every annotation and analyze the data on the client side.
                      *
                      *  On the other hand, server connections are potentially better than client connections. Downloading annotation lists
