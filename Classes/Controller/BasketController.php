@@ -86,7 +86,7 @@ class BasketController extends AbstractController
     }
 
     /**
-     * Different actions which depends on the choosen action (form)
+     * Different actions which depends on the chosen action (form)
      *
      * @return void
      */
@@ -217,7 +217,7 @@ class BasketController extends AbstractController
 
             $basket = $this->basketRepository->findOneBySessionId($sessionId);
         }
-        // session doesnt exists
+        // session does not exist
         if ($basket === null) {
             // create new basket in db
             $basket = GeneralUtility::makeInstance(Basket::class);

@@ -107,7 +107,7 @@ The command `kitodo:index` is used for indexing a single document::
    :Required:
        no
    :Description:
-       Do not output any message. Usefull when using a wrapper script. The
+       Do not output any message. Useful when using a wrapper script. The
        script may check the return value of the CLI job. This is always 0 on
        success and 1 on failure.
    :Example:
@@ -215,7 +215,7 @@ collections or even to reindex all documents on the given page.::
    :Required:
        no
    :Description:
-       Do not output any message. Usefull when using a wrapper script. The
+       Do not output any message. Useful when using a wrapper script. The
        script may check the return value of the CLI job. This is always 0 on
        success and 1 on failure.
    :Example:
@@ -229,7 +229,7 @@ collections or even to reindex all documents on the given page.::
        amount of processed/all documents.
    :Example:
 
-Harvest OAI-OMH interface
+Harvest OAI-PMH interface
 -------------------------
 
 With the command `kitodo:harvest` it is possible to harvest an OAI-PMH
@@ -332,7 +332,7 @@ OAI-PMH base URL (e.g. https://digital.slub-dresden.de/oai/).
    :Required:
        no
    :Description:
-       Do not output any message. Usefull when using a wrapper script. The
+       Do not output any message. Useful when using a wrapper script. The
        script may check the return value of the CLI job. This is always 0 on
        success and 1 on failure.
    :Example:
