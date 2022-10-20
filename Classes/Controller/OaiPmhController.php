@@ -387,14 +387,14 @@ class OaiPmhController extends AbstractController
             $this->logger->notice('Incomplete plugin configuration');
         }
 
-        $oaiIdentifyInfo['oai_label'] = $library->getOaiLabel();
+        $oaiIdentifyInfo['oai_label'] = $library ? $library->getOaiLabel() : '';
         // Use default values for an installation with incomplete plugin configuration.
         if (empty($oaiIdentifyInfo['oai_label'])) {
             $oaiIdentifyInfo['oai_label'] = 'Kitodo.Presentation OAI-PMH Interface (default configuration)';
             $this->logger->notice('Incomplete plugin configuration (oai_label is missing)');
         }
 
-        $oaiIdentifyInfo['contact'] = $library->getContact();
+        $oaiIdentifyInfo['contact'] = $library ? $library->getContact() : '';
         if (empty($oaiIdentifyInfo['contact'])) {
             $oaiIdentifyInfo['contact'] = 'unknown@example.org';
             $this->logger->notice('Incomplete plugin configuration (contact is missing)');

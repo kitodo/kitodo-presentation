@@ -219,7 +219,7 @@ final class IiifManifest extends Doc
     protected $useGrps = [];
 
     /**
-     * IiifManifest also populates the physical stucture array entries for matching
+     * IiifManifest also populates the physical structure array entries for matching
      * 'fileGrp's. To do that, the configuration has to be loaded; afterwards configured
      * 'fileGrp's for thumbnails, downloads, audio, fulltext and the 'fileGrp's for images
      * can be requested with this method.
@@ -452,7 +452,7 @@ final class IiifManifest extends Doc
             if (!$recursive) {
                 $details = $this->getLogicalStructureInfo($logUnits[0]);
             } else {
-                // cache the ranges - they might occure multiple times in the structures "tree" - with full data as well as referenced as id
+                // cache the ranges - they might occur multiple times in the structures "tree" - with full data as well as referenced as id
                 $processedStructures = [];
                 foreach ($logUnits as $logUnit) {
                     if (array_search($logUnit->getId(), $processedStructures) == false) {
