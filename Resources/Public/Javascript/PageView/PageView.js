@@ -236,9 +236,8 @@ dlfViewer.prototype.addCustomControls = function() {
     }
 
 	if (this.scoresLoaded_ !== null) {
-		const scoreControl = new dlfViewerScoreControl(this.pagebeginning, this.imageUrls.length);
+		const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
 
-		const pagebeginning = this.pagebeginning;
 		this.scoresLoaded_
 			.then(function (scoreData) {
 				scoreControl.loadScoreData(scoreData);
@@ -550,6 +549,10 @@ dlfViewer.prototype.init = function(controlNames) {
         this.initCropping();
 };
 
+dlfViewer.prototype.updateLayerSize = function() {
+  this.map.updateSize();
+}
+
 /**
  * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
@@ -584,7 +587,7 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
  * @private
  */
 dlfViewer.prototype.initLoadScores = function () {
-	this.scoresLoaded_ = dlfScoreUtils.fetchScoreDataFromServer(this.score);
+	this.scoresLoaded_ = dlfScoreUtils.fetchScoreDataFromServer(this.score, this.pagebeginning);
 };
 
 /**

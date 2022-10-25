@@ -19,12 +19,15 @@
 let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
 const verovioSettings = {
-	pageWidth: $('#tx-dlf-score').width() *4,
+	pageWidth: $('#tx-dlf-score').width(),
   scale: 25,
-	adjustPageWidth: true,
+	//adjustPageWidth: true,
 	spacingLinear: .15,
-	pageHeight: 60000,
-	adjustPageHeight: true
+	pageHeight: $('#tx-dlf-score').height(),
+	//adjustPageHeight: true,
+  scaleToPageSize: true,
+  breaks: 'encoded',
+  mdivAll: true
 };
 
 // dlfScoreUtils.get_play_midi = function (toolkit) {
@@ -45,7 +48,7 @@ const verovioSettings = {
  * @return {svg}
  * @static
  */
-dlfScoreUtils.fetchScoreDataFromServer = function(url) {
+dlfScoreUtils.fetchScoreDataFromServer = function(url, pagebeginning) {
 
     const result = new $.Deferred();
 	if (url === '') {
@@ -57,6 +60,11 @@ dlfScoreUtils.fetchScoreDataFromServer = function(url) {
         try {
 			const tk = new verovio.toolkit();
             const score = tk.renderData(jqXHR.responseText, verovioSettings);
+            const pageToShow = tk.getPageWithElement(pagebeginning);
+            console.log('pageToShow: ' + pageToShow);
+
+
+
             console.log(dlfScoreUtils.get_play_midi);
 						dlfScoreUtils.get_play_midi(tk);
             const midi = tk.renderToMIDI();

@@ -15,7 +15,9 @@ const scrollOffset = 100;
  * @constructor
  * @param {ol.Map} map
  */
-const dlfViewerScoreControl = function(pagebeginning, pagecount) {
+const dlfViewerScoreControl = function(dlfViewer, pagebeginning, pagecount) {
+
+  this.dlfViewer = dlfViewer;
 
 /**
 *@ type(number)
@@ -73,6 +75,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData) {
   if (target !== null) {
 		target.innerHTML = scoreData;
 	}
+
+  /*
   const image = new Image();
 
   const canvas = document.createElement("canvas");
@@ -102,7 +106,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData) {
     "download": "demo.png"
   });
   $("#tx_dlf_scoredownload").click();
-
+*/
 };
 
 /**
@@ -217,6 +221,9 @@ dlfViewerScoreControl.prototype.deactivate = function() {
 dlfViewerScoreControl.prototype.disableScoreSelect = function() {
   console.log("disable ScoreSelect  is selcted")
 
+  $('#tx-dfgviewer-map').width('100%');
+  this.dlfViewer.updateLayerSize();
+
     $("#tx-dlf-tools-score").removeClass(className)
 
     if(this.activateFullTextInitially === 0) {
@@ -236,6 +243,9 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function() {
  */
 dlfViewerScoreControl.prototype.enableScoreSelect = function() {
   console.log("enable score is selcted")
+
+  $('#tx-dfgviewer-map').width('50%');
+  this.dlfViewer.updateLayerSize();
 
 
     // show score container
