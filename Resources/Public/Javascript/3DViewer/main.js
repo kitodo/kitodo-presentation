@@ -290,7 +290,7 @@ function addTextWatermark (_text, _scale) {
 	loader.load( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
 
 		const textGeo = new TextGeometry( _text, {
-			font: font,
+			font,
 			size: _scale*3,
 			height: _scale/10,
 			curveSegments: 5,
@@ -628,7 +628,7 @@ function buildGallery() {
 	modalClose.innerHTML = "&times";
 	modalClose.onclick = function() {
 		modalGallery.style.display = "none";
-	}
+	};
 
 	document.addEventListener('click', function(event) {
 		if (!modalGallery.contains(event.target) && !imageList.contains(event.target)) {
@@ -854,10 +854,10 @@ function addWissKIMetadata(label, value) {
 				_str = "";
 			break;
 		}
-		if (_str == "period") {
+		if (_str === "period") {
 			return "Reconstruction period: <b>"+value+" - ";
 		}
-		else if (_str == "-") {
+		else if (_str === "-") {
 			return value+"</b><br>";
 		}
 		else if (_str !== "") {
@@ -947,7 +947,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			showToast("No settings " + filename + "_viewer found");
 		}
 		})
-	.then(data => {
+	.then((data) => {
 		var tempArray = [];
 		const hierarchyMain = gui.addFolder( 'Hierarchy' ).close();
 		if (object.name === "Scene" || object.children.length > 0 ) {
@@ -1022,8 +1022,8 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 		req.responseType = 'xml';
 		req.open('GET', xmlPath, true);
 		req.onreadystatechange = function (aEvt) {
-			if (req.readyState == 4) {
-				if(req.status == 200) {
+			if (req.readyState === 4) {
+				if(req.status === 200) {
 					const parser = new DOMParser();
 					const doc = parser.parseFromString(req.responseText, "application/xml");
 					var data = doc.documentElement.childNodes[0].childNodes;
@@ -1064,9 +1064,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 						document.addEventListener('MSFullscreenChange', exitFullscreenHandler, false);
 					}
 				}
-				else
+				else {
 					console.log("Error during loading metadata content\n");
 				}
+			}
 		};
 		req.send(null);
 		//hierarchyFolder.add(hierarchyText, 'Faces' );
@@ -1285,7 +1286,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 							child.castShadow = true;
 							child.receiveShadow = true;
 							child.geometry.computeVertexNormals();
-							if(child.material.map) { child.material.map.anisotropy = 16; };
+							if(child.material.map) { child.material.map.anisotropy = 16; }
 							child.material.side = THREE.DoubleSide;
 							child.material.clippingPlanes = clippingPlanes;
 							child.material.clipIntersection = false;
@@ -1310,19 +1311,19 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 							showToast("GLTF or file with given name (possible archive/filename mismatch) representation not found, trying original file [semi-automatic]...");
 							showToast(path.replace("gltf/", "") + filename + " [" + orgExtension + "]");
 							var autoBasename = basename.replace(/_[0-9]+$/, '');
-							if (EXIT_CODE != 0) {
+							if (EXIT_CODE !== 0) {
 								loadModel (path, autoBasename, '', 'glb', orgExtension);
-								if (EXIT_CODE != 0) {
+								if (EXIT_CODE !== 0) {
 									allowedFormats.forEach(function(item, index, array) {
-										if (EXIT_CODE != 0) {
+										if (EXIT_CODE !== 0) {
 											loadModel (path.replace("gltf/", ""), autoBasename, filename, item, orgExtension); 
 										}
 									});
 								}
 							}
-							if (EXIT_CODE != 0) {
+							if (EXIT_CODE !== 0) {
 								allowedFormats.forEach(function(item, index, array) {
-									if (EXIT_CODE != 0) {
+									if (EXIT_CODE !== 0) {
 										circle.show();
 										loadModel (path.replace("gltf/", ""), basename, filename, item, orgExtension);
 									}
