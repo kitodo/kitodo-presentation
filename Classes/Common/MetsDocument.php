@@ -641,6 +641,10 @@ final class MetsDocument extends Doc
             $metadata['title'][0] = '';
             $metadata['title_sorting'][0] = '';
         }
+        // Set title_sorting to title as default.
+        if (empty($metadata['title_sorting'][0])) {
+            $metadata['title_sorting'][0] = $metadata['title'][0];
+        }
         // Files are not expected to reference a dmdSec
         if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
             return $metadata;
