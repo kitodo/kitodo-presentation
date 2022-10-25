@@ -171,14 +171,12 @@ class TableOfContentsController extends AbstractController
     protected function makeMenuFor3DObjects()
     {
         $menuArray = [];
-        // Is the document an external file?
-        if (!MathUtility::canBeInterpretedAsInteger($this->requestData['id'])) {
-            // Go through table of contents and create all menu entries.
-            foreach ($this->document->getDoc()->tableOfContents as $entry) {
-                $menuEntry = $this->getMenuEntryWithImage($entry, true);
-                if (!empty($menuEntry)) {
-                    $menuArray[] = $menuEntry;
-                }
+
+        // Go through table of contents and create all menu entries.
+        foreach ($this->document->getDoc()->tableOfContents as $entry) {
+            $menuEntry = $this->getMenuEntryWithImage($entry, true);
+            if (!empty($menuEntry)) {
+                $menuArray[] = $menuEntry;
             }
         }
         return $menuArray;
@@ -311,10 +309,10 @@ class TableOfContentsController extends AbstractController
         $entryArray = [];
 
         // don't filter if the entry type is collection or search params are empty
-        if ($entry['type'] != 'collection' && is_array($this->searchParams) && !empty($this->searchParams)) {
+        if ($entry['type'] != 'collection' && is_array($this->filterParams) && !empty($this->filterParams)) {
             // currently only title filtering is defined
             // TODO: add more logic here after another fields are defined
-            if (!str_contains($entry['label'], $this->searchParams[0])) {
+            if (!str_contains($entry['label'], $this->filterParams[0])) {
                 return $entryArray;
             }
         }
