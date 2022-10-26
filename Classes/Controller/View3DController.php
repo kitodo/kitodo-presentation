@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Doc;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'View3D' for the 'dlf' extension
@@ -39,10 +40,25 @@ class View3DController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            $this->view->assign('url', '');
-            $this->view->assign('script.main', '');
-            $this->view->assign('script.toastify', '');
-            $this->view->assign('script.spinner', '');
+            $url = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['DEFAULT']);
+            if ($this->settings['useInternalProxy']) {
+                // Configure @action URL for form.
+                $uri = $this->uriBuilder->reset()
+                    ->setTargetPageUid($GLOBALS['TSFE']->id)
+                    ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+                    ->setArguments([
+                        'eID' => 'tx_dlf_pageview_proxy',
+                        'url' => urlencode($url),
+                        'uHash' => GeneralUtility::hmac($url, 'PageViewProxy')
+                        ])
+                    ->build();
+                    $url = $uri;
+            }
+
+            $this->view->assign('url', $url);
+            $this->view->assign('scriptMain', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/main.js');
+            $this->view->assign('scriptToastify', '/typo3conf/ext/dlf/Resources/Public/Javascript/Toastify/toastify.js');
+            $this->view->assign('scriptSpinner', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/spinner/main.js');
         }
     }
 }
