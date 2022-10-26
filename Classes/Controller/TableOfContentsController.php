@@ -309,7 +309,7 @@ class TableOfContentsController extends AbstractController
         $entryArray = [];
 
         // don't filter if the entry type is collection or search params are empty
-        if ($entry['type'] != 'collection' && is_array($this->filterParams) && !empty($this->filterParams)) {
+        if ($entry['type'] !== 'collection' && is_array($this->filterParams) && !empty($this->filterParams)) {
             // currently only title filtering is defined
             // TODO: add more logic here after another fields are defined
             if (!str_contains($entry['label'], $this->filterParams[0])) {
@@ -325,7 +325,7 @@ class TableOfContentsController extends AbstractController
         $entryArray['doNotLinkIt'] = 1;
         $entryArray['ITEM_STATE'] = 'HEADER';
 
-        if ($entry['children'] == NULL) {
+        if ($entry['children'] === null) {
             $entryArray['description'] = $entry['description'];
             $id = str_replace("LOG", "PHYS", $entry['id']);
             $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$id]['files']['THUMBS']);
