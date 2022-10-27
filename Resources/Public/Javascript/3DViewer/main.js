@@ -75,13 +75,14 @@ const xmlPath = container.getAttribute("xml");
 const settingsPath= container.getAttribute("settings");
 const proxy = container.getAttribute("proxy");
 const dfgViewer = true;
+var elementsURL;
 if (dfgViewer) {
-	var elementsURL = decodeURIComponent(xmlPath).match("/export_xml_single/(.*)?page");
+	elementsURL = decodeURIComponent(xmlPath).match("/export_xml_single/(.*)?page");
 	if (elementsURL) {
 		wisskiID = parseInt(elementsURL[1]);
 	}
 } else {
-	var elementsURL = window.location.pathname;
+	elementsURL = window.location.pathname;
 	elementsURL = elementsURL.match("/wisski/navigate/(.*)/view");
 	wisskiID = elementsURL[1];
 	container.setAttribute("wisski_id", wisskiID);
@@ -247,8 +248,8 @@ var lastPickedFace = {id: '', color: '', object: ''};
 function readWissKI () {
 	const xmlhttp = new XMLHttpRequest();
 	xmlhttp.onload = function() {
-		console.log(this.responseText);
-	}
+		//console.log(this.responseText);
+	};
 	xmlhttp.open("GET", "php/fetchWissKI.php?q=");
 	xmlhttp.send();
 }
@@ -349,7 +350,7 @@ function addTextPoint (_text, _scale, _point) {
 	loader.load( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
 
 		const textGeo = new TextGeometry( _text, {
-			font: font,
+			font,
 			size: _scale*3,
 			height: _scale/10,
 			curveSegments: 4,
@@ -441,10 +442,10 @@ function recreateBoundingBox (object) {
 			}
 		});
 
-		var bBox_min = new THREE.Vector3 (_min.x, _min.y, _min.z);
-		var bBox_max = new THREE.Vector3 (_max.x, _max.y, _max.z);
-		var bBox_new = new THREE.Box3 (bBox_min, bBox_max);
-		object.position.set((bBox_new.min.x+bBox_new.max.x)/2, bBox_new.min.y, (bBox_new.min.z+bBox_new.max.z)/2);
+		var bBoxMin = new THREE.Vector3 (_min.x, _min.y, _min.z);
+		var bBoxMax = new THREE.Vector3 (_max.x, _max.y, _max.z);
+		var bBoxNew = new THREE.Box3 (bBoxMin, bBoxMax);
+		object.position.set((bBoxNew.min.x+bBoxNew.max.x)/2, bBoxNew.min.y, (bBoxNew.min.z+bBoxNew.max.z)/2);
 	}
 	return object;
 }
@@ -678,7 +679,7 @@ function buildGallery() {
 		modalClose.innerHTML = "&times";
 		modalClose.onclick = function() {
 			modalGallery.style.display = "none";
-		}
+		};
 
 		document.addEventListener('click', function(event) {
 			if (!modalGallery.contains(event.target) && !imageList.contains(event.target)) {
@@ -790,19 +791,20 @@ function interpolateDistanceBetweenPoints(pointA, vector, length, scalar) {
 }
 
 function pickFaces(_id) {
-	if (lastPickedFace.id == '' && _id !== '') {
+	if (lastPickedFace.id === '' && _id !== '') {
 		lastPickedFace = {id: _id, color: _id.object.material.color.getHex(), object: _id.object.id};
 	}
-	else if (_id == '' && lastPickedFace.id !== '') {
+	else if (_id === '' && lastPickedFace.id !== '') {
 		scene.getObjectById(lastPickedFace.object).material.color.setHex(lastPickedFace.color);
 		lastPickedFace = {id: '', color: '', object: ''};
 	}
-	else if (_id != lastPickedFace.id) {
+	else if (_id !== lastPickedFace.id) {
 		scene.getObjectById(lastPickedFace.object).material.color.setHex(lastPickedFace.color);
 		lastPickedFace = {id: _id, color: _id.object.material.color.getHex(), object: _id.object.id};		
 	}
-	if (_id !== '')
+	if (_id !== '') {
 		_id.object.material.color.setHex(0xFF0000);
+	}
 }
 
 function buildRuler(_id) {
@@ -920,13 +922,13 @@ function addWissKIMetadata(label, value) {
 				}
 			break;
 			default:
-				_str = ""
+				_str = "";
 			break;
 		}
-		if (_str == "period") {
+		if (_str === "period") {
 			return "Reconstruction period: <b>"+value+" - ";
 		}
-		else if (_str == "-") {
+		else if (_str === "-") {
 			return value+"</b><br>";
 		}
 		else if (_str !== "") {
@@ -1011,7 +1013,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			showToast("No settings " + filename + "_viewer found");
 		}
 		})
-	.then(data => {
+	.then((data) => {
 		var tempArray = [];
 		const hierarchyMain = gui.addFolder( 'Hierarchy' ).close();
 		if (object.name === "Scene" || object.children.length > 0 ) {
@@ -1022,10 +1024,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					metadata['faces'] += fetchMetadata (child, 'faces');
 					var shortChildName = truncateString(child.name, GUILength);
 					if (child.name === '') {
-						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id)}, 'id': child.id};
+						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id);}, 'id': child.id};
 					}
 					else {
-						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id)}, 'id': child.id};
+						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id);}, 'id': child.id};
 					}
 					hierarchyFolder = hierarchyMain.addFolder(shortChildName).close();
 					hierarchyFolder.add(tempArray, shortChildName);
@@ -1034,10 +1036,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 						if ( children.isMesh &&  children.name !== child.name) {
 							var shortChildrenName = truncateString(children.name, GUILength);
 							if (children.name === '') {
-								tempArray = {["Mesh"] (){selectObjectHierarchy(children.id)}, 'id': children.id};
+								tempArray = {["Mesh"] (){selectObjectHierarchy(children.id);}, 'id': children.id};
 							}
 							else {
-								tempArray = { [shortChildrenName] (){selectObjectHierarchy(children.id)}, 'id': children.id};
+								tempArray = { [shortChildrenName] (){selectObjectHierarchy(children.id);}, 'id': children.id};
 							}
 							clippingGeometry.push(children.geometry);
 							hierarchyFolder.add(tempArray, shortChildrenName);
@@ -1053,14 +1055,14 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			metadata['vertices'] += fetchMetadata (object, 'vertices');
 			metadata['faces'] += fetchMetadata (object, 'faces');
 			if (object.name === '') {
-				tempArray = {["Mesh"] (){selectObjectHierarchy(object.id)}, 'id': object.id};
+				tempArray = {["Mesh"] (){selectObjectHierarchy(object.id);}, 'id': object.id};
 				object.name = object.id;
 			}
 			else {
-				tempArray = {[object.name] (){selectObjectHierarchy(object.id)}, 'id': object.id};
+				tempArray = {[object.name] (){selectObjectHierarchy(object.id);}, 'id': object.id};
 			}
 			//hierarchy.push(tempArray);
-			if (object.name === "undefined") object.name = "level";
+			if (object.name === "undefined") {object.name = "level";}
 			clippingGeometry.push(object.geometry);
 			hierarchyFolder = hierarchyMain.addFolder(object.name).close();
 			//hierarchyFolder.add(tempArray, 'name' ).name(object.name);
@@ -1089,8 +1091,8 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 		req.responseType = 'xml';
 		req.open('GET', metadataPath, true);
 		req.onreadystatechange = function (aEvt) {
-			if (req.readyState == 4) {
-				if(req.status == 200) {
+			if (req.readyState === 4) {
+				if(req.status === 200) {
 					const parser = new DOMParser();
 					const doc = parser.parseFromString(req.responseText, "application/xml");
 					var data = doc.documentElement.childNodes[0].childNodes;
@@ -1109,10 +1111,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					downloadModel.setAttribute('id', 'downloadModel');
 					viewEntity = document.createElement('div');
 					viewEntity.setAttribute('id', 'viewEntity');
-					var c_path = path;
-					//if (compressedFile !== '') { c_path = CONFIG.domain + '/' + uri; }
+					var cPath = path;
+					//if (compressedFile !== '') { cPath = CONFIG.domain + '/' + uri; }
 					if (compressedFile !== '') { filename = filename.replace(orgExtension, extension); }
-					downloadModel.innerHTML = "<a href='" + c_path + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
+					downloadModel.innerHTML = "<a href='" + cPath + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
 					
 					if (proxy) {
 						viewEntity.innerHTML = "<a href='" + CONFIG.domain + "/wisski/navigate/" + wisskiID + "/view' target='_blank'><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/share.svg' alt='View Entity' width=22 height=22 title='View Entity'/></a>";
@@ -1138,9 +1140,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 						document.addEventListener('MSFullscreenChange', exitFullscreenHandler, false);
 					}
 				}
-				else
+				else {
 					showToast("Error during loading metadata content");
 				}
+			}
 		};
 		req.send(null);
 		//hierarchyFolder.add(hierarchyText, 'Faces' );
@@ -1152,7 +1155,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 
 const onError = function (_event) {
 	//circle.set(100, 100);
-	console.log("Loader error: " + _event);
+	//console.log("Loader error: " + _event);
 	circle.hide();
 	EXIT_CODE=1;
 };
@@ -1193,7 +1196,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 		var req = new XMLHttpRequest();
 		req.open('HEAD', modelPath, false);
 		req.onreadystatechange = function (aEvt) {
-			if (req.readyState == 4) {
+			if (req.readyState === 4) {
 				fileSize = req.getResponseHeader("Content-Length");
 			}
 		};
@@ -1299,7 +1302,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 				loader.load( modelPath, function ( geometry ) {
 					geometry.center();
 					const vertexColors = ( geometry.hasAttribute( 'color' ) === true );
-					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: vertexColors } );
+					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors } );
 					const object = new THREE.Points( geometry, material );
 					object.position.set (0, 0, 0);
 					scene.add( object );
@@ -1376,7 +1379,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 							child.castShadow = true;
 							child.receiveShadow = true;
 							child.geometry.computeVertexNormals();
-							if(child.material.map) { child.material.map.anisotropy = 16 };
+							if(child.material.map) { child.material.map.anisotropy = 16; }
 							child.material.side = THREE.DoubleSide;
 							child.material.clippingPlanes = clippingPlanes;
 							child.material.clipIntersection = false;
@@ -1489,7 +1492,7 @@ function onPointerUp( e ) {
     //onUpPosition.y = -( e.clientY / canvasDimensions.y ) * 2 + 1;
     //onUpPosition.x = ( e.clientX / (canvasDimensions.x - container.offsetLeft)) * 2 - 1;
     //onUpPosition.y = -( e.clientY / (canvasDimensions.y - container.offsetTop)) * 2 + 1;
-	if (e.button == 0) {
+	if (e.button === 0) {
 		onUpPosition.x = ((e.clientX - container.getBoundingClientRect().left)/ renderer.domElement.clientWidth) * 2 - 1;
 		onUpPosition.y = - ((e.clientY - container.getBoundingClientRect().top) / renderer.domElement.clientHeight) * 2 + 1;
 		
@@ -1509,8 +1512,8 @@ function onPointerUp( e ) {
 					intersects = raycaster.intersectObjects( mainObject[0], true );
 				}
 				if (intersects.length > 0) {
-					if (RULER_MODE) buildRuler(intersects[0]);
-					else if (EDITOR) pickFaces(intersects[0]);
+					if (RULER_MODE) {buildRuler(intersects[0]);}
+					else if (EDITOR) {pickFaces(intersects[0]);}
 				}
 			}
 		}
@@ -1520,7 +1523,7 @@ function onPointerUp( e ) {
 function onPointerMove( e ) {
 	pointer.x = ((e.clientX - container.getBoundingClientRect().left)/ renderer.domElement.clientWidth) * 2 - 1;
 	pointer.y = - ((e.clientY - container.getBoundingClientRect().top) / renderer.domElement.clientHeight) * 2 + 1;
-	if (e.buttons != 1) {
+	if (e.buttons !== 1) {
 		if (EDITOR) {
 			raycaster.setFromCamera( pointer, camera );
 			var intersects;
@@ -1608,10 +1611,12 @@ function mainLoadModel (_ext) {
 		loadModel (path+basename+compressedFile+"gltf/", basename, filename,  "glb", _ext);
 	}
 	else {
-		if (_ext === "glb")
+		if (_ext === "glb") {
 			loadModel (path, basename, filename, "glb", extension);
-		else
+		}
+		else {
 			loadModel (path, basename, filename, _ext, extension);
+		}
 	}
 }
 
@@ -1681,7 +1686,7 @@ function init() {
 	transformControl.addEventListener( 'objectChange', changeScale );
 	transformControl.addEventListener( 'mouseUp', calculateObjectScale );
 	transformControl.addEventListener( 'dragging-changed', function ( event ) {
-		controls.enabled = ! event.value
+		controls.enabled = ! event.value;
 	} );
 	scene.add( transformControl );
 	
@@ -1714,8 +1719,8 @@ function init() {
 	req.responseType = 'xml';
 	req.open('GET', metadataPath, true);
 	req.onreadystatechange = function (aEvt) {
-		if (req.readyState == 4) {
-			if(req.status == 200) {
+		if (req.readyState === 4) {
+			if(req.status === 200) {
 				const parser = new DOMParser();
 				const doc = parser.parseFromString(req.responseText, "application/xml");
 				var data = doc.documentElement.childNodes[0].childNodes;
@@ -1742,7 +1747,7 @@ function init() {
 				}
 			}
 			else {
-				console.log("Error during loading metadata content\n");
+				showToast("Error during loading metadata content");
 				mainLoadModel (_ext);
 			}
 		}
@@ -1850,10 +1855,7 @@ function init() {
 			var _str;
 			EDITOR ? _str = "enabled" : _str = "disabled";
 			showToast ("Face picking is " + _str);
-			if (!EDITOR) {
-
-			}
-			else {
+			if (EDITOR) {
 				RULER_MODE = false;
 			}
 		}}, 'Picking mode');
