@@ -1,10 +1,12 @@
 /*
 DFG 3D-Viewer
 Copyright (C) 2022 - Daniel Dworak
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -12,7 +14,8 @@ GNU General Public License for more details at
 https://www.gnu.org/licenses/.
 */
 
-//Supported file formats: OBJ, DAE, FBX, PLY, IFC, STL, XYZ, JSON, 3DS, glTF
+//Supported file formats: OBJ, DAE, FBX, PLY, IFC, STL, XYZ, JSON, 3DS, PCD, glTF
+
 
 import * as THREE from './build/three.module.js';
 import { TWEEN } from './js/jsm/libs/tween.module.min.js';
@@ -40,6 +43,15 @@ import { PCDLoader } from './js/jsm/loaders/PCDLoader.js';
 import { FontLoader } from './js/jsm/loaders/FontLoader.js';
 import { TextGeometry } from './js/jsm/geometries/TextGeometry.js';
 
+//import CONFIG from './config.json' assert {type: 'json'}; //disabled temporary because of Firefox assertion bug
+const CONFIG = {
+	"domain": "https://3d-repository.hs-mainz.de",
+	"metadataDomain": "https://3d-repository.hs-mainz.de",
+	"container": "DFG_3DViewer",
+	"galleryContainer": "block-bootstrap5-content",
+	"galleryImageClass": "field--type-image"
+};
+
 let camera, scene, renderer, stats, controls, loader, ambientLight, dirLight, dirLightTarget;
 let imported;
 var mainObject = [];
@@ -54,28 +66,33 @@ var FULLSCREEN = false;
 
 let mixer;
 
-const container = document.getElementById("DFG_3DViewer");
+const container = document.getElementById(CONFIG.container);
 container.setAttribute("width", window.self.innerWidth);
 container.setAttribute("height", window.self.innerHeight);
 container.setAttribute("display", "flex");
-const originalPath = container.getAttribute("3d");
-const proxyPath = container.getAttribute("proxy");
-const wisskiUrl = container.getAttribute("wisski_url");
-var elementsURL;
-if (!proxyPath) {
-	elementsURL = window.location.pathname.match("/wisski/navigate/(.*)/view");
-	wisskiID = parseInt(elementsURL[1]);
-	container.setAttribute("wisski_id", wisskiID);
+const model = container.getAttribute("model");
+const xmlPath = container.getAttribute("xml");
+const settingsPath= container.getAttribute("settings");
+const proxy = container.getAttribute("proxy");
+const dfgViewer = true;
+if (dfgViewer) {
+	var elementsURL = decodeURIComponent(xmlPath).match("/export_xml_single/(.*)?page");
+	if (elementsURL) {
+		wisskiID = parseInt(elementsURL[1]);
+	}
 } else {
-	elementsURL = wisskiUrl.match("/export_xml_single/(.*)?page");
-	wisskiID = parseInt(elementsURL[1]);
+	var elementsURL = window.location.pathname;
+	elementsURL = elementsURL.match("/wisski/navigate/(.*)/view");
+	wisskiID = elementsURL[1];
+	container.setAttribute("wisski_id", wisskiID);
 }
-const filename = container.getAttribute("3d").split("/").pop();
-const basename = filename.substring(0, filename.lastIndexOf('.'));
-const extension = filename.substring(filename.lastIndexOf('.') + 1);	
-const path = container.getAttribute("3d").substring(0, container.getAttribute("3d").lastIndexOf(filename));
-const domain = "https://3d-repository.hs-mainz.de";
-const uri = path.replace(domain+"/", "");
+var filename = container.getAttribute("3d").split("/").pop();
+var basename = filename.substring(0, filename.lastIndexOf('.'));
+var extension = filename.substring(filename.lastIndexOf('.') + 1);	
+var path = container.getAttribute("3d").substring(0, container.getAttribute("3d").lastIndexOf(filename));
+var fileSize;
+const uri = path.replace(CONFIG.domain+"/", "");
+const EXPORT_PATH = '/export_xml_single/';
 const loadedFile = basename + "." + extension;
 var COPYRIGHTS = false;
 const allowedFormats = ['obj', 'fbx', 'ply', 'dae', 'ifc', 'stl', 'xyz', 'pcd', 'json', '3ds'];
@@ -165,8 +182,9 @@ const saveProperties = {
 };
 
 var EDITOR = false;
+var RULER_MODE = false;
 const lineMaterial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
-const linePoints = [];
+var linePoints = [];
 
 const gui = new GUI({ container: guiContainer });
 //const mainHierarchyFolder = gui.addFolder('Hierarchy');
@@ -221,13 +239,16 @@ var planeObjects = [];
 var clippingGeometry = [];
 
 var textMesh;
-var ruler;
+var textMeshDistance;
+var ruler = [];
+var rulerObject;
+var lastPickedFace = {id: '', color: '', object: ''};
 
 function readWissKI () {
 	const xmlhttp = new XMLHttpRequest();
 	xmlhttp.onload = function() {
-		
-	};
+		console.log(this.responseText);
+	}
 	xmlhttp.open("GET", "php/fetchWissKI.php?q=");
 	xmlhttp.send();
 }
@@ -313,7 +334,7 @@ function addTextWatermark (_text, _scale) {
 		textMesh.position.y = 0;
 		textMesh.position.z = 0;
 		textMesh.renderOrder = 1;
-		scene.add( textMesh );		
+		scene.add( textMesh );
 	} );
 }
 
@@ -342,14 +363,15 @@ function addTextPoint (_text, _scale, _point) {
 
 		//const centerOffset = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 
-		textMesh = new THREE.Mesh( textGeo, materials );
+		textMeshDistance = new THREE.Mesh( textGeo, materials );
 
-		textMesh.rotation.z = Math.PI;
-		textMesh.rotation.y = Math.PI;
+		//textMeshDistance.rotation.z = Math.PI;
+		//textMeshDistance.rotation.y = Math.PI;
 		
-		textMesh.position.set(_point.x, _point.y, _point.z);
-		textMesh.renderOrder = 1;
-		scene.add( textMesh );		
+		textMeshDistance.position.set(_point.x, _point.y, _point.z);
+		textMeshDistance.renderOrder = 1;
+		rulerObject.add(textMeshDistance);
+		//scene.add( textMesh );		
 	} );
 }
 
@@ -397,6 +419,36 @@ function fetchMetadata (_object, _type) {
 	}
 }
 
+function recreateBoundingBox (object) {
+	var _min = new THREE.Vector3();
+	var _max = new THREE.Vector3();
+	if (object instanceof THREE.Object3D)
+	{
+		object.traverse (function (mesh)
+		{
+			if (mesh instanceof THREE.Mesh)
+			{
+				mesh.geometry.computeBoundingBox ();
+				var bBox = mesh.geometry.boundingBox;
+
+				// compute overall bbox
+				_min.x = Math.min (_min.x, bBox.min.x + mesh.position.x);
+				_min.y = Math.min (_min.y, bBox.min.y + mesh.position.y);
+				_min.z = Math.min (_min.z, bBox.min.z + mesh.position.z);
+				_max.x = Math.max (_max.x, bBox.max.x + mesh.position.x);
+				_max.y = Math.max (_max.y, bBox.max.y + mesh.position.y);
+				_max.z = Math.max (_max.z, bBox.max.z + mesh.position.z);
+			}
+		});
+
+		var bBox_min = new THREE.Vector3 (_min.x, _min.y, _min.z);
+		var bBox_max = new THREE.Vector3 (_max.x, _max.y, _max.z);
+		var bBox_new = new THREE.Box3 (bBox_min, bBox_max);
+		object.position.set((bBox_new.min.x+bBox_new.max.x)/2, bBox_new.min.y, (bBox_new.min.z+bBox_new.max.z)/2);
+	}
+	return object;
+}
+
 function setupObject (_object, _camera, _light, _data, _controls) {
 	if (typeof (_data) !== "undefined") {
 		_object.position.set (_data["objPosition"][0], _data["objPosition"][1], _data["objPosition"][2]);
@@ -411,9 +463,10 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 	else {
 		var boundingBox = new THREE.Box3();
 		if (Array.isArray(_object)) {
-			for (var i = 0; i < _object.length; i++) {
+			for (let i = 0; i < _object.length; i++) {
 				boundingBox.setFromObject( _object[i] );
-				_object[i].position.set (0, 0, 0);
+				_object[i].position.set(-(boundingBox.min.x+boundingBox.max.x)/2, -boundingBox.min.y, -(boundingBox.min.z+boundingBox.max.z)/2);
+				//_object[i].position.set (0, 0, 0);
 				_object[i].needsUpdate = true;
 				if (typeof (_object[i].geometry) !== "undefined") {
 					_object[i].geometry.computeBoundingBox();
@@ -423,7 +476,8 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 		}
 		else {
 			boundingBox.setFromObject( _object );
-			_object.position.set (0, 0, 0);
+			_object.position.set(-(boundingBox.min.x+boundingBox.max.x)/2, -boundingBox.min.y, -(boundingBox.min.z+boundingBox.max.z)/2);
+			//_object.position.set (0, 0, 0);
 			_object.needsUpdate = true;
 			if (typeof (_object.geometry) !== "undefined") {
 				_object.geometry.computeBoundingBox();
@@ -431,11 +485,6 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 			}
 		}
 	}
-}
-
-function render() {
-	controls.update();
-	renderer.render( scene, camera );
 }
 
 function setupClippingPlanes (_geometry, _size, _distance) {	
@@ -477,7 +526,7 @@ function setupClippingPlanes (_geometry, _size, _distance) {
 function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit ) {
 	const boundingBox = new THREE.Box3();
 	if (Array.isArray(object)) {
-		for (var i = 0; i < object.length; i++) {			
+		for (let i = 0; i < object.length; i++) {			
 			boundingBox.setFromObject( object[i] );
 		}
 	}
@@ -601,66 +650,73 @@ function fitCameraToCenteredObject (camera, object, offset, orbitControls, _fit 
 
 function buildGallery() {
 	var fileElement = document.getElementsByClassName("field--type-file");
-	fileElement[0].style.height = canvasDimensions.y*1.1 + "px";
-	var mainElement = document.getElementById("block-bootstrap5-content");
-	var imageElements = document.getElementsByClassName("field--type-image");
-	var imageList = document.createElement("div");
-	imageList.setAttribute('id', 'image-list');
-	var modalGallery = document.createElement('div');
-	var modalImage = document.createElement('img');
-	modalImage.setAttribute('class', 'modalImage');
-	modalGallery.addEventListener("wheel", function(e){
-		e.preventDefault();
-		e.stopPropagation();
-		if(e.deltaY > 0 && zoomImage > 0.15) {    
-			modalImage.style.transform = `scale(${zoomImage -= ZOOM_SPEED_IMAGE})`;  
-		}
-		else if (e.deltaY < 0 && zoomImage < 5) {    
-			modalImage.style.transform = `scale(${zoomImage += ZOOM_SPEED_IMAGE})`;
-		}
-		return false;
-	});
-	var modalClose = document.createElement('span');
-	modalGallery.setAttribute('id', 'modalGallery');
-	modalGallery.setAttribute('class', 'modalGallery');
-	modalClose.setAttribute('class', 'closeGallery');
-	modalClose.setAttribute('title', 'Close');
-	modalClose.innerHTML = "&times";
-	modalClose.onclick = function() {
-		modalGallery.style.display = "none";
-	};
-
-	document.addEventListener('click', function(event) {
-		if (!modalGallery.contains(event.target) && !imageList.contains(event.target)) {
-			//event.preventDefault();
+	fileElement[0].style.height = canvasDimensions.y*1.5 + "px";
+	var mainElement = document.getElementById(CONFIG.galleryContainer);
+	var imageElements = document.getElementsByClassName(CONFIG.galleryImageClass);
+	if (imageElements.length > 0) {
+		var imageList = document.createElement("div");
+		imageList.setAttribute('id', 'image-list');
+		var modalGallery = document.createElement('div');
+		var modalImage = document.createElement('img');
+		modalImage.setAttribute('class', 'modalImage');
+		modalGallery.addEventListener("wheel", function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			if(e.deltaY > 0 && zoomImage > 0.15) {    
+				modalImage.style.transform = `scale(${zoomImage -= ZOOM_SPEED_IMAGE})`;  
+			}
+			else if (e.deltaY < 0 && zoomImage < 5) {    
+				modalImage.style.transform = `scale(${zoomImage += ZOOM_SPEED_IMAGE})`;
+			}
+			return false;
+		});
+		var modalClose = document.createElement('span');
+		modalGallery.setAttribute('id', 'modalGallery');
+		modalGallery.setAttribute('class', 'modalGallery');
+		modalClose.setAttribute('class', 'closeGallery');
+		modalClose.setAttribute('title', 'Close');
+		modalClose.innerHTML = "&times";
+		modalClose.onclick = function() {
 			modalGallery.style.display = "none";
-			zoomImage = 1.0;
-			modalImage.style.transform = `scale(1.0)`;
 		}
-	});
 
-	modalGallery.appendChild(modalImage);
-	modalGallery.appendChild(modalClose);
-	for (var i = 0; imageElements.length - i; imageList.firstChild === imageElements[0] && i++) {
-		//imageElements[i].className += " image-list-item";
-		var imgList = imageElements[i].getElementsByTagName("a");
-		for (var j = 0; j < imgList.length; j++) {
-			imgList[j].setAttribute("href", "#");
-			imgList[j].setAttribute("src", imgList[j].firstChild.src);
-			imgList[j].setAttribute("class", "image-list-item");
+		document.addEventListener('click', function(event) {
+			if (!modalGallery.contains(event.target) && !imageList.contains(event.target)) {
+				//event.preventDefault();
+				modalGallery.style.display = "none";
+				zoomImage = 1.5;
+				modalImage.style.transform = `scale(1.5)`;
+			}
+		});
+
+		modalGallery.appendChild(modalImage);
+		modalGallery.appendChild(modalClose);
+		for (let i = 0; imageElements.length - i; imageList.firstChild === imageElements[0] && i++) {
+			//imageElements[i].className += " image-list-item";
+			var imgList = imageElements[i].getElementsByTagName("a");
+			for (let j = 0; j < imgList.length; j++) {
+				imgList[j].setAttribute("href", "#");
+				imgList[j].setAttribute("src", imgList[j].firstChild.src);
+				imgList[j].setAttribute("class", "image-list-item");
+			}
+			imgList = imageElements[i].getElementsByTagName("img");
+			for (let j = 0; j < imgList.length; j++) {
+				imgList[j].onclick = function(){
+					modalGallery.style.display = "block";
+					modalImage.src = this.src;
+				};
+			}
+			//imageElements[i].getElementsByTagName("a")[0].setAttribute("href", "#");
+			imageList.appendChild(imageElements[i]);
 		}
-		imgList = imageElements[i].getElementsByTagName("img");
-		for (var j = 0; j < imgList.length; j++) {
-			imgList[j].onclick = function(){
-				modalGallery.style.display = "block";
-				modalImage.src = this.src;
-			};
-		}
-		//imageElements[i].getElementsByTagName("a")[0].setAttribute("href", "#");
-		imageList.appendChild(imageElements[i]);
+		fileElement[0].insertAdjacentElement('beforebegin', modalGallery);
+		mainElement.insertBefore(imageList, fileElement[0]);
 	}
-	fileElement[0].insertAdjacentElement('beforebegin', modalGallery);
-	mainElement.insertBefore(imageList, fileElement[0]);
+}
+
+function render() {
+	controls.update();
+	renderer.render( scene, camera );
 }
 
 function setupCamera (_object, _camera, _light, _data, _controls) {
@@ -696,7 +752,7 @@ function setupCamera (_object, _camera, _light, _data, _controls) {
 	else {
 		var boundingBox = new THREE.Box3();
 		if (Array.isArray(_object)) {
-			for (var i = 0; i < _object.length; i++) {
+			for (let i = 0; i < _object.length; i++) {
 				boundingBox.setFromObject( _object[i] );
 			}
 		}
@@ -734,13 +790,29 @@ function interpolateDistanceBetweenPoints(pointA, vector, length, scalar) {
 }
 
 function pickFaces(_id) {
-	var rulerObject = new THREE.Object3D();
+	if (lastPickedFace.id == '' && _id !== '') {
+		lastPickedFace = {id: _id, color: _id.object.material.color.getHex(), object: _id.object.id};
+	}
+	else if (_id == '' && lastPickedFace.id !== '') {
+		scene.getObjectById(lastPickedFace.object).material.color.setHex(lastPickedFace.color);
+		lastPickedFace = {id: '', color: '', object: ''};
+	}
+	else if (_id != lastPickedFace.id) {
+		scene.getObjectById(lastPickedFace.object).material.color.setHex(lastPickedFace.color);
+		lastPickedFace = {id: _id, color: _id.object.material.color.getHex(), object: _id.object.id};		
+	}
+	if (_id !== '')
+		_id.object.material.color.setHex(0xFF0000);
+}
+
+function buildRuler(_id) {
+	rulerObject = new THREE.Object3D();
 	var sphere = new THREE.Mesh(new THREE.SphereGeometry(gridSize/150, 7, 7), new THREE.MeshNormalMaterial({
 				transparent : true,
 				opacity : 0.8,
 				side: THREE.DoubleSide, depthTest: false, depthWrite: false
 			}));
-	var newPoint = new THREE.Vector3( _id[0].point.x, _id[0].point.y, _id[0].point.z );
+	var newPoint = new THREE.Vector3( _id.point.x, _id.point.y, _id.point.z );
 	sphere.position.set( newPoint.x, newPoint.y, newPoint.z	);
 	rulerObject.add(sphere);
 	linePoints.push( newPoint );
@@ -761,7 +833,7 @@ function pickFaces(_id) {
             const geoSegm = [];
 			var interpolatePoints = interpolateDistanceBetweenPoints(linePoints[linePoints.length-2], vectorPoints, distancePoints, rulerI/100);
             geoSegm.push(new THREE.Vector3(interpolatePoints.x, interpolatePoints.y, interpolatePoints.z));
-            //geoSegm.push(new THREE.Vector3(interpolatePoints.x+_id[0].face.normal.x, interpolatePoints.y+_id[0].face.normal.y, interpolatePoints.z+_id[0].face.normal.z));
+            //geoSegm.push(new THREE.Vector3(interpolatePoints.x+_id.face.normal.x, interpolatePoints.y+_id.face.normal.y, interpolatePoints.z+_id.face.normal.z));
 			geoSegm.push(new THREE.Vector3(interpolatePoints.x+measureSize, interpolatePoints.y+measureSize, interpolatePoints.z+measureSize));
 			const geometryLine = new THREE.BufferGeometry().setFromPoints( geoSegm );
             var lineSegm = new THREE.Line(geometryLine, lineMtr);
@@ -773,15 +845,7 @@ function pickFaces(_id) {
 	}
 	rulerObject.renderOrder = 1;
 	scene.add(rulerObject);
-	/*if (mainObject.name == "Scene" || mainObject.children.length > 0)
-		mainObject.traverse( function ( child ) {
-			if (child.isMesh) {
-				child.traverse( function ( children ) {
-				});
-			}
-		});
-	else
-		var intersects = raycaster.intersectObjects( mainObject, false );*/
+	ruler.push(rulerObject);
 }
 
 function onWindowResize() {
@@ -792,18 +856,22 @@ function onWindowResize() {
 		canvasDimensions = {x: screen.width, y: screen.height};
 		rightOffsetDownload = -80.5;
 		rightOffsetEntity = -83.5;
-		rightOffsetFullscreen = 1;		
+		rightOffsetFullscreen = 1;
+		guiContainer.style.left = canvasDimensions.x - 260 + 'px';
 	}
 	else {
 		canvasDimensions = {x: window.self.innerWidth*0.8, y: window.self.innerHeight};
+		guiContainer.style.left = canvasDimensions.x - 380 + 'px';
 	}
 	container.setAttribute("width", canvasDimensions.x);
 	container.setAttribute("height", canvasDimensions.y);
 
 	mainCanvas.setAttribute("width", canvasDimensions.x);
 	mainCanvas.setAttribute("height", canvasDimensions.y);
-	mainCanvas.style.width = "100% !imporant";
+	mainCanvas.style.width = "100% !important";
 	mainCanvas.style.height = "100% !important";
+
+	guiContainer.style.top = mainCanvas.offsetTop + 'px';
 
 	renderer.setPixelRatio( window.devicePixelRatio );
 	camera.aspect = canvasDimensions.x / canvasDimensions.y;
@@ -811,7 +879,8 @@ function onWindowResize() {
 	renderer.setSize( canvasDimensions.x, canvasDimensions.y );
 	downloadModel.setAttribute('style', 'right: ' + rightOffsetDownload +'%');
 	viewEntity.setAttribute('style', 'right: ' + rightOffsetEntity +'%');
-	fullscreenMode.setAttribute('style', 'bottom:' + Math.round(-canvasDimensions.y + 85) + 'px');
+
+	fullscreenMode.setAttribute('style', 'bottom:' + Math.round(-canvasDimensions.y + 55) + 'px');
 	controls.update();
 	render();
 }
@@ -851,13 +920,13 @@ function addWissKIMetadata(label, value) {
 				}
 			break;
 			default:
-				_str = "";
+				_str = ""
 			break;
 		}
-		if (_str === "period") {
+		if (_str == "period") {
 			return "Reconstruction period: <b>"+value+" - ";
 		}
-		else if (_str === "-") {
+		else if (_str == "-") {
 			return value+"</b><br>";
 		}
 		else if (_str !== "") {
@@ -873,11 +942,6 @@ function truncateString(str, n) {
 	} else {
 		return str;
 	}
-}
-
-function getProxyPath(url) {
-	var tempPath = decodeURIComponent(proxyPath);
-	return tempPath.replace(originalPath, encodeURIComponent(url));
 }
 
 function expandMetadata () {
@@ -933,8 +997,8 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 	var hierarchy = [];
 	var geometry;
 	var metadataUrl = path + "metadata/" + filename + "_viewer";
-	if (proxyPath) {
-		metadataUrl = getProxyPath(metadataUrl);
+	if (proxy) {
+		metadataUrl = settingsPath;
 	}
 
 	fetch(metadataUrl, {cache: "no-cache"})
@@ -947,7 +1011,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			showToast("No settings " + filename + "_viewer found");
 		}
 		})
-	.then((data) => {
+	.then(data => {
 		var tempArray = [];
 		const hierarchyMain = gui.addFolder( 'Hierarchy' ).close();
 		if (object.name === "Scene" || object.children.length > 0 ) {
@@ -958,10 +1022,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					metadata['faces'] += fetchMetadata (child, 'faces');
 					var shortChildName = truncateString(child.name, GUILength);
 					if (child.name === '') {
-						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id);}, 'id': child.id};
+						tempArray = {["Mesh"]() {selectObjectHierarchy(child.id)}, 'id': child.id};
 					}
 					else {
-						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id);}, 'id': child.id};
+						tempArray = { [shortChildName]() {selectObjectHierarchy(child.id)}, 'id': child.id};
 					}
 					hierarchyFolder = hierarchyMain.addFolder(shortChildName).close();
 					hierarchyFolder.add(tempArray, shortChildName);
@@ -970,10 +1034,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 						if ( children.isMesh &&  children.name !== child.name) {
 							var shortChildrenName = truncateString(children.name, GUILength);
 							if (children.name === '') {
-								tempArray = {["Mesh"] (){selectObjectHierarchy(children.id);}, 'id': children.id};
+								tempArray = {["Mesh"] (){selectObjectHierarchy(children.id)}, 'id': children.id};
 							}
 							else {
-								tempArray = { [shortChildrenName] (){selectObjectHierarchy(children.id);}, 'id': children.id};
+								tempArray = { [shortChildrenName] (){selectObjectHierarchy(children.id)}, 'id': children.id};
 							}
 							clippingGeometry.push(children.geometry);
 							hierarchyFolder.add(tempArray, shortChildrenName);
@@ -989,16 +1053,17 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 			metadata['vertices'] += fetchMetadata (object, 'vertices');
 			metadata['faces'] += fetchMetadata (object, 'faces');
 			if (object.name === '') {
-				tempArray = {["Mesh"] (){selectObjectHierarchy(object.id);}, 'id': object.id};
+				tempArray = {["Mesh"] (){selectObjectHierarchy(object.id)}, 'id': object.id};
 				object.name = object.id;
 			}
 			else {
-				tempArray = {[object.name] (){selectObjectHierarchy(object.id);}, 'id': object.id};
+				tempArray = {[object.name] (){selectObjectHierarchy(object.id)}, 'id': object.id};
 			}
 			//hierarchy.push(tempArray);
+			if (object.name === "undefined") object.name = "level";
 			clippingGeometry.push(object.geometry);
 			hierarchyFolder = hierarchyMain.addFolder(object.name).close();
-			hierarchyFolder.add(tempArray, 'name' ).name(object.name);
+			//hierarchyFolder.add(tempArray, 'name' ).name(object.name);
 			metadata['vertices'] += fetchMetadata (object, 'vertices');
 			metadata['faces'] += fetchMetadata (object, 'faces');
 		}
@@ -1007,23 +1072,25 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 		
 		var metadataContainer = document.createElement('div');
 		metadataContainer.setAttribute('id', 'metadata-container');
-		var metadataContent = '<div id="metadata-collapse" class="metadata-collapse">METADATA </div><div id="metadata-content" class="metadata-content">';
+
+		var metadataContent = '<div id="metadata-collapse" class="metadata-collapse metadata-collapsed">METADATA </div><div id="metadata-content" class="metadata-content expanded">';
 		metadataContentTech = '<hr class="metadataSeparator">';
 		metadataContentTech += 'Uploaded file name: <b>' + basename + "." + orgExtension + '</b><br>';
 		metadataContentTech += 'Loaded format: <b>' + extension + '</b><br>';
 		metadataContentTech += 'Vertices: <b>' + metadata['vertices'] + '</b><br>';
 		metadataContentTech += 'Faces: <b>' + metadata['faces'] + '</b><br>';
 
-		var xmlPath = wisskiUrl;
-		if (proxyPath) {
-			xmlPath = getProxyPath(xmlPath);
+		var metadataPath = CONFIG.metadataDomain + EXPORT_PATH + wisskiID + '?page=0&amp;_format=xml';
+		if (proxy) {
+			metadataPath = xmlPath;
 		}
+
 		var req = new XMLHttpRequest();
 		req.responseType = 'xml';
-		req.open('GET', xmlPath, true);
+		req.open('GET', metadataPath, true);
 		req.onreadystatechange = function (aEvt) {
-			if (req.readyState === 4) {
-				if(req.status === 200) {
+			if (req.readyState == 4) {
+				if(req.status == 200) {
 					const parser = new DOMParser();
 					const doc = parser.parseFromString(req.responseText, "application/xml");
 					var data = doc.documentElement.childNodes[0].childNodes;
@@ -1042,11 +1109,18 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					downloadModel.setAttribute('id', 'downloadModel');
 					viewEntity = document.createElement('div');
 					viewEntity.setAttribute('id', 'viewEntity');
-					var cPath = path;
-					if (compressedFile !== '') { cPath = domain + '/' +uri; }
-					downloadModel.innerHTML = "<a href='" + cPath + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
-					viewEntity.innerHTML = "<a href='" + domain + "/wisski/navigate/" + wisskiID + "/view' target='_blank'><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/share.svg' alt='View Entity' width=22 height=22 title='View Entity'/></a>";
-					metadataContainer.appendChild( downloadModel );
+					var c_path = path;
+					//if (compressedFile !== '') { c_path = CONFIG.domain + '/' + uri; }
+					if (compressedFile !== '') { filename = filename.replace(orgExtension, extension); }
+					downloadModel.innerHTML = "<a href='" + c_path + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
+					
+					if (proxy) {
+						viewEntity.innerHTML = "<a href='" + CONFIG.domain + "/wisski/navigate/" + wisskiID + "/view' target='_blank'><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/share.svg' alt='View Entity' width=22 height=22 title='View Entity'/></a>";
+					}
+					else
+					{
+						metadataContainer.appendChild( downloadModel );
+					}
 					metadataContainer.appendChild( viewEntity );
 					fullscreenMode = document.createElement('div');
 					fullscreenMode.setAttribute('id', 'fullscreenMode');
@@ -1064,39 +1138,45 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 						document.addEventListener('MSFullscreenChange', exitFullscreenHandler, false);
 					}
 				}
-				else {
-					console.log("Error during loading metadata content\n");
+				else
+					showToast("Error during loading metadata content");
 				}
-			}
 		};
 		req.send(null);
 		//hierarchyFolder.add(hierarchyText, 'Faces' );
 	});
 	helperObjects.push (object);
-	if (proxyPath) {
-		circle.set(100, 100);
-		circle.hide();
-		showToast("Model has been loaded.");
-		EXIT_CODE=0;
-	}
 	//addTextWatermark("©", object.scale.x);
 	//lightObjects.push (object);
 }
 
-const onError = function () {
+const onError = function (_event) {
 	//circle.set(100, 100);
+	console.log("Loader error: " + _event);
 	circle.hide();
 	EXIT_CODE=1;
 };
 
 const onProgress = function ( xhr ) {
-	var percentComplete = xhr.loaded / xhr.total * 100;
-	circle.show();
-	circle.set(percentComplete, 100);
-	if (percentComplete >= 100) {
-		circle.hide();
-		showToast("Model has been loaded.");
-		EXIT_CODE=0;
+	var percentComplete;
+	if (xhr.lengthComputable) {
+		percentComplete = xhr.loaded / xhr.total * 100;
+	} else {
+		percentComplete = xhr.loaded / fileSize * 100;
+	}
+	if (percentComplete !== Infinity) {
+		circle.show();
+		circle.set(percentComplete, 100);
+		if (percentComplete >= 100) {
+			circle.hide();
+			showToast("Model has been loaded.");
+			EXIT_CODE=0;
+		}
+	} else {
+		if (circle) {
+			circle.hide();
+			showToast("Model has been loaded.");
+		}
 	}
 };
 
@@ -1105,19 +1185,29 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 		circle.show();
 		circle.set(0, 100);
 		var modelPath = path + filename;
-		if (proxyPath) {
-			modelPath = getProxyPath(modelPath);
+
+		if (proxy) {
+			modelPath = model;
 		}
 
-		switch(extension) {
+		var req = new XMLHttpRequest();
+		req.open('HEAD', modelPath, false);
+		req.onreadystatechange = function (aEvt) {
+			if (req.readyState == 4) {
+				fileSize = req.getResponseHeader("Content-Length");
+			}
+		};
+		req.send(null);
+
+		switch(extension.toLowerCase()) {
 			case 'obj':
 				const manager = new THREE.LoadingManager();
 				manager.onLoad = function ( ) { showToast ("OBJ model has been loaded"); };
 				manager.addHandler( /\.dds$/i, new DDSLoader() );
 				// manager.addHandler( /\.tga$/i, new TGALoader() );
 				new MTLLoader( manager )
-					.setPath( path )
-					.load( basename + '.mtl', function ( materials ) {
+					//.setPath( path )
+					.load( modelPath, function ( materials ) {
 						materials.preload();
 						new OBJLoader( manager )
 							.setMaterials( materials )
@@ -1208,9 +1298,9 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 				loader = new XYZLoader();
 				loader.load( modelPath, function ( geometry ) {
 					geometry.center();
-					const hasVertexColors = ( geometry.hasAttribute( 'color' ) === true );
-					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: hasVertexColors } );
-					object = new THREE.Points( geometry, material );
+					const vertexColors = ( geometry.hasAttribute( 'color' ) === true );
+					const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: vertexColors } );
+					const object = new THREE.Points( geometry, material );
 					object.position.set (0, 0, 0);
 					scene.add( object );
 					fetchSettings (path.replace("gltf/", ""), basename, filename, object, camera, lightObjects[0], controls, orgExtension, extension );
@@ -1242,10 +1332,10 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 				loader = new TDSLoader( );
 				loader.setResourcePath( path );
 				modelPath = path + basename + "." + extension;
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
+				if (proxy) {
+					modelPath = model;
 				}
-				loader.load( modelPath + basename + "." + extension, function ( object ) {
+				loader.load( modelPath, function ( object ) {
 					object.traverse( function ( child ) {
 						if ( child.isMesh ) {
 							//child.material.specular.setScalar( 0.1 );
@@ -1276,8 +1366,8 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 				showToast("Trying to load model from " + extension + " representation.");
 
 				modelPath = path + basename + "." + extension;
-				if (proxyPath) {
-					modelPath = getProxyPath(modelPath);
+				if (proxy) {
+					modelPath = model;
 				}
 
 				gltf.load(modelPath, function(gltf) {
@@ -1286,18 +1376,23 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 							child.castShadow = true;
 							child.receiveShadow = true;
 							child.geometry.computeVertexNormals();
-							if(child.material.map) { child.material.map.anisotropy = 16; }
+							if(child.material.map) { child.material.map.anisotropy = 16 };
 							child.material.side = THREE.DoubleSide;
 							child.material.clippingPlanes = clippingPlanes;
 							child.material.clipIntersection = false;
 							mainObject.push(child);	
 						}
 					});
-					fetchSettings (path.replace("gltf/", ""), basename, filename, gltf.scene, camera, lightObjects[0], controls, orgExtension, extension );
+					fetchSettings (path, basename, filename, gltf.scene, camera, lightObjects[0], controls, orgExtension, extension );
 					scene.add( gltf.scene );
 				},
 					function ( xhr ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
+						var percentComplete;
+						if (xhr.lengthComputable) {
+							percentComplete = xhr.loaded / xhr.total * 100;
+						} else {
+							percentComplete = xhr.loaded / fileSize * 100;
+						}
 						if (percentComplete !== Infinity) {
 							circle.show();
 							circle.set(percentComplete, 100);
@@ -1305,25 +1400,30 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 								circle.hide();
 								showToast("Model " + filename + " has been loaded.");
 							}
+						} else {
+							if (circle) {
+								circle.hide();
+								showToast("Model " + filename + " has been loaded.");
+							}
 						}
-					},
+					}/*,
 					function ( ) {						
 							showToast("GLTF or file with given name (possible archive/filename mismatch) representation not found, trying original file [semi-automatic]...");
 							showToast(path.replace("gltf/", "") + filename + " [" + orgExtension + "]");
 							var autoBasename = basename.replace(/_[0-9]+$/, '');
-							if (EXIT_CODE !== 0) {
+							if (EXIT_CODE != 0) {
 								loadModel (path, autoBasename, '', 'glb', orgExtension);
-								if (EXIT_CODE !== 0) {
+								if (EXIT_CODE != 0) {
 									allowedFormats.forEach(function(item, index, array) {
-										if (EXIT_CODE !== 0) {
+										if (EXIT_CODE != 0) {
 											loadModel (path.replace("gltf/", ""), autoBasename, filename, item, orgExtension); 
 										}
 									});
 								}
 							}
-							if (EXIT_CODE !== 0) {
+							if (EXIT_CODE != 0) {
 								allowedFormats.forEach(function(item, index, array) {
-									if (EXIT_CODE !== 0) {
+									if (EXIT_CODE != 0) {
 										circle.show();
 										loadModel (path.replace("gltf/", ""), basename, filename, item, orgExtension);
 									}
@@ -1332,7 +1432,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 
 							//loadModel(path.replace("gltf/", ""), basename, filename, orgExtension, orgExtension);
 							imported = true;
-					}
+					}*/
 				);
 			break;
 			default:
@@ -1342,7 +1442,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 	else {
 		showToast("File " + path + basename + " not found.");
 		//circle.set(100, 100);
-		circle.hide();
+		//circle.hide();
 	}
 	
 	scene.updateMatrixWorld();
@@ -1353,9 +1453,8 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 function animate() {
 	requestAnimationFrame( animate );
 	const delta = clock.getDelta();
-	if ( mixer ) mixer.update( delta ); {
-		TWEEN.update();
-	}
+	if ( mixer ) { mixer.update( delta ); }
+	TWEEN.update();
 	/*for ( let i = 0; i < clippingPlanes.length && clippingMode; i ++ ) {
 		const plane = clippingPlanes[ i ];
 		const po = planeObjects[ i ];
@@ -1379,7 +1478,7 @@ function updateObject () {
 function onPointerDown( e ) {
 	//onDownPosition.x = event.clientX;
 	//onDownPosition.y = event.clientY;
-	if (e.button == 0) {
+	if (e.button === 0) {
 		onDownPosition.x = ((e.clientX - container.getBoundingClientRect().left)/ renderer.domElement.clientWidth) * 2 - 1;
 		onDownPosition.y = - ((e.clientY - container.getBoundingClientRect().top) / renderer.domElement.clientHeight) * 2 + 1;
 	}
@@ -1394,10 +1493,10 @@ function onPointerUp( e ) {
 		onUpPosition.x = ((e.clientX - container.getBoundingClientRect().left)/ renderer.domElement.clientWidth) * 2 - 1;
 		onUpPosition.y = - ((e.clientY - container.getBoundingClientRect().top) / renderer.domElement.clientHeight) * 2 + 1;
 		
-		if (onUpPosition.x == onDownPosition.x && onUpPosition.y == onDownPosition.y) {
+		if (onUpPosition.x === onDownPosition.x && onUpPosition.y === onDownPosition.y) {
 			raycaster.setFromCamera( onUpPosition, camera );
 			var intersects;
-			if (EDITOR) {
+			if (EDITOR || RULER_MODE) {
 				if (mainObject.length > 1) {
 					for (let ii = 0; ii < mainObject.length; ii++) {
 						intersects = raycaster.intersectObjects( mainObject[ii].children, true );
@@ -1410,37 +1509,41 @@ function onPointerUp( e ) {
 					intersects = raycaster.intersectObjects( mainObject[0], true );
 				}
 				if (intersects.length > 0) {
-					pickFaces(intersects);
+					if (RULER_MODE) buildRuler(intersects[0]);
+					else if (EDITOR) pickFaces(intersects[0]);
 				}
 			}
 		}
 	}
 }
 
-function onPointerMove( event ) {
-	//pointer.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-	//pointer.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
-	pointer.x = ( ( event.clientX - container.getBoundingClientRect().left ) / (canvasDimensions.x - 200 )) * 2 - 1;
-	pointer.y = - ((event.clientY - (container.getBoundingClientRect().top - document.body.scrollTop - 50)) / (canvasDimensions.y)) * 2 + 1;
-	/*pointer.x = ( event.clientX - windowHalfX ) / canvasDimensions.x;
-	pointer.y = ( event.clientY - windowHalfY ) / canvasDimensions.y;
-	raycaster.setFromCamera( pointer, camera );
-	if (typeof(helperObjects[0]) !== "undefined") {
-		if (helperObjects[0].name == "Scene" || helperObjects[0].children.length > 0)
-			var intersects = raycaster.intersectObjects( helperObjects[0].children, false );
-		else
-			var intersects = raycaster.intersectObjects( helperObjects[0], false );
-
-		if ( intersects.length > 0 ) {
-			const object = intersects[ 0 ].object;
-			if ( object !== transformControl.object ) {
-				if ( transformType != "" ) {
-					transformControl.mode = transformType;
-					transformControl.attach( helperObjects[0] );
+function onPointerMove( e ) {
+	pointer.x = ((e.clientX - container.getBoundingClientRect().left)/ renderer.domElement.clientWidth) * 2 - 1;
+	pointer.y = - ((e.clientY - container.getBoundingClientRect().top) / renderer.domElement.clientHeight) * 2 + 1;
+	if (e.buttons != 1) {
+		if (EDITOR) {
+			raycaster.setFromCamera( pointer, camera );
+			var intersects;
+		
+			if (mainObject.length > 1) {
+				for (let ii = 0; ii < mainObject.length; ii++) {
+					intersects = raycaster.intersectObjects( mainObject[ii].children, true );
+				}
+				if (intersects.length <= 0) {
+					intersects = raycaster.intersectObjects( mainObject, true );
 				}
 			}
+			else {
+				intersects = raycaster.intersectObjects( mainObject[0], true );
+			}
+			if (intersects.length > 0) {
+				pickFaces(intersects[0]);
+			}
+			else {
+				pickFaces("");
+			}
 		}
-	}*/
+	}
 }
 
 function changeScale () {
@@ -1465,7 +1568,7 @@ function changeScale () {
 function calculateObjectScale () {
 	const boundingBox = new THREE.Box3();
 	if (Array.isArray(helperObjects[0])) {
-		for (var i = 0; i < helperObjects[0].length; i++) {			
+		for (let i = 0; i < helperObjects[0].length; i++) {			
 			boundingBox.setFromObject( object[i] );
 		}
 	}
@@ -1494,6 +1597,22 @@ function calculateObjectScale () {
 
 function changeLightRotation () {
 	lightHelper.update();
+}
+
+function mainLoadModel (_ext) {
+	if (_ext === "glb" || _ext === "gltf") {
+		loadModel (path, basename, filename, extension, _ext);
+	}
+	else if  (_ext === "zip" || _ext === "rar" || _ext === "tar" || _ext === "xz" || _ext === "gz" ) {
+		compressedFile = "_" + _ext.toUpperCase() + "/";
+		loadModel (path+basename+compressedFile+"gltf/", basename, filename,  "glb", _ext);
+	}
+	else {
+		if (_ext === "glb")
+			loadModel (path, basename, filename, "glb", extension);
+		else
+			loadModel (path, basename, filename, _ext, extension);
+	}
 }
 
 function init() {
@@ -1539,14 +1658,14 @@ function init() {
 	renderer.domElement.id = 'MainCanvas';
 	container.appendChild( renderer.domElement );
 	mainCanvas = document.getElementById("MainCanvas");
-
+	
 	canvasText = document.createElement('div');
 	canvasText.id = "TextCanvas";
 	canvasText.width = canvasDimensions.x;
 	canvasText.height = canvasDimensions.y;
 
 	//DRUPAL WissKI [start]
-	if (!proxyPath) {
+	if (!dfgViewer) {
 		buildGallery();
 	}
 	//DRUPAL WissKI [end]
@@ -1556,13 +1675,13 @@ function init() {
 	controls.update();
 	
 	transformControl = new TransformControls( camera, renderer.domElement );
-	transformControl.addEventListener( 'objectChange', changeScale );
+	transformControl.rotationSnap = THREE.MathUtils.degToRad(5);
 	transformControl.space = "local";
 	transformControl.addEventListener( 'change', render );
 	transformControl.addEventListener( 'objectChange', changeScale );
 	transformControl.addEventListener( 'mouseUp', calculateObjectScale );
 	transformControl.addEventListener( 'dragging-changed', function ( event ) {
-		controls.enabled = ! event.value;
+		controls.enabled = ! event.value
 	} );
 	scene.add( transformControl );
 	
@@ -1583,40 +1702,59 @@ function init() {
 		controls.enabled = ! event.value;
 	} );
 	scene.add( transformControlLightTarget );
+	
+	var _ext = extension.toLowerCase();
 
+	var metadataPath = CONFIG.metadataDomain + EXPORT_PATH + wisskiID + '?page=0&amp;_format=xml';
+	if (proxy) {
+		metadataPath = xmlPath;
+	}
+
+	var req = new XMLHttpRequest();
+	req.responseType = 'xml';
+	req.open('GET', metadataPath, true);
+	req.onreadystatechange = function (aEvt) {
+		if (req.readyState == 4) {
+			if(req.status == 200) {
+				const parser = new DOMParser();
+				const doc = parser.parseFromString(req.responseText, "application/xml");
+				var data = doc.documentElement.childNodes[0].childNodes;
+				if (typeof (data) !== undefined) {
+					var _found = false;
+					for(var i = 0; i < data.length && !_found; i++) {
+						if ((typeof (data[i].tagName) !== "undefined") && (typeof (data[i].textContent) !== "undefined")) {							
+							var _label = data[i].tagName.replace("wisski_path_3d_model__", "");
+							if (typeof(_label) !== "undefined" && _label === "converted_file_name") {
+								_found = true;
+								var _autoPath = data[i].textContent;
+								//check wheter semo-automatic path found
+								if (_autoPath !== '') {							
+									filename = _autoPath.split("/").pop();
+									basename = filename.substring(0, filename.lastIndexOf('.'));
+									extension = filename.substring(filename.lastIndexOf('.') + 1);
+									_ext = extension.toLowerCase();
+									path = _autoPath.substring(0, _autoPath.lastIndexOf(filename));
+								}
+								mainLoadModel(_ext);
+							}
+						}
+					}
+				}
+			}
+			else {
+				console.log("Error during loading metadata content\n");
+				mainLoadModel (_ext);
+			}
+		}
+	};
+	req.send(null);
 	/*try {
 
 	} catch (e) {
 		// statements to handle any exceptions
 		loadModel(path, basename, filename, extension);
 	}*/
-	var _ext = extension.toLowerCase();
-	if (_ext === "glb" || _ext === "gltf") {
-		loadModel (path, basename, filename, extension, extension);
-	}
-	else if  (_ext === "zip" ) {
-		compressedFile = "_ZIP/";
-		loadModel (path+basename+compressedFile+"gltf/", basename, filename, "glb", extension);
-	}
-	else if  (_ext === "rar" ) {
-		compressedFile = "_RAR/";
-		loadModel (path+basename+compressedFile+"gltf/", basename, filename, "glb", extension);
-	}
-	else if  (_ext === "tar" ) {
-		compressedFile = "_TAR/";
-		loadModel (path+basename+compressedFile+"gltf/", basename, filename, "glb", extension);
-	}
-	else if  (_ext === "xz" ) {
-		compressedFile = "_XZ/";
-		loadModel (path+basename+compressedFile+"gltf/", basename, filename, "glb", extension);
-	}
-	else if  (_ext === "gz" ) {
-		compressedFile = "_GZ/";
-		loadModel (path+basename+compressedFile+"gltf/", basename, filename, "glb", extension);
-	}
-	else {
-		loadModel (path+"gltf/", basename, filename, "glb", extension);
-	}
+
 
 	container.addEventListener( 'pointerdown', onPointerDown );
 	container.addEventListener( 'pointerup', onPointerUp );
@@ -1685,7 +1823,7 @@ function init() {
 			var xhr = new XMLHttpRequest(),
 				jsonArr,
 				method = "POST",
-				jsonRequestURL = domain + "/editor.php";
+				jsonRequestURL = CONFIG.domain + "/editor.php";
 
 			xhr.open(method, jsonRequestURL, true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -1707,13 +1845,36 @@ function init() {
 			};
 			xhr.send(params);
 		}}, 'Save');
-		editorFolder.add({["Picking"] (){
+		editorFolder.add({["Picking mode"] () {
 			EDITOR=!EDITOR;
 			var _str;
 			EDITOR ? _str = "enabled" : _str = "disabled";
-			ruler = new THREE.Group();
 			showToast ("Face picking is " + _str);
-		}}, 'Picking');
+			if (!EDITOR) {
+
+			}
+			else {
+				RULER_MODE = false;
+			}
+		}}, 'Picking mode');
+		editorFolder.add({["Distance Measurement"] () {
+			RULER_MODE=!RULER_MODE;
+			var _str;
+			RULER_MODE ? _str = "enabled" : _str = "disabled";
+			showToast ("Distance measurement mode is " + _str);
+			if (!RULER_MODE) {
+				
+				ruler.forEach( (r) => {
+					scene.remove(r);
+				});
+				rulerObject = new THREE.Object3D();
+				ruler = [];
+				linePoints = [];
+			}
+			else {
+				EDITOR = false;
+			}
+		}}, 'Distance Measurement');
 		clippingFolder = editorFolder.addFolder('Clipping Planes').close();
 	}
 }

@@ -40,27 +40,59 @@ class View3DController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            $url = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['DEFAULT']);
-            $proxy = '';
-            if ($this->settings['useInternalProxy']) {
-                // Configure @action URL for form.
-                $uri = $this->uriBuilder->reset()
-                    ->setTargetPageUid($GLOBALS['TSFE']->id)
-                    ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                    ->setArguments([
-                        'eID' => 'tx_dlf_pageview_proxy',
-                        'url' => $url,
-                        'uHash' => 'View3DController'
-                        ])
-                    ->build();
-                    $proxy = $uri;
+            $model = trim($this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['DEFAULT']));
+            $this->view->assign('3d', $model);
+
+            $modelConverted = trim($this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[1]]['files']['CONVERTED']));
+            $xml = $this->requestData['id'];
+
+            $settingsParts = explode("/", $model);
+            $fileName = end($settingsParts);
+            $path = substr($model, 0,  strrpos($model, $fileName));
+            $modelSettings = $path . "metadata/" . $fileName . "_viewer";
+
+            if (!empty($modelConverted)) {
+                $model = $modelConverted;
             }
 
-            $this->view->assign('url', $url);
-            $this->view->assign('proxy', $proxy);
-            $this->view->assign('scriptMain', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/main.js');
-            $this->view->assign('scriptToastify', '/typo3conf/ext/dlf/Resources/Public/Javascript/Toastify/toastify.js');
-            $this->view->assign('scriptSpinner', '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/spinner/main.js');
+            if ($this->settings['useInternalProxy']) {
+                $absoluteUri = !empty($this->settings['forceAbsoluteUrl']) ? true : false;
+                
+                $model = $this->uriBuilder->reset()
+                    ->setTargetPageUid($GLOBALS['TSFE']->id)
+                    ->setCreateAbsoluteUri($absoluteUri)
+                    ->setArguments([
+                        'eID' => 'tx_dlf_pageview_proxy',
+                        'url' => $model,
+                        'uHash' => GeneralUtility::hmac($model, 'PageViewProxy')
+                        ])
+                    ->build();
+
+                $xml = $this->uriBuilder->reset()
+                    ->setTargetPageUid($GLOBALS['TSFE']->id)
+                    ->setCreateAbsoluteUri($absoluteUri)
+                    ->setArguments([
+                        'eID' => 'tx_dlf_pageview_proxy',
+                        'url' => $xml,
+                        'uHash' => GeneralUtility::hmac($xml, 'PageViewProxy')
+                        ])
+                    ->build();
+
+                $modelSettings = $this->uriBuilder->reset()
+                    ->setTargetPageUid($GLOBALS['TSFE']->id)
+                    ->setCreateAbsoluteUri($absoluteUri)
+                    ->setArguments([
+                        'eID' => 'tx_dlf_pageview_proxy',
+                        'url' => $modelSettings,
+                        'uHash' => GeneralUtility::hmac($modelSettings, 'PageViewProxy')
+                        ])
+                    ->build();
+            }
+
+            $this->view->assign('model', $model);
+            $this->view->assign('xml', $xml);
+            $this->view->assign('settings', $modelSettings);
+            $this->view->assign('proxy', $this->settings['useInternalProxy']);
         }
     }
 }
