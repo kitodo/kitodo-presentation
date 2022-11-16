@@ -115,24 +115,25 @@
 
 <f:section name="render.pageselect">
     <li class="pages">
-        <form method="get" action="{f:uri.page(pageUid='{viewData.requestData.pageUid}')}">
+        <f:form method="post" action="pageSelect" controller="Navigation" name="pageSelectForm" object="{pageSelectForm}" addQueryString="1">
             <f:if condition="{viewData.requestData.id}">
-                <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
+                <f:form.hidden property="id" value="{viewData.requestData.id}"/>
             </f:if>
             <f:if condition="{viewData.requestData.recordId}">
-                <f:form.hidden name="tx_dlf[recordId]" value="{viewData.requestData.recordId}"/>
+                <f:form.hidden property="recordId" value="{viewData.requestData.recordId}"/>
             </f:if>
             <f:if condition="{viewData.requestData.double}">
-                <f:form.hidden name="tx_dlf[double]" value="{viewData.requestData.double}"/>
+                <f:form.hidden property="double" value="{viewData.requestData.double}"/>
             </f:if>
             <label for="tx-dlf-page-{viewData.uniqueId}">
                 <f:translate key="selectPage"/>
             </label>
-            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" name="tx_dlf[page]"
-                options="{pageOptions}"
-                value="{viewData.requestData.page}"
-                additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
+            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" property="page"
+               options="{pageOptions}"
+               value="{viewData.requestData.page}"
+               additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
             </f:form.select>
+        </f:form>
         </form>
     </li>
 </f:section>

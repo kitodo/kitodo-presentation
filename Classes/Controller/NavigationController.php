@@ -26,6 +26,26 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 class NavigationController extends AbstractController
 {
     /**
+     * Method to get the page select values and use them with chash
+     * @param \Kitodo\Dlf\Domain\Model\PageSelectForm|NULL $pageSelectForm
+     * @return void
+     */
+    public function pageSelectAction(\Kitodo\Dlf\Domain\Model\PageSelectForm $pageSelectForm = NULL) {
+        $uriBuilder = $this->getControllerContext()->getUriBuilder();
+        $uri = $uriBuilder->reset()
+            ->setArguments(
+                [
+                    'tx_dlf' => [
+                        'id' => $pageSelectForm->getId(),
+                        'page' => $pageSelectForm->getPage()
+                    ]
+                ]
+            )
+            ->uriFor('main');
+        $this->redirectToUri($uri);
+    }
+
+    /**
      * The main method of the plugin
      *
      * @return void
