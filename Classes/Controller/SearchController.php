@@ -104,6 +104,7 @@ class SearchController extends AbstractController
         if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
             $this->searchParams = array_merge($this->searchParams ? : [], $listRequestData['searchParameter']);
             $listViewSearch = true;
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
