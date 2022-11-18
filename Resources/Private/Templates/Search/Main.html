@@ -37,10 +37,12 @@
     <f:form.submit value="{f:translate(key: 'search.submit')}" />
 
     <!-- Fulltext switch -->
-    <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
-    <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
-    <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
-    <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+    <f:if condition="{settings.fulltext}">
+        <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
+        <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
+        <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
+        <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+    </f:if>
 
     <f:if condition="{settings.searchIn} == 'collection' || {settings.searchIn} == 'all'">
         <f:form.hidden property="collections" value="{settings.collections}" />
