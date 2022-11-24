@@ -5,6 +5,12 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
+			<trans-unit id="search.dateFrom">
+				<source><![CDATA[From]]></source>
+			</trans-unit>
+			<trans-unit id="search.dateTo">
+				<source><![CDATA[To]]></source>
+			</trans-unit>
 			<trans-unit id="search.inFulltext">
 				<source><![CDATA[in fulltext]]></source>
 			</trans-unit>
