@@ -142,6 +142,8 @@ limitations under the License.
         <!-- Next two fields are mandatory for identifying documents. -->
         <field name="title" type="standard" indexed="true" stored="true" multiValued="false" default="" />
         <field name="volume" type="standard" indexed="true" stored="true" multiValued="false" default="" />
+        <!-- The date e.g a newspaper was issued or a letter was written -->
+        <field name="date" type="string" indexed="true" stored="true" multiValued="false" default="" />
         <!-- URL of thumbnail image for the document. -->
         <field name="thumbnail" type="string" indexed="false" stored="true" multiValued="false" default="" />
         <!-- CatchAll field. See <copyField> below. -->

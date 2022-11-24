@@ -336,6 +336,7 @@ class Indexer
             $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
             $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
+            $solrDoc->setField('date', $metadata['date']);
             $solrDoc->setField('record_id', $metadata['record_id'][0]);
             $solrDoc->setField('purl', $metadata['purl'][0]);
             $solrDoc->setField('location', $document->getLocation());

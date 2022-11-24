@@ -269,6 +269,7 @@ class Solr implements LoggerAwareInterface
         $fields['type'] = $conf['solrFieldType'];
         $fields['title'] = $conf['solrFieldTitle'];
         $fields['volume'] = $conf['solrFieldVolume'];
+        $fields['date'] = $conf['solrFieldDate'];
         $fields['thumbnail'] = $conf['solrFieldThumbnail'];
         $fields['default'] = $conf['solrFieldDefault'];
         $fields['timestamp'] = $conf['solrFieldTimestamp'];

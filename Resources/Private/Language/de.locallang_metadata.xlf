@@ -17,6 +17,10 @@
 				<source><![CDATA[Coordinates]]></source>
 				<target><![CDATA[Geoinformationen]]></target>
 			</trans-unit>
+			<trans-unit id="metadata.date" approved="yes">
+				<source><![CDATA[Date]]></source>
+				<target><![CDATA[Datum]]></target>
+			</trans-unit>
 			<trans-unit id="metadata.language" approved="yes">
 				<source><![CDATA[Language]]></source>
 				<target><![CDATA[Sprache]]></target>

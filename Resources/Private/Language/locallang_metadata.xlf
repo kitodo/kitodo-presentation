@@ -14,6 +14,9 @@
 			<trans-unit id="metadata.coordinates">
 				<source><![CDATA[Coordinates]]></source>
 			</trans-unit>
+			<trans-unit id="metadata.date">
+				<source><![CDATA[Date]]></source>
+			</trans-unit>
 			<trans-unit id="metadata.language">
 				<source><![CDATA[Language]]></source>
 			</trans-unit>

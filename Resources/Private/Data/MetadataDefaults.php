@@ -80,6 +80,25 @@ return [
         'is_listed' => 1,
         'index_autocomplete' => 0,
     ],
+    'date' => [
+        'format' => [
+            [
+                'format_root' => 'mods',
+                'xpath' => './mods:originInfo[@eventType="publication"]/mods:dateIssued[@encoding="iso8601"][@keyDate="yes"]',
+                'xpath_sorting' => '',
+            ],
+        ],
+        'default_value' => '',
+        'wrap' => '',
+        'index_tokenized' => 0,
+        'index_stored' => 1,
+        'index_indexed' => 1,
+        'index_boost' => 1.00,
+        'is_sortable' => 1,
+        'is_facet' => 0,
+        'is_listed' => 1,
+        'index_autocomplete' => 0,
+    ],
     'author' => [
         'format' => [
             [
