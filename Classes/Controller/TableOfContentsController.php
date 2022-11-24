@@ -327,7 +327,7 @@ class TableOfContentsController extends AbstractController
 
         if ($entry['children'] === null) {
             $entryArray['description'] = $entry['description'];
-            $id = str_replace("LOG", "PHYS", $entry['id']);
+            $id = $this->document->getDoc()->smLinks['l2p'][$entry['id']][0];
             $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$id]['files']['THUMBS']);
             $entryArray['doNotLinkIt'] = 0;
             // index.php?tx_dlf%5Bid%5D=http%3A%2F%2Flink_to_METS_file.xml
