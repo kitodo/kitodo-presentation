@@ -5,6 +5,7 @@ plugin.tx_dlf {
     }
     settings {
         storagePid = {$plugin.tx_dlf.persistence.storagePid}
+        useInternalProxy = 1
     }
 }
 
