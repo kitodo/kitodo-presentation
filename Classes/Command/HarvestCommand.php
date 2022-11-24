@@ -166,7 +166,7 @@ class HarvestCommand extends BaseCommand
 
         if (
             !is_array($input->getOption('from'))
-            && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $input->getOption('from'))
+            && preg_match('/^\d{4}-\d{2}-\d{2}$/', $input->getOption('from'))
         ) {
             $from = new \DateTime($input->getOption('from'));
         } else {
@@ -175,7 +175,7 @@ class HarvestCommand extends BaseCommand
 
         if (
             !is_array($input->getOption('until'))
-            && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $input->getOption('until'))
+            && preg_match('/^\d{4}-\d{2}-\d{2}$/', $input->getOption('until'))
         ) {
             $until = new \DateTime($input->getOption('until'));
         } else {
