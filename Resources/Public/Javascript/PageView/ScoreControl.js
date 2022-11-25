@@ -10,6 +10,74 @@
 
 const className = 'score-visible';
 const scrollOffset = 100;
+var  zoom = 40;
+var format = 'mei';
+var customOptions = undefined;
+var tk = {}
+
+
+let dlfScoreUtil;
+dlfScoreUtil = dlfScoreUtil || {};
+const verovioSetting = {
+	pageWidth: $('#tx-dlf-score').width(),
+  scale: 25,
+	//adjustPageWidth: true,
+	spacingLinear: .15,
+	pageHeight: $('#tx-dlf-score').height(),
+	//adjustPageHeight: true,
+  scaleToPageSize: true,
+  breaks: 'encoded',
+  mdivAll: true
+};
+
+dlfScoreUtil.fetchScoreDataFromServer = function(url, pagebeginning) {
+    console.log("fetch score data from server ");
+    const result = new $.Deferred();
+		const tk = new verovio.toolkit();
+
+
+	if (url === '') {
+		result.reject();
+		return result;
+	}
+
+
+    $.ajax({ url }).done(function (data, status, jqXHR) {
+        try {
+            const score = tk.renderData(jqXHR.responseText, verovioSettings);
+            const pageToShow = tk.getPageWithElement(pagebeginning);
+            console.log('pageToShow: ' + pageToShow);
+
+
+
+            console.log(dlfScoreUtils.get_play_midi);
+						dlfScoreUtils.get_play_midi(tk);
+            const midi = tk.renderToMIDI();
+            const str2blob = new Blob([midi]);
+
+
+            $("#tx_dlf_mididownload").attr({
+              "href": window.URL.createObjectURL(str2blob, {type: "text/plain"}),
+              "download": "demo.midi"
+            });
+            $("#tx_dlf_mididownload").click();
+            //$("#tx-dlf-tools-midi").click(dlfScoreUtils.get_play_midi(tk));
+
+            if (score === undefined) {
+                result.reject();
+            } else {
+                result.resolve(score);
+            }
+        } catch (e) {
+            console.error(e); // eslint-disable-line no-console
+            result.reject();
+        }
+    });
+
+    return [result, tk];
+};
+
+
 /**
  * Encapsulates especially the score behavior
  * @constructor
@@ -70,45 +138,127 @@ this.pagecount = pagecount;
 /**
  * @param {ScoreFeature} scoreData
  */
-dlfViewerScoreControl.prototype.loadScoreData = function (scoreData) {
+dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 	const target = document.getElementById('tx-dlf-score');
   if (target !== null) {
 		target.innerHTML = scoreData;
 	}
 
-  /*
-  const image = new Image();
+  console.log("the doc is ", $("#tx_dlf_scoredownload"));
 
-  const canvas = document.createElement("canvas");
-  canvas.innerHTML = scoreData
-  const clonedSvgElement = canvas.cloneNode(true);
-  const outerHTML = clonedSvgElement.outerHTML;
-  const blob = new Blob([outerHTML],{type:'image/svg+xml;charset=utf-8'});
-  const URL = window.URL || window.webkitURL || window;
-  const blobURL = URL.createObjectURL(blob);
-  let png = canvas.toDataURL();
-  image.src = blobURL;
-  image.width = 1000;
-  image.height = 1000;
-  image.style.backgroundColor= "black";
+ $("#tx_dlf_scoredownload").click( function() {
+   console.log("this is a download button")
+     var pdfFormat = "A4";
+   var pdfOrientation = "portrait";
+
+   var pdfFormat = $("#pdfFormat").val();
+   var pdfSize = [2100, 2970];
+   if (pdfFormat == "letter") pdfSize = [2159, 2794];
+   else if (pdfFormat == "B4") pdfSize = [2500, 3530];
+
+   var pdfOrientation = $("#pdfOrientation").val();
+   var pdfLandscape = pdfOrientation == 'landscape';
+   var pdfHeight = pdfLandscape ? pdfSize[0] : pdfSize[1];
+   var pdfWidth = pdfLandscape ? pdfSize[1] : pdfSize[0];
+
+   var fontCallback = function(family, bold, italic, fontOptions) {
+       if (family == "VerovioText") {
+           return family;
+       }
+       if (family.match(/(?:^|,)\s*sans-serif\s*$/) || true) {
+           if (bold && italic) {return 'Times-BoldItalic';}
+           if (bold && !italic) {return 'Times-Bold';}
+           if (!bold && italic) {return 'Times-Italic';}
+           if (!bold && !italic) {return 'Times-Roman';}
+       }
+   };
+
+   var options = {};
+   options.fontCallback = fontCallback;
 
 
-  let context = canvas.getContext('2d');
+   var doc = new PDFDocument({useCSS: true, compress: true, autoFirstPage: false, layout: pdfOrientation});
+   var stream = doc.pipe(blobStream());
+
+   stream.on('finish', function() {
+       var blob = stream.toBlob('application/pdf');
+       var pdfFilename = 'test.pdf'
+       saveAs(blob, pdfFilename);
+   });
 
 
-  context.drawImage(image, 0, 0, 1500, 1000 );
+   pdfOptions = {
+                       adjustPageHeight: false,
+                       adjustPageWidth: false,
+                       breaks: "auto",
+                       mmOutput: true,
+                       footer: "auto",
+                       pageHeight: pdfHeight,
+                       pageWidth: pdfWidth,
+                       scale: 100
+           }
 
-  $(".fulltext-container").append(image);
-  console.log("this is the image source" +blobURL)
+   console.log('Setting PDF options');
+   console.log(tk);
+   tk.setOptions(pdfOptions);
+   console.log('Redo layout');
+   tk.redoLayout({ "resetCache": false });
+   console.log('PDF generation started');
+   console.log(tk);
+   for (i = 0; i < tk.getPageCount(); i++) {
+       doc.addPage({size: pdfFormat, layout: pdfOrientation});
+       SVGtoPDF(doc, tk.renderToSVG(i + 1, {}), 0, 0, options);
+   }
+   tk.redoLayout({ "resetCache": false });
+   console.log('PDF generation finished');
 
-  $("#tx_dlf_scoredownload").attr({
-    "href": png,
-    "download": "demo.png"
-  });
-  $("#tx_dlf_scoredownload").click();
-*/
+   doc.end();
+
+       });
+
+
+};
+function calc_page_height() {
+    return ($(document).height() - $( "#navbar" ).height() - 4) * 100 / zoom;
+}
+function calc_page_width() {
+    return ($(".row-offcanvas").width()) * 100 / zoom ; // - $( "#sidbar" ).width();
+}
+
+
+function set_options(tk ) {
+
+    height = calc_page_height();
+    width = calc_page_width();
+
+
+    if (customOptions !== undefined) {
+        localStorage['customOptions'] = JSON.stringify(customOptions);
+        var mergedOptions = {};
+        for(var key in customOptions) mergedOptions[key] = customOptions[key];
+        for(var key in options) mergedOptions[key] = options[key];
+        options = mergedOptions;
+    }
+
+
+options = {
+	pageWidth: $('#tx-dlf-score').width(),
+  scale: 25,
+	//adjustPageWidth: true,
+	spacingLinear: .15,
+	pageHeight: $('#tx-dlf-score').height(),
+	//adjustPageHeight: true,
+  scaleToPageSize: true,
+  breaks: 'encoded',
+  mdivAll: true
 };
 
+console.log($('#tx-dlf-score').width());
+
+    //console.log( options );
+    tk.setOptions( options );
+    //vrvToolkit.setOptions( mergedOptions );
+}
 /**
  * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.
  */

@@ -178,6 +178,13 @@ var dlfViewer = function(settings){
      */
     this.magnifierEnabled = false;
 
+
+    /**
+     * @type {Object}
+     * @public
+     */
+     this.tk = null
+
     /**
      * @type {Boolean|false}
      * @private
@@ -236,16 +243,16 @@ dlfViewer.prototype.addCustomControls = function() {
     }
 
 	if (this.scoresLoaded_ !== null) {
+    const tk = this.tk;
 		const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
+		 this.scoresLoaded_
 
-		this.scoresLoaded_
-			.then(function (scoreData) {
-				scoreControl.loadScoreData(scoreData);
-				scoreControl.scrollToPagebeginning();
-			})
-			.catch(function () {
-				scoreControl.deactivate();
-			});
+     .then (function (scoreData) {
+       scoreControl.loadScoreData(scoreData, tk)
+     })
+    .catch(function () {
+      scoreControl.deactivate();
+    });
 	} else {
 		$('#tx-dlf-tools-score').remove();
 	}
@@ -587,7 +594,9 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
  * @private
  */
 dlfViewer.prototype.initLoadScores = function () {
-	this.scoresLoaded_ = dlfScoreUtils.fetchScoreDataFromServer(this.score, this.pagebeginning);
+  this.config = dlfScoreUtil.fetchScoreDataFromServer(this.score, this.pagebeginning);
+  this.scoresLoaded_ = this.config[0];
+  this.tk = this.config[1];
 };
 
 /**

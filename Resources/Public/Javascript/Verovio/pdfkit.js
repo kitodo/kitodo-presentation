@@ -5,6 +5,7 @@
 },{}],2:[function(require,module,exports){
 (function (global){(function (){
 'use strict';
+var verovio = {exports: {}};
 
 var objectAssign = require('object-assign');
 
