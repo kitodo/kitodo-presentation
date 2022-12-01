@@ -31,18 +31,20 @@ class NavigationController extends AbstractController
      * @return void
      */
     public function pageSelectAction(\Kitodo\Dlf\Domain\Model\PageSelectForm $pageSelectForm = NULL) {
-        $uriBuilder = $this->getControllerContext()->getUriBuilder();
-        $uri = $uriBuilder->reset()
-            ->setArguments(
-                [
-                    'tx_dlf' => [
-                        'id' => $pageSelectForm->getId(),
-                        'page' => $pageSelectForm->getPage()
+        if ($pageSelectForm) {
+            $uriBuilder = $this->getControllerContext()->getUriBuilder();
+            $uri = $uriBuilder->reset()
+                ->setArguments(
+                    [
+                        'tx_dlf' => [
+                            'id' => $pageSelectForm->getId(),
+                            'page' => $pageSelectForm->getPage()
+                        ]
                     ]
-                ]
-            )
-            ->uriFor('main');
-        $this->redirectToUri($uri);
+                )
+                ->uriFor('main');
+            $this->redirectToUri($uri);
+        }
     }
 
     /**
