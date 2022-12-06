@@ -14,6 +14,8 @@ var  zoom = 40;
 var format = 'mei';
 var customOptions = undefined;
 var tk = {}
+var ids = [];
+
 
 
 let dlfScoreUtil;
@@ -50,18 +52,73 @@ dlfScoreUtil.fetchScoreDataFromServer = function(url, pagebeginning) {
 
 
 
-            console.log(dlfScoreUtils.get_play_midi);
-						dlfScoreUtils.get_play_midi(tk);
+            //console.log(dlfScoreUtils.get_play_midi);
+					// dlfScoreUtils.get_play_midi(tk);
             const midi = tk.renderToMIDI();
             const str2blob = new Blob([midi]);
-
 
             $("#tx_dlf_mididownload").attr({
               "href": window.URL.createObjectURL(str2blob, {type: "text/plain"}),
               "download": "demo.midi"
             });
-            $("#tx_dlf_mididownload").click();
-            //$("#tx-dlf-tools-midi").click(dlfScoreUtils.get_play_midi(tk));
+            var midiUpdate = function(time) {
+                    var vrvTime = Math.max(0, time - 400);
+                    var elementsattime = vrvToolkit.getElementsAtTime(vrvTime);
+                    if (
+            elementsattime.page
+             > 0) {
+                        if (
+            elementsattime.page
+             != page) {
+                            page =
+            elementsattime.page
+            ;
+                            load_page();
+                        }
+                        if ((elementsattime.notes.length > 0) && (ids != elementsattime.notes)) {
+                            ids.forEach(function(noteid) {
+                                if ($.inArray(noteid, elementsattime.notes) == -1) {
+                                    $("#" + noteid ).attr("fill", "#000");
+                                    $("#" + noteid ).attr("stroke", "#000");
+                                    //$("#" + noteid ).removeClassSVG("highlighted");
+                                }
+                            });
+                            ids = elementsattime.notes;
+                            ids.forEach(function(noteid) {
+                                if ($.inArray(noteid, elementsattime.notes) != -1) {
+
+            //console.log
+            (noteid);
+                                    $("#" + noteid ).attr("fill", "#c00");
+                                    $("#" + noteid ).attr("stroke", "#c00");;
+                                    //$("#" + noteid ).addClassSVG("highlighted");
+                                }
+                            });
+                        }
+                    }
+                }
+            var midiStop = function() {
+        ids.forEach(function(noteid) {
+            $("#" + noteid ).attr("fill", "#000");
+            $("#" + noteid ).attr("stroke", "#000");
+            //$("#" + noteid ).removeClassSVG("highlighted");
+        });
+        $("#player").hide();
+        $("#play-button").show();
+    }
+
+           $("#tx_dlf_mididownload").click();
+             $("#tx-dlf-tools-midi").click( function() {
+              var base64midi = tk.renderToMIDI();
+              var song = 'data:audio/midi;base64,' + base64midi;
+              $("#player").midiPlayer({
+                  color: "#c00",
+                  width: 250,
+                  onUpdate: midiUpdate,
+                  onStop: midiStop
+              } )
+               $("#player").midiPlayer.play(song);
+             });
 
             if (score === undefined) {
                 result.reject();
@@ -225,6 +282,13 @@ function calc_page_width() {
     return ($(".row-offcanvas").width()) * 100 / zoom ; // - $( "#sidbar" ).width();
 }
 
+// function play_midi() {
+//     var base64midi = vrvToolkit.renderToMIDI();
+//     var song = 'data:audio/midi;base64,' + base64midi;
+//     $("#player").show();
+//     $("#play-button").hide();
+//     $("#player").midiPlayer.play(song);
+// }
 
 function set_options(tk ) {
 
