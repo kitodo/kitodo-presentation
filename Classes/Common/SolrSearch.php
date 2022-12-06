@@ -230,22 +230,36 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                 . $fields['uid'] . ':' . $this->searchParams['documentId'];
         }
 
-        // if a collection is given, we prepare the collection query string
+        // if collections are given, we prepare the collection query string
         if ($this->collection) {
-            if ($this->collection instanceof Collection) {
-                $collectionsQueryString = '"' . $this->collection->getIndexName() . '"';
-            } else {
-                $collectionsQueryString = '';
-                foreach ($this->collection as $index => $collectionEntry) {
-                    $collectionsQueryString .= ($index > 0 ? ' OR ' : '') . '"' . $collectionEntry->getIndexName() . '"';
+            $collectionsQueryString = '';
+            $virtualCollectionsQueryString = '';
+            foreach ($this->collection as $index => $collectionEntry) {
+                // check for virtual collections query string
+                if($collectionEntry->getIndexSearch()) {
+                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
+                }
+                else {
+                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
+                }
+            }
+            
+            // distinguish between simple collection browsing and actual searching within the collection(s)
+            if(!empty($collectionsQueryString)) {
+                if(empty($query)) {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
+                } else {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
                 }
             }
 
-            if (empty($query)) {
-                $params['filterquery'][]['query'] = 'toplevel:true';
-                $params['filterquery'][]['query'] = 'partof:0';
+            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
+            if(!empty($virtualCollectionsQueryString)) {
+                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
             }
-            $params['filterquery'][]['query'] = 'collection_faceting:(' . $collectionsQueryString . ')';
+
+            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
+            $params['filterquery'][]['query'] = implode(" OR ", array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
         }
 
         // Set some query parameters.
