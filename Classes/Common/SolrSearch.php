@@ -234,7 +234,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         if ($this->collection) {
             $collectionsQueryString = '';
             $virtualCollectionsQueryString = '';
-            foreach ($this->collection as $index => $collectionEntry) {
+            foreach ($this->collection as $collectionEntry) {
                 // check for virtual collections query string
                 if($collectionEntry->getIndexSearch()) {
                     $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
