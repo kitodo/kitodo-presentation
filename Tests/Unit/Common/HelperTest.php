@@ -45,4 +45,15 @@ XML;
         $this->assertIsObject($node);
         $this->assertEquals('root', $node->getName());
     }
+
+    /**
+     * @test
+     * @group timecodeToSeconds
+     */
+    public function canConvertTimecode()
+    {
+        $this->assertEquals(20, Helper::timecodeToSeconds('20'));
+        $this->assertEquals(20.5, Helper::timecodeToSeconds('20.5'));
+        $this->assertEquals(80.5, Helper::timecodeToSeconds('1:20.5'));
+    }
 }

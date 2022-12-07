@@ -200,6 +200,13 @@ class TableOfContentsController extends AbstractController
         // Set "title", "volume", "type" and "pagination" from $entry array.
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
+        if ($entry['videoChapter'] !== null) {
+            // Now consumers such as `slub_digitalcollections` may intercept clicks on these links
+            // and use the timecode to directly jump to that video position
+            // NOTE: Remember that the URL also contains parameters such as `tx_dlf[page]` and `cHash`
+            // TODO: For simplicity, this currently assumes all chapters are within the same video file
+            $entryArray['section'] = 'timecode=' . $entry['videoChapter']['timecode'] . ';fileIds=' . $entry['videoChapter']['fileIdsJoin'];
+        }
         $entryArray['orderlabel'] = $entry['orderlabel'];
         $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
@@ -254,11 +261,13 @@ class TableOfContentsController extends AbstractController
             && !empty($entry['children'])
         ) {
             // Build sub-menu only if one of the following conditions apply:
+            // 0. Configuration says that the full menu should be rendered
             // 1. Current menu node is in rootline
             // 2. Current menu node points to another file
             // 3. Current menu node has no corresponding images
             if (
-                $entryArray['ITEM_STATE'] == 'CUR'
+                $this->settings['showFull']
+                || $entryArray['ITEM_STATE'] == 'CUR'
                 || is_string($entry['points'])
                 || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
             ) {
