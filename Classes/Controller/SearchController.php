@@ -280,6 +280,7 @@ class SearchController extends AbstractController
         foreach (array_keys($facets) as $field) {
             $search['params']['component']['facetset']['facet'][] = [
                 'type' => 'field',
+                'mincount' => '1',
                 'key' => $field,
                 'field' => $field,
                 'limit' => $this->settings['limitFacets'],
@@ -315,7 +316,7 @@ class SearchController extends AbstractController
         if ($facet) {
             foreach ($facet as $field => $values) {
                 $entryArray = [];
-                $entryArray['field'] = substr($field, 0, strpos($field, '_'));
+                $entryArray['field'] = substr($field, 0, strpos($field, '_faceting'));
                 $entryArray['count'] = 0;
                 $entryArray['_OVERRIDE_HREF'] = '';
                 $entryArray['ITEM_STATE'] = 'NO';
