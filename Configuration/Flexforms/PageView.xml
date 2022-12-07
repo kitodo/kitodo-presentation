@@ -65,7 +65,7 @@
                             </config>
                         </TCEforms>
                     </settings.elementId>
-                    <settings.elementId>
+                    <settings.progressElementId>
                         <TCEforms>
                             <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.progressElementId</label>
@@ -75,7 +75,7 @@
                                 <default>tx-dlf-page-progress</default>
                             </config>
                         </TCEforms>
-                    </settings.elementId>
+                    </settings.progressElementId>
                     <settings.useInternalProxy>
                         <TCEforms>
                             <exclude>1</exclude>

@@ -1,0 +1,25 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<div class="tx-dlf-toc-preview-item">
+    <f:link.page
+        pageUid="{settings.targetPid}"
+        additionalParams="{'id': model.urlId, 'tx_dlf[id]': model.urlXml}"
+        title="{f:if(condition:'{model.title}', then: '{model.title}', else: '{model.type}')}">
+        <span class="tx-dlf-toc-title">{model.title}</span>
+        <br>
+        <img class="tx-dlf-toc-preview-image" src="{model.image}" alt="{model.title}">
+        <span class="tx-dlf-toc-description">{model.description}</span>
+    </f:link.page>
+</div>
