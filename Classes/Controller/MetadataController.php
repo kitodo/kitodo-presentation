@@ -212,7 +212,7 @@ class MetadataController extends AbstractController
 
                     if ($metadataName == 'title') {
                         // Get title of parent document if needed.
-                        if (empty($metadataValue) && $this->settings['getTitle'] && $this->document->getDoc()->parentId) {
+                        if (empty(implode('', $metadataValue)) && $this->settings['getTitle'] && $this->document->getPartof()) {
                             $superiorTitle = Doc::getTitle($this->document->getPartof(), true);
                             if (!empty($superiorTitle)) {
                                 $metadataArray[$i][$metadataName] = ['[' . $superiorTitle . ']'];
