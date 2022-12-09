@@ -16,6 +16,9 @@
 			</trans-unit>
 			<trans-unit id="metadata.date">
 				<source><![CDATA[Date]]></source>
+      </trans-unit>
+			<trans-unit id="metadata.description">
+				<source><![CDATA[Description]]></source>
 			</trans-unit>
 			<trans-unit id="metadata.language">
 				<source><![CDATA[Language]]></source>

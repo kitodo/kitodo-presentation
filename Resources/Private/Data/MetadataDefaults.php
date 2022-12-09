@@ -520,5 +520,24 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+    ],
+    'description' => [
+        'format' => [
+            [
+                'format_root' => 'mods',
+                'xpath' => './mods:recordInfo/mods:recordInfoNote',
+                'xpath_sorting' => '',
+            ],
+        ],
+        'default_value' => '',
+        'wrap' => '',
+        'index_tokenized' => 0,
+        'index_stored' => 0,
+        'index_indexed' => 0,
+        'index_boost' => 0.00,
+        'is_sortable' => 0,
+        'is_facet' => 0,
+        'is_listed' => 0,
+        'index_autocomplete' => 0,
     ]
 ];
