@@ -190,7 +190,7 @@ limitations under the License.
         <dynamicField name="*_uuu" type="string" stored="false" indexed="false" multiValued="true" />
         <!-- "*_faceting" and "*_sorting" should always be used in addition to one of the other fields. -->
         <dynamicField name="*_faceting" type="string" stored="false" indexed="true" multiValued="true" />
-        <dynamicField name="*_sorting" type="standard" stored="true" indexed="true" multiValued="false" />
+        <dynamicField name="*_sorting" type="string" stored="true" indexed="true" multiValued="false" />
     </fields>
 
     <uniqueKey>id</uniqueKey>
