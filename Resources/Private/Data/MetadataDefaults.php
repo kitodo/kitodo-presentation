@@ -84,7 +84,7 @@ return [
         'format' => [
             [
                 'format_root' => 'mods',
-                'xpath' => './mods:originInfo[@eventType="publication"]/mods:dateIssued[@encoding="iso8601"][@keyDate="yes"]',
+                'xpath' => './mods:originInfo/*[@encoding="iso8601" or @encoding="w3cdtf"][@keyDate="yes"]',
                 'xpath_sorting' => '',
             ],
         ],
