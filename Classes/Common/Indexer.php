@@ -461,6 +461,13 @@ class Indexer
                             $solrDoc->setField($index_name . '_faceting', $data);
                         }
                     }
+                    // Add sorting information to physical sub-elements if applicable.
+                    if (
+                        !empty($data)
+                        && substr($index_name, -8) == '_sorting'
+                    ) {
+                        $solrDoc->setField($index_name , $doc->metadataArray[$doc->toplevelId][$index_name]);
+                    }
                 }
             }
             // Add collection information to physical sub-elements if applicable.
