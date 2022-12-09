@@ -258,8 +258,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             ];
         } else {
             $querySort = [
+                'score' => 'desc',
                 'year_sorting' => 'asc',
                 'title_sorting' => 'asc',
+                'volume' => 'asc'
             ];
         }
 
