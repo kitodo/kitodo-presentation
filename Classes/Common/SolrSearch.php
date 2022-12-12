@@ -3,6 +3,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
