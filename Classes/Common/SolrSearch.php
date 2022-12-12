@@ -319,7 +319,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                 if ($documents[$doc['uid']]) {
                     // translate language code if applicable
                     if($doc['metadata']['language']) {
-                        foreach($doc['metadata']['language'] as $indexName) {
+                        foreach($doc['metadata']['language'] as $indexName => $language) {
                             $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
                         }
                     }
@@ -420,7 +420,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         foreach ($result['documents'] as $doc) {
             // translate language code if applicable
             if($doc['metadata']['language']) {
-                foreach($doc['metadata']['language'] as $indexName) {
+                foreach($doc['metadata']['language'] as $indexName => $language) {
                     $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
                 }
             }
