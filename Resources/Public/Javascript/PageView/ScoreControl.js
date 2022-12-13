@@ -17,6 +17,7 @@ var tk = {}
 var ids = [];
 
 
+let pdf_blob;
 
 let dlfScoreUtil;
 dlfScoreUtil = dlfScoreUtil || {};
@@ -197,15 +198,117 @@ this.pagecount = pagecount;
  */
 dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 	const target = document.getElementById('tx-dlf-score');
+
+  const extent = [0, 0, 1024, 968];
+  const map = new ol.Map({
+    target: target,
+    view: new ol.View({
+      center: [0, 0],
+      extent: [0, 0, 2560, 1280],
+      projection: 'EPSG:4326',
+      zoom: 2,
+    }),
+    interactions: [
+      new ol.interaction.DragPan(),
+      new ol.interaction.DragZoom(),
+      new ol.interaction.PinchZoom(),
+      new ol.interaction.MouseWheelZoom(),
+      new ol.interaction.KeyboardPan(),
+      new ol.interaction.KeyboardZoom(),
+      new ol.interaction.DragRotateAndZoom()
+    ],
+  });
+
+  const svgContainer = document.createElement('div');
+  svgContainer.innerHTML = scoreData;
+
+  const width = 2560;
+  const height = 1280;
+  const svgResolution = 360 / width;
+  svgContainer.style.width = width + 'px';
+  svgContainer.style.height = height + 'px';
+  svgContainer.style.transformOrigin = 'top left';
+  svgContainer.className = 'svg-layer';
+
+  map.addLayer(
+    new ol.layer.Layer({
+      render: function (frameState) {
+        const scale = svgResolution / frameState.viewState.resolution;
+        const center = frameState.viewState.center;
+        const size = frameState.size;
+        /*const cssTransform = ol.transform.composeCssTransform(
+          size[0] / 2,
+          size[1] / 2,
+          scale,
+          scale,
+          frameState.viewState.rotation,
+          -center[0] / svgResolution - width / 2,
+          center[1] / svgResolution - height / 2
+        );
+        svgContainer.style.transform = cssTransform;
+
+         */
+        svgContainer.style.opacity = this.getOpacity();
+        return svgContainer;
+      },
+    })
+  );
+
+  /*
+  const extent = [0, 0, 1024, 968];
+
+  var SVGLayer = new ol.layer.Image({
+    source: new ol.source.ImageStatic({
+      url: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg',
+      projection: new ol.proj.Projection({
+        units: 'pixels',
+        extent
+      }),
+      imageExtent: extent,
+    }),
+  });
+
+  let verovio_map = new ol.Map({
+    target: target,
+    interactions: [
+      new ol.interaction.DragPan(),
+      new ol.interaction.DragZoom(),
+      new ol.interaction.PinchZoom(),
+      new ol.interaction.MouseWheelZoom(),
+      new ol.interaction.KeyboardPan(),
+      new ol.interaction.KeyboardZoom(),
+      new ol.interaction.DragRotateAndZoom()
+    ],
+    // necessary for proper working of the keyboard events
+    keyboardEventTarget: document,
+    view: new ol.View({
+      center: [0, 0],
+      extent: extent,
+      zoom: 2,
+    }),
+  });
+
+  verovio_map.addLayer(SVGLayer);
+
+   */
+
   if (target !== null) {
-		target.innerHTML = scoreData;
+		//target.innerHTML = scoreData;
 	}
 
   console.log("the doc is ", $("#tx_dlf_scoredownload"));
 
  $("#tx_dlf_scoredownload").click( function() {
    console.log("this is a download button")
-     var pdfFormat = "A4";
+
+   if(typeof pdf_blob !== 'undefined') {
+       var pdfFilename = 'second.pdf'
+       saveAs(pdf_blob, pdfFilename);
+
+       return;
+   }
+
+   var pdfFormat = "A4";
    var pdfOrientation = "portrait";
 
    var pdfFormat = $("#pdfFormat").val();
@@ -234,13 +337,13 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
    options.fontCallback = fontCallback;
 
 
-   var doc = new PDFDocument({useCSS: true, compress: true, autoFirstPage: false, layout: pdfOrientation});
+   doc = new PDFDocument({useCSS: true, compress: true, autoFirstPage: false, layout: pdfOrientation});
    var stream = doc.pipe(blobStream());
 
    stream.on('finish', function() {
-       var blob = stream.toBlob('application/pdf');
+       pdf_blob = stream.toBlob('application/pdf');
        var pdfFilename = 'test.pdf'
-       saveAs(blob, pdfFilename);
+       saveAs(pdf_blob, pdfFilename);
    });
 
 
@@ -256,7 +359,15 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
            }
 
    console.log('Setting PDF options');
-   console.log(tk);
+
+   const pdf_tk = new verovio.toolkit();
+   pdf_tk.renderData(tk.getMEI(), pdfOptions);
+   for (let i = 0; i < pdf_tk.getPageCount(); i++) {
+     doc.addPage({size: pdfFormat, layout: pdfOrientation});
+     SVGtoPDF(doc, pdf_tk.renderToSVG(i + 1, {}), 0, 0, options);
+   }
+
+/*   console.log(tk);
    tk.setOptions(pdfOptions);
    console.log('Redo layout');
    tk.redoLayout({ "resetCache": false });
@@ -268,6 +379,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
    }
    tk.redoLayout({ "resetCache": false });
    console.log('PDF generation finished');
+
+ */
 
    doc.end();
 
