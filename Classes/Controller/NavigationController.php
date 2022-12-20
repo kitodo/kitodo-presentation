@@ -73,6 +73,7 @@ class NavigationController extends AbstractController
         $this->view->assign('viewData', $this->viewData);
 
         if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'search')) {
+            $lastSearchArguments = [];
             $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
             $widgetPage = $GLOBALS['TSFE']->fe_user->getKey('ses', 'widgetPage');
 
