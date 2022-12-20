@@ -38,7 +38,8 @@ class NavigationController extends AbstractController
                     [
                         'tx_dlf' => [
                             'id' => $pageSelectForm->getId(),
-                            'page' => $pageSelectForm->getPage()
+                            'page' => $pageSelectForm->getPage(),
+                            'double' => $pageSelectForm->getDouble()
                         ]
                     ]
                 )
