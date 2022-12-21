@@ -13,7 +13,7 @@ const scrollOffset = 100;
 var  zoom = 40;
 var format = 'mei';
 var customOptions = undefined;
-var tk = {}
+var tk = {};
 var ids = [];
 
 
@@ -36,7 +36,7 @@ const verovioSetting = {
 dlfScoreUtil.fetchScoreDataFromServer = function(url, pagebeginning) {
     console.log("fetch score data from server ");
     const result = new $.Deferred();
-		const tk = new verovio.toolkit();
+		tk = new verovio.toolkit();
 
 
 	if (url === '') {
