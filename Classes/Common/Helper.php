@@ -671,8 +671,8 @@ class Helper
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $index_name;
         }
-        /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        /** @var \TYPO3\CMS\Core\Domain\Repository\PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Domain\Repository\PageRepository::class);
 
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
 
@@ -798,8 +798,8 @@ class Helper
             if ($showHidden) {
                 $ignoreHide = 1;
             }
-            /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
-            $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+            /** @var \TYPO3\CMS\Core\Domain\Repository\PageRepository $pageRepository */
+            $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Domain\Repository\PageRepository::class);
 
             $expression = $pageRepository->enableFields($table, $ignoreHide);
             if (!empty($expression)) {
