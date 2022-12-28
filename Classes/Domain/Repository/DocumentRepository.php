@@ -544,7 +544,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param array $settings
      * @param array $searchParams
      * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
-     * @return array
+     * @return SolrSearch
      */
     public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
     {

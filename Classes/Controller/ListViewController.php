@@ -11,9 +11,8 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Domain\Model\Collection;
-use Kitodo\Dlf\Domain\Model\Metadata;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Kitodo\Dlf\Common\SolrPaginator;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -80,9 +79,10 @@ class ListViewController extends AbstractController
             }
         }
 
-        $widgetPage = $this->getParametersSafely('@widget_0');
-        if (empty($widgetPage)) {
-            $widgetPage = ['currentPage' => 1];
+        // Get current page from request data because the parameter is shared between plugins
+        $currentPage = $this->requestData['page'];
+        if (empty($currentPage)) {
+            $currentPage = 1;
         }
         $GLOBALS['TSFE']->fe_user->setKey('ses', 'widgetPage', $widgetPage);
 
@@ -92,17 +92,27 @@ class ListViewController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-        $solrResults = [];
+        $solrResults = null;
         $numResults = 0;
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
             $solrResults = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
             $numResults = $solrResults->getNumFound();
+
+            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
+            if (empty($itemsPerPage)) {
+                $itemsPerPage = 25;
+            }
+            $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
+            $simplePagination = new SimplePagination($solrPaginator);
+
+            $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
+            $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
         }
 
         $this->view->assign('viewData', $this->viewData);
         $this->view->assign('documents', $solrResults);
         $this->view->assign('numResults', $numResults);
-        $this->view->assign('widgetPage', $widgetPage);
+        $this->view->assign('page', $currentPage);
         $this->view->assign('lastSearch', $this->searchParams);
 
         $this->view->assign('sortableMetadata', $sortableMetadata);
