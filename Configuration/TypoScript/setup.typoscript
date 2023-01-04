@@ -18,38 +18,38 @@ config {
 
 page {
   includeCSS {
-    jPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
-    openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.css
+    jPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
+    openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.css
   }
 
   includeJSFooterlibs {
-    jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-3.6.0.min.js
+    jQuery = EXT:dlf/Resources/Public/JavaScript/jQuery/jquery-3.6.0.min.js
     jQuery.forceOnTop = 1
-    jQueryJPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js
-    jQueryUiMouseSlider = EXT:dlf/Resources/Public/Javascript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
+    jQueryJPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/jquery.jplayer.min.js
+    jQueryUiMouseSlider = EXT:dlf/Resources/Public/JavaScript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
   }
 
   includeJSFooter {
     # AudioPlayer plugin
-    kitodo-audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
+    kitodo-audioPlayer = EXT:dlf/Resources/Public/JavaScript/AudioPlayer/AudioPlayer.js
 
     # PageView plugin
-    kitodo-openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.js
+    kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
 
-    kitodo-pageView-utility = EXT:dlf/Resources/Public/Javascript/PageView/Utility.js
-    kitodo-pageView-ol = EXT:dlf/Resources/Public/Javascript/PageView/OL.js
-    kitodo-pageView-olStyles = EXT:dlf/Resources/Public/Javascript/PageView/OLStyles.js
-    kitodo-pageView-olSources = EXT:dlf/Resources/Public/Javascript/PageView/OLSources.js
-    kitodo-pageView-altoParser = EXT:dlf/Resources/Public/Javascript/PageView/AltoParser.js
-    kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationParser.js
-    kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationControl.js
-    kitodo-pageView-imageManipulationControl = EXT:dlf/Resources/Public/Javascript/PageView/ImageManipulationControl.js
-    kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextDownloadControl.js
-    kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextControl.js
-    kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
-    kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
-    kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
-    kitodo-search-suggest = EXT:dlf/Resources/Public/Javascript/Search/Suggester.js
+    kitodo-pageView-utility = EXT:dlf/Resources/Public/JavaScript/PageView/Utility.js
+    kitodo-pageView-ol = EXT:dlf/Resources/Public/JavaScript/PageView/OL.js
+    kitodo-pageView-olStyles = EXT:dlf/Resources/Public/JavaScript/PageView/OLStyles.js
+    kitodo-pageView-olSources = EXT:dlf/Resources/Public/JavaScript/PageView/OLSources.js
+    kitodo-pageView-altoParser = EXT:dlf/Resources/Public/JavaScript/PageView/AltoParser.js
+    kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/JavaScript/PageView/AnnotationParser.js
+    kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/JavaScript/PageView/AnnotationControl.js
+    kitodo-pageView-imageManipulationControl = EXT:dlf/Resources/Public/JavaScript/PageView/ImageManipulationControl.js
+    kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextDownloadControl.js
+    kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextControl.js
+    kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/JavaScript/PageView/FullTextUtility.js
+    kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
+    kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
+    kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
 
   }
 }

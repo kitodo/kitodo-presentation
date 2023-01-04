@@ -16,67 +16,67 @@ if (!defined('TYPO3_MODE')) {
 // Plugin "audioplayer".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_audioplayer'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_audioplayer'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_audioplayer', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/AudioPlayer.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_audioplayer', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/AudioPlayer.xml');
 // Plugin "basket".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_basket'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_basket'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_basket', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Basket.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_basket', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Basket.xml');
 // Plugin "calendar".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_calendar'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_calendar'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_calendar', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Calendar.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_calendar', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Calendar.xml');
 // Plugin "collection".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_collection'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_collection'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_collection', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Collection.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_collection', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Collection.xml');
 // Plugin "feeds".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_feeds'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_feeds'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_feeds', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Feeds.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_feeds', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Feeds.xml');
 // Plugin "listview".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_listview'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_listview'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_listview', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/ListView.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_listview', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/ListView.xml');
 // Plugin "metadata".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_metadata'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_metadata'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_metadata', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Metadata.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_metadata', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Metadata.xml');
 // Plugin "navigation".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_navigation'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_navigation'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_navigation', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Navigation.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_navigation', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Navigation.xml');
 // Plugin "oaipmh".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_oaipmh'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_oaipmh'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_oaipmh', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/OaiPmh.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_oaipmh', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/OaiPmh.xml');
 // Plugin "pagegrid".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_pagegrid'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_pagegrid'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_pagegrid', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/PageGrid.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_pagegrid', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/PageGrid.xml');
 // Plugin "pageview".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_pageview'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_pageview'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_pageview', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/PageView.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_pageview', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/PageView.xml');
 // Plugin "search".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_search'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_search'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_search', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Search.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_search', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Search.xml');
 // Plugin "statistics".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_statistics'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_statistics'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_statistics', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Statistics.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_statistics', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Statistics.xml');
 // Plugin "tableofcontents".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_tableofcontents'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_tableofcontents'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_tableofcontents', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/TableOfContents.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_tableofcontents', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/TableOfContents.xml');
 // Plugin "toolbox".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_toolbox'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_toolbox'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_toolbox', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/Toolbox.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_toolbox', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Toolbox.xml');
 // Plugin "view3d".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_view3d'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_view3d'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_view3d', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/View3D.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_view3d', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/View3D.xml');
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Kitodo.Dlf',
