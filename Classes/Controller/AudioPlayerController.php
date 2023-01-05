@@ -57,7 +57,7 @@ class AudioplayerController extends AbstractController
                         url:  "' . $this->audio['url'] . '"
                     },
                     parentElId: "tx-dlf-audio",
-                    swfPath: "' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('dlf')) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
+                    swfPath: "' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('dlf')) . 'Resources/Public/JavaScript/jPlayer/jquery.jplayer.swf"
                 });
             });
         ';
