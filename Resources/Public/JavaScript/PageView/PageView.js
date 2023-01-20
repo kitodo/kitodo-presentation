@@ -656,11 +656,11 @@ dlfViewer.prototype.getVisiblePages = function () {
         return this.initDoc.pages.map( (page, i) => ({
             pageNo: this.initDoc.query.minPage + i,
             pageObj: page
-        }))
+        }));
     } else {
         return this.docController.getVisiblePages();
     }
-}
+};
 
 /**
  *
@@ -680,7 +680,7 @@ dlfViewer.prototype.setDocController = function (docController) {
     this.docController.eventTarget.addEventListener('tx-dlf-stateChanged', () => {
         this.loadPages(this.getVisiblePages());
     });
-}
+};
 
 /**
  *
