@@ -34,7 +34,6 @@ const verovioSetting = {
 };
 
 dlfScoreUtil.fetchScoreDataFromServer = function(url, pagebeginning) {
-    console.log("fetch score data from server ");
     const result = new $.Deferred();
 		tk = new verovio.toolkit();
 
@@ -47,14 +46,11 @@ dlfScoreUtil.fetchScoreDataFromServer = function(url, pagebeginning) {
 
     $.ajax({ url }).done(function (data, status, jqXHR) {
         try {
-            const score = tk.renderData(jqXHR.responseText, verovioSettings);
+            let score = tk.renderData(jqXHR.responseText, verovioSettings);
             const pageToShow = tk.getPageWithElement(pagebeginning);
             console.log('pageToShow: ' + pageToShow);
+            score = tk.renderToSVG(pageToShow);
 
-
-
-            //console.log(dlfScoreUtils.get_play_midi);
-					// dlfScoreUtils.get_play_midi(tk);
             const midi = tk.renderToMIDI();
             const str2blob = new Blob([midi]);
 
@@ -88,8 +84,6 @@ dlfScoreUtil.fetchScoreDataFromServer = function(url, pagebeginning) {
                             ids.forEach(function(noteid) {
                                 if ($.inArray(noteid, elementsattime.notes) != -1) {
 
-            //console.log
-            (noteid);
                                     $("#" + noteid ).attr("fill", "#c00");
                                     $("#" + noteid ).attr("stroke", "#c00");;
                                     //$("#" + noteid ).addClassSVG("highlighted");
@@ -199,14 +193,12 @@ this.pagecount = pagecount;
 dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 	const target = document.getElementById('tx-dlf-score');
 
-  const extent = [0, 0, 1024, 968];
   const map = new ol.Map({
     target: target,
     view: new ol.View({
       center: [0, 0],
-      extent: [0, 0, 2560, 1280],
-      projection: 'EPSG:4326',
-      zoom: 2,
+      extent: [-1050, -1485, 1050, 1485],
+      zoom: 1,
     }),
     interactions: [
       new ol.interaction.DragPan(),
@@ -222,9 +214,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
   const svgContainer = document.createElement('div');
   svgContainer.innerHTML = scoreData;
 
-  const width = 2560;
-  const height = 1280;
-  const svgResolution = 360 / width;
+  const width = 2100;
+  const height = 2970;
   svgContainer.style.width = width + 'px';
   svgContainer.style.height = height + 'px';
   svgContainer.style.transformOrigin = 'top left';
@@ -233,10 +224,13 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
   map.addLayer(
     new ol.layer.Layer({
       render: function (frameState) {
+
+        const svgResolution = 1;
         const scale = svgResolution / frameState.viewState.resolution;
         const center = frameState.viewState.center;
         const size = frameState.size;
-        /*const cssTransform = ol.transform.composeCssTransform(
+
+        const cssTransform = ol.transform.composeCssTransform(
           size[0] / 2,
           size[1] / 2,
           scale,
@@ -245,62 +239,15 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
           -center[0] / svgResolution - width / 2,
           center[1] / svgResolution - height / 2
         );
-        svgContainer.style.transform = cssTransform;
 
-         */
+        svgContainer.style.transform = cssTransform;
         svgContainer.style.opacity = this.getOpacity();
         return svgContainer;
       },
     })
   );
 
-  /*
-  const extent = [0, 0, 1024, 968];
-
-  var SVGLayer = new ol.layer.Image({
-    source: new ol.source.ImageStatic({
-      url: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg',
-      projection: new ol.proj.Projection({
-        units: 'pixels',
-        extent
-      }),
-      imageExtent: extent,
-    }),
-  });
-
-  let verovio_map = new ol.Map({
-    target: target,
-    interactions: [
-      new ol.interaction.DragPan(),
-      new ol.interaction.DragZoom(),
-      new ol.interaction.PinchZoom(),
-      new ol.interaction.MouseWheelZoom(),
-      new ol.interaction.KeyboardPan(),
-      new ol.interaction.KeyboardZoom(),
-      new ol.interaction.DragRotateAndZoom()
-    ],
-    // necessary for proper working of the keyboard events
-    keyboardEventTarget: document,
-    view: new ol.View({
-      center: [0, 0],
-      extent: extent,
-      zoom: 2,
-    }),
-  });
-
-  verovio_map.addLayer(SVGLayer);
-
-   */
-
-  if (target !== null) {
-		//target.innerHTML = scoreData;
-	}
-
-  console.log("the doc is ", $("#tx_dlf_scoredownload"));
-
  $("#tx_dlf_scoredownload").click( function() {
-   console.log("this is a download button")
-
    if(typeof pdf_blob !== 'undefined') {
        var pdfFilename = 'second.pdf'
        saveAs(pdf_blob, pdfFilename);
@@ -358,29 +305,12 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
                        scale: 100
            }
 
-   console.log('Setting PDF options');
-
    const pdf_tk = new verovio.toolkit();
    pdf_tk.renderData(tk.getMEI(), pdfOptions);
    for (let i = 0; i < pdf_tk.getPageCount(); i++) {
      doc.addPage({size: pdfFormat, layout: pdfOrientation});
      SVGtoPDF(doc, pdf_tk.renderToSVG(i + 1, {}), 0, 0, options);
    }
-
-/*   console.log(tk);
-   tk.setOptions(pdfOptions);
-   console.log('Redo layout');
-   tk.redoLayout({ "resetCache": false });
-   console.log('PDF generation started');
-   console.log(tk);
-   for (i = 0; i < tk.getPageCount(); i++) {
-       doc.addPage({size: pdfFormat, layout: pdfOrientation});
-       SVGtoPDF(doc, tk.renderToSVG(i + 1, {}), 0, 0, options);
-   }
-   tk.redoLayout({ "resetCache": false });
-   console.log('PDF generation finished');
-
- */
 
    doc.end();
 
@@ -430,11 +360,7 @@ options = {
   mdivAll: true
 };
 
-console.log($('#tx-dlf-score').width());
-
-    //console.log( options );
     tk.setOptions( options );
-    //vrvToolkit.setOptions( mergedOptions );
 }
 /**
  * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.
@@ -449,7 +375,6 @@ dlfViewerScoreControl.prototype.changeActiveBehaviour = function() {
 };
 
 dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function() {
-  console.log("addActiveBehaviourForSwitchOn")
     const anchorEl = $('#tx-dlf-tools-score');
     if (anchorEl.length > 0){
         const toggleScore = $.proxy(function(event) {
@@ -478,7 +403,6 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function() {
 };
 
 dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function() {
-  console.log("addActiveBehaviourForSwitchOff")
     const anchorEl = $('#tx-dlf-tools-score');
     if (anchorEl.length > 0){
         const toggleScore = $.proxy(function(event) {
@@ -512,7 +436,6 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function() {
  * Activate Score Features
  */
 dlfViewerScoreControl.prototype.activate = function() {
-  console.log("activate")
     const controlEl = $('#tx-dlf-tools-score');
 
     // now activate the score overlay and map behavior
@@ -528,7 +451,6 @@ dlfViewerScoreControl.prototype.activate = function() {
  * Activate Fulltext Features
  */
 dlfViewerScoreControl.prototype.deactivate = function() {
-  console.log("deactivate")
     const controlEl = $('#tx-dlf-tools-score');
 
     // deactivate fulltext
@@ -546,7 +468,6 @@ dlfViewerScoreControl.prototype.deactivate = function() {
  * @return void
  */
 dlfViewerScoreControl.prototype.disableScoreSelect = function() {
-  console.log("disable ScoreSelect  is selcted")
 
   $('#tx-dfgviewer-map').width('100%');
   this.dlfViewer.updateLayerSize();
@@ -569,7 +490,6 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function() {
  * Activate Score Features
  */
 dlfViewerScoreControl.prototype.enableScoreSelect = function() {
-  console.log("enable score is selcted")
 
   $('#tx-dfgviewer-map').width('50%');
   this.dlfViewer.updateLayerSize();

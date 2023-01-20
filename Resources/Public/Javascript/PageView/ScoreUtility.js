@@ -19,13 +19,11 @@
 let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
 const verovioSettings = {
-	pageWidth: $('#tx-dlf-score').width(),
-  scale: 25,
+  //scale: 25,
 	//adjustPageWidth: true,
-	spacingLinear: .15,
-	pageHeight: $('#tx-dlf-score').height(),
+	//spacingLinear: .15,
 	//adjustPageHeight: true,
-  scaleToPageSize: true,
+  //scaleToPageSize: true,
   breaks: 'encoded',
   mdivAll: true
 };
