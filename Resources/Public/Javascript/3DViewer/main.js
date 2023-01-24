@@ -54,7 +54,7 @@ const CONFIG = {
 	"galleryImageClass": "field--type-image"
 };
 
-let camera, scene, renderer, stats, controls, loader, ambientLight, dirLight, dirLightTarget;
+let camera, scene, renderer, stats, controls, loader, ambientLight, dirLight, dirLightTarget, cameraLight, cameraLightTarget;
 let dirLights = [];
 let imported;
 var mainObject = [];
@@ -510,6 +510,8 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 			}
 		}
 	}
+	cameraLightTarget.position.set(_object.position.x, _object.position.y, _object.position.z);
+	cameraLight.target.updateMatrixWorld();
 }
 
 function setupClippingPlanes (_geometry, _size, _distance) {	
@@ -1564,6 +1566,11 @@ function onPointerUp( e ) {
 function onPointerMove( e ) {
 	pointer.x = ((e.clientX - container.getBoundingClientRect().left)/ renderer.domElement.clientWidth) * 2 - 1;
 	pointer.y = - ((e.clientY - container.getBoundingClientRect().top) / renderer.domElement.clientHeight) * 2 + 1;
+	if (e.buttons === 1) {
+		if (pointer.x !== onDownPosition.x && pointer.y !== onDownPosition.y) {
+			cameraLight.position.set(camera.position.x, camera.position.y, camera.position.z);
+		}
+	}
 	if (e.buttons !== 1) {
 		if (EDITOR) {
 			raycaster.setFromCamera( pointer, camera );
@@ -1696,6 +1703,18 @@ function init() {
 	dirLight.shadow.mapSize.height = 1024*4;
 	scene.add( dirLight );
 	lightObjects.push( dirLight );
+	
+	cameraLightTarget = new THREE.Object3D();
+	cameraLightTarget.position.set(camera.position.x, camera.position.y, camera.position.z);
+	scene.add(cameraLightTarget);
+
+	cameraLight = new THREE.DirectionalLight( 0xffffff );
+	cameraLight.position.set( camera.position );
+	cameraLight.castShadow = false;
+	cameraLight.intensity = 0.3;
+	scene.add( cameraLight );
+	cameraLight.target = cameraLightTarget;
+	cameraLight.target.updateMatrixWorld();
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, logarithmicDepthBuffer: true, colorManagement: true, sortObjects: true, preserveDrawingBuffer: true, powerPreference: "high-performance" } );
 	renderer.setPixelRatio( window.devicePixelRatio );
