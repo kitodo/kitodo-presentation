@@ -358,7 +358,7 @@ class BasketController extends AbstractController
      * @param array $_piVars: piVars
      * @param Basket $basket: basket object
      *
-     * @return array Basket data and Javascript output
+     * @return array Basket data and JavaScript output
      */
     protected function addToBasket($_piVars, $basket)
     {
