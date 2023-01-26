@@ -582,7 +582,7 @@ return [
         'format' => [
             [
                 'format_root' => 'mods',
-                'xpath' => './mods:relatedItem/mods:location/mods:physicalLocation',
+                'xpath' => './mods:relatedItem[@type="original"]/mods:location/mods:physicalLocation',
                 'xpath_sorting' => '',
             ],
         ],
