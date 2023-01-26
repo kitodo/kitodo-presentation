@@ -601,7 +601,7 @@ return [
         'format' => [
             [
                 'format_root' => 'mods',
-                'xpath' => './mods:relatedItem/mods:location/mods:url[@displayLabel="geonames"]',
+                'xpath' => './mods:relatedItem[@type="original"]/mods:location/mods:physicalLocation[@authority="geonames"]/@valueURI',
                 'xpath_sorting' => '',
             ],
         ],
@@ -620,7 +620,7 @@ return [
         'format' => [
             [
                 'format_root' => 'mods',
-                'xpath' => './mods:relatedItem/mods:location/mods:url[@displayLabel="wikidata"]',
+                'xpath' => './mods:relatedItem[@type="original"]/mods:location/mods:url[@note="wikidata"]',
                 'xpath_sorting' => '',
             ],
         ],
@@ -639,7 +639,7 @@ return [
         'format' => [
             [
                 'format_root' => 'mods',
-                'xpath' => './mods:relatedItem/mods:location/mods:url[@displayLabel="wikipedia"]',
+                'xpath' => './mods:relatedItem[@type="original"]/mods:location/mods:url[@note="wikipedia"]',
                 'xpath_sorting' => '',
             ],
         ],
