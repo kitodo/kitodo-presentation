@@ -544,7 +544,7 @@ return [
         'format' => [
             [
                 'format_root' => 'mods',
-                'xpath' => './mods:relatedItem/mods:titleInfo[not(@displayLabel="alternative")]/mods:title',
+                'xpath' => './mods:relatedItem[@type="original"]/mods:titleInfo[not(@type="alternative")]/mods:title',
                 'xpath_sorting' => '',
             ],
         ],
@@ -563,7 +563,7 @@ return [
         'format' => [
             [
                 'format_root' => 'mods',
-                'xpath' => './mods:relatedItem/mods:titleInfo[@displayLabel="alternative"]/mods:title',
+                'xpath' => './mods:relatedItem[@type="original"]/mods:titleInfo[@type="alternative"]/mods:title',
                 'xpath_sorting' => '',
             ],
         ],
