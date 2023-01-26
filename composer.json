@@ -37,7 +37,7 @@
     "typo3/cms-tstemplate": "^9.5.31|^10.4.34",
     "caseyamcl/phpoaipmh": "^3.3",
     "ubl/php-iiif-prezi-reader": "0.3.0",
-    "solarium/solarium": "^5.2"
+    "solarium/solarium": "^6.2"
   },
   "require-dev": {
     "spatie/phpunit-watcher": "^1.23",
