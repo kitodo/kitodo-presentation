@@ -22,7 +22,7 @@ namespace Kitodo\Dlf\Format;
  */
 class Mods implements \Kitodo\Dlf\Common\MetadataInterface
 {
-        /**
+    /**
      * The metadata XML
      *
      * @var \SimpleXMLElement
