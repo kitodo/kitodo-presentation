@@ -114,7 +114,7 @@ class Client
      **/
     private function getApiEndpoint()
     {
-        $url  = 'https://' . $this->level . '.' .  self::HOSTNAME;
+        $url  = 'https://' . $this->level . '.' . self::HOSTNAME;
         $url .= '/v' . self::VERSION . '/';
         $url .= '0000-0001-9483-5161';
         //$url .= $this->orcid;
