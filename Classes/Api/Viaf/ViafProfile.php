@@ -53,14 +53,14 @@ class ViafProfile
     /**
      * Constructs client instance
      *
-     * @param string $viafUrl: the VIAF URL of the profile
+     * @param string $viaf: the VIAF identifier of the profile
      *
      * @return void
      **/
-    public function __construct($viafUrl)
+    public function __construct($viaf)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-        $this->client = new ViafClient($viafUrl, GeneralUtility::makeInstance(RequestFactory::class));
+        $this->client = new ViafClient($viaf, GeneralUtility::makeInstance(RequestFactory::class));
     }
 
     /**

@@ -146,10 +146,10 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             for ($i = 0, $j = count($holders); $i < $j; $i++) {
                 $holders[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-                $identifier = $holders[$i]->xpath('./mods:nameIdentifier');
-                if ($identifier[0]['type'] == 'viaf') {
-                    $viafUrl = (string) $identifier[0];
-                    $profile = new ViafProfile($viafUrl);
+                $identifier = $holders[$i]->xpath('./mods:name/mods:nameIdentifier[@type="viaf"]');
+                if (!empty((string) $identifier[0])) {
+                    $viaf = (string) $identifier[0];
+                    $profile = new ViafProfile($viaf);
                     $this->metadata['holder'][$i] = $profile->getFullName();
                 } else {
                     // Check if there is a display form.

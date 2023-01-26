@@ -43,11 +43,11 @@ class ViafClient
     private $endpoint = 'viaf.xml';
 
     /**
-     * The VIAF URL of the profile
+     * The VIAF identifier of the profile
      *
      * @var string
      **/
-    private $viafUrl = null;
+    private $viaf = null;
 
     /**
      * The request object
@@ -59,14 +59,14 @@ class ViafClient
     /**
      * Constructs a new instance
      *
-     * @param string $viafUrl: the VIAF URL of the profile
+     * @param string $viaf: the VIAF identifier of the profile
      * @param RequestFactory $requestFactory a request object to inject
      * @return void
      **/
-    public function __construct($viafUrl, RequestFactory $requestFactory)
+    public function __construct($viaf, RequestFactory $requestFactory)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-        $this->viafUrl = $viafUrl;
+        $this->viafUrl = 'http://viaf.org/viaf/' . $viaf;
         $this->requestFactory = $requestFactory;
     }
 
