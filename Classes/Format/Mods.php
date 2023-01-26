@@ -82,14 +82,10 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             for ($i = 0, $j = count($authors); $i < $j; $i++) {
                 $authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-                $identifier = $authors[$i]->xpath('./mods:nameIdentifier');
-                if ($identifier[0]['type'] == 'orcid' && !empty((string) $identifier[0])) {
-                    $orcidIdParts = explode('/', (string) $identifier[0]);
-                    $orcidId = trim(end($orcidIdParts));
-                    if (!str_contains($orcidId, 'orcid=')) {
-                        $profile = new Profile($orcidId);
-                        $this->metadata['author'][$i] = $profile->getFullName();
-                    }
+                $identifier = $authors[$i]->xpath('./mods:name/mods:nameIdentifier[@type="orcid"]');
+                if (!empty((string) $identifier[0])) {
+                    $profile = new Profile((string) $identifier[0]);
+                    $this->metadata['author'][$i] = $profile->getFullName();
                 } else {
                     // Check if there is a display form.
                     if (($displayForm = $authors[$i]->xpath('./mods:displayForm'))) {
