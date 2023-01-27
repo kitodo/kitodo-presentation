@@ -309,7 +309,7 @@ function addTextWatermark (_text, _scale) {
 	];
 	const loader = new FontLoader();
 
-	loader.load( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
+	loader.load( '/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
 
 		const textGeo = new TextGeometry( _text, {
 			font,
@@ -347,7 +347,7 @@ function addTextPoint (_text, _scale, _point) {
 	];
 	const loader = new FontLoader();
 
-	loader.load( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
+	loader.load( '/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
 
 		const textGeo = new TextGeometry( _text, {
 			font,
@@ -1114,10 +1114,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					var cPath = path;
 					//if (compressedFile !== '') { cPath = CONFIG.domain + '/' + uri; }
 					if (compressedFile !== '') { filename = filename.replace(orgExtension, extension); }
-					downloadModel.innerHTML = "<a href='" + cPath + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
+					downloadModel.innerHTML = "<a href='" + cPath + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
 					
 					if (proxy) {
-						viewEntity.innerHTML = "<a href='" + CONFIG.domain + "/wisski/navigate/" + wisskiID + "/view' target='_blank'><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/share.svg' alt='View Entity' width=22 height=22 title='View Entity'/></a>";
+						viewEntity.innerHTML = "<a href='" + CONFIG.domain + "/wisski/navigate/" + wisskiID + "/view' target='_blank'><img src='/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/img/share.svg' alt='View Entity' width=22 height=22 title='View Entity'/></a>";
 					}
 					else
 					{
@@ -1127,7 +1127,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					fullscreenMode = document.createElement('div');
 					fullscreenMode.setAttribute('id', 'fullscreenMode');
 					fullscreenMode.setAttribute('style', 'bottom:' + Math.round(-canvasDimensions.y + 85) + 'px');
-					fullscreenMode.innerHTML = "<img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/fullscreen.png' alt='Fullscreen' width=20 height=20 title='Fullscreen mode'/>";
+					fullscreenMode.innerHTML = "<img src='/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/img/fullscreen.png' alt='Fullscreen' width=20 height=20 title='Fullscreen mode'/>";
 					metadataContainer.appendChild(fullscreenMode);
 					//var _container = document.getElementById("MainCanvas");
 					container.appendChild(metadataContainer);
@@ -1271,7 +1271,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			
 			case 'ifc':
 				const ifcLoader = new IFCLoader();
-				ifcLoader.ifcManager.setWasmPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/ifc/' );
+				ifcLoader.ifcManager.setWasmPath( '/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/js/jsm/loaders/ifc/' );
 				ifcLoader.load( modelPath, function ( object ) {
 					//object.position.set (0, 300, 0);
 					scene.add( object );
@@ -1362,7 +1362,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'glb':
 			case 'gltf':
 				const dracoLoader = new DRACOLoader();
-				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/libs/draco/' );
+				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/js/libs/draco/' );
 				dracoLoader.preload();
 				const gltf = new GLTFLoader();
 				gltf.setDRACOLoader(dracoLoader);

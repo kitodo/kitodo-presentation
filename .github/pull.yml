@@ -3,6 +3,18 @@ rules:
   - base: master
     upstream: kitodo:master
     mergeMethod: hardreset
+  - base: 1.x
+    upstream: kitodo:1.x
+    mergeMethod: hardreset
   - base: 2.x
     upstream: kitodo:2.x
+    mergeMethod: hardreset
+  - base: 3.2.x
+    upstream: kitodo:3.2.x
+    mergeMethod: hardreset
+  - base: 3.3.x
+    upstream: kitodo:3.3.x
+    mergeMethod: hardreset
+  - base: 4.x
+    upstream: kitodo:4.x
     mergeMethod: hardreset
