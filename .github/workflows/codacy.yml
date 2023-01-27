@@ -1,44 +1,29 @@
-name: Static Code Analyzing and Security Scanning
+name: Codacy.com
 
 on:
   # Trigger analysis when pushing in stable branches (which includes merging pull requests)
   push:
-    branches: [master, 2.x]
+    branches: [ "master", "1.x", "2.x", "3.2.x", "3.3.x", "4.x" ]
+  pull_request:
+    branches: [ "master" ]
   # Trigger analysis when a new release is drafted
   release:
-    type: [created, edited]
+    type: [ "created", "edited" ]
 
 jobs:
-  sonarcloud:
-    name: SonarCloud Static Code Analyzer
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
-      # Execute SonarCloud Scan
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   codacy-security-scan:
-    name: Codacy Security Scan
+    name: Security Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
 
       # Execute Codacy Analysis CLI and generate a SARIF output
       - name: Run Codacy Analysis CLI
-        uses: codacy/codacy-analysis-cli-action@master
+        uses: codacy/codacy-analysis-cli-action@v4
         with:
           # You can also omit the token and run the tools that support default configurations
           project-token: ${{ secrets.CODACY_TOKEN }}
@@ -53,6 +38,6 @@ jobs:
 
       # Upload the SARIF file generated in the previous step
       - name: Upload SARIF results file
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: results.sarif
