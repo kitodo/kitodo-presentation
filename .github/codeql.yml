@@ -1,0 +1,12 @@
+   name: "CodeQL Configuration"
+   
+   queries:
+     - uses: security-and-quality
+   
+   paths-ignore:
+     - Resources/Public/Javascript/OpenLayers
+     - Resources/Public/Javascript/Toastify
+     - Resources/Public/Javascript/jPlayer
+     - Resources/Public/Javascript/jQuery
+     - Resources/Public/Javascript/jQueryUI
+ 

@@ -207,6 +207,7 @@
             <label index="config.solrFieldType">Solr Schema Field "type" : Type of document (eg. monograph, chapter, etc.) (default is "type")</label>
             <label index="config.solrFieldTitle">Solr Schema Field "title" : Title field is mandatory for identifying documents (default is "title")</label>
             <label index="config.solrFieldVolume">Solr Schema Field "volume" : Volume field is mandatory for identifying documents (default is "volume")</label>
+            <label index="config.solrFieldDate">Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (default is "date")</label>
             <label index="config.solrFieldThumbnail">Solr Schema Field "thumbnail" : URL of thumbnail image for the document (default is "thumbnail")</label>
             <label index="config.solrFieldDefault">Solr Schema Field default" : CatchAll field (default is "default")</label>
             <label index="config.solrFieldTimestamp">Solr Schema Field "timestamp" : (default is "timestamp")</label>
@@ -415,6 +416,7 @@
             <label index="config.solrFieldType">Solr-Schema-Feld "type" : Type of document (eg. monograph, chapter, etc.) (Standard ist "type")</label>
             <label index="config.solrFieldTitle">Solr-Schema-Feld "title" : Title field is mandatory for identifying documents (Standard ist "title")</label>
             <label index="config.solrFieldVolume">Solr-Schema-Feld "volume" : Volume field is mandatory for identifying documents (Standard ist "volume")</label>
+            <label index="config.solrFieldDate">Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (Standard ist "date")</label>
             <label index="config.solrFieldThumbnail">Solr-Schema-Feld "thumbnail" : URL of thumbnail image for the document (Standard ist "thumbnail")</label>
             <label index="config.solrFieldDefault">Solr-Schema-Feld "default" : CatchAll field (Standard ist "default")</label>
             <label index="config.solrFieldTimestamp">Solr-Schema-Feld "timestamp" : (Standard ist "timestamp")</label>
