@@ -106,6 +106,19 @@ class SearchController extends AbstractController
             $listViewSearch = true;
         }
 
+        // sanitize date search input
+        if(empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            $this->searchParams['dateFrom'] = '*';
+        }
+        if(empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+            $this->searchParams['dateTo'] = 'NOW';
+        }
+        if($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+            $tmpDate = $this->searchParams['dateFrom'];
+            $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
+            $this->searchParams['dateTo'] = $tmpDate;
+        }
+
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
         $widgetPage = $this->getParametersSafely('@widget_0');
         if (empty($widgetPage)) {
@@ -239,6 +252,12 @@ class SearchController extends AbstractController
             if (!empty($searchParams['query'])) {
                 $search['query'] = Solr::escapeQueryKeepField(trim($searchParams['query']), $this->settings['storagePid']);
             }
+        }
+
+        // add filter query for date search
+        if (!empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            // combine dateFrom and dateTo into filterquery as range search
+            $search['params']['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}' . $fields['date'] . ':[' . $this->searchParams['dateFrom'] . ' TO ' . $this->searchParams['dateTo'] . ']';
         }
 
         // Add extended search query.
