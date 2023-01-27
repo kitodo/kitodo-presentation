@@ -448,6 +448,7 @@ final class MetsDocument extends Doc
             'title_sorting' => [],
             'description' => [],
             'author' => [],
+            'holder' => [],
             'place' => [],
             'year' => [],
             'prod_id' => [],
