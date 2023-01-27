@@ -872,7 +872,7 @@
      -->
 
     <!-- Add a new named search component that takes care of highlighting OCR field values. -->
-    <searchComponent class="de.digitalcollections.solrocr.solr.OcrHighlightComponent" name="ocrHighlight" />
+    <searchComponent class="solrocr.OcrHighlightComponent" name="ocrHighlight" />
 
     <!-- Autocomplete Component -->
     <searchComponent name="suggest" class="solr.SpellCheckComponent">
