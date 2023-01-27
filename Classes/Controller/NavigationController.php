@@ -95,6 +95,26 @@ class NavigationController extends AbstractController
         $this->view->assign('numPages', $this->document->getDoc()->numPages);
         $this->view->assign('viewData', $this->viewData);
 
+        if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'search')) {
+            $lastSearchArguments = [];
+            $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
+            $widgetPage = $GLOBALS['TSFE']->fe_user->getKey('ses', 'widgetPage');
+
+            if ($searchSessionParameters) {
+                $lastSearchArguments = [
+                    'tx_dlf_listview' => [
+                        'searchParameter' => $searchSessionParameters
+                    ]
+                ];
+            }
+            if ($widgetPage) {
+                $lastSearchArguments['tx_dlf_listview']['@widget_0'] = $widgetPage;
+            }
+
+            // save last search parameter to generate a link back to the search list
+            $this->view->assign('lastSearchParams', $lastSearchArguments);
+        }
+
         $pageOptions = [];
         for ($i = 1; $i <= $this->document->getDoc()->numPages; $i++) {
             $pageOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel']) : '');
