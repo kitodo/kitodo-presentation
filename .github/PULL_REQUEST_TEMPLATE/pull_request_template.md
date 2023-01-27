@@ -11,7 +11,7 @@ The development was paid for by ...
 
 ## Testing and Review
 
-If applicable, provide a working demo to help us review the changes. Alternatively, describe the tests that you ran to verify your changes and provide instructions so we can reproduce.
+If applicable, provide a working demo to help us review the changes. Alternatively, describe the tests that you ran to verify your changes and provide instructions so we can reproduce your steps.
 
 ### Environment
 
