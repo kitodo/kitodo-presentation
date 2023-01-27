@@ -1,4 +1,4 @@
-name: Static Code Analyzing and Security Scanning
+name: Codacy.com
 
 on:
   # Trigger analysis when pushing in stable branches (which includes merging pull requests)
@@ -11,25 +11,8 @@ on:
     type: [ "created", "edited" ]
 
 jobs:
-  sonarcloud:
-    name: SonarCloud Static Code Analyzer
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-
-      # Execute SonarCloud Scan
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   codacy-security-scan:
-    name: Codacy Security Scan
+    name: Security Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
