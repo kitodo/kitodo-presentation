@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  **/
-class ViafProfile
+class Profile
 {
     /**
      * This holds the logger
@@ -38,7 +38,7 @@ class ViafProfile
     /**
      * This holds the client
      *
-     * @var ViafClient
+     * @var Client
      * @access protected
      */
     protected $client;
@@ -60,7 +60,7 @@ class ViafProfile
     public function __construct($viaf)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-        $this->client = new ViafClient($viaf, GeneralUtility::makeInstance(RequestFactory::class));
+        $this->client = new Client($viaf, GeneralUtility::makeInstance(RequestFactory::class));
     }
 
     /**

@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @subpackage dlf
  * @access public
  **/
-class OrcidProfile
+class Profile
 {
     /**
      * This holds the logger
@@ -38,7 +38,7 @@ class OrcidProfile
     /**
      * This holds the client
      *
-     * @var OrcidClient
+     * @var Client
      * @access protected
      */
     protected $client;
@@ -60,7 +60,7 @@ class OrcidProfile
     public function __construct($orcid)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-        $this->client = new OrcidClient($orcid, GeneralUtility::makeInstance(RequestFactory::class));
+        $this->client = new Client($orcid, GeneralUtility::makeInstance(RequestFactory::class));
     }
 
     /**

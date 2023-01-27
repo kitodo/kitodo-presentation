@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Format;
 
-use Kitodo\Dlf\Api\Orcid\OrcidProfile;
-use Kitodo\Dlf\Api\Viaf\ViafProfile;
+use Kitodo\Dlf\Api\Orcid\Profile as OrcidProfile;
+use Kitodo\Dlf\Api\Viaf\Profile as ViafProfile;
 
 /**
  * Metadata MODS format class for the 'dlf' extension

@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Api\Viaf;
+namespace Kitodo\Dlf\Api\Orcid;
 
 use Psr\Http\Message\RequestFactoryInterface;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -18,15 +18,21 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * VIAF API Client class
+ * ORCID API Client class
  *
  * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  **/
-class ViafClient
+class Client
 {
+    /**
+     * constants for API endpoint
+     **/
+    const HOSTNAME  = 'orcid.org';
+    const VERSION   = '3.0';
+
     /**
      * This holds the logger
      *
@@ -40,14 +46,21 @@ class ViafClient
      *
      * @var string
      **/
-    private $endpoint = 'viaf.xml';
+    private $endpoint = 'record';
 
     /**
-     * The VIAF identifier of the profile
+     * The ORCID API access level
      *
      * @var string
      **/
-    private $viaf = null;
+    private $level = 'pub';
+
+    /**
+     * The login/registration page ORCID
+     *
+     * @var string
+     **/
+    private $orcid = null;
 
     /**
      * The request object
@@ -59,14 +72,14 @@ class ViafClient
     /**
      * Constructs a new instance
      *
-     * @param string $viaf: the VIAF identifier of the profile
+     * @param string $orcid: the ORCID to search for
      * @param RequestFactory $requestFactory a request object to inject
      * @return void
      **/
-    public function __construct($viaf, RequestFactory $requestFactory)
+    public function __construct($orcid, RequestFactory $requestFactory)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-        $this->viafUrl = 'http://viaf.org/viaf/' . $viaf;
+        $this->orcid = $orcid;
         $this->requestFactory = $requestFactory;
     }
 
@@ -97,10 +110,15 @@ class ViafClient
     /**
      * Creates the qualified API endpoint for retrieving the desired data
      *
+     * @param string  $endpoint the shortname of the endpoint
      * @return string
      **/
-    protected function getApiEndpoint()
+    private function getApiEndpoint()
     {
-        return $this->viafUrl . '/' . $this->endpoint;
+        $url  = 'https://' . $this->level . '.' . self::HOSTNAME;
+        $url .= '/v' . self::VERSION . '/';
+        $url .= $this->orcid;
+        $url .= '/' . $this->endpoint;
+        return $url;
     }
 }
