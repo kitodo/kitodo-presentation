@@ -340,13 +340,13 @@ class Indexer
             if(strtotime($metadata['date'][0])) {
                 // do not alter dates YYYY or YYYY-MM or YYYY-MM-DD
                 if (
-                    preg_match("/^[0-9]{4}$/", $metadata['date'][0]) 
-                    || preg_match("/^[0-9]{4}-[0-9]{2}$/", $metadata['date'][0])
-                    || preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $metadata['date'][0])
+                    preg_match("/^[\d]{4}$/", $metadata['date'][0])
+                    || preg_match("/^[\d]{4}-[\d]{2}$/", $metadata['date'][0])
+                    || preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $metadata['date'][0])
                 ) {
                     $solrDoc->setField('date', $metadata['date'][0]);
                 // change date YYYYMMDD to YYYY-MM-DD
-                } elseif (preg_match("/^[0-9]{8}$/", $metadata['date'][0])){
+                } elseif (preg_match("/^[\d]{8}$/", $metadata['date'][0])){
                     $solrDoc->setField('date', date("Y-m-d", strtotime($metadata['date'][0])));
                 // convert any datetime to proper ISO extended datetime format and timezone for SOLR
                 } else {

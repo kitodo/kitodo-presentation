@@ -321,7 +321,7 @@ class SearchController extends AbstractController
         $facetCollectionArray = [];
 
         // replace everything expect numbers and comma
-        $facetCollections = preg_replace('/[^0-9,]/', '', $this->settings['facetCollections']);
+        $facetCollections = preg_replace('/[^\d,]/', '', $this->settings['facetCollections']);
 
         if (!empty($facetCollections)) {
             $collections = $this->collectionRepository->findCollectionsBySettings(['collections' => $facetCollections]);

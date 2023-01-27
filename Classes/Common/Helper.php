@@ -122,7 +122,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/\d{8}[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -132,7 +132,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/\d{8}-[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -153,7 +153,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/\d{8}-[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -349,7 +349,7 @@ class Helper
         // Convert to lowercase.
         $string = strtolower($string);
         // Remove non-alphanumeric characters.
-        $string = preg_replace('/[^a-z0-9_\s-]/', '', $string);
+        $string = preg_replace('/[^a-z\d_\s-]/', '', $string);
         // Remove multiple dashes or whitespaces.
         $string = preg_replace('/[\s-]+/', ' ', $string);
         // Convert whitespaces and underscore to dash.
@@ -561,7 +561,7 @@ class Helper
             ':' => 17,
         ];
         $urn = strtolower($base . $id);
-        if (preg_match('/[^a-z0-9:-]/', $urn)) {
+        if (preg_match('/[^a-z\d:-]/', $urn)) {
             self::log('Invalid chars in given parameters', LOG_SEVERITY_WARNING);
             return '';
         }
