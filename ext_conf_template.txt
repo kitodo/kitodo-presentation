@@ -68,6 +68,8 @@ solrFieldType = type
 solrFieldTitle = title
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldVolume
 solrFieldVolume = volume
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldDate
+solrFieldDate = date
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldThumbnail
 solrFieldThumbnail = thumbnail
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldDefault

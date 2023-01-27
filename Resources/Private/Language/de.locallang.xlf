@@ -293,6 +293,14 @@
 				<source><![CDATA[Rotate Right]]></source>
 				<target><![CDATA[Ansicht nach rechts drehen]]></target>
 			</trans-unit>
+			<trans-unit id="search.dateFrom" approved="yes">
+				<source><![CDATA[From]]></source>
+				<target><![CDATA[Von]]></target>
+			</trans-unit>
+			<trans-unit id="search.dateTo" approved="yes">
+				<source><![CDATA[To]]></source>
+				<target><![CDATA[Bis]]></target>
+			</trans-unit>
 			<trans-unit id="search.for" approved="yes">
 				<source><![CDATA[for "%s"]]></source>
 				<target><![CDATA[nach "%s"]]></target>
