@@ -122,7 +122,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}[0-9X]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -132,7 +132,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}-[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-[0-9X]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -140,7 +140,7 @@ class Helper
                 break;
             case 'SWD':
                 $checksum = 11 - $checksum;
-                if (!preg_match('/[0-9]{8}-[0-9]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-\d{1}/i', $id)) {
                     return false;
                 } elseif ($checksum == 10) {
                     return self::checkIdentifier(($digits + 1) . substr($id, -2, 2), 'SWD');
@@ -153,7 +153,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}-[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-[0-9X]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
