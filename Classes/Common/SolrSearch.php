@@ -208,6 +208,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
         }
 
+        // Add filter query for date search
+        if (!empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            // combine dateFrom and dateTo into range search
+            $params['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}'. $fields['date'] . ':[' . $this->searchParams['dateFrom'] . ' TO ' . $this->searchParams['dateTo'] . ']';
+        }
+
         // Add filter query for faceting.
         if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
             foreach ($this->searchParams['fq'] as $filterQuery) {

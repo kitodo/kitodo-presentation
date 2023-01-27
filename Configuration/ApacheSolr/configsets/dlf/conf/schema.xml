@@ -39,6 +39,7 @@ limitations under the License.
         <fieldType name="int" class="solr.IntPointField" positionIncrementGap="0" />
         <!-- Use dates of the form 1995-12-31Z23:59:49Z for this field. -->
         <fieldType name="date" class="solr.DatePointField" positionIncrementGap="0" />
+        <fieldType name="daterange" class="solr.DateRangeField" />
         <fieldType name="geojson" class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="Geo3D" geo="true" planetModel="WGS84" format="GeoJSON" />
         <fieldType name="standard" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
@@ -143,6 +144,8 @@ limitations under the License.
         <!-- Next two fields are mandatory for identifying documents. -->
         <field name="title" type="standard" indexed="true" stored="true" multiValued="false" default="" />
         <field name="volume" type="standard" indexed="true" stored="true" multiValued="false" default="" />
+        <!-- The keydate of a resource e.g a newspaper was issued or a letter was written -->
+	    <field name="date" type="daterange" indexed="true" stored="true" multiValued="false" />
         <!-- URL of thumbnail image for the document. -->
         <field name="thumbnail" type="string" indexed="false" stored="true" multiValued="false" default="" />
         <!-- CatchAll field. See <copyField> below. -->

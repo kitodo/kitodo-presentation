@@ -345,6 +345,11 @@ final class MetsDocument extends Doc
         }
         $details['pagination'] = '';
         $details['type'] = $attributes['TYPE'];
+        // add description for 3D objects
+        if ($details['type'] == 'object') {
+            $metadata = $this->getMetadata($details['id']);
+            $details['description'] = $metadata['description'][0] ?? '';
+        }
         $details['thumbnailId'] = '';
         // Load smLinks.
         $this->_getSmLinks();
@@ -441,7 +446,9 @@ final class MetsDocument extends Doc
         $metadata = [
             'title' => [],
             'title_sorting' => [],
+            'description' => [],
             'author' => [],
+            'holder' => [],
             'place' => [],
             'year' => [],
             'prod_id' => [],
@@ -453,6 +460,7 @@ final class MetsDocument extends Doc
             'type' => [],
             'volume' => [],
             'volume_sorting' => [],
+            'date' => [],
             'license' => [],
             'terms' => [],
             'restrictions' => [],
@@ -640,6 +648,10 @@ final class MetsDocument extends Doc
         if (empty($metadata['title'][0])) {
             $metadata['title'][0] = '';
             $metadata['title_sorting'][0] = '';
+        }
+        // Set date to empty string if not present.
+        if (empty($metadata['date'][0])) {
+            $metadata['date'][0] = '';
         }
         // Files are not expected to reference a dmdSec
         if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
