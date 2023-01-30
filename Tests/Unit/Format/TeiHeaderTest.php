@@ -22,9 +22,7 @@ class TeiHeaderTest extends UnitTestCase
      */
     public function extract(): void
     {
-        $teiHeader = new TeiHeader();
-        //$teiHeader->extractMetadata();
-        //TODO: TeiHeader class not fully implemented.
+        //TODO: TeiHeader class has no usefull implementation.
         $this->assertTrue(false);
     }
 }
