@@ -186,11 +186,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Navigation',
     [
-        Navigation::class => 'main',
+        Navigation::class => 'main, pageSelect',
     ],
     // non-cacheable actions
     [
-        Navigation::class => '',
+        Navigation::class => 'pageSelect',
     ]
 );
 

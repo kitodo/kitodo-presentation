@@ -3,6 +3,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
@@ -208,6 +209,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
         }
 
+        // Add filter query for date search
+        if (!empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            // combine dateFrom and dateTo into range search
+            $params['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}'. $fields['date'] . ':[' . $this->searchParams['dateFrom'] . ' TO ' . $this->searchParams['dateTo'] . ']';
+        }
+
         // Add filter query for faceting.
         if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
             foreach ($this->searchParams['fq'] as $filterQuery) {
@@ -316,6 +323,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                     $documents[$doc['uid']] = $allDocuments[$doc['uid']];
                 }
                 if ($documents[$doc['uid']]) {
+                    // translate language code if applicable
+                    if($doc['metadata']['language']) {
+                        foreach($doc['metadata']['language'] as $indexName => $language) {
+                            $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
+                        }
+                    }
                     if ($doc['toplevel'] === false) {
                         // this maybe a chapter, article, ..., year
                         if ($doc['type'] === 'year') {
@@ -411,6 +424,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $result = $this->searchSolr($params, true);
 
         foreach ($result['documents'] as $doc) {
+            // translate language code if applicable
+            if($doc['metadata']['language']) {
+                foreach($doc['metadata']['language'] as $indexName => $language) {
+                    $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
+                }
+            }
             $metadataArray[$doc['uid']] = $doc['metadata'];
         }
 
