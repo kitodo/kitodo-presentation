@@ -78,7 +78,7 @@
         <fe_admin_lock>0</fe_admin_lock>
         <label>Geschichte</label>
         <index_name>Geschichte</index_name>
-        <index_search/>
+        <index_search>GeschichteSearch</index_search>
         <oai_name>history</oai_name>
         <description/>
         <thumbnail/>

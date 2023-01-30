@@ -166,7 +166,24 @@ class CollectionRepsitoryTest extends FunctionalTestCase
      */
     public function canGetIndexNameForSolr(): void
     {
-        $indexName = $this->collectionRepository->getIndexNameForSolr(['show_userdefined' => true], 'history');
-        //$indexName->fetchAllAssociativeIndexed();
+        $indexName = $this->collectionRepository->getIndexNameForSolr(
+            ['show_userdefined' => true, 'storagePid' => '20000'], 'history'
+        );
+        $result = $indexName->fetchAllAssociative();
+        $this->assertEquals(1, $indexName->rowCount());
+        $this->assertEquals('Geschichte', $result[0]['index_name']);
+        $this->assertEquals('GeschichteSearch', $result[0]['index_query']);
+        $this->assertEquals('1103', $result[0]['uid']);
+
+        $indexName = $this->collectionRepository->getIndexNameForSolr(
+            ['show_userdefined' => false, 'storagePid' => '20000'], 'history'
+        );
+        $this->assertEquals(0, $indexName->rowCount());
+
+        $indexName = $this->collectionRepository->getIndexNameForSolr(
+            ['show_userdefined' => false, 'storagePid' => '20000'], 'collection-with-single-document'
+        );
+        $this->assertEquals(1, $indexName->rowCount());
+        $this->assertEquals('collection-with-single-document', $indexName->fetchOne());
     }
 }
