@@ -192,16 +192,16 @@ Version 3.2 -> 3.3
 ==================
 
 Version 3.3 introduce the usage of the OCR Highlighting Plugin for Solr. The plugin can be found at
-GitHub: https://github.com/dbmdz/solr-ocrhighlighting. This plugin is now mandatory if you are using the full texts feature.
+GitHub: https://github.com/dbmdz/solr-ocrhighlighting. This plugin is now mandatory if you are using the full text feature.
 
-Please note: The full text is stored in Solr index in a XML format (`MiniOCR <https://dbmdz.github.io/solr-ocrhighlighting/formats/#miniocr>`_).
+Please note: The full text is stored in Solr index in a XML format (`MiniOCR <https://dbmdz.github.io/solr-ocrhighlighting/0.8.0/formats/#miniocr>`_).
 This will rise the demand for storage space. You should therefore monitor the disc usage during reindexing.
 
 Steps to Upgrade
 ----------------
 
-a. Get the latest release ("jar"-file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.7.1 is the minimum version number.
-b. Copy the jar-file (e.g. "solr-ocrhighlighting-0.7.1.jar") to the contrib/ocrsearch/lib/ directory of your Solr.
+a. Get the latest release ("jar"-file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.8.0 is the minimum version number. Make sure to pick the right file for Solr 7/8.
+b. Copy the jar-file (e.g. "solr-ocrhighlighting-0.8.0-solr78.jar") to the contrib/ocrsearch/lib/ directory of your Solr.
 c. Copy the updated schema.xml to your Solr configsets in $SOLR_HOME/configsets/dlf/
 d. Copy the schema.xml from EXT:dlf/Configuration/ApacheSolr/configsets/dlf/conf/ to all of your Solr cores. E.g. $SOLR_HOME/data/dlfCore0/conf/
 e. Restart Solr.
