@@ -46,7 +46,7 @@ class Profile
     /**
      * The raw VIAF profile
      *
-     * @var \SimpleXmlElement
+     * @var \SimpleXmlElement|false
      **/
     private $raw = null;
 
@@ -66,7 +66,7 @@ class Profile
     /**
      * Get the VIAF profile data
      *
-     * @return  object
+     * @return array|false
      **/
     public function getData()
     {
@@ -85,7 +85,7 @@ class Profile
     /**
      * Get the address
      *
-     * @return  string
+     * @return string|false
      **/
     public function getAddress()
     {
@@ -101,7 +101,7 @@ class Profile
     /**
      * Get the full name
      *
-     * @return  string
+     * @return string|false
      **/
     public function getFullName()
     {

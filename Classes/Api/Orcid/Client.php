@@ -56,7 +56,7 @@ class Client
     private $level = 'pub';
 
     /**
-     * The login/registration page ORCID
+     * The ORCID ID to search for
      *
      * @var string
      **/
@@ -84,7 +84,11 @@ class Client
     }
 
     /**
+     * Sets API endpoint
+     *
      * @param string  $endpoint the shortname of the endpoint
+     *
+     * @return void
      */
     public function setEndpoint($endpoint) {
         $this->endpoint = $endpoint;
@@ -110,7 +114,6 @@ class Client
     /**
      * Creates the qualified API endpoint for retrieving the desired data
      *
-     * @param string  $endpoint the shortname of the endpoint
      * @return string
      **/
     private function getApiEndpoint()

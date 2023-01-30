@@ -43,11 +43,11 @@ class Client
     private $endpoint = 'viaf.xml';
 
     /**
-     * The VIAF identifier of the profile
+     * The VIAF URL for the profile
      *
      * @var string
      **/
-    private $viaf = null;
+    private $viafUrl = null;
 
     /**
      * The request object
@@ -71,7 +71,11 @@ class Client
     }
 
     /**
+     * Sets API endpoint
+     *
      * @param string  $endpoint the shortname of the endpoint
+     *
+     * @return void
      */
     public function setEndpoint($endpoint) {
         $this->endpoint = $endpoint;

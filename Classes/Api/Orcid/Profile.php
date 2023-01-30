@@ -46,7 +46,7 @@ class Profile
     /**
      * The raw ORCID profile
      *
-     * @var \SimpleXmlElement
+     * @var \SimpleXmlElement|false
      **/
     private $raw = null;
 
@@ -66,7 +66,7 @@ class Profile
     /**
      * Get the ORCID profile data
      *
-     * @return  array|bool
+     * @return array|false
      **/
     public function getData()
     {
@@ -86,7 +86,7 @@ class Profile
     /**
      * Get the address
      *
-     * @return  string|bool
+     * @return string|false
      **/
     public function getAddress()
     {
@@ -103,7 +103,7 @@ class Profile
     /**
      * Get the email
      *
-     * @return  string|bool
+     * @return string|false
      **/
     public function getEmail()
     {
@@ -120,7 +120,7 @@ class Profile
     /**
      * Get the full name
      *
-     * @return  string|bool
+     * @return string|false
      **/
     public function getFullName()
     {
@@ -138,6 +138,8 @@ class Profile
 
     /**
      * Get the ORCID part of profile data for given endpoint
+     *
+     * @param string  $endpoint the shortname of the endpoint
      *
      * @return void
      **/
