@@ -12,7 +12,8 @@
 
 namespace Kitodo\Dlf\Format;
 
-use Kitodo\Dlf\Api\Orcid\Profile;
+use Kitodo\Dlf\Api\Orcid\Profile as OrcidProfile;
+use Kitodo\Dlf\Api\Viaf\Profile as ViafProfile;
 
 /**
  * Metadata MODS format class for the 'dlf' extension
@@ -83,51 +84,76 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
                 $authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
                 $identifier = $authors[$i]->xpath('./mods:name/mods:nameIdentifier[@type="orcid"]');
-                if (!empty((string) $identifier[0])) {
-                    $profile = new Profile((string) $identifier[0]);
-                    $this->metadata['author'][$i] = $profile->getFullName();
+                if ($this->settings['useExternalApisForMetadata'] && !empty((string) $identifier[0])) {
+                    $this->getAuthorFromOrcidApi((string) $identifier[0], $authors, $i);
                 } else {
-                    // Check if there is a display form.
-                    if (($displayForm = $authors[$i]->xpath('./mods:displayForm'))) {
-                        $this->metadata['author'][$i] = (string) $displayForm[0];
-                    } elseif (($nameParts = $authors[$i]->xpath('./mods:namePart'))) {
-                        $name = [];
-                        $k = 4;
-                        foreach ($nameParts as $namePart) {
-                            if (
-                                isset($namePart['type'])
-                                && (string) $namePart['type'] == 'family'
-                            ) {
-                                $name[0] = (string) $namePart;
-                            } elseif (
-                                isset($namePart['type'])
-                                && (string) $namePart['type'] == 'given'
-                            ) {
-                                $name[1] = (string) $namePart;
-                            } elseif (
-                                isset($namePart['type'])
-                                && (string) $namePart['type'] == 'termsOfAddress'
-                            ) {
-                                $name[2] = (string) $namePart;
-                            } elseif (
-                                isset($namePart['type'])
-                                && (string) $namePart['type'] == 'date'
-                            ) {
-                                $name[3] = (string) $namePart;
-                            } else {
-                                $name[$k] = (string) $namePart;
-                            }
-                            $k++;
-                        }
-                        ksort($name);
-                        $this->metadata['author'][$i] = trim(implode(', ', $name));
-                    }
-                    // Append "valueURI" to name using Unicode unit separator.
-                    if (isset($authors[$i]['valueURI'])) {
-                        $this->metadata['author'][$i] .= chr(31) . (string) $authors[$i]['valueURI'];
-                    }
+                    $this->getAuthorFromXml($authors, $i);
                 }
             }
+        }
+    }
+
+    private function getAuthorFromOrcidApi($orcidId, $authors, $i) {
+        $profile = new OrcidProfile($orcidId);
+        $name = $profile->getFullName();
+        if (!empty($name)) {
+            $this->metadata['author'][$i] = [
+                'name' => $name,
+                'url' => 'https://orcid.org/' . $orcidId
+            ];
+        } else {
+            //fallback into display form
+            $this->getAuthorFromXmlDisplayForm($authors, $i);
+        }
+    }
+
+    private function getAuthorFromXml($authors, $i) {
+        $this->getAuthorFromXmlDisplayForm($authors, $i);
+
+        $nameParts = $authors[$i]->xpath('./mods:namePart');
+
+        if (empty($this->metadata['author'][$i]) && $nameParts) {
+            $name = [];
+            $k = 4;
+            foreach ($nameParts as $namePart) {
+                if (
+                    isset($namePart['type'])
+                    && (string) $namePart['type'] == 'family'
+                ) {
+                    $name[0] = (string) $namePart;
+                } elseif (
+                    isset($namePart['type'])
+                    && (string) $namePart['type'] == 'given'
+                ) {
+                    $name[1] = (string) $namePart;
+                } elseif (
+                    isset($namePart['type'])
+                    && (string) $namePart['type'] == 'termsOfAddress'
+                ) {
+                    $name[2] = (string) $namePart;
+                } elseif (
+                    isset($namePart['type'])
+                    && (string) $namePart['type'] == 'date'
+                ) {
+                    $name[3] = (string) $namePart;
+                } else {
+                    $name[$k] = (string) $namePart;
+                }
+                $k++;
+            }
+            ksort($name);
+            $this->metadata['author'][$i] = trim(implode(', ', $name));
+        }
+        // Append "valueURI" to name using Unicode unit separator.
+        if (isset($authors[$i]['valueURI'])) {
+            $this->metadata['author'][$i] .= chr(31) . (string) $authors[$i]['valueURI'];
+        }
+    }
+
+    private function getAuthorFromXmlDisplayForm($authors, $i) {
+        $displayForm = $authors[$i]->xpath('./mods:displayForm');
+        if ($displayForm) {
+            $this->metadata['author'][$i] = (string) $displayForm[0];
         }
     }
 
@@ -145,42 +171,43 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
             for ($i = 0, $j = count($holders); $i < $j; $i++) {
                 $holders[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-                // Check if there is a display form.
-                if (($displayForm = $holders[$i]->xpath('./mods:displayForm'))) {
-                    $this->metadata['holder'][$i] = (string) $displayForm[0];
-                } elseif (($nameParts = $holders[$i]->xpath('./mods:namePart'))) {
-                    $name = [];
-                    $k = 4;
-                    foreach ($nameParts as $namePart) {
-                        if (
-                            isset($namePart['type'])
-                            && (string) $namePart['type'] == 'family'
-                        ) {
-                            $name[0] = (string) $namePart;
-                        } elseif (
-                            isset($namePart['type'])
-                            && (string) $namePart['type'] == 'given'
-                        ) {
-                            $name[1] = (string) $namePart;
-                        } elseif (
-                            isset($namePart['type'])
-                            && (string) $namePart['type'] == 'termsOfAddress'
-                        ) {
-                            $name[2] = (string) $namePart;
-                        } elseif (
-                            isset($namePart['type'])
-                            && (string) $namePart['type'] == 'date'
-                        ) {
-                            $name[3] = (string) $namePart;
-                        } else {
-                            $name[$k] = (string) $namePart;
-                        }
-                        $k++;
-                    }
-                    ksort($name);
-                    $this->metadata['holder'][$i] = trim(implode(', ', $name));
+                $identifier = $holders[$i]->xpath('./mods:name/mods:nameIdentifier[@type="viaf"]');
+                if ($this->settings['useExternalApisForMetadata'] && !empty((string) $identifier[0])) {
+                    $this->getHolderFromViafApi((string) $identifier[0], $holders, $i);
+                } else {
+                    $this->getHolderFromXml($holders, $i);
                 }
             }
+        }
+    }
+
+    private function getHolderFromViafApi($viafId, $holders, $i) {
+        $profile = new ViafProfile($viafId);
+        $name = $profile->getFullName();
+        if (!empty($name)) {
+            $this->metadata['holder'][$i] = [
+                'name' => $name,
+                'url' => 'http://viaf.org/viaf/' . $viafId
+            ];
+        } else {
+            //fallback into display form
+            $this->getHolderFromXmlDisplayForm($holders, $i);
+        }
+    }
+
+    private function getHolderFromXml($holders, $i) {
+        $this->getHolderFromXmlDisplayForm($holders, $i);
+        // Append "valueURI" to name using Unicode unit separator.
+        if (isset($holders[$i]['valueURI'])) {
+            $this->metadata['holder'][$i] .= chr(31) . (string) $holders[$i]['valueURI'];
+        }
+    }
+
+    private function getHolderFromXmlDisplayForm($holders, $i) {
+        // Check if there is a display form.
+        $displayForm = $holders[$i]->xpath('./mods:displayForm');
+        if ($displayForm) {
+            $this->metadata['holder'][$i] = (string) $displayForm[0];
         }
     }
 

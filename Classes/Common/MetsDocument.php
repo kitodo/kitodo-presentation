@@ -649,6 +649,10 @@ final class MetsDocument extends Doc
             $metadata['title'][0] = '';
             $metadata['title_sorting'][0] = '';
         }
+        // Set title_sorting to title as default.
+        if (empty($metadata['title_sorting'][0])) {
+            $metadata['title_sorting'][0] = $metadata['title'][0];
+        }
         // Set date to empty string if not present.
         if (empty($metadata['date'][0])) {
             $metadata['date'][0] = '';
@@ -673,7 +677,7 @@ final class MetsDocument extends Doc
      */
     protected function getMetadataIds($id)
     {
-        // ­Load amdSecChildIds concordance
+        // Load amdSecChildIds concordance
         $this->_getMdSec();
         $this->_getFileInfos();
 
