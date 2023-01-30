@@ -104,6 +104,20 @@ class SearchController extends AbstractController
         if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
             $this->searchParams = array_merge($this->searchParams ? : [], $listRequestData['searchParameter']);
             $listViewSearch = true;
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
+        }
+
+        // sanitize date search input
+        if(empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            $this->searchParams['dateFrom'] = '*';
+        }
+        if(empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+            $this->searchParams['dateTo'] = 'NOW';
+        }
+        if($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+            $tmpDate = $this->searchParams['dateFrom'];
+            $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
+            $this->searchParams['dateTo'] = $tmpDate;
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
@@ -241,7 +255,6 @@ class SearchController extends AbstractController
             }
         }
 
-
         // if collections are given, we prepare the collection query string
         // extract collections from collection parameter
         $collection = null;
@@ -280,6 +293,12 @@ class SearchController extends AbstractController
 
             // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
             $search['params']['filterquery'][]['query'] = implode(" OR ", array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        }
+
+        // add filter query for date search
+        if (!empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            // combine dateFrom and dateTo into filterquery as range search
+            $search['params']['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}' . $fields['date'] . ':[' . $this->searchParams['dateFrom'] . ' TO ' . $this->searchParams['dateTo'] . ']';
         }
 
         // Add extended search query.
@@ -342,7 +361,7 @@ class SearchController extends AbstractController
         $facetCollectionArray = [];
 
         // replace everything expect numbers and comma
-        $facetCollections = preg_replace('/[^0-9,]/', '', $this->settings['facetCollections']);
+        $facetCollections = preg_replace('/[^\d,]/', '', $this->settings['facetCollections']);
 
         if (!empty($facetCollections)) {
             $collections = $this->collectionRepository->findCollectionsBySettings(['collections' => $facetCollections]);
