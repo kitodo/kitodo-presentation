@@ -15,7 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<schema name="dlf" version="1.6">
+<schema name="dlf" version="1.7">
     <!-- attribute "name" is the name of this schema and is only used for display purposes.
        version="x.y" is Solr's version number for the schema syntax and
        semantics.  It should not normally be changed by applications.
@@ -31,6 +31,7 @@ limitations under the License.
        1.5: omitNorms defaults to true for primitive field types
             (int, float, boolean, string...)
        1.6: useDocValuesAsStored defaults to true.
+       1.7: Change class attributes to match new package namespaces since solr-ocrhighlighting v0.8.0
     -->
     <types>
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
@@ -60,7 +61,7 @@ limitations under the License.
             <!-- TODO: check why some filters are outcommented -->
             <analyzer type="index">
                 <!-- For converting OCR to plaintext -->
-                <charFilter class="de.digitalcollections.solrocr.lucene.filters.OcrCharFilterFactory" />
+                <charFilter class="solrocr.OcrCharFilterFactory" />
 
                 <charFilter class="solr.HTMLStripCharFilterFactory" />
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
