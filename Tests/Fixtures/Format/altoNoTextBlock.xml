@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alto:alto xsi:schemaLocation="http://www.loc.gov/standards/alto/ns-v2# http://www.loc.gov/standards/alto/alto-v2.0.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:alto="http://www.loc.gov/standards/alto/ns-v2#">
+    <alto:Description>
+        <alto:MeasurementUnit>pixel</alto:MeasurementUnit>
+        <alto:OCRProcessing ID="IdOcr">
+            <alto:ocrProcessingStep>
+                <alto:processingDateTime>2020-05-14</alto:processingDateTime>
+                <alto:processingSoftware>
+                    <alto:softwareCreator>ABBYY</alto:softwareCreator>
+                    <alto:softwareName>ABBYY FineReader Engine</alto:softwareName>
+                    <alto:softwareVersion>12</alto:softwareVersion>
+                </alto:processingSoftware>
+            </alto:ocrProcessingStep>
+        </alto:OCRProcessing>
+    </alto:Description>
+    <alto:Styles> </alto:Styles>
+    <alto:Layout>
+        <alto:Page ID="Page1" PHYSICAL_IMG_NR="1" HEIGHT="2546" WIDTH="1801">
+            <alto:PrintSpace HEIGHT="2546" WIDTH="1801" VPOS="0" HPOS="0">
+                <alto:Illustration ID="Page1_Block1" HEIGHT="2546" WIDTH="1801" VPOS="0" HPOS="0"/>
+                <alto:GraphicalElement ID="Page1_Block4" HEIGHT="14" WIDTH="1674" VPOS="266" HPOS="55"/>
+                <alto:GraphicalElement ID="Page1_Block5" HEIGHT="15" WIDTH="1674" VPOS="442" HPOS="55"/>
+                <alto:GraphicalElement ID="Page1_Block6" HEIGHT="30" WIDTH="629" VPOS="680" HPOS="477"/>
+                <alto:GraphicalElement ID="Page1_Block7" HEIGHT="8" WIDTH="170" VPOS="1963" HPOS="635"/>
+                <alto:GraphicalElement ID="Page1_Block8" HEIGHT="141" WIDTH="11" VPOS="1019" HPOS="1197"/>
+                <alto:GraphicalElement ID="Page1_Block9" HEIGHT="168" WIDTH="12" VPOS="948" HPOS="1411"/>
+                <alto:Illustration ID="Page1_Block10" HEIGHT="175" WIDTH="88" VPOS="1469" HPOS="544">
+                    <alto:Shape>
+                        <alto:Polygon POINTS="544,1469 631,1469 631,1474 632,1474 632,1644 545,1644 545,1477 544,1477 544,1469"/>
+                    </alto:Shape>
+                </alto:Illustration>
+                <alto:Illustration ID="Page1_Block11" HEIGHT="207" WIDTH="61" VPOS="1657" HPOS="790"/>
+            </alto:PrintSpace>
+        </alto:Page>
+    </alto:Layout>
+</alto:alto>
