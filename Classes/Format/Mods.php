@@ -84,7 +84,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
                 $authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
                 $identifier = $authors[$i]->xpath('./mods:name/mods:nameIdentifier[@type="orcid"]');
-                if (!empty((string) $identifier[0])) {
+                if ($this->settings['useExternalApisForMetadata'] && !empty((string) $identifier[0])) {
                     $this->getAuthorFromOrcidApi((string) $identifier[0], $authors, $i);
                 } else {
                     $this->getAuthorFromXml($authors, $i);
@@ -172,7 +172,7 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
                 $holders[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
                 $identifier = $holders[$i]->xpath('./mods:name/mods:nameIdentifier[@type="viaf"]');
-                if (!empty((string) $identifier[0])) {
+                if ($this->settings['useExternalApisForMetadata'] && !empty((string) $identifier[0])) {
                     $this->getHolderFromViafApi((string) $identifier[0], $holders, $i);
                 } else {
                     $this->getHolderFromXml($holders, $i);
