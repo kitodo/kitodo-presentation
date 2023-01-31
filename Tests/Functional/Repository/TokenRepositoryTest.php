@@ -6,7 +6,7 @@ use Kitodo\Dlf\Domain\Repository\TokenRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-class TokenRepsitoryTest extends FunctionalTestCase
+class TokenRepositoryTest extends FunctionalTestCase
 {
     /**
      * @var TokenRepository

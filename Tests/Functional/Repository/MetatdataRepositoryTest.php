@@ -6,7 +6,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 
-class MetadataRepsitoryTest extends FunctionalTestCase
+class MetadataRepositoryTest extends FunctionalTestCase
 {
     /**
      * @var MetadataRepository

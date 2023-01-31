@@ -6,7 +6,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 
-class CollectionRepsitoryTest extends FunctionalTestCase
+class CollectionRepositoryTest extends FunctionalTestCase
 {
     /**
      * @var CollectionRepository
