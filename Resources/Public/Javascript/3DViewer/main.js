@@ -262,6 +262,19 @@ function readWissKI () {
 	xmlhttp.send();
 }
 
+function readMetadataFromFile(responseText) {
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(responseText, "application/xml");
+	var data;
+	for (let childNode of doc.documentElement.childNodes) {
+		data = childNode.childNodes;
+		if (typeof (data) !== undefined && data.length > 0) {
+			break;
+		}
+	}
+	return data;
+}
+
 //readWissKI();
 
 function createClippingPlaneGroup( geometry, plane, renderOrder ) {
@@ -1107,9 +1120,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState === 4) {
 				if(req.status === 200) {
-					const parser = new DOMParser();
-					const doc = parser.parseFromString(req.responseText, "application/xml");
-					var data = doc.documentElement.childNodes[0].childNodes;
+					var data = readMetadataFromFile(req.responseText);
 					if (typeof (data) !== undefined) {
 						for(var i = 0; i < data.length; i++) {
 							var fetchedValue = addWissKIMetadata(data[i].tagName, data[i].textContent);
@@ -1754,9 +1765,7 @@ function init() {
 	req.onreadystatechange = function (aEvt) {
 		if (req.readyState === 4) {
 			if(req.status === 200) {
-				const parser = new DOMParser();
-				const doc = parser.parseFromString(req.responseText, "application/xml");
-				var data = doc.documentElement.childNodes[0].childNodes;
+				var data = readMetadataFromFile(req.responseText);
 				if (typeof (data) !== undefined) {
 					var _found = false;
 					for(var i = 0; i < data.length && !_found; i++) {
@@ -1764,23 +1773,25 @@ function init() {
 							var _label = data[i].tagName.replace("wisski_path_3d_model__", "");
 							if (typeof(_label) !== "undefined" && _label === "converted_file_name") {
 								_found = true;
-								var _autoPath = data[i].textContent;
-								//check wheter semo-automatic path found
+								var _autoPath = data[i].textContent.trim();
+								//check whether semi-automatic path found
 								if (_autoPath !== '') {							
-									filename = _autoPath.split("/").pop();
-									basename = filename.substring(0, filename.lastIndexOf('.'));
-									extension = filename.substring(filename.lastIndexOf('.') + 1);
-									_ext = extension.toLowerCase();
-									path = _autoPath.substring(0, _autoPath.lastIndexOf(filename));
+									filename = _autoPath.split("/").pop().trim();
+									basename = filename.substring(0, filename.lastIndexOf('.')).trim();
+									extension = filename.substring(filename.lastIndexOf('.') + 1).trim();
+									_ext = extension.toLowerCase().trim();
+									path = _autoPath.substring(0, _autoPath.lastIndexOf(filename)).trim();
 								}
 								mainLoadModel(_ext);
 							}
 						}
 					}
+				} else {
+					showToast("Error during loading metadata content - empty metadata file\n");
 				}
 			}
 			else {
-				showToast("Error during loading metadata content");
+				showToast("Error during loading metadata content\n");
 				mainLoadModel (_ext);
 			}
 		}
