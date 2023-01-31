@@ -37,10 +37,12 @@
     <f:form.submit value="{f:translate(key: 'search.submit')}" />
 
     <!-- Fulltext switch -->
-    <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
-    <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
-    <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
-    <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+    <f:if condition="{settings.fulltext}">
+        <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
+        <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
+        <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
+        <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+    </f:if>
 
     <f:if condition="{settings.searchIn} == 'collection' || {settings.searchIn} == 'all'">
         <f:form.hidden property="collections" value="{settings.collections}" />
@@ -83,6 +85,13 @@
         </div>
     </f:if>
 
+    <f:if condition="{settings.datesearch}">
+        <label for="tx-dlf-search-dateFrom"><f:translate key="search.dateFrom"/>: </label>
+        <f:form.textfield type="date" property="dateFrom" value="{lastSearch.dateFrom}" class="tx-dlf-search-datesearch" id="tx-dlf-search-dateFrom"/>
+        <label for="tx-dlf-search-dateTo"><f:translate key="search.dateTo"/>: </label>
+        <f:form.textfield type="date" property="dateTo" value="{lastSearch.dateTo}" class="tx-dlf-search-datesearch" id="tx-dlf-search-dateTo"/>
+    </f:if>
+
     <f:form.hidden property="orderBy" value="{lastSearch.orderBy}" />
     <f:form.hidden property="order" value="{lastSearch.order}" />
 
@@ -114,16 +123,34 @@
                                 <f:if condition="{values.resetFacet}">
                                     <f:then>
                                         <li class="tx-dlf-search-cur">
-                                            <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}'}">
-                                                {values.title} ({values.count})
-                                            </f:link.action>
+                                            <f:if condition="{lastSearch.dateFrom} || {lastSearch.dateTo}">
+                                                <f:then>
+                                                    <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][dateFrom]':'{lastSearch.dateFrom}', 'tx_dlf_search[searchParameter][dateTo]':'{lastSearch.dateTo}'}">
+                                                        {values.title} ({values.count})
+                                                    </f:link.action>
+                                                </f:then>
+                                                <f:else>
+                                                    <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}'}">
+                                                        {values.title} ({values.count})
+                                                    </f:link.action>
+                                                </f:else>
+                                            </f:if>
                                         </li>
                                     </f:then>
                                     <f:else>
                                         <li class="tx-dlf-search-no">
-                                            <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}'}">
-                                                {values.title} ({values.count})
-                                            </f:link.action>
+                                            <f:if condition="{lastSearch.dateFrom} || {lastSearch.dateTo}">
+                                                <f:then>
+                                                    <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][dateFrom]':'{lastSearch.dateFrom}', 'tx_dlf_search[searchParameter][dateTo]':'{lastSearch.dateTo}'}">
+                                                        {values.title} ({values.count})
+                                                    </f:link.action>
+                                                </f:then>
+                                                <f:else>
+                                                    <f:link.action additionalParams="{'tx_dlf_search[searchParameter][fq]':'{values.queryColumn}', 'tx_dlf_search[searchParameter][query]':'{lastSearch.query}',  'tx_dlf_search[searchParameter][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[searchParameter][order]':'{lastSearch.order}', 'tx_dlf_search[searchParameter][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[searchParameter][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[searchParameter][extField]':'{lastSearch.extField}', 'tx_dlf_search[searchParameter][extOperator]':'{lastSearch.extField}'}">
+                                                        {values.title} ({values.count})
+                                                    </f:link.action>
+                                                </f:else>
+                                            </f:if>
                                         </li>
                                     </f:else>
                                 </f:if>

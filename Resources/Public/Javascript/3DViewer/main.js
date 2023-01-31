@@ -55,7 +55,6 @@ const CONFIG = {
 };
 
 let camera, scene, renderer, stats, controls, loader, ambientLight, dirLight, dirLightTarget, cameraLight, cameraLightTarget;
-let dirLights = [];
 let imported;
 var mainObject = [];
 var metadataContentTech;

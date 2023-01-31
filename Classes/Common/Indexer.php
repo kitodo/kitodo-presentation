@@ -336,6 +336,24 @@ class Indexer
             $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
             $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
+            // verify date formatting
+            if(strtotime($metadata['date'][0])) {
+                // do not alter dates YYYY or YYYY-MM or YYYY-MM-DD
+                if (
+                    preg_match("/^[\d]{4}$/", $metadata['date'][0])
+                    || preg_match("/^[\d]{4}-[\d]{2}$/", $metadata['date'][0])
+                    || preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $metadata['date'][0])
+                ) {
+                    $solrDoc->setField('date', $metadata['date'][0]);
+                // change date YYYYMMDD to YYYY-MM-DD
+                } elseif (preg_match("/^[\d]{8}$/", $metadata['date'][0])){
+                    $solrDoc->setField('date', date("Y-m-d", strtotime($metadata['date'][0])));
+                // convert any datetime to proper ISO extended datetime format and timezone for SOLR
+                } else {
+                    $solrDoc->setField('date', date('Y-m-d\TH:i:s\Z', strtotime($metadata['date'][0])));
+                }
+                $solrDoc->setField('date', $metadata['date'][0]);
+            }
             $solrDoc->setField('record_id', $metadata['record_id'][0]);
             $solrDoc->setField('purl', $metadata['purl'][0]);
             $solrDoc->setField('location', $document->getLocation());
@@ -460,6 +478,13 @@ class Indexer
                             // Add facets to index.
                             $solrDoc->setField($index_name . '_faceting', $data);
                         }
+                    }
+                    // Add sorting information to physical sub-elements if applicable.
+                    if (
+                        !empty($data)
+                        && substr($index_name, -8) == '_sorting'
+                    ) {
+                        $solrDoc->setField($index_name , $doc->metadataArray[$doc->toplevelId][$index_name]);
                     }
                 }
             }

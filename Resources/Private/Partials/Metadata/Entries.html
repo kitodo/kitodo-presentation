@@ -23,6 +23,9 @@
             <f:then>
                 <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
             </f:then>
+            <f:else if="{externalUrlVariable.{configObject.indexName}}">
+                <f:render partial="Metadata/ExternalLinkEntry" arguments="{_all}"/>
+            </f:else>
             <f:else>
                 <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionCObj}">{value}</kitodo:stdWrap>
             </f:else>

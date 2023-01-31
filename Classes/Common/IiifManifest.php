@@ -632,6 +632,7 @@ final class IiifManifest extends Doc
             'type' => [],
             'volume' => [],
             'volume_sorting' => [],
+            'date' => [],
             'license' => [],
             'terms' => [],
             'restrictions' => [],
@@ -710,6 +711,10 @@ final class IiifManifest extends Doc
                     $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
                 }
             }
+        }
+        // Set date to empty string if not present.
+        if (empty($metadata['date'][0])) {
+            $metadata['date'][0] = '';
         }
         return $metadata;
     }
