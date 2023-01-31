@@ -125,17 +125,17 @@ class MetadataController extends AbstractController
      *
      * @access protected
      *
-     * @param array $metadataArray: The metadata array
+     * @param array $metadata: The metadata array
      * @param bool $useOriginalIiifManifestMetadata: Output IIIF metadata as simple key/value pairs?
      *
      * @return string The metadata array ready for output
      */
-    protected function printMetadata(array $metadataArray, $useOriginalIiifManifestMetadata = false)
+    protected function printMetadata(array $metadata, $useOriginalIiifManifestMetadata = false)
     {
         if ($useOriginalIiifManifestMetadata) {
             $iiifData = [];
-            foreach ($metadataArray as $metadata) {
-                foreach ($metadata as $key => $group) {
+            foreach ($metadata as $row) {
+                foreach ($row as $key => $group) {
                     if ($key == '_id') {
                         continue;
                     }
@@ -188,7 +188,6 @@ class MetadataController extends AbstractController
                 }
             }
         } else {
-
             // findBySettings also sorts entries by the `sorting` field
             $metadataResult = $this->metadataRepository->findBySettings([
                 'is_listed' => !$this->settings['showFull'],
@@ -199,72 +198,80 @@ class MetadataController extends AbstractController
             $metaCObjData = [];
 
             $buildUrl = [];
+            $externalUrl = [];
             $i = 0;
-            foreach ($metadataArray as $metadataSection) {
+            foreach ($metadata as $section) {
                 $metaCObjData[$i] = [];
 
-                foreach ($metadataSection as $metadataName => $metadataValue) {
+                foreach ($section as $name => $value) {
                     // NOTE: Labels are to be escaped in Fluid template
 
-                    $metaCObjData[$i][$metadataName] = is_array($metadataValue)
-                        ? implode($this->settings['separator'], $metadataValue)
-                        : $metadataValue;
+                    $metaCObjData[$i][$name] = is_array($value)
+                        ? implode($this->settings['separator'], $value)
+                        : $value;
 
-                    if ($metadataName == 'title') {
+                    if ($name == 'title') {
                         // Get title of parent document if needed.
-                        if (empty(implode('', $metadataValue)) && $this->settings['getTitle'] && $this->document->getPartof()) {
+                        if (empty(implode('', $value)) && $this->settings['getTitle'] && $this->document->getPartof()) {
                             $superiorTitle = Doc::getTitle($this->document->getPartof(), true);
                             if (!empty($superiorTitle)) {
-                                $metadataArray[$i][$metadataName] = ['[' . $superiorTitle . ']'];
+                                $metadata[$i][$name] = ['[' . $superiorTitle . ']'];
                             }
                         }
-                        if (!empty($metadataValue)) {
-                            $metadataArray[$i][$metadataName][0] = $metadataArray[$i][$metadataName][0];
+                        if (!empty($value)) {
+                            $metadata[$i][$name][0] = $metadata[$i][$name][0];
                             // Link title to pageview.
-                            if ($this->settings['linkTitle'] && $metadataSection['_id']) {
-                                $details = $this->document->getDoc()->getLogicalStructure($metadataSection['_id']);
-                                $buildUrl[$i][$metadataName]['buildUrl'] = [
+                            if ($this->settings['linkTitle'] && $section['_id']) {
+                                $details = $this->document->getDoc()->getLogicalStructure($section['_id']);
+                                $buildUrl[$i][$name]['buildUrl'] = [
                                     'id' => $this->document->getUid(),
                                     'page' => (!empty($details['points']) ? intval($details['points']) : 1),
                                     'targetPid' => (!empty($this->settings['targetPid']) ? $this->settings['targetPid'] : 0),
                                 ];
                             }
                         }
-                    } elseif ($metadataName == 'owner' && empty($metadataValue)) {
+                    } elseif (($name == 'author' || $name == 'holder') && !empty($value) && !empty($value[0]['url'])) {
+                        $externalUrl[$i][$name]['externalUrl'] = $value[0];
+                    } elseif (($name == 'geonames' || $name == 'wikidata' || $name == 'wikipedia') && !empty($value)) {
+                        $externalUrl[$i][$name]['externalUrl'] = [
+                            'name' => $value[0],
+                            'url' => $value[0]
+                        ];
+                    } elseif ($name == 'owner' && empty($value)) {
                         // no owner is found by metadata records --> take the one associated to the document
                         $library = $this->document->getOwner();
                         if ($library) {
-                            $metadataArray[$i][$metadataName][0] = $library->getLabel();
+                            $metadata[$i][$name][0] = $library->getLabel();
                         }
-                    } elseif ($metadataName == 'type' && !empty($metadataValue)) {
+                    } elseif ($name == 'type' && !empty($value)) {
                         // Translate document type.
-                        $structure = $this->structureRepository->findOneByIndexName($metadataArray[$i][$metadataName][0]);
+                        $structure = $this->structureRepository->findOneByIndexName($metadata[$i][$name][0]);
                         if ($structure) {
-                            $metadataArray[$i][$metadataName][0] = $structure->getLabel();
+                            $metadata[$i][$name][0] = $structure->getLabel();
                         }
-                    } elseif ($metadataName == 'collection' && !empty($metadataValue)) {
+                    } elseif ($name == 'collection' && !empty($value)) {
                         // Check if collections isn't hidden.
                         $j = 0;
-                        foreach ($metadataValue as $metadataEntry) {
-                            $collection = $this->collectionRepository->findOneByIndexName($metadataEntry);
+                        foreach ($value as $entry) {
+                            $collection = $this->collectionRepository->findOneByIndexName($entry);
                             if ($collection) {
-                                $metadataArray[$i][$metadataName][$j] = $collection->getLabel() ? : '';
+                                $metadata[$i][$name][$j] = $collection->getLabel() ? : '';
                                 $j++;
                             }
                         }
-                    } elseif ($metadataName == 'language' && !empty($metadataValue)) {
+                    } elseif ($name == 'language' && !empty($value)) {
                         // Translate ISO 639 language code.
-                        foreach ($metadataArray[$i][$metadataName] as &$langValue) {
+                        foreach ($metadata[$i][$name] as &$langValue) {
                             $langValue = Helper::getLanguageName($langValue);
                         }
-                    } elseif (!empty($metadataValue)) {
-                        $metadataArray[$i][$metadataName][0] = $metadataArray[$i][$metadataName][0];
+                    } elseif (!empty($value)) {
+                        $metadata[$i][$name][0] = $metadata[$i][$name][0];
                     }
 
-                    if (is_array($metadataArray[$i][$metadataName])) {
-                        $metadataArray[$i][$metadataName] = array_values(array_filter($metadataArray[$i][$metadataName], function($value)
+                    if (is_array($metadata[$i][$name])) {
+                        $metadata[$i][$name] = array_values(array_filter($metadata[$i][$name], function($metadataValue)
                         {
-                            return !empty($value);
+                            return !empty($metadataValue);
                         }));
                     }
                 }
@@ -272,7 +279,8 @@ class MetadataController extends AbstractController
             }
 
             $this->view->assign('buildUrl', $buildUrl);
-            $this->view->assign('documentMetadataSections', $metadataArray);
+            $this->view->assign('externalUrl', $externalUrl);
+            $this->view->assign('documentMetadataSections', $metadata);
             $this->view->assign('configMetadata', $metadataResult);
             $this->view->assign('separator', $this->settings['separator']);
             $this->view->assign('metaCObjData', $metaCObjData);

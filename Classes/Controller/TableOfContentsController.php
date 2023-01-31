@@ -35,26 +35,6 @@ class TableOfContentsController extends AbstractController
     protected $activeEntries = [];
 
     /**
-     * @var array $this->filterParams: The current filter parameter
-     * @access protected
-     */
-    protected $filterParams;
-
-    /**
-     * Filter Action
-     *
-     * @return void
-     */
-    public function filterAction()
-    {
-        // if filter was triggered, get filter parameters from POST variables
-        $this->filterParams = $this->getParametersSafely('filterParameter');
-
-        // output is done by main action
-        $this->forward('main', null, null, ['filterParameter' => $this->filterParams]);
-    }
-
-    /**
      * The main method of the plugin
      *
      * @return void
@@ -75,13 +55,8 @@ class TableOfContentsController extends AbstractController
                 // The logical page parameter should not appear again
                 unset($this->requestData['logicalPage']);
             }
-            if ($this->document->getDoc()->tableOfContents[0]['type'] == 'collection') {
-                $this->view->assign('type', 'collection');
-                $this->view->assign('toc', $this->makeMenuFor3DObjects());
-            } else {
-                $this->view->assign('type', 'other');
-                $this->view->assign('toc', $this->makeMenuArray());
-            }
+
+            $this->view->assign('toc', $this->makeMenuArray());
         }
     }
 
@@ -153,30 +128,6 @@ class TableOfContentsController extends AbstractController
                     ];
                     $menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($entry, false);
                 }
-            }
-        }
-        return $menuArray;
-    }
-
-    /**
-     * This builds a menu for list of 3D objects
-     *
-     * @access protected
-     *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
-     * @return array HMENU array
-     */
-    protected function makeMenuFor3DObjects()
-    {
-        $menuArray = [];
-
-        // Go through table of contents and create all menu entries.
-        foreach ($this->document->getDoc()->tableOfContents as $entry) {
-            $menuEntry = $this->getMenuEntryWithImage($entry, true);
-            if (!empty($menuEntry)) {
-                $menuArray[] = $menuEntry;
             }
         }
         return $menuArray;
@@ -302,58 +253,5 @@ class TableOfContentsController extends AbstractController
         }
 
         return $entry;
-    }
-
-    protected function getMenuEntryWithImage(array $entry, $recursive = false)
-    {
-        $entryArray = [];
-
-        // don't filter if the entry type is collection or search params are empty
-        if ($entry['type'] !== 'collection' && is_array($this->filterParams) && !empty($this->filterParams)) {
-            // currently only title filtering is defined
-            // TODO: add more logic here after another fields are defined
-            if (!str_contains($entry['label'], $this->filterParams[0])) {
-                return $entryArray;
-            }
-        }
-
-        // Set "title", "volume", "type" and "pagination" from $entry array.
-        $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
-        $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
-        $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
-        $entryArray['doNotLinkIt'] = 1;
-        $entryArray['ITEM_STATE'] = 'HEADER';
-
-        if ($entry['children'] === null) {
-            $entryArray['description'] = $entry['description'];
-            $id = $this->document->getDoc()->smLinks['l2p'][$entry['id']][0];
-            $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$id]['files']['THUMBS']);
-            $entryArray['doNotLinkIt'] = 0;
-            // index.php?tx_dlf%5Bid%5D=http%3A%2F%2Flink_to_METS_file.xml
-            $entryArray['urlId'] = GeneralUtility::_GET('id');
-            $entryArray['urlXml'] = $entry['points'];
-            $entryArray['ITEM_STATE'] = 'ITEM';
-        }
-
-        // Build sub-menu if available and called recursively.
-        if (
-            $recursive == true
-            && !empty($entry['children'])
-        ) {
-            // Build sub-menu only if one of the following conditions apply:
-            // 1. Current menu node points to another file
-            // 2. Current menu node has no corresponding images
-            if (
-                is_string($entry['points'])
-                || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
-            ) {
-                $entryArray['_SUB_MENU'] = [];
-                foreach ($entry['children'] as $child) {
-                    $entryArray['_SUB_MENU'][] = $this->getMenuEntryWithImage($child);
-                }
-            }
-        }
-        return $entryArray;
     }
 }

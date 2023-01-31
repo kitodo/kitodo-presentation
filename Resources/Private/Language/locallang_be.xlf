@@ -86,6 +86,9 @@
 			<trans-unit id="plugins.search.flexform.fulltext">
 				<source><![CDATA[Enable full text search?]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.search.flexform.datesearch">
+                <source><![CDATA[Enable date search?]]></source>
+            </trans-unit>
 			<trans-unit id="text.yes">
 				<source><![CDATA[Yes]]></source>
 			</trans-unit>
