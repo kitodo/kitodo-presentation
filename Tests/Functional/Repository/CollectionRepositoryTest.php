@@ -172,7 +172,7 @@ class CollectionRepositoryTest extends FunctionalTestCase
         $result = $indexName->fetchAllAssociative();
         $this->assertEquals(1, $indexName->rowCount());
         $this->assertEquals('Geschichte', $result[0]['index_name']);
-        $this->assertEquals('GeschichteSearch', $result[0]['index_query']);
+        $this->assertEquals('*:*', $result[0]['index_query']);
         $this->assertEquals('1103', $result[0]['uid']);
 
         $indexName = $this->collectionRepository->getIndexNameForSolr(
