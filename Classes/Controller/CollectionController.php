@@ -100,7 +100,13 @@ class CollectionController extends AbstractController
             } else {
                 $solr_query .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
             }
-            $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
+
+            // virtual collection might yield documents, that are not toplevel true or partof anything
+            if ($collection->getIndexSearch()) {
+                $params['query'] = $solr_query;
+            } else {
+                $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
+            }
             $partOfNothing = $solr->search_raw($params);
 
             $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';

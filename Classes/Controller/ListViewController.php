@@ -72,9 +72,12 @@ class ListViewController extends AbstractController
     {
         $this->searchParams = $this->getParametersSafely('searchParameter');
 
+        // extract collection(s) from collection parameter
         $collection = null;
-        if ($this->searchParams['collection'] && MathUtility::canBeInterpretedAsInteger($this->searchParams['collection'])) {
-            $collection = $this->collectionRepository->findByUid($this->searchParams['collection']);
+        if ($this->searchParams['collection']) {
+            foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
+                $collection[] = $this->collectionRepository->findByUid($collectionEntry);
+            }
         }
 
         $widgetPage = $this->getParametersSafely('@widget_0');
