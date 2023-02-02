@@ -24,7 +24,9 @@ import Stats from './js/jsm/libs/stats.module.js';
 
 import { OrbitControls } from './js/jsm/controls/OrbitControls.js';
 import { TransformControls } from './js/jsm/controls/TransformControls.js';
+// BEGIN - path can't be changed while updating
 import { GUI } from './node_modules/lil-gui/dist/lil-gui.esm.min.js';
+// END - path can't be changed while updating
 import { FBXLoader } from './js/jsm/loaders/FBXLoader.js';
 import { DDSLoader } from './js/jsm/loaders/DDSLoader.js';
 import { MTLLoader } from './js/jsm/loaders/MTLLoader.js';
@@ -52,7 +54,7 @@ const CONFIG = {
 	"galleryImageClass": "field--type-image"
 };
 
-let camera, scene, renderer, stats, controls, loader, ambientLight, dirLight, dirLightTarget;
+let camera, scene, renderer, stats, controls, loader, ambientLight, dirLight, dirLightTarget, cameraLight, cameraLightTarget;
 let imported;
 var mainObject = [];
 var metadataContentTech;
@@ -70,6 +72,7 @@ const container = document.getElementById(CONFIG.container);
 container.setAttribute("width", window.self.innerWidth);
 container.setAttribute("height", window.self.innerHeight);
 container.setAttribute("display", "flex");
+// BEGIN - part necessary to keep while updating
 const model = container.getAttribute("model");
 const xmlPath = container.getAttribute("xml");
 const settingsPath= container.getAttribute("settings");
@@ -82,6 +85,7 @@ if (dfgViewer) {
 		wisskiID = parseInt(elementsURL[1]);
 	}
 } else {
+// END - part necessary to keep while updating
 	elementsURL = window.location.pathname;
 	elementsURL = elementsURL.match("/wisski/navigate/(.*)/view");
 	wisskiID = elementsURL[1];
@@ -91,7 +95,9 @@ var filename = container.getAttribute("3d").split("/").pop();
 var basename = filename.substring(0, filename.lastIndexOf('.'));
 var extension = filename.substring(filename.lastIndexOf('.') + 1);	
 var path = container.getAttribute("3d").substring(0, container.getAttribute("3d").lastIndexOf(filename));
+// BEGIN - part necessary to keep while updating
 var fileSize;
+// END - part necessary to keep while updating
 const uri = path.replace(CONFIG.domain+"/", "");
 const EXPORT_PATH = '/export_xml_single/';
 const loadedFile = basename + "." + extension;
@@ -128,9 +134,11 @@ container.appendChild(statsContainer);
 var guiContainer = document.createElement("div");
 guiContainer.id = 'guiContainer';
 guiContainer.className = 'guiContainer';
+// BEGIN - part necessary to keep while updating
 guiContainer.style.position = 'absolute';
 guiContainer.style.right = '2%';
 guiContainer.style.marginTop = '0px';
+// END - part necessary to keep while updating
 var guiElement = document.createElement("div");
 guiElement.id = 'guiElement';
 guiElement.className = 'guiElement';
@@ -254,6 +262,19 @@ function readWissKI () {
 	xmlhttp.send();
 }
 
+function readMetadataFromFile(responseText) {
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(responseText, "application/xml");
+	var data;
+	for (let childNode of doc.documentElement.childNodes) {
+		data = childNode.childNodes;
+		if (typeof (data) !== undefined && data.length > 0) {
+			break;
+		}
+	}
+	return data;
+}
+
 //readWissKI();
 
 function createClippingPlaneGroup( geometry, plane, renderOrder ) {
@@ -308,8 +329,9 @@ function addTextWatermark (_text, _scale) {
 		new THREE.MeshStandardMaterial( { color: 0xffffff, flatShading: true, side: THREE.DoubleSide, depthTest: false, depthWrite: false, transparent: true, opacity: 0.4 } ) // side
 	];
 	const loader = new FontLoader();
-
-	loader.load( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
+	// BEGIN - path can't be changed while updating
+	loader.load( '/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
+	// END - path can't be changed while updating
 
 		const textGeo = new TextGeometry( _text, {
 			font,
@@ -346,8 +368,9 @@ function addTextPoint (_text, _scale, _point) {
 		new THREE.MeshStandardMaterial( { color: 0x0000ff, flatShading: true, side: THREE.DoubleSide, depthTest: false, depthWrite: false, transparent: true, opacity: 0.4 } ) // side
 	];
 	const loader = new FontLoader();
-
-	loader.load( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
+	// BEGIN - path can't be changed while updating
+	loader.load( '/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/fonts/helvetiker_regular.typeface.json', function ( font ) {
+	// END - path can't be changed while updating
 
 		const textGeo = new TextGeometry( _text, {
 			font,
@@ -486,6 +509,8 @@ function setupObject (_object, _camera, _light, _data, _controls) {
 			}
 		}
 	}
+	cameraLightTarget.position.set(_object.position.x, _object.position.y, _object.position.z);
+	cameraLight.target.updateMatrixWorld();
 }
 
 function setupClippingPlanes (_geometry, _size, _distance) {	
@@ -851,6 +876,7 @@ function buildRuler(_id) {
 }
 
 function onWindowResize() {
+	// BEGIN - values can't be changed while updating
 	var rightOffsetDownload = -74;
 	var rightOffsetEntity = -77;
 	var rightOffsetFullscreen = 1;
@@ -883,6 +909,7 @@ function onWindowResize() {
 	viewEntity.setAttribute('style', 'right: ' + rightOffsetEntity +'%');
 
 	fullscreenMode.setAttribute('style', 'bottom:' + Math.round(-canvasDimensions.y + 55) + 'px');
+	// END - values can't be changed while updating
 	controls.update();
 	render();
 }
@@ -1082,10 +1109,12 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 		metadataContentTech += 'Vertices: <b>' + metadata['vertices'] + '</b><br>';
 		metadataContentTech += 'Faces: <b>' + metadata['faces'] + '</b><br>';
 
+		// BEGIN - part necessary to keep while updating
 		var metadataPath = CONFIG.metadataDomain + EXPORT_PATH + wisskiID + '?page=0&amp;_format=xml';
 		if (proxy) {
 			metadataPath = xmlPath;
 		}
+		// END - part necessary to keep while updating
 
 		var req = new XMLHttpRequest();
 		req.responseType = 'xml';
@@ -1093,9 +1122,7 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState === 4) {
 				if(req.status === 200) {
-					const parser = new DOMParser();
-					const doc = parser.parseFromString(req.responseText, "application/xml");
-					var data = doc.documentElement.childNodes[0].childNodes;
+					var data = readMetadataFromFile(req.responseText);
 					if (typeof (data) !== undefined) {
 						for(var i = 0; i < data.length; i++) {
 							var fetchedValue = addWissKIMetadata(data[i].tagName, data[i].textContent);
@@ -1114,10 +1141,10 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					var cPath = path;
 					//if (compressedFile !== '') { cPath = CONFIG.domain + '/' + uri; }
 					if (compressedFile !== '') { filename = filename.replace(orgExtension, extension); }
-					downloadModel.innerHTML = "<a href='" + cPath + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
+					downloadModel.innerHTML = "<a href='" + cPath + filename + "' download><img src='/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/img/cloud-arrow-down.svg' alt='download' width=25 height=25 title='Download source file'/></a>";
 					
 					if (proxy) {
-						viewEntity.innerHTML = "<a href='" + CONFIG.domain + "/wisski/navigate/" + wisskiID + "/view' target='_blank'><img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/share.svg' alt='View Entity' width=22 height=22 title='View Entity'/></a>";
+						viewEntity.innerHTML = "<a href='" + CONFIG.domain + "/wisski/navigate/" + wisskiID + "/view' target='_blank'><img src='/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/img/share.svg' alt='View Entity' width=22 height=22 title='View Entity'/></a>";
 					}
 					else
 					{
@@ -1126,8 +1153,12 @@ function fetchSettings ( path, basename, filename, object, camera, light, contro
 					metadataContainer.appendChild( viewEntity );
 					fullscreenMode = document.createElement('div');
 					fullscreenMode.setAttribute('id', 'fullscreenMode');
+					// BEGIN - values can't be changed while updating
 					fullscreenMode.setAttribute('style', 'bottom:' + Math.round(-canvasDimensions.y + 85) + 'px');
-					fullscreenMode.innerHTML = "<img src='/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/img/fullscreen.png' alt='Fullscreen' width=20 height=20 title='Fullscreen mode'/>";
+					// END - values can't be changed while updating
+					// BEGIN - path can't be changed while updating
+					fullscreenMode.innerHTML = "<img src='/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/img/fullscreen.png' alt='Fullscreen' width=20 height=20 title='Fullscreen mode'/>";
+					// END - path can't be changed while updating
 					metadataContainer.appendChild(fullscreenMode);
 					//var _container = document.getElementById("MainCanvas");
 					container.appendChild(metadataContainer);
@@ -1161,6 +1192,7 @@ const onError = function (_event) {
 };
 
 const onProgress = function ( xhr ) {
+	// BEGIN - part necessary to keep while updating
 	var percentComplete;
 	if (xhr.lengthComputable) {
 		percentComplete = xhr.loaded / xhr.total * 100;
@@ -1181,6 +1213,7 @@ const onProgress = function ( xhr ) {
 			showToast("Model has been loaded.");
 		}
 	}
+	// END - part necessary to keep while updating
 };
 
 function loadModel ( path, basename, filename, extension, orgExtension ) {
@@ -1188,7 +1221,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 		circle.show();
 		circle.set(0, 100);
 		var modelPath = path + filename;
-
+		// BEGIN - part necessary to keep while updating
 		if (proxy) {
 			modelPath = model;
 		}
@@ -1201,6 +1234,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			}
 		};
 		req.send(null);
+		// END - part necessary to keep while updating
 
 		switch(extension.toLowerCase()) {
 			case 'obj':
@@ -1271,7 +1305,9 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			
 			case 'ifc':
 				const ifcLoader = new IFCLoader();
-				ifcLoader.ifcManager.setWasmPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/jsm/loaders/ifc/' );
+				// BEGIN - path can't be changed while updating
+				ifcLoader.ifcManager.setWasmPath( '/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/js/jsm/loaders/ifc/' );
+				// END - path can't be changed while updating
 				ifcLoader.load( modelPath, function ( object ) {
 					//object.position.set (0, 300, 0);
 					scene.add( object );
@@ -1334,11 +1370,13 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case '3ds':
 				loader = new TDSLoader( );
 				loader.setResourcePath( path );
+				// BEGIN - part necessary to keep while updating
 				modelPath = path + basename + "." + extension;
 				if (proxy) {
 					modelPath = model;
 				}
 				loader.load( modelPath, function ( object ) {
+				// END - part necessary to keep while updating
 					object.traverse( function ( child ) {
 						if ( child.isMesh ) {
 							//child.material.specular.setScalar( 0.1 );
@@ -1362,7 +1400,9 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 			case 'glb':
 			case 'gltf':
 				const dracoLoader = new DRACOLoader();
-				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/Javascript/3DViewer/js/libs/draco/' );
+				// BEGIN - path can't be changed while updating
+				dracoLoader.setDecoderPath( '/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/js/libs/draco/' );
+				// END - path can't be changed while updating
 				dracoLoader.preload();
 				const gltf = new GLTFLoader();
 				gltf.setDRACOLoader(dracoLoader);
@@ -1390,6 +1430,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 					scene.add( gltf.scene );
 				},
 					function ( xhr ) {
+						// BEGIN - part necessary to keep while updating
 						var percentComplete;
 						if (xhr.lengthComputable) {
 							percentComplete = xhr.loaded / xhr.total * 100;
@@ -1409,6 +1450,7 @@ function loadModel ( path, basename, filename, extension, orgExtension ) {
 								showToast("Model " + filename + " has been loaded.");
 							}
 						}
+						// END - part necessary to keep while updating
 					}/*,
 					function ( ) {						
 							showToast("GLTF or file with given name (possible archive/filename mismatch) representation not found, trying original file [semi-automatic]...");
@@ -1523,6 +1565,11 @@ function onPointerUp( e ) {
 function onPointerMove( e ) {
 	pointer.x = ((e.clientX - container.getBoundingClientRect().left)/ renderer.domElement.clientWidth) * 2 - 1;
 	pointer.y = - ((e.clientY - container.getBoundingClientRect().top) / renderer.domElement.clientHeight) * 2 + 1;
+	if (e.buttons === 1) {
+		if (pointer.x !== onDownPosition.x && pointer.y !== onDownPosition.y) {
+			cameraLight.position.set(camera.position.x, camera.position.y, camera.position.z);
+		}
+	}
 	if (e.buttons !== 1) {
 		if (EDITOR) {
 			raycaster.setFromCamera( pointer, camera );
@@ -1623,7 +1670,9 @@ function mainLoadModel (_ext) {
 function init() {
 	// model
 	//canvasDimensions = {x: container.getBoundingClientRect().width, y: container.getBoundingClientRect().bottom};
+	// BEGIN - values can't be changed while updating
 	canvasDimensions = {x: window.self.innerWidth*0.8, y: window.self.innerHeight};
+	// END - values can't be changed while updating
 	container.setAttribute("width", canvasDimensions.x);
 	container.setAttribute("height", canvasDimensions.y);
 
@@ -1653,6 +1702,18 @@ function init() {
 	dirLight.shadow.mapSize.height = 1024*4;
 	scene.add( dirLight );
 	lightObjects.push( dirLight );
+	
+	cameraLightTarget = new THREE.Object3D();
+	cameraLightTarget.position.set(camera.position.x, camera.position.y, camera.position.z);
+	scene.add(cameraLightTarget);
+
+	cameraLight = new THREE.DirectionalLight( 0xffffff );
+	cameraLight.position.set( camera.position );
+	cameraLight.castShadow = false;
+	cameraLight.intensity = 0.3;
+	scene.add( cameraLight );
+	cameraLight.target = cameraLightTarget;
+	cameraLight.target.updateMatrixWorld();
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, logarithmicDepthBuffer: true, colorManagement: true, sortObjects: true, preserveDrawingBuffer: true, powerPreference: "high-performance" } );
 	renderer.setPixelRatio( window.devicePixelRatio );
@@ -1710,10 +1771,12 @@ function init() {
 	
 	var _ext = extension.toLowerCase();
 
+	// BEGIN - part necessary to keep while updating
 	var metadataPath = CONFIG.metadataDomain + EXPORT_PATH + wisskiID + '?page=0&amp;_format=xml';
 	if (proxy) {
 		metadataPath = xmlPath;
 	}
+	// END - part necessary to keep while updating
 
 	var req = new XMLHttpRequest();
 	req.responseType = 'xml';
@@ -1721,9 +1784,7 @@ function init() {
 	req.onreadystatechange = function (aEvt) {
 		if (req.readyState === 4) {
 			if(req.status === 200) {
-				const parser = new DOMParser();
-				const doc = parser.parseFromString(req.responseText, "application/xml");
-				var data = doc.documentElement.childNodes[0].childNodes;
+				var data = readMetadataFromFile(req.responseText);
 				if (typeof (data) !== undefined) {
 					var _found = false;
 					for(var i = 0; i < data.length && !_found; i++) {
@@ -1731,23 +1792,25 @@ function init() {
 							var _label = data[i].tagName.replace("wisski_path_3d_model__", "");
 							if (typeof(_label) !== "undefined" && _label === "converted_file_name") {
 								_found = true;
-								var _autoPath = data[i].textContent;
-								//check wheter semo-automatic path found
+								var _autoPath = data[i].textContent.trim();
+								//check whether semi-automatic path found
 								if (_autoPath !== '') {							
-									filename = _autoPath.split("/").pop();
-									basename = filename.substring(0, filename.lastIndexOf('.'));
-									extension = filename.substring(filename.lastIndexOf('.') + 1);
-									_ext = extension.toLowerCase();
-									path = _autoPath.substring(0, _autoPath.lastIndexOf(filename));
+									filename = _autoPath.split("/").pop().trim();
+									basename = filename.substring(0, filename.lastIndexOf('.')).trim();
+									extension = filename.substring(filename.lastIndexOf('.') + 1).trim();
+									_ext = extension.toLowerCase().trim();
+									path = _autoPath.substring(0, _autoPath.lastIndexOf(filename)).trim();
 								}
 								mainLoadModel(_ext);
 							}
 						}
 					}
+				} else {
+					showToast("Error during loading metadata content - empty metadata file\n");
 				}
 			}
 			else {
-				showToast("Error during loading metadata content");
+				showToast("Error during loading metadata content\n");
 				mainLoadModel (_ext);
 			}
 		}

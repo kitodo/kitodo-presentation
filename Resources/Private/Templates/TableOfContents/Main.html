@@ -12,18 +12,10 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:if condition="{type} == 'collection'">
-    <f:then>
-        <div class="tx-dlf-toc-preview">
-            <f:render partial="TableOfContents/Filter"/>
-            <f:render partial="TableOfContents/Models" arguments="{models: toc}"/>
-        </div>
-    </f:then>
-    <f:else>
-        <div class="tx-dlf-tableofcontents">
-            <ul>
-                <f:render partial="TableOfContents/Children" arguments="{children: toc}"/>
-            </ul>
-        </div>
-    </f:else>
-</f:if>
+<div class="tx-dlf-tableofcontents">
+    <ul>
+        <f:render partial="TableOfContents/Children" arguments="{children: toc}"/>
+    </ul>
+</div>
+
+</html>

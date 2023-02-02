@@ -259,8 +259,8 @@ class PageViewController extends AbstractController
                 $image['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
 
                 // Only deliver static images via the internal PageViewProxy.
-                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL`.)
-                if ($this->settings['useInternalProxy'] && strpos($image['mimetype'], 'image/') === 0) {
+                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL` in `OLSources.js`.)
+                if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
                     // Configure @action URL for form.
                     $uri = $this->uriBuilder->reset()
                         ->setTargetPageUid($GLOBALS['TSFE']->id)

@@ -57,6 +57,10 @@
                 <f:form.hidden property="collections" value="{settings.collections}" />
                 <f:form.hidden property="query" value="{lastSearch.query}" />
                 <f:form.hidden property="fulltext" value="{lastSearch.fulltext}" />
+                <f:if condition="{lastSearch.dateFrom} || {lastSearch.dateTo}">
+                    <f:form.hidden property="dateFrom" value="{lastSearch.dateFrom}" />
+                    <f:form.hidden property="dateTo" value="{lastSearch.dateTo}" />
+                </f:if>
             </div>
         </f:form>
     </f:if>
