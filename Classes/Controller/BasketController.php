@@ -390,10 +390,7 @@ class BasketController extends AbstractController
             }
             // get document instance to load further information
             $this->loadDocument(['id' => $documentItem['id']]);
-            if (
-                $this->document === null
-                || $this->document->getDoc() === null
-            ) {
+            if ($this->isDocMissing()) {
                 // Quit without doing anything if required variables are not set.
                 return;
             }

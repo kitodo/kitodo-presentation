@@ -33,8 +33,7 @@ class View3DController extends AbstractController
         // Load current document.
         $this->loadDocument($this->requestData);
         if (
-            $this->document === null
-            || $this->document->getDoc() === null
+            $this->isDocMissingOrEmpty()
             || $this->document->getDoc()->metadataArray['LOG_0001']['type'][0] != 'object'
         ) {
             // Quit without doing anything if required variables are not set.
