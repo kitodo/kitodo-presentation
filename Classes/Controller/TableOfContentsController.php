@@ -43,10 +43,7 @@ class TableOfContentsController extends AbstractController
     {
         // Load current document.
         $this->loadDocument($this->requestData);
-        if (
-            $this->document === null
-            || $this->document->getDoc() === null
-        ) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {

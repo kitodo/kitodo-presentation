@@ -33,8 +33,7 @@ class PageGridController extends AbstractController
     {
         $this->loadDocument($this->requestData);
         if (
-            $this->document === null
-            || $this->document->getDoc()->numPages < 1
+            $this->isDocMissingOrEmpty()
             || empty($this->extConf['fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
