@@ -282,7 +282,7 @@ class CalendarController extends AbstractController
                 ];
             }
             // create an array that includes years without issues
-            if($this->settings['showEmptyYears']){
+            if (!empty($this->settings['showEmptyYears'])){
                 $yearFilled = [];
                 $min = $yearArray[0]['title'];
                 // round the starting decade down to zero for equal rows
