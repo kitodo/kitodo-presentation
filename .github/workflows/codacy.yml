@@ -10,8 +10,15 @@ on:
   release:
     type: [ "created", "edited" ]
 
+permissions:
+  contents: read
+
 jobs:
   codacy-security-scan:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     name: Security Scan
     runs-on: ubuntu-latest
     steps:
