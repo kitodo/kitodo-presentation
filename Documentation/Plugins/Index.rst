@@ -220,6 +220,13 @@ now.
    :Default:
 
  - :Property:
+       showEmptyYears
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
        showEmptyMonths
    :Data Type:
        :ref:`t3tsref:data-type-boolean`

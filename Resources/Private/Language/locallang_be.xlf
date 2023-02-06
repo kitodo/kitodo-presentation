@@ -56,6 +56,9 @@
 			<trans-unit id="plugins.calendar.flexform.initialDocument">
 				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.showEmptyYears">
+				<source><![CDATA[Show years without issues in calendar?]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.calendar.flexform.showEmptyMonths">
 				<source><![CDATA[Show months without issues in calendar?]]></source>
 			</trans-unit>
