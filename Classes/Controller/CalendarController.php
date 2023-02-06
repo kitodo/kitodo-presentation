@@ -282,20 +282,18 @@ class CalendarController extends AbstractController
                 ];
             }
             // create an array that includes years without issues
-            if (!empty($this->settings['showEmptyYears'])){
+            if (!empty($this->settings['showEmptyYears'])) {
                 $yearFilled = [];
                 $min = $yearArray[0]['title'];
                 // round the starting decade down to zero for equal rows
-                $min = substr_replace($min,"0",-1);
+                $min = substr_replace($min, "0", -1);
                 $max = $yearArray[count($yearArray) - 1]['title'];
                 // if we have an actual documentId it should be used, otherwise leave empty
-                for($i = 0; $i < $max-$min+1; $i++) {
-                    $key = array_search($min+$i,array_column($yearArray, 'title'));
-                    if (is_int($key))
-                    {
+                for ($i = 0; $i < $max - $min + 1; $i++) {
+                    $key = array_search($min + $i, array_column($yearArray, 'title'));
+                    if (is_int($key)) {
                         $yearFilled[] = $yearArray[$key];
-                    }
-                    else {
+                    } else {
                         $yearFilled[] = ['title' => $min+$i, 'documentId' => ''];
                     }
                 }
