@@ -38,11 +38,7 @@ class DocumentController extends AbstractController
     {
         // Load current document.
         $this->loadDocument($this->requestData);
-        if (
-            $this->document === null
-            || $this->document->getDoc() === null
-            || $this->document->getDoc()->numPages < 1
-        ) {
+        if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
@@ -61,7 +57,7 @@ class DocumentController extends AbstractController
             $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         }
 
-        $doc = $this->document->getDoc();
+        $metadataUrl = null;
 
         if (!empty($this->settings['targetPidMetadata'])) {
             $metadataUrl = $this->uriBuilder
