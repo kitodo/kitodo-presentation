@@ -66,7 +66,7 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.showEmptyYears</label>
                         <config>
                           <type>check</type>
-                          <default>1</default>
+                          <default>0</default>
                         </config>
                       </TCEforms>
                     </settings.showEmptyYears>
