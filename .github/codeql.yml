@@ -3,6 +3,11 @@
    queries:
      - uses: security-and-quality
    
+   query-filters:
+     - exclude:
+       problem.severity:
+         - note
+   
    paths-ignore:
      - Resources/Public/Javascript/OpenLayers
      - Resources/Public/Javascript/Toastify
