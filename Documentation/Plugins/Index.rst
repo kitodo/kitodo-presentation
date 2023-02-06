@@ -224,7 +224,7 @@ now.
    :Data Type:
        :ref:`t3tsref:data-type-boolean`
    :Default:
-       1
+       0
 
  - :Property:
        showEmptyMonths
