@@ -5,8 +5,8 @@
    
    query-filters:
      - exclude:
-       problem.severity:
-         - note
+         problem.severity:
+           - note
    
    paths-ignore:
      - Resources/Public/Javascript/OpenLayers
