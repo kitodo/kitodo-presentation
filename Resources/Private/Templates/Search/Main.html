@@ -38,10 +38,22 @@
 
     <!-- Fulltext switch -->
     <f:if condition="{settings.fulltext}">
-        <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
-        <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
-        <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
-        <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+        <f:comment><!-- needs to be written like this, to check if fulltext searchparam == NULL --></f:comment>
+        <f:if condition="{lastSearch.fulltext} ==">
+            <f:then>
+                <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{settings.fulltextPreselect} == 0" />
+                <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
+                <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{settings.fulltextPreselect} == 1" />
+                <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+            </f:then>
+            <f:comment><!-- as soon we have a user preference, we use it instead --></f:comment>
+            <f:else>
+                <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
+                <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
+                <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
+                <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+            </f:else>
+        </f:if>
     </f:if>
 
     <f:comment><!-- Add list of collections as parameter when configured in search plugin --></f:comment>
