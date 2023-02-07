@@ -21,7 +21,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * Helper for Flexform's custom "itemsProcFunc"
+ * Helper for FlexForm's custom "itemsProcFunc"
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
