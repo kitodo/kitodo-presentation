@@ -6,13 +6,7 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 
 For a complete overview of all features, visit the [Kitodo homepage](https://www.kitodo.org/software/kitodopresentation/features).
 
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=kitodo-presentation&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=kitodo-presentation)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=kitodo-presentation&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=kitodo-presentation)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=kitodo-presentation&metric=security_rating)](https://sonarcloud.io/dashboard?id=kitodo-presentation)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kitodo-presentation&metric=alert_status)](https://sonarcloud.io/dashboard?id=kitodo-presentation)
-
 [![Codacy Grade](https://api.codacy.com/project/badge/Grade/b2a7bd8e42ef405d95ca503e4fe95320)](https://app.codacy.com/gh/kitodo/kitodo-presentation)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master)
 
 Kitodo was formerly known as Goobi. Older releases can be found on [Launchpad](https://launchpad.net/goobi-presentation).
 
