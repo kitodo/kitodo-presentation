@@ -50,11 +50,13 @@ const verovioSettings = {
 dlfScoreUtils.get_play_midi = function (toolkit) {
   $("#tx-dlf-tools-midi").click(
 	function () {
+    console.log('function working?')
 			var base64midi = toolkit.renderToMIDI();
 			var song = 'data:audio/midi;base64,' + base64midi;
-			$("#player").show();
-			$("#tx-dlf-tools-midi").hide();
-      $("#player").midiPlayer();
+			// $("#player").show();
+			// $("#tx-dlf-tools-midi").hide();
+			console.log("this is song " + song)
+
 			$("#player").midiPlayer.play(song);
 	})
 	return dlfScoreUtils
