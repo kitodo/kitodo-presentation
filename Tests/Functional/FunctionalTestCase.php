@@ -88,11 +88,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
         $this->baseUrl = 'http://web:8000/public/typo3temp/var/tests/functional-' . $this->identifier . '/';
         $this->httpClient = new HttpClient([
-            'base_uri' => $this->baseUrl,
+            'base_uri' => $this->baseUrl . 'index.php',
             'http_errors' => false,
         ]);
 
-        $this->addSiteConfig('dlf-testing', $this->baseUrl);
+        $this->addSiteConfig('dlf-testing');
     }
 
     protected function getDlfConfiguration()
@@ -103,7 +103,6 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             'fileGrpDownload' => 'DOWNLOAD',
             'fileGrpFulltext' => 'FULLTEXT',
             'fileGrpAudio' => 'AUDIO',
-
             'solrFieldAutocomplete' => 'autocomplete',
             'solrFieldCollection' => 'collection',
             'solrFieldDefault' => 'default',
@@ -134,11 +133,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         ];
     }
 
-    protected function addSiteConfig($identifier, $baseUrl)
+    protected function addSiteConfig($identifier)
     {
         $siteConfig = Yaml::parseFile(__DIR__ . '/../Fixtures/siteconfig.yaml');
-        $siteConfig['base'] = $baseUrl;
-        $siteConfig['languages'][0]['base'] = $baseUrl;
+        $siteConfig['base'] = $this->baseUrl;
+        $siteConfig['languages'][0]['base'] = $this->baseUrl;
 
         $siteConfigPath = $this->instancePath . '/typo3conf/sites/' . $identifier;
         @mkdir($siteConfigPath, 0775, true);
