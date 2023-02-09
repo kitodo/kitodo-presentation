@@ -1,6 +1,6 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
+namespace Kitodo\Dlf\Common\Solr;
 
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;

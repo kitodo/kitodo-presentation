@@ -10,11 +10,11 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Common\SolrSearchResult;
+namespace Kitodo\Dlf\Common\Solr\SearchResult;
 
-use Kitodo\Dlf\Common\SolrSearchResult\Highlight;
-use Kitodo\Dlf\Common\SolrSearchResult\Page;
-use Kitodo\Dlf\Common\SolrSearchResult\Region;
+use Kitodo\Dlf\Common\Solr\SearchResult\Highlight;
+use Kitodo\Dlf\Common\Solr\SearchResult\Page;
+use Kitodo\Dlf\Common\Solr\SearchResult\Region;
 
 /**
  * ResultDocument class for the 'dlf' extension. It keeps the result of the search in the SOLR index.
