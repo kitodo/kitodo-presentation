@@ -123,7 +123,7 @@ return [
                         'info' => 1,
                         'new' => 1,
                         'dragdrop' => 0,
-                        'sort' => 0,
+                        'sort' => 1,
                         'hide' => 0,
                         'delete' => 1,
                         'localize' => 0,

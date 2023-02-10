@@ -630,6 +630,7 @@ final class MetsDocument extends Doc
                     $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', intval($cPid))
                     // $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->dmdSec[$dmdId]['type']))
                 )
+                ->orderBy('tx_dlf_subentries_joins.sorting')
                 ->execute();
             $subentriesResult = $subentries->fetchAll();
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
