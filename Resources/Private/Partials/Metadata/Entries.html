@@ -38,7 +38,11 @@
                                             {subConfigObject.wrap -> kitodo:metadataWrapVariable(name: 'subMetadataWrap')}
                                             <kitodo:stdWrap wrap="{subMetadataWrap.all}" data="{metaSectionCObj}">
                                                 <kitodo:stdWrap wrap="{subMetadataWrap.key}" data="{metaSectionCObj}">{subConfigObject.label}</kitodo:stdWrap>
-                                                <kitodo:stdWrap wrap="{subMetadataWrap.value}" data="{metaSectionCObj}">{val.0}</kitodo:stdWrap>
+                                                <f:for each="{val}" as="subvalue">
+                                                    <kitodo:stdWrap wrap="{subMetadataWrap.value}" data="{metaSectionCObj}">
+                                                        {subvalue}
+                                                    </kitodo:stdWrap>
+                                                </f:for>
                                             </kitodo:stdWrap>
                                         </f:if>
                                     </f:for>
