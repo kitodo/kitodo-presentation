@@ -172,55 +172,44 @@ class OaiPmhController extends AbstractController
 
         $metadata[] = ['dc:identifier' => $record['record_id']];
 
-        if (!empty($record['purl'])) {
-            $metadata[] = ['dc:identifier' => $record['purl']];
-        }
-        if (!empty($record['prod_id'])) {
-            $metadata[] = ['dc:identifier' => $record['prod_id']];
-        }
-        if (!empty($record['urn'])) {
-            $metadata[] = ['dc:identifier' => $record['urn']];
-        }
-        if (!empty($record['title'])) {
-            $metadata[] = ['dc:title' => $record['title']];
-        }
-        if (!empty($record['author'])) {
-            $metadata[] = ['dc:creator' => $record['author']];
-        }
-        if (!empty($record['year'])) {
-            $metadata[] = ['dc:date' => $record['year']];
-        }
-        if (!empty($record['place'])) {
-            $metadata[] = ['dc:coverage' => $record['place']];
-        }
+        $this->addDcData($metadata, 'dc:identifier', $record['purl']);
+        $this->addDcData($metadata, 'dc:identifier', $record['prod_id']);
+        $this->addDcData($metadata, 'dc:identifier', $record['urn']);
+        $this->addDcData($metadata, 'dc:title', $record['title']);
+        $this->addDcData($metadata, 'dc:creator', $record['author']);
+        $this->addDcData($metadata, 'dc:date', $record['year']);
+        $this->addDcData($metadata, 'dc:coverage', $record['place']);
+
         $record[] = ['dc:format' => $record['application/mets+xml']];
         $record[] = ['dc:type' => $record['Text']];
         if (!empty($record['partof'])) {
-
             $document = $this->documentRepository->findOneByPartof($metadata['partof']);
 
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
             }
         }
-        if (!empty($record['license'])) {
-            $metadata[] = ['dc:rights' => $record['license']];
-        }
-        if (!empty($record['terms'])) {
-            $metadata[] = ['dc:rights' => $record['terms']];
-        }
-        if (!empty($record['restrictions'])) {
-            $metadata[] = ['dc:rights' => $record['restrictions']];
-        }
-        if (!empty($record['out_of_print'])) {
-            $metadata[] = ['dc:rights' => $record['out_of_print']];
-        }
-        if (!empty($record['rights_info'])) {
-            $metadata[] = ['dc:rights' => $record['rights_info']];
-        }
+        $this->addDcData($metadata, 'dc:rights', $record['license']);
+        $this->addDcData($metadata, 'dc:rights', $record['terms']);
+        $this->addDcData($metadata, 'dc:rights', $record['restrictions']);
+        $this->addDcData($metadata, 'dc:rights', $record['out_of_print']);
+        $this->addDcData($metadata, 'dc:rights', $record['rights_info']);
+
         return $metadata;
     }
 
+    /**
+     * @param array $metadata The mapped metadata array
+     * @param string $key The key to which record value should be assigned
+     * @param string $value The key from record array
+     *
+     * @return void
+     */
+    private function addDcData(&$metadata, $key, $value) {
+        if (!empty($value)) {
+            $metadata[] = [$key => $value];
+        }
+    }
 
     /**
      * Get METS data.
