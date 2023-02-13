@@ -446,7 +446,7 @@ dlfViewerFullTextControl.prototype.activate = function() {
 
     // now activate the fulltext overlay and map behavior
     this.enableFulltextSelect();
-    dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled');
+    dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'enabled', "lax");
     $(controlEl).addClass('active');
     this.isActive = true;
 
@@ -463,7 +463,7 @@ dlfViewerFullTextControl.prototype.deactivate = function() {
 
     // deactivate fulltext
     this.disableFulltextSelect();
-    dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled');
+    dlfUtils.setCookie("tx-dlf-pageview-fulltext-select", 'disabled', "lax");
     $(controlEl).removeClass('active');
     this.isActive = false;
 
