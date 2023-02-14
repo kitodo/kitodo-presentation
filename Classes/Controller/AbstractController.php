@@ -598,4 +598,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         return $doc;
     }
+
+    /**
+     * For testing purposes only.
+     */
+    public function setSettingsForTest($settings)
+    {
+        $this->settings = $settings;
+    }
 }
