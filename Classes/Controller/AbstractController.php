@@ -424,4 +424,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             'pagesG' => $pages
         ];
     }
+
+    /**
+     * For testing purposes only.
+     */
+    public function setSettingsForTest($settings)
+    {
+        $this->settings = $settings;
+    }
 }
