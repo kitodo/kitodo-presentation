@@ -74,6 +74,14 @@ class Solr implements LoggerAwareInterface
     public static $extKey = 'dlf';
 
     /**
+     * The fields for SOLR index
+     *
+     * @var array
+     * @access public
+     */
+    public static $fields = [];
+
+    /**
      * This holds the max results
      *
      * @var int
@@ -255,37 +263,38 @@ class Solr implements LoggerAwareInterface
      */
     public static function getFields()
     {
-        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+        if (empty(self::$fields)) {
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
 
-        $fields = [];
-        $fields['id'] = $conf['solrFieldId'];
-        $fields['uid'] = $conf['solrFieldUid'];
-        $fields['pid'] = $conf['solrFieldPid'];
-        $fields['page'] = $conf['solrFieldPage'];
-        $fields['partof'] = $conf['solrFieldPartof'];
-        $fields['root'] = $conf['solrFieldRoot'];
-        $fields['sid'] = $conf['solrFieldSid'];
-        $fields['toplevel'] = $conf['solrFieldToplevel'];
-        $fields['type'] = $conf['solrFieldType'];
-        $fields['title'] = $conf['solrFieldTitle'];
-        $fields['volume'] = $conf['solrFieldVolume'];
-        $fields['date'] = $conf['solrFieldDate'];
-        $fields['thumbnail'] = $conf['solrFieldThumbnail'];
-        $fields['default'] = $conf['solrFieldDefault'];
-        $fields['timestamp'] = $conf['solrFieldTimestamp'];
-        $fields['autocomplete'] = $conf['solrFieldAutocomplete'];
-        $fields['fulltext'] = $conf['solrFieldFulltext'];
-        $fields['record_id'] = $conf['solrFieldRecordId'];
-        $fields['purl'] = $conf['solrFieldPurl'];
-        $fields['urn'] = $conf['solrFieldUrn'];
-        $fields['location'] = $conf['solrFieldLocation'];
-        $fields['collection'] = $conf['solrFieldCollection'];
-        $fields['license'] = $conf['solrFieldLicense'];
-        $fields['terms'] = $conf['solrFieldTerms'];
-        $fields['restrictions'] = $conf['solrFieldRestrictions'];
-        $fields['geom'] = $conf['solrFieldGeom'];
+            self::$fields['id'] = $conf['solrFieldId'];
+            self::$fields['uid'] = $conf['solrFieldUid'];
+            self::$fields['pid'] = $conf['solrFieldPid'];
+            self::$fields['page'] = $conf['solrFieldPage'];
+            self::$fields['partof'] = $conf['solrFieldPartof'];
+            self::$fields['root'] = $conf['solrFieldRoot'];
+            self::$fields['sid'] = $conf['solrFieldSid'];
+            self::$fields['toplevel'] = $conf['solrFieldToplevel'];
+            self::$fields['type'] = $conf['solrFieldType'];
+            self::$fields['title'] = $conf['solrFieldTitle'];
+            self::$fields['volume'] = $conf['solrFieldVolume'];
+            self::$fields['date'] = $conf['solrFieldDate'];
+            self::$fields['thumbnail'] = $conf['solrFieldThumbnail'];
+            self::$fields['default'] = $conf['solrFieldDefault'];
+            self::$fields['timestamp'] = $conf['solrFieldTimestamp'];
+            self::$fields['autocomplete'] = $conf['solrFieldAutocomplete'];
+            self::$fields['fulltext'] = $conf['solrFieldFulltext'];
+            self::$fields['record_id'] = $conf['solrFieldRecordId'];
+            self::$fields['purl'] = $conf['solrFieldPurl'];
+            self::$fields['urn'] = $conf['solrFieldUrn'];
+            self::$fields['location'] = $conf['solrFieldLocation'];
+            self::$fields['collection'] = $conf['solrFieldCollection'];
+            self::$fields['license'] = $conf['solrFieldLicense'];
+            self::$fields['terms'] = $conf['solrFieldTerms'];
+            self::$fields['restrictions'] = $conf['solrFieldRestrictions'];
+            self::$fields['geom'] = $conf['solrFieldGeom'];
+        }
 
-        return $fields;
+        return self::$fields;
     }
 
     /**
