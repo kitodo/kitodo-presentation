@@ -591,9 +591,9 @@ dlfViewer.prototype.init = function(controlNames) {
                     center = this.map.getView().getCenter() !== undefined ? this.map.getView().getCenter() : ['', ''];
 
                 // save actual map view parameters to cookie
-                dlfUtils.setCookie('tx-dlf-pageview-zoomLevel', zoom);
-                dlfUtils.setCookie('tx-dlf-pageview-centerLon', center[0]);
-                dlfUtils.setCookie('tx-dlf-pageview-centerLat', center[1]);
+                dlfUtils.setCookie('tx-dlf-pageview-zoomLevel', zoom, "lax");
+                dlfUtils.setCookie('tx-dlf-pageview-centerLon', center[0], "lax");
+                dlfUtils.setCookie('tx-dlf-pageview-centerLat', center[1], "lax");
             }, this));
         }, this));
         this.source = new ol.source.Vector();
