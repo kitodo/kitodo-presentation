@@ -594,7 +594,7 @@ dlfUtils.setCookie = function (name, value, samesite) {
             samesite = "lax"
     }
     
-    document.cookie = name + "=" + decodeURI(value) + "; path=/" + "; SameSite="+samesite;
+    document.cookie = name + "=" + decodeURI(value) + "; path=/" + "; SameSite=" + samesite;
 };
 
 /**
