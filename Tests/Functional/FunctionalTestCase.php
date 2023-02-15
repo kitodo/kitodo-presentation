@@ -31,9 +31,15 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                     ],
                 ],
             ],
+            'displayErrors' => '1'
         ],
         'EXTENSIONS' => [
             'dlf' => [], // = $this->getDlfConfiguration(), set in constructor
+        ],
+        'FE' => [
+            'cacheHash' => [
+                'enforceValidation' => false,
+            ],
         ],
         'DB' => [
             'Connections' => [
