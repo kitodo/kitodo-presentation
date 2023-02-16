@@ -276,16 +276,16 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $virtualCollectionsQueryString = '';
             foreach ($this->collection as $collectionEntry) {
                 // check for virtual collections query string
-                if($collectionEntry->getIndexSearch()) {
+                if ($collectionEntry->getIndexSearch()) {
                     $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
                 } else {
                     $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
                 }
             }
-            
+
             // distinguish between simple collection browsing and actual searching within the collection(s)
-            if(!empty($collectionsQueryString)) {
-                if(empty($query)) {
+            if (!empty($collectionsQueryString)) {
+                if (empty($query)) {
                     $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
                 } else {
                     $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
@@ -293,7 +293,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
 
             // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
-            if(!empty($virtualCollectionsQueryString)) {
+            if (!empty($virtualCollectionsQueryString)) {
                 $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
             }
 
@@ -372,8 +372,8 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                 }
                 if ($documents[$doc['uid']]) {
                     // translate language code if applicable
-                    if($doc['metadata']['language']) {
-                        foreach($doc['metadata']['language'] as $indexName => $language) {
+                    if ($doc['metadata']['language']) {
+                        foreach ($doc['metadata']['language'] as $indexName => $language) {
                             $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
                         }
                     }
