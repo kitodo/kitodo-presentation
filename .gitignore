@@ -11,7 +11,6 @@
 /Build/Documentation/venv
 /Build/Documentation/dbdocs/var
 /Build/Test/.env
-/composer.lock
 /Documentation-GENERATED-temp/
 /nbproject/
 /public/
