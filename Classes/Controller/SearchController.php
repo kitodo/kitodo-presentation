@@ -93,7 +93,7 @@ class SearchController extends AbstractController
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
             $this->logger->warning('Incomplete plugin configuration');
-            return '';
+            return;
         }
 
         // if search was triggered, get search parameters from POST variables
