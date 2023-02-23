@@ -25,9 +25,9 @@
         <f:then>
             <f:if condition="{viewData.requestData.double}">
                 <f:then>
-                    <div class="tx-dlf-navigation-double">
+                    <div class="tx-dlf-navigation-single">
                         <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'0'}">
-                            <f:translate key="doublePageOn"/>
+                            <f:translate key="doublePageOff"/>
                         </f:link.action>
                     </div>
                     <div class="tx-dlf-navigation-double+">
@@ -46,14 +46,17 @@
                     </div>
                 </f:then>
                 <f:else>
-                    <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'1'}">
-                        <f:translate key="doublePageOn"/>
-                    </f:link.action>
+                    <div class="tx-dlf-navigation-double">
+                        <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'1'}">
+                            <f:translate key="doublePageOn"/>
+                        </f:link.action>
+                    </div>
                 </f:else>
             </f:if>
         </f:then>
         <f:else>
-            <div class="tx-dlf-navigation-double">
+            <f:comment>No pages available, therefore actually no double page view possible</f:comment>
+            <div class="tx-dlf-navigation-double disabled">
                 <span title="{f:translate(key: 'doublePageOn')}">
                     <f:translate key="doublePageOn"/>
                 </span>
