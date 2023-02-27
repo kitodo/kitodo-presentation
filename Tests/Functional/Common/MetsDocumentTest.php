@@ -11,6 +11,7 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.xml');
         $this->importDataSet(__DIR__ . '/../../Fixtures/Common/metadata.xml');
         $this->importDataSet(__DIR__ . '/../../Fixtures/MetsDocument/metadata_mets.xml');
     }
@@ -127,5 +128,106 @@ class MetsDocumentTest extends FunctionalTestCase
         // AMD only does not work
         $metadata = $doc->getMetadata('LOG_0002', 20000);
         $this->assertEquals([], $metadata);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetDownloadLocation()
+    {
+        $doc = $this->doc('two_dmdsec.xml');
+
+        $correct = $doc->getDownloadLocation('FILE_0000_DOWNLOAD');
+        $this->assertEquals('https://example.com/download?&CVT=jpeg', $correct);
+
+        $incorrect = $doc->getDownloadLocation('ID_DOES_NOT_EXIST');
+        $this->assertEquals('', $incorrect);
+    }
+
+
+    /**
+     * @test
+     */
+    public function canGetFileLocation()
+    {
+        $doc = $this->doc('two_dmdsec.xml');
+
+        $correct = $doc->getFileLocation('FILE_0000_DEFAULT');
+        $this->assertEquals('https://digital.slub-dresden.de/data/kitodo/1703800435/video.mov', $correct);
+
+        $incorrect = $doc->getFileLocation('ID_DOES_NOT_EXIST');
+        $this->assertEquals('', $incorrect);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetFileMimeType()
+    {
+        $doc = $this->doc('two_dmdsec.xml');
+
+        $correct = $doc->getFileMimeType('FILE_0000_DEFAULT');
+        $this->assertEquals('video/quicktime', $correct);
+
+        $incorrect = $doc->getFileMimeType('ID_DOES_NOT_EXIST');
+        $this->assertEquals('', $incorrect);
+    }
+
+    // FIXME: Method getPhysicalPage does not work as expected
+    /**
+     * @test
+     */
+    public function canGetPhysicalPage()
+    {
+        $doc = $this->doc('mets_with_pages.xml');
+
+        // pass orderlabel and retrieve order
+        $physicalPage = $doc->getPhysicalPage('1');
+        $this->assertEquals(1, $physicalPage);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetTitle()
+    {
+        $doc = $this->doc('mets_with_pages.xml');
+
+        $correct = $doc->getTitle(1001);
+        $this->assertEquals('10 Keyboard pieces - Go. S. 658', $correct);
+
+        $incorrect = $doc->getTitle(1234);
+        $this->assertEquals('', $incorrect);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetFullText()
+    {
+        $doc = $this->doc('mets_with_pages.xml');
+
+        $fulltext = $doc->getFullText('PHYS_0003');
+        $expected = '<?xml version="1.0"?>
+<ocr><b/><b/></ocr>
+';
+        $this->assertEquals($expected, $fulltext);
+
+        $incorrect = $doc->getFullText('ID_DOES_NOT_EXIST');
+        $this->assertEquals('', $incorrect);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetStructureDepth()
+    {
+        $doc = $this->doc('mets_with_pages.xml');
+
+        $correct = $doc->getStructureDepth('LOG_0001');
+        $this->assertEquals(3, $correct);
+
+        $incorrect = $doc->getStructureDepth('ID_DOES_NOT_EXIST');
+        $this->assertEquals(0, $incorrect);
     }
 }
