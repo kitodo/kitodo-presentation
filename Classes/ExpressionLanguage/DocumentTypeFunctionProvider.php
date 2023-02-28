@@ -65,11 +65,15 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * @var ConfigurationManager
      */
     protected $configurationManager;
+    
+    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    {
+        $this->documentRepository = $documentRepository;
+    }
 
-    public function __construct(ConfigurationManager $configurationManager, DocumentRepository $documentRepository)
+    public function injectConfigurationManager(ConfigurationManager $configurationManager)
     {
         $this->configurationManager = $configurationManager;
-        $this->documentRepository = $documentRepository;
     }
 
     /**
