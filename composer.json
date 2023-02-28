@@ -32,19 +32,19 @@
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "^10.4.34|^11.5",
-    "typo3/cms-extbase": "^10.4.34|^11.5",
-    "typo3/cms-tstemplate": "^10.4.34|^11.5",
+    "typo3/cms-core": "^10.4.36|^11.5.24",
+    "typo3/cms-extbase": "^10.4.36|^11.5.24",
+    "typo3/cms-tstemplate": "^10.4.36|^11.5.24",
     "caseyamcl/phpoaipmh": "^3.3",
     "ubl/php-iiif-prezi-reader": "0.3.0",
     "solarium/solarium": "^5.2"
   },
   "require-dev": {
     "spatie/phpunit-watcher": "^1.23",
-    "typo3/cms-backend": "^10.4.34|^11.5",
-    "typo3/cms-fluid": "^10.4.34|^11.5",
-    "typo3/cms-fluid-styled-content": "^10.4.34|^11.5",
-    "typo3/cms-frontend": "^10.4.34|^11.5",
+    "typo3/cms-backend": "^10.4.36|^11.5.24",
+    "typo3/cms-fluid": "^10.4.36|^11.5.24",
+    "typo3/cms-fluid-styled-content": "^10.4.36|^11.5.24",
+    "typo3/cms-frontend": "^10.4.36|^11.5.24",
     "typo3/testing-framework": "^6.16.6"
   },
   "replace": {
