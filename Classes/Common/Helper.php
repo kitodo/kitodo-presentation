@@ -839,45 +839,6 @@ class Helper
     }
 
     /**
-     * Make classname configuration from `Classes.php` available in contexts
-     * where it normally isn't, and where the classical way via TypoScript won't
-     * work either.
-     *
-     * This transforms the structure used in `Classes.php` to that used in
-     * `ext_typoscript_setup.txt`. See commit 5e6110fb for a similar approach.
-     *
-     * @deprecated Remove once we drop support for TYPO3v9
-     *
-     * @access public
-     */
-    public static function polyfillExtbaseClassesForTYPO3v9()
-    {
-        $classes = require __DIR__ . '/../../Configuration/Extbase/Persistence/Classes.php';
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get(ConfigurationManager::class);
-        $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-
-        $extbaseClassmap = &$frameworkConfiguration['persistence']['classes'];
-        if ($extbaseClassmap === null) {
-            $extbaseClassmap = [];
-        }
-
-        foreach ($classes as $className => $classConfig) {
-            $extbaseClass = &$extbaseClassmap[$className];
-            if ($extbaseClass === null) {
-                $extbaseClass = [];
-            }
-            if (!isset($extbaseClass['mapping'])) {
-                $extbaseClass['mapping'] = [];
-            }
-            $extbaseClass['mapping']['tableName'] = $classConfig['tableName'];
-        }
-
-        $configurationManager->setConfiguration($frameworkConfiguration);
-    }
-
-    /**
      * Replacement for the TYPO3 GeneralUtility::getUrl().
      *
      * This method respects the User Agent settings from extConf

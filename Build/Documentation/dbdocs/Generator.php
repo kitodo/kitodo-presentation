@@ -92,8 +92,6 @@ class Generator
      */
     public function getTableClassMap(): array
     {
-        Helper::polyfillExtbaseClassesForTYPO3v9();
-
         $configurationManager = $this->objectManager->get(ConfigurationManager::class);
         $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
