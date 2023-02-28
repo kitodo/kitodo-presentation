@@ -85,6 +85,11 @@ class Indexer
     protected static $solr;
 
     /**
+     * @var DocumentRepository
+     */
+    protected $documentRepository;
+
+    /**
      * Insert given document into Solr index
      *
      * @access public
@@ -102,12 +107,8 @@ class Indexer
             Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Handle multi-volume documents.
             if ($parentId = $document->getPartof()) {
-                // initialize documentRepository
-                // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
-                $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-                $documentRepository = $objectManager->get(DocumentRepository::class);
                 // get parent document
-                $parent = $documentRepository->findByUid($parentId);
+                $parent = $this->documentRepository->findByUid($parentId);
                 if ($parent) {
                     // get XML document of parent
                     $doc = Doc::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true);
@@ -595,8 +596,9 @@ class Indexer
      *
      * @access private
      */
-    private function __construct()
+    private function __construct(DocumentRepository $documentRepository)
     {
         // This is a static class, thus no instances should be created.
+        $this->documentRepository = $documentRepository;
     }
 }
