@@ -263,7 +263,7 @@ DlfAnnotationControl.prototype.activate = function() {
 
     // now activate the annotation overlay and map behavior
     this.enableAnnotationSelect();
-    dlfUtils.setCookie("tx-dlf-pageview-annotation-select", 'enabled');
+    dlfUtils.setCookie("tx-dlf-pageview-annotation-select", 'enabled', "lax");
     $(controlEl).addClass('active');
 
     // trigger event
@@ -275,7 +275,7 @@ DlfAnnotationControl.prototype.deactivate = function() {
     var controlEl = $('#tx-dlf-tools-annotations');
     // deactivate annotations
     this.disableAnnotationSelect();
-    dlfUtils.setCookie("tx-dlf-pageview-annotation-select", 'disabled');
+    dlfUtils.setCookie("tx-dlf-pageview-annotation-select", 'disabled', "lax");
     $(controlEl).removeClass('active');
     // trigger event
     $(this).trigger("deactivate-annotations", this);

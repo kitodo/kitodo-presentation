@@ -60,6 +60,16 @@
                             </config>
                         </TCEforms>
                     </settings.initialDocument>
+                    <settings.showEmptyYears>
+                      <TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.showEmptyYears</label>
+                        <config>
+                          <type>check</type>
+                          <default>0</default>
+                        </config>
+                      </TCEforms>
+                    </settings.showEmptyYears>
                     <settings.showEmptyMonths>
                       <TCEforms>
                         <exclude>1</exclude>

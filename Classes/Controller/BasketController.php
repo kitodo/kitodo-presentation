@@ -22,6 +22,7 @@ use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Context\Context;
 
 /**
  * Controller class for the plugin 'Basket'.
@@ -207,8 +208,12 @@ class BasketController extends AbstractController
     {
         // get user session
         $sessionId = $GLOBALS['TSFE']->fe_user->id;
+        $context = GeneralUtility::makeInstance(Context::class);
 
-        if ($GLOBALS['TSFE']->loginUser) {
+        // Checking if a user is logged in
+        $userIsLoggedIn = $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+
+        if ($userIsLoggedIn) {
             $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
         } else {
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
@@ -217,12 +222,13 @@ class BasketController extends AbstractController
 
             $basket = $this->basketRepository->findOneBySessionId($sessionId);
         }
+
         // session does not exist
         if ($basket === null) {
             // create new basket in db
             $basket = GeneralUtility::makeInstance(Basket::class);
             $basket->setSessionId($sessionId);
-            $basket->setFeUserId($GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
+            $basket->setFeUserId($userIsLoggedIn ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
         }
 
         return $basket;

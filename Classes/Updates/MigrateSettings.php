@@ -92,7 +92,7 @@ class MigrateSettings implements UpgradeWizardInterface
                         $queryBuilder->createNamedParameter($record['uid'], \PDO::PARAM_INT)
                     )
                 )
-                ->set('pi_flexform', $this->migrateFlexformSettings($record['pi_flexform']))
+                ->set('pi_flexform', $this->migrateFlexFormSettings($record['pi_flexform']))
                 ->execute();
 
             // exit if at least one update statement is not successful
@@ -160,7 +160,7 @@ class MigrateSettings implements UpgradeWizardInterface
      * @param string $oldValue
      * @return string
      */
-    protected function migrateFlexformSettings(string $oldValue): string
+    protected function migrateFlexFormSettings(string $oldValue): string
     {
         $xml = simplexml_load_string($oldValue);
 

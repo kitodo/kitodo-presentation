@@ -37,8 +37,8 @@ class OaiPmhTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->oaiUrl = $this->baseUrl . '/index.php?id=' . $this->oaiPage;
-        $this->oaiUrlNoStoragePid = $this->baseUrl . '/index.php?id=' . $this->oaiPageNoStoragePid;
+        $this->oaiUrl = $this->baseUrl . 'index.php?id=' . $this->oaiPage;
+        $this->oaiUrlNoStoragePid = $this->baseUrl . 'index.php?id=' . $this->oaiPageNoStoragePid;
 
         $this->importDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.xml');
         $this->importDataSet(__DIR__ . '/../../Fixtures/Common/metadata.xml');

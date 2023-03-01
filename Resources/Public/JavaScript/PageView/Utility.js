@@ -579,10 +579,22 @@ dlfUtils.parseDataDic = function (element) {
  *
  * @param {string} name The key of the value
  * @param {?} value The value to save
+ * @param {string} samesite Sets the SameSite attribute: lax, strict or none
+ * 
  */
-dlfUtils.setCookie = function (name, value) {
-
-    document.cookie = name + "=" + decodeURI(value) + "; path=/";
+dlfUtils.setCookie = function (name, value, samesite) {
+    switch(samesite) {
+        case "lax":
+        case "strict": 
+            break;
+        case "none":
+            samesite+= ";secure"
+            break;
+        default:
+            samesite = "lax"
+    }
+    
+    document.cookie = name + "=" + decodeURI(value) + "; path=/" + "; SameSite=" + samesite;
 };
 
 /**

@@ -121,6 +121,10 @@
 				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
 				<target><![CDATA[Anfangsdokument (z.B. vom Typ "newspaper" oder "ephemera)]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.showEmptyYears" approved="yes">
+				<source><![CDATA[Show years without issues in calendar?]]></source>
+				<target><![CDATA[Zeige Jahre ohne Ausgaben im Kalender?]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.calendar.flexform.showEmptyMonths" approved="yes">
 				<source><![CDATA[Show months without issues in calendar?]]></source>
 				<target><![CDATA[Zeige Monate ohne Ausgaben im Kalender?]]></target>
