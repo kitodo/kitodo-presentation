@@ -13,15 +13,40 @@
       data-namespace-typo3-fluid="true">
 
     <div class="tx-dlf-listview">
+        <f:if condition="{lastSearch.collection}">
+            <f:then>
+                <f:for each="{currentCollection}" as="currentCollectionItem">
+                    <div class="collection">
+                        <f:if condition="{currentCollectionItem.label}">
+                            <h2>{currentCollectionItem.label}</h2>
+                        </f:if>
 
-        <h2 class="tx-dlf-listview-label">
-            <f:translate key="search.search"  />
-            <f:translate key="search.for" arguments="{0: '{lastSearch.query}'}" />
-            <f:comment>
-                We need an ViewHelper to get the Extbase document object here. Usable e.g. on search in a newspaper title.
-                <f:translate key="search.in" arguments="{0: '{lastSearch.documentId}'}" />
-            </f:comment>
-        </h2>
+                        <div class="collection-thumbnail">
+                            <f:if condition="{currentCollectionItem.thumbnail}">
+                                <f:image image="{currentCollectionItem.thumbnail}" />
+                            </f:if>
+                        </div>
+
+                        <div class="collection-description">
+                            <f:if condition="{currentCollectionItem.description}">
+                                <f:format.html>{currentCollectionItem.description}</f:format.html>
+                            </f:if>
+                        </div>
+                    </div>
+                </f:for>
+
+        </f:then>
+            <f:else>
+                <h2 class="tx-dlf-listview-label">
+                    <f:translate key="search.search"  />
+                    <f:translate key="search.for" arguments="{0: '{lastSearch.query}'}" />
+                    <f:comment>
+                        We need an ViewHelper to get the Extbase document object here. Usable e.g. on search in a newspaper title.
+                        <f:translate key="search.in" arguments="{0: '{lastSearch.documentId}'}" />
+                    </f:comment>
+                </h2>
+            </f:else>
+        </f:if>
         <f:render partial="ListView/SearchHits" arguments="{_all}" />
 
         <f:variable name="action" value="main" />
