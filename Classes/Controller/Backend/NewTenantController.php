@@ -419,7 +419,7 @@ class NewTenantController extends AbstractController
     {
         if (isset($langArray[$lang][$index][0]['target'])) {
             return $langArray[$lang][$index][0]['target'];
-        } else if (isset($langArray['default'][$index][0]['target'])) {
+        } elseif (isset($langArray['default'][$index][0]['target'])) {
             return $langArray['default'][$index][0]['target'];
         } else {
             return "Missing translation for ".substr($index, 9); //cut 'metadata.' string
