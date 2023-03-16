@@ -12,7 +12,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_tokens',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_tokens',
         'label'     => 'token',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -27,7 +27,7 @@ return [
     ],
     'columns' => [
         'token' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_tokens.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_tokens.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -37,7 +37,7 @@ return [
             ],
         ],
         'options' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_tokens.index_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_tokens.index_name',
             'config' => [
                 'type' => 'input',
                 'eval' => 'alphanum,nospace',
@@ -46,7 +46,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_tokens.tab1,token,options'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_tokens.tab1,token,options'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

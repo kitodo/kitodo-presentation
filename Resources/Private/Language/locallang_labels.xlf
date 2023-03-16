@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-27T08:32:27Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="tx_dlf_actionlog">
+				<source>Action protocol</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_actionlog.label">
+				<source>Action protocol</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_actionlog.user_id">
+				<source>User ID</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_actionlog.file_name">
+				<source>Filename</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_actionlog.count_pages">
+				<source>Page count</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_actionlog.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_actionlog.creation_date">
+				<source>Creation date</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_basket">
+				<source>Basket</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_basket.label">
+				<source>Basket</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_basket.sessionId">
+				<source>Session ID</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_basket.docIds">
+				<source>Document ID</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_basket.feUser">
+				<source>FE user ID</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents">
+				<source>Documents</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.prod_id">
+				<source>Production Identifier</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.location">
+				<source>Location of METS file / IIIF manifest (URI)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.record_id">
+				<source>Record Identifier</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.opac_id">
+				<source>OPAC/Local Identifier</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.union_id">
+				<source>Union Catalog/Foreign Identifier</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.urn">
+				<source>Uniform Resource Name (URN)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.purl">
+				<source>Persistent Uniform Resource Locator (PURL)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.title_sorting">
+				<source>Title (Sorting)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.author">
+				<source>Author</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.year">
+				<source>Year of Publication</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.place">
+				<source>Place of Publication</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.thumbnail">
+				<source>Thumbnail</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.structure">
+				<source>Typ of Document</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.partof">
+				<source>Part of ...</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.volume">
+				<source>Number of Volume</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.volume_sorting">
+				<source>Number of Volume (Sorting)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.license">
+				<source>License</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.terms">
+				<source>Terms of Use</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.restrictions">
+				<source>Restrictions on Access</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.out_of_print">
+				<source>Out Of Print Works</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.rights_info">
+				<source>Rights Information</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.collections">
+				<source>Collections</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.mets_trans-unit">
+				<source>METS @LABEL</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.mets_ordertrans-unit">
+				<source>METS @ORDERLABEL</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.owner">
+				<source>Owner</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.status">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.status.default">
+				<source>default</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.document_format">
+				<source>METS or IIIF</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.document_format.mets">
+				<source>METS</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.document_format.iiif">
+				<source>IIIF</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.tab1">
+				<source>Titledata</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.tab2">
+				<source>Identifier</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_documents.tab3">
+				<source>Access</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures">
+				<source>Structures</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.toplevel">
+				<source>Toplevel Unit?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.label">
+				<source>Display Label</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.id_name">
+				<source>Index Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.oai_name">
+				<source>OAI-PMH Mapping</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.thumbnail">
+				<source>Get thumbnail from...</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.thumbnail.self">
+				<source>self</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.status">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.status.default">
+				<source>default</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.tab1">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.tab2">
+				<source>Translation</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_structures.tab3">
+				<source>Access</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata">
+				<source>Metadata</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.label">
+				<source>Display Label</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.index_name">
+				<source>Index Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.format">
+				<source>Data Format</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.default_value">
+				<source>Default Value</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.wrap">
+				<source>TypoScript-Wrap</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.index_tokenized">
+				<source>Tokenize in Search Index?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.index_stored">
+				<source>Store in Search Index?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.index_ided">
+				<source>Index in Search Index?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.index_boost">
+				<source>Field boost</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.is_sortable">
+				<source>Prepare for sorting?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.is_facet">
+				<source>Prepare for faceting?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.is_listed">
+				<source>Show in titledata/listview?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.index_autocomplete">
+				<source>Use for search suggestion?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.status">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.status.default">
+				<source>default</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.tab1">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.tab2">
+				<source>Translation</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadata.tab3">
+				<source>Access</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadataformat">
+				<source>Metadata Format</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadataformat.encoded">
+				<source>Encoding</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadataformat.xpath">
+				<source>XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadataformat.xpath_sorting">
+				<source>XPath / JSONPath for sorting (optional)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadataformat.mandatory">
+				<source>Mandatory field?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_metadataformat.tab1">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_formats">
+				<source>Data Formats</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_formats.type">
+				<source>Format Name (e.g. in METS)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_formats.root">
+				<source>Root Element</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_formats.namespace">
+				<source>Namespace URI</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_formats.class">
+				<source>Class Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_formats.tab1">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_solrcores">
+				<source>Solr Cores</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_solrcores.label">
+				<source>Display Label</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_solrcores.index_name">
+				<source>Solr Core</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_solrcores.tab1">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections">
+				<source>Collections</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.label">
+				<source>Display Label</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.index_name">
+				<source>Index Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.index_search">
+				<source>Define (virtual) collection via Solr Query</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.oai_name">
+				<source>OAI-PMH Mapping</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.description">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.thumbnail">
+				<source>Thumbnail</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.priority">
+				<source>Priority</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.documents">
+				<source>Documents</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.owner">
+				<source>Owner</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.owner.none">
+				<source>none</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.fe_cruser_id">
+				<source>Frontend User</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.fe_cruser_id.none">
+				<source>none</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.fe_admin_lock">
+				<source>Disallow frontend editing?</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.status">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.status.default">
+				<source>default</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.tab1">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.tab2">
+				<source>Translation</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_collections.tab3">
+				<source>Access</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries">
+				<source>Libraries</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.label">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.index_name">
+				<source>Index Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.website">
+				<source>Website</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.contact">
+				<source>Contact</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.image">
+				<source>Logo</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.oai_trans-unit">
+				<source>Open Archives Interface (OAI) Label</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.oai_base">
+				<source>Open Archives Interface (OAI) Base URL</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.opac_trans-unit">
+				<source>Online Public Access Catalog (OPAC) Label</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.opac_base">
+				<source>Online Public Access Catalog (OPAC) Base URL</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.union_trans-unit">
+				<source>Union Catalog Label</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.union_base">
+				<source>Union Catalog Base URL</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.tab1">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.tab2">
+				<source>Translation</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_libraries.tab3">
+				<source>Catalogs</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_printer">
+				<source>Printer</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_printer.label">
+				<source>Label</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_printer.address">
+				<source>Network address</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_printer.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_printer.printcommand">
+				<source>CLI command(##fileName##)</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_mail">
+				<source>Email</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_mail.mail">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_mail.name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.fulltexttool">
+				<source>Fulltext</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.annotationtool">
+				<source>IIIF Annotations</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.fulltextdownloadtool">
+				<source>Fulltext Download</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.imagedownloadtool">
+				<source>Image Download</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.imagemanipulationtool">
+				<source>Image Manipulation</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.pdfdownloadtool">
+				<source>PDF Download</source>
+			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.searchindocumenttool">
+				<source>Search in Document</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_audioplayer">
+				<source>DLF: Audio Player</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_basket">
+				<source>DLF: Basket</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_calendar">
+				<source>DLF: Calendar</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_collection">
+				<source>DLF: Collection</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_listview">
+				<source>DLF: List View</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_metadata">
+				<source>DLF: Metadata</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_navigation">
+				<source>DLF: Navigation</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_oaipmh">
+				<source>DLF: OAI-PMH Interface</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_pagegrid">
+				<source>DLF: Page Preview</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_pageview">
+				<source>DLF: Page View</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_statistics">
+				<source>DLF: Statistics</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_tableofcontents">
+				<source>DLF: Table of Contents</source>
+			</trans-unit>
+			<trans-unit id="tt_content.dlf_toolbox">
+				<source>DLF: Toolbox</source>
+			</trans-unit>
+			<trans-unit id="config.metadataFormats">
+				<source>Default metadata namespaces</source>
+			</trans-unit>
+			<trans-unit id="config.enableInternalProxy">
+				<source>Enable internal page view proxy?: (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.useragent">
+				<source>DLF User-Agent: (default is "Kitodo.Presentation")</source>
+			</trans-unit>
+			<trans-unit id="config.forceAbsoluteUrl">
+				<source>Force all links to pages and resources to be absolute?: Only needed for some multi-domain environments; requires a fully qualified Entry Point in Site Configuration (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.forceAbsoluteUrlHttps">
+				<source>Use HTTPS for absolute links?: requires a valid Entry Point with "https://..." in Site Configuration (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.caching">
+				<source>Cache parsed METS files / IIIF manifests: Caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.publishNewCollections">
+				<source>Publish new collections?: Should new collections automatically be published in the OAI-PMH interface? (default is "TRUE")</source>
+			</trans-unit>
+			<trans-unit id="config.unhideOnIndex">
+				<source>Unhide ided documents?: Should hidden documents be unhidden when re-iding them? (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.useExternalApisForMetadata">
+				<source>Use external APIs for getting metadata?: (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.fileGrpImages">
+				<source>Page fileGrps: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+			</trans-unit>
+			<trans-unit id="config.fileGrpThumbs">
+				<source>Thumbnail fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</source>
+			</trans-unit>
+			<trans-unit id="config.fileGrpDownload">
+				<source>Download fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
+			</trans-unit>
+			<trans-unit id="config.fileGrpFulltext">
+				<source>Fulltext fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "FULLTEXT")</source>
+			</trans-unit>
+			<trans-unit id="config.fileGrpAudio">
+				<source>Audio fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
+			</trans-unit>
+			<trans-unit id="config.idAnnotations">
+				<source>Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are ided (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.iiifThumbnailWidth">
+				<source>Maximum thumbnail width for IIIF images: Only for images without a thumbnail declaration (default is "150")</source>
+			</trans-unit>
+			<trans-unit id="config.iiifThumbnailHeight">
+				<source>Maximum thumbnail height for IIIF images: Only for images without a thumbnail declaration (default is "150")</source>
+			</trans-unit>
+			<trans-unit id="config.solrConnect">
+				<source>Solr Connection</source>
+			</trans-unit>
+			<trans-unit id="config.solrHttps">
+				<source>Use HTTPS: (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.solrHost">
+				<source>Solr Server Host: (default is "localhost")</source>
+			</trans-unit>
+			<trans-unit id="config.solrPort">
+				<source>Solr Server Port: (default is "8983")</source>
+			</trans-unit>
+			<trans-unit id="config.solrPath">
+				<source>Solr Server Path: without API endpoint "/solr" (default is "/")</source>
+			</trans-unit>
+			<trans-unit id="config.solrUser">
+				<source>Solr Server User: (default is "")</source>
+			</trans-unit>
+			<trans-unit id="config.solrPass">
+				<source>Solr Server Password: (default is "")</source>
+			</trans-unit>
+			<trans-unit id="config.solrTimeout">
+				<source>Solr Server Timeout: (default is "10")</source>
+			</trans-unit>
+			<trans-unit id="config.solrAllowCoreDelete">
+				<source>Allow Solr Core Deletion?: If a Solr Core is deleted in the TYPO3 Backend, should it be deleted in Apache Solr as well? (default is "FALSE")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldId">
+				<source>Solr Schema Field "id" : Unique identifier for the document in the id (default is "id")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldUid">
+				<source>Solr Schema Field "uid" : Unique identifier for the document (or its top-level parent) in the TYPO3 database (default is "uid")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldPid">
+				<source>Solr Schema Field "pid" : PageID for the document (or its top-level parent) in the TYPO3 database (default is "pid")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldPage">
+				<source>Solr Schema Field "page" : Image number where this document starts (default is "page")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldPartof">
+				<source>Solr Schema Field "partof" : Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! (default is "partof")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldRoot">
+				<source>Solr Schema Field "root" : Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! (default is "root")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldSid">
+				<source>Solr Schema Field "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (default is "sid")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldToplevel">
+				<source>Solr Schema Field "toplevel" : Information if it is a top-level document (default is "toplevel")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldType">
+				<source>Solr Schema Field "type" : Type of document (eg. monograph, chapter, etc.) (default is "type")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldTitle">
+				<source>Solr Schema Field "title" : Title field is mandatory for identifying documents (default is "title")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldVolume">
+				<source>Solr Schema Field "volume" : Volume field is mandatory for identifying documents (default is "volume")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldDate">
+				<source>Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (default is "date")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldThumbnail">
+				<source>Solr Schema Field "thumbnail" : URL of thumbnail image for the document (default is "thumbnail")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldDefault">
+				<source>Solr Schema Field default" : CatchAll field (default is "default")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldTimestamp">
+				<source>Solr Schema Field "timestamp" : (default is "timestamp")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldAutocomplete">
+				<source>Solr Schema Field "autocomplete" : Autocomplete field for search form (default is "autocomplete")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldFulltext">
+				<source>Solr Schema Field "fulltext" : Fulltext field for OCR results (default is "fulltext")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldRecordId">
+				<source>Solr Schema Field "record_id" : Record ID of the document (required for OAI_DC output) (default is "record_id")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldPurl">
+				<source>Solr Schema Field "purl" : Permanent URL of the document (required for EPICUR output) (default is "purl")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldUrn">
+				<source>Solr Schema Field "urn" : URN of the Document (required for EPICUR output) (default is "urn")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldLocation">
+				<source>Solr Schema Field "location" : Location of METS XML (required for METS output) (default is "location")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldCollection">
+				<source>Solr Schema Field "collection" : Associated collection(s) of the document (default is "collection")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldLicense">
+				<source>Solr Schema Field "license" : License (should be URI) (default is "license")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldTerms">
+				<source>Solr Schema Field "terms" : Term of Use (should be URI) (default is "terms")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldRestrictions">
+				<source>Solr Schema Field "restrictions" : Access Restrictions (should be URI) (default is "restrictions")</source>
+			</trans-unit>
+			<trans-unit id="config.solrFieldGeom">
+				<source>Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
