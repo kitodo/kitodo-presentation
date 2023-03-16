@@ -452,9 +452,9 @@ class Helper
         // Analyze code and set appropriate ISO table.
         $isoCode = strtolower(trim($code));
         if (preg_match('/^[a-z]{3}$/', $isoCode)) {
-            $file = 'EXT:dlf/Resources/Private/Data/iso-639-2b.xml';
+            $file = 'EXT:dlf/Resources/Private/Data/iso-639-2b.xlf';
         } elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
-            $file = 'EXT:dlf/Resources/Private/Data/iso-639-1.xml';
+            $file = 'EXT:dlf/Resources/Private/Data/iso-639-1.xlf';
         } else {
             // No ISO code, return unchanged.
             return $code;
