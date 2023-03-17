@@ -6,9 +6,6 @@ on:
     branches: [ "master", "1.x", "2.x", "3.2.x", "3.3.x", "4.x" ]
   pull_request:
     branches: [ "master" ]
-  # Trigger analysis when a new release is drafted
-  release:
-    type: [ "created", "edited" ]
 
 permissions:
   contents: read
@@ -34,7 +31,6 @@ jobs:
         with:
           # You can also omit the token and run the tools that support default configurations
           project-token: ${{ secrets.CODACY_TOKEN }}
-          verbose: true
           output: results.sarif
           format: sarif
           # Adjust severity of non-security issues
