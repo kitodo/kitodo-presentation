@@ -45,6 +45,9 @@ return [
                 'eval' => 'required,alphanum,nospace,unique',
                 'default' => '',
                 'fieldInformation' => [
+                    'newSolrCore' => [
+                        'renderType' => 'newSolrCore',
+                    ],
                     'solrCoreStatus' => [
                         'renderType' => 'solrCoreStatus',
                     ],

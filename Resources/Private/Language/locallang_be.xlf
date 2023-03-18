@@ -527,6 +527,9 @@
             <trans-unit id="solr.error" approved="yes">
                 <source><![CDATA[Apache Solr not reachable with given configuration.]]></source>
             </trans-unit>
+			<trans-unit id="flash.newSolrName" approved="yes">
+				<source><![CDATA[Please insert anything here. This gets automatically replaced by the real core name given by Solr.]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
