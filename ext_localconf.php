@@ -110,6 +110,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\EditInProductionWarning::class
 ];
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
+    'nodeName' => 'newSolrCore',
+    'priority' => 30,
+    'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\NewSolrCore::class
+];
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'nodeName' => 'solrCoreStatus',
     'priority' => 30,
     'class' => \Kitodo\Dlf\Hooks\Form\FieldInformation\SolrCoreStatus::class
