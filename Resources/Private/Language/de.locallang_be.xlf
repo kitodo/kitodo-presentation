@@ -685,10 +685,6 @@
                 <source><![CDATA[Apache Solr not reachable with given configuration.]]></source>
                 <target><![CDATA[Apache Solr ist mit der gegebenen Konfiguration nicht erreichbar.]]></target>
             </trans-unit>
-			<trans-unit id="flash.newSolrName" approved="yes">
-				<source><![CDATA[Please insert anything here. This gets automatically replaced by the real core name given by Solr.]]></source>
-				<target><![CDATA[Bitte geben Sie hier irgendwas ein. Es wird automatisch durch den tatsächlichen Core Name ersetzt, den Solr vergibt.]]></target>
-			</trans-unit>
 		</body>
 	</file>
 </xliff>
