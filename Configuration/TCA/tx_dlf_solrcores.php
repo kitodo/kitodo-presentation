@@ -42,12 +42,10 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,alphanum,nospace,unique',
+                'eval' => 'alphanum,nospace,unique',
                 'default' => '',
+                'readOnly' => 1,
                 'fieldInformation' => [
-                    'newSolrCore' => [
-                        'renderType' => 'newSolrCore',
-                    ],
                     'solrCoreStatus' => [
                         'renderType' => 'solrCoreStatus',
                     ],
