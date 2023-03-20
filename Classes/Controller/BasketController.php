@@ -217,7 +217,7 @@ class BasketController extends AbstractController
             $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
         } else {
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
-            $GLOBALS['TSFE']->fe_user->sesData_change = true;
+            $GLOBALS['TSFE']->fe_user->dataWasUpdated();
             $GLOBALS['TSFE']->fe_user->storeSessionData();
 
             $basket = $this->basketRepository->findOneBySessionId($sessionId);

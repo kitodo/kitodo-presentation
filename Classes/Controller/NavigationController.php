@@ -32,8 +32,7 @@ class NavigationController extends AbstractController
      */
     public function pageSelectAction(\Kitodo\Dlf\Domain\Model\PageSelectForm $pageSelectForm = NULL) {
         if ($pageSelectForm) {
-            $uriBuilder = $this->getControllerContext()->getUriBuilder();
-            $uri = $uriBuilder->reset()
+            $uri = $this->uriBuilder->reset()
                 ->setArguments(
                     [
                         'tx_dlf' => [
