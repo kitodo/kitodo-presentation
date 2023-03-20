@@ -20,6 +20,12 @@
 
 ## Future Changes
 
+### Forward() in controller actions will be removed in TYPO3 12
+
+Instead of calling $this->forward() the controller action must return a ForwardResponse
+
+https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Deprecation-92815-ActionControllerForward.html
+
 ### Pagination Widget will be removed in TYPO3 11
 
 https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Breaking-92529-AllFluidWidgetFunctionalityRemoved.html
@@ -36,12 +42,11 @@ Before running any of the tests, please install the project dependencies. Choose
 
 ```bash
 # If you use PHP 7.3 or 7.4 (supported by Kitodo)
-composer update --with=typo3/cms-core:^9.5
 composer update --with=typo3/cms-core:^10.4
 
 # If you use PHP 8
-composer install-via-docker -- -t 9.5
 composer install-via-docker -- -t 10.4
+composer install-via-docker -- -t 11.5
 ```
 
 ### Quick Start
