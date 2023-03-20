@@ -59,7 +59,7 @@
             <f:form action="addMetadata" name="metadata">
                 <f:if condition="{formatsAvailable} == '0'">
                     <f:then>
-                        <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createMetadata')}" class="btn btn-primary" disabled />
+                        <f:form.button name="submit" class="btn btn-primary" disabled="disabled"><f:translate key="newTenant.createMetadata" /></f:form.button>
                     </f:then>
                     <f:else>
                         <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createMetadata')}" class="btn btn-primary" />

@@ -419,8 +419,10 @@ class NewTenantController extends AbstractController
     {
         if (isset($langArray[$lang][$index][0]['target'])) {
             return $langArray[$lang][$index][0]['target'];
-        } else {
+        } elseif (isset($langArray['default'][$index][0]['target'])) {
             return $langArray['default'][$index][0]['target'];
+        } else {
+            return 'Missing translation for ' . $index;
         }
     }
 }
