@@ -23,6 +23,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
 use Ubl\Iiif\Tools\IiifHelper;
+use TYPO3\CMS\Core\Core\Environment;
 
 /**
  * Indexer class for the 'dlf' extension
@@ -147,7 +148,7 @@ class Indexer
                 $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
 
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                if (!(Environment::isCli())) {
                     if ($success) {
                         Helper::addMessage(
                             sprintf(Helper::getLanguageService()->getLL('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
@@ -168,7 +169,7 @@ class Indexer
                 }
                 return $success;
             } catch (\Exception $e) {
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                if (!(Environment::isCli())) {
                     Helper::addMessage(
                         Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
                         Helper::getLanguageService()->getLL('flash.error'),
@@ -181,7 +182,7 @@ class Indexer
                 return false;
             }
         } else {
-            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+            if (!(Environment::isCli())) {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('flash.solrNoConnection'),
                     Helper::getLanguageService()->getLL('flash.warning'),
@@ -397,7 +398,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                if (!(Environment::isCli())) {
                     Helper::addMessage(
                         Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getLanguageService()->getLL('flash.error'),
@@ -495,7 +496,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                if (!(Environment::isCli())) {
                     Helper::addMessage(
                         Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getLanguageService()->getLL('flash.error'),

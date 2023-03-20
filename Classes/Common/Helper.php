@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Http\ApplicationType;
 
 /**
  * Helper class for the 'dlf' extension
@@ -792,7 +793,8 @@ class Helper
      */
     public static function whereExpression($table, $showHidden = false)
     {
-        if (\TYPO3_MODE === 'FE') {
+        // TODO: Request should be handed over instead of using $GLOBALS['TYPO3_REQUEST']
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             // Should we ignore the record's hidden flag?
             $ignoreHide = 0;
             if ($showHidden) {
@@ -807,13 +809,13 @@ class Helper
             } else {
                 return '';
             }
-        } elseif (\TYPO3_MODE === 'BE') {
+        } elseif (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             return GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table)
                 ->expr()
                 ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
-            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
+            self::log('Unexpected TYPO3_MODE', LOG_SEVERITY_ERROR);
             return '1=-1';
         }
     }
