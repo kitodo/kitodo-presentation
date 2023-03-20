@@ -49,11 +49,51 @@ class Generator
      */
     protected $dataMapper;
 
+    /**
+     * @var SqlReader
+     */
+    protected $sqlReader;
+
+    /**
+     * @var ConfigurationManager
+     */
+    protected $configurationManager;
+
+    /**
+     * @param LanguageService $languageService
+     */
+    public function injectLanguageService(LanguageService $languageService)
+    {
+        $this->languageService = $languageService;
+    }
+
+    /**
+     * @param DataMapper $dataMapper
+     */
+    public function injectDataMapper(DataMapper $dataMapper)
+    {
+        $this->dataMapper = $dataMapper;
+    }
+
+    /**
+     * @param SqlReader $sqlReader
+     */
+    public function injectSqlReader(DataMapper $sqlReader)
+    {
+        $this->sqlReader = $sqlReader;
+    }
+
+    /**
+     * @param ConfigurationManager $configurationManager
+     */
+    public function injectConfigurationManager(ConfigurationManager $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
+
     public function __construct()
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->languageService = $this->objectManager->get(LanguageService::class);
-        $this->dataMapper = $this->objectManager->get(DataMapper::class);
     }
 
     /**
@@ -62,9 +102,8 @@ class Generator
      */
     public function collectTables(): array
     {
-        $sqlReader = $this->objectManager->get(SqlReader::class);
-        $sqlCode = $sqlReader->getTablesDefinitionString(true);
-        $createTableStatements = $sqlReader->getCreateTableStatementArray($sqlCode);
+        $sqlCode = $this->sqlReader->getTablesDefinitionString(true);
+        $createTableStatements = $this->sqlReader->getCreateTableStatementArray($sqlCode);
 
         $tableToClassName = $this->getTableClassMap();
 
@@ -92,8 +131,7 @@ class Generator
      */
     public function getTableClassMap(): array
     {
-        $configurationManager = $this->objectManager->get(ConfigurationManager::class);
-        $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
         $result = [];
 
