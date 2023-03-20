@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Core\Http\ApplicationType;
 
 /**
  * Helper class for the 'dlf' extension
@@ -793,8 +792,8 @@ class Helper
      */
     public static function whereExpression($table, $showHidden = false)
     {
-        // TODO: Request should be handed over instead of using $GLOBALS['TYPO3_REQUEST']
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
+        // TODO: Check with applicationType; TYPO3_MODE is removed in v12
+        if (\TYPO3_MODE === 'FE') {
             // Should we ignore the record's hidden flag?
             $ignoreHide = 0;
             if ($showHidden) {
@@ -809,7 +808,8 @@ class Helper
             } else {
                 return '';
             }
-        } elseif (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+            // TODO: Check with applicationType; TYPO3_MODE is removed in v12
+        } elseif (\TYPO3_MODE === 'BE') {
             return GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table)
                 ->expr()
