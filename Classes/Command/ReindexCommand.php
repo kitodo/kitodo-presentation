@@ -177,7 +177,7 @@ class ReindexCommand extends BaseCommand
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
-                Indexer::add($document);
+                Indexer::add($document, $this->documentRepository);
             }
             // Clear document registry to prevent memory exhaustion.
             Doc::clearRegistry();

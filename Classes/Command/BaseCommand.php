@@ -333,7 +333,7 @@ class BaseCommand extends Command
 
                     if ($success === true) {
                         // add to index
-                        Indexer::add($parentDocument);
+                        Indexer::add($parentDocument, $this->documentRepository);
                         return $parentDocument->getUid();
                     }
                 }

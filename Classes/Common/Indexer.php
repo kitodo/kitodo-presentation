@@ -85,11 +85,6 @@ class Indexer
     protected static $solr;
 
     /**
-     * @var DocumentRepository
-     */
-    protected $documentRepository;
-
-    /**
      * Insert given document into Solr index
      *
      * @access public
@@ -98,7 +93,7 @@ class Indexer
      *
      * @return bool true on success or false on failure
      */
-    public static function add(Document $document)
+    public static function add(Document $document, DocumentRepository $documentRepository)
     {
         if (in_array($document->getUid(), self::$processedDocs)) {
             return true;
@@ -108,13 +103,13 @@ class Indexer
             // Handle multi-volume documents.
             if ($parentId = $document->getPartof()) {
                 // get parent document
-                $parent = $this->documentRepository->findByUid($parentId);
+                $parent = $documentRepository->findByUid($parentId);
                 if ($parent) {
                     // get XML document of parent
                     $doc = Doc::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true);
                     if ($doc !== null) {
                         $parent->setDoc($doc);
-                        $success = self::add($parent);
+                        $success = self::add($parent, $documentRepository);
                     } else {
                         Helper::log('Could not load parent document with UID ' . $document->getDoc()->parentId, LOG_SEVERITY_ERROR);
                         return false;

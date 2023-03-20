@@ -252,7 +252,7 @@ class DataHandler implements LoggerAwareInterface
                                 $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
                                     $document->setDoc($doc);
-                                    Indexer::add($document);
+                                    Indexer::add($document, $this->getDocumentRepository());
                                 } else {
                                     $this->logger->error('Failed to re-index document with UID ' . $id);
                                 }

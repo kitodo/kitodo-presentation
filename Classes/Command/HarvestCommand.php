@@ -248,7 +248,7 @@ class HarvestCommand extends BaseCommand
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
-                Indexer::add($document);
+                Indexer::add($document, $this->documentRepository);
             }
         }
 
