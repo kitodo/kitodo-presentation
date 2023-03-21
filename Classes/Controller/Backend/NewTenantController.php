@@ -280,11 +280,13 @@ class NewTenantController extends AbstractController
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
             $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getTypo3Language(), $beLabels). ' (PID ' . $this->pid . ')');
             $indexName = Solr::createCore('');
-            $newRecord->setIndexName($indexName);
+            if (!empty($indexName)) {
+                $newRecord->setIndexName($indexName);
 
-            $this->solrCoreRepository->add($newRecord);
+                $this->solrCoreRepository->add($newRecord);
 
-            $doPersist = true;
+                $doPersist = true;
+            }
         }
 
         // We must persist here, if we changed anything.
