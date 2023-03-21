@@ -197,26 +197,6 @@
 				<source><![CDATA[...]]></source>
 				<target><![CDATA[...]]></target>
 			</trans-unit>
-			<trans-unit id="newTenant.createFormat" approved="yes">
-				<source><![CDATA[Create default namespaces]]></source>
-				<target><![CDATA[Standard-Namensräume anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createMetadata" approved="yes">
-				<source><![CDATA[Create metadata]]></source>
-				<target><![CDATA[Metadaten Konfiguration anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createSolrCore" approved="yes">
-				<source><![CDATA[Create solr core]]></source>
-				<target><![CDATA[Solr Kern anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createStructure" approved="yes">
-				<source><![CDATA[Create structures]]></source>
-				<target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.module" approved="yes">
-				<source><![CDATA[New Tenant Module]]></source>
-				<target><![CDATA[Modul Neuer Mandant]]></target>
-			</trans-unit>
 			<trans-unit id="nextPage" approved="yes">
 				<source><![CDATA[Next Page]]></source>
 				<target><![CDATA[Nächste Seite]]></target>
@@ -481,6 +461,26 @@
 				<source><![CDATA[Zoom Out]]></source>
 				<target><![CDATA[Ansicht verkleinern]]></target>
 			</trans-unit>
+			<trans-unit id="newTenant.module" approved="yes">
+				<source><![CDATA[New Tenant Module]]></source>
+				<target><![CDATA[Modul Neuer Mandant]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createFormat" approved="yes">
+				<source><![CDATA[Create default namespaces]]></source>
+				<target><![CDATA[Standard-Namensräume anlegen]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createMetadata" approved="yes">
+				<source><![CDATA[Create metadata]]></source>
+				<target><![CDATA[Metadaten Konfiguration anlegen]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createSolrCore" approved="yes">
+				<source><![CDATA[Create solr core]]></source>
+				<target><![CDATA[Solr Kern anlegen]]></target>
+			</trans-unit>
+			<trans-unit id="newTenant.createStructure" approved="yes">
+				<source><![CDATA[Create structures]]></source>
+				<target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
+			</trans-unit>
             <trans-unit id="newTenant.formatOkay" approved="yes">
                 <source><![CDATA[Default namespaces found!]]></source>
                 <target><![CDATA[Standard-Namensräume gefunden!]]></target>
@@ -489,19 +489,11 @@
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
                 <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.formatCreated" approved="yes">
-                <source><![CDATA[Default namespaces created successfully!]]></source>
-                <target><![CDATA[Standard-Namensräume erfolgreich angelegt!]]></target>
-            </trans-unit>
-            <trans-unit id="newTenant.formatCreatedMsg" approved="yes">
-                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO were created properly.]]></source>
-                <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO wurden erfolgreich definiert.]]></target>
-            </trans-unit>
-            <trans-unit id="newTenant.formatNotCreated" approved="yes">
+            <trans-unit id="newTenant.formatNotOkay" approved="yes">
                 <source><![CDATA[Default namespaces not found!]]></source>
                 <target><![CDATA[Standard-Namensräume nicht gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.formatNotCreatedMsg" approved="yes">
+            <trans-unit id="newTenant.formatNotOkayMsg" approved="yes">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
                 <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.]]></target>
             </trans-unit>
