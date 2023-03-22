@@ -113,7 +113,7 @@
 			<trans-unit id="tx_dlf_documents.collections">
 				<source>Collections</source>
 			</trans-unit>
-			<trans-unit id="tx_dlf_documents.mets_trans-unit">
+			<trans-unit id="tx_dlf_documents.mets_label">
 				<source>METS @LABEL</source>
 			</trans-unit>
 			<trans-unit id="tx_dlf_documents.mets_ordertrans-unit">
@@ -362,19 +362,19 @@
 			<trans-unit id="tx_dlf_libraries.image">
 				<source>Logo</source>
 			</trans-unit>
-			<trans-unit id="tx_dlf_libraries.oai_trans-unit">
+			<trans-unit id="tx_dlf_libraries.oai_label">
 				<source>Open Archives Interface (OAI) Label</source>
 			</trans-unit>
 			<trans-unit id="tx_dlf_libraries.oai_base">
 				<source>Open Archives Interface (OAI) Base URL</source>
 			</trans-unit>
-			<trans-unit id="tx_dlf_libraries.opac_trans-unit">
+			<trans-unit id="tx_dlf_libraries.opac_label">
 				<source>Online Public Access Catalog (OPAC) Label</source>
 			</trans-unit>
 			<trans-unit id="tx_dlf_libraries.opac_base">
 				<source>Online Public Access Catalog (OPAC) Base URL</source>
 			</trans-unit>
-			<trans-unit id="tx_dlf_libraries.union_trans-unit">
+			<trans-unit id="tx_dlf_libraries.union_label">
 				<source>Union Catalog Label</source>
 			</trans-unit>
 			<trans-unit id="tx_dlf_libraries.union_base">
