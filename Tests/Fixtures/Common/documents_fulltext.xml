@@ -54,7 +54,6 @@
 		<l18n_diffsource>...</l18n_diffsource>
 		<hidden>0</hidden>
 		<fe_group></fe_group>
-		<l10n_state>NULL</l10n_state>
 		<fe_cruser_id>0</fe_cruser_id>
 		<fe_admin_lock>0</fe_admin_lock>
 		<label>Saxonica</label>
@@ -81,7 +80,6 @@
 		<l18n_diffsource></l18n_diffsource>
 		<hidden>0</hidden>
 		<fe_group></fe_group>
-		<l10n_state>NULL</l10n_state>
 		<fe_cruser_id>0</fe_cruser_id>
 		<fe_admin_lock>0</fe_admin_lock>
 		<label>Projekt: Dresdner Hefte</label>
