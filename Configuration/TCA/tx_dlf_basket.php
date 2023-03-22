@@ -17,7 +17,6 @@ return [
         'tstamp'    => 'tstamp',
         'fe_user_id' => 'fe_user_id',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',

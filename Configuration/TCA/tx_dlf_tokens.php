@@ -22,9 +22,6 @@ return [
         'rootLevel' => -1,
         'searchFields' => 'token',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'token,options',
-    ],
     'columns' => [
         'token' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_tokens.label',

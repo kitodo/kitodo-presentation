@@ -20,7 +20,6 @@ return [
         'fe_cruser_id' => 'fe_cruser_id',
         'fe_admin_lock' => 'fe_admin_lock',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -39,7 +38,7 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
-                'type' => 'select',
+                'type' => 'language',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'sys_language',
                 'foreign_table_where' => 'ORDER BY sys_language.title',
