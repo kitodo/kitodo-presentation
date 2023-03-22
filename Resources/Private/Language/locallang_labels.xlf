@@ -155,7 +155,7 @@
 			<trans-unit id="tx_dlf_structures.label">
 				<source>Display Label</source>
 			</trans-unit>
-			<trans-unit id="tx_dlf_structures.id_name">
+			<trans-unit id="tx_dlf_structures.index_name">
 				<source>Index Name</source>
 			</trans-unit>
 			<trans-unit id="tx_dlf_structures.oai_name">
@@ -206,7 +206,7 @@
 			<trans-unit id="tx_dlf_metadata.index_stored">
 				<source>Store in Search Index?</source>
 			</trans-unit>
-			<trans-unit id="tx_dlf_metadata.index_ided">
+			<trans-unit id="tx_dlf_metadata.index_indexed">
 				<source>Index in Search Index?</source>
 			</trans-unit>
 			<trans-unit id="tx_dlf_metadata.index_boost">
@@ -515,7 +515,7 @@
 			<trans-unit id="config.fileGrpAudio">
 				<source>Audio fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
 			</trans-unit>
-			<trans-unit id="config.idAnnotations">
+			<trans-unit id="config.indexAnnotations">
 				<source>Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are ided (default is "FALSE")</source>
 			</trans-unit>
 			<trans-unit id="config.iiifThumbnailWidth">

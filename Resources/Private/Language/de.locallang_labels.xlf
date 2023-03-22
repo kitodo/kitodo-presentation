@@ -273,7 +273,7 @@
 				<source>Store in Search Index?</source>
 				<target>Im Suchid speichern?</target>
 			</trans-unit>
-			<trans-unit id="tx_dlf_metadata.index_ided">
+			<trans-unit id="tx_dlf_metadata.index_indexed">
 				<source>Index in Search Index?</source>
 				<target>Im Suchid indizieren?</target>
 			</trans-unit>
@@ -685,7 +685,7 @@
 				<target>Audio fileGrp: Komma-getrennte Liste der @USE Attributwerte der Audiodateien nach absteigender Priorität sortiert (Standard ist "AUDIO")</target>
 				<source>Audio fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
 			</trans-unit>
-			<trans-unit id="config.idAnnotations">
+			<trans-unit id="config.indexAnnotations">
 				<target>IIIF-Annotationen mit Motivation "painting" als Volltext behandeln?: Als Volltext behandelte Annotationen werden im Suchid idiert (Standard ist "FALSE")</target>
 				<source>Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are ided (default is "FALSE")</source>
 			</trans-unit>
