@@ -35,11 +35,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 class Generator
 {
     /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
      * @var LanguageService
      */
     protected $languageService;
@@ -93,7 +88,7 @@ class Generator
 
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
     }
 
     /**
