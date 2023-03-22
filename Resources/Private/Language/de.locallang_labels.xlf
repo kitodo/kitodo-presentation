@@ -153,7 +153,7 @@
 				<target>METS @LABEL</target>
 				<source>METS @LABEL</source>
 			</trans-unit>
-			<trans-unit id="tx_dlf_documents.mets_ordertrans-unit">
+			<trans-unit id="tx_dlf_documents.mets_orderlabel">
 				<target>METS @ORDERLABEL</target>
 				<source>METS @ORDERLABEL</source>
 			</trans-unit>

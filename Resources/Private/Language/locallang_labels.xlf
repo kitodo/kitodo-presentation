@@ -116,7 +116,7 @@
 			<trans-unit id="tx_dlf_documents.mets_label">
 				<source>METS @LABEL</source>
 			</trans-unit>
-			<trans-unit id="tx_dlf_documents.mets_ordertrans-unit">
+			<trans-unit id="tx_dlf_documents.mets_orderlabel">
 				<source>METS @ORDERLABEL</source>
 			</trans-unit>
 			<trans-unit id="tx_dlf_documents.owner">
