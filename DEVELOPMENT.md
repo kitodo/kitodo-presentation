@@ -20,6 +20,9 @@
 
 ## Future Changes
 
+### TCA type "language"
+The TCA field 'sys_language_uid' of table 'tx_dlf_collections' is defined as the 'languageField' and should therefore use the TCA type 'language' instead of TCA type 'select' with 'foreign_table=sys_language' or 'special=languages'.
+
 ### Forward() in controller actions will be removed in TYPO3 12
 
 Instead of calling $this->forward() the controller action must return a ForwardResponse
