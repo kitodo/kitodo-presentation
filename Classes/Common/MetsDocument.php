@@ -725,13 +725,14 @@ final class MetsDocument extends Doc
                         ($values instanceof \DOMNodeList
                         && $values->length > 0) || is_string($values)
                     ) {
-                        $theseSubentries[$subentry['index_name']] = [];
                         if (is_string($values)) {
                             // if concat is used evaluate returns a string
                             $theseSubentries[$subentry['index_name']][] = trim($values);
                         } else {
                             foreach ($values as $value) {
-                                $theseSubentries[$subentry['index_name']][] = trim((string)$value->nodeValue);
+                                if (!empty(trim((string)$value->nodeValue))) {
+                                    $theseSubentries[$subentry['index_name']][] = trim((string)$value->nodeValue);
+                                }
                             }
                         }
                     } elseif (!($values instanceof \DOMNodeList)) {
