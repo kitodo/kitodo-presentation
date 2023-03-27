@@ -383,7 +383,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($pid)),
                 $excludeOtherWhere
             )
-            ->addOrderBy('tx_dlf_documents.volume_sorting')
+            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
             ->execute();
         return $result;
@@ -502,7 +502,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $queryBuilder->expr()->in('tx_dlf_documents.pid', $this->settings['storagePid']),
                 $exprDocumentMatchesUid
             )
-            ->addOrderBy('tx_dlf_documents.volume_sorting', 'asc')
+            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel', 'asc')
             ->execute();
 
