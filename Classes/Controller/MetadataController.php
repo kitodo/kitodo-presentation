@@ -138,60 +138,9 @@ class MetadataController extends AbstractController
     protected function printMetadata(array $metadata, $useOriginalIiifManifestMetadata = false)
     {
         if ($useOriginalIiifManifestMetadata) {
-            $iiifData = [];
-            foreach ($metadata as $row) {
-                foreach ($row as $key => $group) {
-                    if ($key == '_id') {
-                        continue;
-                    }
-                    if (!is_array($group)) {
-                        if (
-                            IRI::isAbsoluteIri($group)
-                            && (($scheme = (new IRI($group))->getScheme()) == 'http' || $scheme == 'https')
-                        ) {
-                            // Build link
-                            $iiifData[$key] = [
-                                'label' => $key,
-                                'value' => $group,
-                                'buildUrl' => true,
-                            ];
-                        } else {
-                            // Data output
-                            $iiifData[$key] = [
-                                'label' => $key,
-                                'value' => $group,
-                                'buildUrl' => false,
-                            ];
-                        }
-                    } else {
-                        foreach ($group as $label => $value) {
-                            if ($label == '_id') {
-                                continue;
-                            }
-                            if (is_array($value)) {
-                                $value = implode($this->settings['separator'], $value);
-                            }
-                            // NOTE: Labels are to be escaped in Fluid template
-                            if (IRI::isAbsoluteIri($value) && (($scheme = (new IRI($value))->getScheme()) == 'http' || $scheme == 'https')) {
-                                $nolabel = $value == $label;
-                                $iiifData[$key]['data'][] = [
-                                    'label' => $nolabel ? '' : $label,
-                                    'value' => $value,
-                                    'buildUrl' => true,
-                                ];
-                            } else {
-                                $iiifData[$key]['data'][] = [
-                                    'label' => $label,
-                                    'value' => $value,
-                                    'buildUrl' => false,
-                                ];
-                            }
-                        }
-                    }
-                    $this->view->assign('useIiif', true);
-                    $this->view->assign('iiifData', $iiifData);
-                }
-            }
+            $iiifData = $this->buildIiifData($metadata);
+            $this->view->assign('useIiif', true);
+            $this->view->assign('iiifData', $iiifData);
         } else {
             // findBySettings also sorts entries by the `sorting` field
             $metadataResult = $this->metadataRepository->findBySettings([
@@ -288,6 +237,73 @@ class MetadataController extends AbstractController
             $this->view->assign('separator', $this->settings['separator']);
             $this->view->assign('metaCObjData', $metaCObjData);
         }
+    }
+
+    /**
+     * Builds the IIIF data array from metadata array
+     *
+     * @access private
+     *
+     * @param array $metadata The metadata array
+     *
+     * @return array The IIIF data array ready for output
+     */
+    private function buildIiifData(array $metadata): array
+    {
+        $iiifData = [];
+
+        foreach ($metadata as $row) {
+            foreach ($row as $key => $group) {
+                if ($key == '_id') {
+                    continue;
+                }
+
+                if (!is_array($group)) {
+                    $iiifData[$key] = $this->buildIiifDataGroup($key, $group);
+                } else {
+                    foreach ($group as $label => $value) {
+                        if ($label == '_id') {
+                            continue;
+                        }
+                        if (is_array($value)) {
+                            $value = implode($this->settings['separator'], $value);
+                        }
+
+                        $iiifData[$key]['data'][] = $this->buildIiifDataGroup($label, $value);
+                    }
+                }
+            }
+        }
+
+        return $iiifData;
+    }
+
+    /**
+     * Builds the IIIF data array from label and value
+     *
+     * @access private
+     *
+     * @param string $label The label string
+     * @param string $value The value string
+     *
+     * @return array The IIIF data array ready for output
+     */
+    private function buildIiifDataGroup(string $label, string $value): array
+    {
+        // NOTE: Labels are to be escaped in Fluid template
+        if (IRI::isAbsoluteIri($value) && ($scheme = (new IRI($value))->getScheme()) == 'http' || $scheme == 'https') {
+            //TODO: should really label be converted to empty string if equal to value?
+            $label = $value == $label ? '' : $label;
+            $buildUrl = true;
+        } else {
+            $buildUrl = false;
+        }
+
+        return [
+            'label' => $label,
+            'value' => $value,
+            'buildUrl' => $buildUrl,
+        ];
     }
 
     /**
