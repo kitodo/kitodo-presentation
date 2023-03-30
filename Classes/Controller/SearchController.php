@@ -424,22 +424,7 @@ class SearchController extends AbstractController
     protected function getFacetsMenuEntry($field, $value, $count, $search, &$state)
     {
         $entryArray = [];
-        // Translate value.
-        if ($field == 'owner_faceting') {
-            // Translate name of holding library.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
-        } elseif ($field == 'type_faceting') {
-            // Translate document type.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
-        } elseif ($field == 'collection_faceting') {
-            // Translate name of collection.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
-        } elseif ($field == 'language_faceting') {
-            // Translate ISO 639 language code.
-            $entryArray['title'] = htmlspecialchars(Helper::getLanguageName($value));
-        } else {
-            $entryArray['title'] = htmlspecialchars($value);
-        }
+        $entryArray['title'] = $this->translateValue($field, $value);
         $entryArray['count'] = $count;
         $entryArray['doNotLinkIt'] = 0;
         // Check if facet is already selected.
@@ -464,6 +449,33 @@ class SearchController extends AbstractController
         $entryArray['queryColumn'] = $queryColumn;
 
         return $entryArray;
+    }
+
+    /**
+     * Translates value depending on the index name.
+     *
+     * @param string $field: The facet's index_name
+     * @param string $value: The facet's value
+     *
+     * @return string
+     */
+    private function translateValue($field, $value) {
+        switch ($field) {
+            case 'owner_faceting':
+                // Translate name of holding library.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
+            case 'type_faceting':
+                // Translate document type.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
+            case 'collection_faceting':
+                // Translate name of collection.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
+            case 'language_faceting':
+                // Translate ISO 639 language code.
+                return htmlspecialchars(Helper::getLanguageName($value));
+            default:
+                return htmlspecialchars($value);
+        }
     }
 
     /**
