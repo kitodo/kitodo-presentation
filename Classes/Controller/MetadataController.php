@@ -32,6 +32,11 @@ use Ubl\Iiif\Context\IRI;
 class MetadataController extends AbstractController
 {
     /**
+     * @var Doc
+     */
+    private $doc;
+
+    /**
      * @var CollectionRepository
      */
     protected $collectionRepository;
@@ -90,12 +95,15 @@ class MetadataController extends AbstractController
             $this->setDefault('displayIiifRights', 1);
             $this->setDefault('displayIiifLinks', 1);
         }
-        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->document->getDoc() instanceof IiifManifest;
+
+        $this->doc = $this->document->getDoc();
+
+        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
         $metadata = $this->getMetadata();
         // Get titledata?
-        if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->document->getDoc()->toplevelId)) {
-            $data = $useOriginalIiifManifestMetadata ? $this->document->getDoc()->getManifestMetadata($this->document->getDoc()->toplevelId, $this->settings['storagePid']) : $this->document->getDoc()->getTitledata($this->settings['storagePid']);
-            $data['_id'] = $this->document->getDoc()->toplevelId;
+        if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->doc->toplevelId)) {
+            $data = $useOriginalIiifManifestMetadata ? $this->doc->getManifestMetadata($this->doc->toplevelId, $this->settings['storagePid']) : $this->doc->getTitledata($this->settings['storagePid']);
+            $data['_id'] = $this->doc->toplevelId;
             array_unshift($metadata, $data);
         }
         if (empty($metadata)) {
@@ -209,7 +217,7 @@ class MetadataController extends AbstractController
                             $metadata[$i][$name][0] = $metadata[$i][$name][0];
                             // Link title to pageview.
                             if ($this->settings['linkTitle'] && $section['_id']) {
-                                $details = $this->document->getDoc()->getLogicalStructure($section['_id']);
+                                $details = $this->doc->getLogicalStructure($section['_id']);
                                 $buildUrl[$i][$name]['buildUrl'] = [
                                     'id' => $this->document->getUid(),
                                     'page' => (!empty($details['points']) ? intval($details['points']) : 1),
@@ -285,9 +293,9 @@ class MetadataController extends AbstractController
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
             $ids = [];
-            if (!empty($this->document->getDoc()->physicalStructure[$this->requestData['page']]) && !empty($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]])) {
-                foreach ($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]] as $logId) {
-                    $count = $this->document->getDoc()->getStructureDepth($logId);
+            if (!empty($this->doc->physicalStructure[$this->requestData['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->requestData['page']]])) {
+                foreach ($this->doc->smLinks['p2l'][$doc->physicalStructure[$this->requestData['page']]] as $logId) {
+                    $count = $doc->getStructureDepth($logId);
                     $ids[$count][] = $logId;
                 }
             }
@@ -320,12 +328,12 @@ class MetadataController extends AbstractController
      */
     private function getMetadataForIds($id, $metadata)
     {
-        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->document->getDoc() instanceof IiifManifest;
+        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
         foreach ($id as $sid) {
             if ($useOriginalIiifManifestMetadata) {
-                $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['storagePid']);
+                $data = $this->doc->getManifestMetadata($sid, $this->settings['storagePid']);
             } else {
-                $data = $this->document->getDoc()->getMetadata($sid, $this->settings['storagePid']);
+                $data = $this->doc->getMetadata($sid, $this->settings['storagePid']);
             }
             if (!empty($data)) {
                 $data['_id'] = $sid;
