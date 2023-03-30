@@ -137,22 +137,13 @@ class MetadataController extends AbstractController
                 'is_listed' => !$this->settings['showFull'],
             ]);
 
-            // Collect raw metadata into an array that will be passed as data to cObj.
-            // This lets metadata wraps reference (own or foreign) values via TypoScript "field".
-            $metaCObjData = [];
-
             $buildUrl = [];
             $externalUrl = [];
             $i = 0;
             foreach ($metadata as $section) {
-                $metaCObjData[$i] = [];
 
                 foreach ($section as $name => $value) {
                     // NOTE: Labels are to be escaped in Fluid template
-
-                    $metaCObjData[$i][$name] = is_array($value)
-                        ? implode($this->settings['separator'], $value)
-                        : $value;
 
                     if ($name == 'title') {
                         // Get title of parent document if needed.
@@ -225,7 +216,7 @@ class MetadataController extends AbstractController
             $this->view->assign('documentMetadataSections', $metadata);
             $this->view->assign('configMetadata', $metadataResult);
             $this->view->assign('separator', $this->settings['separator']);
-            $this->view->assign('metaCObjData', $metaCObjData);
+            $this->view->assign('metaCObjData', $this->buildMetaCObjData($metadata));
         }
     }
 
@@ -294,6 +285,33 @@ class MetadataController extends AbstractController
             'value' => $value,
             'buildUrl' => $buildUrl,
         ];
+    }
+
+    /**
+     * Collects raw metadata into an array that will be passed as data to cObj.
+     * This lets metadata wraps reference (own or foreign) values via TypoScript "field".
+     *
+     * @access private
+     *
+     * @param array $metadata The metadata array
+     *
+     * @return array The raw metadata array ready for output
+     */
+    private function buildMetaCObjData(array $metadata)
+    {
+        $metaCObjData = [];
+
+        foreach ($metadata as $i => $section) {
+            $metaCObjData[$i] = [];
+
+            foreach ($section as $name => $value) {
+                $metaCObjData[$i][$name] = is_array($value)
+                    ? implode($this->settings['separator'], $value)
+                    : $value;
+            }
+        }
+
+        return $metaCObjData;
     }
 
     /**
