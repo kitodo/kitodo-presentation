@@ -139,8 +139,8 @@ class MetadataController extends AbstractController
 
             $buildUrl = [];
             $externalUrl = [];
-            $i = 0;
-            foreach ($metadata as $section) {
+
+            foreach ($metadata as $i => $section) {
 
                 foreach ($section as $name => $value) {
                     // NOTE: Labels are to be escaped in Fluid template
@@ -208,7 +208,7 @@ class MetadataController extends AbstractController
                         }));
                     }
                 }
-                $i++;
+                
             }
 
             $this->view->assign('buildUrl', $buildUrl);
