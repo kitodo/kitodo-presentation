@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 
-
 /**
  * Abstract controller class for most of the plugin controller.
  *
@@ -88,9 +87,28 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected function initialize()
     {
         $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
-        if (empty($this->requestData['page'])) {
+
+        // Sanitize user input to prevent XSS attacks.
+
+        // tx_dlf[id] may only be an UID or URI.
+        if (
+            !empty($this->requestData['id'])
+            && !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
+            && !GeneralUtility::isValidUrl($this->requestData['id'])
+        ) {
+            unset($this->requestData['id']);
+            $this->logger->error('Invalid ID or URI "' . $this->requestData['id'] . '" for document loading');
+        }
+
+        // tx_dlf[page] may only be a positive integer or valid XML ID.
+        if (
+            empty($this->requestData['page'])
+            || !preg_match('/^[1-9][0-9]*$|^[_a-z][_a-z0-9-.]*$/', $this->requestData['page']) === 1
+        ) {
             $this->requestData['page'] = 1;
         }
+
+        // tx_dlf[double] may only be 0 or 1.
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
 
         // Get extension configuration.
@@ -108,28 +126,33 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @access protected
      *
-     * @param array $requestData: The request data
+     * @param  int $documentId: The document's UID (fallback: $this->requestData[id])
      *
      * @return void
      */
-    protected function loadDocument($requestData)
+    protected function loadDocument(int $documentId = 0)
     {
+        // Get document ID from request data if not passed as parameter.
+        if ($documentId === 0 && !empty($this->requestData['id'])) {
+            $documentId = $this->requestData['id'];
+        }
+
         // Try to get document format from database
-        if (!empty($requestData['id'])) {
+        if (!empty($documentId)) {
 
             $doc = null;
 
-            if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
+            if (MathUtility::canBeInterpretedAsInteger($documentId)) {
                 // find document from repository by uid
-                $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id']);
+                $this->document = $this->documentRepository->findOneByIdAndSettings((int) $documentId);
                 if ($this->document) {
                     $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
                 } else {
-                    $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
+                    $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
                 }
-            } else if (GeneralUtility::isValidUrl($requestData['id'])) {
+            } else if (GeneralUtility::isValidUrl($documentId)) {
 
-                $doc = Doc::getInstance($requestData['id'], $this->settings, true);
+                $doc = Doc::getInstance($documentId, $this->settings, true);
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
@@ -146,9 +169,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                         $doc->cPid = max(intval($this->settings['storagePid']), 0);
                     }
 
-                    $this->document->setLocation($requestData['id']);
+                    $this->document->setLocation($documentId);
                 } else {
-                    $this->logger->error('Invalid location given "' . $requestData['id'] . '" for document loading');
+                    $this->logger->error('Invalid location given "' . $documentId . '" for document loading');
                 }
             }
 
@@ -156,20 +179,20 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 $this->document->setDoc($doc);
             }
 
-        } elseif (!empty($requestData['recordId'])) {
+        } elseif (!empty($this->requestData['recordId'])) {
 
-            $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
+            $this->document = $this->documentRepository->findOneByRecordId($this->requestData['recordId']);
 
             if ($this->document !== null) {
                 $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
                 if ($this->document !== null && $doc !== null) {
                     $this->document->setDoc($doc);
                 } else {
-                    $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
+                    $this->logger->error('Failed to load document with record ID "' . $this->requestData['recordId'] . '"');
                 }
             }
         } else {
-            $this->logger->error('Invalid ID "' . $requestData['id'] . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
+            $this->logger->error('Invalid ID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
     }
 

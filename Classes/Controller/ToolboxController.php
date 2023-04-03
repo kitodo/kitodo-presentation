@@ -42,7 +42,7 @@ class ToolboxController extends AbstractController
     public function mainAction()
     {
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
 
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $this->view->assign('double', $this->requestData['double']);

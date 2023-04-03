@@ -300,7 +300,7 @@ class BasketController extends AbstractController
     protected function getDocumentData($id, $data)
     {
         // get document instance to load further information
-        $this->loadDocument(['id' => $id]);
+        $this->loadDocument((int) $id);
         if ($this->document) {
             // replace url param placeholder
             $urlParams = str_replace("##page##", (int) $data['page'], $this->settings['pdfparams']);
@@ -395,7 +395,7 @@ class BasketController extends AbstractController
                 $items = [];
             }
             // get document instance to load further information
-            $this->loadDocument(['id' => $documentItem['id']]);
+            $this->loadDocument((int) $documentItem['id']);
             if ($this->isDocMissing()) {
                 // Quit without doing anything if required variables are not set.
                 return;

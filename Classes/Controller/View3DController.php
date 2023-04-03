@@ -31,7 +31,7 @@ class View3DController extends AbstractController
     {
         $this->cObj = $this->configurationManager->getContentObject();
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if (
             $this->isDocMissingOrEmpty()
             || $this->document->getDoc()->metadataArray['LOG_0001']['type'][0] != 'object'
@@ -56,7 +56,7 @@ class View3DController extends AbstractController
 
             if ($this->settings['useInternalProxy']) {
                 $absoluteUri = !empty($this->settings['forceAbsoluteUrl']) ? true : false;
-                
+
                 $model = $this->uriBuilder->reset()
                     ->setTargetPageUid($GLOBALS['TSFE']->id)
                     ->setCreateAbsoluteUri($absoluteUri)
