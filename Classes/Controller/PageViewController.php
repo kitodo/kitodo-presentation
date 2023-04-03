@@ -137,21 +137,6 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
-        // TODO(client-side): Avoid redundancy to DocumentController
-        $imageFileGroups = array_reverse(GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']));
-        $fulltextFileGroups = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
-        $config = [
-            'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']),
-            'proxyFileGroups' => !empty($this->settings['useInternalProxy'])
-                ? array_merge($imageFileGroups, $fulltextFileGroups)
-                : [],
-            // toArray uses closed interval [minPage, maxPage]
-            'minPage' => $this->requestData['page'],
-            'maxPage' => $this->requestData['page'] + $this->requestData['double']
-        ];
-
-        $initDoc = $this->document->getCurrentDocument()->toArray($this->uriBuilder, $config);
-
         // Viewer configuration.
         $viewerConfiguration = '
             (function () {
@@ -175,7 +160,6 @@ class PageViewController extends AbstractController
                             fulltexts: ' . json_encode($this->fulltexts) . ',
                             annotationContainers: ' . json_encode($this->annotationContainers) . ',
                             useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
-                            initDoc: ' . json_encode($initDoc) . ',
                         });
                         tx_dlf_viewer.setDocController(docController);
                     }

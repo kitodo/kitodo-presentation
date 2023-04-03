@@ -22,7 +22,6 @@
  *  images?: dlf.ImageDesc[] | [];
  *  fulltexts?: dlf.FulltextDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
- *  initDoc: dlf.Document;
  * }} DlfViewerConfig
  *
  * @typedef {any} DlfDocument
@@ -195,11 +194,6 @@ var dlfViewer = function(settings){
      * @private
      */
     this.layersCache = {};
-
-    /**
-     * @private
-     */
-    this.initDoc = settings.initDoc;
 
     /**
      * @type {dlfController | null}
@@ -653,10 +647,9 @@ dlfViewer.prototype.init = function(controlNames) {
 
 dlfViewer.prototype.getVisiblePages = function () {
     if (this.docController === null) {
-        return this.initDoc.pages.map( (page, i) => ({
-            pageNo: this.initDoc.query.minPage + i,
-            pageObj: page
-        }));
+        /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+        console.error("No document controller found");
+        return;
     } else {
         return this.docController.getVisiblePages();
     }
@@ -762,7 +755,6 @@ dlfViewer.prototype.initLayer = function (imageSourceObjs) {
  */
 dlfViewer.prototype.initLoadFulltexts = function (visiblePages) {
     if (this.docController === null) {
-        // TODO(client-side): Make it work then docController === null
         return;
     }
 
