@@ -78,7 +78,7 @@ class MetadataController extends AbstractController
         $this->cObj = $this->configurationManager->getContentObject();
 
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return '';
