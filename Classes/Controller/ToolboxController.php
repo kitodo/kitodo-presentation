@@ -188,7 +188,7 @@ class ToolboxController extends AbstractController
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
+        $fileGrps = GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
         while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
@@ -426,5 +426,31 @@ class ToolboxController extends AbstractController
             $name = Helper::encrypt($name);
         }
         return $name;
+    }
+
+    /**
+     * Sets page value.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function setPage() {
+        if (!empty($this->requestData['logicalPage'])) {
+            $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
+            // The logical page parameter should not appear again
+            unset($this->requestData['logicalPage']);
+        }
+
+        // Set default values if not set.
+        // $this->requestData['page'] may be integer or string (physical structure @ID)
+        if (
+            (int) $this->requestData['page'] > 0
+            || empty($this->requestData['page'])
+        ) {
+            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+        } else {
+            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
+        }
     }
 }
