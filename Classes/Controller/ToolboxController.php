@@ -41,7 +41,7 @@ class ToolboxController extends AbstractController
         $tools = explode(',', $this->settings['tools']);
         // Add the tools to the toolbox.
         foreach ($tools as $tool) {
-            $tool = trim(str_replace('tx_dlf_', '', $tool));
+            $tool = 'render' . trim(ucfirst(str_replace('tx_dlf_', '', str_replace('tool', 'Tool', $tool))));
             $this->$tool();
             $this->view->assign($tool, true);
         }
@@ -52,7 +52,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function annotationtool()
+    public function renderAnnotationTool()
     {
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
@@ -91,7 +91,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function fulltextdownloadtool()
+    public function renderFulltextdownloadTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -136,7 +136,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function fulltexttool()
+    public function renderFulltextTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -181,7 +181,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function imagedownloadtool()
+    public function renderImagedownloadTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -258,7 +258,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function imagemanipulationtool()
+    public function renderImagemanipulationtTool()
     {
         // Set parent element for initialization.
         $parentContainer = !empty($this->settings['parentContainer']) ? $this->settings['parentContainer'] : '.tx-dlf-imagemanipulationtool';
@@ -272,7 +272,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function pdfdownloadtool()
+    public function renderPdfdownloadTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -385,7 +385,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function searchindocumenttool()
+    public function renderSearchindocumentTool()
     {
         if (
             $this->isDocMissingOrEmpty()
