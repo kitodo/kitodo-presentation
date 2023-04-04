@@ -435,7 +435,7 @@ class ToolboxController extends AbstractController
      */
     private function setPage() {
         if (!empty($this->requestData['logicalPage'])) {
-            $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
+            $this->requestData['page'] = $this->doc->getPhysicalPage($this->requestData['logicalPage']);
             // The logical page parameter should not appear again
             unset($this->requestData['logicalPage']);
         }
@@ -446,9 +446,9 @@ class ToolboxController extends AbstractController
             (int) $this->requestData['page'] > 0
             || empty($this->requestData['page'])
         ) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->doc->numPages, 1);
         } else {
-            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
+            $this->requestData['page'] = array_search($this->requestData['page'], $this->doc->physicalStructure);
         }
     }
 }
