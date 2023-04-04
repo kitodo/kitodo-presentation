@@ -57,9 +57,9 @@ class ToolboxController extends AbstractController
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return '';
-        } else {
-            $this->setPage();
         }
+
+        $this->setPage();
 
         $annotationContainers = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['annotationContainers'];
         if (
@@ -85,9 +85,10 @@ class ToolboxController extends AbstractController
         ) {
             // Quit without doing anything if required variables are not set.
             return '';
-        } else {
-            $this->setPage();
         }
+
+        $this->setPage();
+
         // Get text download.
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
@@ -116,9 +117,10 @@ class ToolboxController extends AbstractController
         ) {
             // Quit without doing anything if required variables are not set.
             return '';
-        } else {
-            $this->setPage();
         }
+
+        $this->setPage();
+
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpFulltext])) {
@@ -147,9 +149,10 @@ class ToolboxController extends AbstractController
         ) {
             // Quit without doing anything if required variables are not set.
             return '';
-        } else {
-            $this->setPage();
         }
+
+        $this->setPage();
+
         $imageArray = [];
         // Get left or single page download.
         $imageArray[0] = $this->getImage($this->requestData['page']);
@@ -224,9 +227,10 @@ class ToolboxController extends AbstractController
         ) {
             // Quit without doing anything if required variables are not set.
             return '';
-        } else {
-            $this->setPage();
         }
+
+        $this->setPage();
+
         // Get single page downloads.
         $this->view->assign('pageLinks', $this->getPageLink());
         // Get work download.
@@ -324,9 +328,9 @@ class ToolboxController extends AbstractController
         ) {
             // Quit without doing anything if required variables are not set.
             return '';
-        } else {
-            $this->setPage();
         }
+
+        $this->setPage();
 
         // Quit if no fulltext file is present
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
