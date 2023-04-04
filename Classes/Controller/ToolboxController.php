@@ -58,21 +58,7 @@ class ToolboxController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
         }
 
         $annotationContainers = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['annotationContainers'];
@@ -100,21 +86,7 @@ class ToolboxController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
         }
         // Get text download.
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
@@ -145,21 +117,7 @@ class ToolboxController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
         }
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
@@ -190,21 +148,7 @@ class ToolboxController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
         }
         $imageArray = [];
         // Get left or single page download.
@@ -281,21 +225,7 @@ class ToolboxController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
         }
         // Get single page downloads.
         $this->view->assign('pageLinks', $this->getPageLink());
@@ -395,21 +325,7 @@ class ToolboxController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
         }
 
         // Quit if no fulltext file is present
@@ -493,5 +409,31 @@ class ToolboxController extends AbstractController
             $name = Helper::encrypt($name);
         }
         return $name;
+    }
+
+    /**
+     * Sets page value.
+     * 
+     * @access private
+     * 
+     * @return void
+     */
+    private function setPage() {
+        if (!empty($this->requestData['logicalPage'])) {
+            $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
+            // The logical page parameter should not appear again
+            unset($this->requestData['logicalPage']);
+        }
+
+        // Set default values if not set.
+        // $this->requestData['page'] may be integer or string (physical structure @ID)
+        if (
+            (int) $this->requestData['page'] > 0
+            || empty($this->requestData['page'])
+        ) {
+            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+        } else {
+            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
+        }
     }
 }
