@@ -102,8 +102,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
         // tx_dlf[page] may only be a positive integer or valid XML ID.
         if (
-            empty($this->requestData['page'])
-            || !preg_match('/^[1-9][0-9]*$|^[_a-z][_a-z0-9-.]*$/', $this->requestData['page']) === 1
+            !empty($this->requestData['page'])
+            && !MathUtility::canBeInterpretedAsInteger($this->requestData['page'])
+            && !Helper::isValidXmlId($this->requestData['page'])
         ) {
             $this->requestData['page'] = 1;
         }
