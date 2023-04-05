@@ -32,6 +32,11 @@ use Ubl\Iiif\Context\IRI;
 class MetadataController extends AbstractController
 {
     /**
+     * @var Doc
+     */
+    private $doc;
+
+    /**
      * @var CollectionRepository
      */
     protected $collectionRepository;
@@ -78,34 +83,27 @@ class MetadataController extends AbstractController
         $this->cObj = $this->configurationManager->getContentObject();
 
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
             // Set default values if not set.
-            if (!isset($this->settings['rootline'])) {
-                $this->settings['rootline'] = 0;
-            }
-            if (!isset($this->settings['originalIiifMetadata'])) {
-                $this->settings['originalIiifMetadata'] = 0;
-            }
-            if (!isset($this->settings['displayIiifDescription'])) {
-                $this->settings['displayIiifDescription'] = 1;
-            }
-            if (!isset($this->settings['displayIiifRights'])) {
-                $this->settings['displayIiifRights'] = 1;
-            }
-            if (!isset($this->settings['displayIiifLinks'])) {
-                $this->settings['displayIiifLinks'] = 1;
-            }
+            $this->setDefault('rootline', 0);
+            $this->setDefault('originalIiifMetadata', 0);
+            $this->setDefault('displayIiifDescription', 1);
+            $this->setDefault('displayIiifRights', 1);
+            $this->setDefault('displayIiifLinks', 1);
         }
-        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->document->getDoc() instanceof IiifManifest;
+
+        $this->doc = $this->document->getDoc();
+
+        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
         $metadata = $this->getMetadata();
         // Get titledata?
-        if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->document->getDoc()->toplevelId)) {
-            $data = $useOriginalIiifManifestMetadata ? $this->document->getDoc()->getManifestMetadata($this->document->getDoc()->toplevelId, $this->settings['storagePid']) : $this->document->getDoc()->getTitledata($this->settings['storagePid']);
-            $data['_id'] = $this->document->getDoc()->toplevelId;
+        if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->doc->toplevelId)) {
+            $data = $useOriginalIiifManifestMetadata ? $this->doc->getManifestMetadata($this->doc->toplevelId, $this->settings['storagePid']) : $this->doc->getTitledata($this->settings['storagePid']);
+            $data['_id'] = $this->doc->toplevelId;
             array_unshift($metadata, $data);
         }
         if (empty($metadata)) {
@@ -130,60 +128,9 @@ class MetadataController extends AbstractController
     protected function printMetadata(array $metadata, $useOriginalIiifManifestMetadata = false)
     {
         if ($useOriginalIiifManifestMetadata) {
-            $iiifData = [];
-            foreach ($metadata as $row) {
-                foreach ($row as $key => $group) {
-                    if ($key == '_id') {
-                        continue;
-                    }
-                    if (!is_array($group)) {
-                        if (
-                            IRI::isAbsoluteIri($group)
-                            && (($scheme = (new IRI($group))->getScheme()) == 'http' || $scheme == 'https')
-                        ) {
-                            // Build link
-                            $iiifData[$key] = [
-                                'label' => $key,
-                                'value' => $group,
-                                'buildUrl' => true,
-                            ];
-                        } else {
-                            // Data output
-                            $iiifData[$key] = [
-                                'label' => $key,
-                                'value' => $group,
-                                'buildUrl' => false,
-                            ];
-                        }
-                    } else {
-                        foreach ($group as $label => $value) {
-                            if ($label == '_id') {
-                                continue;
-                            }
-                            if (is_array($value)) {
-                                $value = implode($this->settings['separator'], $value);
-                            }
-                            // NOTE: Labels are to be escaped in Fluid template
-                            if (IRI::isAbsoluteIri($value) && (($scheme = (new IRI($value))->getScheme()) == 'http' || $scheme == 'https')) {
-                                $nolabel = $value == $label;
-                                $iiifData[$key]['data'][] = [
-                                    'label' => $nolabel ? '' : $label,
-                                    'value' => $value,
-                                    'buildUrl' => true,
-                                ];
-                            } else {
-                                $iiifData[$key]['data'][] = [
-                                    'label' => $label,
-                                    'value' => $value,
-                                    'buildUrl' => false,
-                                ];
-                            }
-                        }
-                    }
-                    $this->view->assign('useIiif', true);
-                    $this->view->assign('iiifData', $iiifData);
-                }
-            }
+            $iiifData = $this->buildIiifData($metadata);
+            $this->view->assign('useIiif', true);
+            $this->view->assign('iiifData', $iiifData);
         } else {
             // findBySettings also sorts entries by the `sorting` field
             $metadataResult = $this->metadataRepository->findBySettings([
@@ -219,7 +166,7 @@ class MetadataController extends AbstractController
                             $metadata[$i][$name][0] = $metadata[$i][$name][0];
                             // Link title to pageview.
                             if ($this->settings['linkTitle'] && $section['_id']) {
-                                $details = $this->document->getDoc()->getLogicalStructure($section['_id']);
+                                $details = $this->doc->getLogicalStructure($section['_id']);
                                 $buildUrl[$i][$name]['buildUrl'] = [
                                     'id' => $this->document->getUid(),
                                     'page' => (!empty($details['points']) ? intval($details['points']) : 1),
@@ -283,6 +230,73 @@ class MetadataController extends AbstractController
     }
 
     /**
+     * Builds the IIIF data array from metadata array
+     *
+     * @access private
+     *
+     * @param array $metadata The metadata array
+     *
+     * @return array The IIIF data array ready for output
+     */
+    private function buildIiifData(array $metadata): array
+    {
+        $iiifData = [];
+
+        foreach ($metadata as $row) {
+            foreach ($row as $key => $group) {
+                if ($key == '_id') {
+                    continue;
+                }
+
+                if (!is_array($group)) {
+                    $iiifData[$key] = $this->buildIiifDataGroup($key, $group);
+                } else {
+                    foreach ($group as $label => $value) {
+                        if ($label == '_id') {
+                            continue;
+                        }
+                        if (is_array($value)) {
+                            $value = implode($this->settings['separator'], $value);
+                        }
+
+                        $iiifData[$key]['data'][] = $this->buildIiifDataGroup($label, $value);
+                    }
+                }
+            }
+        }
+
+        return $iiifData;
+    }
+
+    /**
+     * Builds the IIIF data array from label and value
+     *
+     * @access private
+     *
+     * @param string $label The label string
+     * @param string $value The value string
+     *
+     * @return array The IIIF data array ready for output
+     */
+    private function buildIiifDataGroup(string $label, string $value): array
+    {
+        // NOTE: Labels are to be escaped in Fluid template
+        if (IRI::isAbsoluteIri($value) && ($scheme = (new IRI($value))->getScheme()) == 'http' || $scheme == 'https') {
+            //TODO: should really label be converted to empty string if equal to value?
+            $label = $value == $label ? '' : $label;
+            $buildUrl = true;
+        } else {
+            $buildUrl = false;
+        }
+
+        return [
+            'label' => $label,
+            'value' => $value,
+            'buildUrl' => $buildUrl,
+        ];
+    }
+
+    /**
      * Get metadata for given id array.
      *
      * @access private
@@ -295,9 +309,9 @@ class MetadataController extends AbstractController
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
             $ids = [];
-            if (!empty($this->document->getDoc()->physicalStructure[$this->requestData['page']]) && !empty($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]])) {
-                foreach ($this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]] as $logId) {
-                    $count = $this->document->getDoc()->getStructureDepth($logId);
+            if (!empty($this->doc->physicalStructure[$this->requestData['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->requestData['page']]])) {
+                foreach ($this->doc->smLinks['p2l'][$doc->physicalStructure[$this->requestData['page']]] as $logId) {
+                    $count = $doc->getStructureDepth($logId);
                     $ids[$count][] = $logId;
                 }
             }
@@ -330,12 +344,12 @@ class MetadataController extends AbstractController
      */
     private function getMetadataForIds($id, $metadata)
     {
-        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->document->getDoc() instanceof IiifManifest;
+        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
         foreach ($id as $sid) {
             if ($useOriginalIiifManifestMetadata) {
-                $data = $this->document->getDoc()->getManifestMetadata($sid, $this->settings['storagePid']);
+                $data = $this->doc->getManifestMetadata($sid, $this->settings['storagePid']);
             } else {
-                $data = $this->document->getDoc()->getMetadata($sid, $this->settings['storagePid']);
+                $data = $this->doc->getMetadata($sid, $this->settings['storagePid']);
             }
             if (!empty($data)) {
                 $data['_id'] = $sid;
@@ -343,5 +357,21 @@ class MetadataController extends AbstractController
             }
         }
         return $metadata;
+    }
+
+    /**
+     * Sets default value for setting if not yet set.
+     *
+     * @access private
+     *
+     * @param string $setting name of setting
+     * @param int $value 0 or 1
+     *
+     * @return void
+     */
+    private function setDefault($setting, $value) {
+        if (!isset($this->settings[$setting])) {
+            $this->settings[$setting] = $value;
+        }
     }
 }
