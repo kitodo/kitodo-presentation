@@ -89,28 +89,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
 
         // Sanitize user input to prevent XSS attacks.
-
-        // tx_dlf[id] may only be an UID or URI.
-        if (
-            !empty($this->requestData['id'])
-            && !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
-            && !GeneralUtility::isValidUrl($this->requestData['id'])
-        ) {
-            $this->logger->error('Invalid ID or URI "' . $this->requestData['id'] . '" for document loading');
-            unset($this->requestData['id']);
-        }
-
-        // tx_dlf[page] may only be a positive integer or valid XML ID.
-        if (
-            !empty($this->requestData['page'])
-            && !MathUtility::canBeInterpretedAsInteger($this->requestData['page'])
-            && !Helper::isValidXmlId($this->requestData['page'])
-        ) {
-            $this->requestData['page'] = 1;
-        }
-
-        // tx_dlf[double] may only be 0 or 1.
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+        $this->sanitizeRequestData();
 
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
@@ -278,6 +257,36 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         } else {
             $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
         }
+    }
+
+    /**
+     * Sanitize input variables.
+     *
+     * @return void
+     */
+    private function sanitizeRequestData()
+    {
+        // tx_dlf[id] may only be an UID or URI.
+        if (
+            !empty($this->requestData['id'])
+            && !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
+            && !GeneralUtility::isValidUrl($this->requestData['id'])
+        ) {
+            $this->logger->warning('Invalid ID or URI "' . $this->requestData['id'] . '" for document loading');
+            unset($this->requestData['id']);
+        }
+
+        // tx_dlf[page] may only be a positive integer or valid XML ID.
+        if (
+            !empty($this->requestData['page'])
+            && !MathUtility::canBeInterpretedAsInteger($this->requestData['page'])
+            && !Helper::isValidXmlId($this->requestData['page'])
+        ) {
+            $this->requestData['page'] = 1;
+        }
+
+        // tx_dlf[double] may only be 0 or 1.
+        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
     }
 
     /**
