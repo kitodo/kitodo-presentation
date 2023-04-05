@@ -83,27 +83,17 @@ class MetadataController extends AbstractController
         $this->cObj = $this->configurationManager->getContentObject();
 
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
             // Set default values if not set.
-            if (!isset($this->settings['rootline'])) {
-                $this->settings['rootline'] = 0;
-            }
-            if (!isset($this->settings['originalIiifMetadata'])) {
-                $this->settings['originalIiifMetadata'] = 0;
-            }
-            if (!isset($this->settings['displayIiifDescription'])) {
-                $this->settings['displayIiifDescription'] = 1;
-            }
-            if (!isset($this->settings['displayIiifRights'])) {
-                $this->settings['displayIiifRights'] = 1;
-            }
-            if (!isset($this->settings['displayIiifLinks'])) {
-                $this->settings['displayIiifLinks'] = 1;
-            }
+            $this->setDefault('rootline', 0);
+            $this->setDefault('originalIiifMetadata', 0);
+            $this->setDefault('displayIiifDescription', 1);
+            $this->setDefault('displayIiifRights', 1);
+            $this->setDefault('displayIiifLinks', 1);
         }
 
         $this->doc = $this->document->getDoc();
@@ -367,5 +357,21 @@ class MetadataController extends AbstractController
             }
         }
         return $metadata;
+    }
+
+    /**
+     * Sets default value for setting if not yet set.
+     *
+     * @access private
+     *
+     * @param string $setting name of setting
+     * @param int $value 0 or 1
+     *
+     * @return void
+     */
+    private function setDefault($setting, $value) {
+        if (!isset($this->settings[$setting])) {
+            $this->settings[$setting] = $value;
+        }
     }
 }
