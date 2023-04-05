@@ -225,9 +225,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     /**
      * Sanitize input variables.
      *
+     * @access protected
+     *
      * @return void
      */
-    private function sanitizeRequestData()
+    protected function sanitizeRequestData()
     {
         // tx_dlf[id] may only be an UID or URI.
         if (
@@ -250,6 +252,43 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
         // tx_dlf[double] may only be 0 or 1.
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+    }
+
+    /**
+     * Sets page value.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function setPage() {
+        if (!empty($this->requestData['logicalPage'])) {
+            $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
+            // The logical page parameter should not appear again
+            unset($this->requestData['logicalPage']);
+        }
+
+        $this->setDefaultPage();
+    }
+
+    /**
+     * Sets default page value.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function setDefaultPage() {
+        // Set default values if not set.
+        // $this->requestData['page'] may be integer or string (physical structure @ID)
+        if (
+            (int) $this->requestData['page'] > 0
+            || empty($this->requestData['page'])
+        ) {
+            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+        } else {
+            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
+        }
     }
 
     /**
