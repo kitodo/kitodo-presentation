@@ -78,7 +78,7 @@ class MetadataController extends AbstractController
         $this->cObj = $this->configurationManager->getContentObject();
 
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return '';
@@ -261,8 +261,6 @@ class MetadataController extends AbstractController
                         foreach ($metadata[$i][$name] as &$langValue) {
                             $langValue = Helper::getLanguageName($langValue);
                         }
-                    } elseif (!empty($value)) {
-                        $metadata[$i][$name][0] = $metadata[$i][$name][0];
                     }
 
                     if (is_array($metadata[$i][$name])) {

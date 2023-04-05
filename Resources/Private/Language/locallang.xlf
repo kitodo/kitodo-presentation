@@ -371,6 +371,12 @@
             <trans-unit id="newTenant.formatOkayMsg" approved="yes">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
             </trans-unit>
+            <trans-unit id="newTenant.formatNotOkay" approved="yes">
+                <source><![CDATA[Default namespaces not found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.formatNotOkayMsg" approved="yes">
+                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
+            </trans-unit>
             <trans-unit id="newTenant.structureOkay" approved="yes">
                 <source><![CDATA[Structures found!]]></source>
             </trans-unit>
