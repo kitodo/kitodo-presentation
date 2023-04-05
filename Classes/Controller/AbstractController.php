@@ -96,8 +96,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             && !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
             && !GeneralUtility::isValidUrl($this->requestData['id'])
         ) {
-            unset($this->requestData['id']);
             $this->logger->error('Invalid ID or URI "' . $this->requestData['id'] . '" for document loading');
+            unset($this->requestData['id']);
         }
 
         // tx_dlf[page] may only be a positive integer or valid XML ID.
