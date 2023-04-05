@@ -44,7 +44,6 @@ class ToolboxController extends AbstractController
         // Load current document.
         $this->loadDocument();
 
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $this->view->assign('double', $this->requestData['double']);
 
         if (!$this->isDocMissingOrEmpty()) {
