@@ -62,7 +62,7 @@ class CalendarController extends AbstractController
         }
 
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return '';
@@ -109,7 +109,7 @@ class CalendarController extends AbstractController
         $this->requestData = array_merge($this->requestData, $mainrequestData);
 
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return '';
@@ -238,7 +238,7 @@ class CalendarController extends AbstractController
         $this->requestData = array_merge($this->requestData, $mainrequestData);
 
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
             return '';

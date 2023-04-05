@@ -75,7 +75,7 @@ class AudioplayerController extends AbstractController
     public function mainAction()
     {
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return '';
