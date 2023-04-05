@@ -51,21 +51,66 @@ class ToolboxController extends AbstractController
             $this->doc = $this->document->getDoc();
         }
 
-        $tools = explode(',', $this->settings['tools']);
-        // Add the tools to the toolbox.
-        foreach ($tools as $tool) {
-            $tool = 'render' . trim(ucfirst(str_replace('tx_dlf_', '', str_replace('tool', 'Tool', $tool))));
-            $this->$tool();
-            $this->view->assign($tool, true);
+        $this->renderTool();
+    }
+
+    /**
+     * Renders tool in the toolbox.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderTool() {
+        if (!empty($this->settings['tool'])) {
+            switch ($this->settings['tool']) {
+                case 'tx_dlf_annotationtool':
+                    $this->renderToolByName('renderAnnotationTool');
+                    break;
+                case 'tx_dlf_fulltextdownloadtool':
+                    $this->renderToolByName('renderFulltextDownloadTool');
+                    break;
+                case 'tx_dlf_fulltexttool':
+                    $this->renderToolByName('renderFulltextTool');
+                    break;
+                case 'tx_dlf_imagedownloadtool':
+                    $this->renderToolByName('renderImageDownloadTool');
+                    break;
+                case 'tx_dlf_imagemanipulationtool':
+                    $this->renderToolByName('renderImageManipulationTool');
+                    break;
+                case 'tx_dlf_pdfdownloadtool':
+                    $this->renderToolByName('renderPdfDownloadTool');
+                    break;
+                case 'tx_dlf_searchindocumenttool':
+                    $this->renderToolByName('renderSearchInDocumentTool');
+                    break;
+                default:
+                    $this->logger->warn('Incorrect tool configuration: "' . $this->settings['tool'] . '". This tool does not exist.');
+            }
         }
+    }
+
+    /**
+     * Renders tool by the name in the toolbox.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderToolByName(string $tool) {
+        $this->$tool();
+        $this->view->assign($tool, true);
     }
 
     /**
      * Renders the annotation tool
      *
+     * @access private
+     *
      * @return void
      */
-    public function renderAnnotationTool()
+    private function renderAnnotationTool()
     {
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
@@ -88,9 +133,11 @@ class ToolboxController extends AbstractController
     /**
      * Renders the fulltext download tool
      *
+     * @access private
+     *
      * @return void
      */
-    public function renderFulltextdownloadTool()
+    private function renderFulltextDownloadTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -120,9 +167,11 @@ class ToolboxController extends AbstractController
     /**
      * Renders the fulltext tool
      *
+     * @access private
+     *
      * @return void
      */
-    public function renderFulltextTool()
+    private function renderFulltextTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -152,9 +201,11 @@ class ToolboxController extends AbstractController
     /**
      * Renders the image download tool
      *
+     * @access private
+     *
      * @return void
      */
-    public function renderImagedownloadTool()
+    private function renderImageDownloadTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -178,13 +229,13 @@ class ToolboxController extends AbstractController
     /**
      * Get image's URL and MIME type
      *
-     * @access protected
+     * @access private
      *
      * @param int $page: Page number
      *
      * @return array Array of image links and image format information
      */
-    protected function getImage($page)
+    private function getImage($page)
     {
         $image = [];
         // Get @USE value of METS fileGrp.
@@ -216,9 +267,11 @@ class ToolboxController extends AbstractController
     /**
      * Renders the image manipulation tool
      *
+     * @access private
+     *
      * @return void
      */
-    public function renderImagemanipulationtTool()
+    private function renderImageManipulationTool()
     {
         // Set parent element for initialization.
         $parentContainer = !empty($this->settings['parentContainer']) ? $this->settings['parentContainer'] : '.tx-dlf-imagemanipulationtool';
@@ -230,9 +283,11 @@ class ToolboxController extends AbstractController
     /**
      * Renders the PDF download tool
      *
+     * @access private
+     *
      * @return void
      */
-    public function renderPdfdownloadTool()
+    private function renderPdfDownloadTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -253,11 +308,11 @@ class ToolboxController extends AbstractController
     /**
      * Get page's download link
      *
-     * @access protected
+     * @access private
      *
      * @return array Link to downloadable page
      */
-    protected function getPageLink()
+    private function getPageLink()
     {
         $page1Link = '';
         $page2Link = '';
@@ -298,11 +353,11 @@ class ToolboxController extends AbstractController
     /**
      * Get work's download link
      *
-     * @access protected
+     * @access private
      *
      * @return string Link to downloadable work
      */
-    protected function getWorkLink()
+    private function getWorkLink()
     {
         $workLink = '';
         $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
@@ -330,9 +385,11 @@ class ToolboxController extends AbstractController
     /**
      * Renders the searchInDocument tool
      *
+     * @access private
+     *
      * @return void
      */
-    public function renderSearchindocumentTool()
+    private function renderSearchInDocumentTool()
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -377,11 +434,11 @@ class ToolboxController extends AbstractController
      * In case there is defined documentIdUrlSchema then the id will
      * extracted from this URL.
      *
-     * @access protected
+     * @access private
      *
      * @return string with current document id
      */
-    protected function getCurrentDocumentId()
+    private function getCurrentDocumentId()
     {
         $id = $this->document->getUid();
 
@@ -413,11 +470,11 @@ class ToolboxController extends AbstractController
     /**
      * Get the encrypted Solr core name
      *
-     * @access protected
+     * @access private
      *
      * @return string with encrypted core name
      */
-    protected function getEncryptedCoreName()
+    private function getEncryptedCoreName()
     {
         // Get core name.
         $name = Helper::getIndexNameFromUid($this->settings['solrcore'], 'tx_dlf_solrcores');
