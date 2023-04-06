@@ -76,7 +76,15 @@ class NavigationController extends AbstractController
         for ($i = 1; $i <= $this->document->getDoc()->numPages; $i++) {
             $pageOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel']) : '');
         }
+
         $this->view->assign('pageOptions', $pageOptions);
+
+        $measureOptions = [];
+        for ($i = 1; $i <= $this->document->getDoc()->numMeasures; $i++) {
+            $measureOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->musicalStructureInfo[$this->document->getDoc()->musicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->musicalStructureInfo[$this->document->getDoc()->musicalStructureInfo[$i]]['orderlabel']) : '');
+        }
+
+        $this->view->assign('measureOptions', $measureOptions);
 
         // prepare feature array for fluid
         $features = [];
