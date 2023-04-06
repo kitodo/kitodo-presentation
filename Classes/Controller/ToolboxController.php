@@ -373,9 +373,7 @@ class ToolboxController extends AbstractController
                 }
             }
         }
-        if (!empty($workLink)) {
-            $workLink = $workLink;
-        } else {
+        if (empty($workLink)) {
             $this->logger->warning('File not found in fileGrps "' . $this->extConf['fileGrpDownload'] . '"');
         }
         return $workLink;
