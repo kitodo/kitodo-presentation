@@ -246,15 +246,14 @@ class ToolboxController extends AbstractController
                 $image['mimetype'] = $this->doc->getFileMimeType($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp]);
                 switch ($image['mimetype']) {
                     case 'image/jpeg':
-                        $mimetypeLabel = ' (JPG)';
+                        $image['mimetypeLabel']  = ' (JPG)';
                         break;
                     case 'image/tiff':
-                        $mimetypeLabel = ' (TIFF)';
+                        $image['mimetypeLabel']  = ' (TIFF)';
                         break;
                     default:
-                        $mimetypeLabel = '';
+                        $image['mimetypeLabel']  = '';
                 }
-                $image['mimetypeLabel'] = $mimetypeLabel;
                 break;
             } else {
                 $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
