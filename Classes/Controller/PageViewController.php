@@ -116,18 +116,7 @@ class PageViewController extends AbstractController
             if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
                 $fulltext['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 if ($this->settings['useInternalProxy']) {
-                    // Configure @action URL for form.
-                    $uri = $this->uriBuilder->reset()
-                        ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments([
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $fulltext['url'],
-                            'uHash' => GeneralUtility::hmac($fulltext['url'], 'PageViewProxy')
-                            ])
-                        ->build();
-
-                    $fulltext['url'] = $uri;
+                    $this->configureProxyUrl($fulltext['url']);
                 }
                 $fulltext['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 break;
@@ -247,17 +236,7 @@ class PageViewController extends AbstractController
                 // Only deliver static images via the internal PageViewProxy.
                 // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL` in `OLSources.js`.)
                 if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
-                    // Configure @action URL for form.
-                    $uri = $this->uriBuilder->reset()
-                        ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments([
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $image['url'],
-                            'uHash' => GeneralUtility::hmac($image['url'], 'PageViewProxy')
-                            ])
-                        ->build();
-                    $image['url'] = $uri;
+                    $this->configureProxyUrl($image['url']);
                 }
                 break;
             } else {
