@@ -177,6 +177,27 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
+     * Configure URL for proxy.
+     *
+     * @access protected
+     *
+     * @param string $url URL for proxy configuration
+     *
+     * @return void
+     */
+    protected function configureProxyUrl(&$url) {
+        $this->uriBuilder->reset()
+            ->setTargetPageUid($GLOBALS['TSFE']->id)
+            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
+            ->setArguments([
+                'eID' => 'tx_dlf_pageview_proxy',
+                'url' => $url,
+                'uHash' => GeneralUtility::hmac($url, 'PageViewProxy')
+                ])
+            ->build();
+    }
+
+    /**
      * Checks if doc is missing or is empty (no pages)
      *
      * @return boolean
