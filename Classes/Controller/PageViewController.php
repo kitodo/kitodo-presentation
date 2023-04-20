@@ -68,23 +68,12 @@ class PageViewController extends AbstractController
     public function mainAction()
     {
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->requestData['page'] > 0 || empty($this->requestData['page'])) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
             $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         }
         // Get image data.
