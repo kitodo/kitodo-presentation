@@ -188,7 +188,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     protected function configureProxyUrl(&$url) {
         $this->uriBuilder->reset()
             ->setTargetPageUid($GLOBALS['TSFE']->id)
-            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
             ->setArguments([
                 'eID' => 'tx_dlf_pageview_proxy',
                 'url' => $url,
