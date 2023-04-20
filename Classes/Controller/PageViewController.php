@@ -73,18 +73,7 @@ class PageViewController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->requestData['page'] > 0 || empty($this->requestData['page'])) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
             $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         }
         // Get image data.
@@ -127,18 +116,7 @@ class PageViewController extends AbstractController
             if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
                 $fulltext['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 if ($this->settings['useInternalProxy']) {
-                    // Configure @action URL for form.
-                    $uri = $this->uriBuilder->reset()
-                        ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments([
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $fulltext['url'],
-                            'uHash' => GeneralUtility::hmac($fulltext['url'], 'PageViewProxy')
-                            ])
-                        ->build();
-
-                    $fulltext['url'] = $uri;
+                    $this->configureProxyUrl($fulltext['url']);
                 }
                 $fulltext['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 break;
@@ -258,17 +236,7 @@ class PageViewController extends AbstractController
                 // Only deliver static images via the internal PageViewProxy.
                 // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL` in `OLSources.js`.)
                 if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
-                    // Configure @action URL for form.
-                    $uri = $this->uriBuilder->reset()
-                        ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments([
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $image['url'],
-                            'uHash' => GeneralUtility::hmac($image['url'], 'PageViewProxy')
-                            ])
-                        ->build();
-                    $image['url'] = $uri;
+                    $this->configureProxyUrl($image['url']);
                 }
                 break;
             } else {
