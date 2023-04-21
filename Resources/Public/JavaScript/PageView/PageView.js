@@ -445,6 +445,14 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         this.highlightWords = highlightWords;
     }
 
+    // exctract highlighWords from URL
+    if (this.highlightWords === null) {
+        var urlParams = dlfUtils.getUrlParams();
+        this.highlightWords = urlParams['tx_dlf[highlight_word]'];
+        // remove special charachters and search operators
+        this.highlightWords = this.highlightWords.replace(/[{~\d*}`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/[{AND|OR|NOT}]/g, '').replace(/\s\s+/g, ' ');
+    }
+
     if (!dlfUtils.exists(this.highlightLayer)) {
 
         this.highlightLayer = new ol.layer.Vector({
@@ -485,7 +493,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
 
     if (this.highlightWords !== null) {
         var self = this;
-        var values = decodeURIComponent(this.highlightWords).split(';');
+        var values = decodeURIComponent(this.highlightWords).split(' ');
 
         $.when.apply($, this.fulltextsLoaded_)
             .done(function (fulltextData, fulltextDataImageTwo) {
