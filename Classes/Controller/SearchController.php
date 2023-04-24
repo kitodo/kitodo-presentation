@@ -358,8 +358,8 @@ class SearchController extends AbstractController
         // check for solr response
         $solrRequest = $solr->service->createRequest($selectQuery);
         $response = $solr->service->executeRequest($solrRequest);
-        // return empty facet on solr error          
-        if($response->getStatusCode() == "400") {
+        // return empty facet on solr error
+        if ($response->getStatusCode() == "400") {
             return [];
         }
         $results = $solr->service->select($selectQuery);
