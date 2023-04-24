@@ -449,8 +449,6 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
     if (this.highlightWords === null) {
         var urlParams = dlfUtils.getUrlParams();
         this.highlightWords = urlParams['tx_dlf[highlight_word]'];
-        // remove special charachters and search operators
-        this.highlightWords = this.highlightWords.replace(/[{~\d*}`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/[{AND|OR|NOT}]/g, '').replace(/\s\s+/g, ' ');
     }
 
     if (!dlfUtils.exists(this.highlightLayer)) {
@@ -493,7 +491,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
 
     if (this.highlightWords !== null) {
         var self = this;
-        var values = decodeURIComponent(this.highlightWords).split(' ');
+        var values = decodeURIComponent(this.highlightWords).split(';');
 
         $.when.apply($, this.fulltextsLoaded_)
             .done(function (fulltextData, fulltextDataImageTwo) {
