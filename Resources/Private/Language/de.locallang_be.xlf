@@ -297,6 +297,14 @@
 				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
 				<target><![CDATA[Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.measureForward">
+				<source><![CDATA[One measure forward]]></source>
+				<target><![CDATA[Ein Takt vor]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.measureBack">
+				<source><![CDATA[One measureBack back]]></source>
+				<target><![CDATA[Ein Takt zurück]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.navigation.title" approved="yes">
 				<source><![CDATA[Kitodo: Navigation]]></source>
 				<target><![CDATA[Kitodo: Navigation]]></target>

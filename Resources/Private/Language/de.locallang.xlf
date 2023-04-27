@@ -301,6 +301,14 @@
 				<source><![CDATA[Rotate Right]]></source>
 				<target><![CDATA[Ansicht nach rechts drehen]]></target>
 			</trans-unit>
+			<trans-unit id="prevMeasure">
+				<source><![CDATA[Previus Measure]]></source>
+				<target><![CDATA[Vorheriger Takt]]></target>
+			</trans-unit>
+			<trans-unit id="nextMeasure">
+				<source><![CDATA[Next Measure]]></source>
+				<target><![CDATA[Nächster Takt]]></target>
+			</trans-unit>
 			<trans-unit id="search.for" approved="yes">
 				<source><![CDATA[for "%s"]]></source>
 				<target><![CDATA[nach "%s"]]></target>

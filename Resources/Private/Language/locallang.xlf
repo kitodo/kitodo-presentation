@@ -170,6 +170,12 @@
 			<trans-unit id="rotateRight">
 				<source><![CDATA[Rotate Right]]></source>
 			</trans-unit>
+			<trans-unit id="prevMeasure">
+				<source><![CDATA[Previus Measure]]></source>
+			</trans-unit>
+			<trans-unit id="nextMeasure">
+				<source><![CDATA[Next Measure]]></source>
+			</trans-unit>
 			<trans-unit id="selectPage">
 				<source><![CDATA[Page]]></source>
 			</trans-unit>

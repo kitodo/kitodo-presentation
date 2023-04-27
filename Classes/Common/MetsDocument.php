@@ -898,9 +898,11 @@ final class MetsDocument extends Doc
                 $this->physicalStructureInfo[$physSeq[0]]['contentIds'] = (isset($physNode[0]['CONTENTIDS']) ? (string) $physNode[0]['CONTENTIDS'] : '');
                 // Get the file representations from fileSec node.
                 foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                    $fileNode = isset($fptr->area)? $fptr->area : $fptr;
+
                     // Check if file has valid @USE attribute.
-                    if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                        $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+                    if (!empty($fileUse[(string) $fileNode->attributes()->FILEID])) {
+                        $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUse[(string) $fileNode->attributes()->FILEID]] = (string) $fileNode->attributes()->FILEID;
                     }
                 }
                 // Build the physical elements' array from the physical structMap node.
@@ -915,9 +917,29 @@ final class MetsDocument extends Doc
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['contentIds'] = (isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '');
                     // Get the file representations from fileSec node.
                     foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                        $fileNode = isset($fptr->area)? $fptr->area : $fptr;
+
                         // Check if file has valid @USE attribute.
-                        if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                            $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+                        if (!empty($fileUse[(string) $fileNode->attributes()->FILEID])) {
+                                $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['files'][$fileUse[(string) $fileNode->attributes()->FILEID]] = (string) $fileNode->attributes()->FILEID;
+                        }
+                    }
+
+                    // Get track info wtih begin end extent time for later assignment with musical
+                    if ((string) $elementNode['TYPE'] === 'track') {
+                        foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                            if (isset($fptr->area) &&  ((string) $fptr->area->attributes()->BETYPE === 'TIME')) {
+                                // Check if file has valid @USE attribute.
+                                if (!empty($fileUse[(string) $fptr->area->attributes()->FILEID])) {
+                                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['tracks'][$fileUse[(string) $fptr->area->attributes()->FILEID]] = [
+                                        'fileid'  => (string)$fptr->area->attributes()->FILEID,
+                                        'begin'   => (string)$fptr->area->attributes()->BEGIN,
+                                        'betype'  => (string)$fptr->area->attributes()->BETYPE,
+                                        'extent'  => (string)$fptr->area->attributes()->EXTENT,
+                                        'exttype' => (string)$fptr->area->attributes()->EXTTYPE,
+                                    ];
+                                }
+                            }
                         }
                     }
                 }
@@ -1126,6 +1148,7 @@ final class MetsDocument extends Doc
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
+
             // Does the document have a structMap node of type "MUSICAL"?
             $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measurement"]/mets:div');
             if (!empty($elementNodes)) {
@@ -1154,6 +1177,11 @@ final class MetsDocument extends Doc
                             'type'   => (string)$fptr->area->attributes()->BETYPE,
                         ];
                     }
+
+                    if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
+                        $this->musicalStructureInfo[$musicalSeq[0]]['begin'] = (string)$fptr->area->attributes()->BEGIN;
+                        $this->musicalStructureInfo[$musicalSeq[0]]['end'] = (string)$fptr->area->attributes()->END;
+                    }
                 }
 
                 // Build the physical elements' array from the physical structMap node.
@@ -1178,14 +1206,50 @@ final class MetsDocument extends Doc
                                 'type'   => (string)$fptr->area->attributes()->BETYPE,
                             ];
                         }
+
+                        if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
+                            $this->musicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['begin'] = (string)$fptr->area->attributes()->BEGIN;
+                            $this->musicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['end'] = (string)$fptr->area->attributes()->END;
+                        }
                     }
                 }
                 // Sort array by keys (= @ORDER).
                 if (ksort($elements)) {
                     // Set total number of measures.
                     $this->numMeasures = count($elements);
+
                     // Merge and re-index the array to get nice numeric indexes.
-                    $this->musicalStructure = array_merge($musicalSeq, $elements);
+                    $measures = array_merge($musicalSeq, $elements);
+
+                    // Get the track/page info (begin and extent time).
+                    $this->musicalStructure = [];
+                    $tracks = [];
+                    foreach ($this->physicalStructureInfo as $physicalId => $page) {
+                        if (isset($page['tracks'])) {
+                            $tracks[$physicalId] = reset($page['tracks']);
+                        }
+                    }
+
+                    // Build final musicalStructure: assign pages to measures.
+                    foreach ($measures as $order => $measureId) {
+                        if ($order > 0) {
+                            $measureBegin = new \DateTime($this->musicalStructureInfo[$measureId]['begin']);
+                            //$measureEnd = new \DateTime($this->musicalStructureInfo[$measureId]['end']);
+
+                            foreach ($tracks as $physicalId => $trackInfo) {
+                                $trackBegin = new \DateTime($trackInfo['begin']);
+                                $trackEnd = new \DateTime($trackInfo['extent']);
+
+                                if ($measureBegin >= $trackBegin && $measureBegin < $trackEnd) {
+                                    $this->musicalStructure[$order] = [
+                                        'measureid' => $measureId,
+                                        'physicalid' => $physicalId,
+                                        'page' => array_search($physicalId, $this->physicalStructure)
+                                    ];
+                                }
+                            }
+                        }
+                    }
                 }
             }
             $this->musicalStructureLoaded = true;
