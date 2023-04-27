@@ -377,8 +377,8 @@ class MetadataController extends AbstractController
             // Get current structure's @ID.
             $ids = [];
             if (!empty($this->doc->physicalStructure[$this->requestData['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->requestData['page']]])) {
-                foreach ($this->doc->smLinks['p2l'][$doc->physicalStructure[$this->requestData['page']]] as $logId) {
-                    $count = $doc->getStructureDepth($logId);
+                foreach ($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->requestData['page']]] as $logId) {
+                    $count = $this->doc->getStructureDepth($logId);
                     $ids[$count][] = $logId;
                 }
             }
