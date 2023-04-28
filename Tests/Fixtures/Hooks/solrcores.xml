@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<dataset>
+    <tx_dlf_solrcores>
+        <uid>1</uid>
+        <pid>20000</pid>
+        <tstamp>1631254345</tstamp>
+        <crdate>1631186030</crdate>
+        <cruser_id>1</cruser_id>
+        <deleted>0</deleted>
+        <label>Controller Solr Testing Core</label>
+        <index_name /> <!-- Set in test -->
+    </tx_dlf_solrcores>
+</dataset>
