@@ -172,11 +172,9 @@ class BaseCommand extends Command
      */
     protected function saveToDatabase(Document $document)
     {
-        $success = false;
-
         $doc = $document->getDoc();
         if ($doc === null) {
-            return $success;
+            return false;
         }
         $doc->cPid = $this->storagePid;
 
@@ -260,7 +258,7 @@ class BaseCommand extends Command
 
         // set volume data
         $document->setVolume($metadata['volume'][0] ? : '');
-        $document->setVolume_Sorting($metadata['volume_sorting'][0] ? : '');
+        $document->setVolumeSorting($metadata['volume_sorting'][0] ? : '');
 
         // Get UID of parent document.
         if ($document->getDocumentFormat() === 'METS') {
@@ -278,9 +276,7 @@ class BaseCommand extends Command
         $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
-        $success = true;
-
-        return $success;
+        return true;
     }
 
     /**
