@@ -890,6 +890,47 @@ abstract class Doc
     }
 
     /**
+     * Initialize metadata array with empty values.
+     *
+     * @access protected
+     *
+     * @param string $format of the document eg. METS
+     *
+     * @return array
+     */
+    protected function initializeMetadata($format) {
+        return [
+            'title' => [],
+            'title_sorting' => [],
+            'description' => [],
+            'author' => [],
+            'holder' => [],
+            'place' => [],
+            'year' => [],
+            'prod_id' => [],
+            'record_id' => [],
+            'opac_id' => [],
+            'union_id' => [],
+            'urn' => [],
+            'purl' => [],
+            'type' => [],
+            'volume' => [],
+            'volume_sorting' => [],
+            'date' => [],
+            'license' => [],
+            'terms' => [],
+            'restrictions' => [],
+            'out_of_print' => [],
+            'rights_info' => [],
+            'collection' => [],
+            'owner' => [],
+            'mets_label' => [],
+            'mets_orderlabel' => [],
+            'document_format' => [$format]
+        ];
+    }
+
+    /**
      * This returns $this->cPid via __get()
      *
      * @access protected

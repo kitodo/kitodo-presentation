@@ -442,36 +442,9 @@ final class MetsDocument extends Doc
         ) {
             return $this->metadataArray[$id];
         }
-        // Initialize metadata array with empty values.
-        $metadata = [
-            'title' => [],
-            'title_sorting' => [],
-            'description' => [],
-            'author' => [],
-            'holder' => [],
-            'place' => [],
-            'year' => [],
-            'prod_id' => [],
-            'record_id' => [],
-            'opac_id' => [],
-            'union_id' => [],
-            'urn' => [],
-            'purl' => [],
-            'type' => [],
-            'volume' => [],
-            'volume_sorting' => [],
-            'date' => [],
-            'license' => [],
-            'terms' => [],
-            'restrictions' => [],
-            'out_of_print' => [],
-            'rights_info' => [],
-            'collection' => [],
-            'owner' => [],
-            'mets_label' => [],
-            'mets_orderlabel' => [],
-            'document_format' => ['METS'],
-        ];
+
+        $metadata = $this->initializeMetadata('METS');
+
         $mdIds = $this->getMetadataIds($id);
         if (empty($mdIds)) {
             // There is no metadata section for this structure node.
