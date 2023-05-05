@@ -22,6 +22,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 
 class MetadataRepository extends Repository
 {
+    const TABLE = 'tx_dlf_metadata';
+
     /**
      * Finds all collection for the given settings
      *
@@ -69,21 +71,21 @@ class MetadataRepository extends Repository
     {
         $query = $this->getQueryBuilder()
             ->select(
-                'tx_dlf_metadata.index_name AS index_name',
+                self::TABLE . '.index_name AS index_name',
                 'tx_dlf_metadataformat_joins.xpath AS xpath',
                 'tx_dlf_metadataformat_joins.xpath_sorting AS xpath_sorting',
-                'tx_dlf_metadata.is_sortable AS is_sortable',
-                'tx_dlf_metadata.default_value AS default_value',
-                'tx_dlf_metadata.format AS format'
+                self::TABLE . '.is_sortable AS is_sortable',
+                self::TABLE . '.default_value AS default_value',
+                self::TABLE . '.format AS format'
             )
-            ->from('tx_dlf_metadata')
+            ->from(self::TABLE)
             ->innerJoin(
-                'tx_dlf_metadata',
+                self::TABLE,
                 'tx_dlf_metadataformat',
                 'tx_dlf_metadataformat_joins',
                 $queryBuilder->expr()->eq(
                     'tx_dlf_metadataformat_joins.parent_id',
-                    'tx_dlf_metadata.uid'
+                    self::TABLE . '.uid'
                 )
             )
             ->innerJoin(
@@ -96,8 +98,8 @@ class MetadataRepository extends Repository
                 )
             )
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $pid),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
+                $queryBuilder->expr()->eq(self::TABLE . '.pid', $pid),
+                $queryBuilder->expr()->eq(self::TABLE . '.l18n_parent', 0),
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', $pid),
                 $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($type))
             );
@@ -115,17 +117,17 @@ class MetadataRepository extends Repository
     {
         $query = $this->getQueryBuilder()
             ->select(
-                'tx_dlf_metadata.index_name AS index_name',
-                'tx_dlf_metadata.is_sortable AS is_sortable',
-                'tx_dlf_metadata.default_value AS default_value',
-                'tx_dlf_metadata.format AS format'
+                self::TABLE . '.index_name AS index_name',
+                self::TABLE . '.is_sortable AS is_sortable',
+                self::TABLE . '.default_value AS default_value',
+                self::TABLE . '.format AS format'
             )
-            ->from('tx_dlf_metadata')
+            ->from(self::TABLE)
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $pid),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0),
-                $queryBuilder->expr()->neq('tx_dlf_metadata.default_value', $queryBuilder->createNamedParameter(''))
+                $queryBuilder->expr()->eq(self::TABLE . '.pid', $pid),
+                $queryBuilder->expr()->eq(self::TABLE . '.l18n_parent', 0),
+                $queryBuilder->expr()->eq(self::TABLE . '.format', 0),
+                $queryBuilder->expr()->neq(self::TABLE . '.default_value', $queryBuilder->createNamedParameter(''))
             );
 
         return $query->execute()->fetchAll();
@@ -150,20 +152,20 @@ class MetadataRepository extends Repository
          */
          $query = $this->getQueryBuilder()
             ->select('tx_dlf_metadataformat.xpath AS querypath')
-            ->from('tx_dlf_metadata')
+            ->from(self::TABLE)
             ->from('tx_dlf_metadataformat')
             ->from('tx_dlf_formats')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $pid),
+                $queryBuilder->expr()->eq(self::TABLE . '.pid', $pid),
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', $pid),
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
+                        $queryBuilder->expr()->eq(self::TABLE . '.uid', 'tx_dlf_metadataformat.parent_id'),
                         $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.index_name', $queryBuilder->createNamedParameter('record_id')),
+                        $queryBuilder->expr()->eq(self::TABLE . '.index_name', $queryBuilder->createNamedParameter('record_id')),
                         $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($iiifVersion))
                     ),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
+                    $queryBuilder->expr()->eq(self::TABLE . '.format', 0)
                 )
             );
 
@@ -182,26 +184,26 @@ class MetadataRepository extends Repository
     {
         $query = $this->getQueryBuilder()
             ->select(
-                'tx_dlf_metadata.index_name AS index_name',
-                'tx_dlf_metadataformat.xpath AS xpath',
+                self::TABLE . '.index_name AS index_name',
+                self::TABLE . '.xpath AS xpath',
                 'tx_dlf_metadataformat.xpath_sorting AS xpath_sorting',
-                'tx_dlf_metadata.is_sortable AS is_sortable',
-                'tx_dlf_metadata.default_value AS default_value',
-                'tx_dlf_metadata.format AS format'
+                self::TABLE . '.is_sortable AS is_sortable',
+                self::TABLE . '.default_value AS default_value',
+                self::TABLE . '.format AS format'
             )
-            ->from('tx_dlf_metadata')
+            ->from(self::TABLE)
             ->from('tx_dlf_metadataformat')
             ->from('tx_dlf_formats')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $pid),
+                $queryBuilder->expr()->eq(self::TABLE . '.pid', $pid),
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', $pid),
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
+                        $queryBuilder->expr()->eq(self::TABLE . '.uid', 'tx_dlf_metadataformat.parent_id'),
                         $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
                         $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($iiifVersion))
                     ),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
+                    $queryBuilder->expr()->eq(self::TABLE . '.format', 0)
                 )
             );
         
@@ -215,7 +217,7 @@ class MetadataRepository extends Repository
      */
     private function getQueryBuilder() : QueryBuilder {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
+            ->getQueryBuilderForTable(self::TABLE);
 
         // Get hidden records, too.
         $queryBuilder
