@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -313,6 +315,32 @@ abstract class Doc
      * @access protected
      */
     protected $xml;
+
+    /**
+     * @var MetadataRepository
+     */
+    protected $metadataRepository;
+
+    /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
+     * @param MetadataRepository $metadataRepository
+     */
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    {
+        $this->metadataRepository = $metadataRepository;
+    }
+
+    /**
+     * @param StructureRepository $structureRepository
+     */
+    public function injectStructureRepository(StructureRepository $structureRepository)
+    {
+        $this->structureRepository = $structureRepository;
+    }
 
     /**
      * This clears the static registry to prevent memory exhaustion

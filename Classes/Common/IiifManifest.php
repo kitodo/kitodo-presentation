@@ -13,9 +13,8 @@
 namespace Kitodo\Dlf\Common;
 
 use Flow\JSONPath\JSONPath;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
@@ -115,45 +114,27 @@ final class IiifManifest extends Doc
     public static $extKey = 'dlf';
 
     /**
+     * @var MetadataRepository
+     */
+    protected $metadataRepository;
+
+    /**
+     * @param MetadataRepository $metadataRepository
+     */
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    {
+        $this->metadataRepository = $metadataRepository;
+    }
+
+    /**
      * {@inheritDoc}
      * @see Doc::establishRecordId()
      */
     protected function establishRecordId($pid)
     {
         if ($this->iiif !== null) {
-            /*
-             *  FIXME This will not consistently work because we can not be sure to have the pid at hand. It may miss
-             *  if the plugin that actually loads the manifest allows content from other pages.
-             *  Up until now the cPid is only set after the document has been initialized. We need it before to
-             *  check the configuration.
-             *  TODO Saving / indexing should still work - check!
-             */
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-            // Get hidden records, too.
-            $queryBuilder
-                ->getRestrictions()
-                ->removeByType(HiddenRestriction::class);
-            $result = $queryBuilder
-                ->select('tx_dlf_metadataformat.xpath AS querypath')
-                ->from('tx_dlf_metadata')
-                ->from('tx_dlf_metadataformat')
-                ->from('tx_dlf_formats')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
-                    $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($pid)),
-                    $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->andX(
-                            $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
-                            $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
-                            $queryBuilder->expr()->eq('tx_dlf_metadata.index_name', $queryBuilder->createNamedParameter('record_id')),
-                            $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($this->getIiifVersion()))
-                        ),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
-                    )
-                )
-                ->execute();
-            while ($resArray = $result->fetchAssociative()) {
+            $allResults = $this->metadataRepository->findQueryPath(intval($pid), $this->getIiifVersion());
+            foreach ($allResults as $resArray) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
                     try {
@@ -617,40 +598,9 @@ final class IiifManifest extends Doc
         }
 
         $metadata = $this->initializeMetadata('IIIF');
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_metadata.index_name AS index_name',
-                'tx_dlf_metadataformat.xpath AS xpath',
-                'tx_dlf_metadataformat.xpath_sorting AS xpath_sorting',
-                'tx_dlf_metadata.is_sortable AS is_sortable',
-                'tx_dlf_metadata.default_value AS default_value',
-                'tx_dlf_metadata.format AS format'
-            )
-            ->from('tx_dlf_metadata')
-            ->from('tx_dlf_metadataformat')
-            ->from('tx_dlf_formats')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($cPid)),
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
-                        $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
-                        $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($this->getIiifVersion()))
-                    ),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
-                )
-            )
-            ->execute();
+        $allResults = $this->metadataRepository->findForIiif(intval($cPid), $this->getIiifVersion());
         $iiifResource = $this->iiif->getContainedResourceById($id);
-        while ($resArray = $result->fetchAssociative()) {
+        foreach ($allResults as $resArray) {
             // Set metadata field's value(s).
             if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != null) {
                 if (is_string($values)) {

@@ -12,13 +12,13 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
-use TYPO3\CMS\Core\Log\LogManager;
 
 /**
  * MetsDocument class for the 'dlf' extension.
@@ -165,6 +165,32 @@ final class MetsDocument extends Doc
      * @access protected
      */
     protected $parentHref;
+
+    /**
+     * @var MetadataRepository
+     */
+    protected $metadataRepository;
+
+    /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
+     * @param MetadataRepository $metadataRepository
+     */
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    {
+        $this->metadataRepository = $metadataRepository;
+    }
+
+    /**
+     * @param StructureRepository $structureRepository
+     */
+    public function injectStructureRepository(StructureRepository $structureRepository)
+    {
+        $this->structureRepository = $structureRepository;
+    }
 
     /**
      * This adds metadata from METS structural map to metadata array.
@@ -492,73 +518,12 @@ final class MetsDocument extends Doc
                 // Continue searching for supported metadata with next @DMDID.
                 continue;
             }
+            $this->initializeRepositories();
             // Get the additional metadata from database.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-            // Get hidden records, too.
-            $queryBuilder
-                ->getRestrictions()
-                ->removeByType(HiddenRestriction::class);
-            // Get all metadata with configured xpath and applicable format first.
-            $resultWithFormat = $queryBuilder
-                ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadataformat_joins.xpath AS xpath',
-                    'tx_dlf_metadataformat_joins.xpath_sorting AS xpath_sorting',
-                    'tx_dlf_metadata.is_sortable AS is_sortable',
-                    'tx_dlf_metadata.default_value AS default_value',
-                    'tx_dlf_metadata.format AS format'
-                )
-                ->from('tx_dlf_metadata')
-                ->innerJoin(
-                    'tx_dlf_metadata',
-                    'tx_dlf_metadataformat',
-                    'tx_dlf_metadataformat_joins',
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_metadataformat_joins.parent_id',
-                        'tx_dlf_metadata.uid'
-                    )
-                )
-                ->innerJoin(
-                    'tx_dlf_metadataformat_joins',
-                    'tx_dlf_formats',
-                    'tx_dlf_formats_joins',
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_formats_joins.uid',
-                        'tx_dlf_metadataformat_joins.encoded'
-                    )
-                )
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                    $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', intval($cPid)),
-                    $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
-                )
-                ->execute();
-            // Get all metadata without a format, but with a default value next.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-            // Get hidden records, too.
-            $queryBuilder
-                ->getRestrictions()
-                ->removeByType(HiddenRestriction::class);
-            $resultWithoutFormat = $queryBuilder
-                ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.is_sortable AS is_sortable',
-                    'tx_dlf_metadata.default_value AS default_value',
-                    'tx_dlf_metadata.format AS format'
-                )
-                ->from('tx_dlf_metadata')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0),
-                    $queryBuilder->expr()->neq('tx_dlf_metadata.default_value', $queryBuilder->createNamedParameter(''))
-                )
-                ->execute();
+            $resultWithFormat = $this->metadataRepository->findWithFormat(intval($cPid), $this->mdSec[$dmdId]['type']);
+            $resultWithoutFormat = $this->metadataRepository->findWithoutFormat(intval($cPid));
             // Merge both result sets.
-            $allResults = array_merge($resultWithFormat->fetchAll(), $resultWithoutFormat->fetchAll());
+            $allResults = array_merge($resultWithFormat, $resultWithoutFormat);
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
@@ -1103,22 +1068,7 @@ final class MetsDocument extends Doc
             $strctId = $this->_getToplevelId();
             $metadata = $this->getTitledata($cPid);
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_structures');
-
-            // Get structure element to get thumbnail from.
-            $result = $queryBuilder
-                ->select('tx_dlf_structures.thumbnail AS thumbnail')
-                ->from('tx_dlf_structures')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($cPid)),
-                    $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
-                    Helper::whereExpression('tx_dlf_structures')
-                )
-                ->setMaxResults(1)
-                ->execute();
-
-            $allResults = $result->fetchAll();
+            $allResults = $this->structureRepository->findThumbnail(intval($cPid), $metadata['type'][0]);
 
             if (count($allResults) == 1) {
                 $resArray = $allResults[0];
@@ -1254,6 +1204,16 @@ final class MetsDocument extends Doc
         } else {
             $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
             $this->logger->error('Could not load XML after deserialization');
+        }
+    }
+    
+    private function initializeRepositories() {
+        if (empty($this->metadataRepository)) {
+            $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
+        }
+
+        if (empty($this->structureRepository)) {
+            $this->structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
         }
     }
 }
