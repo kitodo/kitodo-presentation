@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
@@ -79,9 +79,39 @@ class BaseCommand extends Command
     protected $extConf;
 
     /**
+     * @param CollectionRepository $collectionRepository
+     */
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    {
+        $this->collectionRepository = $collectionRepository;
+    }
+
+    /**
+     * @param DocumentRepository $documentRepository
+     */
+    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    {
+        $this->documentRepository = $documentRepository;
+    }
+
+    /**
+     * @param LibraryRepository $libraryRepository
+     */
+    public function injectLibraryRepository(LibraryRepository $libraryRepository)
+    {
+        $this->libraryRepository = $libraryRepository;
+    }
+
+    /**
+     * @param StructureRepository $structureRepository
+     */
+    public function injectStructureRepository(StructureRepository $structureRepository)
+    {
+        $this->structureRepository = $structureRepository;
+    }
+
+    /**
      * Initialize the extbase repository based on the given storagePid.
-     *
-     * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependency Injection.
      *
      * @param int $storagePid The storage pid
      *
@@ -91,27 +121,25 @@ class BaseCommand extends Command
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
             $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-            $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+            $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
             $configurationManager->setConfiguration($frameworkConfiguration);
 
-            // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-            $this->collectionRepository = $objectManager->get(CollectionRepository::class);
-            $this->documentRepository = $objectManager->get(DocumentRepository::class);
-            $this->libraryRepository = $objectManager->get(LibraryRepository::class);
-            $this->structureRepository = $objectManager->get(StructureRepository::class);
+            $this->collectionRepository = GeneralUtility::makeInstance(CollectionRepository::class);
+            $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+            $this->libraryRepository = GeneralUtility::makeInstance(LibraryRepository::class);
+            $this->structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
 
             // Get extension configuration.
             $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-        } else {
-            return false;
-        }
-        $this->storagePid = MathUtility::forceIntegerInRange((int) $storagePid, 0);
 
-        return true;
+            $this->storagePid = MathUtility::forceIntegerInRange((int) $storagePid, 0);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
