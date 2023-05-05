@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -79,15 +80,7 @@ class MetadataRepository extends Repository
      */
     public function findWithFormat($pid, $type)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-
-        $query = $queryBuilder
+        $query = $this->getQueryBuilder()
             ->select(
                 'tx_dlf_metadata.index_name AS index_name',
                 'tx_dlf_metadataformat_joins.xpath AS xpath',
@@ -133,15 +126,7 @@ class MetadataRepository extends Repository
      */
     public function findWithoutFormat($pid)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-
-        $query = $queryBuilder
+        $query = $this->getQueryBuilder()
             ->select(
                 'tx_dlf_metadata.index_name AS index_name',
                 'tx_dlf_metadata.is_sortable AS is_sortable',
@@ -176,15 +161,7 @@ class MetadataRepository extends Repository
          *  check the configuration.
          *  TODO Saving / indexing should still work - check!
          */
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-
-        $query = $queryBuilder
+         $query = $this->getQueryBuilder()
             ->select('tx_dlf_metadataformat.xpath AS querypath')
             ->from('tx_dlf_metadata')
             ->from('tx_dlf_metadataformat')
@@ -216,15 +193,7 @@ class MetadataRepository extends Repository
      */
     public function findForIiif($pid, $iiifVersion)
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-
-        $query = $queryBuilder
+        $query = $this->getQueryBuilder()
             ->select(
                 'tx_dlf_metadata.index_name AS index_name',
                 'tx_dlf_metadataformat.xpath AS xpath',
@@ -250,5 +219,22 @@ class MetadataRepository extends Repository
             );
 
         return $query->execute()->fetchAll();
+    }
+
+    /**
+     * Get query builder for tx_dlf_metadata table.
+     *
+     * @return QueryBuilder
+     */
+    private function getQueryBuilder() : QueryBuilder {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_metadata');
+
+        // Get hidden records, too.
+        $queryBuilder
+            ->getRestrictions()
+            ->removeByType(HiddenRestriction::class);
+
+        return $queryBuilder;
     }
 }
