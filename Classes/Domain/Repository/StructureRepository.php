@@ -12,7 +12,37 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+
 class StructureRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
+    /**
+     * Finds structure element to get thumbnail from.
+     *
+     * @param int $cPid
+     * @param string $type
+     *
+     * @return array
+     */
+    public function findThumbnail($cPid, $type)
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_structures');
 
+        $query = $queryBuilder
+            ->select('tx_dlf_structures.thumbnail AS thumbnail')
+            ->from('tx_dlf_structures')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_structures.pid', $cPid),
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_structures.index_name',
+                    $queryBuilder->expr()->literal($type)
+                ),
+                Helper::whereExpression('tx_dlf_structures')
+            )
+            ->setMaxResults(1);
+
+        return $query->execute()->fetchAll();
+    }
 }
