@@ -17,6 +17,8 @@ use DOMElement;
 use DOMNode;
 use DOMNodeList;
 use DOMXPath;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Hooks\KitodoProductionHacks;
 use SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -181,6 +183,32 @@ final class MetsDocument extends AbstractDocument
      * @access protected
      */
     protected int $numMeasures;
+
+    /**
+     * @var MetadataRepository
+     */
+    protected $metadataRepository;
+
+    /**
+     * @var StructureRepository
+     */
+    protected $structureRepository;
+
+    /**
+     * @param MetadataRepository $metadataRepository
+     */
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    {
+        $this->metadataRepository = $metadataRepository;
+    }
+
+    /**
+     * @param StructureRepository $structureRepository
+     */
+    public function injectStructureRepository(StructureRepository $structureRepository)
+    {
+        $this->structureRepository = $structureRepository;
+    }
 
     /**
      * This adds metadata from METS structural map to metadata array.
@@ -1632,22 +1660,7 @@ final class MetsDocument extends AbstractDocument
             $strctId = $this->getToplevelId();
             $metadata = $this->getToplevelMetadata();
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_structures');
-
-            // Get structure element to get thumbnail from.
-            $result = $queryBuilder
-                ->select('thumbnail')
-                ->from('tx_dlf_structures')
-                ->where(
-                    $queryBuilder->expr()->eq('pid', $this->configPid),
-                    $queryBuilder->expr()->eq('index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
-                    Helper::whereExpression('tx_dlf_structures')
-                )
-                ->setMaxResults(1)
-                ->executeQUery();
-
-            $allResults = $result->fetchAllAssociative();
+            $allResults = $this->structureRepository->findThumbnail(intval($this->configPid), $metadata['type'][0]);
 
             if (count($allResults) == 1) {
                 $resArray = $allResults[0];
