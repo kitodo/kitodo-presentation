@@ -374,9 +374,6 @@ class MetadataController extends AbstractController
             }
         } elseif (!empty($value)) {
           $metadata[$i][$name][0] = $metadata[$i][$name][0];
-        } elseif (!empty($metadataValue)) {
-          // TODO: Might need to be extended for the case of two or more metadata nodes with subentries.
-          $metadata[$i][$name][0] = $metadata[$i][$name][0];
         }
     }
 
