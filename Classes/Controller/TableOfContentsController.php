@@ -147,7 +147,7 @@ class TableOfContentsController extends AbstractController
 
         $entryArray = [];
         // Set "title", "volume", "type" and "pagination" from $entry array.
-        $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
+        $entryArray['title'] = $this->setTitle($entry);
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
         $entryArray['type'] = $this->getTranslatedType($entry['type']);
@@ -156,9 +156,6 @@ class TableOfContentsController extends AbstractController
         $entryArray['doNotLinkIt'] = 1;
         $entryArray['ITEM_STATE'] = 'NO';
 
-        if ($entry['type'] == 'volume') {
-            $entryArray['title'] = $this->getTranslatedType($entry['type']) . ' ' . $entry['volume'];
-        }
         // Build menu links based on the $entry['points'] array.
         if (
             !empty($entry['points'])
@@ -265,6 +262,24 @@ class TableOfContentsController extends AbstractController
      */
     private function getTranslatedType($type) {
         return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
+    }
+
+    /**
+     * Set title from entry.
+     *
+     * @param array $entry
+     * @return string
+     */
+    private function setTitle($entry) {
+        if ($entry['type'] == 'issue') {
+            return $this->getTranslatedType($entry['type']) . ' ' . $entry['label'];
+        }
+
+        if ($entry['type'] == 'volume') {
+            return $this->getTranslatedType($entry['type']) . ' ' . $entry['volume'];
+        }
+
+        return !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
     }
 
     /**
