@@ -172,11 +172,9 @@ class BaseCommand extends Command
      */
     protected function saveToDatabase(Document $document)
     {
-        $success = false;
-
         $doc = $document->getDoc();
         if ($doc === null) {
-            return $success;
+            return false;
         }
         $doc->cPid = $this->storagePid;
 
@@ -278,9 +276,7 @@ class BaseCommand extends Command
         $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
-        $success = true;
-
-        return $success;
+        return true;
     }
 
     /**
