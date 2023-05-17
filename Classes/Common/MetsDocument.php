@@ -706,7 +706,7 @@ final class MetsDocument extends Doc
         // Set date to empty string if not present.
         if (empty($metadata['date'][0])) {
             $metadata['date'][0] = '';
-        }var_dump($metadata);
+        }
         // Files are not expected to reference a dmdSec
         if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
             return $metadata;
