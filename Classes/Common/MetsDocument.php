@@ -634,7 +634,7 @@ final class MetsDocument extends Doc
                 ->execute();
             $subentriesResult = $subentries->fetchAll();
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
-            $domNode = dom_import_simplexml($this->dmdSec[$dmdId]['xml']);
+            $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
             $this->registerNamespaces($domXPath);
             // OK, now make the XPath queries.
@@ -658,7 +658,7 @@ final class MetsDocument extends Doc
                             }
                         }
                     } elseif (!($values instanceof \DOMNodeList)) {
-                        $metadata[$resArray['index_name']] = [trim((string)$values->nodeValue)];
+                        $metadata[$resArray['index_name']] = [trim((string)$values)];
                     }
                 }
                 // Set default value if applicable.
@@ -692,14 +692,26 @@ final class MetsDocument extends Doc
                     }
                 }
             }
-            // Extract metadata only from first supported dmdSec.
-            $hasSupportedMetadata = true;
-            break;
+            $hasMetadataSection[$mdSectionType] = true;
         }
-        if ($hasSupportedMetadata) {
+        // Set title to empty string if not present.
+        if (empty($metadata['title'][0])) {
+            $metadata['title'][0] = '';
+            $metadata['title_sorting'][0] = '';
+        }
+        // Set title_sorting to title as default.
+        if (empty($metadata['title_sorting'][0])) {
+            $metadata['title_sorting'][0] = $metadata['title'][0];
+        }
+        // Set date to empty string if not present.
+        if (empty($metadata['date'][0])) {
+            $metadata['date'][0] = '';
+        }var_dump($metadata);
+        // Files are not expected to reference a dmdSec
+        if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
             return $metadata;
         } else {
-            $this->logger->warning('No supported metadata found for logical structure with @ID "' . $id . '"');
+            $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
             return [];
         }
     }
