@@ -92,7 +92,7 @@ class ToolboxController extends AbstractController
                     $this->renderToolByName('renderSearchInDocumentTool');
                     break;
                 default:
-                    $this->logger->warn('Incorrect tool configuration: "' . $this->settings['tool'] . '". This tool does not exist.');
+                    $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tool'] . '". This tool does not exist.');
             }
         }
     }
