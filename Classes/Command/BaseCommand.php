@@ -306,36 +306,29 @@ class BaseCommand extends Command
     {
         $doc = $document->getDoc();
 
-        if ($doc !== null) {
-            // Same as MetsDocument::parentHref (TODO: Use it)
-            // Get the closest ancestor of the current document which has a MPTR child.
-            $parentMptr = $doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $doc->toplevelId . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
-            if (!empty($parentMptr)) {
-                $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+        if ($doc !== null && !empty($doc->parentHref)) {
+            // find document object by record_id of parent
+            $parentDoc = Doc::getInstance($doc->parentHref, ['storagePid' => $this->storagePid]);
 
-                // find document object by record_id of parent
-                $parentDoc = Doc::getInstance($parentLocation, ['storagePid' => $this->storagePid]);
+            if ($parentDoc->recordId) {
+                $parentDocument = $this->documentRepository->findOneByRecordId($parentDoc->recordId);
 
-                if ($parentDoc->recordId) {
-                    $parentDocument = $this->documentRepository->findOneByRecordId($parentDoc->recordId);
+                if ($parentDocument === null) {
+                    // create new Document object
+                    $parentDocument = GeneralUtility::makeInstance(Document::class);
+                }
 
-                    if ($parentDocument === null) {
-                        // create new Document object
-                        $parentDocument = GeneralUtility::makeInstance(Document::class);
-                    }
+                $parentDocument->setOwner($this->owner);
+                $parentDocument->setDoc($parentDoc);
+                $parentDocument->setLocation($doc->parentHref);
+                $parentDocument->setSolrcore($document->getSolrcore());
 
-                    $parentDocument->setOwner($this->owner);
-                    $parentDocument->setDoc($parentDoc);
-                    $parentDocument->setLocation($parentLocation);
-                    $parentDocument->setSolrcore($document->getSolrcore());
+                $success = $this->saveToDatabase($parentDocument);
 
-                    $success = $this->saveToDatabase($parentDocument);
-
-                    if ($success === true) {
-                        // add to index
-                        Indexer::add($parentDocument, $this->documentRepository);
-                        return $parentDocument->getUid();
-                    }
+                if ($success === true) {
+                    // add to index
+                    Indexer::add($parentDocument);
+                    return $parentDocument->getUid();
                 }
             }
         }
