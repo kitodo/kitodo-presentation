@@ -701,6 +701,20 @@ Search
    :Default:
 
  - :Property:
+       fulltextPreselect
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
+       datesearch
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
        solrcore
    :Data Type:
        :ref:`t3tsref:data-type-integer`
