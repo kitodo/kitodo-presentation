@@ -42,16 +42,12 @@ class TableOfContentsController extends AbstractController
     public function mainAction()
     {
         // Load current document.
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
+            $this->setPage();
 
             $this->view->assign('toc', $this->makeMenuArray());
         }
@@ -65,16 +61,6 @@ class TableOfContentsController extends AbstractController
      */
     protected function makeMenuArray()
     {
-        // Set default values for page if not set.
-        // $this->requestData['page'] may be integer or string (physical structure @ID)
-        if (
-            (int) $this->requestData['page'] > 0
-            || empty($this->requestData['page'])
-        ) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-        } else {
-            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-        }
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
@@ -127,6 +113,7 @@ class TableOfContentsController extends AbstractController
                 }
             }
         }
+        $this->sortMenu($menuArray);
         return $menuArray;
     }
 
@@ -149,7 +136,7 @@ class TableOfContentsController extends AbstractController
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
+        $entryArray['type'] = $this->getTranslatedType($entry['type']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
@@ -250,5 +237,40 @@ class TableOfContentsController extends AbstractController
         }
 
         return $entry;
+    }
+
+    /**
+     * Get translated type of entry.
+     * 
+     * @param array $type
+     * @return string
+     */
+    private function getTranslatedType($type) {
+        return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
+    }
+
+    /**
+     * Sort menu by orderlabel - currently implemented for newspaper.
+     * //TODO: add for years
+     * 
+     * @param array &$menu
+     * @return void
+     */
+    private function sortMenu(&$menu) {
+        if ($menu[0]['type'] == $this->getTranslatedType("newspaper")) {
+            $this->sortMenuForNewspapers($menu);
+        }
+    }
+
+    /**
+     * Sort menu years of the newspaper by orderlabel.
+     * 
+     * @param array &$menu
+     * @return void
+     */
+    private function sortMenuForNewspapers(&$menu) {
+        usort($menu[0]['_SUB_MENU'], function ($firstYear, $secondYear) {
+            return $firstYear['orderlabel'] <=> $secondYear['orderlabel'];
+        });
     }
 }
