@@ -113,6 +113,7 @@ class TableOfContentsController extends AbstractController
                 }
             }
         }
+        $this->sortMenu($menuArray);
         return $menuArray;
     }
 
@@ -135,7 +136,7 @@ class TableOfContentsController extends AbstractController
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
+        $entryArray['type'] = $this->getTranslatedType($entry['type']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
@@ -236,5 +237,40 @@ class TableOfContentsController extends AbstractController
         }
 
         return $entry;
+    }
+
+    /**
+     * Get translated type of entry.
+     * 
+     * @param array $type
+     * @return string
+     */
+    private function getTranslatedType($type) {
+        return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
+    }
+
+    /**
+     * Sort menu by orderlabel - currently implemented for newspaper.
+     * //TODO: add for years
+     * 
+     * @param array &$menu
+     * @return void
+     */
+    private function sortMenu(&$menu) {
+        if ($menu[0]['type'] == $this->getTranslatedType("newspaper")) {
+            $this->sortMenuForNewspapers($menu);
+        }
+    }
+
+    /**
+     * Sort menu years of the newspaper by orderlabel.
+     * 
+     * @param array &$menu
+     * @return void
+     */
+    private function sortMenuForNewspapers(&$menu) {
+        usort($menu[0]['_SUB_MENU'], function ($firstYear, $secondYear) {
+            return $firstYear['orderlabel'] <=> $secondYear['orderlabel'];
+        });
     }
 }

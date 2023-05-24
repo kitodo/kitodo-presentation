@@ -64,28 +64,35 @@ class ToolboxController extends AbstractController
         if (!empty($this->settings['tool'])) {
             switch ($this->settings['tool']) {
                 case 'tx_dlf_annotationtool':
+                case 'annotationtool':
                     $this->renderToolByName('renderAnnotationTool');
                     break;
                 case 'tx_dlf_fulltextdownloadtool':
+                case 'fulltextdownloadtool':
                     $this->renderToolByName('renderFulltextDownloadTool');
                     break;
                 case 'tx_dlf_fulltexttool':
+                case 'fulltexttool':
                     $this->renderToolByName('renderFulltextTool');
                     break;
                 case 'tx_dlf_imagedownloadtool':
+                case 'imagedownloadtool':
                     $this->renderToolByName('renderImageDownloadTool');
                     break;
                 case 'tx_dlf_imagemanipulationtool':
+                case 'imagemanipulationtool':
                     $this->renderToolByName('renderImageManipulationTool');
                     break;
                 case 'tx_dlf_pdfdownloadtool':
+                case 'pdfdownloadtool':
                     $this->renderToolByName('renderPdfDownloadTool');
                     break;
                 case 'tx_dlf_searchindocumenttool':
+                case 'searchindocumenttool':
                     $this->renderToolByName('renderSearchInDocumentTool');
                     break;
                 default:
-                    $this->logger->warn('Incorrect tool configuration: "' . $this->settings['tool'] . '". This tool does not exist.');
+                    $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tool'] . '". This tool does not exist.');
             }
         }
     }
