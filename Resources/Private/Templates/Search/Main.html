@@ -99,10 +99,12 @@
     </f:if>
 
     <f:if condition="{settings.datesearch}">
-        <label for="tx-dlf-search-dateFrom"><f:translate key="search.dateFrom"/>: </label>
-        <f:form.textfield type="date" property="dateFrom" value="{lastSearch.dateFrom}" class="tx-dlf-search-datesearch" id="tx-dlf-search-dateFrom"/>
-        <label for="tx-dlf-search-dateTo"><f:translate key="search.dateTo"/>: </label>
-        <f:form.textfield type="date" property="dateTo" value="{lastSearch.dateTo}" class="tx-dlf-search-datesearch" id="tx-dlf-search-dateTo"/>
+        <div class="tx-dlf-search-date">
+            <label for="tx-dlf-search-dateFrom"><f:translate key="search.dateFrom"/>: </label>
+            <f:form.textfield type="date" property="dateFrom" value="{lastSearch.dateFrom}" class="tx-dlf-search-datesearch" id="tx-dlf-search-dateFrom"/>
+            <label for="tx-dlf-search-dateTo"><f:translate key="search.dateTo"/>: </label>
+            <f:form.textfield type="date" property="dateTo" value="{lastSearch.dateTo}" class="tx-dlf-search-datesearch" id="tx-dlf-search-dateTo"/>
+        </div>
     </f:if>
 
     <f:form.hidden property="orderBy" value="{lastSearch.orderBy}" />
