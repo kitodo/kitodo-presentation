@@ -435,7 +435,11 @@
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.fulltext" approved="yes">
 				<source><![CDATA[Enable full text search?]]></source>
-				<target><![CDATA[Volltext-Suche aktivieren?]]></target>
+				<target><![CDATA[Volltextsuche aktivieren?]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.fulltextPreselect" approved="yes">
+				<source><![CDATA[Preselect full text search?]]></source>
+				<target><![CDATA[Volltextsuche vorauswählen?]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.datesearch" approved="yes">
                 <source><![CDATA[Enable date search?]]></source>
