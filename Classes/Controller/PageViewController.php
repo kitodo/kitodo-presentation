@@ -53,6 +53,8 @@ class PageViewController extends AbstractController
      */
     protected $scores = [];
 
+    protected $measures = [];
+
     /**
      * Holds the current fulltexts' URLs
      *
@@ -110,6 +112,8 @@ class PageViewController extends AbstractController
         }
         $this->scores = $this->getScore($this->requestData['page']);
 
+        $this->measures = $this->getMeasures($this->requestData['page']);
+
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
 
@@ -120,6 +124,25 @@ class PageViewController extends AbstractController
         $this->view->assign('images', $this->images);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $this->requestData['page']);
+    }
+
+    /**
+     * Get all measures from musical struct
+     * @param int $page
+     * @return void
+     */
+    protected function getMeasures(int $page) {
+        $currentPhysId = $this->document->getDoc()->physicalStructure[$page];
+        $measureCoordsFromCurrentSite = [];
+        if ($defaultFileId = $this->document->getDoc()->physicalStructureInfo[$currentPhysId]['files']['DEFAULT']) {
+            $musicalStruct = $this->document->getDoc()->musicalStructureInfo;
+            foreach ($musicalStruct as $measureId => $measureData) {
+                if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
+                    $measureCoordsFromCurrentSite[$measureId] = $measureData['files']['DEFAULT']['coords'];
+                }
+            }
+        }
+        return $measureCoordsFromCurrentSite;
     }
 
     /**
@@ -237,6 +260,7 @@ class PageViewController extends AbstractController
                         fulltexts: ' . json_encode($this->fulltexts) . ',
 						score: ' . json_encode($this->scores) . ',
                         annotationContainers: ' . json_encode($this->annotationContainers) . ',
+                        measureCoords: ' . json_encode($this->measures) . ',
                         useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
                     });
                 }
