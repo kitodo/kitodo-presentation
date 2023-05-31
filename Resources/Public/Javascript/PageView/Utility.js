@@ -198,7 +198,8 @@ dlfUtils.createOlView = function (images) {
     // define view
     var viewParams = {
         projection: proj,
-        center: ol.extent.getCenter(extent),
+        //center: ol.extent.getCenter(extent),
+        center: [0, 0],
         zoom: 1,
         maxZoom: window.DLF_MAX_ZOOM,
         extent,

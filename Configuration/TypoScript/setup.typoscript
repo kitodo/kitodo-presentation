@@ -58,6 +58,7 @@ page {
     kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
 	kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/Javascript/PageView/ScoreControl.js
 	kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/Javascript/PageView/ScoreUtility.js
+    kitodo-pageView-syncControl = EXT:dlf/Resources/Public/Javascript/PageView/SyncControl.js
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
     kitodo-search-suggest = EXT:dlf/Resources/Public/Javascript/Search/Suggester.js

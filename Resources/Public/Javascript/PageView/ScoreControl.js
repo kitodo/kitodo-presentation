@@ -42,7 +42,6 @@ dlfScoreUtil.fetchScoreDataFromServer = function(url, pagebeginning) {
 		return result;
 	}
 
-
     $.ajax({ url }).done(function (data, status, jqXHR) {
         try {
             let score = tk.renderData(jqXHR.responseText, verovioSettings);
@@ -83,6 +82,8 @@ dlfScoreUtil.fetchScoreDataFromServer = function(url, pagebeginning) {
             } else {
                 result.resolve(score);
             }
+
+
         } catch (e) {
             console.error(e); // eslint-disable-line no-console
             result.reject();
@@ -164,9 +165,9 @@ function get_pdf_title(tk){
  */
 dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 	const target = document.getElementById('tx-dlf-score');
-
   const map = new ol.Map({
     target: target,
+    // view: tx_dlf_viewer.view,
     view: new ol.View({
       center: [0, 0],
       extent: [-1050, -1485, 1050, 1485],
@@ -182,6 +183,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
       new ol.interaction.DragRotateAndZoom()
     ],
   });
+    this.dlfViewer.scoreMap = map;
 
   const svgContainer = document.createElement('div');
   svgContainer.innerHTML = scoreData;
@@ -453,6 +455,10 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function() {
     $('#tx-dlf-score').hide();
     $('body').removeClass(className);
 
+    if (this.dlfViewer.measureLayer) {
+        this.dlfViewer.measureLayer.setVisible(false);
+    }
+
 };
 
 /**
@@ -477,6 +483,10 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function() {
     $('#tx-dlf-score').show();
     $('body').addClass(className);
 	this.scrollToPagebeginning();
+
+    if (this.dlfViewer.measureLayer) {
+        this.dlfViewer.measureLayer.setVisible(true);
+    }
 };
 
 /**

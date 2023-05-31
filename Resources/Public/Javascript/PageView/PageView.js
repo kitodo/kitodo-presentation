@@ -17,8 +17,10 @@
  * @typedef {ResourceLocator} ImageDesc
  *
  * @typedef {ResourceLocator} FulltextDesc
-*
+ *
  * @typedef {ResourceLocator} ScoreDesc
+ *
+ * @typedef {ResourceLocator} MeasureDesc
  *
  * @typedef {{
  *  div: string;
@@ -26,6 +28,7 @@
  *  fulltexts?: FulltextDesc[] | [];
  *  scores?: ScoreDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
+ *  measureCoords?: MeasureDesc[] | [];
  * }} DlfViewerConfig
  */
 
@@ -70,6 +73,12 @@ var dlfViewer = function(settings){
      * @private
      */
     this.score = dlfUtils.exists(settings.score['url']) ? settings.score['url'] : '';
+
+    this.scoreMap = null;
+
+    this.measureCoords = dlfUtils.exists(settings.measureCoords) ? settings.measureCoords : [];
+
+    this.measureLayer = undefined;
 
     /**
      * Id of pagebeginning in score
@@ -130,6 +139,7 @@ var dlfViewer = function(settings){
      */
     this.imageManipulationControl = undefined;
 
+    this.syncControl = undefined;
     /**
      * @type {Object|undefined}
      * @private
@@ -192,6 +202,12 @@ var dlfViewer = function(settings){
     this.initMagnifier = false;
 
     /**
+     *
+     * @type {Object|null}
+     */
+    this.view = null;
+
+    /**
      * use internal proxy setting
      * @type {boolean}
      * @private
@@ -243,15 +259,107 @@ dlfViewer.prototype.addCustomControls = function() {
     }
 
 	if (this.scoresLoaded_ !== null) {
+        var context = this;
 		const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
-		 this.scoresLoaded_
+        this.scoresLoaded_
+        .then (function (scoreData) {
+        scoreControl.loadScoreData(scoreData, tk);
 
-     .then (function (scoreData) {
-       scoreControl.loadScoreData(scoreData, tk)
+        // Add synchronisation control
+        context.syncControl = new dlfViewerSyncControl(context);
+        context.syncControl.addSyncControl();
+
+
      })
     .catch(function () {
       scoreControl.deactivate();
     });
+
+        //
+        // Show measure boxes if coordinates are available
+        //
+        if (this.measureCoords) {
+            // Add measure layer for facsimile
+            if (!dlfUtils.exists(this.measureLayer)) {
+                this.measureLayer = new ol.layer.Vector({
+                    'source': new ol.source.Vector(),
+                    'style': dlfViewerOLStyles.invisibleStyle,
+                    'id': 'measureLayer'
+                });
+                this.map.addLayer(this.measureLayer);
+            }
+            this.measureLayer.getSource().clear();
+
+            var map = this.map;
+            var measureLayer = this.measureLayer;
+
+            var i = 0, xLow = 0, xHigh = 0, yLow = 0, yHigh = 0;
+
+            $.each(this.measureCoords, function(key, value) {
+                var splitValue = value.split(","),
+                    x1 = splitValue[0],
+                    y1 = splitValue[1],
+                    x2 = splitValue[2],
+                    y2 = splitValue[3],
+                    coordinatesWithoutScale = [[[x1, -y1], [x2, -y1], [x2, -y2], [x1, -y2], [x1, -y1]]],
+                    width = x1 - x2,
+                    height = y1 - y2;
+
+                if (i === 0) {
+                    xLow = x1;
+                    yLow = y1;
+                }
+                xHigh = x2;
+                yHigh = y2;
+
+                var geometry = new ol.geom.Polygon(coordinatesWithoutScale);
+                var feature = new ol.Feature(geometry);
+                feature.setId(key);
+                feature.setProperties({
+                    width,
+                    height,
+                    x1,
+                    y1
+                });
+                measureLayer.getSource().addFeature(feature);
+                i++;
+            });
+
+            let clicked = null;
+            map.on('singleclick', function (evt) {
+                if (clicked !== null) {
+                    clicked.setStyle(undefined);
+                    clicked = null;
+                }
+                map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                    if (feature !== null) {
+                        clicked = feature;
+                        return true;
+                    }
+                });
+            });
+
+            let selected = null
+            map.on('pointermove', function (e) {
+                if (selected !== null) {
+                    selected.setStyle(undefined);
+                    selected = null;
+
+                    if (clicked !== null) {
+                        clicked.setStyle(dlfViewerOLStyles.selectStyle());
+                    }
+                }
+
+                map.forEachFeatureAtPixel(e.pixel, function (f) {
+                    selected = f;
+                    dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
+                    f.setStyle(dlfViewerOLStyles.hoverStyle());
+                    return true;
+                });
+            });
+        }
+
+
 	} else {
 		$('#tx-dlf-tools-score').remove();
 	}
@@ -294,6 +402,103 @@ dlfViewer.prototype.addCustomControls = function() {
         this.imageManipulationControl = imageManipulationControl;
 
     }
+
+    //
+    // Show measure boxes if coordinates are available
+    //
+    // if (this.measureCoords) {
+    //     // Add measure layer for facsimile
+    //     if (!dlfUtils.exists(this.measureLayer)) {
+    //         this.measureLayer = new ol.layer.Vector({
+    //             'source': new ol.source.Vector(),
+    //             'style': dlfViewerOLStyles.invisibleStyle,
+    //             'id': 'measureLayer'
+    //         });
+    //         this.map.addLayer(this.measureLayer);
+    //     }
+    //     this.measureLayer.getSource().clear();
+    //
+    //     var map = this.map;
+    //     var measureLayer = this.measureLayer;
+    //
+    //
+    //
+    //     $.each(this.measureCoords, function(key, value) {
+    //         var splitValue = value.split(","),
+    //             x1 = splitValue[0],
+    //             y1 = splitValue[1],
+    //             x2 = splitValue[2],
+    //             y2 = splitValue[3],
+    //             coordinatesWithoutScale = [[[x1, -y1], [x2, -y1], [x2, -y2], [x1, -y2], [x1, -y1]]],
+    //             width = x1 - x2,
+    //             height = y1 - y2;
+    //
+    //         var geometry = new ol.geom.Polygon(coordinatesWithoutScale);
+    //         var feature = new ol.Feature(geometry);
+    //         feature.setId(key);
+    //         feature.setProperties({
+    //             // type,
+    //             width,
+    //             height,
+    //             x1,
+    //             y1
+    //         });
+    //         measureLayer.getSource().addFeature(feature);
+    //     });
+    //
+    //     let clicked = null;
+    //     map.on('singleclick', function (evt) {
+    //         if (clicked !== null) {
+    //             clicked.setStyle(undefined);
+    //             clicked = null;
+    //         }
+    //        map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+    //            if (feature !== null) {
+    //                clicked = feature;
+    //                return true;
+    //            }
+    //        });
+    //     });
+    //
+    //     let selected = null
+    //     map.on('pointermove', function (e) {
+    //         if (selected !== null) {
+    //             selected.setStyle(undefined);
+    //             selected = null;
+    //
+    //             if (clicked !== null) {
+    //                 clicked.setStyle(dlfViewerOLStyles.selectStyle());
+    //             }
+    //         }
+    //
+    //         map.forEachFeatureAtPixel(e.pixel, function (f) {
+    //             selected = f;
+    //             dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
+    //             f.setStyle(dlfViewerOLStyles.hoverStyle());
+    //             return true;
+    //         });
+    //     });
+    // }
+
+
+
+    // $.ajax({ url: "http://slubdfgviewer.ddev.site/fileadmin/test.xml"}).done(function (data, status, jqXHR) {
+    //     try {
+    //         var surfaces = $(data).find('surface');
+    //         var zones = $(surfaces[0]).children();
+    //         for (var i = 0; i < zones.length; i++) {
+    //             var type = zones[i].nodeName.toLowerCase();
+    //             if (type === 'zone') {
+    //                 var feature = dlfScoreUtil.parseFeatureWithGeometry_(zones[i]);
+    //                 scoreLayer.getSource().addFeature(feature);
+    //             }
+    //         }
+    //
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // });
+
 };
 
 /**
@@ -478,7 +683,7 @@ dlfViewer.prototype.init = function(controlNames) {
                 //        coordinateFormat: ol.coordinate.createStringXY(4),
                 //        undefinedHTML: '&nbsp;'
                 //    })];
-
+            this.view = dlfUtils.createOlView(this.images);
             // create map
             this.map = new ol.Map({
                 layers: layers,
@@ -493,11 +698,11 @@ dlfViewer.prototype.init = function(controlNames) {
                     new ol.interaction.MouseWheelZoom(),
                     new ol.interaction.KeyboardPan(),
                     new ol.interaction.KeyboardZoom(),
-                    new ol.interaction.DragRotateAndZoom()
+                    new ol.interaction.DragRotateAndZoom(),
                 ],
                 // necessary for proper working of the keyboard events
                 keyboardEventTarget: document,
-                view: dlfUtils.createOlView(this.images),
+                view: this.view,
             });
 
             // Position image according to user preferences
