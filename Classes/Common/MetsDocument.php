@@ -1150,13 +1150,13 @@ final class MetsDocument extends Doc
         if (!$this->musicalStructureLoaded) {
 
             // Does the document have a structMap node of type "MUSICAL"?
-            $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measurement"]/mets:div');
+            $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]/mets:div');
             if (!empty($elementNodes)) {
                 // Get file groups.
                 $fileUse = $this->_getFileGrps();
 
                 // Get the musical sequence's metadata.
-                $musicalNode = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measurement"]');
+                $musicalNode = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]');
                 $musicalSeq[0] = (string) $musicalNode[0]['ID'];
                 $this->musicalStructureInfo[$musicalSeq[0]]['id'] = (string) $musicalNode[0]['ID'];
                 $this->musicalStructureInfo[$musicalSeq[0]]['dmdId'] = (isset($musicalNode[0]['DMDID']) ? (string) $musicalNode[0]['DMDID'] : '');
@@ -1175,6 +1175,8 @@ final class MetsDocument extends Doc
                             'begin'  => (string)$fptr->area->attributes()->BEGIN,
                             'end'    => (string)$fptr->area->attributes()->END,
                             'type'   => (string)$fptr->area->attributes()->BETYPE,
+                            'shape'   => (string)$fptr->area->attributes()->SHAPE,
+                            'coords'   => (string)$fptr->area->attributes()->COORDS,
                         ];
                     }
 
@@ -1204,6 +1206,8 @@ final class MetsDocument extends Doc
                                 'begin'  => (string)$fptr->area->attributes()->BEGIN,
                                 'end'    => (string)$fptr->area->attributes()->END,
                                 'type'   => (string)$fptr->area->attributes()->BETYPE,
+                                'shape'   => (string)$fptr->area->attributes()->SHAPE,
+                                'coords'   => (string)$fptr->area->attributes()->COORDS,
                             ];
                         }
 
