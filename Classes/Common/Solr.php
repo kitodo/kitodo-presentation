@@ -192,7 +192,7 @@ class Solr implements LoggerAwareInterface
         // Escape query by dissallowing range and field operators
         // Permit operators: wildcard, boolean, fuzzy, proximity, boost, grouping
         // https://solr.apache.org/guide/solr/latest/query-guide/standard-query-parser.html
-        return preg_replace('/(\{|}|\[|]|:|\/\)/', '\\\$1', $query);
+        return preg_replace('/(\{|}|\[|]|:|\/|\\\)/', '\\\$1', $query);
     }
 
     /**
