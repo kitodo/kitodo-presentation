@@ -383,7 +383,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                                 $metadataOf = $this->fetchToplevelMetadataFromSolr([
                                     'query' => 'partof:' . $doc['uid'],
                                     'start' => 0,
-                                    'rows' => 100,
+                                    'rows' => 200,
                                 ]);
                                 foreach ($children as $docChild) {
                                     // We need only a few fields from the children, but we need them as array.
