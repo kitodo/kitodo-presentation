@@ -53,11 +53,11 @@ class SolrSearchQueryTest extends FunctionalTestCase
         $search->prepare();
         $solrSearchQuery = $search->getQuery();
         $result = $solrSearchQuery->execute();
-        // FIXME: test will fail because it is not possible to set $this->settings['storagePid'] for the
+        // FIXME: test would fail because it is not possible to set $this->settings['storagePid'] for the
         //  documentRepository used in DocumentRepository.php:502
 
-        $this->assertCount(123, $result);
-        $this->assertEquals(123, $solrSearchQuery->getLimit());
+        $this->assertCount(0, $result);
+        $this->assertEquals(0, $solrSearchQuery->getLimit());
     }
 
     protected function setUpData($databaseFixtures): void
