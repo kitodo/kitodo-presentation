@@ -165,13 +165,24 @@ function get_pdf_title(tk){
  */
 dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 	const target = document.getElementById('tx-dlf-score');
+    var extent = [-1050, -1485, 1050, 1485]
+
+    var proj = new ol.proj.Projection({
+        code: 'score-projection',
+        units: 'pixels',
+        extent: extent
+    });
+
   const map = new ol.Map({
     target: target,
     // view: tx_dlf_viewer.view,
     view: new ol.View({
-      center: [0, 0],
-      extent: [-1050, -1485, 1050, 1485],
+      projection: proj,
+        center: [0, 0],
+      // center: ol.extent.getCenter(extent),
+      extent: extent,
       zoom: 1,
+      minZoom: 1,
     }),
     interactions: [
       new ol.interaction.DragPan(),

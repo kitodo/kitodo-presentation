@@ -186,7 +186,7 @@ dlfUtils.createOlView = function (images) {
         extent = [0, -maxLatY, maxLonX, 0];
 
     // globally define max zoom
-    window.DLF_MAX_ZOOM = 8;
+    window.DLF_MAX_ZOOM = 5;
 
     // define map projection
     var proj = new ol.proj.Projection({
@@ -198,10 +198,10 @@ dlfUtils.createOlView = function (images) {
     // define view
     var viewParams = {
         projection: proj,
-        //center: ol.extent.getCenter(extent),
-        center: [0, 0],
+        center: ol.extent.getCenter(extent),
         zoom: 1,
         maxZoom: window.DLF_MAX_ZOOM,
+        minZoom: 1,
         extent,
         constrainOnlyCenter: true,
         constrainRotation: false
