@@ -1315,7 +1315,7 @@ final class MetsDocument extends Doc
     /**
      * Try to determine URL of parent document.
      *
-     * @return string|null
+     * @return string
      */
     public function _getParentHref()
     {
