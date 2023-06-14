@@ -280,7 +280,7 @@ class TableOfContentsController extends AbstractController
             return $this->getTranslatedType($entry['type']) . ' ' . $entry['label'];
         }
 
-        if ($entry['type'] == 'volume') {
+        if ($entry['type'] == 'volume' && empty($entry['label'])) {
             return $this->getTranslatedType($entry['type']) . ' ' . $entry['volume'];
         }
 
