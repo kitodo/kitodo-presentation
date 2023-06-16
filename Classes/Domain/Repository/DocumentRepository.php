@@ -14,14 +14,15 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Common\SolrSearch;
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
@@ -46,7 +47,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param array $parameters
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOneByParameters($parameters)
     {
@@ -91,7 +92,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find the oldest document
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOldestDocument()
     {
@@ -128,7 +129,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $uid
      * @param array $settings
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOneByIdAndSettings($uid, $settings = [])
     {
@@ -540,11 +541,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find all documents with given collection from Solr
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|\Kitodo\Dlf\Domain\Model\Collection $collection
+     * @param QueryResult|Collection $collection
      * @param array $settings
      * @param array $searchParams
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
-     * @return array
+     * @param QueryResult $listedMetadata
+     * @return SolrSearch
      */
     public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
     {

@@ -15,7 +15,6 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -149,7 +148,7 @@ class SearchController extends AbstractController
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-            $solrResults = [];
+            $solrResults = null;
             $numResults = 0;
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
@@ -157,7 +156,7 @@ class SearchController extends AbstractController
                 $numResults = $solrResults->getNumFound();
             }
 
-            $this->view->assign('documents', $solrResults);
+            $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
             $this->view->assign('numResults', $numResults);
             $this->view->assign('widgetPage', $widgetPage);
             $this->view->assign('lastSearch', $this->searchParams);
