@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -102,19 +103,19 @@ class SearchController extends AbstractController
         $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
 
         if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
-            $this->searchParams = array_merge($this->searchParams ? : [], $listRequestData['searchParameter']);
+            $this->searchParams = array_merge($this->searchParams ?: [], $listRequestData['searchParameter']);
             $listViewSearch = true;
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
         }
 
         // sanitize date search input
-        if(empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+        if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
             $this->searchParams['dateFrom'] = '*';
         }
-        if(empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+        if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
             $this->searchParams['dateTo'] = 'NOW';
         }
-        if($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+        if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
             $tmpDate = $this->searchParams['dateFrom'];
             $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
             $this->searchParams['dateTo'] = $tmpDate;
@@ -128,11 +129,15 @@ class SearchController extends AbstractController
 
         // If a targetPid is given, the results will be shown by ListView on the target page.
         if (!empty($this->settings['targetPid']) && !empty($this->searchParams) && !$listViewSearch) {
-            $this->redirect('main', 'ListView', null,
+            $this->redirect(
+                'main',
+                'ListView',
+                null,
                 [
                     'searchParameter' => $this->searchParams,
                     'widgetPage' => $widgetPage
-                ], $this->settings['targetPid']
+                ],
+                $this->settings['targetPid']
             );
         }
 
@@ -161,7 +166,6 @@ class SearchController extends AbstractController
 
             // Add the facets menu
             $this->addFacetsMenu();
-
         }
 
         // Get additional fields for extended search.
@@ -259,27 +263,25 @@ class SearchController extends AbstractController
         // extract collections from collection parameter
         $collection = null;
         if ($this->searchParams['collection']) {
-            foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
+            foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
                 $collection[] = $this->collectionRepository->findByUid($collectionEntry);
             }
-            
         }
         if ($collection) {
             $collectionsQueryString = '';
             $virtualCollectionsQueryString = '';
             foreach ($collection as $collectionEntry) {
                 // check for virtual collections query string
-                if($collectionEntry->getIndexSearch()) {
-                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
-                }
-                else {
+                if ($collectionEntry->getIndexSearch()) {
+                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR (' . $collectionEntry->getIndexSearch() . ')';
+                } else {
                     $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
                 }
             }
-            
+
             // distinguish between simple collection browsing and actual searching within the collection(s)
-            if(!empty($collectionsQueryString)) {
-                if(empty($searchParams['query'])) {
+            if (!empty($collectionsQueryString)) {
+                if (empty($searchParams['query'])) {
                     $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
                 } else {
                     $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
@@ -287,7 +289,7 @@ class SearchController extends AbstractController
             }
 
             // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
-            if(!empty($virtualCollectionsQueryString)) {
+            if (!empty($virtualCollectionsQueryString)) {
                 $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
             }
 
@@ -459,7 +461,8 @@ class SearchController extends AbstractController
      *
      * @return string
      */
-    private function translateValue($field, $value) {
+    private function translateValue($field, $value)
+    {
         switch ($field) {
             case 'owner_faceting':
                 // Translate name of holding library.
