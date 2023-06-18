@@ -223,6 +223,7 @@
             <label index="config.solrFieldTerms">Solr Schema Field "terms" : Term of Use (should be URI) (default is "terms")</label>
             <label index="config.solrFieldRestrictions">Solr Schema Field "restrictions" : Access Restrictions (should be URI) (default is "restrictions")</label>
             <label index="config.solrFieldGeom">Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</label>
+            <label index="config.annotationServerUrl">Annotation server url</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="tx_dlf_actionlog">Aktionsprotokoll</label>
@@ -432,6 +433,7 @@
             <label index="config.solrFieldTerms">Solr-Schema-Feld "terms" : Term of Use (should be URI) (Standard ist "terms")</label>
             <label index="config.solrFieldRestrictions">Solr-Schema-Feld "restrictions" : Access Restrictions (should be URI) (Standard ist "restrictions")</label>
             <label index="config.solrFieldGeom">Solr-Schema-Feld "geom" : GeoJSON geometry for spatial search (Standard ist "geom")</label>
+            <label index="config.annotationServerUrl">Url des Annotations-Servers</label>
         </languageKey>
     </data>
 </T3locallang>

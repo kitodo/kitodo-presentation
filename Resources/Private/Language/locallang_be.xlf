@@ -407,6 +407,9 @@
 			<trans-unit id="plugins.metadata.flexform.separator">
 				<source><![CDATA[Separator for multi-valued fields]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.annotation.title">
+        		<source><![CDATA[Kitodo: Annotations]]></source>
+        	</trans-unit>
             <trans-unit id="flash.attention" approved="yes">
                 <source><![CDATA[Attention!]]></source>
             </trans-unit>

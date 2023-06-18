@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\DocumentAnnotation;
 use Kitodo\Dlf\Common\IiifManifest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -71,6 +72,14 @@ class PageViewController extends AbstractController
      */
     protected $annotationContainers = [];
 
+
+    /**
+     * Holds the verovio relevant annotations
+     *
+     * @var array
+     */
+    protected $verovioAnnotations = [];
+
     /**
      * The main method of the plugin
      *
@@ -100,6 +109,9 @@ class PageViewController extends AbstractController
                 $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
             }
             $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+
+            $documentAnnotation = DocumentAnnotation::getInstance($this->document);
+            $this->verovioAnnotations = $documentAnnotation->getVerovioRelevantAnnotations();
         }
         // Get image data.
         $this->images[0] = $this->getImage($this->requestData['page']);
@@ -262,6 +274,7 @@ class PageViewController extends AbstractController
                         annotationContainers: ' . json_encode($this->annotationContainers) . ',
                         measureCoords: ' . json_encode($this->measures) . ',
                         useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
+                        verovioAnnotations: ' . json_encode($this->verovioAnnotations) . '
                     });
                 }
             });';

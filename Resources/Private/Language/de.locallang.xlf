@@ -569,6 +569,18 @@
                 <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
                 <target><![CDATA[Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
             </trans-unit>
+			<trans-unit id="annotation.creator.label" approved="yes">
+				<source><![CDATA[Annotation created by:]]></source>
+				<target><![CDATA[Annotation erstellt von:]]></target>
+			</trans-unit>
+			<trans-unit id="annotation.created.label" approved="yes">
+				<source><![CDATA[Created:]]></source>
+				<target><![CDATA[Erstellt:]]></target>
+			</trans-unit>
+			<trans-unit id="annotation.modified.label" approved="yes">
+				<source><![CDATA[Modified:]]></source>
+				<target><![CDATA[Geändert:]]></target>
+			</trans-unit>
 
 		</body>
 	</file>

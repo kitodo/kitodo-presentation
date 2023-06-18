@@ -509,6 +509,10 @@
 				<source><![CDATA[Kitodo: Toolbox]]></source>
 				<target><![CDATA[Kitodo: Werkzeugkasten]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.annotation.title" approved="yes">
+        		<source><![CDATA[Kitodo: Annotations]]></source>
+        		<target><![CDATA[Kitodo: Annotationen]]></target>
+        	</trans-unit>
 			<trans-unit id="text.all" approved="yes">
 				<source><![CDATA[all]]></source>
 				<target><![CDATA[alle]]></target>

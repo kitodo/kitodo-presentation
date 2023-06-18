@@ -301,6 +301,16 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     ]
 );
 
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Kitodo.Dlf',
+    'Annotation',
+    [
+        Annotation::class => 'main'
+    ],
+    // non-cacheable actions
+    [
+    ]
+);
 
 // Register a node in ext_localconf.php
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1638809996] = [
