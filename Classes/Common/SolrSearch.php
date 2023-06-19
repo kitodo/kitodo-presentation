@@ -23,7 +23,41 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInterface
 {
-    protected $result;
+    /**
+     * @var DocumentRepository
+     */
+    private $documentRepository;
+
+    /**
+     * @var QueryResult|Collection
+     */
+    private $collection;
+
+    /**
+     * @var array
+     */
+    private $settings;
+
+    /**
+     * @var array
+     */
+    private $searchParams;
+
+    /**
+     * @var QueryResult
+     */
+    private $listedMetadata;
+
+    /**
+     * @var array
+     */
+    private $params;
+
+    private $result;
+
+    /**
+     * @var int
+     */
     protected $position = 0;
 
     /**
