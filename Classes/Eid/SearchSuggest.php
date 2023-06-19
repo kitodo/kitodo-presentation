@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Eid;
 
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
