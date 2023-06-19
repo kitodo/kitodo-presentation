@@ -429,7 +429,7 @@ class SearchController extends AbstractController
     /**
      * Creates an array for a HMENU entry of a facet value.
      *
-     * @access protected
+     * @access private
      *
      * @param string $field: The facet's index_name
      * @param string $value: The facet's value
@@ -439,7 +439,7 @@ class SearchController extends AbstractController
      *
      * @return array The array for the facet's menu entry
      */
-    protected function getFacetsMenuEntry($field, $value, $count, $search, &$state)
+    private function getFacetsMenuEntry($field, $value, $count, $search, &$state)
     {
         $entryArray = [];
         $entryArray['title'] = $this->translateValue($field, $value);
@@ -500,11 +500,11 @@ class SearchController extends AbstractController
     /**
      * Returns the extended search form and adds the JS files necessary for extended search.
      *
-     * @access protected
+     * @access private
      *
      * @return string The extended search form or an empty string
      */
-    protected function addExtendedSearch()
+    private function addExtendedSearch()
     {
         // Quit without doing anything if no fields for extended search are selected.
         if (
