@@ -258,42 +258,9 @@ class SearchController extends AbstractController
             }
         }
 
-        // if collections are given, we prepare the collection query string
-        // extract collections from collection parameter
-        $collection = null;
-        if ($this->searchParams['collection']) {
-            foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collection[] = $this->collectionRepository->findByUid($collectionEntry);
-            }
-        }
-        if ($collection) {
-            $collectionsQueryString = '';
-            $virtualCollectionsQueryString = '';
-            foreach ($collection as $collectionEntry) {
-                // check for virtual collections query string
-                if ($collectionEntry->getIndexSearch()) {
-                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR (' . $collectionEntry->getIndexSearch() . ')';
-                } else {
-                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
-                }
-            }
-
-            // distinguish between simple collection browsing and actual searching within the collection(s)
-            if (!empty($collectionsQueryString)) {
-                if (empty($searchParams['query'])) {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
-                } else {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
-                }
-            }
-
-            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
-            if (!empty($virtualCollectionsQueryString)) {
-                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
-            }
-
-            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
-            $search['params']['filterquery'][]['query'] = implode(" OR ", array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        $collectionsQuery = $this->addCollectionsQuery($searchParams['query']);
+        if (!empty($collectionsQuery)) {
+            $search['params']['filterquery'][]['query'] = $collectionsQuery;
         }
 
         // add filter query for date search
@@ -407,6 +374,56 @@ class SearchController extends AbstractController
             }
         }
         return $menuArray;
+    }
+
+    /**
+     * Add the collection query string, if the collections are given.
+     *
+     * @access private
+     * 
+     * @param string $query The current query
+     *
+     * @return string The collection query string
+     */
+    private function addCollectionsQuery($query) {
+        // if collections are given, we prepare the collections query string
+        // extract collections from collection parameter
+        $collections = null;
+        if ($this->searchParams['collection']) {
+            foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
+                $collections[] = $this->collectionRepository->findByUid($collectionEntry);
+            }
+        }
+        if ($collections) {
+            $collectionsQueryString = '';
+            $virtualCollectionsQueryString = '';
+            foreach ($collections as $collectionEntry) {
+                // check for virtual collections query string
+                if ($collectionEntry->getIndexSearch()) {
+                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR (' . $collectionEntry->getIndexSearch() . ')';
+                } else {
+                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
+                }
+            }
+
+            // distinguish between simple collection browsing and actual searching within the collection(s)
+            if (!empty($collectionsQueryString)) {
+                if (empty($query)) {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
+                } else {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
+                }
+            }
+
+            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separately
+            if (!empty($virtualCollectionsQueryString)) {
+                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
+            }
+
+            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
+            return implode(" OR ", array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        }
+        return "";
     }
 
     /**
