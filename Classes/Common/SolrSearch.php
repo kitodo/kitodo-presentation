@@ -48,7 +48,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return count($this->result['documents']);
     }
 
-    public function count()
+    public function count(): int
     {
         if ($this->result === null) {
             return 0;
@@ -67,22 +67,22 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $this->position;
     }
 
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return isset($this[$this->position]);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         $idx = $this->result['document_keys'][$offset];
         return isset($this->result['documents'][$idx]);
@@ -117,12 +117,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $document;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
