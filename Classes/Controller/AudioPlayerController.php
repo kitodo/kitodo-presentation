@@ -75,26 +75,14 @@ class AudioplayerController extends AbstractController
     public function mainAction()
     {
         // Load current document.
-        $this->loadDocument($this->requestData);
-        if (
-            $this->document === null
-            || $this->document->getDoc() === null
-            || $this->document->getDoc()->numPages < 1
-        ) {
+        $this->loadDocument();
+        if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return '';
-        } else {
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
         }
+
+        $this->setDefaultPage();
+
         // Check if there are any audio files available.
         $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {

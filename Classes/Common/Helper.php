@@ -122,7 +122,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -132,7 +132,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}-[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -140,7 +140,7 @@ class Helper
                 break;
             case 'SWD':
                 $checksum = 11 - $checksum;
-                if (!preg_match('/[0-9]{8}-[0-9]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-\d{1}/i', $id)) {
                     return false;
                 } elseif ($checksum == 10) {
                     return self::checkIdentifier(($digits + 1) . substr($id, -2, 2), 'SWD');
@@ -153,7 +153,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}-[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -349,7 +349,7 @@ class Helper
         // Convert to lowercase.
         $string = strtolower($string);
         // Remove non-alphanumeric characters.
-        $string = preg_replace('/[^a-z0-9_\s-]/', '', $string);
+        $string = preg_replace('/[^a-z\d_\s-]/', '', $string);
         // Remove multiple dashes or whitespaces.
         $string = preg_replace('/[\s-]+/', ' ', $string);
         // Convert whitespaces and underscore to dash.
@@ -561,7 +561,7 @@ class Helper
             ':' => 17,
         ];
         $urn = strtolower($base . $id);
-        if (preg_match('/[^a-z0-9:-]/', $urn)) {
+        if (preg_match('/[^a-z\d:-]/', $urn)) {
             self::log('Invalid chars in given parameters', LOG_SEVERITY_WARNING);
             return '';
         }
@@ -914,5 +914,20 @@ class Helper
         $content  = $response->getBody()->getContents();
 
         return $content;
+    }
+
+    /**
+     * Check if given value is a valid XML ID.
+     * @see https://www.w3.org/TR/xmlschema-2/#ID
+     *
+     * @access public
+     *
+     * @param mixed $id: The ID value to check
+     *
+     * @return bool: TRUE if $id is valid XML ID, FALSE otherwise
+     */
+    public static function isValidXmlId($id): bool
+    {
+        return preg_match('/^[_a-z][_a-z0-9-.]*$/i', $id) === 1;
     }
 }

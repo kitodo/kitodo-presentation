@@ -3,6 +3,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
@@ -208,6 +209,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
         }
 
+        // Add filter query for date search
+        if (!empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            // combine dateFrom and dateTo into range search
+            $params['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}'. $fields['date'] . ':[' . $this->searchParams['dateFrom'] . ' TO ' . $this->searchParams['dateTo'] . ']';
+        }
+
         // Add filter query for faceting.
         if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
             foreach ($this->searchParams['fq'] as $filterQuery) {
@@ -230,22 +237,35 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                 . $fields['uid'] . ':' . $this->searchParams['documentId'];
         }
 
-        // if a collection is given, we prepare the collection query string
+        // if collections are given, we prepare the collection query string
         if ($this->collection) {
-            if ($this->collection instanceof Collection) {
-                $collectionsQueryString = '"' . $this->collection->getIndexName() . '"';
-            } else {
-                $collectionsQueryString = '';
-                foreach ($this->collection as $index => $collectionEntry) {
-                    $collectionsQueryString .= ($index > 0 ? ' OR ' : '') . '"' . $collectionEntry->getIndexName() . '"';
+            $collectionsQueryString = '';
+            $virtualCollectionsQueryString = '';
+            foreach ($this->collection as $collectionEntry) {
+                // check for virtual collections query string
+                if($collectionEntry->getIndexSearch()) {
+                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
+                } else {
+                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
+                }
+            }
+            
+            // distinguish between simple collection browsing and actual searching within the collection(s)
+            if(!empty($collectionsQueryString)) {
+                if(empty($query)) {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
+                } else {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
                 }
             }
 
-            if (empty($query)) {
-                $params['filterquery'][]['query'] = 'toplevel:true';
-                $params['filterquery'][]['query'] = 'partof:0';
+            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
+            if(!empty($virtualCollectionsQueryString)) {
+                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
             }
-            $params['filterquery'][]['query'] = 'collection_faceting:(' . $collectionsQueryString . ')';
+
+            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
+            $params['filterquery'][]['query'] = implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
         }
 
         // Set some query parameters.
@@ -258,8 +278,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             ];
         } else {
             $querySort = [
+                'score' => 'desc',
                 'year_sorting' => 'asc',
                 'title_sorting' => 'asc',
+                'volume' => 'asc'
             ];
         }
 
@@ -316,6 +338,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                     $documents[$doc['uid']] = $allDocuments[$doc['uid']];
                 }
                 if ($documents[$doc['uid']]) {
+                    // translate language code if applicable
+                    if($doc['metadata']['language']) {
+                        foreach($doc['metadata']['language'] as $indexName => $language) {
+                            $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
+                        }
+                    }
                     if ($doc['toplevel'] === false) {
                         // this maybe a chapter, article, ..., year
                         if ($doc['type'] === 'year') {
@@ -411,6 +439,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $result = $this->searchSolr($params, true);
 
         foreach ($result['documents'] as $doc) {
+            // translate language code if applicable
+            if($doc['metadata']['language']) {
+                foreach($doc['metadata']['language'] as $indexName => $language) {
+                    $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
+                }
+            }
             $metadataArray[$doc['uid']] = $doc['metadata'];
         }
 

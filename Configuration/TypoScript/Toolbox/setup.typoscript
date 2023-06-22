@@ -1,11 +1,20 @@
-plugin.tx_dlf_fulltexttool.settings.activateFullTextInitially = 0
-plugin.tx_dlf_fulltexttool.settings.fullTextScrollElement = html, body
-plugin.tx_dlf_fulltexttool.settings.searchHlParameters = tx_dlf[highlight_word]
-plugin.tx_dlf_searchindocumenttool.settings.searchUrl =
-plugin.tx_dlf_searchindocumenttool.settings.documentIdUrlSchema =
-plugin.tx_dlf_searchindocumenttool.settings.idInputName = tx_dlf[id]
-plugin.tx_dlf_searchindocumenttool.settings.queryInputName = tx_dlf[query]
-plugin.tx_dlf_searchindocumenttool.settings.startInputName = tx_dlf[start]
-plugin.tx_dlf_searchindocumenttool.settings.pageInputName = tx_dlf[page]
-plugin.tx_dlf_searchindocumenttool.settings.highlightWordInputName = tx_dlf[highlight_word]
-plugin.tx_dlf_searchindocumenttool.settings.encryptedInputName = tx_dlf[encrypted]
+plugin.tx_dlf_fulltexttool {
+    settings {
+        activateFullTextInitially = 0
+        fullTextScrollElement = html, body
+        searchHlParameters = tx_dlf[highlight_word]
+    }
+}
+
+plugin.tx_dlf_searchindocumenttool {
+    settings {
+        searchUrl =
+        documentIdUrlSchema =
+        idInputName = tx_dlf[id]
+        queryInputName = tx_dlf[query]
+        startInputName = tx_dlf[start]
+        pageInputName = tx_dlf[page]
+        highlightWordInputName = tx_dlf[highlight_word]
+        encryptedInputName = tx_dlf[encrypted]
+    }
+}

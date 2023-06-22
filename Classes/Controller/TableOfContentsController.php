@@ -35,26 +35,6 @@ class TableOfContentsController extends AbstractController
     protected $activeEntries = [];
 
     /**
-     * @var array $this->filterParams: The current filter parameter
-     * @access protected
-     */
-    protected $filterParams;
-
-    /**
-     * Filter Action
-     *
-     * @return void
-     */
-    public function filterAction()
-    {
-        // if filter was triggered, get filter parameters from POST variables
-        $this->filterParams = $this->getParametersSafely('filterParameter');
-
-        // output is done by main action
-        $this->forward('main', null, null, ['filterParameter' => $this->filterParams]);
-    }
-
-    /**
      * The main method of the plugin
      *
      * @return void
@@ -62,26 +42,14 @@ class TableOfContentsController extends AbstractController
     public function mainAction()
     {
         // Load current document.
-        $this->loadDocument($this->requestData);
-        if (
-            $this->document === null
-            || $this->document->getDoc() === null
-        ) {
+        $this->loadDocument();
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
         } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            if ($this->document->getDoc()->tableOfContents[0]['type'] == 'collection') {
-                $this->view->assign('type', 'collection');
-                $this->view->assign('toc', $this->makeMenuFor3DObjects());
-            } else {
-                $this->view->assign('type', 'other');
-                $this->view->assign('toc', $this->makeMenuArray());
-            }
+            $this->setPage();
+
+            $this->view->assign('toc', $this->makeMenuArray());
         }
     }
 
@@ -93,16 +61,6 @@ class TableOfContentsController extends AbstractController
      */
     protected function makeMenuArray()
     {
-        // Set default values for page if not set.
-        // $this->requestData['page'] may be integer or string (physical structure @ID)
-        if (
-            (int) $this->requestData['page'] > 0
-            || empty($this->requestData['page'])
-        ) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-        } else {
-            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-        }
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
@@ -155,30 +113,7 @@ class TableOfContentsController extends AbstractController
                 }
             }
         }
-        return $menuArray;
-    }
-
-    /**
-     * This builds a menu for list of 3D objects
-     *
-     * @access protected
-     *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
-     * @return array HMENU array
-     */
-    protected function makeMenuFor3DObjects()
-    {
-        $menuArray = [];
-
-        // Go through table of contents and create all menu entries.
-        foreach ($this->document->getDoc()->tableOfContents as $entry) {
-            $menuEntry = $this->getMenuEntryWithImage($entry, true);
-            if (!empty($menuEntry)) {
-                $menuArray[] = $menuEntry;
-            }
-        }
+        $this->sortMenu($menuArray);
         return $menuArray;
     }
 
@@ -201,7 +136,7 @@ class TableOfContentsController extends AbstractController
         $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
         $entryArray['volume'] = $entry['volume'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
+        $entryArray['type'] = $this->getTranslatedType($entry['type']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
@@ -304,56 +239,38 @@ class TableOfContentsController extends AbstractController
         return $entry;
     }
 
-    protected function getMenuEntryWithImage(array $entry, $recursive = false)
-    {
-        $entryArray = [];
+    /**
+     * Get translated type of entry.
+     * 
+     * @param array $type
+     * @return string
+     */
+    private function getTranslatedType($type) {
+        return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
+    }
 
-        // don't filter if the entry type is collection or search params are empty
-        if ($entry['type'] !== 'collection' && is_array($this->filterParams) && !empty($this->filterParams)) {
-            // currently only title filtering is defined
-            // TODO: add more logic here after another fields are defined
-            if (!str_contains($entry['label'], $this->filterParams[0])) {
-                return $entryArray;
-            }
+    /**
+     * Sort menu by orderlabel - currently implemented for newspaper.
+     * //TODO: add for years
+     * 
+     * @param array &$menu
+     * @return void
+     */
+    private function sortMenu(&$menu) {
+        if ($menu[0]['type'] == $this->getTranslatedType("newspaper")) {
+            $this->sortMenuForNewspapers($menu);
         }
+    }
 
-        // Set "title", "volume", "type" and "pagination" from $entry array.
-        $entryArray['title'] = !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
-        $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = Helper::translate($entry['type'], 'tx_dlf_structures', $this->settings['storagePid']);
-        $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
-        $entryArray['doNotLinkIt'] = 1;
-        $entryArray['ITEM_STATE'] = 'HEADER';
-
-        if ($entry['children'] === null) {
-            $entryArray['description'] = $entry['description'];
-            $id = $this->document->getDoc()->smLinks['l2p'][$entry['id']][0];
-            $entryArray['image'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$id]['files']['THUMBS']);
-            $entryArray['doNotLinkIt'] = 0;
-            // index.php?tx_dlf%5Bid%5D=http%3A%2F%2Flink_to_METS_file.xml
-            $entryArray['urlId'] = GeneralUtility::_GET('id');
-            $entryArray['urlXml'] = $entry['points'];
-            $entryArray['ITEM_STATE'] = 'ITEM';
-        }
-
-        // Build sub-menu if available and called recursively.
-        if (
-            $recursive == true
-            && !empty($entry['children'])
-        ) {
-            // Build sub-menu only if one of the following conditions apply:
-            // 1. Current menu node points to another file
-            // 2. Current menu node has no corresponding images
-            if (
-                is_string($entry['points'])
-                || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
-            ) {
-                $entryArray['_SUB_MENU'] = [];
-                foreach ($entry['children'] as $child) {
-                    $entryArray['_SUB_MENU'][] = $this->getMenuEntryWithImage($child);
-                }
-            }
-        }
-        return $entryArray;
+    /**
+     * Sort menu years of the newspaper by orderlabel.
+     * 
+     * @param array &$menu
+     * @return void
+     */
+    private function sortMenuForNewspapers(&$menu) {
+        usort($menu[0]['_SUB_MENU'], function ($firstYear, $secondYear) {
+            return $firstYear['orderlabel'] <=> $secondYear['orderlabel'];
+        });
     }
 }

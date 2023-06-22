@@ -25,9 +25,9 @@
         <f:then>
             <f:if condition="{viewData.requestData.double}">
                 <f:then>
-                    <div class="tx-dlf-navigation-double">
+                    <div class="tx-dlf-navigation-single">
                         <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'0'}">
-                            <f:translate key="doublePageOn"/>
+                            <f:translate key="doublePageOff"/>
                         </f:link.action>
                     </div>
                     <div class="tx-dlf-navigation-double+">
@@ -46,14 +46,17 @@
                     </div>
                 </f:then>
                 <f:else>
-                    <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'1'}">
-                        <f:translate key="doublePageOn"/>
-                    </f:link.action>
+                    <div class="tx-dlf-navigation-double">
+                        <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'1'}">
+                            <f:translate key="doublePageOn"/>
+                        </f:link.action>
+                    </div>
                 </f:else>
             </f:if>
         </f:then>
         <f:else>
-            <div class="tx-dlf-navigation-double">
+            <f:comment>No pages available, therefore actually no double page view possible</f:comment>
+            <div class="tx-dlf-navigation-double disabled">
                 <span title="{f:translate(key: 'doublePageOn')}">
                     <f:translate key="doublePageOn"/>
                 </span>
@@ -79,7 +82,7 @@
     </div>
 </f:section>
 
-<f:section name="render.pageBack">
+<f:section name="render.pageStepBack">
     <div class="tx-dlf-navigation-back">
         <f:if condition="{viewData.requestData.page} > {pageSteps}">
             <f:then>
@@ -96,7 +99,7 @@
     </div>
 </f:section>
 
-<f:section name="render.pageStepBack">
+<f:section name="render.pageBack">
     <div class="tx-dlf-navigation-prev">
         <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
             <f:then>
@@ -115,24 +118,25 @@
 
 <f:section name="render.pageselect">
     <li class="pages">
-        <form method="get" action="{f:uri.page(pageUid='{viewData.requestData.pageUid}')}">
+        <f:form method="post" action="pageSelect" controller="Navigation" name="pageSelectForm" object="{pageSelectForm}" addQueryString="1">
             <f:if condition="{viewData.requestData.id}">
-                <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
+                <f:form.hidden property="id" value="{viewData.requestData.id}"/>
             </f:if>
             <f:if condition="{viewData.requestData.recordId}">
-                <f:form.hidden name="tx_dlf[recordId]" value="{viewData.requestData.recordId}"/>
+                <f:form.hidden property="recordId" value="{viewData.requestData.recordId}"/>
             </f:if>
             <f:if condition="{viewData.requestData.double}">
-                <f:form.hidden name="tx_dlf[double]" value="{viewData.requestData.double}"/>
+                <f:form.hidden property="double" value="{viewData.requestData.double}"/>
             </f:if>
             <label for="tx-dlf-page-{viewData.uniqueId}">
                 <f:translate key="selectPage"/>
             </label>
-            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" name="tx_dlf[page]"
+            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" property="page"
                 options="{pageOptions}"
                 value="{viewData.requestData.page}"
                 additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
             </f:form.select>
+        </f:form>
         </form>
     </li>
 </f:section>
@@ -190,7 +194,7 @@
 
 <f:section name="render.listview">
         <div class="tx-dlf-navigation-listview">
-            <f:link.page pageUid="{settings.targetPid}">
+            <f:link.page pageUid="{settings.targetPid}" additionalParams="{lastSearchParams}">
                 <f:translate key="linkToList"/>
             </f:link.page>
         </div>

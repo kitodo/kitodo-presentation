@@ -6,15 +6,7 @@ Kitodo.Presentation is highly customizable through a user-friendly backend and f
 
 For a complete overview of all features, visit the [Kitodo homepage](https://www.kitodo.org/software/kitodopresentation/features).
 
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=kitodo-presentation&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=kitodo-presentation)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=kitodo-presentation&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=kitodo-presentation)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=kitodo-presentation&metric=security_rating)](https://sonarcloud.io/dashboard?id=kitodo-presentation)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kitodo-presentation&metric=alert_status)](https://sonarcloud.io/dashboard?id=kitodo-presentation)
-
 [![Codacy Grade](https://api.codacy.com/project/badge/Grade/b2a7bd8e42ef405d95ca503e4fe95320)](https://app.codacy.com/gh/kitodo/kitodo-presentation)
-[![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/g/kitodo/kitodo-presentation.svg?logo=lgtm)](https://lgtm.com/projects/g/kitodo/kitodo-presentation/context:javascript)
-[![LGTM Alerts](https://img.shields.io/lgtm/alerts/g/kitodo/kitodo-presentation.svg?logo=lgtm)](https://lgtm.com/projects/g/kitodo/kitodo-presentation/alerts/)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kitodo/kitodo-presentation/?branch=master)
 
 Kitodo was formerly known as Goobi. Older releases can be found on [Launchpad](https://launchpad.net/goobi-presentation).
 
@@ -30,8 +22,8 @@ Currently **TYPO3 9.5 LTS** and **TYPO3 10.4 LTS** is supported with the followi
 | PHP         | 7.3.x - 7.4.x         | 7.3.x - 7.4.x          |
 | MySQL       | 5.7.x                 | 5.7.x                  |
 | MariaDB     | 10.2.x - 10.3.x       | 10.3.x - 10.5.x        |
-| Apache Solr | 8.x                   | 8.x                    |
-| OCR Highlighting Plugin | 0.7.1     | 0.7.1                  |
+| Apache Solr | 8.x - 9.x             | 8.x - 9.x              |
+| OCR Highlighting Plugin | 0.8.x     | 0.8.x                  |
 
 Application level dependencies are handled by [Composer](https://getcomposer.org) (see [composer.json](./composer.json)).
 
@@ -66,14 +58,14 @@ association cannot provide further assistance in selecting service providers.
 
 ## Getting started
 
-### Kitodo.Production
-
-* [Installation Guides](https://github.com/kitodo/kitodo-production/wiki/Installationsanleitung)
-* [User documentation](https://github.com/kitodo/kitodo-production/wiki/)
-* [Developer documentation](https://kitodo-production.readthedocs.io/en/latest/)
-
 ### Kitodo.Presentation
 
 * [Extension Documentation](https://docs.typo3.org/p/kitodo/presentation/master/en-us/)
 * [DDEV Development Environment](https://github.com/kitodo/ddev-kitodo-presentation)
 * [Demo server](https://presentation-demo.kitodo.org/)
+
+### Kitodo.Production
+
+* [Installation Guides](https://github.com/kitodo/kitodo-production/wiki/Installationsanleitung)
+* [User documentation](https://github.com/kitodo/kitodo-production/wiki/)
+* [Developer documentation](https://kitodo-production.readthedocs.io/en/latest/)

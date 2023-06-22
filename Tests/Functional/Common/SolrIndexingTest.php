@@ -133,8 +133,8 @@ class SolrIndexingTest extends FunctionalTestCase
         $collections = $this->collectionRepository->findCollectionsBySettings([
             'index_name' => ['Musik', 'Projekt: Dresdner Hefte'],
         ]);
-        $musik = $collections[0];
-        $dresdnerHefte = $collections[1];
+        $musik[] = $collections[0];
+        $dresdnerHefte[] = $collections[1];
 
         $settings = [
             'solrcore' => $core->solr->core,

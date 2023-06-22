@@ -220,6 +220,13 @@ now.
    :Default:
 
  - :Property:
+       showEmptyYears
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
        showEmptyMonths
    :Data Type:
        :ref:`t3tsref:data-type-boolean`
@@ -692,6 +699,20 @@ Search
    :Data Type:
        :ref:`t3tsref:data-type-boolean`
    :Default:
+
+ - :Property:
+       fulltextPreselect
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
+       datesearch
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
 
  - :Property:
        solrcore

@@ -448,6 +448,7 @@ final class MetsDocument extends Doc
             'title_sorting' => [],
             'description' => [],
             'author' => [],
+            'holder' => [],
             'place' => [],
             'year' => [],
             'prod_id' => [],
@@ -459,6 +460,7 @@ final class MetsDocument extends Doc
             'type' => [],
             'volume' => [],
             'volume_sorting' => [],
+            'date' => [],
             'license' => [],
             'terms' => [],
             'restrictions' => [],
@@ -647,6 +649,14 @@ final class MetsDocument extends Doc
             $metadata['title'][0] = '';
             $metadata['title_sorting'][0] = '';
         }
+        // Set title_sorting to title as default.
+        if (empty($metadata['title_sorting'][0])) {
+            $metadata['title_sorting'][0] = $metadata['title'][0];
+        }
+        // Set date to empty string if not present.
+        if (empty($metadata['date'][0])) {
+            $metadata['date'][0] = '';
+        }
         // Files are not expected to reference a dmdSec
         if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
             return $metadata;
@@ -667,7 +677,7 @@ final class MetsDocument extends Doc
      */
     protected function getMetadataIds($id)
     {
-        // ­Load amdSecChildIds concordance
+        // Load amdSecChildIds concordance
         $this->_getMdSec();
         $this->_getFileInfos();
 
@@ -1205,7 +1215,7 @@ final class MetsDocument extends Doc
     /**
      * Try to determine URL of parent document.
      *
-     * @return string|null
+     * @return string
      */
     public function _getParentHref()
     {
