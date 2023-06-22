@@ -183,11 +183,9 @@ class BaseCommand extends Command
      */
     protected function saveToDatabase(Document $document)
     {
-        $success = false;
-
         $doc = $document->getDoc();
         if ($doc === null) {
-            return $success;
+            return false;
         }
         $doc->cPid = $this->storagePid;
 
@@ -207,7 +205,7 @@ class BaseCommand extends Command
         $document->setAuthor(implode('; ', $metadata['author']));
         $document->setThumbnail($doc->thumbnail ? : '');
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
-        $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
+        $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : $metadata['mets_order'][0] ? : '');
 
         $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0], 'tx_dlf_structures');
         $document->setStructure($structure);
@@ -269,9 +267,9 @@ class BaseCommand extends Command
             }
         }
 
-        // to be still (re-) implemented
-        // 'volume' => $metadata['volume'][0],
-        // 'volume_sorting' => $metadata['volume_sorting'][0],
+        // set volume data
+        $document->setVolume($metadata['volume'][0] ? : '');
+        $document->setVolumeSorting($metadata['volume_sorting'][0] ? : '');
 
         // Get UID of parent document.
         if ($document->getDocumentFormat() === 'METS') {
@@ -289,9 +287,7 @@ class BaseCommand extends Command
         $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
-        $success = true;
-
-        return $success;
+        return true;
     }
 
     /**
