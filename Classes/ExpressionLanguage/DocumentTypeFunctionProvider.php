@@ -120,7 +120,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
-                if ($this->document === null) {
+                if ($this->document === null || $this->document->getDoc() === null) {
                     return $type;
                 }
                 // Set PID for metadata definitions.
