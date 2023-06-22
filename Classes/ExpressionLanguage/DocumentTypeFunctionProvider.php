@@ -204,7 +204,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
             }
         } else {
-            $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
+            $this->logger->error('Empty UID or invalid PID "' . $pid . '" for document loading');
         }
     }
 }
