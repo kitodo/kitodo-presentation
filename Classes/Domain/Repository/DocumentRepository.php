@@ -249,7 +249,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_documents');
@@ -294,7 +294,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                     )
                     ->execute()
-                    ->fetchColumn(0);
+                    ->fetchFirstColumn();
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -309,7 +309,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     Helper::whereExpression('tx_dlf_documents')
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -333,7 +333,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
         }
 
         return ['titles' => $countTitles, 'volumes' => $countVolumes];
@@ -427,7 +427,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $statement = $connection->executeQuery($sql, $values, $types);
 
-        return $statement->fetch();
+        return $statement->fetchAssociative();
     }
 
     /**
@@ -509,7 +509,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
         // Process documents in a usable array structure
-        while ($resArray = $kitodoDocuments->fetch()) {
+        while ($resArray = $kitodoDocuments->fetchAssociative()) {
             $resArray['structure'] = $documentStructures[$resArray['structure']];
             $allDocuments[$resArray['uid']] = $resArray;
         }

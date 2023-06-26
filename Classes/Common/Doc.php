@@ -660,7 +660,7 @@ abstract class Doc
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetch()) {
+            if ($resArray = $result->fetchAssociative()) {
                 // Get title information.
                 $title = $resArray['title'];
                 $partof = $resArray['partof'];
@@ -849,7 +849,7 @@ abstract class Doc
                 )
                 ->execute();
 
-            while ($resArray = $result->fetch()) {
+            while ($resArray = $result->fetchAssociative()) {
                 // Update format registry.
                 $this->formats[$resArray['type']] = [
                     'rootElement' => $resArray['root'],

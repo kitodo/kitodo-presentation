@@ -259,7 +259,7 @@ class Indexer
                 )
                 ->execute();
 
-            while ($indexing = $result->fetch()) {
+            while ($indexing = $result->fetchAssociative()) {
                 if ($indexing['index_tokenized']) {
                     self::$fields['tokenized'][] = $indexing['index_name'];
                 }

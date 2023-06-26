@@ -421,7 +421,7 @@ class Helper
 
             $cache[$table] = [];
 
-            while ($row = $result->fetch()) {
+            while ($row = $result->fetchAssociative()) {
                 $cache[$table][$makeCacheKey($row['pid'], $row['uid'])]
                     = $cache[$table][$makeCacheKey(-1, $row['uid'])]
                     = $row['index_name'];
@@ -756,7 +756,7 @@ class Helper
                     ->execute();
 
                 if ($result->rowCount() > 0) {
-                    while ($resArray = $result->fetch()) {
+                    while ($resArray = $result->fetchAssociative()) {
                         // Overlay localized labels if available.
                         if ($languageAspect->getContentId() > 0) {
                             $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageAspect->getContentId(), $languageAspect->getLegacyOverlayType());
