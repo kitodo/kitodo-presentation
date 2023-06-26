@@ -219,7 +219,6 @@ class SearchController extends AbstractController
      */
     public function makeFacetsMenuArray($facets)
     {
-        $menuArray = [];
         // Set default value for facet search.
         $search = [
             'query' => '*:*',
@@ -340,40 +339,7 @@ class SearchController extends AbstractController
             }
         }
 
-        // Process results.
-        if ($facet) {
-            foreach ($facet as $field => $values) {
-                $entryArray = [];
-                $entryArray['field'] = substr($field, 0, strpos($field, '_faceting'));
-                $entryArray['count'] = 0;
-                $entryArray['_OVERRIDE_HREF'] = '';
-                $entryArray['ITEM_STATE'] = 'NO';
-                // Count number of facet values.
-                $i = 0;
-                foreach ($values as $value => $count) {
-                    if ($count > 0) {
-                        // check if facet collection configuration exists
-                        if (!empty($this->settings['facetCollections'])) {
-                            if ($field == "collection_faceting" && !in_array($value, $facetCollectionArray)) {
-                                continue;
-                            }
-                        }
-                        $entryArray['count']++;
-                        if ($entryArray['ITEM_STATE'] == 'NO') {
-                            $entryArray['ITEM_STATE'] = 'IFSUB';
-                        }
-                        $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
-                        if (++$i == $this->settings['limit']) {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-                $menuArray[] = $entryArray;
-            }
-        }
-        return $menuArray;
+        return $this->processResults($facet, $facetCollectionArray, $search);
     }
 
     /**
@@ -467,6 +433,55 @@ class SearchController extends AbstractController
         $entryArray['queryColumn'] = $queryColumn;
 
         return $entryArray;
+    }
+
+    /**
+     * Process results.
+     *
+     * @access private
+     *
+     * @param array $facet
+     * @param array $facetCollectionArray
+     * @param array $search
+     *
+     * @return array menu array
+     */
+    private function processResults($facet, $facetCollectionArray, $search) {
+        $menuArray = [];
+
+        if ($facet) {
+            foreach ($facet as $field => $values) {
+                $entryArray = [];
+                $entryArray['field'] = substr($field, 0, strpos($field, '_faceting'));
+                $entryArray['count'] = 0;
+                $entryArray['_OVERRIDE_HREF'] = '';
+                $entryArray['ITEM_STATE'] = 'NO';
+                // Count number of facet values.
+                $i = 0;
+                foreach ($values as $value => $count) {
+                    if ($count > 0) {
+                        // check if facet collection configuration exists
+                        if (!empty($this->settings['facetCollections'])) {
+                            if ($field == "collection_faceting" && !in_array($value, $facetCollectionArray)) {
+                                continue;
+                            }
+                        }
+                        $entryArray['count']++;
+                        if ($entryArray['ITEM_STATE'] == 'NO') {
+                            $entryArray['ITEM_STATE'] = 'IFSUB';
+                        }
+                        $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
+                        if (++$i == $this->settings['limit']) {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                $menuArray[] = $entryArray;
+            }
+        }
+        return $menuArray;
     }
 
     /**
