@@ -268,7 +268,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                     'storage',
                     $queryBuilder->createNamedParameter($storageUid, \PDO::PARAM_INT)
                 )
-            )->execute()->fetch();
+            )->execute()->fetchAssociative();
 
             // the file exists
             if (is_array($existingFileRecord)) {

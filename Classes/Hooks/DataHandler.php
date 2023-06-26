@@ -149,7 +149,7 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             // Reset storing to current.
                             $fieldArray['index_stored'] = $resArray['is_listed'];
                         }
@@ -174,7 +174,7 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             // Reset indexing to current.
                             $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                         }
@@ -236,7 +236,7 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             if ($resArray['hidden']) {
                                 // Establish Solr connection.
                                 $solr = Solr::getInstance($resArray['core']);
@@ -313,7 +313,7 @@ class DataHandler implements LoggerAwareInterface
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetch()) {
+            if ($resArray = $result->fetchAssociative()) {
                 switch ($command) {
                     case 'move':
                     case 'delete':
@@ -367,7 +367,7 @@ class DataHandler implements LoggerAwareInterface
                     ->setMaxResults(1)
                     ->execute();
 
-                if ($resArray = $result->fetch()) {
+                if ($resArray = $result->fetchAssociative()) {
                     // Establish Solr connection.
                     $solr = Solr::getInstance();
                     if ($solr->ready) {
