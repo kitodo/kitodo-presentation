@@ -156,7 +156,7 @@ class BaseCommand extends Command
             )
             ->execute();
 
-        while ($record = $result->fetch()) {
+        while ($record = $result->fetchAssociative()) {
             $solrCores[$record['index_name']] = $record['uid'];
         }
 
