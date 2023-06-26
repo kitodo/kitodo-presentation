@@ -364,7 +364,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                             if ($this->searchParams['fulltext'] == '1') {
                                 $searchResult['snippet'] = $doc['snippet'];
                                 $searchResult['highlight'] = $doc['highlight'];
-                                $searchResult['highlight_word'] = $this->searchParams['query'];
+                                $searchResult['highlight_word'] = preg_replace('/^;|;$/', '',       // remove ; at beginning or end
+                                                                  preg_replace('/;+/', ';',         // replace any multiple of ; with a single ;
+                                                                  preg_replace('/[{~\d*}{\s+}{^=*\d+.*\d*}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $this->searchParams['query']))); // replace search operators and special characters with ;
                             }
                             $documents[$doc['uid']]['searchResults'][] = $searchResult;
                         }
@@ -522,6 +524,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
             $response = $solr->service->executeRequest($solrRequest);
+            // return empty resultSet on error-response
+            if ($response->getStatusCode() == "400") {
+                return $resultSet;
+            }
             $result = $solr->service->createResult($selectQuery, $response);
 
             $uidGroup = $result->getGrouping()->getGroup('uid');

@@ -660,7 +660,7 @@ abstract class Doc
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetch()) {
+            if ($resArray = $result->fetchAssociative()) {
                 // Get title information.
                 $title = $resArray['title'];
                 $partof = $resArray['partof'];
@@ -849,7 +849,7 @@ abstract class Doc
                 )
                 ->execute();
 
-            while ($resArray = $result->fetch()) {
+            while ($resArray = $result->fetchAssociative()) {
                 // Update format registry.
                 $this->formats[$resArray['type']] = [
                     'rootElement' => $resArray['root'],
@@ -887,6 +887,47 @@ abstract class Doc
         foreach ($this->formats as $enc => $conf) {
             $obj->$method(strtolower($enc), $conf['namespaceURI']);
         }
+    }
+
+    /**
+     * Initialize metadata array with empty values.
+     *
+     * @access protected
+     *
+     * @param string $format of the document eg. METS
+     *
+     * @return array
+     */
+    protected function initializeMetadata($format) {
+        return [
+            'title' => [],
+            'title_sorting' => [],
+            'description' => [],
+            'author' => [],
+            'holder' => [],
+            'place' => [],
+            'year' => [],
+            'prod_id' => [],
+            'record_id' => [],
+            'opac_id' => [],
+            'union_id' => [],
+            'urn' => [],
+            'purl' => [],
+            'type' => [],
+            'volume' => [],
+            'volume_sorting' => [],
+            'date' => [],
+            'license' => [],
+            'terms' => [],
+            'restrictions' => [],
+            'out_of_print' => [],
+            'rights_info' => [],
+            'collection' => [],
+            'owner' => [],
+            'mets_label' => [],
+            'mets_orderlabel' => [],
+            'document_format' => [$format]
+        ];
     }
 
     /**
