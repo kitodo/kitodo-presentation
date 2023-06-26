@@ -569,25 +569,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             foreach ($uidGroup as $group) {
                 foreach ($group as $record) {
-                    $resultDocument = new ResultDocument($record, $highlighting, $fields);
-
-                    $document = [
-                        'id' => $resultDocument->getId(),
-                        'page' => $resultDocument->getPage(),
-                        'snippet' => $resultDocument->getSnippets(),
-                        'thumbnail' => $resultDocument->getThumbnail(),
-                        'title' => $resultDocument->getTitle(),
-                        'toplevel' => $resultDocument->getToplevel(),
-                        'type' => $resultDocument->getType(),
-                        'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
-                        'highlight' => $resultDocument->getHighlightsIds(),
-                    ];
-                    foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
-                        if (!empty($record->$solrField)) {
-                            $document['metadata'][$indexName] = $record->$solrField;
-                        }
-                    }
-                    $resultSet['documents'][] = $document;
+                    $resultSet['documents'][] = $this->getDocument($record, $highlighting, $fields, $parameters);
                 }
             }
 
@@ -600,5 +582,29 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $resultSet = $entry;
         }
         return $resultSet;
+    }
+
+    private function getDocument($record, $highlighting, $fields, $parameters) {
+        $resultDocument = new ResultDocument($record, $highlighting, $fields);
+
+        $document = [
+            'id' => $resultDocument->getId(),
+            'page' => $resultDocument->getPage(),
+            'snippet' => $resultDocument->getSnippets(),
+            'thumbnail' => $resultDocument->getThumbnail(),
+            'title' => $resultDocument->getTitle(),
+            'toplevel' => $resultDocument->getToplevel(),
+            'type' => $resultDocument->getType(),
+            'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+            'highlight' => $resultDocument->getHighlightsIds(),
+        ];
+        
+        foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
+            if (!empty($record->$solrField)) {
+                    $document['metadata'][$indexName] = $record->$solrField;
+            }
+        }
+
+        return $document;
     }
 }
