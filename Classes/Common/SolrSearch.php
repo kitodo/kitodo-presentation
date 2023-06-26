@@ -22,7 +22,41 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInterface
 {
-    protected $result;
+    /**
+     * @var DocumentRepository
+     */
+    private $documentRepository;
+
+    /**
+     * @var QueryResult|Collection
+     */
+    private $collection;
+
+    /**
+     * @var array
+     */
+    private $settings;
+
+    /**
+     * @var array
+     */
+    private $searchParams;
+
+    /**
+     * @var QueryResult
+     */
+    private $listedMetadata;
+
+    /**
+     * @var array
+     */
+    private $params;
+
+    private $result;
+
+    /**
+     * @var int
+     */
     protected $position = 0;
 
     /**
@@ -47,7 +81,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return count($this->result['documents']);
     }
 
-    public function count()
+    public function count(): int
     {
         if ($this->result === null) {
             return 0;
@@ -66,22 +100,22 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $this->position;
     }
 
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return isset($this[$this->position]);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         $idx = $this->result['document_keys'][$offset];
         return isset($this->result['documents'][$idx]);
@@ -116,12 +150,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $document;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
@@ -541,25 +575,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             foreach ($uidGroup as $group) {
                 foreach ($group as $record) {
-                    $resultDocument = new ResultDocument($record, $highlighting, $fields);
-
-                    $document = [
-                        'id' => $resultDocument->getId(),
-                        'page' => $resultDocument->getPage(),
-                        'snippet' => $resultDocument->getSnippets(),
-                        'thumbnail' => $resultDocument->getThumbnail(),
-                        'title' => $resultDocument->getTitle(),
-                        'toplevel' => $resultDocument->getToplevel(),
-                        'type' => $resultDocument->getType(),
-                        'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
-                        'highlight' => $resultDocument->getHighlightsIds(),
-                    ];
-                    foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
-                        if (!empty($record->$solrField)) {
-                            $document['metadata'][$indexName] = $record->$solrField;
-                        }
-                    }
-                    $resultSet['documents'][] = $document;
+                    $resultSet['documents'][] = $this->getDocument($record, $highlighting, $fields, $parameters);
                 }
             }
 
@@ -572,5 +588,29 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $resultSet = $entry;
         }
         return $resultSet;
+    }
+
+    private function getDocument($record, $highlighting, $fields, $parameters) {
+        $resultDocument = new ResultDocument($record, $highlighting, $fields);
+
+        $document = [
+            'id' => $resultDocument->getId(),
+            'page' => $resultDocument->getPage(),
+            'snippet' => $resultDocument->getSnippets(),
+            'thumbnail' => $resultDocument->getThumbnail(),
+            'title' => $resultDocument->getTitle(),
+            'toplevel' => $resultDocument->getToplevel(),
+            'type' => $resultDocument->getType(),
+            'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+            'highlight' => $resultDocument->getHighlightsIds(),
+        ];
+        
+        foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
+            if (!empty($record->$solrField)) {
+                    $document['metadata'][$indexName] = $record->$solrField;
+            }
+        }
+
+        return $document;
     }
 }
