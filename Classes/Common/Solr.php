@@ -232,7 +232,7 @@ class Solr implements LoggerAwareInterface
                 )
                 ->execute();
 
-            while ($resArray = $result->fetch()) {
+            while ($resArray = $result->fetchAssociative()) {
                 $fields[] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . ($resArray['index_stored'] ? 's' : 'u') . 'i';
             }
 
