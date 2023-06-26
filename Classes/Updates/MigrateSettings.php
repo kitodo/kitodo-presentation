@@ -83,7 +83,7 @@ class MigrateSettings implements UpgradeWizardInterface
             ->execute();
 
         // Update the found record sets
-        while ($record = $statement->fetch()) {
+        while ($record = $statement->fetchAssociative()) {
             $queryBuilder = $connection->createQueryBuilder();
             $updateResult = $queryBuilder->update('tt_content')
                 ->where(
@@ -129,7 +129,7 @@ class MigrateSettings implements UpgradeWizardInterface
             ->execute();
 
         // Update the found record sets
-        while ($record = $statement->fetch()) {
+        while ($record = $statement->fetchAssociative()) {
             $oldSettingsFound = $this->checkForOldSettings($record['pi_flexform']);
             if ($oldSettingsFound === true) {
                 // We found at least one field to be updated --> break here

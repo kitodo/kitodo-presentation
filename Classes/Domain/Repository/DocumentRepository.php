@@ -14,14 +14,15 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Common\SolrSearch;
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
@@ -46,7 +47,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param array $parameters
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOneByParameters($parameters)
     {
@@ -91,7 +92,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find the oldest document
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOldestDocument()
     {
@@ -128,7 +129,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $uid
      * @param array $settings
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOneByIdAndSettings($uid, $settings = [])
     {
@@ -249,7 +250,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_documents');
@@ -294,7 +295,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                     )
                     ->execute()
-                    ->fetchColumn(0);
+                    ->fetchFirstColumn();
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -309,7 +310,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     Helper::whereExpression('tx_dlf_documents')
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -333,7 +334,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
         }
 
         return ['titles' => $countTitles, 'volumes' => $countVolumes];
@@ -427,7 +428,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $statement = $connection->executeQuery($sql, $values, $types);
 
-        return $statement->fetch();
+        return $statement->fetchAssociative();
     }
 
     /**
@@ -509,7 +510,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
         // Process documents in a usable array structure
-        while ($resArray = $kitodoDocuments->fetch()) {
+        while ($resArray = $kitodoDocuments->fetchAssociative()) {
             $resArray['structure'] = $documentStructures[$resArray['structure']];
             $allDocuments[$resArray['uid']] = $resArray;
         }
@@ -540,11 +541,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find all documents with given collection from Solr
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|\Kitodo\Dlf\Domain\Model\Collection $collection
+     * @param QueryResult|Collection $collection
      * @param array $settings
      * @param array $searchParams
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
-     * @return array
+     * @param QueryResult $listedMetadata
+     * @return SolrSearch
      */
     public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
     {

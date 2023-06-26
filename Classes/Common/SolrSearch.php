@@ -5,7 +5,6 @@ namespace Kitodo\Dlf\Common;
 use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Collection;
-use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -398,7 +397,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                             if ($this->searchParams['fulltext'] == '1') {
                                 $searchResult['snippet'] = $doc['snippet'];
                                 $searchResult['highlight'] = $doc['highlight'];
-                                $searchResult['highlight_word'] = $this->searchParams['query'];
+                                $searchResult['highlight_word'] = preg_replace('/^;|;$/', '',       // remove ; at beginning or end
+                                                                  preg_replace('/;+/', ';',         // replace any multiple of ; with a single ;
+                                                                  preg_replace('/[{~\d*}{\s+}{^=*\d+.*\d*}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $this->searchParams['query']))); // replace search operators and special characters with ;
                             }
                             $documents[$doc['uid']]['searchResults'][] = $searchResult;
                         }
@@ -411,11 +412,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                         if ($this->searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $childrenOf[$doc['uid']] ?? [];
+                            $childrenRows = !empty($this->settings['childrenRows']) ? intval($this->settings['childrenRows']) : 100;
                             if (!empty($children)) {
                                 $metadataOf = $this->fetchToplevelMetadataFromSolr([
                                     'query' => 'partof:' . $doc['uid'],
                                     'start' => 0,
-                                    'rows' => 100,
+                                    'rows' => $childrenRows,
                                 ]);
                                 foreach ($children as $docChild) {
                                     // We need only a few fields from the children, but we need them as array.
@@ -555,6 +557,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
             $response = $solr->service->executeRequest($solrRequest);
+            // return empty resultSet on error-response
+            if ($response->getStatusCode() == "400") {
+                return $resultSet;
+            }
             $result = $solr->service->createResult($selectQuery, $response);
 
             $uidGroup = $result->getGrouping()->getGroup('uid');

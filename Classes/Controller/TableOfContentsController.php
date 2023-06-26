@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\MetsDocument;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Controller class for plugin 'Table Of Contents'.
@@ -141,6 +140,10 @@ class TableOfContentsController extends AbstractController
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
         $entryArray['ITEM_STATE'] = 'NO';
+
+        if ($entry['type'] == 'volume') {
+            $entryArray['title'] = $this->getTranslatedType($entry['type']) . ' ' . $entry['volume'];
+        }
         // Build menu links based on the $entry['points'] array.
         if (
             !empty($entry['points'])
@@ -251,7 +254,6 @@ class TableOfContentsController extends AbstractController
 
     /**
      * Sort menu by orderlabel - currently implemented for newspaper.
-     * //TODO: add for years
      * 
      * @param array &$menu
      * @return void

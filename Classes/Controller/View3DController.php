@@ -11,9 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Doc;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Plugin 'View3D' for the 'dlf' extension
  *
@@ -29,7 +26,6 @@ class View3DController extends AbstractController
      */
     public function mainAction()
     {
-        $this->cObj = $this->configurationManager->getContentObject();
         // Load current document.
         $this->loadDocument();
         if (

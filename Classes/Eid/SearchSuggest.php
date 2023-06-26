@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Eid;
 
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -57,10 +56,12 @@ class SearchSuggest
             $query->setRows(0);
             $results = $solr->service->select($query)->getResponse()->getBody();
             $result = json_decode($results);
-            foreach ($result->spellcheck->suggestions as $suggestions) {
-                if (is_object($suggestions)) {
-                    foreach ($suggestions->suggestion as $suggestion) {
-                        $output[] = $suggestion;
+            if (is_iterable($result->spellcheck->suggestions)) {
+                foreach ($result->spellcheck->suggestions as $suggestions) {
+                    if (is_object($suggestions)) {
+                        foreach ($suggestions->suggestion as $suggestion) {
+                            $output[] = $suggestion;
+                        }
                     }
                 }
             }

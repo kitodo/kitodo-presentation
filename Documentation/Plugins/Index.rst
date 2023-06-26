@@ -250,12 +250,23 @@ The collection plugin shows one collection, all collections or selected collecti
        Data type
    :Default:
        Default
+   :Description:
+       Description
+          
 
  - :Property:
        collections
    :Data Type:
        :ref:`t3tsref:data-type-list`
    :Default:
+
+ - :Property:
+       childrenRows
+   :Data Type:
+       :ref:`t3tsref:data-type-integer`
+   :Default:
+   :Description:
+       It defines for how many children documents metadata should be fetched
 
  - :Property:
        show_userdefined
@@ -693,6 +704,8 @@ Search
        Data type
    :Default:
        Default
+   :Description:
+       Description
 
  - :Property:
        fulltext
@@ -713,6 +726,14 @@ Search
        :ref:`t3tsref:data-type-boolean`
    :Default:
        0
+
+ - :Property:
+       childrenRows
+   :Data Type:
+       :ref:`t3tsref:data-type-integer`
+   :Default:
+   :Description:
+       It defines for how many children documents metadata should be fetched
 
  - :Property:
        solrcore

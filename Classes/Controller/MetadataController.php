@@ -14,8 +14,6 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
-use Kitodo\Dlf\Domain\Model\Collection;
-use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
@@ -80,8 +78,6 @@ class MetadataController extends AbstractController
      */
     public function mainAction()
     {
-        $this->cObj = $this->configurationManager->getContentObject();
-
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissing()) {
