@@ -153,7 +153,7 @@ final class IiifManifest extends Doc
                     )
                 )
                 ->execute();
-            while ($resArray = $result->fetch()) {
+            while ($resArray = $result->fetchAssociative()) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
                     try {
@@ -650,7 +650,7 @@ final class IiifManifest extends Doc
             )
             ->execute();
         $iiifResource = $this->iiif->getContainedResourceById($id);
-        while ($resArray = $result->fetch()) {
+        while ($resArray = $result->fetchAssociative()) {
             // Set metadata field's value(s).
             if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != null) {
                 if (is_string($values)) {
