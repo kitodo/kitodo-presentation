@@ -59,6 +59,6 @@ class StructureRepository extends Repository
             )
             ->setMaxResults(1);
 
-        return $query->execute()->fetchAll();
+        return $query->execute()->fetchAllAssociative();
     }
 }
