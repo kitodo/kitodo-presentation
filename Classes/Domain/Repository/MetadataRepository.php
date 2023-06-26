@@ -69,7 +69,8 @@ class MetadataRepository extends Repository
      */
     public function findWithFormat($pid, $type)
     {
-        $query = $this->getQueryBuilder()
+        $queryBuilder = $this->getQueryBuilder();
+        $query = $queryBuilder
             ->select(
                 self::TABLE . '.index_name AS index_name',
                 'tx_dlf_metadataformat_joins.xpath AS xpath',
@@ -103,7 +104,7 @@ class MetadataRepository extends Repository
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', $pid),
                 $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($type))
             );
-        return $query->execute()->fetchAll();
+        return $query->execute()->fetchAllAssociative();
     }
 
     /**
@@ -115,7 +116,8 @@ class MetadataRepository extends Repository
      */
     public function findWithoutFormat($pid)
     {
-        $query = $this->getQueryBuilder()
+        $queryBuilder = $this->getQueryBuilder();
+        $query = $queryBuilder
             ->select(
                 self::TABLE . '.index_name AS index_name',
                 self::TABLE . '.is_sortable AS is_sortable',
@@ -130,7 +132,7 @@ class MetadataRepository extends Repository
                 $queryBuilder->expr()->neq(self::TABLE . '.default_value', $queryBuilder->createNamedParameter(''))
             );
 
-        return $query->execute()->fetchAll();
+        return $query->execute()->fetchAllAssociative();
     }
 
     /**
@@ -150,7 +152,8 @@ class MetadataRepository extends Repository
          *  check the configuration.
          *  TODO Saving / indexing should still work - check!
          */
-         $query = $this->getQueryBuilder()
+        $queryBuilder = $this->getQueryBuilder();
+        $query = $queryBuilder
             ->select('tx_dlf_metadataformat.xpath AS querypath')
             ->from(self::TABLE)
             ->from('tx_dlf_metadataformat')
@@ -169,7 +172,7 @@ class MetadataRepository extends Repository
                 )
             );
 
-        return $query->execute()->fetchAll();
+        return $query->execute()->fetchAllAssociative();
     }
 
     /**
@@ -182,7 +185,8 @@ class MetadataRepository extends Repository
      */
     public function findForIiif($pid, $iiifVersion)
     {
-        $query = $this->getQueryBuilder()
+        $queryBuilder = $this->getQueryBuilder();
+        $query = $queryBuilder
             ->select(
                 self::TABLE . '.index_name AS index_name',
                 self::TABLE . '.xpath AS xpath',
@@ -207,7 +211,7 @@ class MetadataRepository extends Repository
                 )
             );
         
-        return $query->execute()->fetchAll();
+        return $query->execute()->fetchAllAssociative();
     }
 
     /**
