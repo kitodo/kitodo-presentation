@@ -355,6 +355,13 @@ class SearchController extends AbstractController
         $search['params']['query'] = $search['query'];
         // Perform search.
         $selectQuery = $solr->service->createSelect($search['params']);
+        // check for solr response
+        $solrRequest = $solr->service->createRequest($selectQuery);
+        $response = $solr->service->executeRequest($solrRequest);
+        // return empty facet on solr error
+        if ($response->getStatusCode() == "400") {
+            return [];
+        }
         $results = $solr->service->select($selectQuery);
         $facet = $results->getFacetSet();
 
