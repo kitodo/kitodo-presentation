@@ -14,8 +14,6 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Controller class for the plugin 'Calendar'.

@@ -13,7 +13,6 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\SolrPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 

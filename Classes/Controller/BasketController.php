@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\ActionLog;
 use Kitodo\Dlf\Domain\Model\Basket;
