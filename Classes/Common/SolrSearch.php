@@ -379,11 +379,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                         if ($this->searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $childrenOf[$doc['uid']] ?? [];
+                            $childrenRows = !empty($this->settings['childrenRows']) ? intval($this->settings['childrenRows']) : 100;
                             if (!empty($children)) {
                                 $metadataOf = $this->fetchToplevelMetadataFromSolr([
                                     'query' => 'partof:' . $doc['uid'],
                                     'start' => 0,
-                                    'rows' => 100,
+                                    'rows' => $childrenRows,
                                 ]);
                                 foreach ($children as $docChild) {
                                     // We need only a few fields from the children, but we need them as array.
