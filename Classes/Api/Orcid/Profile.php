@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Api\Orcid;
 
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,7 +31,7 @@ class Profile
     /**
      * This holds the logger
      *
-     * @var LogManager
+     * @var Logger
      * @access protected
      */
     protected $logger;
