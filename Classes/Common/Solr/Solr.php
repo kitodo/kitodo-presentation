@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common\Solr;
 
+use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\CacheManager;

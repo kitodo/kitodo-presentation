@@ -3,7 +3,9 @@
 namespace Kitodo\Dlf\Common\Solr;
 
 use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
+use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Cache\CacheManager;

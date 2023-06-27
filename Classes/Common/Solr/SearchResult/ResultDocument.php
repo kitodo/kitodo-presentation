@@ -12,10 +12,6 @@
 
 namespace Kitodo\Dlf\Common\Solr\SearchResult;
 
-use Kitodo\Dlf\Common\Solr\SearchResult\Highlight;
-use Kitodo\Dlf\Common\Solr\SearchResult\Page;
-use Kitodo\Dlf\Common\Solr\SearchResult\Region;
-
 /**
  * ResultDocument class for the 'dlf' extension. It keeps the result of the search in the SOLR index.
  *
@@ -202,7 +198,7 @@ class ResultDocument
     }
 
     /**
-     * Get the thumnail URL
+     * Get the thumbnail URL
      *
      * @access public
      *
