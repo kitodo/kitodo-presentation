@@ -15,7 +15,7 @@ namespace Kitodo\Dlf\Common;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
 use Ubl\Iiif\Tools\IiifHelper;
@@ -51,7 +51,7 @@ abstract class Doc
     /**
      * This holds the logger
      *
-     * @var LogManager
+     * @var Logger
      * @access protected
      */
     protected $logger;
