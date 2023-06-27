@@ -75,7 +75,7 @@ final class MetsDocument extends Doc
      * This maps the ID of each amdSec to the IDs of its children (techMD etc.).
      * When an ADMID references an amdSec instead of techMD etc., this is used to iterate the child elements.
      *
-     * @var string[]
+     * @var array
      * @access protected
      */
     protected $amdSecChildIds = [];
@@ -645,8 +645,10 @@ final class MetsDocument extends Doc
      * a logical structure node or to a file.
      *
      * @access protected
+     *
      * @param string $id: The "@ID" attribute of the file node
-     * @return void
+     *
+     * @return array
      */
     protected function getMetadataIds($id)
     {
