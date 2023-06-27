@@ -560,7 +560,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             // Perform search for all documents with the same uid that either fit to the search or marked as toplevel.
             $response = $solr->service->executeRequest($solrRequest);
             // return empty resultSet on error-response
-            if ($response->getStatusCode() == "400") {
+            if ($response->getStatusCode() == 400) {
                 return $resultSet;
             }
             $result = $solr->service->createResult($selectQuery, $response);
