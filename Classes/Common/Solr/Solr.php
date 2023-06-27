@@ -188,8 +188,7 @@ class Solr implements LoggerAwareInterface
      */
     public static function escapeQuery($query)
     {
-        $helper = GeneralUtility::makeInstance(\Solarium\Core\Query\Helper::class);
-        // Escape query by dissallowing range and field operators
+        // Escape query by disallowing range and field operators
         // Permit operators: wildcard, boolean, fuzzy, proximity, boost, grouping
         // https://solr.apache.org/guide/solr/latest/query-guide/standard-query-parser.html
         return preg_replace('/(\{|}|\[|]|:|\/|\\\)/', '\\\$1', $query);
