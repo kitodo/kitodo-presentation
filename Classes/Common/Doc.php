@@ -558,6 +558,7 @@ abstract class Doc
         // ... and extension configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
+        $textFormat = "";
         if (!empty($this->physicalStructureInfo[$id])) {
             while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
                 if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
