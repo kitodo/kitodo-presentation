@@ -15,10 +15,10 @@ namespace Kitodo\Dlf\Common;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
-use TYPO3\CMS\Core\Log\LogManager;
 
 /**
  * MetsDocument class for the 'dlf' extension.
@@ -75,7 +75,7 @@ final class MetsDocument extends Doc
      * This maps the ID of each amdSec to the IDs of its children (techMD etc.).
      * When an ADMID references an amdSec instead of techMD etc., this is used to iterate the child elements.
      *
-     * @var string[]
+     * @var array
      * @access protected
      */
     protected $amdSecChildIds = [];
@@ -645,8 +645,10 @@ final class MetsDocument extends Doc
      * a logical structure node or to a file.
      *
      * @access protected
+     *
      * @param string $id: The "@ID" attribute of the file node
-     * @return void
+     *
+     * @return array
      */
     protected function getMetadataIds($id)
     {
