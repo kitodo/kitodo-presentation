@@ -80,6 +80,8 @@ var dlfViewer = function(settings){
 
     this.measureLayer = undefined;
 
+    this.counter = dlfUtils.exists(settings.counter) ? settings.counter : 0;
+
     /**
      * Id of pagebeginning in score
      * @type {string}

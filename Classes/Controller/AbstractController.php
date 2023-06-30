@@ -59,6 +59,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
     /**
      * @var array
+     */
+    protected $documentArray;
+
+    /**
+     * @var array
      * @access protected
      */
     protected $extConf;
@@ -130,6 +135,19 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             } else if (GeneralUtility::isValidUrl($requestData['id'])) {
 
                 $doc = Doc::getInstance($requestData['id'], $this->settings, true);
+                if ($doc->tableOfContents[0]['type'] === 'multivolume_work') { // @TODO: Change type
+                    $childDocuments = $doc->tableOfContents[0]['children'];
+                    foreach ($childDocuments as $document) {
+                        $this->documentArray[] = Doc::getInstance($document['points'], $this->settings, true);
+                    }
+                } else {
+                    $this->documentArray[] = $doc;
+                }
+                if ($requestData['multipleSource'] && is_array($requestData['multipleSource'])) {
+                    foreach ($requestData['multipleSource'] as $location) {
+                        $this->documentArray[] = Doc::getInstance($location, $this->settings, true);
+                    }
+                }
 
                 if ($doc !== null) {
                     if ($doc->recordId) {

@@ -23,7 +23,7 @@ const dlfViewerSyncControl = function(dlfViewer, sync = true) {
 };
 
 dlfViewerSyncControl.prototype.addSyncControl = function () {
-    this.dlfViewer.map.addControl(new SyncViewsControl());
+    this.dlfViewer.map.addControl(new SyncViewsControl({dlfViewerObject: this.dlfViewer}));
     var controlContext = this;
     controlContext.addMapEventListener();
 }
@@ -32,8 +32,8 @@ dlfViewerSyncControl.prototype.addMapEventListener = function () {
     var controlContext = this;
     this.dlfViewer.scoreMap.getView().on(['change:center','change:resolution','change:rotation'], function() {
         if (controlContext.sync) {
-            var map1 = tx_dlf_viewer.map;
-            var map2 = tx_dlf_viewer.scoreMap;
+            var map1 = controlContext.dlfViewer.map;
+            var map2 = controlContext.dlfViewer.scoreMap;
             var center = map2.getView().getCenter();
             var zoom = map2.getView().getZoom();
             var rotation = map2.getView().getRotation();
@@ -49,8 +49,8 @@ dlfViewerSyncControl.prototype.addMapEventListener = function () {
 
     this.dlfViewer.map.getView().on(['change:center','change:resolution','change:rotation'], function() {
         if (controlContext.sync) {
-            var map1 = tx_dlf_viewer.scoreMap;
-            var map2 = tx_dlf_viewer.map;
+            var map1 = controlContext.dlfViewer.scoreMap;
+            var map2 = controlContext.dlfViewer.map;
             var center = map2.getView().getCenter();
             var zoom = map2.getView().getZoom();
             var rotation = map2.getView().getRotation();
@@ -70,9 +70,10 @@ dlfViewerSyncControl.prototype.addMapEventListener = function () {
 }
 
 dlfViewerSyncControl.prototype.setSync = function () {
+    var controlContext = this;
     this.sync = true;
-    var map1 = tx_dlf_viewer.scoreMap;
-    var map2 = tx_dlf_viewer.map;
+    var map1 = controlContext.dlfViewer.scoreMap;
+    var map2 = controlContext.dlfViewer.map;
     var center1 = map1.getView().getCenter();
     var center2 = map2.getView().getCenter();
     this.dx = center2[0] - center1[0];
@@ -97,13 +98,13 @@ class SyncViewsControl extends ol.control.Control {
     constructor(opt_options) {
         const options = opt_options || {};
 
-        const button = document.createElement('button');
+        var button = document.createElement('button');
         button.innerHTML = 'SYNC';
 
-        const buttonUnsync = document.createElement('button');
+        var buttonUnsync = document.createElement('button');
         buttonUnsync.innerHTML = 'UNSYNC';
 
-        const element = document.createElement('div');
+        var element = document.createElement('div');
         element.className = 'sync-views ol-unselectable'; // ol-control
         element.appendChild(button);
         element.appendChild(buttonUnsync);
@@ -113,21 +114,21 @@ class SyncViewsControl extends ol.control.Control {
             target: options.target,
         });
 
-        button.addEventListener('click', this.syncViews.bind(this), false);
-        buttonUnsync.addEventListener('click', this.unsyncViews.bind(this), false);
+        var viewerContext = options.dlfViewerObject;
+
+        var syncViews = function(e) {
+            viewerContext.syncControl.setSync();
+        };
+
+        var unsyncViews = function(e) {
+            viewerContext.syncControl.unsetSync();
+        };
+
+        button.addEventListener('click', syncViews, false);
+        buttonUnsync.addEventListener('click', unsyncViews, false);
     }
 
-    toggleSyncViews() {
-        tx_dlf_viewer.syncControl.setSync();
-    }
 
-    syncViews() {
-        tx_dlf_viewer.syncControl.setSync();
-    }
-
-    unsyncViews() {
-        tx_dlf_viewer.syncControl.unsetSync();
-    }
 }
 
 
