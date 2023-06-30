@@ -181,10 +181,8 @@ final class MetsDocument extends Doc
         $details = $this->getLogicalStructure($id);
         if (!empty($details)) {
             $metadata['mets_order'][0] = $details['order'];
-            if ($metadata['type'][0] != 'issue') {
-                $metadata['mets_label'][0] = $details['label'];
-                $metadata['mets_orderlabel'][0] = $details['orderlabel'];
-            }
+            $metadata['mets_label'][0] = $details['label'];
+            $metadata['mets_orderlabel'][0] = $details['orderlabel'];
         }
     }
 
@@ -631,13 +629,6 @@ final class MetsDocument extends Doc
         // Set date to empty string if not present.
         if (empty($metadata['date'][0])) {
             $metadata['date'][0] = '';
-        }
-        // Set mets_label for issues
-        if ($metadata['type'][0] == 'issue' && empty($metadata['mets_label'][0])) {
-            $dayLabel = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="day"]/@ORDERLABEL');
-            if (!empty($dayLabel)) {
-                $metadata['mets_label'] = [(string) $dayLabel[0]];
-            }
         }
 
         // Files are not expected to reference a dmdSec
