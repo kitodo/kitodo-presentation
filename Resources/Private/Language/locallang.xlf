@@ -419,6 +419,15 @@
             <trans-unit id="newTenant.wrongPageTypeMsg" approved="yes">
                 <source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
             </trans-unit>
+			<trans-unit id="annotation.creator.label" approved="yes">
+				<source><![CDATA[Annotation created by:]]></source>
+			</trans-unit>
+			<trans-unit id="annotation.created.label" approved="yes">
+				<source><![CDATA[Created:]]></source>
+			</trans-unit>
+			<trans-unit id="annotation.modified.label" approved="yes">
+				<source><![CDATA[Modified:]]></source>
+			</trans-unit>
 
 		</body>
 	</file>

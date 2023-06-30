@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -952,7 +953,9 @@ final class MetsDocument extends Doc
                 }
             }
             $this->physicalStructureLoaded = true;
+
         }
+
         return $this->physicalStructure;
     }
 
@@ -1217,8 +1220,10 @@ final class MetsDocument extends Doc
                         }
                     }
                 }
+
                 // Sort array by keys (= @ORDER).
                 if (ksort($elements)) {
+
                     // Set total number of measures.
                     $this->numMeasures = count($elements);
 
@@ -1228,7 +1233,7 @@ final class MetsDocument extends Doc
                     // Get the track/page info (begin and extent time).
                     $this->musicalStructure = [];
                     $tracks = [];
-                    foreach ($this->physicalStructureInfo as $physicalId => $page) {
+                    foreach ($this->_getPhysicalStructureInfo() as $physicalId => $page) {
                         if (isset($page['tracks'])) {
                             $tracks[$physicalId] = reset($page['tracks']);
                         }
@@ -1237,12 +1242,13 @@ final class MetsDocument extends Doc
                     // Build final musicalStructure: assign pages to measures.
                     foreach ($measures as $order => $measureId) {
                         if ($order > 0) {
-                            $measureBegin = new \DateTime($this->musicalStructureInfo[$measureId]['begin']);
-                            //$measureEnd = new \DateTime($this->musicalStructureInfo[$measureId]['end']);
+                            $measureBegin = new \DateTime("1970-01-01 " . $this->musicalStructureInfo[$measureId]['begin']);
 
                             foreach ($tracks as $physicalId => $trackInfo) {
-                                $trackBegin = new \DateTime($trackInfo['begin']);
-                                $trackEnd = new \DateTime($trackInfo['extent']);
+                                $trackBegin =  new \DateTime("1970-01-01 " . $trackInfo['begin']);
+                                $trackExtent = new \DateTime("1970-01-01 " . $trackInfo['extent']);
+                                $diff = (new \DateTime("1970-01-01 00:00:00"))->diff($trackExtent);
+                                $trackEnd = (new \DateTime("1970-01-01 " . $trackInfo['begin']))->add($diff);
 
                                 if ($measureBegin >= $trackBegin && $measureBegin < $trackEnd) {
                                     $this->musicalStructure[$order] = [
