@@ -36,6 +36,8 @@ class TableOfContentsController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
@@ -55,10 +57,11 @@ class TableOfContentsController extends AbstractController
     /**
      * This builds a menu array for HMENU
      *
-     * @access protected
+     * @access private
+     *
      * @return array HMENU array
      */
-    protected function makeMenuArray()
+    private function makeMenuArray()
     {
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
@@ -67,21 +70,7 @@ class TableOfContentsController extends AbstractController
             !empty($this->document->getDoc()->physicalStructure)
             || !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
         ) {
-            // Get all logical units the current page or track is a part of.
-            if (
-                !empty($this->requestData['page'])
-                && !empty($this->document->getDoc()->physicalStructure)
-            ) {
-                $this->activeEntries = array_merge((array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[0]],
-                    (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]]);
-                if (
-                    !empty($this->requestData['double'])
-                    && $this->requestData['page'] < $this->document->getDoc()->numPages
-                ) {
-                    $this->activeEntries = array_merge($this->activeEntries,
-                        (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page'] + 1]]);
-                }
-            }
+            $this->getAllLogicalUnits();
             // Go through table of contents and create all menu entries.
             foreach ($this->document->getDoc()->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, true);
@@ -104,6 +93,7 @@ class TableOfContentsController extends AbstractController
                         'label' => !empty($resArray['mets_label']) ? $resArray['mets_label'] : $resArray['title'],
                         'type' => $resArray['type'],
                         'volume' => $resArray['volume'],
+                        'year' => $resArray['year'],
                         'orderlabel' => $resArray['mets_orderlabel'],
                         'pagination' => '',
                         'targetUid' => $resArray['uid']
@@ -119,14 +109,14 @@ class TableOfContentsController extends AbstractController
     /**
      * This builds an array for one menu entry
      *
-     * @access protected
+     * @access private
      *
      * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
      * @param bool $recursive : Whether to include the child entries
      *
      * @return array HMENU array for menu entry
      */
-    protected function getMenuEntry(array $entry, $recursive = false)
+    private function getMenuEntry(array $entry, $recursive = false)
     {
         $entry = $this->resolveMenuEntry($entry);
 
@@ -134,6 +124,7 @@ class TableOfContentsController extends AbstractController
         // Set "title", "volume", "type" and "pagination" from $entry array.
         $entryArray['title'] = $this->setTitle($entry);
         $entryArray['volume'] = $entry['volume'];
+        $entryArray['year'] = $entry['year'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
         $entryArray['type'] = $this->getTranslatedType($entry['type']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
@@ -219,10 +210,12 @@ class TableOfContentsController extends AbstractController
      * This is so that when linking from a child document back to its parent,
      * that link is via UID, so that subsequently the parent's TOC is built from database.
      *
+     * @access private
+     *
      * @param array $entry
      * @return array
      */
-    protected function resolveMenuEntry($entry)
+    private function resolveMenuEntry($entry)
     {
         // If the menu entry points to the parent document,
         // resolve to the parent UID set on indexation.
@@ -240,7 +233,33 @@ class TableOfContentsController extends AbstractController
     }
 
     /**
+     * Get all logical units the current page or track is a part of.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function getAllLogicalUnits() {
+        if (
+            !empty($this->requestData['page'])
+            && !empty($this->document->getDoc()->physicalStructure)
+        ) {
+            $this->activeEntries = array_merge((array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[0]],
+                (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]]);
+            if (
+                !empty($this->requestData['double'])
+                && $this->requestData['page'] < $this->document->getDoc()->numPages
+            ) {
+                $this->activeEntries = array_merge($this->activeEntries,
+                    (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page'] + 1]]);
+            }
+        }
+    }
+
+    /**
      * Get translated type of entry.
+     *
+     * @access private
      *
      * @param string $type
      *
@@ -272,23 +291,38 @@ class TableOfContentsController extends AbstractController
     /**
      * Set title from entry.
      *
+     * @access private
+     *
      * @param array $entry
+     *
      * @return string
      */
     private function setTitle($entry) {
-        if ($entry['type'] == 'issue') {
-            return $this->getTranslatedType($entry['type']) . ' ' . $entry['label'];
+        if (empty($entry['label']) && empty($entry['orderlabel'])) {
+            foreach ($this->settings['titleReplacements'] as $titleReplacement) {
+                if ($entry['type'] == $titleReplacement['type']) {
+                    $fields = explode(",", $titleReplacement['fields']);
+                    $title = '';
+        
+                    foreach ($fields as $field) {
+                        if ($field == 'type') {
+                            $title .= $this->getTranslatedType($entry['type']) . ' ';
+                        } else {
+                            $title .= $entry[$field] . ' ';
+                        }
+                    }
+        
+                    return trim($title);
+                }
+            }
         }
-
-        if ($entry['type'] == 'volume' && empty($entry['label'])) {
-            return $this->getTranslatedType($entry['type']) . ' ' . $entry['volume'];
-        }
-
-        return !empty($entry['label']) ? $entry['label'] : $entry['orderlabel'];
+        return $entry['label'] ?: $entry['orderlabel'];
     }
 
     /**
      * Sort menu by orderlabel.
+     *
+     * @access private
      *
      * @param array &$menu
      *
@@ -305,6 +339,8 @@ class TableOfContentsController extends AbstractController
 
     /**
      * Sort sub menu e.g years of the newspaper by orderlabel.
+     *
+     * @access private
      *
      * @param array &$menu
      *
