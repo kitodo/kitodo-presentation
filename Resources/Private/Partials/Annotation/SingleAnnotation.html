@@ -16,9 +16,9 @@
 
 <details class="annotation-details"
          data-annotation-id="{annotation.id}"
-         data-range-facsimile="{f:format.json(value: '{annotation.pageFacsimileRanges.{currentPage}}')}"
-         data-range-audio="{f:format.json(value: '{annotation.pageAudioRanges.{currentPage}}')}"
-         data-range-score="{f:format.json(value: '{annotation.pageScoreRanges.{currentPage}}')}">
+         data-range-facsimile="{kitodo:implode(value: '{annotation.pageFacsimileRanges.{currentPage}}', delimiter: ';')}"
+         data-range-audio="{kitodo:implode(value: '{annotation.pageAudioRanges.{currentPage}}', delimiter: ';')}"
+         data-range-score="{kitodo:implode(value: '{annotation.pageScoreRanges.{currentPage}}', delimiter: ';')}">
 
     <summary class="annotation-title">
         <f:format.html>{annotation.title}</f:format.html>
