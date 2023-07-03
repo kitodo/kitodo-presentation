@@ -222,11 +222,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'PageView',
     [
-        PageView::class => 'main',
+        PageView::class => 'main, addDocument',
     ],
     // non-cacheable actions
     [
-        PageView::class => '',
+        PageView::class => 'addDocument',
     ]
 );
 

@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\DocumentAnnotation;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\Connection;
@@ -110,8 +111,10 @@ class PageViewController extends AbstractController
                 } else {
                     $i = 0;
                     foreach ($this->documentArray as $document) {
-                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
-                        $i++;
+                        if ($document !== null) {
+                            $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                            $i++;
+                        }
                     }
                 }
             } else {
@@ -169,6 +172,32 @@ class PageViewController extends AbstractController
         $this->view->assign('images', $this->images);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $this->requestData['page']);
+
+    }
+
+    /**
+     * Action to add multiple mets sources (multi page view)
+     * @return void
+     */
+    public function addDocumentAction(FormAddDocument $formAddDocument)
+    {
+        if (GeneralUtility::isValidUrl($formAddDocument->getLocation())) {
+            $nextMultipleSourceKey = 0;
+            if ($this->requestData['multipleSource']) {
+                $nextMultipleSourceKey = max(array_keys($this->requestData['multipleSource'])) + 1;
+            }
+            $params = array_merge(
+                ['tx_dlf' => $this->requestData],
+                ['tx_dlf[multipleSource]['.$nextMultipleSourceKey.']' => $formAddDocument->getLocation()]
+            );
+            $uriBuilder = $this->uriBuilder;
+            $uri = $uriBuilder
+                ->setArguments($params)
+                ->setArgumentPrefix('tx_dlf')
+                ->uriFor('main');
+
+            $this->redirectToUri($uri);
+        }
 
     }
 
@@ -309,26 +338,28 @@ class PageViewController extends AbstractController
             $i = 0;
             $globalPage = $this->requestData['page'];
             foreach ($this->documentArray as $document) {
-                $docPage = $this->requestData['docPage'][$i];
-                $docImage[0] = $this->getImage($docPage, $document);
-                $docScore = $this->getScore($docPage, $document);
-                $docMeasures = $this->getMeasures($docPage, $document);
-                $docFulltext = [];
-                $docAnnotationContainers = [];
+                if ($document !== null) {
+                    $docPage = $this->requestData['docPage'][$i];
+                    $docImage[0] = $this->getImage($docPage, $document);
+                    $docScore = $this->getScore($docPage, $document);
+                    $docMeasures = $this->getMeasures($docPage, $document);
+                    $docFulltext = [];
+                    $docAnnotationContainers = [];
 
-                $jsViewer .= 'tx_dlf_viewer['.$i.'] = new dlfViewer({
-                            controls: ["' . implode('", "', $this->controls) . '"],
-                            div: "tx-dfgviewer-map-'.$i.'",
-                            counter: "'.$i.'",
-                            images: ' . json_encode($docImage) . ',
-                            fulltexts: ' . json_encode($docFulltext) . ',
-                            score: ' . json_encode($docScore) . ',
-                            annotationContainers: ' . json_encode($docAnnotationContainers) . ',
-                            measureCoords: ' . json_encode($docMeasures) . ',
-                            useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
-                        });
-                        ';
-                $i++;
+                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer({
+                                controls: ["' . implode('", "', $this->controls) . '"],
+                                div: "tx-dfgviewer-map-' . $i . '",
+                                counter: "' . $i . '",
+                                images: ' . json_encode($docImage) . ',
+                                fulltexts: ' . json_encode($docFulltext) . ',
+                                score: ' . json_encode($docScore) . ',
+                                annotationContainers: ' . json_encode($docAnnotationContainers) . ',
+                                measureCoords: ' . json_encode($docMeasures) . ',
+                                useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
+                            });
+                            ';
+                    $i++;
+                }
             }
 
             // Viewer configuration.
