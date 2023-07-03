@@ -348,7 +348,10 @@ class TableOfContentsController extends AbstractController
      */
     private function sortSubMenu(&$menu) {
         usort($menu[0]['_SUB_MENU'], function ($firstElement, $secondElement) {
-            return $firstElement['orderlabel'] <=> $secondElement['orderlabel'];
+            if (!empty($firstElement['orderlabel'])) {
+                return $firstElement['orderlabel'] <=> $secondElement['orderlabel'];
+            }
+            return $firstElement['year'] <=> $secondElement['year'];
         });
     }
 }
