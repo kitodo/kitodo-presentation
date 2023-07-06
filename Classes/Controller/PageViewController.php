@@ -98,6 +98,18 @@ class PageViewController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return;
         } else {
+            if ($this->document->getDoc()->tableOfContents[0]['type'] == 'multivolume_work' && empty($this->requestData['multiview'])) { // @TODO: Change type
+                $params = array_merge(
+                    ['tx_dlf' => $this->requestData],
+                    ['tx_dlf[multiview]' => 1]
+                );
+                $uriBuilder = $this->uriBuilder;
+                $uri = $uriBuilder
+                    ->setArguments($params)
+                    ->setArgumentPrefix('tx_dlf')
+                    ->uriFor('main');
+                $this->redirectToUri($uri);
+            }
             if (!empty($this->requestData['logicalPage'])) {
                 $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
                 // The logical page parameter should not appear again
@@ -150,7 +162,22 @@ class PageViewController extends AbstractController
         $this->view->assign('docPage', $this->requestData['docPage']);
         $this->view->assign('docType', $this->document->getDoc()->tableOfContents[0]['type']);
 
+        $this->multipageNavigation();
+
+        $this->view->assign('images', $this->images);
+        $this->view->assign('docId', $this->requestData['id']);
+        $this->view->assign('page', $this->requestData['page']);
+
+    }
+
+    /**
+     * Add multi page navigation
+     * @return void
+     */
+    protected function multipageNavigation() {
         $navigationArray = [];
+        $navigateAllNext = [];
+        $navigateAllPrev = [];
         $docNumPages = [];
         $i = 0;
         foreach ($this->documentArray as $document) {
@@ -162,17 +189,25 @@ class PageViewController extends AbstractController
                 'tx_dlf[docPage]['.$i.']' =>
                     MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
             ];
+
+            $navigateAllNext = array_merge($navigateAllNext, [
+                'tx_dlf[docPage]['.$i.']' =>
+                    MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
+            ]);
+
+            $navigateAllPrev = array_merge($navigateAllPrev, [
+                'tx_dlf[docPage]['.$i.']' =>
+                    MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
+            ]);
+
             $docNumPages[$i] = $document->numPages;
             $i++;
         }
 
+        $this->view->assign('navigateAllNext', $navigateAllNext);
+        $this->view->assign('navigateAllPrev', $navigateAllPrev);
         $this->view->assign('navigationArray', $navigationArray);
         $this->view->assign('docNumPage', $docNumPages);
-
-        $this->view->assign('images', $this->images);
-        $this->view->assign('docId', $this->requestData['id']);
-        $this->view->assign('page', $this->requestData['page']);
-
     }
 
     /**
@@ -188,7 +223,8 @@ class PageViewController extends AbstractController
             }
             $params = array_merge(
                 ['tx_dlf' => $this->requestData],
-                ['tx_dlf[multipleSource]['.$nextMultipleSourceKey.']' => $formAddDocument->getLocation()]
+                ['tx_dlf[multipleSource]['.$nextMultipleSourceKey.']' => $formAddDocument->getLocation()],
+                ['tx_dlf[multiview]' => 1]
             );
             $uriBuilder = $this->uriBuilder;
             $uri = $uriBuilder
