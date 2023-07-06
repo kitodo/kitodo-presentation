@@ -337,6 +337,26 @@ dlfViewer.prototype.addCustomControls = function() {
             });
         });
 
+        //
+        // Hover event on html annotation
+        //
+        $('[data-range-facsimile]').each(function(index) {
+            $(this).on('mouseenter', function (evt) {
+                var feature = annotationLayer.getSource().getFeatureById($(this).data('annotation-id'));
+                if (feature !== null) {
+                    selected = feature;
+                    feature.setStyle(dlfViewerOLStyles.hoverStyle());
+                }
+            });
+            $(this).on('mouseleave', function (evt) {
+                var feature = annotationLayer.getSource().getFeatureById($(this).data('annotation-id'));
+                if (feature !== null) {
+                    selected = null;
+                    feature.setStyle(dlfViewerOLStyles.defaultStyle());
+                }
+            });
+        });
+
 
 
     }
