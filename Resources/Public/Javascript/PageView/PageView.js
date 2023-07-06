@@ -242,6 +242,105 @@ dlfViewer.prototype.addCustomControls = function() {
         imageManipulationControl = undefined,
         images = this.images;
 
+    //
+    // Annotation facsimile
+    //
+    // draw annotations
+    var listItems = $('.annotation-list-item details');
+    if (listItems.length > 0) {
+
+        // add new layer for annotations
+        if (!dlfUtils.exists(this.annotationLayer)) {
+            this.annotationLayer = new ol.layer.Vector({
+                'source': new ol.source.Vector(),
+                'style': dlfViewerOLStyles.defaultStyle(),
+                'id': 'annotationLayer'
+            });
+            this.map.addLayer(this.annotationLayer);
+        }
+        this.annotationLayer.getSource().clear();
+
+        var map = this.map;
+        var annotationLayer = this.annotationLayer;
+
+        var i = 0, xLow = 0, xHigh = 0, yLow = 0, yHigh = 0;
+
+        listItems.each(function(index) {
+            var annotationId = $(this).data('annotation-id');
+            var dataRanges = $(this).data('range-facsimile').split(";");
+
+            $.each(dataRanges, function(key, value) {
+
+                var splitValue = value.split(","),
+                    x1 = splitValue[0],
+                    y1 = splitValue[1],
+                    x2 = splitValue[2],
+                    y2 = splitValue[3],
+                    coordinatesWithoutScale = [[[x1, -y1], [x2, -y1], [x2, -y2], [x1, -y2], [x1, -y1]]],
+                    width = x1 - x2,
+                    height = y1 - y2;
+
+                var geometry = new ol.geom.Polygon(coordinatesWithoutScale);
+                var feature = new ol.Feature(geometry);
+                feature.setId(annotationId);
+                feature.setProperties({
+                    width,
+                    height,
+                    x1,
+                    y1
+                });
+                annotationLayer.getSource().addFeature(feature);
+            });
+
+        });
+
+        //
+        // Annotation click event
+        //
+        let clicked = null;
+        map.on('singleclick', function (evt) {
+            if (clicked !== null) {
+                $('[data-annotation-id="'+clicked.getId()+'"]').removeClass('active');
+                $('[data-annotation-id="'+clicked.getId()+'"]').removeAttr('open');
+                clicked.setStyle(undefined);
+                clicked = null;
+            }
+            map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                if (feature !== null) {
+                    feature.setStyle(dlfViewerOLStyles.selectStyle());
+                    $('[data-annotation-id="'+feature.getId()+'"]').addClass('active');
+                    $('[data-annotation-id="'+feature.getId()+'"]').attr('open', '');
+                    clicked = feature;
+                    return true;
+                }
+            });
+        });
+
+        let selected = null
+        map.on('pointermove', function (e) {
+            if (selected !== null) {
+                $('[data-annotation-id="'+selected.getId()+'"]').removeClass('hover')
+                selected.setStyle(undefined);
+                selected = null;
+
+                if (clicked !== null) {
+                    clicked.setStyle(dlfViewerOLStyles.selectStyle());
+                }
+            }
+
+            map.forEachFeatureAtPixel(e.pixel, function (f) {
+                selected = f;
+                dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
+                $('[data-annotation-id="'+selected.getId()+'"]').addClass('hover');
+                f.setStyle(dlfViewerOLStyles.hoverStyle());
+                return true;
+            });
+        });
+
+
+
+    }
+
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
     if (this.fulltextsLoaded_[0] !== undefined && this.images.length === 1) {
@@ -361,10 +460,10 @@ dlfViewer.prototype.addCustomControls = function() {
             });
         }
 
-
 	} else {
 		$('#tx-dlf-tools-score').remove();
 	}
+
 
     if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
         && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
@@ -404,102 +503,6 @@ dlfViewer.prototype.addCustomControls = function() {
         this.imageManipulationControl = imageManipulationControl;
 
     }
-
-    //
-    // Show measure boxes if coordinates are available
-    //
-    // if (this.measureCoords) {
-    //     // Add measure layer for facsimile
-    //     if (!dlfUtils.exists(this.measureLayer)) {
-    //         this.measureLayer = new ol.layer.Vector({
-    //             'source': new ol.source.Vector(),
-    //             'style': dlfViewerOLStyles.invisibleStyle,
-    //             'id': 'measureLayer'
-    //         });
-    //         this.map.addLayer(this.measureLayer);
-    //     }
-    //     this.measureLayer.getSource().clear();
-    //
-    //     var map = this.map;
-    //     var measureLayer = this.measureLayer;
-    //
-    //
-    //
-    //     $.each(this.measureCoords, function(key, value) {
-    //         var splitValue = value.split(","),
-    //             x1 = splitValue[0],
-    //             y1 = splitValue[1],
-    //             x2 = splitValue[2],
-    //             y2 = splitValue[3],
-    //             coordinatesWithoutScale = [[[x1, -y1], [x2, -y1], [x2, -y2], [x1, -y2], [x1, -y1]]],
-    //             width = x1 - x2,
-    //             height = y1 - y2;
-    //
-    //         var geometry = new ol.geom.Polygon(coordinatesWithoutScale);
-    //         var feature = new ol.Feature(geometry);
-    //         feature.setId(key);
-    //         feature.setProperties({
-    //             // type,
-    //             width,
-    //             height,
-    //             x1,
-    //             y1
-    //         });
-    //         measureLayer.getSource().addFeature(feature);
-    //     });
-    //
-    //     let clicked = null;
-    //     map.on('singleclick', function (evt) {
-    //         if (clicked !== null) {
-    //             clicked.setStyle(undefined);
-    //             clicked = null;
-    //         }
-    //        map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-    //            if (feature !== null) {
-    //                clicked = feature;
-    //                return true;
-    //            }
-    //        });
-    //     });
-    //
-    //     let selected = null
-    //     map.on('pointermove', function (e) {
-    //         if (selected !== null) {
-    //             selected.setStyle(undefined);
-    //             selected = null;
-    //
-    //             if (clicked !== null) {
-    //                 clicked.setStyle(dlfViewerOLStyles.selectStyle());
-    //             }
-    //         }
-    //
-    //         map.forEachFeatureAtPixel(e.pixel, function (f) {
-    //             selected = f;
-    //             dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
-    //             f.setStyle(dlfViewerOLStyles.hoverStyle());
-    //             return true;
-    //         });
-    //     });
-    // }
-
-
-
-    // $.ajax({ url: "http://slubdfgviewer.ddev.site/fileadmin/test.xml"}).done(function (data, status, jqXHR) {
-    //     try {
-    //         var surfaces = $(data).find('surface');
-    //         var zones = $(surfaces[0]).children();
-    //         for (var i = 0; i < zones.length; i++) {
-    //             var type = zones[i].nodeName.toLowerCase();
-    //             if (type === 'zone') {
-    //                 var feature = dlfScoreUtil.parseFeatureWithGeometry_(zones[i]);
-    //                 scoreLayer.getSource().addFeature(feature);
-    //             }
-    //         }
-    //
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // });
 
 };
 
