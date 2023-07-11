@@ -176,6 +176,7 @@ class BaseCommand extends Command
         if ($doc === null) {
             return false;
         }
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $doc->cPid = $this->storagePid;
 
         $metadata = $doc->getTitledata($this->storagePid);
@@ -212,6 +213,8 @@ class BaseCommand extends Command
                     $documentCollection->setDescription('');
                     // add to CollectionRepository
                     $this->collectionRepository->add($documentCollection);
+                    // persist collection to prevent duplicates
+                    $persistenceManager->persistAll();
                 }
                 // add to document
                 $document->addCollection($documentCollection);
@@ -273,7 +276,6 @@ class BaseCommand extends Command
             $this->documentRepository->update($document);
         }
 
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
         return true;
