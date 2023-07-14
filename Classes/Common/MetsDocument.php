@@ -1232,31 +1232,21 @@ final class MetsDocument extends Doc
 
                     // Get the track/page info (begin and extent time).
                     $this->musicalStructure = [];
-                    $tracks = [];
+                    $measurePages = [];
                     foreach ($this->_getPhysicalStructureInfo() as $physicalId => $page) {
-                        if (isset($page['tracks'])) {
-                            $tracks[$physicalId] = reset($page['tracks']);
+                        if ($page['files']['DEFAULT']) {
+                            $measurePages[$physicalId] = $page['files']['DEFAULT'];
                         }
                     }
-
                     // Build final musicalStructure: assign pages to measures.
-                    foreach ($measures as $order => $measureId) {
-                        if ($order > 0) {
-                            $measureBegin = new \DateTime("1970-01-01 " . $this->musicalStructureInfo[$measureId]['begin']);
-
-                            foreach ($tracks as $physicalId => $trackInfo) {
-                                $trackBegin =  new \DateTime("1970-01-01 " . $trackInfo['begin']);
-                                $trackExtent = new \DateTime("1970-01-01 " . $trackInfo['extent']);
-                                $diff = (new \DateTime("1970-01-01 00:00:00"))->diff($trackExtent);
-                                $trackEnd = (new \DateTime("1970-01-01 " . $trackInfo['begin']))->add($diff);
-
-                                if ($measureBegin >= $trackBegin && $measureBegin < $trackEnd) {
-                                    $this->musicalStructure[$order] = [
-                                        'measureid' => $measureId,
-                                        'physicalid' => $physicalId,
-                                        'page' => array_search($physicalId, $this->physicalStructure)
-                                    ];
-                                }
+                    foreach ($this->musicalStructureInfo as $measureId => $measureInfo) {
+                        foreach ($measurePages as $physicalId => $file) {
+                            if ($measureInfo['files']['DEFAULT']['fileid'] === $file) {
+                                $this->musicalStructure[$measureInfo['order']] = [
+                                    'measureid' => $measureId,
+                                    'physicalid' => $physicalId,
+                                    'page' => array_search($physicalId, $this->physicalStructure)
+                                ];
                             }
                         }
                     }
