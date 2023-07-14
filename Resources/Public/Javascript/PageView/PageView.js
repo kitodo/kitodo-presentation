@@ -82,6 +82,12 @@ var dlfViewer = function(settings){
 
     this.counter = dlfUtils.exists(settings.counter) ? settings.counter : 0;
 
+    this.facsimileMeasureActive = null;
+    this.facsimileMeasureHover = null;
+
+    this.verovioMeasureActive = null;
+    this.verovioMeasureHover = null;
+
     /**
      * Id of pagebeginning in score
      * @type {string}
@@ -356,9 +362,6 @@ dlfViewer.prototype.addCustomControls = function() {
                 }
             });
         });
-
-
-
     }
 
     // Adds fulltext behavior and download only if there is fulltext available and no double page
@@ -382,19 +385,16 @@ dlfViewer.prototype.addCustomControls = function() {
 	if (this.scoresLoaded_ !== null) {
         var context = this;
 		const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
-        this.scoresLoaded_
-        .then (function (scoreData) {
-        scoreControl.loadScoreData(scoreData, tk);
+        this.scoresLoaded_.then (function (scoreData) {
+            scoreControl.loadScoreData(scoreData, tk);
 
-        // Add synchronisation control
-        context.syncControl = new dlfViewerSyncControl(context);
-        context.syncControl.addSyncControl();
+            // Add synchronisation control
+            context.syncControl = new dlfViewerSyncControl(context);
+            context.syncControl.addSyncControl();
 
-
-     })
-    .catch(function () {
-      scoreControl.deactivate();
-    });
+        }).catch(function () {
+            scoreControl.deactivate();
+        });
 
         //
         // Show measure boxes if coordinates are available
@@ -444,37 +444,41 @@ dlfViewer.prototype.addCustomControls = function() {
                 });
                 measureLayer.getSource().addFeature(feature);
                 i++;
+
             });
 
-            let clicked = null;
             map.on('singleclick', function (evt) {
-                if (clicked !== null) {
-                    clicked.setStyle(undefined);
-                    clicked = null;
+                if (context.facsimileMeasureActive !== null) {
+                    context.verovioMeasureActive.removeClass('active');
+                    context.facsimileMeasureActive.setStyle(undefined);
+                    context.facsimileMeasureActive = null;
                 }
                 map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
                     if (feature !== null) {
-                        clicked = feature;
+                        context.facsimileMeasureActive = feature;
+                        context.verovioMeasureActive = $('#tx-dlf-score-'+context.counter+' #' + feature.getId() + ' rect').addClass('active');
                         return true;
                     }
                 });
             });
 
-            let selected = null
             map.on('pointermove', function (e) {
-                if (selected !== null) {
-                    selected.setStyle(undefined);
-                    selected = null;
+                if (context.facsimileMeasureHover !== null) {
+                    context.facsimileMeasureHover.setStyle(undefined);
+                    context.facsimileMeasureHover = null;
+                    context.verovioMeasureHover.removeClass('hover');
 
-                    if (clicked !== null) {
-                        clicked.setStyle(dlfViewerOLStyles.selectStyle());
+                    if (context.facsimileMeasureActive !== null) {
+                        context.facsimileMeasureActive.setStyle(dlfViewerOLStyles.selectStyle());
                     }
                 }
 
                 map.forEachFeatureAtPixel(e.pixel, function (f) {
-                    selected = f;
+                    context.facsimileMeasureHover = f;
                     dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
                     f.setStyle(dlfViewerOLStyles.hoverStyle());
+
+                    context.verovioMeasureHover = $('#tx-dlf-score-'+context.counter+' #' + context.facsimileMeasureHover.getId() + ' rect').addClass('hover');
                     return true;
                 });
             });

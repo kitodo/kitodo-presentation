@@ -162,7 +162,10 @@ class PageViewController extends AbstractController
         $this->view->assign('docPage', $this->requestData['docPage']);
         $this->view->assign('docType', $this->document->getDoc()->tableOfContents[0]['type']);
 
-        $this->multipageNavigation();
+        $this->view->assign('multiview', $this->requestData['multiview']);
+        if ($this->requestData['multiview']) {
+            $this->multipageNavigation();
+        }
 
         $this->view->assign('images', $this->images);
         $this->view->assign('docId', $this->requestData['id']);
@@ -176,11 +179,23 @@ class PageViewController extends AbstractController
      */
     protected function multipageNavigation() {
         $navigationArray = [];
-        $navigateAllNext = [];
-        $navigateAllPrev = [];
+        $navigationMeasureArray = [];
+        $navigateAllPageNext = [];
+        $navigateAllPagePrev = [];
+        $navigateAllMeasureNext = [];
+        $navigateAllMeasurePrev = [];
         $docNumPages = [];
         $i = 0;
         foreach ($this->documentArray as $document) {
+            // convert either page or measure if requestData exists
+            if ($this->requestData['docPage'][$i] && empty($this->requestData['docMeasure'][$i])) {
+                // convert document page information to measure count information
+                $this->requestData['docMeasure'][$i] = $this->convertMeasureOrPage($document, null, $this->requestData['docPage'][$i]);
+
+            } else if ((empty($this->requestData['docPage'][$i]) || $this->requestData['docPage'][$i] === 1) && $this->requestData['docMeasure'][$i]) {
+                $this->requestData['docPage'][$i] = $this->convertMeasureOrPage($document, $this->requestData['docMeasure'][$i]);
+            }
+
             $navigationArray[$i]['next'] = [
                 'tx_dlf[docPage]['.$i.']' =>
                     MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
@@ -190,24 +205,68 @@ class PageViewController extends AbstractController
                     MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
             ];
 
-            $navigateAllNext = array_merge($navigateAllNext, [
+            $navigateAllPageNext = array_merge($navigateAllPageNext, [
                 'tx_dlf[docPage]['.$i.']' =>
                     MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
             ]);
 
-            $navigateAllPrev = array_merge($navigateAllPrev, [
+            $navigateAllPagePrev = array_merge($navigateAllPagePrev, [
                 'tx_dlf[docPage]['.$i.']' =>
                     MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
             ]);
+
+            $navigateAllMeasureNext = array_merge($navigateAllMeasureNext, [
+                'tx_dlf[docMeasure]['.$i.']' =>
+                    MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
+            ]);
+
+            $navigateAllMeasurePrev = array_merge($navigateAllMeasurePrev, [
+                'tx_dlf[docMeasure]['.$i.']' =>
+                    MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
+            ]);
+
+            $navigationMeasureArray[$i]['next'] = [
+                'tx_dlf[docMeasure]['.$i.']' =>
+                    MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
+            ];
+            $navigationMeasureArray[$i]['prev'] = [
+                'tx_dlf[docMeasure]['.$i.']' =>
+                    MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
+            ];
 
             $docNumPages[$i] = $document->numPages;
             $i++;
         }
 
-        $this->view->assign('navigateAllNext', $navigateAllNext);
-        $this->view->assign('navigateAllPrev', $navigateAllPrev);
+        // page navigation
         $this->view->assign('navigationArray', $navigationArray);
+        $this->view->assign('navigateAllPageNext', $navigateAllPageNext);
+        $this->view->assign('navigateAllPagePrev', $navigateAllPagePrev);
+        // measure navigation
+        $this->view->assign('navigateAllMeasurePrev', $navigateAllMeasurePrev);
+        $this->view->assign('navigateAllMeasureNext', $navigateAllMeasureNext);
+        $this->view->assign('navigationMeasureArray', $navigationMeasureArray);
+
         $this->view->assign('docNumPage', $docNumPages);
+    }
+
+    /**
+     * Converts either measure into page or page into measure
+     * @param $document
+     * @param $measure
+     * @param $page
+     * @return false|int|mixed|string|null
+     */
+    public function convertMeasureOrPage($document, $measure = null, $page = null) {
+        $return = null;
+        $measure2Page = array_column($document->musicalStructure, 'page');
+        if ($measure) {
+            $return = $measure2Page[$measure];
+        } else if ($page) {
+            $return = array_search($page, $measure2Page);
+        }
+
+        return $return;
     }
 
     /**
@@ -252,9 +311,11 @@ class PageViewController extends AbstractController
         $measureCoordsFromCurrentSite = [];
         if ($defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT']) {
             $musicalStruct = $doc->musicalStructureInfo;
+
             foreach ($musicalStruct as $measureId => $measureData) {
                 if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
-                    $measureCoordsFromCurrentSite[$measureId] = $measureData['files']['DEFAULT']['coords'];
+
+                    $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
                 }
             }
         }
@@ -369,13 +430,22 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS()
     {
-        if (count($this->documentArray) > 1) {
+        if (count($this->documentArray) > 1 ||
+            $this->document->getDoc()->tableOfContents[0]['type'] == 'multivolume_work') { // @todo Change type
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
             $globalPage = $this->requestData['page'];
             foreach ($this->documentArray as $document) {
                 if ($document !== null) {
                     $docPage = $this->requestData['docPage'][$i];
+
+                    // check if page or measure is set
+                    if ($this->requestData['docMeasure'][$i]) {
+                        // convert document page information to measure count information
+                        $measure2Page = array_column($document->musicalStructure, 'page');
+                        $docPage = $measure2Page[$this->requestData['docMeasure'][$i]];
+                    }
+
                     $docImage[0] = $this->getImage($docPage, $document);
                     $docScore = $this->getScore($docPage, $document);
                     $docMeasures = $this->getMeasures($docPage, $document);

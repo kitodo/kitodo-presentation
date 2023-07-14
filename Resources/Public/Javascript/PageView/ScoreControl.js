@@ -22,11 +22,11 @@ let pdf_blob;
 let dlfScoreUtil;
 dlfScoreUtil = dlfScoreUtil || {};
 const verovioSetting = {
-    pageWidth: $('#tx-dlf-score').width(),
+    pageWidth: 300,
     scale: 25,
     //adjustPageWidth: true,
     spacingLinear: .15,
-    pageHeight: $('#tx-dlf-score').height(),
+    pageHeight: 300,
     //adjustPageHeight: true,
     scaleToPageSize: true,
     breaks: 'encoded',
@@ -51,21 +51,21 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
 
             console.log("this is url " + url)
 
-            $("#player").midiPlayer();
+            // $("#player").midiPlayer();
 
             //console.log(dlfScoreUtils.get_play_midi);
-            $("#tx-dlf-tools-midi").click(
-                function () {
-                    var base64midi = tk.renderToMIDI();
-                    var song = 'data:audio/midi;base64,' + base64midi;
-                    console.log(song);
-                    // $("#player").show();
-                    // $("#tx-dlf-tools-midi").hide();
-
-                    // $("#player").loadFile(song);
-                    $("#player").midiPlayer.play(song);
-
-                })
+            // $("#tx-dlf-tools-midi").click(
+            //     function () {
+            //         var base64midi = tk.renderToMIDI();
+            //         var song = 'data:audio/midi;base64,' + base64midi;
+            //         console.log(song);
+            //         // $("#player").show();
+            //         // $("#tx-dlf-tools-midi").hide();
+            //
+            //         // $("#player").loadFile(song);
+            //         $("#player").midiPlayer.play(song);
+            //
+            //     })
 
             const midi = tk.renderToMIDI();
             const str2blob = new Blob([midi]);
@@ -124,8 +124,8 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
      * @type {Object}
      * @private
      */
-    this.dic = $('#tx-dlf-tools-score').length > 0 && $('#tx-dlf-tools-score').attr('data-dic') ?
-        dlfUtils.parseDataDic($('#tx-dlf-tools-score')) :
+    this.dic = $('#tx-dlf-tools-score-' + this.dlfViewer.counter).length > 0 && $('#tx-dlf-tools-score-' + this.dlfViewer.counter).attr('data-dic') ?
+        dlfUtils.parseDataDic($('#tx-dlf-tools-score-' + this.dlfViewer.counter)) :
         {
             'score': 'Score',
             'score-loading': 'Loading score...',
@@ -147,7 +147,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
      */
     this.scoreScrollElement = this.dic['score-scroll-element'];
 
-    $('#tx-dlf-score').text(this.dic['score-loading']);
+    $('#tx-dlf-score-' + this.dlfViewer.counter).text(this.dic['score-loading']);
 
     this.changeActiveBehaviour();
 };
@@ -166,10 +166,14 @@ function get_pdf_title(tk) {
  * @param {ScoreFeature} scoreData
  */
 dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
+    var target = document.getElementById('tx-dlf-score-' + this.dlfViewer.counter);
+    // const target = document.getElementById('tx-dlf-score');
 
-    const target = document.getElementById('tx-dlf-score-' + this.dlfViewer.counter);
-
-    var extent = [-1050, -1485, 1050, 1485]
+    // var extent = [-1050, -1485, 1050, 1485]
+    // var extent = [0, 0, 2100, 2970];
+    // var extent = [-2100, -2970, 2100, 2970];
+    var extent = [-2100, -2970, 2100, 2970];
+    // [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0]
 
     var proj = new ol.proj.Projection({
         code: 'score-projection',
@@ -177,7 +181,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
         extent: extent
     });
 
-    const map = new ol.Map({
+    var map = new ol.Map({
         target: target,
         // view: tx_dlf_viewer.view,
         view: new ol.View({
@@ -200,7 +204,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     });
     this.dlfViewer.scoreMap = map;
 
-    const svgContainer = document.createElement('div');
+    var svgContainer = document.createElement('div');
     svgContainer.innerHTML = scoreData;
 
     const width = 2100;
@@ -218,7 +222,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
                 const scale = svgResolution / frameState.viewState.resolution;
                 const center = frameState.viewState.center;
                 const size = frameState.size;
-
                 const cssTransform = ol.transform.composeCssTransform(
                     size[0] / 2,
                     size[1] / 2,
@@ -235,6 +238,92 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
             },
         })
     );
+
+    function makeSVG(tag, attrs) {
+        var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (var k in attrs)
+            el.setAttribute(k, attrs[k]);
+        return el;
+    }
+
+    //
+    // Draw boxes for each measure
+    //
+    var measureCoords = this.dlfViewer.measureCoords;
+    var dlfViewer = this.dlfViewer;
+    $( document ).ready(function() {
+        $.each(measureCoords, function (key, value) {
+            var bbox = $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].getBBox();
+
+            var measureRect = makeSVG('rect', {
+                x: bbox['x'],
+                y: bbox['y'],
+                width:bbox['width'],
+                height:bbox['height'],
+                stroke: 'none',
+                'stroke-width': 20,
+                fill: 'red',
+                'fill-opacity': '0'
+            });
+            $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].appendChild(measureRect);
+        });
+
+        //
+        // SVG click event
+        //
+        $('#tx-dlf-score-' + dlfViewer.counter + ' rect').on('click', function(evt) {
+            if (dlfViewer.verovioMeasureActive !== null) {
+                dlfViewer.verovioMeasureActive.removeClass('active');
+                dlfViewer.verovioMeasureActive = null;
+            }
+            if (dlfViewer.facsimileMeasureActive !== null) {
+                dlfViewer.facsimileMeasureActive.setStyle(undefined);
+                dlfViewer.facsimileMeasureActive = null;
+            }
+
+            dlfViewer.verovioMeasureActive = $(this);
+            // set measure as active
+            dlfViewer.verovioMeasureActive.addClass('active');
+            var measureId = $(this).parent().attr('id');
+
+            // show measure on facsimile
+            if (dlfUtils.exists(dlfViewer.measureLayer)) {
+                dlfViewer.facsimileMeasureActive = dlfViewer.measureLayer.getSource().getFeatureById(measureId);
+                dlfViewer.facsimileMeasureActive.setStyle(dlfViewerOLStyles.selectStyle());
+            }
+
+        });
+        //
+        // SVG hover event
+        //
+        $('#tx-dlf-score-' + dlfViewer.counter + ' rect').on('pointermove', function(evt) {
+            if (dlfViewer.verovioMeasureHover !== null) {
+                dlfViewer.verovioMeasureHover.removeClass('hover');
+                dlfViewer.verovioMeasureHover = null;
+            }
+            if (dlfViewer.facsimileMeasureHover !== null && dlfViewer.facsimileMeasureHover != dlfViewer.facsimileMeasureActive) {
+                dlfViewer.facsimileMeasureHover.setStyle(undefined);
+                dlfViewer.facsimileMeasureHover = null;
+            }
+
+            dlfViewer.verovioMeasureHover = $(this);
+            // set measure as active
+            console.log(dlfViewer.verovioMeasureHover);
+            dlfViewer.verovioMeasureHover.addClass('hover');
+            var measureId = $(this).parent().attr('id');
+
+            // show measure in openlayer
+            if (dlfUtils.exists(dlfViewer.measureLayer)) {
+                dlfViewer.facsimileMeasureHover = dlfViewer.measureLayer.getSource().getFeatureById(measureId);
+                if (dlfViewer.facsimileMeasureHover != dlfViewer.facsimileMeasureActive) {
+                    dlfViewer.facsimileMeasureHover.setStyle(dlfViewerOLStyles.hoverStyle());
+                }
+            }
+        });
+
+    });
+
+
 
     $("#tx_dlf_scoredownload").click(function () {
         if (typeof pdf_blob !== 'undefined') {
@@ -345,11 +434,11 @@ function set_options(tk) {
 
 
     options = {
-        pageWidth: $('#tx-dlf-score').width(),
+        pageWidth: $('#tx-dlf-score-' + this.dlfViewer.counter).width(),
         scale: 25,
         //adjustPageWidth: true,
         spacingLinear: .15,
-        pageHeight: $('#tx-dlf-score').height(),
+        pageHeight: $('#tx-dlf-score-' + this.dlfViewer.counter).height(),
         //adjustPageHeight: true,
         scaleToPageSize: true,
         breaks: 'encoded',
@@ -477,8 +566,9 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
             .attr('title', this.dic['score-on']);
     }
 
-    $('#tx-dlf-score').removeClass(className);
-    $('#tx-dlf-score').hide();
+    // $('#tx-dlf-score').removeClass(className);
+    // $('#tx-dlf-score').hide();
+    $('*[id*=tx-dlf-score-]').addClass(className).show();
     $('body').removeClass(className);
 
     if (this.dlfViewer.measureLayer) {
@@ -505,8 +595,10 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
             .attr('title', this.dic['score-off']);
     }
 
-    $('#tx-dlf-score').addClass(className);
-    $('#tx-dlf-score').show();
+    // $('#tx-dlf-score').addClass(className);
+    // $('#tx-dlf-score').show();
+    $('*[id*=tx-dlf-score-]').addClass(className).show();
+    // $('#tx-dlf-score').show();
     $('body').addClass(className);
     this.scrollToPagebeginning();
 
@@ -521,11 +613,11 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
 dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
     // get current position of pb element
     if (this.pagebeginning) {
-        const currentPosition = $('#tx-dlf-score svg g#' + this.pagebeginning)?.parent()?.position()?.top ?? 0;
+        const currentPosition = $('#tx-dlf-score-' + this.dlfViewer.counter + ' svg g#' + this.pagebeginning)?.parent()?.position()?.top ?? 0;
         // set target position if zero
         this.position = this.position == 0 ? currentPosition : this.position;
         // trigger scroll
-        $('#tx-dlf-score').scrollTop(this.position - scrollOffset);
+        $('#tx-dlf-score-' + this.dlfViewer.counter).scrollTop(this.position - scrollOffset);
     } else {
         $('#tx-dlf-tools-score').hide();
     }

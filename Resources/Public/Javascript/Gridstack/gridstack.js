@@ -1,7 +1,8 @@
 $( document ).ready(function() {
     var options = { // put in gridstack options here
         disableOneColumnMode: true, // for jfiddle small window size
-        float: false
+        float: false,
+        handle: '.drag'
     };
     var grid = GridStack.init(options);
 
@@ -28,20 +29,12 @@ $( document ).ready(function() {
 
     // DEV ########################
 
-    $("#enableEdit").on('click', function (evt) {
-        grid.enableMove(true);
-        grid.enableResize(true);
-    });
-
-    $("#disableEdit").on('click', function (evt) {
-        grid.enableMove(false);
-        grid.enableResize(false);
-    });
-
-    // resize each map
-    grid.on('change', function(evt, items) {
-        $('.tx-dlf-map').each(function (index) {
-            tx_dlf_viewer[index].map.updateSize()
+    if (grid) {
+        // resize each map
+        grid.on('change', function(evt, items) {
+            $('.tx-dlf-map').each(function (index) {
+                tx_dlf_viewer[index].map.updateSize()
+            });
         });
-    });
+    }
 });
