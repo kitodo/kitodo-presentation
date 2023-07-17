@@ -249,7 +249,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     //
     // Draw boxes for each measure
     //
-    var measureCoords = this.dlfViewer.measureCoords;
+    var measureCoords = this.dlfViewer.measureCoords;console.log(measureCoords);
     var dlfViewer = this.dlfViewer;
     $( document ).ready(function() {
         $.each(measureCoords, function (key, value) {
@@ -266,6 +266,12 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
                 'fill-opacity': '0'
             });
             $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].appendChild(measureRect);
+
+            if (key == dlfViewer.currentMeasureId) {
+                $($('#tx-dlf-score-' + dlfViewer.counter + ' #' + key + ' > rect')[0]).addClass('active');
+
+                dlfViewer.verovioMeasureActive = $($('#tx-dlf-score-' + dlfViewer.counter + ' #' + key + ' > rect')[0]);
+            }
         });
 
         //
@@ -308,7 +314,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
             dlfViewer.verovioMeasureHover = $(this);
             // set measure as active
-            console.log(dlfViewer.verovioMeasureHover);
             dlfViewer.verovioMeasureHover.addClass('hover');
             var measureId = $(this).parent().attr('id');
 
@@ -316,7 +321,9 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
             if (dlfUtils.exists(dlfViewer.measureLayer)) {
                 dlfViewer.facsimileMeasureHover = dlfViewer.measureLayer.getSource().getFeatureById(measureId);
                 if (dlfViewer.facsimileMeasureHover != dlfViewer.facsimileMeasureActive) {
-                    dlfViewer.facsimileMeasureHover.setStyle(dlfViewerOLStyles.hoverStyle());
+                    if (dlfViewer.facsimileMeasureHover) {
+                        dlfViewer.facsimileMeasureHover.setStyle(dlfViewerOLStyles.hoverStyle());
+                    }
                 }
             }
         });

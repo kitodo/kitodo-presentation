@@ -82,6 +82,8 @@ var dlfViewer = function(settings){
 
     this.counter = dlfUtils.exists(settings.counter) ? settings.counter : 0;
 
+    this.currentMeasureId = dlfUtils.exists(settings.currentMeasureId) ? settings.currentMeasureId : '';
+
     this.facsimileMeasureActive = null;
     this.facsimileMeasureHover = null;
 
@@ -443,6 +445,12 @@ dlfViewer.prototype.addCustomControls = function() {
                     y1
                 });
                 measureLayer.getSource().addFeature(feature);
+
+                if (key == context.currentMeasureId) {
+                    feature.setStyle(dlfViewerOLStyles.selectStyle());
+                    context.facsimileMeasureActive = feature;
+                }
+
                 i++;
 
             });

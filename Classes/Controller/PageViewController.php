@@ -312,14 +312,16 @@ class PageViewController extends AbstractController
         if ($defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT']) {
             $musicalStruct = $doc->musicalStructureInfo;
 
+            $i = 0;
             foreach ($musicalStruct as $measureId => $measureData) {
                 if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
-
                     $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
+                    $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
                 }
+                $i++;
             }
         }
-        return $measureCoordsFromCurrentSite;
+        return ['measureCoordsCurrentSite' => $measureCoordsFromCurrentSite, 'measureCounterToMeasureId' => $measureCounterToMeasureId];
     }
 
     /**
@@ -452,6 +454,11 @@ class PageViewController extends AbstractController
                     $docFulltext = [];
                     $docAnnotationContainers = [];
 
+                    $currentMeasureId = '';
+                    if ($this->requestData['docMeasure'][$i]) {
+                        $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
+                    }
+
                     $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer({
                                 controls: ["' . implode('", "', $this->controls) . '"],
                                 div: "tx-dfgviewer-map-' . $i . '",
@@ -460,8 +467,9 @@ class PageViewController extends AbstractController
                                 fulltexts: ' . json_encode($docFulltext) . ',
                                 score: ' . json_encode($docScore) . ',
                                 annotationContainers: ' . json_encode($docAnnotationContainers) . ',
-                                measureCoords: ' . json_encode($docMeasures) . ',
-                                useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
+                                measureCoords: ' . json_encode($docMeasures['measureCoordsCurrentSite']) . ',
+                                useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
+                                currentMeasureId: "' . $currentMeasureId . '"
                             });
                             ';
                     $i++;
