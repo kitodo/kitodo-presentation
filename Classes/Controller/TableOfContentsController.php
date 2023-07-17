@@ -232,7 +232,7 @@ class TableOfContentsController extends AbstractController
         $doc = $this->document->getDoc();
         if (
             $doc instanceof MetsDocument
-            && $entry['points'] === $doc->parentHref
+            && ($entry['points'] === $doc->parentHref || $entry['type'] === 'multivolume_work')
             && !empty($this->document->getPartof())
         ) {
             unset($entry['points']);
