@@ -232,7 +232,7 @@ class TableOfContentsController extends AbstractController
         $doc = $this->document->getDoc();
         if (
             $doc instanceof MetsDocument
-            && ($entry['points'] === $doc->parentHref || $entry['type'] === 'multivolume_work')
+            && ($entry['points'] === $doc->parentHref || $this->isMultiElement($entry['type']))
             && !empty($this->document->getPartof())
         ) {
             unset($entry['points']);
@@ -244,8 +244,9 @@ class TableOfContentsController extends AbstractController
 
     /**
      * Get translated type of entry.
-     * 
-     * @param array $type
+     *
+     * @param string $type
+     *
      * @return string
      */
     private function getTranslatedType($type) {
@@ -253,9 +254,25 @@ class TableOfContentsController extends AbstractController
     }
 
     /**
+     * Check if element has type 'multivolume_work' or 'multipart_manuscript'.
+     * Those elements have for each child one parent anchor file instead one
+     * parent file for all children elements.
+     *
+     * @access private
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    private function isMultiElement($type) {
+        return $type === 'multivolume_work' || $type === 'multipart_manuscript';
+    }
+
+    /**
      * Sort menu by orderlabel - currently implemented for newspaper.
-     * 
+     *
      * @param array &$menu
+     *
      * @return void
      */
     private function sortMenu(&$menu) {
@@ -268,6 +285,7 @@ class TableOfContentsController extends AbstractController
      * Sort menu years of the newspaper by orderlabel.
      * 
      * @param array &$menu
+     *
      * @return void
      */
     private function sortMenuForNewspapers(&$menu) {
