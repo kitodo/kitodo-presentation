@@ -232,7 +232,7 @@ class TableOfContentsController extends AbstractController
         $doc = $this->document->getDoc();
         if (
             $doc instanceof MetsDocument
-            && $entry['points'] === $doc->parentHref
+            && ($entry['points'] === $doc->parentHref || $this->isMultiElement($entry['type']))
             && !empty($this->document->getPartof())
         ) {
             unset($entry['points']);
@@ -244,8 +244,9 @@ class TableOfContentsController extends AbstractController
 
     /**
      * Get translated type of entry.
-     * 
-     * @param array $type
+     *
+     * @param string $type
+     *
      * @return string
      */
     private function getTranslatedType($type) {
@@ -253,9 +254,30 @@ class TableOfContentsController extends AbstractController
     }
 
     /**
+     * Check if element has type 'multivolume_work' or 'multipart_manuscript'.
+     * For Kitodo.Production prior to version 3.x, hierarchical child documents
+     * always come with their own METS file for their parent document, even
+     * if multiple documents in fact have the same parent. To make sure that all
+     * of them point to the same parent document in Kitodo.Presentation, we
+     * need some workaround here.
+     *
+     * @todo Should be removed when Kitodo.Production 2.x is no longer supported.
+     *
+     * @access private
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    private function isMultiElement($type) {
+        return $type === 'multivolume_work' || $type === 'multipart_manuscript';
+    }
+
+    /**
      * Sort menu by orderlabel - currently implemented for newspaper.
-     * 
+     *
      * @param array &$menu
+     *
      * @return void
      */
     private function sortMenu(&$menu) {
@@ -268,6 +290,7 @@ class TableOfContentsController extends AbstractController
      * Sort menu years of the newspaper by orderlabel.
      * 
      * @param array &$menu
+     *
      * @return void
      */
     private function sortMenuForNewspapers(&$menu) {
