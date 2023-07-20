@@ -30,7 +30,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @access public
  * @property int $cPid This holds the PID for the configuration
  * @property-read bool $hasFulltext Are there any fulltext files available?
- * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read int $numPages The holds the total number of pages
  * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
@@ -954,18 +953,6 @@ abstract class Doc
     }
 
     /**
-     * This returns $this->location via __get()
-     *
-     * @access protected
-     *
-     * @return string The location of the document
-     */
-    protected function _getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
      * Format specific part of building the document's metadata array
      *
      * @access protected
@@ -1164,18 +1151,6 @@ abstract class Doc
      * @return string The logical structure node's ID
      */
     protected abstract function _getToplevelId();
-
-    /**
-     * This returns $this->uid via __get()
-     *
-     * @access protected
-     *
-     * @return mixed The UID or the URL of the document
-     */
-    protected function _getUid()
-    {
-        return $this->uid;
-    }
 
     /**
      * This sets $this->cPid via __set()
