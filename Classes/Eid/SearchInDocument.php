@@ -13,8 +13,8 @@
 namespace Kitodo\Dlf\Eid;
 
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Solr;
-use Kitodo\Dlf\Common\SolrSearchResult\ResultDocument;
+use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\Response;

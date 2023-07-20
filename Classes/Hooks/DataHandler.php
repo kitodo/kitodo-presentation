@@ -15,7 +15,7 @@ namespace Kitodo\Dlf\Hooks;
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;

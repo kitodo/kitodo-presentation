@@ -94,7 +94,7 @@ class TableOfContentsController extends AbstractController
             // Build table of contents from database.
             $result = $this->documentRepository->getTableOfContentsFromDb($this->document->getUid(), $this->document->getPid(), $this->settings);
 
-            $allResults = $result->fetchAll();
+            $allResults = $result->fetchAllAssociative();
 
             if (count($allResults) > 0) {
                 $menuArray[0]['ITEM_STATE'] = 'CURIFSUB';

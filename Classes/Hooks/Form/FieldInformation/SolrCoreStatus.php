@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Hooks\Form\FieldInformation;
 
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 
 /**
