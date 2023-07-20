@@ -255,8 +255,13 @@ class TableOfContentsController extends AbstractController
 
     /**
      * Check if element has type 'multivolume_work' or 'multipart_manuscript'.
-     * Those elements have for each child one parent anchor file instead one
-     * parent file for all children elements.
+     * For Kitodo.Production prior to version 3.x, hierarchical child documents
+     * always come with their own METS file for their parent document, even
+     * if multiple documents in fact have the same parent. To make sure that all
+     * of them point to the same parent document in Kitodo.Presentation, we
+     * need some workaround here.
+     *
+     * @todo Should be removed when Kitodo.Production 2.x is no longer supported.
      *
      * @access private
      *
