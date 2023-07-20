@@ -209,7 +209,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Volumes are documents that are both
      *  a) "leaf" elements i.e. partof != 0
      *  b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
-
+     *
      * @param array $settings
      *
      * @return array
@@ -347,7 +347,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $pid
      * @param array $settings
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \Doctrine\DBAL\ForwardCompatibility\Result
      */
     public function getTableOfContentsFromDb($uid, $pid, $settings)
     {
@@ -360,7 +360,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($settings['storagePid']);
         }
         // Check if there are any metadata to suggest.
-        $result = $queryBuilder
+        return $queryBuilder
             ->select(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents.title AS title',
@@ -387,7 +387,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->addOrderBy('tx_dlf_documents.volume_sorting')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
             ->execute();
-        return $result;
     }
 
     /**
