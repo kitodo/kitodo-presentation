@@ -176,6 +176,7 @@ class BaseCommand extends Command
         if ($doc === null) {
             return false;
         }
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $doc->cPid = $this->storagePid;
 
         $metadata = $doc->getTitledata($this->storagePid);
@@ -194,7 +195,7 @@ class BaseCommand extends Command
         $document->setAuthor(implode('; ', $metadata['author']));
         $document->setThumbnail($doc->thumbnail ? : '');
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
-        $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : $metadata['mets_order'][0] ? : '');
+        $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
         $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0], 'tx_dlf_structures');
         $document->setStructure($structure);
@@ -212,6 +213,8 @@ class BaseCommand extends Command
                     $documentCollection->setDescription('');
                     // add to CollectionRepository
                     $this->collectionRepository->add($documentCollection);
+                    // persist collection to prevent duplicates
+                    $persistenceManager->persistAll();
                 }
                 // add to document
                 $document->addCollection($documentCollection);
@@ -258,7 +261,7 @@ class BaseCommand extends Command
 
         // set volume data
         $document->setVolume($metadata['volume'][0] ? : '');
-        $document->setVolumeSorting($metadata['volume_sorting'][0] ? : '');
+        $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
 
         // Get UID of parent document.
         if ($document->getDocumentFormat() === 'METS') {
@@ -273,7 +276,6 @@ class BaseCommand extends Command
             $this->documentRepository->update($document);
         }
 
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
         return true;
