@@ -14,7 +14,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -326,7 +326,7 @@ class SearchController extends AbstractController
         $solrRequest = $solr->service->createRequest($selectQuery);
         $response = $solr->service->executeRequest($solrRequest);
         // return empty facet on solr error
-        if ($response->getStatusCode() == "400") {
+        if ($response->getStatusCode() == 400) {
             return [];
         }
         $results = $solr->service->select($selectQuery);

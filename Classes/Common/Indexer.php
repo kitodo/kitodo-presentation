@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -74,9 +75,9 @@ class Indexer
     protected static $processedDocs = [];
 
     /**
-     * Instance of \Kitodo\Dlf\Common\Solr class
+     * Instance of \Kitodo\Dlf\Common\Solr\Solr class
      *
-     * @var \Kitodo\Dlf\Common\Solr
+     * @var Solr
      * @access protected
      */
     protected static $solr;

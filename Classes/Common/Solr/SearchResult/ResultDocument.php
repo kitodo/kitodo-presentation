@@ -10,11 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Common\SolrSearchResult;
-
-use Kitodo\Dlf\Common\SolrSearchResult\Highlight;
-use Kitodo\Dlf\Common\SolrSearchResult\Page;
-use Kitodo\Dlf\Common\SolrSearchResult\Region;
+namespace Kitodo\Dlf\Common\Solr\SearchResult;
 
 /**
  * ResultDocument class for the 'dlf' extension. It keeps the result of the search in the SOLR index.
@@ -202,7 +198,7 @@ class ResultDocument
     }
 
     /**
-     * Get the thumnail URL
+     * Get the thumbnail URL
      *
      * @access public
      *

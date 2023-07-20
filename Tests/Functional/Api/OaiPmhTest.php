@@ -4,7 +4,7 @@ namespace Kitodo\Dlf\Tests\Functional\Api;
 
 use DateTime;
 use GuzzleHttp\Client as HttpClient;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use Phpoaipmh\Endpoint;

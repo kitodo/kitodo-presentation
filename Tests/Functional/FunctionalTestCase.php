@@ -3,7 +3,7 @@
 namespace Kitodo\Dlf\Tests\Functional;
 
 use GuzzleHttp\Client as HttpClient;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;

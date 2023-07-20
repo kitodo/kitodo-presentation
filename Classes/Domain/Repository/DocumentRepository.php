@@ -14,7 +14,7 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\SolrSearch;
+use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Database\ConnectionPool;
