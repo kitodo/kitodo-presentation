@@ -4,7 +4,7 @@ namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\SolrCore;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kitodo\Dlf\Common;
+namespace Kitodo\Dlf\Common\Solr;
 
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -12,6 +12,24 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
  */
 class SolrSearchQuery implements QueryInterface
 {
+    /**
+     * @var SolrSearch
+     * @access private
+     */
+    private $solrSearch;
+
+    /**
+     * @var int
+     * @access private
+     */
+    private $limit;
+
+    /**
+     * @var int
+     * @access private
+     */
+    private $offset;
+
     public function __construct($solrSearch)
     {
         $this->solrSearch = $solrSearch;

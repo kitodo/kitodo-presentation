@@ -12,7 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Token;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;

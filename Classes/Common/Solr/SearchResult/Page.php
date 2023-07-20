@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Common\SolrSearchResult;
+namespace Kitodo\Dlf\Common\Solr\SearchResult;
 
 /**
  * Page class for the 'dlf' extension. It keeps page in which search phrase was found.
