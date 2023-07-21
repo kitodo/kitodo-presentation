@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Hooks;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\Solr;
@@ -250,9 +250,9 @@ class DataHandler implements LoggerAwareInterface
                             } else {
                                 // Reindex document.
                                 $document = $this->getDocumentRepository()->findByUid($id);
-                                $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                                $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
-                                    $document->setDoc($doc);
+                                    $document->setCurrentDocument($doc);
                                     Indexer::add($document, $this->getDocumentRepository());
                                 } else {
                                     $this->logger->error('Failed to re-index document with UID ' . $id);
@@ -332,9 +332,9 @@ class DataHandler implements LoggerAwareInterface
                     case 'undelete':
                         // Reindex document.
                         $document = $this->getDocumentRepository()->findByUid($id);
-                        $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                         if ($document !== null && $doc !== null) {
-                            $document->setDoc($doc);
+                            $document->setCurrentDocument($doc);
                             Indexer::add($document);
                         } else {
                             $this->logger->error('Failed to re-index document with UID ' . $id);

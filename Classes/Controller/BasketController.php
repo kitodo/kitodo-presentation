@@ -401,13 +401,13 @@ class BasketController extends AbstractController
             }
             // set endpage for toc and subentry based on logid
             if (($_piVars['addToBasket'] == 'subentry') or ($_piVars['addToBasket'] == 'toc')) {
-                $smLinks = $this->document->getDoc()->smLinks;
+                $smLinks = $this->document->getCurrentDocument()->smLinks;
                 $pageCounter = sizeof($smLinks['l2p'][$_piVars['logId']]);
                 $documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
             }
             // add whole document
             if ($_piVars['addToBasket'] == 'list') {
-                $documentItem['endpage'] = $this->document->getDoc()->numPages;
+                $documentItem['endpage'] = $this->document->getCurrentDocument()->numPages;
             }
             $arrayKey = $documentItem['id'] . '_' . $page;
             if (!empty($documentItem['startX'])) {

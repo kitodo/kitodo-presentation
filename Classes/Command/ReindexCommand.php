@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -158,7 +158,7 @@ class ReindexCommand extends BaseCommand
         }
 
         foreach ($documents as $id => $document) {
-            $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
+            $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
 
             if ($doc === null) {
                 $io->warning('WARNING: Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
@@ -171,14 +171,14 @@ class ReindexCommand extends BaseCommand
                 if ($io->isVerbose()) {
                     $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . ($id + 1) . '/' . count($documents) . ' with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
-                $document->setDoc($doc);
+                $document->setCurrentDocument($doc);
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
                 Indexer::add($document, $this->documentRepository);
             }
             // Clear document registry to prevent memory exhaustion.
-            Doc::clearRegistry();
+            AbstractDocument::clearRegistry();
         }
 
         $io->success('All done!');

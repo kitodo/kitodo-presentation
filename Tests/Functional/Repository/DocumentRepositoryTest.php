@@ -2,7 +2,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Repository;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
@@ -37,7 +37,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         $this->assertNotEmpty($document->getTitle());
         $this->assertEquals('Default Library', $document->getOwner()->getLabel());
 
-        $doc = Doc::getInstance($document->getLocation());
+        $doc = AbstractDocument::getInstance($document->getLocation());
         $this->assertInstanceOf(MetsDocument::class, $doc);
     }
 

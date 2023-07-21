@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\ExpressionLanguage;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Model\Document;
@@ -120,17 +120,17 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
-                if ($this->document === null || $this->document->getDoc() === null) {
+                if ($this->document === null || $this->document->getCurrentDocument() === null) {
                     return $type;
                 }
                 // Set PID for metadata definitions.
-                $this->document->getDoc()->cPid = $cPid;
+                $this->document->getCurrentDocument()->cPid = $cPid;
 
-                $metadata = $this->document->getDoc()->getTitledata($cPid);
+                $metadata = $this->document->getCurrentDocument()->getTitledata($cPid);
                 if (!empty($metadata['type'][0])) {
                     // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
                     if (
-                        $this->document->getDoc() instanceof IiifManifest
+                        $this->document->getCurrentDocument() instanceof IiifManifest
                         && array_search($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']) !== false
                     ) {
                         return $type;
@@ -163,13 +163,13 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 // find document from repository by uid
                 $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id'], ['storagePid' => $pid]);
                 if ($this->document) {
-                    $doc = Doc::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                    $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
                 } else {
                     $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
                 }
             } else if (GeneralUtility::isValidUrl($requestData['id'])) {
 
-                $doc = Doc::getInstance($requestData['id'], ['storagePid' => $pid], true);
+                $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid], true);
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
@@ -188,7 +188,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             }
 
             if ($this->document !== null && $doc !== null) {
-                $this->document->setDoc($doc);
+                $this->document->setCurrentDocument($doc);
             }
 
         } elseif (!empty($requestData['recordId'])) {
@@ -196,9 +196,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
 
             if ($this->document !== null) {
-                $doc = Doc::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
                 if ($this->document !== null && $doc !== null) {
-                    $this->document->setDoc($doc);
+                    $this->document->setCurrentDocument($doc);
                 } else {
                     $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
                 }

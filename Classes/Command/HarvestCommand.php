@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Input\InputInterface;
@@ -216,7 +216,7 @@ class HarvestCommand extends BaseCommand
             $docLocation = $baseLocation . http_build_query($params);
             // ...index the document...
             $document = null;
-            $doc = Doc::getInstance($docLocation, ['storagePid' => $this->storagePid], true);
+            $doc = AbstractDocument::getInstance($docLocation, ['storagePid' => $this->storagePid], true);
 
             if ($doc === null) {
                 $io->warning('WARNING: Document "' . $docLocation . '" could not be loaded. Skip to next document.');
@@ -241,7 +241,7 @@ class HarvestCommand extends BaseCommand
                 if ($io->isVerbose()) {
                     $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
-                $document->setDoc($doc);
+                $document->setCurrentDocument($doc);
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
