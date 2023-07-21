@@ -411,7 +411,7 @@ abstract class Doc
         $xml = null;
         $iiif = null;
 
-        if ($instance = self::getDocCache($location)) {
+        if ($instance = self::getDocCache($location) && !$forceReload) {
             return $instance;
         } else {
             $instance = null;
