@@ -724,7 +724,7 @@ class Helper
                 ->setMaxResults(1)
                 ->execute();
 
-                $row = $result->fetchAssociative();
+            $row = $result->fetchAssociative();
 
             if ($row) {
                 // If there is an translated content element, overwrite the received $index_name.
