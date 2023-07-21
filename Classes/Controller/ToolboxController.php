@@ -156,7 +156,7 @@ class ToolboxController extends AbstractController
         $this->setPage();
 
         // Get text download.
-        $this->view->assign('fulltextDownload', !$this->emptyFullText());
+        $this->view->assign('fulltextDownload', !$this->isFullTextEmpty());
     }
 
     /**
@@ -178,7 +178,7 @@ class ToolboxController extends AbstractController
 
         $this->setPage();
 
-        if (!$this->emptyFullText()) {
+        if (!$this->isFullTextEmpty()) {
             $this->view->assign('fulltext', true);
             $this->view->assign('activateFullTextInitially', MathUtility::forceIntegerInRange($this->settings['activateFullTextInitially'], 0, 1, 0));
         } else {
@@ -392,7 +392,7 @@ class ToolboxController extends AbstractController
         $this->setPage();
 
         // Quit if no fulltext file is present
-        if ($this->emptyFullText()) {
+        if ($this->isFullTextEmpty()) {
             return;
         }
 
@@ -474,7 +474,7 @@ class ToolboxController extends AbstractController
      *
      * @return bool true if empty, false otherwise
      */
-    private function emptyFullText() {
+    private function isFullTextEmpty() {
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->requestData['page']]]['files'][$fileGrpFulltext];
