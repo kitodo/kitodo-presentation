@@ -316,7 +316,6 @@ class Indexer
             }
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
-            $solrDoc = $updateQuery->createDocument();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
             if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                 $solrDoc->setField('page', $logicalUnit['points']);
