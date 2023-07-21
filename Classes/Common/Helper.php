@@ -313,12 +313,12 @@ class Helper
             self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
-        // Generate random initialisation vector.
+        // Generate random initialization vector.
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
         $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
         // Encrypt data.
         $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
-        // Merge initialisation vector and encrypted data.
+        // Merge initialization vector and encrypted data.
         if ($encrypted !== false) {
             $encrypted = base64_encode($iv . $encrypted);
         }
