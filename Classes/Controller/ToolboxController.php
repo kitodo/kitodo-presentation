@@ -12,8 +12,8 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Controller class for plugin 'Toolbox'.
@@ -245,7 +245,7 @@ class ToolboxController extends AbstractController
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $fileGrps = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
+        $fileGrps = GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
         while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
             if (!empty($this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp])) {
