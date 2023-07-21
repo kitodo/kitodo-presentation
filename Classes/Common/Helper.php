@@ -680,6 +680,7 @@ class Helper
         $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
+        $languageContentId = $languageAspect->getContentId();
 
         // Check if "index_name" is an UID.
         if (MathUtility::canBeInterpretedAsInteger($index_name)) {
@@ -717,7 +718,7 @@ class Helper
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
                     $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId())),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId)),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
@@ -732,15 +733,15 @@ class Helper
         }
 
         // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
+        if (empty($labels[$table][$pid][$languageContentId][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
-                if ($languageAspect->getContentId() > 0) {
+                if ($languageContentId > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId()))
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId))
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
@@ -761,11 +762,11 @@ class Helper
                 if ($result->rowCount() > 0) {
                     while ($resArray = $result->fetchAssociative()) {
                         // Overlay localized labels if available.
-                        if ($languageAspect->getContentId() > 0) {
-                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageAspect->getContentId(), $languageAspect->getLegacyOverlayType());
+                        if ($languageContentId > 0) {
+                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageContentId, $languageAspect->getLegacyOverlayType());
                         }
                         if ($resArray) {
-                            $labels[$table][$pid][$languageAspect->getContentId()][$resArray['index_name']] = $resArray['label'];
+                            $labels[$table][$pid][$languageContentId][$resArray['index_name']] = $resArray['label'];
                         }
                     }
                 } else {
@@ -776,8 +777,8 @@ class Helper
             }
         }
 
-        if (!empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
-            return $labels[$table][$pid][$languageAspect->getContentId()][$index_name];
+        if (!empty($labels[$table][$pid][$languageContentId][$index_name])) {
+            return $labels[$table][$pid][$languageContentId][$index_name];
         } else {
             return $index_name;
         }
