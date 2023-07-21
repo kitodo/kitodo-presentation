@@ -16,12 +16,17 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
+
 
 /**
  * Helper class for the 'dlf' extension
@@ -83,7 +88,7 @@ class Helper
      */
     public static function addMessage($message, $title, $severity, $session = false, $queue = 'kitodo.default.flashMessages')
     {
-        $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessage = GeneralUtility::makeInstance(
             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -613,7 +618,7 @@ class Helper
 
     /**
      * Merges two arrays recursively and actually returns the modified array.
-     * @see \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule()
+     * @see ArrayUtility::mergeRecursiveWithOverrule()
      *
      * @access public
      *
@@ -627,7 +632,7 @@ class Helper
      */
     public static function mergeRecursiveWithOverrule(array $original, array $overrule, $addKeys = true, $includeEmptyValues = true, $enableUnsetFeature = true)
     {
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
+        ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
         return $original;
     }
 
@@ -642,7 +647,7 @@ class Helper
      */
     public static function renderFlashMessages($queue = 'kitodo.default.flashMessages')
     {
-        $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
         $content = GeneralUtility::makeInstance(\Kitodo\Dlf\Common\KitodoFlashMessageRenderer::class)
@@ -671,13 +676,13 @@ class Helper
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $index_name;
         }
-        /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
 
         // Check if "index_name" is an UID.
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
+        if (MathUtility::canBeInterpretedAsInteger($index_name)) {
             $index_name = self::getIndexNameFromUid($index_name, $table, $pid);
         }
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
@@ -796,8 +801,8 @@ class Helper
             if ($showHidden) {
                 $ignoreHide = 1;
             }
-            /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
-            $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+            /** @var PageRepository $pageRepository */
+            $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
             $expression = $pageRepository->enableFields($table, $ignoreHide);
             if (!empty($expression)) {
