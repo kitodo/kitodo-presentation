@@ -499,7 +499,7 @@ class Helper
             ->where($where)
             ->execute();
 
-        $allStructures = $kitodoStructures->fetchAll();
+        $allStructures = $kitodoStructures->fetchAllAssociative();
 
         // make lookup-table indexName -> uid
         $allStructures = array_column($allStructures, 'indexName', 'uid');
@@ -702,29 +702,27 @@ class Helper
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
+        $row = $result->fetchAssociative();
 
-        if (count($allResults) == 1) {
+        if ($row) {
             // Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
-            $resArray = $allResults[0];
-
             $result = $queryBuilder
                 ->select($table . '.index_name AS index_name')
                 ->from($table)
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
-                    $queryBuilder->expr()->eq($table . '.uid', $resArray['l18n_parent']),
+                    $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
                     $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId())),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
+                $row = $result->fetchAssociative();
 
-            if (count($allResults) == 1) {
+            if ($row) {
                 // If there is an translated content element, overwrite the received $index_name.
-                $index_name = $allResults[0]['index_name'];
+                $index_name = $row['index_name'];
             }
         }
 
