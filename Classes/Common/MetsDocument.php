@@ -336,7 +336,7 @@ final class MetsDocument extends Doc
         // Set volume any year information only if no label is set and this is the toplevel structure element.
         if (
             empty($details['label'])
-            && $details['id'] == $this->_getToplevelId()
+            && empty($details['orderlabel'])
         ) {
             $metadata = $this->getMetadata($details['id']);
             if (!empty($metadata['volume'][0])) {
