@@ -445,6 +445,12 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         this.highlightWords = highlightWords;
     }
 
+    // exctract highlighWords from URL
+    if (this.highlightWords === null) {
+        var urlParams = dlfUtils.getUrlParams();
+        this.highlightWords = urlParams['tx_dlf[highlight_word]'];
+    }
+
     if (!dlfUtils.exists(this.highlightLayer)) {
 
         this.highlightLayer = new ol.layer.Vector({

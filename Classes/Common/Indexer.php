@@ -12,17 +12,15 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
-use Ubl\Iiif\Tools\IiifHelper;
 
 /**
  * Indexer class for the 'dlf' extension
@@ -77,9 +75,9 @@ class Indexer
     protected static $processedDocs = [];
 
     /**
-     * Instance of \Kitodo\Dlf\Common\Solr class
+     * Instance of \Kitodo\Dlf\Common\Solr\Solr class
      *
-     * @var \Kitodo\Dlf\Common\Solr
+     * @var Solr
      * @access protected
      */
     protected static $solr;
@@ -262,7 +260,7 @@ class Indexer
                 )
                 ->execute();
 
-            while ($indexing = $result->fetch()) {
+            while ($indexing = $result->fetchAssociative()) {
                 if ($indexing['index_tokenized']) {
                     self::$fields['tokenized'][] = $indexing['index_name'];
                 }
@@ -322,7 +320,6 @@ class Indexer
             }
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
-            $solrDoc = $updateQuery->createDocument();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
             if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                 $solrDoc->setField('page', $logicalUnit['points']);

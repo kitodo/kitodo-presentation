@@ -153,7 +153,7 @@ final class IiifManifest extends Doc
                     )
                 )
                 ->execute();
-            while ($resArray = $result->fetch()) {
+            while ($resArray = $result->fetchAssociative()) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
                     try {
@@ -615,35 +615,9 @@ final class IiifManifest extends Doc
         if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
             return $this->metadataArray[$id];
         }
-        // Initialize metadata array with empty values.
-        // TODO initialize metadata in abstract class
-        $metadata = [
-            'title' => [],
-            'title_sorting' => [],
-            'author' => [],
-            'place' => [],
-            'year' => [],
-            'prod_id' => [],
-            'record_id' => [],
-            'opac_id' => [],
-            'union_id' => [],
-            'urn' => [],
-            'purl' => [],
-            'type' => [],
-            'volume' => [],
-            'volume_sorting' => [],
-            'date' => [],
-            'license' => [],
-            'terms' => [],
-            'restrictions' => [],
-            'out_of_print' => [],
-            'rights_info' => [],
-            'collection' => [],
-            'owner' => [],
-            'mets_label' => [],
-            'mets_orderlabel' => [],
-            'document_format' => ['IIIF'],
-        ];
+
+        $metadata = $this->initializeMetadata('IIIF');
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_metadata');
         // Get hidden records, too.
@@ -676,7 +650,7 @@ final class IiifManifest extends Doc
             )
             ->execute();
         $iiifResource = $this->iiif->getContainedResourceById($id);
-        while ($resArray = $result->fetch()) {
+        while ($resArray = $result->fetchAssociative()) {
             // Set metadata field's value(s).
             if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != null) {
                 if (is_string($values)) {

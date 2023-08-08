@@ -12,7 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Token;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
@@ -587,7 +587,7 @@ class OaiPmhController extends AbstractController
 
             $result = $this->collectionRepository->getIndexNameForSolr($this->settings, $this->parameters['set']);
 
-            if ($resArray = $result->fetch()) {
+            if ($resArray = $result->fetchAssociative()) {
                 if ($resArray['index_query'] != "") {
                     $solr_query .= '(' . $resArray['index_query'] . ')';
                 } else {
@@ -699,7 +699,7 @@ class OaiPmhController extends AbstractController
         $documents = $this->documentRepository->getOaiDocumentList($this->settings, $documentsToProcess);
 
         $records = [];
-        while ($resArray = $documents->fetch()) {
+        while ($resArray = $documents->fetchAssociative()) {
             // we need the collections as array later
             $resArray['collections'] = explode(' ', $resArray['collections']);
 
