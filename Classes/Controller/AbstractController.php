@@ -309,6 +309,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         } else {
             $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
         }
+        // reassign viewData to get correct page
+        $this->viewData['requestData'] = $this->requestData;
     }
 
     /**
