@@ -93,12 +93,10 @@ class AudioplayerController extends AbstractController
                 break;
             }
         }
+
         if (!empty($this->audio)) {
             // Add jPlayer javascript.
             $this->addPlayerJS();
-        } else {
-            // Quit without doing anything if required variables are not set.
-            return;
         }
     }
 }

@@ -101,14 +101,14 @@ class CalendarController extends AbstractController
     public function calendarAction()
     {
         // access arguments passed by the mainAction()
-        $mainrequestData = $this->request->getArguments();
+        $mainRequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $this->requestData = array_merge($this->requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainRequestData);
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
         }
@@ -230,14 +230,14 @@ class CalendarController extends AbstractController
     public function yearsAction()
     {
         // access arguments passed by the mainAction()
-        $mainrequestData = $this->request->getArguments();
+        $mainRequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $this->requestData = array_merge($this->requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainRequestData);
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
         }
