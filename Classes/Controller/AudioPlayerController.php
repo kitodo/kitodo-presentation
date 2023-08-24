@@ -77,7 +77,7 @@ class AudioplayerController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setDefaultPage();
@@ -98,7 +98,7 @@ class AudioplayerController extends AbstractController
             $this->addPlayerJS();
         } else {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
     }
 }

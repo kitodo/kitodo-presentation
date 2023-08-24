@@ -74,7 +74,7 @@ class MetadataController extends AbstractController
     }
 
     /**
-     * @return string|void
+     * @return void
      */
     public function mainAction()
     {
@@ -82,7 +82,7 @@ class MetadataController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             // Set default values if not set.
             $this->setDefault('rootline', 0);
@@ -104,7 +104,7 @@ class MetadataController extends AbstractController
         }
         if (empty($metadata)) {
             $this->logger->warning('No metadata found for document with UID ' . $this->document->getUid());
-            return '';
+            return;
         }
         ksort($metadata);
 

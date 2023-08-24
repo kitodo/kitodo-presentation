@@ -37,7 +37,7 @@ class PageGridController extends AbstractController
             || empty($this->extConf['fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $entryArray = [];
