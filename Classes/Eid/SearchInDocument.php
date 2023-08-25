@@ -18,6 +18,7 @@ use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -88,15 +89,33 @@ class SearchInDocument
             $data = $result->getData();
             $highlighting = $data['ocrHighlighting'];
 
+            $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+            // TODO: find a way to get current pid
+            // attribute routing is null
+            //$pageId = $request->getAttribute('routing')->getPageId();
+            $pid = $GLOBALS['TSFE']->id;
+            $site = $siteFinder->getSiteByPageId(1);
+
             foreach ($result as $record) {
                 $resultDocument = new ResultDocument($record, $highlighting, $fields);
+ 
+                // TODO: find a way to get route (werkansicht)
+                $url = (string) $site->getRouter()->generateUri(
+                    8,
+                    [
+                        'tx_dlf[id]' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+                        'tx_dlf[page]' => $resultDocument->getPage(),
+                        'tx_dlf[highlight_word]' => $parameters['q']
+                    ]
+                );
 
                 $document = [
                     'id' => $resultDocument->getId(),
                     'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
                     'page' => $resultDocument->getPage(),
                     'snippet' => $resultDocument->getSnippets(),
-                    'highlight' => $resultDocument->getHighlightsIds()
+                    'highlight' => $resultDocument->getHighlightsIds(),
+                    'url' => $url
                 ];
                 $output['documents'][] = $document;
             }
