@@ -90,18 +90,13 @@ class SearchInDocument
             $highlighting = $data['ocrHighlighting'];
 
             $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-            // TODO: find a way to get current pid
-            // attribute routing is null
-            //$pageId = $request->getAttribute('routing')->getPageId();
-            $pid = $GLOBALS['TSFE']->id;
-            $site = $siteFinder->getSiteByPageId(1);
+            $site = $siteFinder->getSiteByPageId($parameters['pid']);
 
             foreach ($result as $record) {
                 $resultDocument = new ResultDocument($record, $highlighting, $fields);
- 
-                // TODO: find a way to get route (werkansicht)
+
                 $url = (string) $site->getRouter()->generateUri(
-                    8,
+                    $parameters['pid'],
                     [
                         'tx_dlf[id]' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
                         'tx_dlf[page]' => $resultDocument->getPage(),

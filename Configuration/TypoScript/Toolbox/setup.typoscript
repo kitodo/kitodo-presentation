@@ -1,5 +1,6 @@
 plugin.tx_dlf_fulltexttool {
     settings {
+        tool = fulltexttool
         activateFullTextInitially = 0
         fullTextScrollElement = html, body
         searchHlParameters = tx_dlf[highlight_word]
@@ -8,9 +9,11 @@ plugin.tx_dlf_fulltexttool {
 
 plugin.tx_dlf_searchindocumenttool {
     settings {
+        tool = searchindocumenttool
         searchUrl =
         documentIdUrlSchema =
         idInputName = tx_dlf[id]
+        pidInputName = tx_dlf[pid]
         queryInputName = tx_dlf[query]
         startInputName = tx_dlf[start]
         pageInputName = tx_dlf[page]
