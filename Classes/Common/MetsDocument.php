@@ -333,7 +333,7 @@ final class MetsDocument extends Doc
         $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
         $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
         $details['volume'] = '';
-        // Set volume any year information only if no label is set and this is the toplevel structure element.
+        // Set volume and year information only if no label is set and this is the toplevel structure element.
         if (
             empty($details['label'])
             && empty($details['orderlabel'])
