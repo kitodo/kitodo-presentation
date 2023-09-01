@@ -365,6 +365,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents.title AS title',
                 'tx_dlf_documents.volume AS volume',
+                'tx_dlf_documents.year AS year',
                 'tx_dlf_documents.mets_label AS mets_label',
                 'tx_dlf_documents.mets_orderlabel AS mets_orderlabel',
                 'tx_dlf_structures_join.index_name AS type'

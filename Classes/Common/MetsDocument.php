@@ -333,14 +333,17 @@ final class MetsDocument extends Doc
         $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
         $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
         $details['volume'] = '';
-        // Set volume information only if no label is set and this is the toplevel structure element.
+        // Set volume and year information only if no label is set and this is the toplevel structure element.
         if (
             empty($details['label'])
-            && $details['id'] == $this->_getToplevelId()
+            && empty($details['orderlabel'])
         ) {
             $metadata = $this->getMetadata($details['id']);
             if (!empty($metadata['volume'][0])) {
                 $details['volume'] = $metadata['volume'][0];
+            }
+            if (!empty($metadata['year'][0])) {
+                $details['year'] = $metadata['year'][0];
             }
         }
         $details['pagination'] = '';
@@ -630,6 +633,7 @@ final class MetsDocument extends Doc
         if (empty($metadata['date'][0])) {
             $metadata['date'][0] = '';
         }
+
         // Files are not expected to reference a dmdSec
         if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
             return $metadata;
