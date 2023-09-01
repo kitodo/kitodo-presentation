@@ -303,7 +303,6 @@ class TableOfContentsController extends AbstractController
                 if ($entry['type'] == $titleReplacement['type']) {
                     $fields = explode(",", $titleReplacement['fields']);
                     $title = '';
-        
                     foreach ($fields as $field) {
                         if ($field == 'type') {
                             $title .= $this->getTranslatedType($entry['type']) . ' ';
