@@ -2,7 +2,7 @@
 name: Task for the development fund
 about: A working package which may be sponsored by the Kitodo e.V. development fund.
 title: "[FUND] "
-labels: development fund 2022
+labels: ⭐ development fund 2023
 assignees: ''
 
 ---

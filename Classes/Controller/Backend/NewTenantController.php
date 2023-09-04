@@ -11,7 +11,7 @@
 
 namespace Kitodo\Dlf\Controller\Backend;
 
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Model\Metadata;
@@ -22,18 +22,14 @@ use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
-
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
-use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
@@ -280,11 +276,13 @@ class NewTenantController extends AbstractController
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
             $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getTypo3Language(), $beLabels). ' (PID ' . $this->pid . ')');
             $indexName = Solr::createCore('');
-            $newRecord->setIndexName($indexName);
+            if (!empty($indexName)) {
+                $newRecord->setIndexName($indexName);
 
-            $this->solrCoreRepository->add($newRecord);
+                $this->solrCoreRepository->add($newRecord);
 
-            $doPersist = true;
+                $doPersist = true;
+            }
         }
 
         // We must persist here, if we changed anything.
@@ -419,8 +417,10 @@ class NewTenantController extends AbstractController
     {
         if (isset($langArray[$lang][$index][0]['target'])) {
             return $langArray[$lang][$index][0]['target'];
-        } else {
+        } elseif (isset($langArray['default'][$index][0]['target'])) {
             return $langArray['default'][$index][0]['target'];
+        } else {
+            return 'Missing translation for ' . $index;
         }
     }
 }

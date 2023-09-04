@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\ActionLog;
 use Kitodo\Dlf\Domain\Model\Basket;
@@ -22,6 +21,7 @@ use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Context\Context;
 
 /**
  * Controller class for the plugin 'Basket'.
@@ -86,7 +86,7 @@ class BasketController extends AbstractController
     }
 
     /**
-     * Different actions which depends on the choosen action (form)
+     * Different actions which depends on the chosen action (form)
      *
      * @return void
      */
@@ -207,8 +207,12 @@ class BasketController extends AbstractController
     {
         // get user session
         $sessionId = $GLOBALS['TSFE']->fe_user->id;
+        $context = GeneralUtility::makeInstance(Context::class);
 
-        if ($GLOBALS['TSFE']->loginUser) {
+        // Checking if a user is logged in
+        $userIsLoggedIn = $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+
+        if ($userIsLoggedIn) {
             $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
         } else {
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
@@ -217,12 +221,13 @@ class BasketController extends AbstractController
 
             $basket = $this->basketRepository->findOneBySessionId($sessionId);
         }
-        // session doesnt exists
+
+        // session does not exist
         if ($basket === null) {
             // create new basket in db
             $basket = GeneralUtility::makeInstance(Basket::class);
             $basket->setSessionId($sessionId);
-            $basket->setFeUserId($GLOBALS['TSFE']->loginUser ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
+            $basket->setFeUserId($userIsLoggedIn ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
         }
 
         return $basket;
@@ -294,7 +299,7 @@ class BasketController extends AbstractController
     protected function getDocumentData($id, $data)
     {
         // get document instance to load further information
-        $this->loadDocument(['id' => $id]);
+        $this->loadDocument((int) $id);
         if ($this->document) {
             // replace url param placeholder
             $urlParams = str_replace("##page##", (int) $data['page'], $this->settings['pdfparams']);
@@ -358,7 +363,7 @@ class BasketController extends AbstractController
      * @param array $_piVars: piVars
      * @param Basket $basket: basket object
      *
-     * @return array Basket data and Javascript output
+     * @return array Basket data and JavaScript output
      */
     protected function addToBasket($_piVars, $basket)
     {
@@ -389,11 +394,8 @@ class BasketController extends AbstractController
                 $items = [];
             }
             // get document instance to load further information
-            $this->loadDocument(['id' => $documentItem['id']]);
-            if (
-                $this->document === null
-                || $this->document->getDoc() === null
-            ) {
+            $this->loadDocument((int) $documentItem['id']);
+            if ($this->isDocMissing()) {
                 // Quit without doing anything if required variables are not set.
                 return;
             }

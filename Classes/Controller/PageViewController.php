@@ -16,7 +16,6 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Database\Connection;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
 use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 
@@ -89,14 +88,11 @@ class PageViewController extends AbstractController
     public function mainAction()
     {
         // Load current document.
-        $this->loadDocument($this->requestData);
-        if (
-            $this->document === null
-            || ($this->document->getDoc()->numPages < 1
-                && $this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work') // @TODO: Change type
-        ) {
+        $this->loadDocument();
+        if ($this->isDocMissingOrEmpty() ||
+            ($this->document->getDoc()->numPages < 1 && $this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work')) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         } else {
             if ($this->document->getDoc()->tableOfContents[0]['type'] == 'multivolume_work' && empty($this->requestData['multiview'])) { // @TODO: Change type
                 $params = array_merge(
@@ -110,28 +106,7 @@ class PageViewController extends AbstractController
                     ->uriFor('main');
                 $this->redirectToUri($uri);
             }
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->requestData['page'] > 0 || empty($this->requestData['page']) || is_array($this->requestData['docPage'])) {
-                if ($this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work') {
-                    $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-                } else {
-                    $i = 0;
-                    foreach ($this->documentArray as $document) {
-                        if ($document !== null) {
-                            $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
-                            $i++;
-                        }
-                    }
-                }
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            $this->setPage();
             $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
 
             $documentAnnotation = DocumentAnnotation::getInstance($this->document);
@@ -398,18 +373,7 @@ class PageViewController extends AbstractController
             if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
                 $fulltext['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 if ($this->settings['useInternalProxy']) {
-                    // Configure @action URL for form.
-                    $uri = $this->uriBuilder->reset()
-                        ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments([
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $fulltext['url'],
-                            'uHash' => GeneralUtility::hmac($fulltext['url'], 'PageViewProxy')
-                            ])
-                        ->build();
-
-                    $fulltext['url'] = $uri;
+                    $this->configureProxyUrl($fulltext['url']);
                 }
                 $fulltext['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
                 break;
@@ -418,7 +382,7 @@ class PageViewController extends AbstractController
             }
         }
         if (empty($fulltext)) {
-            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpFulltext'] . '"');
+            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->extConf['fileGrpFulltext'] . '"');
         }
         return $fulltext;
     }
@@ -462,6 +426,7 @@ class PageViewController extends AbstractController
                     $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer({
                                 controls: ["' . implode('", "', $this->controls) . '"],
                                 div: "tx-dfgviewer-map-' . $i . '",
+                                progressElementId: "' . $this->settings['progressElementId'] . '",
                                 counter: "' . $i . '",
                                 images: ' . json_encode($docImage) . ',
                                 fulltexts: ' . json_encode($docFulltext) . ',
@@ -490,6 +455,7 @@ class PageViewController extends AbstractController
                         tx_dlf_viewer = new dlfViewer({
                             controls: ["' . implode('", "', $this->controls) . '"],
                             div: "' . $this->settings['elementId'] . '",
+                            progressElementId: "' . $this->settings['progressElementId'] . '",
                             images: ' . json_encode($this->images) . ',
                             fulltexts: ' . json_encode($this->fulltexts) . ',
                             score: ' . json_encode($this->scores) . ',
@@ -525,7 +491,7 @@ class PageViewController extends AbstractController
                     $annotationContainers = [];
                     /*
                      *  TODO Analyzing the annotations on the server side requires loading the annotation lists / pages
-                     *  just to determine wether they contain text annotations for painting. This will take time and lead to a bad user experience.
+                     *  just to determine whether they contain text annotations for painting. This will take time and lead to a bad user experience.
                      *  It would be better to link every annotation and analyze the data on the client side.
                      *
                      *  On the other hand, server connections are potentially better than client connections. Downloading annotation lists
@@ -584,18 +550,8 @@ class PageViewController extends AbstractController
 
                     // Only deliver static images via the internal PageViewProxy.
                     // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL`.)
-                    if ($this->settings['useInternalProxy'] && strpos($image['mimetype'], 'image/') === 0) {
-                        // Configure @action URL for form.
-                        $uri = $this->uriBuilder->reset()
-                            ->setTargetPageUid($GLOBALS['TSFE']->id)
-                            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                            ->setArguments([
-                                'eID' => 'tx_dlf_pageview_proxy',
-                                'url' => $image['url'],
-                                'uHash' => GeneralUtility::hmac($image['url'], 'PageViewProxy')
-                            ])
-                            ->build();
-                        $image['url'] = $uri;
+                    if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
+                        $this->configureProxyUrl($image['url']);
                     }
                     break;
                 } else {
@@ -611,18 +567,8 @@ class PageViewController extends AbstractController
 
                     // Only deliver static images via the internal PageViewProxy.
                     // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL`.)
-                    if ($this->settings['useInternalProxy'] && strpos($image['mimetype'], 'image/') === 0) {
-                        // Configure @action URL for form.
-                        $uri = $this->uriBuilder->reset()
-                            ->setTargetPageUid($GLOBALS['TSFE']->id)
-                            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                            ->setArguments([
-                                'eID' => 'tx_dlf_pageview_proxy',
-                                'url' => $image['url'],
-                                'uHash' => GeneralUtility::hmac($image['url'], 'PageViewProxy')
-                                ])
-                            ->build();
-                        $image['url'] = $uri;
+                    if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
+                        $this->configureProxyUrl($image['url']);
                     }
                     break;
                 } else {
@@ -631,7 +577,7 @@ class PageViewController extends AbstractController
             }
         }
         if (empty($image)) {
-            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpImages'] . '"');
+            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->extConf['fileGrpImages'] . '"');
         }
         return $image;
     }

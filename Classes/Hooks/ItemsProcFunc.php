@@ -13,21 +13,25 @@
 namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * Helper for Flexform's custom "itemsProcFunc"
+ * Helper for FlexForm's custom "itemsProcFunc"
  *
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class ItemsProcFunc
+class ItemsProcFunc implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var int
      */
@@ -45,24 +49,43 @@ class ItemsProcFunc
     public function toolList(&$params)
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
-            $params['items'][] = [Helper::getLanguageService()->getLL($label), $class];
+            $params['items'][] = [Helper::getLanguageService()->sL($label), $class];
         }
     }
 
     /**
-     * The constructor to access TypoScript configuration
+     * Extract typoscript configuration from site root of the plugin
      *
      * @access public
      *
+     * @param $params
+     *
      * @return void
      */
-    public function __construct()
-    {
+    public function getTyposcriptConfigFromPluginSiteRoot($params) {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get(ConfigurationManager::class);
-        // we must get the storagePid from full TypoScript setup at this point.
-        $fullTyposcriptSetup = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-        $this->storagePid = $fullTyposcriptSetup["plugin."]["tx_dlf."]["persistence."]["storagePid"];
+        $pid = $params['flexParentDatabaseRow']['pid'];
+        $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($pid);
+        $siterootRow = [];
+        foreach ($rootline as $_row) {
+            if ($_row['is_siteroot'] == '1') {
+                $siterootRow = $_row;
+                break;
+            }
+        }
+
+        try {
+            $ts = $objectManager->get(\TYPO3\CMS\Core\TypoScript\TemplateService::class, [$siterootRow['uid']]);
+            $ts->rootLine = $rootline;
+            $ts->runThroughTemplates($rootline, 0);
+            $ts->generateConfig();
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        $typoscriptConfig = $ts->setup;
+        $this->storagePid = $typoscriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
+
     }
 
     /**
@@ -118,6 +141,8 @@ class ItemsProcFunc
      */
     protected function generateList(&$params, $fields, $table, $sorting, $andWhere = '')
     {
+        $this->getTyposcriptConfigFromPluginSiteRoot($params);
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table);
 

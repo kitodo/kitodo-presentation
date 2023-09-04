@@ -83,7 +83,7 @@ class MigrateSettings implements UpgradeWizardInterface
             ->execute();
 
         // Update the found record sets
-        while ($record = $statement->fetch()) {
+        while ($record = $statement->fetchAssociative()) {
             $queryBuilder = $connection->createQueryBuilder();
             $updateResult = $queryBuilder->update('tt_content')
                 ->where(
@@ -92,7 +92,7 @@ class MigrateSettings implements UpgradeWizardInterface
                         $queryBuilder->createNamedParameter($record['uid'], \PDO::PARAM_INT)
                     )
                 )
-                ->set('pi_flexform', $this->migrateFlexformSettings($record['pi_flexform']))
+                ->set('pi_flexform', $this->migrateFlexFormSettings($record['pi_flexform']))
                 ->execute();
 
             // exit if at least one update statement is not successful
@@ -129,7 +129,7 @@ class MigrateSettings implements UpgradeWizardInterface
             ->execute();
 
         // Update the found record sets
-        while ($record = $statement->fetch()) {
+        while ($record = $statement->fetchAssociative()) {
             $oldSettingsFound = $this->checkForOldSettings($record['pi_flexform']);
             if ($oldSettingsFound === true) {
                 // We found at least one field to be updated --> break here
@@ -160,7 +160,7 @@ class MigrateSettings implements UpgradeWizardInterface
      * @param string $oldValue
      * @return string
      */
-    protected function migrateFlexformSettings(string $oldValue): string
+    protected function migrateFlexFormSettings(string $oldValue): string
     {
         $xml = simplexml_load_string($oldValue);
 

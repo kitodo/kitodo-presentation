@@ -1,0 +1,64 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<div id="tx-dlf-map" class="tx-dlf-map" data-dic="overview-map:{f:translate(key: 'pageview.overview-map')}">
+    <div id="tx-dlf-fulltextselection"></div>
+    <div id="tx-dlf-annotationselection"></div>
+</div>
+<div id="ov_map"></div>
+
+<f:if condition="{settings.basketButton} && {settings.targetBasket}">
+    <f:if condition="{settings.basket.crop}">
+        <f:then>
+            <div class="tx-dlf-navigation-edit">
+                <a href="javascript: tx_dlf_viewer.activateSelection();" title="{f:translate(key: 'basket.editMode')}">
+                    <f:translate key="basket.editMode"/>
+                </a>
+            </div>
+            <div class="tx-dlf-navigation-editRemove">
+                <a href="javascript: tx_dlf_viewer.resetCropSelection();" title="{f:translate(key: 'basket.editRemove')}">
+                    <f:translate key="basket.editRemove"/>
+                </a>
+            </div>
+        </f:then>
+    </f:if>
+    <f:if condition="{settings.basket.magnifier}">
+        <div class="tx-dlf-navigation-magnifier">
+            <f:then>
+                <a href="javascript: tx_dlf_viewer.activateMagnifier();" title="{f:translate(key: 'basket.magnifier')}">
+                    <f:translate key="basket.magnifier"/>
+                </a>
+            </f:then>
+        </div>
+    </f:if>
+
+    <div class="tx-dlf-interaction-addbasket">
+        <f:form id="addToBasketForm" pluginName="basket" controller="Basket" action="add" additionalParams="{'tx_dlf[addToBasket]': '1'}" absolute="{forceAbsoluteUrl}" pageUid="{settings.targetBasket}" fieldNamePrefix="tx_dlf">
+            <f:form.hidden name="id" value="{docId}" id="id"/>
+            <f:form.hidden name="startpage" value="{page}" id="startpage"/>
+            <f:form.hidden name="endpage" value="{page}" id="endpage"/>
+            <f:form.hidden name="startX" value="" id="startX"/>
+            <f:form.hidden name="startY" value="" id="startY"/>
+            <f:form.hidden name="endX" value="" id="endX"/>
+            <f:form.hidden name="endY" value="" id="endY"/>
+            <f:form.hidden name="rotation" value="" id="rotation"/>
+            <f:form.submit value="{f:translate(key: 'basket.addBasket')}" />
+        </f:form>
+    </div>
+</f:if>
+
+<kitodo:jsFooter inlineCode="{viewerConfiguration}" />
+
+</html>

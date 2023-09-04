@@ -3,8 +3,12 @@
 namespace Kitodo\Dlf\Tests\Functional;
 
 use GuzzleHttp\Client as HttpClient;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Symfony\Component\Yaml\Yaml;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
@@ -27,9 +31,15 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                     ],
                 ],
             ],
+            'displayErrors' => '1'
         ],
         'EXTENSIONS' => [
             'dlf' => [], // = $this->getDlfConfiguration(), set in constructor
+        ],
+        'FE' => [
+            'cacheHash' => [
+                'enforceValidation' => false,
+            ],
         ],
         'DB' => [
             'Connections' => [
@@ -84,16 +94,21 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
         $this->baseUrl = 'http://web:8000/public/typo3temp/var/tests/functional-' . $this->identifier . '/';
         $this->httpClient = new HttpClient([
-            'base_uri' => $this->baseUrl,
+            'base_uri' => $this->baseUrl . 'index.php',
             'http_errors' => false,
         ]);
 
-        $this->addSiteConfig('dlf-testing', $this->baseUrl);
+        $this->addSiteConfig('dlf-testing');
     }
 
     protected function getDlfConfiguration()
     {
         return [
+            'fileGrpImages' => 'DEFAULT,MAX',
+            'fileGrpThumbs' => 'THUMBS',
+            'fileGrpDownload' => 'DOWNLOAD',
+            'fileGrpFulltext' => 'FULLTEXT',
+            'fileGrpAudio' => 'AUDIO',
             'solrFieldAutocomplete' => 'autocomplete',
             'solrFieldCollection' => 'collection',
             'solrFieldDefault' => 'default',
@@ -124,11 +139,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         ];
     }
 
-    protected function addSiteConfig($identifier, $baseUrl)
+    protected function addSiteConfig($identifier)
     {
         $siteConfig = Yaml::parseFile(__DIR__ . '/../Fixtures/siteconfig.yaml');
-        $siteConfig['base'] = $baseUrl;
-        $siteConfig['languages'][0]['base'] = $baseUrl;
+        $siteConfig['base'] = $this->baseUrl;
+        $siteConfig['languages'][0]['base'] = $this->baseUrl;
 
         $siteConfigPath = $this->instancePath . '/typo3conf/sites/' . $identifier;
         @mkdir($siteConfigPath, 0775, true);
@@ -144,5 +159,47 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $repository->setDefaultQuerySettings($querySettings);
 
         return $repository;
+    }
+
+    protected function importSolrDocuments(Solr $solr, string $path)
+    {
+        $jsonDocuments = json_decode(file_get_contents($path), true);
+
+        $updateQuery = $solr->service->createUpdate();
+        $documents = array_map(function ($jsonDoc) use ($updateQuery) {
+            $document = $updateQuery->createDocument();
+            foreach ($jsonDoc as $key => $value) {
+                $document->setField($key, $value);
+            }
+            if (isset($jsonDoc['collection'])) {
+                $document->setField('collection_faceting', $jsonDoc['collection']);
+            }
+            return $document;
+        }, $jsonDocuments);
+        $updateQuery->addDocuments($documents);
+        $updateQuery->addCommit();
+        $solr->service->update($updateQuery);
+    }
+
+    protected function initLanguageService(string $locale)
+    {
+        if (class_exists(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)) {
+            $GLOBALS['LANG'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)->create($locale);
+        } else {
+            $typo3MajorVersion = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version())['version_main'];
+            $this->assertEquals(9, $typo3MajorVersion);
+
+            $lang = new LanguageService();
+            $lang->init($locale);
+            $GLOBALS['LANG'] = $lang;
+        }
+    }
+
+    /**
+     * Assert that $sub is recursively contained within $super.
+     */
+    protected function assertArrayMatches(array $sub, array $super, string $message = '')
+    {
+        $this->assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
     }
 }

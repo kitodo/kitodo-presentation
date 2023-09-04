@@ -25,16 +25,16 @@
         <f:then>
             <f:if condition="{viewData.requestData.double}">
                 <f:then>
-                    <div class="tx-dlf-navigation-double">
-                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'0'}"
+                    <div class="tx-dlf-navigation-single">
+                        <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'0'}"
                                        argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
-                            <f:translate key="doublePageOn"/>
+                            <f:translate key="doublePageOff"/>
                         </f:link.action>
                     </div>
                     <div class="tx-dlf-navigation-double+">
                         <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
                             <f:then>
-                                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}'}"
+                                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}'}"
                                                argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                                     <f:translate key="doublePage+1"/>
                                 </f:link.action>
@@ -48,15 +48,18 @@
                     </div>
                 </f:then>
                 <f:else>
-                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'1'}"
-                                   argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
-                        <f:translate key="doublePageOn"/>
-                    </f:link.action>
+                    <div class="tx-dlf-navigation-double">
+                        <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[double]':'1'}"
+                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                            <f:translate key="doublePageOn"/>
+                        </f:link.action>
+                    </div>
                 </f:else>
             </f:if>
         </f:then>
         <f:else>
-            <div class="tx-dlf-navigation-double">
+            <f:comment>No pages available, therefore actually no double page view possible</f:comment>
+            <div class="tx-dlf-navigation-double disabled">
                 <span title="{f:translate(key: 'doublePageOn')}">
                     <f:translate key="doublePageOn"/>
                 </span>
@@ -69,7 +72,7 @@
     <div class="tx-dlf-navigation-first">
         <f:if condition="{viewData.requestData.page} > 1">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'1'}"
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'1'}"
                                argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="firstPage"/>
                 </f:link.action>
@@ -83,11 +86,11 @@
     </div>
 </f:section>
 
-<f:section name="render.pageBack">
+<f:section name="render.pageStepBack">
     <div class="tx-dlf-navigation-back">
         <f:if condition="{viewData.requestData.page} > {pageSteps}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}'}"
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}'}"
                                argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
                 </f:link.action>
@@ -101,11 +104,11 @@
     </div>
 </f:section>
 
-<f:section name="render.pageStepBack">
+<f:section name="render.pageBack">
     <div class="tx-dlf-navigation-prev">
         <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}'}"
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}'}"
                                argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="prevPage"/>
                 </f:link.action>
@@ -121,24 +124,25 @@
 
 <f:section name="render.pageselect">
     <li class="pages">
-        <form method="get" action="{f:uri.page(pageUid='{viewData.requestData.pageUid}')}">
+        <f:form method="post" action="pageSelect" controller="Navigation" name="pageSelectForm" object="{pageSelectForm}" addQueryString="1">
             <f:if condition="{viewData.requestData.id}">
-                <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
+                <f:form.hidden property="id" value="{viewData.requestData.id}"/>
             </f:if>
             <f:if condition="{viewData.requestData.recordId}">
-                <f:form.hidden name="tx_dlf[recordId]" value="{viewData.requestData.recordId}"/>
+                <f:form.hidden property="recordId" value="{viewData.requestData.recordId}"/>
             </f:if>
             <f:if condition="{viewData.requestData.double}">
-                <f:form.hidden name="tx_dlf[double]" value="{viewData.requestData.double}"/>
+                <f:form.hidden property="double" value="{viewData.requestData.double}"/>
             </f:if>
             <label for="tx-dlf-page-{viewData.uniqueId}">
                 <f:translate key="selectPage"/>
             </label>
-            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" name="tx_dlf[page]"
+            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" property="page"
                 options="{pageOptions}"
                 value="{viewData.requestData.page}"
                 additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
             </f:form.select>
+        </f:form>
         </form>
     </li>
 </f:section>
@@ -165,7 +169,7 @@
         <div class="tx-dlf-navigation-fwd">
             <f:if condition="{viewData.requestData.page} <= {numPages - pageSteps}">
                 <f:then>
-                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}"
+                    <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}"
                                    argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                         <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
                     </f:link.action>
@@ -183,7 +187,7 @@
     <div class="tx-dlf-navigation-last">
         <f:if condition="{viewData.requestData.page} < {numPages - viewData.requestData.double}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}'}"
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}'}"
                                argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="lastPage"/>
                 </f:link.action>
@@ -199,7 +203,7 @@
 
 <f:section name="render.listview">
         <div class="tx-dlf-navigation-listview">
-            <f:link.page pageUid="{settings.targetPid}">
+            <f:link.page pageUid="{settings.targetPid}" additionalParams="{lastSearchParams}">
                 <f:translate key="linkToList"/>
             </f:link.page>
         </div>

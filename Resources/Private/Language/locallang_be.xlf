@@ -56,6 +56,9 @@
 			<trans-unit id="plugins.calendar.flexform.initialDocument">
 				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.calendar.flexform.showEmptyYears">
+				<source><![CDATA[Show years without issues in calendar?]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.calendar.flexform.showEmptyMonths">
 				<source><![CDATA[Show months without issues in calendar?]]></source>
 			</trans-unit>
@@ -81,11 +84,17 @@
 				<source><![CDATA[Search Plugin for Kitodo.Presentation]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.facets.collections">
-				<source><![CDATA[Use only this collections as facet]]></source>
+				<source><![CDATA[Use only these collections as facet]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.search.flexform.fulltext">
 				<source><![CDATA[Enable full text search?]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.search.flexform.fulltextPreselect">
+				<source><![CDATA[Preselect full text search?]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.search.flexform.datesearch">
+                <source><![CDATA[Enable date search?]]></source>
+            </trans-unit>
 			<trans-unit id="text.yes">
 				<source><![CDATA[Yes]]></source>
 			</trans-unit>
@@ -238,6 +247,9 @@
 			</trans-unit>
 			<trans-unit id="plugins.pageview.flexform.magnifier">
 				<source><![CDATA[Activate magnifier]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.progressElementId">
+				<source><![CDATA[@ID value of the <progress> element used for loading indicator]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.pageview.flexform.useInternalProxy">
 				<source><![CDATA[Use Internal Proxy]]></source>

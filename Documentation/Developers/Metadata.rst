@@ -53,8 +53,44 @@ There are three objects that may be set, each of which is passed to ``stdWrap`` 
 
 -  ``key``: First, the (localized) *label* of the metadata entry, such as "Title" or "Year", is transformed using the ``key`` object.
 
--  ``value``: Each *value* of the entry is transformed using the ``value`` object and appended to the output.
+-  ``value``: Each *value* of the entry is transformed using the ``value`` object.
 
--  ``all``: The combined output (label and values) is processed using the ``all`` object.
+-  ``all``: The combined output (label and values) is processed using the ``all`` object and appended to the output (unless there is no value or all processed values are blank).
 
 Finally, all entries are wrapped in a definition list (``<dl>`` tag). If one of the objects is not specified, the unprocessed output is taken as-is.
+
+Displaying Multiple Values
+--------------------------
+
+To allow TypoScript wrap to reference metadata values,
+all configured entries of the current metadata section are set as data before calling ``stdWrap``.
+The index names are used as key.
+Whenever there are multiple values, they are joined by the ``separator`` that is configured in the metadata plugin.
+
+To see where this is useful, consider the following MODS access condition.
+
+.. code-block:: xml
+
+   <mods:accessCondition
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      type="use and reproduction"
+      xlink:href="http://creativecommons.org/licenses/by-sa/4.0/"
+   >
+       CC BY-SA 4.0
+   </mods:accessCondition>
+
+In the metadata table, we may want to render an ``<a>`` tag that links to the license summary page and displays the license name as link text.
+To achieve this, we may create two metadata entries:
+
+*  Create a hidden entry called ``useandreproduction_link`` that has ``xpath`` set to ``./mods:accessCondition[@type="use and reproduction"]/@xlink:href``.
+   This entry is used purely to extract the license URL.
+
+*  The main entry sets ``xpath`` to ``./mods:accessCondition[@type="use and reproduction"]`` (so it extracts the license name)
+   and uses a ``wrap`` along the lines of
+
+   .. code-block:: typoscript
+
+      key.wrap = <dt>|</dt>
+      value.required = 1
+      value.typolink.parameter.field = useandreproduction_link
+      value.wrap = <dd>|</dd>

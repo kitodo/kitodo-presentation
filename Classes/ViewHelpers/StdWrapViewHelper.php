@@ -23,6 +23,7 @@ class StdWrapViewHelper extends AbstractViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('wrap', 'string', 'The wrap information', true);
+        $this->registerArgument('data', 'array', 'Data for the content object', false);
     }
 
     /**
@@ -33,11 +34,21 @@ class StdWrapViewHelper extends AbstractViewHelper
     public function render()
     {
         $wrap = $this->arguments['wrap'];
+        $data = $this->arguments['data'] ?? [];
 
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $cObj = $configurationManager->getContentObject();
 
         $insideContent = $this->renderChildren();
 
-        return $configurationManager->getContentObject()->stdWrap($insideContent, $wrap);
+        $prevData = $cObj->data;
+        $cObj->data = $data;
+        try {
+            $result = $cObj->stdWrap($insideContent, $wrap);
+        } finally {
+            $cObj->data = $prevData;
+        }
+
+        return $result;
     }
 }

@@ -67,7 +67,7 @@ class PageViewProxy
         $origin = (string) ($request->getHeaderLine('Origin') ? : '*');
 
         return $response
-            ->withHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, OPTIONS, HEAD')
             ->withHeader('Access-Control-Allow-Origin', $origin)
             ->withHeader('Access-Control-Max-Age', '86400');
     }
@@ -114,6 +114,39 @@ class PageViewProxy
     }
 
     /**
+     * Handle an HEAD request.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    protected function handleHead(ServerRequestInterface $request): ResponseInterface
+    {
+        $queryParams = $request->getQueryParams();
+
+        $url = (string) ($queryParams['url'] ?? '');
+        try {
+            $targetResponse = $this->requestFactory->request($url, 'HEAD', [
+                'headers' => [
+                    'User-Agent' => $this->extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => 'Could not fetch resource of given URL.'], 500);
+        }
+
+        $clientResponse = GeneralUtility::makeInstance(Response::class)
+            ->withStatus($targetResponse->getStatusCode());
+
+        $clientResponse = $this->copyHeaders($targetResponse, $clientResponse, [
+            'Content-Length',
+            'Content-Type',
+            'Last-Modified',
+        ]);
+
+        return $this->withCorsResponseHeaders($clientResponse, $request);
+    }
+
+    /**
      * Handle a GET request.
      *
      * @param ServerRequestInterface $request
@@ -133,7 +166,6 @@ class PageViewProxy
         if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
             return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
         }
-
         try {
             $targetResponse = $this->requestFactory->request($url, 'GET', [
                 'headers' => [
@@ -184,6 +216,9 @@ class PageViewProxy
 
             case 'GET':
                 return $this->handleGet($request);
+
+            case 'HEAD':
+                return $this->handleHead($request);
 
             default:
                 // 405 Method Not Allowed

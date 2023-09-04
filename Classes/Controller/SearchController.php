@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -13,8 +14,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use Kitodo\Dlf\Common\Solr\Solr;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -102,8 +102,22 @@ class SearchController extends AbstractController
         $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
 
         if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
-            $this->searchParams = array_merge($this->searchParams ? : [], $listRequestData['searchParameter']);
+            $this->searchParams = array_merge($this->searchParams ?: [], $listRequestData['searchParameter']);
             $listViewSearch = true;
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
+        }
+
+        // sanitize date search input
+        if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            $this->searchParams['dateFrom'] = '*';
+        }
+        if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+            $this->searchParams['dateTo'] = 'NOW';
+        }
+        if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+            $tmpDate = $this->searchParams['dateFrom'];
+            $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
+            $this->searchParams['dateTo'] = $tmpDate;
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
@@ -114,11 +128,15 @@ class SearchController extends AbstractController
 
         // If a targetPid is given, the results will be shown by ListView on the target page.
         if (!empty($this->settings['targetPid']) && !empty($this->searchParams) && !$listViewSearch) {
-            $this->redirect('main', 'ListView', null,
+            $this->redirect(
+                'main',
+                'ListView',
+                null,
                 [
                     'searchParameter' => $this->searchParams,
                     'widgetPage' => $widgetPage
-                ], $this->settings['targetPid']
+                ],
+                $this->settings['targetPid']
             );
         }
 
@@ -130,16 +148,16 @@ class SearchController extends AbstractController
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-            $solrResults = [];
+            $solrResults = null;
+            $numResults = 0;
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
                 $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
+                $numResults = $solrResults->getNumFound();
             }
 
-            $documents = $solrResults['documents'] ? : [];
-            $this->view->assign('documents', $documents);
-            $rawResults = $solrResults['solrResults']['documents'] ? : [];
-            $this->view->assign('numResults', count($rawResults));
+            $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
+            $this->view->assign('numResults', $numResults);
             $this->view->assign('widgetPage', $widgetPage);
             $this->view->assign('lastSearch', $this->searchParams);
             $this->view->assign('listedMetadata', $listedMetadata);
@@ -147,7 +165,6 @@ class SearchController extends AbstractController
 
             // Add the facets menu
             $this->addFacetsMenu();
-
         }
 
         // Get additional fields for extended search.
@@ -202,7 +219,6 @@ class SearchController extends AbstractController
      */
     public function makeFacetsMenuArray($facets)
     {
-        $menuArray = [];
         // Set default value for facet search.
         $search = [
             'query' => '*:*',
@@ -239,6 +255,17 @@ class SearchController extends AbstractController
             if (!empty($searchParams['query'])) {
                 $search['query'] = Solr::escapeQueryKeepField(trim($searchParams['query']), $this->settings['storagePid']);
             }
+        }
+
+        $collectionsQuery = $this->addCollectionsQuery($searchParams['query']);
+        if (!empty($collectionsQuery)) {
+            $search['params']['filterquery'][]['query'] = $collectionsQuery;
+        }
+
+        // add filter query for date search
+        if (!empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+            // combine dateFrom and dateTo into filterquery as range search
+            $search['params']['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}' . $fields['date'] . ':[' . $this->searchParams['dateFrom'] . ' TO ' . $this->searchParams['dateTo'] . ']';
         }
 
         // Add extended search query.
@@ -280,6 +307,7 @@ class SearchController extends AbstractController
         foreach (array_keys($facets) as $field) {
             $search['params']['component']['facetset']['facet'][] = [
                 'type' => 'field',
+                'mincount' => '1',
                 'key' => $field,
                 'field' => $field,
                 'limit' => $this->settings['limitFacets'],
@@ -294,13 +322,20 @@ class SearchController extends AbstractController
         $search['params']['query'] = $search['query'];
         // Perform search.
         $selectQuery = $solr->service->createSelect($search['params']);
+        // check for solr response
+        $solrRequest = $solr->service->createRequest($selectQuery);
+        $response = $solr->service->executeRequest($solrRequest);
+        // return empty facet on solr error
+        if ($response->getStatusCode() == 400) {
+            return [];
+        }
         $results = $solr->service->select($selectQuery);
         $facet = $results->getFacetSet();
 
         $facetCollectionArray = [];
 
         // replace everything expect numbers and comma
-        $facetCollections = preg_replace('/[^0-9,]/', '', $this->settings['facetCollections']);
+        $facetCollections = preg_replace('/[^\d,]/', '', $this->settings['facetCollections']);
 
         if (!empty($facetCollections)) {
             $collections = $this->collectionRepository->findCollectionsBySettings(['collections' => $facetCollections]);
@@ -311,11 +346,120 @@ class SearchController extends AbstractController
             }
         }
 
-        // Process results.
+        return $this->processResults($facet, $facetCollectionArray, $search);
+    }
+
+    /**
+     * Add the collection query string, if the collections are given.
+     *
+     * @access private
+     * 
+     * @param string $query The current query
+     *
+     * @return string The collection query string
+     */
+    private function addCollectionsQuery($query) {
+        // if collections are given, we prepare the collections query string
+        // extract collections from collection parameter
+        $collections = null;
+        if ($this->searchParams['collection']) {
+            foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
+                $collections[] = $this->collectionRepository->findByUid($collectionEntry);
+            }
+        }
+        if ($collections) {
+            $collectionsQueryString = '';
+            $virtualCollectionsQueryString = '';
+            foreach ($collections as $collectionEntry) {
+                // check for virtual collections query string
+                if ($collectionEntry->getIndexSearch()) {
+                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR (' . $collectionEntry->getIndexSearch() . ')';
+                } else {
+                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
+                }
+            }
+
+            // distinguish between simple collection browsing and actual searching within the collection(s)
+            if (!empty($collectionsQueryString)) {
+                if (empty($query)) {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
+                } else {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
+                }
+            }
+
+            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separately
+            if (!empty($virtualCollectionsQueryString)) {
+                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
+            }
+
+            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
+            return implode(" OR ", array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        }
+        return "";
+    }
+
+    /**
+     * Creates an array for a HMENU entry of a facet value.
+     *
+     * @access private
+     *
+     * @param string $field: The facet's index_name
+     * @param string $value: The facet's value
+     * @param int $count: Number of hits for this facet
+     * @param array $search: The parameters of the current search query
+     * @param string &$state: The state of the parent item
+     *
+     * @return array The array for the facet's menu entry
+     */
+    private function getFacetsMenuEntry($field, $value, $count, $search, &$state)
+    {
+        $entryArray = [];
+        $entryArray['title'] = $this->translateValue($field, $value);
+        $entryArray['count'] = $count;
+        $entryArray['doNotLinkIt'] = 0;
+        // Check if facet is already selected.
+        $queryColumn = array_column($search['params']['filterquery'], 'query');
+        $index = array_search($field . ':("' . Solr::escapeQuery($value) . '")', $queryColumn);
+        if ($index !== false) {
+            // Facet is selected, thus remove it from filter.
+            unset($queryColumn[$index]);
+            $queryColumn = array_values($queryColumn);
+            $entryArray['ITEM_STATE'] = 'CUR';
+            $state = 'ACTIFSUB';
+            // Reset facets
+            if ($this->settings['resetFacets']) {
+                $entryArray['resetFacet'] = true;
+                $entryArray['queryColumn'] = $queryColumn;
+            }
+        } else {
+            // Facet is not selected, thus add it to filter.
+            $queryColumn[] = $field . ':("' . Solr::escapeQuery($value) . '")';
+            $entryArray['ITEM_STATE'] = 'NO';
+        }
+        $entryArray['queryColumn'] = $queryColumn;
+
+        return $entryArray;
+    }
+
+    /**
+     * Process results.
+     *
+     * @access private
+     *
+     * @param array $facet
+     * @param array $facetCollectionArray
+     * @param array $search
+     *
+     * @return array menu array
+     */
+    private function processResults($facet, $facetCollectionArray, $search) {
+        $menuArray = [];
+
         if ($facet) {
             foreach ($facet as $field => $values) {
                 $entryArray = [];
-                $entryArray['field'] = substr($field, 0, strpos($field, '_'));
+                $entryArray['field'] = substr($field, 0, strpos($field, '_faceting'));
                 $entryArray['count'] = 0;
                 $entryArray['_OVERRIDE_HREF'] = '';
                 $entryArray['ITEM_STATE'] = 'NO';
@@ -348,71 +492,41 @@ class SearchController extends AbstractController
     }
 
     /**
-     * Creates an array for a HMENU entry of a facet value.
-     *
-     * @access protected
+     * Translates value depending on the index name.
      *
      * @param string $field: The facet's index_name
      * @param string $value: The facet's value
-     * @param int $count: Number of hits for this facet
-     * @param array $search: The parameters of the current search query
-     * @param string &$state: The state of the parent item
      *
-     * @return array The array for the facet's menu entry
+     * @return string
      */
-    protected function getFacetsMenuEntry($field, $value, $count, $search, &$state)
+    private function translateValue($field, $value)
     {
-        $entryArray = [];
-        // Translate value.
-        if ($field == 'owner_faceting') {
-            // Translate name of holding library.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
-        } elseif ($field == 'type_faceting') {
-            // Translate document type.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
-        } elseif ($field == 'collection_faceting') {
-            // Translate name of collection.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
-        } elseif ($field == 'language_faceting') {
-            // Translate ISO 639 language code.
-            $entryArray['title'] = htmlspecialchars(Helper::getLanguageName($value));
-        } else {
-            $entryArray['title'] = htmlspecialchars($value);
+        switch ($field) {
+            case 'owner_faceting':
+                // Translate name of holding library.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
+            case 'type_faceting':
+                // Translate document type.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
+            case 'collection_faceting':
+                // Translate name of collection.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
+            case 'language_faceting':
+                // Translate ISO 639 language code.
+                return htmlspecialchars(Helper::getLanguageName($value));
+            default:
+                return htmlspecialchars($value);
         }
-        $entryArray['count'] = $count;
-        $entryArray['doNotLinkIt'] = 0;
-        // Check if facet is already selected.
-        $queryColumn = array_column($search['params']['filterquery'], 'query');
-        $index = array_search($field . ':("' . Solr::escapeQuery($value) . '")', $queryColumn);
-        if ($index !== false) {
-            // Facet is selected, thus remove it from filter.
-            unset($queryColumn[$index]);
-            $queryColumn = array_values($queryColumn);
-            $entryArray['ITEM_STATE'] = 'CUR';
-            $state = 'ACTIFSUB';
-            // Reset facets
-            if ($this->settings['resetFacets']) {
-                $entryArray['resetFacet'] = true;
-                $entryArray['queryColumn'] = $queryColumn;
-            }
-        } else {
-            // Facet is not selected, thus add it to filter.
-            $queryColumn[] = $field . ':("' . Solr::escapeQuery($value) . '")';
-            $entryArray['ITEM_STATE'] = 'NO';
-        }
-        $entryArray['queryColumn'] = $queryColumn;
-
-        return $entryArray;
     }
 
     /**
      * Returns the extended search form and adds the JS files necessary for extended search.
      *
-     * @access protected
+     * @access private
      *
      * @return string The extended search form or an empty string
      */
-    protected function addExtendedSearch()
+    private function addExtendedSearch()
     {
         // Quit without doing anything if no fields for extended search are selected.
         if (

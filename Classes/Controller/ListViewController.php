@@ -11,10 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Domain\Model\Collection;
-use Kitodo\Dlf\Domain\Model\Metadata;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 
@@ -72,15 +68,19 @@ class ListViewController extends AbstractController
     {
         $this->searchParams = $this->getParametersSafely('searchParameter');
 
+        // extract collection(s) from collection parameter
         $collection = null;
-        if ($this->searchParams['collection'] && MathUtility::canBeInterpretedAsInteger($this->searchParams['collection'])) {
-            $collection = $this->collectionRepository->findByUid($this->searchParams['collection']);
+        if ($this->searchParams['collection']) {
+            foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
+                $collection[] = $this->collectionRepository->findByUid($collectionEntry);
+            }
         }
 
         $widgetPage = $this->getParametersSafely('@widget_0');
         if (empty($widgetPage)) {
             $widgetPage = ['currentPage' => 1];
         }
+        $GLOBALS['TSFE']->fe_user->setKey('ses', 'widgetPage', $widgetPage);
 
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
@@ -89,15 +89,15 @@ class ListViewController extends AbstractController
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
         $solrResults = [];
+        $numResults = 0;
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
             $solrResults = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
+            $numResults = $solrResults->getNumFound();
         }
 
         $this->view->assign('viewData', $this->viewData);
-        $documents = $solrResults['documents'] ? : [];
-        $this->view->assign('documents', $documents);
-        $rawResults = $solrResults['solrResults']['documents'] ? : [];
-        $this->view->assign('numResults', count($rawResults));
+        $this->view->assign('documents', $solrResults);
+        $this->view->assign('numResults', $numResults);
         $this->view->assign('widgetPage', $widgetPage);
         $this->view->assign('lastSearch', $this->searchParams);
 

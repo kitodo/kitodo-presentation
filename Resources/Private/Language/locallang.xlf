@@ -5,6 +5,12 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
+			<trans-unit id="search.dateFrom">
+				<source><![CDATA[From]]></source>
+			</trans-unit>
+			<trans-unit id="search.dateTo">
+				<source><![CDATA[To]]></source>
+			</trans-unit>
 			<trans-unit id="search.inFulltext">
 				<source><![CDATA[in fulltext]]></source>
 			</trans-unit>
@@ -34,9 +40,6 @@
 			</trans-unit>
 			<trans-unit id="search.resetFacet">
 				<source><![CDATA[Reset selection (%s)]]></source>
-			</trans-unit>
-			<trans-unit id="AddToBasket">
-				<source><![CDATA[Add to basket]]></source>
 			</trans-unit>
 			<trans-unit id="backXPages">
 				<source><![CDATA[Back %s Pages]]></source>
@@ -151,6 +154,9 @@
 			</trans-unit>
 			<trans-unit id="page">
 				<source><![CDATA[Page]]></source>
+			</trans-unit>
+			<trans-unit id="pageview.overview-map">
+				<source><![CDATA[Overview Map]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.feeds.new">
 				<source><![CDATA[NEW:]]></source>
@@ -376,6 +382,12 @@
             </trans-unit>
             <trans-unit id="newTenant.formatOkayMsg" approved="yes">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.formatNotOkay" approved="yes">
+                <source><![CDATA[Default namespaces not found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.formatNotOkayMsg" approved="yes">
+                <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
             </trans-unit>
             <trans-unit id="newTenant.structureOkay" approved="yes">
                 <source><![CDATA[Structures found!]]></source>

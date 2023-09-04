@@ -18,18 +18,20 @@
         <f:variable name="allDocuments" value="{documents->f:count()}" />
         <f:variable name="numDocuments" value="{pageOffset + settings.list.paginate.itemsPerPage}" />
 
-        <p class="tx-dlf-sortinfo">
-            <f:translate
-                key="listview.count"
-                arguments="{0:'{pageOffset + 1}', 1:'{f:if(condition: \'{numDocuments} > {allDocuments}\', then: \'{allDocuments}\', else: \'{numDocuments}\')}', 2:'{allDocuments}'}" />
-        </p>
+        <f:if condition="{allDocuments} > 0">
+            <p class="tx-dlf-sortinfo">
+                <f:translate
+                    key="listview.count"
+                    arguments="{0:'{pageOffset + 1}', 1:'{f:if(condition: \'{numDocuments} > {allDocuments}\', then: \'{allDocuments}\', else: \'{numDocuments}\')}', 2:'{allDocuments}'}" />
+            </p>
+        </f:if>
 
-        <f:form section="showResults" action="{action}" controller="{Controller}" name="searchParameter" method="post" class="tx-dlf-search-form">
+        <f:form section="showResults" action="search" controller="Search" name="searchParameter" method="get" class="tx-dlf-search-form">
             <div>
                 <label for="form-orderBy-{viewData.uniqueId}">
                     <f:translate key="listview.form.orderBy"/>
                 </label>
-                <f:form.select id="form-orderBy-{viewData.uniqueId}" property="orderBy" value="{lastSearch.orderBy}" onclick="javascript:this.form.submit();">
+                <f:form.select id="form-orderBy-{viewData.uniqueId}" property="orderBy" value="{lastSearch.orderBy}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
                     <f:form.select.option value="score">
                         <f:translate key="listview.form.relevance" />
                     </f:form.select.option>
@@ -42,18 +44,25 @@
                 <label for="form-order-{viewData.uniqueId}">
                     <f:translate key="listview.form.order"/>
                 </label>
-                <f:form.select id="form-order-{viewData.uniqueId}" property="order" value="{lastSearch.order}" onclick="javascript:this.form.submit();">
+                <f:form.select id="form-order-{viewData.uniqueId}" property="order" value="{lastSearch.order}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
                     <f:form.select.option value="asc">
-                    <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.asc' extensionName='slub_digitalcollections' />
+                    <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:listview.form.order.asc' />
                     </f:form.select.option>
                     <f:form.select.option value="desc">
-                    <f:translate key='LLL:EXT:slub_digitalcollections/Resources/Private/Language/locallang_kitodo.xlf:form.order.desc' extensionName='slub_digitalcollections' />
+                    <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:listview.form.order.desc' />
                     </f:form.select.option>
+
                 </f:form.select>
                 <f:form.hidden property="collection" value="{lastSearch.collection}" />
-                <f:form.hidden property="collections" value="{settings.collections}" />
                 <f:form.hidden property="query" value="{lastSearch.query}" />
                 <f:form.hidden property="fulltext" value="{lastSearch.fulltext}" />
+                <f:if condition="{lastSearch.dateFrom} || {lastSearch.dateTo}">
+                    <f:form.hidden property="dateFrom" value="{lastSearch.dateFrom}" />
+                    <f:form.hidden property="dateTo" value="{lastSearch.dateTo}" />
+                </f:if>
+                <f:for each="{lastSearch.fq}" as="filter" iteration="iter">
+                    <f:form.hidden name="searchParameter[fq][{iter.index}]" value="{filter}"/>
+                </f:for>
             </div>
         </f:form>
     </f:if>

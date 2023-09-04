@@ -15,11 +15,8 @@ namespace Kitodo\Dlf\Common;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
-use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
 use Ubl\Iiif\Tools\IiifHelper;
 
@@ -33,7 +30,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @access public
  * @property int $cPid This holds the PID for the configuration
  * @property-read bool $hasFulltext Are there any fulltext files available?
- * @property-read string $location This holds the documents location
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read int $numPages The holds the total number of pages
  * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
@@ -54,7 +50,7 @@ abstract class Doc
     /**
      * This holds the logger
      *
-     * @var LogManager
+     * @var Logger
      * @access protected
      */
     protected $logger;
@@ -429,7 +425,7 @@ abstract class Doc
         $xml = null;
         $iiif = null;
 
-        if ($instance = self::getDocCache($location)) {
+        if ($instance = self::getDocCache($location) && !$forceReload) {
             return $instance;
         } else {
             $instance = null;
@@ -575,6 +571,7 @@ abstract class Doc
         // ... and extension configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
+        $textFormat = "";
         if (!empty($this->physicalStructureInfo[$id])) {
             while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
                 if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
@@ -674,7 +671,7 @@ abstract class Doc
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetch()) {
+            if ($resArray = $result->fetchAssociative()) {
                 // Get title information.
                 $title = $resArray['title'];
                 $partof = $resArray['partof'];
@@ -728,7 +725,7 @@ abstract class Doc
     }
 
     /**
-     * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return it's depth.
+     * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return its depth.
      *
      * @access protected
      *
@@ -781,7 +778,7 @@ abstract class Doc
     protected abstract function init($location);
 
     /**
-     * Reuse any document object that might have been already loaded to determine wether document is METS or IIIF
+     * Reuse any document object that might have been already loaded to determine whether document is METS or IIIF
      *
      * @access protected
      *
@@ -863,7 +860,7 @@ abstract class Doc
                 )
                 ->execute();
 
-            while ($resArray = $result->fetch()) {
+            while ($resArray = $result->fetchAssociative()) {
                 // Update format registry.
                 $this->formats[$resArray['type']] = [
                     'rootElement' => $resArray['root'],
@@ -904,6 +901,47 @@ abstract class Doc
     }
 
     /**
+     * Initialize metadata array with empty values.
+     *
+     * @access protected
+     *
+     * @param string $format of the document eg. METS
+     *
+     * @return array
+     */
+    protected function initializeMetadata($format) {
+        return [
+            'title' => [],
+            'title_sorting' => [],
+            'description' => [],
+            'author' => [],
+            'holder' => [],
+            'place' => [],
+            'year' => [],
+            'prod_id' => [],
+            'record_id' => [],
+            'opac_id' => [],
+            'union_id' => [],
+            'urn' => [],
+            'purl' => [],
+            'type' => [],
+            'volume' => [],
+            'volume_sorting' => [],
+            'date' => [],
+            'license' => [],
+            'terms' => [],
+            'restrictions' => [],
+            'out_of_print' => [],
+            'rights_info' => [],
+            'collection' => [],
+            'owner' => [],
+            'mets_label' => [],
+            'mets_orderlabel' => [],
+            'document_format' => [$format]
+        ];
+    }
+
+    /**
      * This returns $this->cPid via __get()
      *
      * @access protected
@@ -926,18 +964,6 @@ abstract class Doc
     {
         $this->ensureHasFulltextIsSet();
         return $this->hasFulltext;
-    }
-
-    /**
-     * This returns $this->location via __get()
-     *
-     * @access protected
-     *
-     * @return string The location of the document
-     */
-    protected function _getLocation()
-    {
-        return $this->location;
     }
 
     /**
@@ -1141,18 +1167,6 @@ abstract class Doc
     protected abstract function _getToplevelId();
 
     /**
-     * This returns $this->uid via __get()
-     *
-     * @access protected
-     *
-     * @return mixed The UID or the URL of the document
-     */
-    protected function _getUid()
-    {
-        return $this->uid;
-    }
-
-    /**
      * This sets $this->cPid via __set()
      *
      * @access protected
@@ -1181,6 +1195,7 @@ abstract class Doc
      */
     protected function __construct($location, $pid, $preloadedDocument)
     {
+        $this->pid = $pid;
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location);
         $this->establishRecordId($pid);

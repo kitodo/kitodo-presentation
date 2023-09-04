@@ -12,7 +12,7 @@
 // error about missing extension configuration.
 
 $matches = [];
-preg_match("@.*/(?:acceptance|functional-[a-z0-9]+)@", $_SERVER['REQUEST_URI'], $matches);
+preg_match("@.*/(?:acceptance|functional-[a-z\d]+)@", $_SERVER['REQUEST_URI'], $matches);
 
 if (!empty($matches)) {
     $root = realpath($_SERVER['DOCUMENT_ROOT'] . $matches[0]);

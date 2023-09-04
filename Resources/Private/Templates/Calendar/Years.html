@@ -26,11 +26,20 @@
         <div class="year-view">
             <ul>
                 <f:for each="{yearName}" as="yearEntry">
-                    <li class="year">
-                        <f:link.page additionalParams="{'tx_dlf[id]': yearEntry.documentId}">
-                            {yearEntry.title}
-                        </f:link.page>
-                    </li>
+                    <f:if condition="{yearEntry.documentId}">
+                        <f:then>
+                            <li class="year">
+                                <f:link.page additionalParams="{'tx_dlf[id]': yearEntry.documentId}">
+                                    {yearEntry.title}
+                                </f:link.page>
+                            </li>
+                        </f:then>
+                        <f:else>
+                            <li class="year-empty">
+                                <p>{yearEntry.title}</p>
+                            </li>
+                        </f:else>
+                    </f:if>
                 </f:for>
             </ul>
         </div>

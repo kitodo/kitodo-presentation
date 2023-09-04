@@ -14,38 +14,38 @@
     },
     {
       "name": "Sebastian Meyer",
-      "email": "sebastian.meyer@slub-dresden.de",
-      "homepage": "https://www.slub-dresden.de",
+      "email": "sebastian.meyer@opencultureconsulting.com",
+      "homepage": "https://www.opencultureconsulting.com",
       "role": "maintainer"
     }
   ],
   "support": {
     "issues": "https://github.com/kitodo/kitodo-presentation/issues",
     "source": "https://github.com/kitodo/kitodo-presentation",
-    "docs": "https://docs.typo3.org/p/kitodo/presentation/master/en-us/"
+    "docs": "https://docs.typo3.org/p/kitodo/presentation/main/en-us/"
   },
   "require": {
-    "php": "^7.3|^7.4",
+    "php": "^7.4",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "^9.5|^10.4",
-    "typo3/cms-extbase": "^9.5|^10.4",
-    "typo3/cms-tstemplate": "^9.5|^10.4",
-    "caseyamcl/phpoaipmh": "^3.0",
+    "typo3/cms-core": "^9.5.31|^10.4.36",
+    "typo3/cms-extbase": "^9.5.31|^10.4.36",
+    "typo3/cms-tstemplate": "^9.5.31|^10.4.36",
+    "caseyamcl/phpoaipmh": "^3.3.1",
     "ubl/php-iiif-prezi-reader": "0.3.0",
-    "solarium/solarium": "^4.2|^5.2"
+    "solarium/solarium": "^5.2.0"
   },
   "require-dev": {
-    "spatie/phpunit-watcher": "^1.23",
-    "typo3/cms-backend": "^9.5|^10.4",
-    "typo3/cms-fluid": "^9.5|^10.4",
-    "typo3/cms-fluid-styled-content": "^9.5|^10.4",
-    "typo3/cms-frontend": "^9.5|^10.4",
-    "typo3/testing-framework": "^4.15.5|^6.16.2"
+    "spatie/phpunit-watcher": "^1.23.0",
+    "typo3/cms-backend": "^9.5.31|^10.4.36",
+    "typo3/cms-fluid": "^9.5.31|^10.4.36",
+    "typo3/cms-fluid-styled-content": "^9.5.31|^10.4.36",
+    "typo3/cms-frontend": "^9.5.31|^10.4.36",
+    "typo3/testing-framework": "^4.15.5|^6.16.7"
   },
   "replace": {
     "typo3-ter/dlf": "self.version"

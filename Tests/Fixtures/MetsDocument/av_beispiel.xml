@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets xmlns:mets="http://www.loc.gov/METS/"
+    xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:videomd="http://www.loc.gov/videoMD/"
+    xmlns:dv="http://dfg-viewer.de/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/videoMD/ https://www.loc.gov/standards/amdvmd/videoMD.xsd">
+    <mets:metsHdr CREATEDATE="2021-08-16T16:32:21">
+        <mets:agent ROLE="CREATOR" TYPE="INDIVIDUAL">
+            <mets:name>Sebastian Meyer</mets:name>
+            <mets:note>mailto:sebastian.meyer@slub-dresden.de</mets:note>
+        </mets:agent>
+    </mets:metsHdr>
+    <mets:dmdSec ID="DMDLOG_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:titleInfo>
+                        <mods:title>Odol-Mundwasser, 3 Werbespots</mods:title>
+                    </mods:titleInfo>
+                    <mods:relatedItem type="series">
+                        <mods:titleInfo>
+                            <mods:title lang="ger">SAVE: Beispiel-Kollektion</mods:title>
+                        </mods:titleInfo>
+                    </mods:relatedItem>
+                    <mods:name type="corporate">
+                        <mods:nameIdentifier type="gnd" typeURI="http://id.loc.gov/vocabulary/identifiers/gnd">2180770-X</mods:nameIdentifier>
+                        <mods:displayForm>Stiftung Deutsches Hygiene-Museum</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">oth</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:typeOfResource valueURI="http://d-nb.info/gnd/4017102-4">Film</mods:typeOfResource>
+                    <mods:genre>Werbefilm</mods:genre>
+                    <mods:originInfo eventType="digitisation">
+                        <mods:place>
+                            <mods:placeTerm type="text" valueURI="http://d-nb.info/gnd/4012995-0">Dresden</mods:placeTerm>
+                        </mods:place>
+                        <mods:publisher>SLUB</mods:publisher>
+                        <mods:publisher>Filmverband Sachsen</mods:publisher>
+                        <mods:publisher>Stiftung Deutsches Hygiene-Museum</mods:publisher>
+                        <mods:dateIssued encoding="iso8601" keyDate="yes">2019</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:language displayLabel="Sprachfassung: Deutsch">
+                        <mods:languageTerm type="code" authority="iso639-2b">ger</mods:languageTerm>
+                    </mods:language>
+                    <mods:physicalDescription>
+                        <mods:form>positiv, farbig, 24 fps, Bildseitenverhältnis 1,375:1, 2048 px horizontal, Codec: Apple ProRes (HQ) 4444, Container: Quicktime .mov</mods:form>
+                        <mods:reformattingQuality>access</mods:reformattingQuality>
+                        <mods:internetMediaType>video/quicktime</mods:internetMediaType>
+                        <mods:extent>1 Online-Ressource (1 min, 30 s)</mods:extent>
+                        <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+                    </mods:physicalDescription>
+                    <mods:abstract>[Inhaltsbeschreibung]</mods:abstract>
+                    <mods:relatedItem type="original">
+                        <mods:titleInfo>
+                            <mods:title>Odol-Mundwasser, 3 Werbespots</mods:title>
+                        </mods:titleInfo>
+                        <mods:name type="corporate">
+                            <mods:nameIdentifier type="gnd" typeURI="http://id.loc.gov/vocabulary/identifiers/gnd">2180770-X</mods:nameIdentifier>
+                            <mods:displayForm>Stiftung Deutsches Hygiene-Museum</mods:displayForm>
+                            <mods:role>
+                                <mods:roleTerm authority="marcrelator" type="code">oth</mods:roleTerm>
+                            </mods:role>
+                        </mods:name>
+                        <mods:typeOfResource valueURI="http://d-nb.info/gnd/4017102-4">Film</mods:typeOfResource>
+                        <mods:genre>Werbefilm</mods:genre>
+                        <mods:originInfo eventType="digitisation">
+                            <mods:place>
+                                <mods:placeTerm type="text" valueURI="http://d-nb.info/gnd/4012995-0">Dresden</mods:placeTerm>
+                            </mods:place>
+                            <mods:publisher>SLUB</mods:publisher>
+                            <mods:publisher>Filmverband Sachsen</mods:publisher>
+                            <mods:publisher>Stiftung Deutsches Hygiene-Museum</mods:publisher>
+                            <mods:dateIssued encoding="iso8601" keyDate="yes" point="start">1965</mods:dateIssued>
+                            <mods:dateIssued encoding="iso8601" point="end">1975</mods:dateIssued>
+                        </mods:originInfo>
+                        <mods:language displayLabel="Sprachfassung: Deutsch">
+                            <mods:languageTerm type="code" authority="iso639-2b">ger</mods:languageTerm>
+                        </mods:language>
+                        <mods:physicalDescription>
+                            <mods:form>Nativ-Scan mit Overscan, Videocodec FFV1 Version 3, Container: Matroska</mods:form>
+                            <mods:reformattingQuality>preservation</mods:reformattingQuality>
+                            <mods:internetMediaType>video/quicktime</mods:internetMediaType>
+                            <mods:extent>1 Online-Ressource (1 min, 16 s)</mods:extent>
+                            <mods:digitalOrigin>digitized other analog</mods:digitalOrigin>
+                            <mods:note>Acetat mit Lichtton, Umkehr-Positiv, farbig ; 16 mm</mods:note>
+                        </mods:physicalDescription>
+                        <mods:note type="reproduction">Bearbeitete digitale Ausgabe eines Exemplars aus dem Bestand der Stiftung Deutsches Hygiene-Museum Dresden</mods:note>
+                        <mods:note type="credits">Die Digitalisierung des Films erfolgte im Rahmen des Programms „Sicherung des audiovisuellen Erbes in Sachsen“ des Filmverband Sachsen (2019) und der Sächsischen Landesbibliothek – Staats- und Universitätsbibliothek Dresden in Kooperation mit: Stiftung Deutsches Hygiene-Museum Dresden, gefördert durch: Sächsisches Staatsministerium für Wissenschaft und Kunst</mods:note>
+                        <mods:identifier type="kxp">1703800354</mods:identifier>
+                        <mods:location>
+                            <mods:physicalLocation valueURI="https://ld.zdb-services.de/resource/organisations/DE-14">DE-14</mods:physicalLocation>
+                            <mods:shelfLocator>Odol 2915 (Rolle 2)</mods:shelfLocator>
+                        </mods:location>
+                    </mods:relatedItem>
+                    <mods:identifier type="kxp">1703800435</mods:identifier>
+                    <mods:identifier type="purl">http://digital.slub-dresden.de/id1703800435</mods:identifier>
+                    <mods:identifier type="urn">urn:nbn:de:bsz:14-db-id17038004351</mods:identifier>
+                    <mods:location>
+                        <mods:physicalLocation valueURI="https://ld.zdb-services.de/resource/organisations/DE-14">DE-14</mods:physicalLocation>
+                        <mods:url access="object in context">https://digital.slub-dresden.de/id1703800435</mods:url>
+                    </mods:location>
+                    <mods:accessCondition xlink:href="https://creativecommons.org/publicdomain/mark/1.0/" type="use and reproduction">Public Domain Mark 1.0</mods:accessCondition>
+                    <mods:accessCondition xlink:href="http://purl.org/coar/access_right/c_abf2" displayLabel="Access Status" type="restriction on access">Open Access</mods:accessCondition>
+                    <mods:extension>
+                    </mods:extension>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="http://digital.slub-dresden.de/oai/">oai:de:slub-dresden:db:id-1703800435</mods:recordIdentifier>
+                    </mods:recordInfo>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:amdSec ID="AMD">
+        <mets:techMD ID="VIDEOMD">
+            <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="VIDEOMD">
+                <mets:xmlData>
+                    <videomd:VIDEOMD ANALOGDIGITALFLAG="FileDigital">
+                        <videomd:fileData>
+                            <videomd:color>Color</videomd:color>
+                            <videomd:compression>
+                                <videomd:codecCreatorApp>Phoenix Finish</videomd:codecCreatorApp>
+                                <videomd:codecName>Apple ProRes 4444</videomd:codecName>
+                            </videomd:compression>
+                            <videomd:frameRate mode="Fixed">24</videomd:frameRate>
+                            <videomd:sound>Yes</videomd:sound>
+                        </videomd:fileData>
+                        <videomd:videoInfo>
+                            <videomd:aspectRatio>1.375:1</videomd:aspectRatio>
+                            <videomd:dimensions LENGTH="1808" UNITS="frames" />
+                            <videomd:duration>00:01:30.07</videomd:duration>
+                            <videomd:frame>
+                                <videomd:frameRate>24</videomd:frameRate>
+                            </videomd:frame>
+                        </videomd:videoInfo>
+                    </videomd:VIDEOMD>
+                </mets:xmlData>
+            </mets:mdWrap>
+        </mets:techMD>
+        <mets:rightsMD ID="RIGHTS">
+            <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVRIGHTS">
+                <mets:xmlData>
+                    <dv:rights>
+                        <dv:owner>Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden</dv:owner>
+                        <dv:ownerLogo>https://digital.slub-dresden.de/fileadmin/images/dfgviewer_logo_slub.gif</dv:ownerLogo>
+                        <dv:ownerSiteURL>https://www.slub-dresden.de/</dv:ownerSiteURL>
+                        <dv:ownerContact>mailto:digital@slub-dresden.de</dv:ownerContact>
+                    </dv:rights>
+                </mets:xmlData>
+            </mets:mdWrap>
+        </mets:rightsMD>
+        <mets:digiprovMD ID="DIGIPROV">
+            <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVLINKS">
+                <mets:xmlData>
+                    <dv:links>
+                        <dv:reference>https://katalog.slub-dresden.de/id/0-1703800435</dv:reference>
+                        <dv:presentation>https://digital.slub-dresden.de/id1703800435</dv:presentation>
+                    </dv:links>
+                </mets:xmlData>
+            </mets:mdWrap>
+        </mets:digiprovMD>
+    </mets:amdSec>
+    <mets:fileSec>
+        <mets:fileGrp USE="DEFAULT">
+            <mets:file ADMID="AMD" ID="FILE_0000_DEFAULT" MIMETYPE="video/quicktime">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/1703800435/video.mov"/>
+            </mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="THUMBS">
+            <mets:file ID="FILE_0000_THUMBS" MIMETYPE="image/jpeg">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/1703800435/thumbnail.jpg"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ADMID="AMD" CONTENTIDS="https://digital.slub-dresden.de/id1703800435" DMDID="DMDLOG_0000" ID="LOG_0000" LABEL="[Odol-Mundwasser, 3 Werbespots (Deutsches Hygiene-Museum Dresden Inventar-Nr.: Odol 2915)]" TYPE="advertisement">
+            <mets:div ID="LOG_0001" LABEL="1. Werbespot" TYPE="segment"></mets:div>
+            <mets:div ID="LOG_0002" LABEL="2. Werbespot" TYPE="segment"></mets:div>
+            <mets:div ID="LOG_0003" LABEL="3. Werbespot" TYPE="segment"></mets:div>
+            <mets:div ID="LOG_0004" LABEL="Abspann" TYPE="credits"></mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structMap TYPE="PHYSICAL">
+        <mets:div ID="PHYS_0000" TYPE="physSequence">
+            <mets:fptr FILEID="FILE_0000_THUMBS"/>
+            <mets:div ID="PHYS_0001" ORDER="1" TYPE="track">
+                <mets:fptr>
+                    <mets:area FILEID="FILE_0000_DEFAULT" BEGIN="00:00:00" BETYPE="TIME" EXTENT="00:00:20" EXTTYPE="TIME"></mets:area>
+                </mets:fptr>
+            </mets:div>
+            <mets:div ID="PHYS_0002" ORDER="2" TYPE="track">
+                <mets:fptr>
+                    <mets:area FILEID="FILE_0000_DEFAULT" BEGIN="00:00:20" BETYPE="TIME" EXTENT="00:00:20" EXTTYPE="TIME"></mets:area>
+                </mets:fptr>
+            </mets:div>
+            <mets:div ID="PHYS_0003" ORDER="3" TYPE="track">
+                <mets:fptr>
+                    <mets:area FILEID="FILE_0000_DEFAULT" BEGIN="00:00:40" BETYPE="TIME" EXTENT="00:00:20" EXTTYPE="TIME"></mets:area>
+                </mets:fptr>
+            </mets:div>
+            <mets:div ID="PHYS_0004" ORDER="4" TYPE="track">
+                <mets:fptr>
+                    <mets:area FILEID="FILE_0000_DEFAULT" BEGIN="00:01:00" BETYPE="TIME" EXTENT="00:00:16" EXTTYPE="TIME"></mets:area>
+                </mets:fptr>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structLink>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0003"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0004"/>
+        <mets:smLink xlink:from="LOG_0001" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0002" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0003" xlink:to="PHYS_0003"/>
+        <mets:smLink xlink:from="LOG_0004" xlink:to="PHYS_0004"/>
+    </mets:structLink>
+</mets:mets>

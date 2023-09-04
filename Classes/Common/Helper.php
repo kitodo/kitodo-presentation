@@ -16,11 +16,17 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
+
 
 /**
  * Helper class for the 'dlf' extension
@@ -82,7 +88,7 @@ class Helper
      */
     public static function addMessage($message, $title, $severity, $session = false, $queue = 'kitodo.default.flashMessages')
     {
-        $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessage = GeneralUtility::makeInstance(
             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -121,7 +127,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -131,7 +137,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}-[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -139,7 +145,7 @@ class Helper
                 break;
             case 'SWD':
                 $checksum = 11 - $checksum;
-                if (!preg_match('/[0-9]{8}-[0-9]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-\d{1}/i', $id)) {
                     return false;
                 } elseif ($checksum == 10) {
                     return self::checkIdentifier(($digits + 1) . substr($id, -2, 2), 'SWD');
@@ -152,7 +158,7 @@ class Helper
                 if ($checksum == 10) {
                     $checksum = 'X';
                 }
-                if (!preg_match('/[0-9]{8}-[0-9X]{1}/i', $id)) {
+                if (!preg_match('/\d{8}-[\dX]{1}/i', $id)) {
                     return false;
                 } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
                     return false;
@@ -307,12 +313,12 @@ class Helper
             self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
-        // Generate random initialisation vector.
+        // Generate random initialization vector.
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
         $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
         // Encrypt data.
         $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
-        // Merge initialisation vector and encrypted data.
+        // Merge initialization vector and encrypted data.
         if ($encrypted !== false) {
             $encrypted = base64_encode($iv . $encrypted);
         }
@@ -348,7 +354,7 @@ class Helper
         // Convert to lowercase.
         $string = strtolower($string);
         // Remove non-alphanumeric characters.
-        $string = preg_replace('/[^a-z0-9_\s-]/', '', $string);
+        $string = preg_replace('/[^a-z\d_\s-]/', '', $string);
         // Remove multiple dashes or whitespaces.
         $string = preg_replace('/[\s-]+/', ' ', $string);
         // Convert whitespaces and underscore to dash.
@@ -393,40 +399,48 @@ class Helper
         $uid = max(intval($uid), 0);
         if (
             !$uid
+            // NOTE: Only use tables that don't have too many entries!
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
             self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
             return '';
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
+        $makeCacheKey = function ($pid, $uid) {
+            return $pid . '.' . $uid;
+        };
 
-        $where = '';
-        // Should we check for a specific PID, too?
-        if ($pid !== -1) {
-            $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq($table . '.pid', $pid);
+        static $cache = [];
+        if (!isset($cache[$table])) {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table);
+
+            $result = $queryBuilder
+                ->select(
+                    $table . '.index_name AS index_name',
+                    $table . '.uid AS uid',
+                    $table . '.pid AS pid',
+                )
+                ->from($table)
+                ->execute();
+
+            $cache[$table] = [];
+
+            while ($row = $result->fetchAssociative()) {
+                $cache[$table][$makeCacheKey($row['pid'], $row['uid'])]
+                    = $cache[$table][$makeCacheKey(-1, $row['uid'])]
+                    = $row['index_name'];
+            }
         }
 
-        // Get index_name from database.
-        $result = $queryBuilder
-            ->select($table . '.index_name AS index_name')
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq($table . '.uid', $uid),
-                $where,
-                self::whereExpression($table)
-            )
-            ->setMaxResults(1)
-            ->execute();
+        $cacheKey = $makeCacheKey($pid, $uid);
+        $result = $cache[$table][$cacheKey] ?? '';
 
-        if ($resArray = $result->fetch()) {
-            return $resArray['index_name'];
-        } else {
+        if ($result === '') {
             self::log('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
-            return '';
         }
+
+        return $result;
     }
 
     /**
@@ -443,29 +457,14 @@ class Helper
         // Analyze code and set appropriate ISO table.
         $isoCode = strtolower(trim($code));
         if (preg_match('/^[a-z]{3}$/', $isoCode)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey) . 'Resources/Private/Data/iso-639-2b.xml';
+            $file = 'EXT:dlf/Resources/Private/Data/iso-639-2b.xml';
         } elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
-            $file = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::$extKey) . 'Resources/Private/Data/iso-639-1.xml';
+            $file = 'EXT:dlf/Resources/Private/Data/iso-639-1.xml';
         } else {
             // No ISO code, return unchanged.
             return $code;
         }
-        $languageService = GeneralUtility::makeInstance(LanguageService::class);
-        // Load ISO table and get localized full name of language.
-        if (\TYPO3_MODE === 'FE') {
-            $iso639 = $languageService->includeLLFile($file);
-            if (!empty($iso639['default'][$isoCode])) {
-                $lang = $languageService->getLLL($isoCode, $iso639);
-            }
-        } elseif (\TYPO3_MODE === 'BE') {
-            $iso639 = $languageService->includeLLFile($file, false, true);
-            if (!empty($iso639['default'][$isoCode])) {
-                $lang = $languageService->getLLL($isoCode, $iso639);
-            }
-        } else {
-            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
-            return $code;
-        }
+        $lang = LocalizationUtility::translate('LLL:' . $file . ':' . $code);
         if (!empty($lang)) {
             return $lang;
         } else {
@@ -483,6 +482,8 @@ class Helper
      */
     public static function getDocumentStructures($pid = -1)
     {
+        // TODO: Against redundancy with getIndexNameFromUid
+
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_structures');
 
@@ -503,7 +504,7 @@ class Helper
             ->where($where)
             ->execute();
 
-        $allStructures = $kitodoStructures->fetchAll();
+        $allStructures = $kitodoStructures->fetchAllAssociative();
 
         // make lookup-table indexName -> uid
         $allStructures = array_column($allStructures, 'indexName', 'uid');
@@ -565,7 +566,7 @@ class Helper
             ':' => 17,
         ];
         $urn = strtolower($base . $id);
-        if (preg_match('/[^a-z0-9:-]/', $urn)) {
+        if (preg_match('/[^a-z\d:-]/', $urn)) {
             self::log('Invalid chars in given parameters', LOG_SEVERITY_WARNING);
             return '';
         }
@@ -617,7 +618,7 @@ class Helper
 
     /**
      * Merges two arrays recursively and actually returns the modified array.
-     * @see \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule()
+     * @see ArrayUtility::mergeRecursiveWithOverrule()
      *
      * @access public
      *
@@ -631,7 +632,7 @@ class Helper
      */
     public static function mergeRecursiveWithOverrule(array $original, array $overrule, $addKeys = true, $includeEmptyValues = true, $enableUnsetFeature = true)
     {
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
+        ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
         return $original;
     }
 
@@ -646,7 +647,7 @@ class Helper
      */
     public static function renderFlashMessages($queue = 'kitodo.default.flashMessages')
     {
-        $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
         $content = GeneralUtility::makeInstance(\Kitodo\Dlf\Common\KitodoFlashMessageRenderer::class)
@@ -675,13 +676,14 @@ class Helper
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $index_name;
         }
-        /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
+        $languageContentId = $languageAspect->getContentId();
 
         // Check if "index_name" is an UID.
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
+        if (MathUtility::canBeInterpretedAsInteger($index_name)) {
             $index_name = self::getIndexNameFromUid($index_name, $table, $pid);
         }
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
@@ -706,42 +708,40 @@ class Helper
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
+        $row = $result->fetchAssociative();
 
-        if (count($allResults) == 1) {
+        if ($row) {
             // Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
-            $resArray = $allResults[0];
-
             $result = $queryBuilder
                 ->select($table . '.index_name AS index_name')
                 ->from($table)
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
-                    $queryBuilder->expr()->eq($table . '.uid', $resArray['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId())),
+                    $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId)),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
+            $row = $result->fetchAssociative();
 
-            if (count($allResults) == 1) {
+            if ($row) {
                 // If there is an translated content element, overwrite the received $index_name.
-                $index_name = $allResults[0]['index_name'];
+                $index_name = $row['index_name'];
             }
         }
 
         // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
+        if (empty($labels[$table][$pid][$languageContentId][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
-                if ($languageAspect->getContentId() > 0) {
+                if ($languageContentId > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId()))
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId))
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
@@ -760,13 +760,13 @@ class Helper
                     ->execute();
 
                 if ($result->rowCount() > 0) {
-                    while ($resArray = $result->fetch()) {
+                    while ($resArray = $result->fetchAssociative()) {
                         // Overlay localized labels if available.
-                        if ($languageAspect->getContentId() > 0) {
-                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageAspect->getContentId(), $languageAspect->getLegacyOverlayType());
+                        if ($languageContentId > 0) {
+                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageContentId, $languageAspect->getLegacyOverlayType());
                         }
                         if ($resArray) {
-                            $labels[$table][$pid][$languageAspect->getContentId()][$resArray['index_name']] = $resArray['label'];
+                            $labels[$table][$pid][$languageContentId][$resArray['index_name']] = $resArray['label'];
                         }
                     }
                 } else {
@@ -777,8 +777,8 @@ class Helper
             }
         }
 
-        if (!empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
-            return $labels[$table][$pid][$languageAspect->getContentId()][$index_name];
+        if (!empty($labels[$table][$pid][$languageContentId][$index_name])) {
+            return $labels[$table][$pid][$languageContentId][$index_name];
         } else {
             return $index_name;
         }
@@ -802,8 +802,8 @@ class Helper
             if ($showHidden) {
                 $ignoreHide = 1;
             }
-            /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
-            $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+            /** @var PageRepository $pageRepository */
+            $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
             $expression = $pageRepository->enableFields($table, $ignoreHide);
             if (!empty($expression)) {
@@ -918,5 +918,20 @@ class Helper
         $content  = $response->getBody()->getContents();
 
         return $content;
+    }
+
+    /**
+     * Check if given value is a valid XML ID.
+     * @see https://www.w3.org/TR/xmlschema-2/#ID
+     *
+     * @access public
+     *
+     * @param mixed $id: The ID value to check
+     *
+     * @return bool: TRUE if $id is valid XML ID, FALSE otherwise
+     */
+    public static function isValidXmlId($id): bool
+    {
+        return preg_match('/^[_a-z][_a-z0-9-.]*$/i', $id) === 1;
     }
 }

@@ -31,21 +31,20 @@ class PageGridController extends AbstractController
      */
     public function mainAction()
     {
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
         if (
-            $this->document === null
-            || $this->document->getDoc()->numPages < 1
+            $this->isDocMissingOrEmpty()
             || empty($this->extConf['fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
 
         $entryArray = [];
 
         $numPages = $this->document->getDoc()->numPages;
         // Iterate through visible page set and display thumbnails.
-        for ($i = 1; $i < $numPages; $i++) {
+        for ($i = 1; $i <= $numPages; $i++) {
             $foundEntry = $this->getEntry($i, $this->extConf['fileGrpThumbs']);
             $foundEntry['state'] = ($i == $this->requestData['page']) ? 'cur' : 'no';
             $entryArray[] = $foundEntry;

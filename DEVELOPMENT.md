@@ -98,7 +98,9 @@ docker-compose down
 
 ### Fixtures
 
-- When writing datasets, please use `uid`s that are easy to search (`grep`) for.
+- Datasets may be created, for example, by exporting records from [MySQL Workbench](https://www.mysql.com/de/products/workbench/).
+- When writing datasets, please use `uid`s that are easy to search (`grep`) for, and that ideally prevent merge conflicts.
+  Some test cases use random nine-digit numbers (`rand(100000000, 999999999)`).
 
 ### File Structure
 

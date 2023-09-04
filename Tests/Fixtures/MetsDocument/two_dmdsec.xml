@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets xmlns:mets="http://www.loc.gov/METS/"
+    xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:videomd="http://www.loc.gov/videoMD/"
+    xmlns:dv="http://dfg-viewer.de/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/videoMD/ https://www.loc.gov/standards/amdvmd/videoMD.xsd">
+    <mets:dmdSec ID="DMDLOG_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <dv:test>Test Value in DMDLOG_0000</dv:test>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDLOG_0000b">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <dv:test>Test Value in DMDLOG_0000b</dv:test>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:amdSec ID="AMD">
+        <mets:rightsMD ID="RIGHTS">
+            <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVRIGHTS">
+                <mets:xmlData>
+                    <dv:rights>
+                        <dv:owner>SLUB</dv:owner>
+                        <dv:ownerLogo>https://digital.slub-dresden.de/fileadmin/images/dfgviewer_logo_slub.gif</dv:ownerLogo>
+                        <dv:ownerSiteURL>https://www.slub-dresden.de/</dv:ownerSiteURL>
+                        <dv:ownerContact>mailto:digital@slub-dresden.de</dv:ownerContact>
+                    </dv:rights>
+                </mets:xmlData>
+            </mets:mdWrap>
+        </mets:rightsMD>
+    </mets:amdSec>
+    <mets:fileSec>
+        <mets:fileGrp USE="DEFAULT">
+            <mets:file ID="FILE_0000_DEFAULT" MIMETYPE="video/quicktime">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/1703800435/video.mov"/>
+            </mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="THUMBS">
+            <mets:file ID="FILE_0000_THUMBS" MIMETYPE="image/jpeg">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/1703800435/thumbnail.jpg"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ADMID="AMD" DMDID="DMDLOG_0000 DMDLOG_0000b" ID="LOG_0000" LABEL="With (two) DMD and AMD"></mets:div>
+        <mets:div DMDID="DMDLOG_0000b" ID="LOG_0001" LABEL="With DMD only"></mets:div>
+        <mets:div ADMID="RIGHTS" ID="LOG_0002" LABEL="With AMD only"></mets:div>
+    </mets:structMap>
+</mets:mets>

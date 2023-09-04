@@ -153,7 +153,7 @@ final class IiifManifest extends Doc
                     )
                 )
                 ->execute();
-            while ($resArray = $result->fetch()) {
+            while ($resArray = $result->fetchAssociative()) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
                     try {
@@ -219,7 +219,7 @@ final class IiifManifest extends Doc
     protected $useGrps = [];
 
     /**
-     * IiifManifest also populates the physical stucture array entries for matching
+     * IiifManifest also populates the physical structure array entries for matching
      * 'fileGrp's. To do that, the configuration has to be loaded; afterwards configured
      * 'fileGrp's for thumbnails, downloads, audio, fulltext and the 'fileGrp's for images
      * can be requested with this method.
@@ -452,7 +452,7 @@ final class IiifManifest extends Doc
             if (!$recursive) {
                 $details = $this->getLogicalStructureInfo($logUnits[0]);
             } else {
-                // cache the ranges - they might occure multiple times in the structures "tree" - with full data as well as referenced as id
+                // cache the ranges - they might occur multiple times in the structures "tree" - with full data as well as referenced as id
                 $processedStructures = [];
                 foreach ($logUnits as $logUnit) {
                     if (array_search($logUnit->getId(), $processedStructures) == false) {
@@ -615,34 +615,9 @@ final class IiifManifest extends Doc
         if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
             return $this->metadataArray[$id];
         }
-        // Initialize metadata array with empty values.
-        // TODO initialize metadata in abstract class
-        $metadata = [
-            'title' => [],
-            'title_sorting' => [],
-            'author' => [],
-            'place' => [],
-            'year' => [],
-            'prod_id' => [],
-            'record_id' => [],
-            'opac_id' => [],
-            'union_id' => [],
-            'urn' => [],
-            'purl' => [],
-            'type' => [],
-            'volume' => [],
-            'volume_sorting' => [],
-            'license' => [],
-            'terms' => [],
-            'restrictions' => [],
-            'out_of_print' => [],
-            'rights_info' => [],
-            'collection' => [],
-            'owner' => [],
-            'mets_label' => [],
-            'mets_orderlabel' => [],
-            'document_format' => ['IIIF'],
-        ];
+
+        $metadata = $this->initializeMetadata('IIIF');
+
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_metadata');
         // Get hidden records, too.
@@ -675,7 +650,7 @@ final class IiifManifest extends Doc
             )
             ->execute();
         $iiifResource = $this->iiif->getContainedResourceById($id);
-        while ($resArray = $result->fetch()) {
+        while ($resArray = $result->fetchAssociative()) {
             // Set metadata field's value(s).
             if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != null) {
                 if (is_string($values)) {
@@ -710,6 +685,10 @@ final class IiifManifest extends Doc
                     $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
                 }
             }
+        }
+        // Set date to empty string if not present.
+        if (empty($metadata['date'][0])) {
+            $metadata['date'][0] = '';
         }
         return $metadata;
     }

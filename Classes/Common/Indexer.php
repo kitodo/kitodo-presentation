@@ -12,17 +12,15 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
-use Ubl\Iiif\Tools\IiifHelper;
 
 /**
  * Indexer class for the 'dlf' extension
@@ -77,9 +75,9 @@ class Indexer
     protected static $processedDocs = [];
 
     /**
-     * Instance of \Kitodo\Dlf\Common\Solr class
+     * Instance of \Kitodo\Dlf\Common\Solr\Solr class
      *
-     * @var \Kitodo\Dlf\Common\Solr
+     * @var Solr
      * @access protected
      */
     protected static $solr;
@@ -262,7 +260,7 @@ class Indexer
                 )
                 ->execute();
 
-            while ($indexing = $result->fetch()) {
+            while ($indexing = $result->fetchAssociative()) {
                 if ($indexing['index_tokenized']) {
                     self::$fields['tokenized'][] = $indexing['index_name'];
                 }
@@ -322,7 +320,6 @@ class Indexer
             }
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
-            $solrDoc = $updateQuery->createDocument();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
             if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                 $solrDoc->setField('page', $logicalUnit['points']);
@@ -336,6 +333,23 @@ class Indexer
             $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
             $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
+            // verify date formatting
+            if(strtotime($metadata['date'][0])) {
+                // do not alter dates YYYY or YYYY-MM or YYYY-MM-DD
+                if (
+                    preg_match("/^[\d]{4}$/", $metadata['date'][0])
+                    || preg_match("/^[\d]{4}-[\d]{2}$/", $metadata['date'][0])
+                    || preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $metadata['date'][0])
+                ) {
+                    $solrDoc->setField('date', $metadata['date'][0]);
+                // change date YYYYMMDD to YYYY-MM-DD
+                } elseif (preg_match("/^[\d]{8}$/", $metadata['date'][0])){
+                    $solrDoc->setField('date', date("Y-m-d", strtotime($metadata['date'][0])));
+                // convert any datetime to proper ISO extended datetime format and timezone for SOLR
+                } elseif (preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*$/", $metadata['date'][0])) {
+                    $solrDoc->setField('date', date('Y-m-d\TH:i:s\Z', strtotime($metadata['date'][0])));
+                }
+            }
             $solrDoc->setField('record_id', $metadata['record_id'][0]);
             $solrDoc->setField('purl', $metadata['purl'][0]);
             $solrDoc->setField('location', $document->getLocation());
@@ -460,6 +474,13 @@ class Indexer
                             // Add facets to index.
                             $solrDoc->setField($index_name . '_faceting', $data);
                         }
+                    }
+                    // Add sorting information to physical sub-elements if applicable.
+                    if (
+                        !empty($data)
+                        && substr($index_name, -8) == '_sorting'
+                    ) {
+                        $solrDoc->setField($index_name , $doc->metadataArray[$doc->toplevelId][$index_name]);
                     }
                 }
             }

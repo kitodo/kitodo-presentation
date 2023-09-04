@@ -25,11 +25,15 @@
                 additionalParams="{tx_dlf:{page:'{document.page}', double:'0', id:'{document.uid}', pagegrid:'0'}}"
                 class=""
                 title="{docTitle}">
-                    <div class="tx-dlf-listview-thumbnail">
-                        <f:if condition="{document.thumbnail}">
-                            <img src="{document.thumbnail}" alt="Vorschaubild von {docTitle}" />
-                        </f:if>
-                    </div>
+                    <f:comment>
+                        slub_digitalcollections uses the :empty CSS selector to check for missing thumbnail.
+                        The HTML comments make sure there is no whitespace in that case.
+                    </f:comment>
+                    <div class="tx-dlf-listview-thumbnail"><!--
+                        --><f:if condition="{document.thumbnail}">
+                            <img src="{document.thumbnail}" loading="lazy" alt="Vorschaubild von {docTitle}" />
+                        </f:if><!--
+                    --></div>
                     <dl>
                         <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
                         <dd class="tx-dlf-title">{docTitle}</dd>
@@ -87,11 +91,11 @@
                                     additionalParams="{tx_dlf:{page:'1', double:'0', id:'{child.uid}', pagegrid:'0'}}"
                                     class=""
                                     title="{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}">
-                                        <div class="tx-dlf-listview-thumbnail">
-                                        <f:if condition="{child.thumbnail}">
-                                            <img src="{child.thumbnail}" alt="Vorschaubild von {f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}" />
-                                        </f:if>
-                                        </div>
+                                        <div class="tx-dlf-listview-thumbnail"><!--
+                                        --><f:if condition="{child.thumbnail}">
+                                            <img src="{child.thumbnail}" loading="lazy" alt="Vorschaubild von {f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}" />
+                                        </f:if><!--
+                                        --></div>
                                         <dl>
                                         <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
                                         <dd class="tx-dlf-title">{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}</dd>
@@ -132,11 +136,11 @@
                                     additionalParams="{tx_dlf:{page:'{result.page}', double:'0', id:'{document.uid}', pagegrid:'0', highlight_word: '{result.highlight_word}'}}"
                                     class=""
                                     title="{f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}, Seite {result.page}">
-                                    <div class="tx-dlf-listview-thumbnail">
-                                        <f:if condition="{result.thumbnail}">
-                                            <img src="{result.thumbnail}" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
-                                        </f:if>
-                                    </div>
+                                    <div class="tx-dlf-listview-thumbnail"><!--
+                                        --><f:if condition="{result.thumbnail}">
+                                            <img src="{result.thumbnail}" loading="lazy" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
+                                        </f:if><!--
+                                    --></div>
                                     <dl>
                                         <f:if condition="{result.title}">
                                             <f:then>

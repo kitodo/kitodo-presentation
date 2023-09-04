@@ -30,19 +30,18 @@ class StatisticsController extends AbstractController
      */
     public function mainAction()
     {
-        $countTitles = $this->documentRepository->countAllTitles($this->settings);
-        $countVolumes = $this->documentRepository->countAllVolumes($this->settings);
+        $foundNumbers = $this->documentRepository->getStatisticsForSelectedCollection($this->settings);
 
         // Set replacements.
-        $args['###TITLES###'] = $countTitles . ' ' . htmlspecialchars(
+        $args['###TITLES###'] = $foundNumbers['titles'] . ' ' . htmlspecialchars(
             LocalizationUtility::translate(
-                ($countTitles > 1 ? 'titles' : 'title'), 'dlf'
+                ($foundNumbers['titles'] > 1 ? 'titles' : 'title'), 'dlf'
             )
         );
 
-        $args['###VOLUMES###'] = $countVolumes . ' ' . htmlspecialchars(
+        $args['###VOLUMES###'] = $foundNumbers['volumes'] . ' ' . htmlspecialchars(
             LocalizationUtility::translate(
-                ($countTitles > 1 ? 'volumes' : 'volume'), 'dlf'
+                ($foundNumbers['volumes'] > 1 ? 'volumes' : 'volume'), 'dlf'
             )
         );
 

@@ -1,8 +1,10 @@
-name: Run the tests
+name: Unit and Functional Testing
 
 on:
   push:
-    branches: [master, dev-extbase-fluid, dev-testing]
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   test:
@@ -12,7 +14,7 @@ jobs:
         typo3: [9.5, 10.4]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dependencies
         run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.typo3 }}

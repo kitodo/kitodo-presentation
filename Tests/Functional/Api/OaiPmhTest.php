@@ -4,7 +4,7 @@ namespace Kitodo\Dlf\Tests\Functional\Api;
 
 use DateTime;
 use GuzzleHttp\Client as HttpClient;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use Phpoaipmh\Endpoint;
@@ -37,8 +37,8 @@ class OaiPmhTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->oaiUrl = $this->baseUrl . '/index.php?id=' . $this->oaiPage;
-        $this->oaiUrlNoStoragePid = $this->baseUrl . '/index.php?id=' . $this->oaiPageNoStoragePid;
+        $this->oaiUrl = $this->baseUrl . 'index.php?id=' . $this->oaiPage;
+        $this->oaiUrlNoStoragePid = $this->baseUrl . 'index.php?id=' . $this->oaiPageNoStoragePid;
 
         $this->importDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.xml');
         $this->importDataSet(__DIR__ . '/../../Fixtures/Common/metadata.xml');
@@ -69,23 +69,6 @@ class OaiPmhTest extends FunctionalTestCase
         $oaiCoreModel->setIndexName($solr->core);
         $this->solrCoreRepository->update($oaiCoreModel);
         $this->persistenceManager->persistAll();
-    }
-
-    protected function importSolrDocuments(Solr $solr, string $path)
-    {
-        $jsonDocuments = json_decode(file_get_contents($path), true);
-
-        $updateQuery = $solr->service->createUpdate();
-        $documents = array_map(function ($jsonDoc) use ($updateQuery) {
-            $document = $updateQuery->createDocument();
-            foreach ($jsonDoc as $key => $value) {
-                $document->setField($key, $value);
-            }
-            return $document;
-        }, $jsonDocuments);
-        $updateQuery->addDocuments($documents);
-        $updateQuery->addCommit();
-        $solr->service->update($updateQuery);
     }
 
     /**

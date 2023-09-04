@@ -112,7 +112,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
-                if ($this->document === null) {
+                if ($this->document === null || $this->document->getDoc() === null) {
                     return $type;
                 }
                 // Set PID for metadata definitions.
@@ -196,7 +196,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
             }
         } else {
-            $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
+            $this->logger->error('Empty UID or invalid PID "' . $pid . '" for document loading');
         }
     }
 }

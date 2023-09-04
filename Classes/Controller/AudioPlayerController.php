@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Controller;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
@@ -57,7 +56,7 @@ class AudioplayerController extends AbstractController
                         url:  "' . $this->audio['url'] . '"
                     },
                     parentElId: "tx-dlf-audio",
-                    swfPath: "' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('dlf')) . 'Resources/Public/Javascript/jPlayer/jquery.jplayer.swf"
+                    swfPath: "' . PathUtility::stripPathSitePrefix(ExtensionManagementUtility::extPath('dlf')) . 'Resources/Public/JavaScript/jPlayer/jquery.jplayer.swf"
                 });
             });
         ';
@@ -75,28 +74,16 @@ class AudioplayerController extends AbstractController
     public function mainAction()
     {
         // Load current document.
-        $this->loadDocument($this->requestData);
-        if (
-            $this->document === null
-            || $this->document->getDoc() === null
-            || $this->document->getDoc()->numPages < 1
-        ) {
+        $this->loadDocument();
+        if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return;
-        } else {
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-            ) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
+            return '';
         }
+
+        $this->setDefaultPage();
+
         // Check if there are any audio files available.
-        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->settings['fileGrpAudio']);
+        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
             if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio])) {
                 // Get audio data.
@@ -111,7 +98,7 @@ class AudioplayerController extends AbstractController
             $this->addPlayerJS();
         } else {
             // Quit without doing anything if required variables are not set.
-            return;
+            return '';
         }
     }
 }
