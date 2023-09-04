@@ -71,10 +71,10 @@ class PageViewController extends AbstractController
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return;
-        } else {
-            $this->setPage();
-            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         }
+
+        $this->setPage();
+
         // Get image data.
         $this->images[0] = $this->getImage($this->requestData['page']);
         $this->fulltexts[0] = $this->getFulltext($this->requestData['page']);
