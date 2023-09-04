@@ -59,24 +59,10 @@ class AnnotationTool extends AbstractPlugin
         ) {
             // Quit without doing anything if required variables are not set.
             return $content;
-        } else {
-            if (!empty($this->piVars['logicalPage'])) {
-                $this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->piVars['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->piVars['page'] may be integer or string (physical structure @ID)
-            if (
-                (int) $this->piVars['page'] > 0
-                || empty($this->piVars['page'])
-            ) {
-                $this->piVars['page'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
-            } else {
-                $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
-            }
-            $this->piVars['double'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
         }
+
+        $this->setPage();
+
         // Load template file.
         $this->getTemplate();
         $annotationContainers = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->piVars['page']]]['annotationContainers'];
