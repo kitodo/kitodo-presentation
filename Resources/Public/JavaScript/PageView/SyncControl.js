@@ -8,6 +8,46 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+class SyncViewsControl extends ol.control.Control {
+    /**
+     * @param {Object} [opt_options] Control options.
+     */
+    constructor(opt_options) {
+        const options = opt_options || {};
+
+        var button = document.createElement('button');
+        button.innerHTML = 'SYNC';
+
+        var buttonUnsync = document.createElement('button');
+        buttonUnsync.innerHTML = 'UNSYNC';
+
+        var element = document.createElement('div');
+        element.className = 'sync-views ol-unselectable'; // ol-control
+        element.appendChild(button);
+        element.appendChild(buttonUnsync);
+
+        super({
+            element: element,
+            target: options.target,
+        });
+
+        var viewerContext = options.dlfViewerObject;
+
+        var syncViews = function(e) {
+            viewerContext.syncControl.setSync();
+        };
+
+        var unsyncViews = function(e) {
+            viewerContext.syncControl.unsetSync();
+        };
+
+        button.addEventListener('click', syncViews, false);
+        buttonUnsync.addEventListener('click', unsyncViews, false);
+    }
+
+
+}
+
 /**
  * Encapsulates especially the score behavior
  * @constructor
@@ -91,45 +131,7 @@ dlfViewerSyncControl.prototype.unsetSync = function () {
 }
 
 
-class SyncViewsControl extends ol.control.Control {
-    /**
-     * @param {Object} [opt_options] Control options.
-     */
-    constructor(opt_options) {
-        const options = opt_options || {};
 
-        var button = document.createElement('button');
-        button.innerHTML = 'SYNC';
-
-        var buttonUnsync = document.createElement('button');
-        buttonUnsync.innerHTML = 'UNSYNC';
-
-        var element = document.createElement('div');
-        element.className = 'sync-views ol-unselectable'; // ol-control
-        element.appendChild(button);
-        element.appendChild(buttonUnsync);
-
-        super({
-            element: element,
-            target: options.target,
-        });
-
-        var viewerContext = options.dlfViewerObject;
-
-        var syncViews = function(e) {
-            viewerContext.syncControl.setSync();
-        };
-
-        var unsyncViews = function(e) {
-            viewerContext.syncControl.unsetSync();
-        };
-
-        button.addEventListener('click', syncViews, false);
-        buttonUnsync.addEventListener('click', unsyncViews, false);
-    }
-
-
-}
 
 
 

@@ -318,8 +318,6 @@ class PageViewController extends AbstractController
         }
         $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
 
-
-
 		$pageId = $doc->physicalStructure[$page];
 		$files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
 
@@ -332,8 +330,7 @@ class PageViewController extends AbstractController
 
 		$score['mimetype'] = $doc->getFileMimeType($loc);
 		$score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
-		$score['url'] = $doc
-			->getFileLocation($loc);
+		$score['url'] = $doc->getFileLocation($loc);
 		if ($this->settings['useInternalProxy']) {
 			// Configure @action URL for form.
 			$uri = $this->uriBuilder->reset()

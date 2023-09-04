@@ -156,7 +156,7 @@ class Annotation
     {
         $pages = [];
         if (is_array($this->targetPages)) {
-            foreach($this->targetPages as $target) {
+            foreach ($this->targetPages as $target) {
                 $pages = array_merge($pages, $target['pages']);
             }
         }
@@ -172,8 +172,8 @@ class Annotation
     public function getPageTargets() {
         $pageTargets = [];
         if (is_array($this->targetPages)) {
-            foreach($this->targetPages as $target) {
-                foreach($target['pages'] as $page) {
+            foreach ($this->targetPages as $target) {
+                foreach ($target['pages'] as $page) {
                     $pageTargets[$page][$target['target']->getUrl()] = $target['target'];
                 }
             }
@@ -191,8 +191,8 @@ class Annotation
     {
         $ranges = [];
         if (is_array($this->getPageTargets())) {
-            foreach($this->getPageTargets() as $pageNumber => $targets) {
-                foreach($targets as $target) {
+            foreach ($this->getPageTargets() as $pageNumber => $targets) {
+                foreach ($targets as $target) {
                     if ($target->isValid() && $target->isAudioRange()) {
                         $ranges[$pageNumber][] = $target->getRangeValue();
                     }
@@ -211,8 +211,8 @@ class Annotation
     {
         $ranges = [];
         if (is_array($this->getPageTargets())) {
-            foreach($this->getPageTargets() as $pageNumber => $targets) {
-                foreach($targets as $target) {
+            foreach ($this->getPageTargets() as $pageNumber => $targets) {
+                foreach ($targets as $target) {
                     if ($target->isValid() && $target->isScoreRange()) {
                         $ranges[$pageNumber][] = $target->getRangeValue();
                     }
@@ -231,8 +231,8 @@ class Annotation
     {
         $ranges = [];
         if (is_array($this->getPageTargets())) {
-            foreach($this->getPageTargets() as $pageNumber => $targets) {
-                foreach($targets as $target) {
+            foreach ($this->getPageTargets() as $pageNumber => $targets) {
+                foreach ($targets as $target) {
                     if ($target->isValid() && $target->isFacsimileRange()) {
                         $ranges[$pageNumber][] = $target->getRangeValue();
                     }

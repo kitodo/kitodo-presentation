@@ -55,7 +55,7 @@ dlfScoreUtils.get_play_midi = function (toolkit) {
 			var song = 'data:audio/midi;base64,' + base64midi;
 			// $("#player").show();
 			// $("#tx-dlf-tools-midi").hide();
-			console.log("this is song " + song)
+			console.log("this is song " + song);
 
 			$("#player").midiPlayer.play(song);
 	})

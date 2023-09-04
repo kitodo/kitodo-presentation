@@ -124,7 +124,7 @@ class DocumentAnnotation
                                 . 'Target: "' . $annotationTarget->getUrl() . '"'
                             );
                         }
-                    } elseif($annotationTarget->getObjectId()) {
+                    } elseif ($annotationTarget->getObjectId()) {
                          $objectTargetPages = [];
                         foreach ($this->document->getDoc()->physicalStructureInfo as $physInfo) {
                              $order = $physInfo['order'];
