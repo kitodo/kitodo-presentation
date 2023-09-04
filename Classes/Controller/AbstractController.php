@@ -325,9 +325,20 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         // $this->requestData['page'] may be integer or string (physical structure @ID)
         if (
             (int) $this->requestData['page'] > 0
-            || empty($this->requestData['page'])
+            || empty($this->requestData['page']
+                || is_array($this->requestData['docPage']))
         ) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+            if ($this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work') {
+                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+            } else {
+                $i = 0;
+                foreach ($this->documentArray as $document) {
+                    if ($document !== null) {
+                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                        $i++;
+                    }
+                }
+            }
         } else {
             $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
         }
