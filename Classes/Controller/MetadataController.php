@@ -138,6 +138,18 @@ class MetadataController extends AbstractController
                 foreach ($section as $name => $value) {
                     // NOTE: Labels are to be escaped in Fluid template
 
+                    $metadata[$i][$name] = is_array($value)
+                        ? implode($this->settings['separator'], $value)
+                        : $value;
+
+                    // TODO: This might not be necessary for subentries or needs to be typecasted correctly.
+                    if ($metadata[$i][$name] === 'Array') {
+                        $metadata[$i][$name] = [];
+                        foreach ($value as $subKey => $subValue) {
+                            $metadata[$i][$name][$subKey] = $subValue;
+                        }
+                    }
+
                     $this->parseMetadata($i, $name, $value, $metadata);
 
                     if (is_array($metadata[$i][$name])) {
@@ -356,6 +368,8 @@ class MetadataController extends AbstractController
             foreach ($metadata[$i][$name] as &$langValue) {
                 $langValue = Helper::getLanguageName($langValue);
             }
+        } elseif (!empty($value)) {
+          $metadata[$i][$name][0] = $metadata[$i][$name][0];
         }
     }
 

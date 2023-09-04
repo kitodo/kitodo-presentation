@@ -29,6 +29,9 @@ return [
     \Kitodo\Dlf\Domain\Model\MetadataFormat::class => [
         'tableName' => 'tx_dlf_metadataformat',
     ],
+    \Kitodo\Dlf\Domain\Model\MetadataSubentry::class => [
+        'tableName' => 'tx_dlf_metadatasubentries',
+    ],
     \Kitodo\Dlf\Domain\Model\Printer::class => [
         'tableName' => 'tx_dlf_printer',
     ],
