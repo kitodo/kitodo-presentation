@@ -29,6 +29,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @subpackage dlf
  * @access public
  * @property int $cPid This holds the PID for the configuration
+ * @property-read array $fileInfos Additional information about files (e.g., ADMID), indexed by ID.
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read int $numPages The holds the total number of pages
@@ -70,6 +71,14 @@ abstract class AbstractDocument
      * @access public
      */
     public static $extKey = 'dlf';
+
+    /**
+     * Additional information about files (e.g., ADMID), indexed by ID.
+     *
+     * @var array
+     * @access protected
+     */
+    protected $fileInfos = [];
 
     /**
      * This holds the configuration for all supported metadata encodings
@@ -364,6 +373,19 @@ abstract class AbstractDocument
      * @return string    The file's location as URL
      */
     public abstract function getDownloadLocation($id);
+
+    /**
+     * This gets all file information stored in single array.
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
+     * 
+     * @return array|null The set of file information
+     */
+    public abstract function getFileInfo($id);
 
     /**
      * This gets the location of a file representing a physical page or track

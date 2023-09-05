@@ -85,12 +85,14 @@ class AudioplayerController extends AbstractController
         // Check if there are any audio files available.
         $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
-            $fileGroupAudio = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio];
-            if (!empty($fileGroupAudio)) {
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpAudio];
+            if (!empty($fileId)) {
                 // Get audio data.
-                $this->audio['url'] = $this->document->getCurrentDocument()->getFileLocation($fileGroupAudio);
-                $this->audio['label'] = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]['label'];
-                $this->audio['mimetype'] = $this->document->getCurrentDocument()->getFileMimeType($fileGroupAudio);
+                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+                $this->audio['url'] = $file['location'];
+                $this->audio['label'] = $physicalStructureInfo['label'];
+                $this->audio['mimetype'] = $file['mimeType'];
                 break;
             }
         }
