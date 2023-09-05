@@ -14,6 +14,13 @@ return [
     'frontend' => [
         'dlf/page-view-proxy' => [
             'target' => \Kitodo\Dlf\Middleware\PageViewProxy::class,
+            // Ensure this runs before the router/dispatcher so it can handle the request
+            'before' => [
+                // replace with the actual TYPO3 router middleware id if known
+                'typo3/cms-frontend/router'
+            ],
+            //'after' => [],
+            'priority' => 50,
         ],
         'dlf/search-in-document' => [
             'target' => \Kitodo\Dlf\Middleware\SearchInDocument::class,
