@@ -116,6 +116,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
+    // TODO(client-side)
     private function renderAnnotationTool()
     {
         if ($this->isDocMissingOrEmpty()) {
@@ -205,13 +206,17 @@ class ToolboxController extends AbstractController
 
         $this->setPage();
 
+        // Get @USE value of METS fileGrp.
+        $fileGrpsImageDownload = array_reverse(GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']));
+
         $imageArray = [];
         // Get left or single page download.
-        $imageArray[0] = $this->getImage($this->requestData['page']);
+        $imageArray[0] = $this->getImage($this->requestData['page'], $fileGrpsImageDownload);
         if ($this->requestData['double'] == 1) {
-            $imageArray[1] = $this->getImage($this->requestData['page'] + 1);
+            $imageArray[1] = $this->getImage($this->requestData['page'] + 1, $fileGrpsImageDownload);
         }
         $this->view->assign('imageDownload', $imageArray);
+        $this->view->assign('fileGrpsImageDownload', $fileGrpsImageDownload);
     }
 
     /**
@@ -220,20 +225,20 @@ class ToolboxController extends AbstractController
      * @access private
      *
      * @param int $page: Page number
+     * @param string[] $fileGrps File groups to consider
      *
      * @return array Array of image links and image format information
      */
-    private function getImage($page)
+    private function getImage($page, $fileGrps)
     {
         $image = [];
-        // Get @USE value of METS fileGrp.
-        $fileGrps = GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
-        while ($fileGrp = @array_pop($fileGrps)) {
+        foreach ($fileGrps as $fileGrp) {
             // Get image link.
             $fileGroup = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp];
             if (!empty($fileGroup)) {
                 $image['url'] = $this->doc->getDownloadLocation($fileGroup);
                 $image['mimetype'] = $this->doc->getFileMimeType($fileGroup);
+                // Also see Toolbox.js
                 switch ($image['mimetype']) {
                     case 'image/jpeg':
                         $image['mimetypeLabel']  = ' (JPG)';
@@ -266,6 +271,8 @@ class ToolboxController extends AbstractController
 
         $this->view->assign('imageManipulation', true);
         $this->view->assign('parentContainer', $parentContainer);
+        // activate it here as it is the most common used tool
+        $this->view->assign('activateToolbox', true);
     }
 
     /**
@@ -302,42 +309,22 @@ class ToolboxController extends AbstractController
      */
     private function getPageLink()
     {
-        $firstPageLink = '';
-        $secondPageLink = '';
-        $pageLinkArray = [];
         $pageNumber = $this->requestData['page'];
-        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
-        // Get image link.
-        while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
-            $firstFileGroupDownload = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber]]['files'][$fileGrpDownload];
-            if (!empty($firstFileGroupDownload)) {
-                $firstPageLink = $this->doc->getFileLocation($firstFileGroupDownload);
-                // Get second page, too, if double page view is activated.
-                $secondFileGroupDownload = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$pageNumber + 1]]['files'][$fileGrpDownload];
-                if (
-                    $this->requestData['double']
-                    && $pageNumber < $this->doc->numPages
-                    && !empty($secondFileGroupDownload)
-                ) {
-                    $secondPageLink = $this->doc->getFileLocation($secondFileGroupDownload);
-                }
-                break;
-            }
+        $pageLinks = [
+            $this->doc->getPageLink($pageNumber),
+        ];
+        // Get second page, too, if double page view is activated.
+        if ($this->requestData['double'] && $pageNumber < $this->doc->numPages) {
+            $pageLinks[1] = $this->doc->getPageLink($pageNumber + 1);
         }
         if (
-            empty($firstPageLink)
-            && empty($secondPageLink)
+            empty($pageLinks[0])
+            && empty($pageLinks[1])
         ) {
             $this->logger->warning('File not found in fileGrps "' . $this->extConf['fileGrpDownload'] . '"');
         }
 
-        if (!empty($firstPageLink)) {
-            $pageLinkArray[0] = $firstPageLink;
-        }
-        if (!empty($secondPageLink)) {
-            $pageLinkArray[1] = $secondPageLink;
-        }
-        return $pageLinkArray;
+        return $pageLinks;
     }
 
     /**

@@ -100,6 +100,7 @@ class MetadataController extends AbstractController
         if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $this->doc->toplevelId)) {
             $data = $useOriginalIiifManifestMetadata ? $this->doc->getManifestMetadata($this->doc->toplevelId, $this->settings['storagePid']) : $this->doc->getTitledata($this->settings['storagePid']);
             $data['_id'] = $this->doc->toplevelId;
+            $data['_active'] = true;
             array_unshift($metadata, $data);
         }
         if (empty($metadata)) {
@@ -173,7 +174,7 @@ class MetadataController extends AbstractController
 
         foreach ($metadata as $row) {
             foreach ($row as $key => $group) {
-                if ($key == '_id') {
+                if ($key == '_id' || $key === '_active') {
                     continue;
                 }
 
@@ -181,7 +182,7 @@ class MetadataController extends AbstractController
                     $iiifData[$key] = $this->buildIiifDataGroup($key, $group);
                 } else {
                     foreach ($group as $label => $value) {
-                        if ($label == '_id') {
+                        if ($label === '_id' || $label === '_active') {
                             continue;
                         }
                         if (is_array($value)) {
@@ -371,17 +372,35 @@ class MetadataController extends AbstractController
         $metadata = [];
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
-            $ids = [];
-            if (!empty($this->doc->physicalStructure[$this->requestData['page']]) && !empty($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->requestData['page']]])) {
-                foreach ($this->doc->smLinks['p2l'][$this->doc->physicalStructure[$this->requestData['page']]] as $logId) {
-                    $count = $this->doc->getStructureDepth($logId);
-                    $ids[$count][] = $logId;
-                }
-            }
-            ksort($ids);
-            reset($ids);
+            $ids = $this->doc->getLogicalSectionsOnPage((int) $this->requestData['page']);
+
             // Check if we should display all metadata up to the root.
-            if ($this->settings['rootline'] == 1) {
+            if ($this->settings['prerenderAllSections'] ?? false) {
+                // Collect IDs of all logical structures. This is a flattened tree, so the
+                // order also works for rootline configurations.
+                $allIds = [];
+                function getIds($toc, &$output) {
+                    foreach ($toc as $entry) {
+                        $output[$entry['id']] = true;
+                        if (is_array($entry['children'])) {
+                            getIds($entry['children'], $output);
+                        }
+                    }
+                }
+                getIds($this->doc->tableOfContents, $allIds);
+
+                $idIsActive = [];
+                foreach ($ids as $id) {
+                    foreach ($id as $sid) {
+                        $idIsActive[$sid] = true;
+                    }
+                }
+
+                $metadata = $this->getMetadataForIds(array_keys($allIds), $metadata);
+                foreach ($metadata as &$entry) {
+                    $entry['_active'] = isset($idIsActive[$entry['_id']]);
+                }
+            } elseif ($this->settings['rootline'] == 1) {
                 foreach ($ids as $id) {
                     $metadata = $this->getMetadataForIds($id, $metadata);
                 }
@@ -416,6 +435,7 @@ class MetadataController extends AbstractController
             }
             if (!empty($data)) {
                 $data['_id'] = $sid;
+                $data['_active'] = true;
                 $metadata[] = $data;
             }
         }

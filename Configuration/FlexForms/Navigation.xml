@@ -73,7 +73,7 @@
                                         <numIndex index="1">rotation</numIndex>
                                     </numIndex>
                                 </items>
-                                <default>doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation</default>
+                                <default>doublepage,pageFirst,pageStepBack,pageBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation</default>
                                 <minitems>1</minitems>
                             </config>
                         </TCEforms>

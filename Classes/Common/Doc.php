@@ -392,6 +392,27 @@ abstract class Doc
     public abstract function getFileMimeType($id);
 
     /**
+     * Get information about all files contained in the document, or null if this information is not available.
+     *
+     * Returns an associative array of the following form:
+     *
+     * ```php
+     * [
+     *     '#FILE_ID' => [
+     *         'url' => '...',
+     *         'mimetype' => '...',
+     *     ],
+     *     // ...
+     * ]
+     * ```
+     *
+     * @access public
+     *
+     * @return array
+     */
+    public abstract function getAllFiles();
+
+    /**
      * This is a singleton class, thus an instance must be created by this method
      *
      * @access public
@@ -411,7 +432,10 @@ abstract class Doc
         $xml = null;
         $iiif = null;
 
-        if ($instance = self::getDocCache($location) && !$forceReload) {
+        if (isset(self::$registry[$location])) {
+            return self::$registry[$location];
+        } elseif ($instance = self::getDocCache($location)) {
+            self::$registry[$location] = $instance;
             return $instance;
         } else {
             $instance = null;
@@ -455,6 +479,7 @@ abstract class Doc
         }
 
         if ($instance) {
+            self::$registry[$location] = $instance;
             self::setDocCache($location, $instance);
         }
 
@@ -1279,4 +1304,111 @@ abstract class Doc
         $cache->set($cacheIdentifier, $doc);
     }
 
+    /**
+     * Get IDs of logical structures that a page belongs to, indexed by depth.
+     *
+     * @param int $pageNo
+     * @return array
+     */
+    public function getLogicalSectionsOnPage($pageNo)
+    {
+        $this->_getSmLinks();
+        $this->_getPhysicalStructure();
+
+        $ids = [];
+        if (!empty($this->physicalStructure[$pageNo]) && !empty($this->smLinks['p2l'][$this->physicalStructure[$pageNo]])) {
+            foreach ($this->smLinks['p2l'][$this->physicalStructure[$pageNo]] as $logId) {
+                $depth = $this->getStructureDepth($logId);
+                $ids[$depth][] = $logId;
+            }
+        }
+        ksort($ids);
+        reset($ids);
+        return $ids;
+    }
+
+    /**
+     * Get URL of download file of specified page, or the empty string if there is no such link.
+     *
+     * @param int $pageNumber
+     * @return string
+     */
+    public function getPageLink($pageNumber)
+    {
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+        $fileGrpsDownload = GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']);
+        // Get image link.
+        foreach ($fileGrpsDownload as $fileGrpDownload) {
+            if (!empty($this->physicalStructureInfo[$this->physicalStructure[$pageNumber]]['files'][$fileGrpDownload])) {
+                return $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[$pageNumber]]['files'][$fileGrpDownload]);
+            }
+        }
+        return '';
+    }
+
+    public function toArray($uriBuilder, array $config = [])
+    {
+        $this->_getSmLinks();
+        $this->_getPhysicalStructure();
+
+        $proxyFileGroups = $config['proxyFileGroups'] ?? [];
+        $forceAbsoluteUrl = $config['forceAbsoluteUrl'] ?? false;
+        $minPage = $config['minPage'] ?? 1;
+        $maxPage = $config['maxPage'] ?? $this->numPages;
+
+        $result = [
+            'pages' => [],
+            'query' => [
+                'minPage' => $minPage
+            ]
+        ];
+
+        $allFiles = $this->getAllFiles();
+
+        for ($page = $minPage; $page <= $maxPage; $page++) {
+            $pageEntry = [
+                'logSections' => array_merge(...$this->getLogicalSectionsOnPage($page)),
+                'files' => [],
+            ];
+
+            foreach ($this->physicalStructureInfo[$this->physicalStructure[$page]]['files'] as $fileGrp => $fileId) {
+                if ($allFiles === null) {
+                    $file = [
+                        'url' => $this->getFileLocation($fileId),
+                        'mimetype' => $this->getFileMimeType($fileId),
+                    ];
+                } else {
+                    $file = $allFiles[$fileId] ?? null;
+                    if ($file === null) {
+                        continue;
+                    }
+                }
+
+                $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+                $nonProxyMimeTypes = GeneralUtility::trimExplode(',', $extConf['nonProxyMimeTypes']);
+
+                // Only deliver static images via the internal PageViewProxy.
+                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL`.)
+                if (in_array($fileGrp, $proxyFileGroups) && !in_array($file['mimetype'], $nonProxyMimeTypes)) {
+                    // Configure @action URL for form.
+                    $file['url'] = $uriBuilder
+                        ->reset()
+                        ->setTargetPageUid($GLOBALS['TSFE']->id)
+                        ->setCreateAbsoluteUri($forceAbsoluteUrl)
+                        ->setArguments([
+                            'eID' => 'tx_dlf_pageview_proxy',
+                            'url' => $file['url'],
+                            'uHash' => GeneralUtility::hmac($file['url'], 'PageViewProxy')
+                        ])
+                        ->build();
+                }
+
+                $pageEntry['files'][$fileGrp] = $file;
+            }
+
+            $result['pages'][] = $pageEntry;
+        }
+
+        return $result;
+    }
 }
