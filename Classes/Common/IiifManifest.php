@@ -115,7 +115,6 @@ final class IiifManifest extends AbstractDocument
     public static $extKey = 'dlf';
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::establishRecordId()
      */
     protected function establishRecordId($pid)
@@ -171,7 +170,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getDocument()
      */
     protected function getDocument()
@@ -256,7 +254,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
@@ -384,7 +381,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileInfo()
      */
     public function getFileInfo($id)
@@ -401,7 +397,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileLocation()
      */
     public function getFileLocation($id)
@@ -426,7 +421,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileMimeType()
      */
     public function getFileMimeType($id)
@@ -452,7 +446,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
@@ -624,7 +617,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
@@ -711,7 +703,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getSmLinks()
      */
     protected function _getSmLinks()
@@ -772,7 +763,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFullText()
      */
     //TODO: rewrite it to get full OCR
@@ -840,7 +830,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::init()
      */
     protected function init($location)
@@ -849,7 +838,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::loadLocation()
      */
     protected function loadLocation($location)
@@ -873,7 +861,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
@@ -883,7 +870,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)
@@ -896,7 +882,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
@@ -943,7 +928,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
@@ -952,7 +936,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getToplevelId()
      */
     protected function _getToplevelId()
