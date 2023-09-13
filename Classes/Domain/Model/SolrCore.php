@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * Cores on the application-wide Solr instance that are available for indexing.
  * They may be used, for example, as a parameter to the CLI indexing commands, and are referenced by ``tx_dlf_document.solrcore``.
@@ -21,7 +23,7 @@ namespace Kitodo\Dlf\Domain\Model;
  * @subpackage dlf
  * @access public
  */
-class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class SolrCore extends AbstractEntity
 {
     /**
      * @var int

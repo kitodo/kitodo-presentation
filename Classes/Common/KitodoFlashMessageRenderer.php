@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface;
 
 /**
  * A class representing a bootstrap flash messages.
@@ -21,7 +22,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
  * The created output contains all classes which are required for
  * the TYPO3 backend. Any kind of message contains also a nice icon.
  */
-class KitodoFlashMessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface
+class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 {
     /**
      * @var string The message severity class names

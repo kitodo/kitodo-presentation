@@ -99,7 +99,7 @@ final class IiifManifest extends AbstractDocument
     protected $originalMetadataArray = [];
 
     /**
-     * Holds the mime types of linked resources in the manifest (extreacted during parsing) for later use.
+     * Holds the mime types of linked resources in the manifest (extracted during parsing) for later use.
      * @var array
      * @access protected
      */

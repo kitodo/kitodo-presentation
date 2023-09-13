@@ -19,7 +19,9 @@ use Kitodo\Dlf\Domain\Repository\ActionLogRepository;
 use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
+use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Context\Context;
 
@@ -544,9 +546,9 @@ class BasketController extends AbstractController
                 $mailBody = $hookObj->customizeMailBody($mailText, $pdfUrl);
             }
         }
-        $from = \TYPO3\CMS\Core\Utility\MailUtility::getSystemFrom();
+        $from = MailUtility::getSystemFrom();
         // send mail
-        $mail = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+        $mail = GeneralUtility::makeInstance(MailMessage::class);
         // Prepare and send the message
         $mail
             // subject

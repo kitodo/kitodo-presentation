@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Format;
 
+use Kitodo\Dlf\Common\MetadataInterface;
+
 /**
  * Metadata TEI-Header format class for the 'dlf' extension
  *
@@ -20,7 +22,7 @@ namespace Kitodo\Dlf\Format;
  * @subpackage dlf
  * @access public
  */
-class TeiHeader implements \Kitodo\Dlf\Common\MetadataInterface
+class TeiHeader implements MetadataInterface
 {
     /**
      * This extracts the essential TEIHDR metadata from XML

@@ -12,7 +12,9 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-class MetadataFormatRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
+class MetadataFormatRepository extends Repository
 {
 
 }
