@@ -26,9 +26,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * CLI Command for indexing single documents into database and Solr.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class IndexCommand extends BaseCommand

@@ -21,9 +21,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * VIAF API Client class
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  **/
 class Client
@@ -37,7 +37,7 @@ class Client
     protected $logger;
 
     /**
-     * The ORCID API endpoint
+     * The VIAF API endpoint
      *
      * @var string
      **/
@@ -60,7 +60,7 @@ class Client
     /**
      * Constructs a new instance
      *
-     * @param string $viaf: the VIAF identifier of the profile
+     * @param string $viaf the VIAF identifier of the profile
      * @param RequestFactory $requestFactory a request object to inject
      * @return void
      **/

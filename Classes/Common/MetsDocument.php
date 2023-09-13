@@ -23,30 +23,45 @@ use Ubl\Iiif\Services\AbstractImageService;
 /**
  * MetsDocument class for the 'dlf' extension.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
- * @property int $cPid This holds the PID for the configuration
- * @property-read array $mdSec Associative array of METS metadata sections indexed by their IDs.
- * @property-read array $dmdSec Subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
- * @property-read array $fileGrps This holds the file ID -> USE concordance
- * @property-read bool $hasFulltext Are there any fulltext files available?
- * @property-read array $metadataArray This holds the documents' parsed metadata array
- * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
- * @property-read int $numPages The holds the total number of pages
- * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
- * @property-read array $physicalStructure This holds the physical structure
- * @property-read array $physicalStructureInfo This holds the physical structure metadata
- * @property-read int $pid This holds the PID of the document or zero if not in database
+ *
+ * @property int $cPid this holds the PID for the configuration
+ * @property-read array $formats this holds the configuration for all supported metadata encodings
+ * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
+ * @property-read bool $hasFulltext flag with information if there are any fulltext files available
+ * @property array $lastSearchedPhysicalPage the last searched logical and physical page
+ * @property array $logicalUnits this holds the logical units
+ * @property-read array $metadataArray this holds the documents' parsed metadata array
+ * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
+ * @property-read int $numPages the holds the total number of pages
+ * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
+ * @property-read array $physicalStructure this holds the physical structure
+ * @property-read array $physicalStructureInfo this holds the physical structure metadata
+ * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
+ * @property-read int $pid this holds the PID of the document or zero if not in database
+ * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
- * @property-read string $recordId The METS file's / IIIF manifest's record identifier
- * @property-read int $rootId This holds the UID of the root document or zero if not multi-volumed
- * @property-read array $smLinks This holds the smLinks between logical and physical structMap
- * @property-read array $tableOfContents This holds the logical structure
- * @property-read string $thumbnail This holds the document's thumbnail location
- * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
+ * @property-read string $recordId the METS file's / IIIF manifest's record identifier
+ * @property array $registry this holds the singleton object of the document
+ * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
+ * @property-read array $smLinks this holds the smLinks between logical and physical structMap
+ * @property bool $smLinksLoaded flag with information if the smLinks are loaded
+ * @property-read array $tableOfContents this holds the logical structure
+ * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
+ * @property-read string $thumbnail this holds the document's thumbnail location
+ * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
+ * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
+ * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
+ * @property-read array $mdSec associative array of METS metadata sections indexed by their IDs.
+ * @property bool $mdSecLoaded flag with information if the array of METS metadata sections is loaded
+ * @property-read array $dmdSec subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
+ * @property-read array $fileGrps this holds the file ID -> USE concordance
+ * @property bool $fileGrpsLoaded flag with information if file groups array is loaded
+ * @property-read array $fileInfos additional information about files (e.g., ADMID), indexed by ID.
+ * @property-read \SimpleXMLElement $mets this holds the XML file's METS part as \SimpleXMLElement object
  * @property-read string $parentHref URL of the parent document (determined via mptr element), or empty string if none is available
  */
 final class MetsDocument extends AbstractDocument
@@ -105,14 +120,6 @@ final class MetsDocument extends AbstractDocument
     protected $dmdSec = [];
 
     /**
-     * The extension key
-     *
-     * @var	string
-     * @access public
-     */
-    public static $extKey = 'dlf';
-
-    /**
      * This holds the file ID -> USE concordance
      * @see _getFileGrps()
      *
@@ -137,14 +144,6 @@ final class MetsDocument extends AbstractDocument
      * @access protected
      */
     protected $mets;
-
-    /**
-     * This holds the whole XML file as \SimpleXMLElement object
-     *
-     * @var \SimpleXMLElement
-     * @access protected
-     */
-    protected $xml;
 
     /**
      * URL of the parent document (determined via mptr element),

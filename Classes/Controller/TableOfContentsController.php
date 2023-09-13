@@ -18,9 +18,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Controller class for plugin 'Table Of Contents'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class TableOfContentsController extends AbstractController

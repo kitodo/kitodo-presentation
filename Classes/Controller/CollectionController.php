@@ -20,9 +20,9 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 /**
  * Controller class for the plugin 'Collection'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class CollectionController extends AbstractController

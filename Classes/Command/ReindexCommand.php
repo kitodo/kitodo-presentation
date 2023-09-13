@@ -25,9 +25,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * CLI Command for re-indexing collections into database and Solr.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ReindexCommand extends BaseCommand

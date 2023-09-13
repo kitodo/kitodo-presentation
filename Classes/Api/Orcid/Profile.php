@@ -21,9 +21,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * ORCID API Profile class
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  **/
 class Profile

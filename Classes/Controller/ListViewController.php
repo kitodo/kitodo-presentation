@@ -19,12 +19,9 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 /**
  * Controller class for the plugin 'ListView'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
- * @author Frank Ulrich Weber <fuw@zeutschel.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ListViewController extends AbstractController

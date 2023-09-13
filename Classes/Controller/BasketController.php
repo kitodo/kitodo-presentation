@@ -26,9 +26,9 @@ use TYPO3\CMS\Core\Context\Context;
 /**
  * Controller class for the plugin 'Basket'.
  *
- * @author Christopher Timm <timm@effective-webwork.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class BasketController extends AbstractController

@@ -21,10 +21,9 @@ use Kitodo\Dlf\Domain\Repository\TokenRepository;
 /**
  * Controller class for the plugin 'OAI-PMH Interface'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class OaiPmhController extends AbstractController

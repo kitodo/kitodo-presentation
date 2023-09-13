@@ -22,9 +22,9 @@ use Ubl\Iiif\Context\IRI;
 /**
  * Controller class for the plugin 'Metadata'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class MetadataController extends AbstractController

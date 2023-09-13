@@ -24,18 +24,22 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Solr class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
- * @property-read string|null $core This holds the core name for the current instance
- * @property-write int $cPid This holds the PID for the configuration
- * @property int $limit This holds the max results
- * @property-read int $numberOfHits This holds the number of hits for last search
- * @property-write array $params This holds the additional query parameters
- * @property-read bool $ready Is the Solr service instantiated successfully?
- * @property-read \Solarium\Client $service This holds the Solr service object
+ *
+ * @property array $config this holds the Solr configuration
+ * @property-read string|null $core this holds the core name for the current instance
+ * @property-write int $cPid this holds the PID for the configuration
+ * @property-read string $extKey the extension key
+ * @property array $fields the fields for SOLR index
+ * @property int $limit this holds the max results
+ * @property-read int $numberOfHits this holds the number of hits for last search
+ * @property-write array $params this holds the additional query parameters
+ * @property-read bool $ready flag if the Solr service is instantiated successfully
+ * @property array $registry this holds the singleton search objects with their core as array key
+ * @property-read \Solarium\Client $service this holds the Solr service object
  */
 class Solr implements LoggerAwareInterface
 {

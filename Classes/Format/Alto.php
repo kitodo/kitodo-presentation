@@ -17,9 +17,9 @@ namespace Kitodo\Dlf\Format;
  *
  * ** This currently supports only ALTO 2.x **
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class Alto implements \Kitodo\Dlf\Common\FulltextInterface

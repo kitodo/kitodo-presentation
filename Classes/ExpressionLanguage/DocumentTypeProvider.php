@@ -18,9 +18,9 @@ use TYPO3\CMS\Core\ExpressionLanguage\FunctionsProvider\Typo3ConditionFunctionsP
 /**
  * Wrapper class to provide variables and functions for the ExpressionLanguage.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DocumentTypeProvider extends AbstractProvider

@@ -24,6 +24,14 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
+/**
+ * Document repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
     /**

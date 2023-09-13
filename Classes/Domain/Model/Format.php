@@ -23,6 +23,7 @@ namespace Kitodo\Dlf\Domain\Model;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class Format extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity

@@ -17,6 +17,14 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
+/**
+ * Collection repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
     /**

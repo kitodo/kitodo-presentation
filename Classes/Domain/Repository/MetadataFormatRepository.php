@@ -12,6 +12,14 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+/**
+ * Metadata format repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class MetadataFormatRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 

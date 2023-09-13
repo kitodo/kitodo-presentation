@@ -15,9 +15,9 @@ namespace Kitodo\Dlf\Hooks;
 /**
  * Hooks and hacks for Kitodo.Production
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class KitodoProductionHacks

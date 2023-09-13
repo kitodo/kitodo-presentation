@@ -26,10 +26,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Search in document Middleware for plugin 'Search' of the 'dlf' extension
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class SearchInDocument implements MiddlewareInterface

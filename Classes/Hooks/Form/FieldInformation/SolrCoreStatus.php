@@ -19,9 +19,9 @@ use TYPO3\CMS\Backend\Form\AbstractNode;
 /**
  * FieldInformation renderType for TYPO3 FormEngine
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class SolrCoreStatus extends AbstractNode

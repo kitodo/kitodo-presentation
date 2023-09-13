@@ -15,6 +15,14 @@ namespace Kitodo\Dlf\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
+/**
+ * Mail repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class MailRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 

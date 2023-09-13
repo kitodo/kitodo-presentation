@@ -24,9 +24,9 @@ use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 /**
  * Hooks and helper for \TYPO3\CMS\Core\TypoScript\ConfigurationForm
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ConfigurationForm

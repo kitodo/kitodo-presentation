@@ -29,9 +29,9 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterface, LoggerAwareInterface

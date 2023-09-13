@@ -12,6 +12,14 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+/**
+ * Structure repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class StructureRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
 

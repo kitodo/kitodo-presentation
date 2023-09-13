@@ -21,6 +21,10 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Class MigrateSettings
+ * 
+ * @package TYPO3
+ * @subpackage dlf
+ *
  * @internal
  */
 class MigrateSettings implements UpgradeWizardInterface

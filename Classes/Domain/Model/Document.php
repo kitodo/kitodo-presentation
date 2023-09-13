@@ -22,6 +22,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity

@@ -23,9 +23,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * Helper for FlexForm's custom "itemsProcFunc"
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ItemsProcFunc implements LoggerAwareInterface
