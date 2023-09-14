@@ -29,6 +29,7 @@ class FeedsController extends AbstractController
 {
 
     /**
+     * @access protected
      * @var LibraryRepository
      */
     protected $libraryRepository;

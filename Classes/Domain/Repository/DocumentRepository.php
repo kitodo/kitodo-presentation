@@ -27,10 +27,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
     /**
-     * The controller settings passed to the repository for some special actions.
-     *
-     * @var array
      * @access protected
+     * @var array The controller settings passed to the repository for some special actions.
      */
     protected $settings;
 

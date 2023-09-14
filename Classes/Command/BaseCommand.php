@@ -43,38 +43,44 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 class BaseCommand extends Command
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
     protected $documentRepository;
 
     /**
+     * @access protected
      * @var LibraryRepository
      */
     protected $libraryRepository;
 
     /**
+     * @access protected
      * @var StructureRepository
      */
     protected $structureRepository;
 
     /**
+     * @access protected
      * @var int
      */
     protected $storagePid;
 
     /**
+     * @access protected
      * @var \Kitodo\Dlf\Domain\Model\Library
      */
     protected $owner;
 
     /**
-     * @var array
      * @access protected
+     * @var array
      */
     protected $extConf;
 

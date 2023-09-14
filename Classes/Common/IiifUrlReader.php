@@ -28,10 +28,8 @@ use Ubl\Iiif\Tools\UrlReaderInterface;
 class IiifUrlReader implements UrlReaderInterface
 {
     /**
-     * Singleton instance of the class
-     *
      * @access protected
-     * @var IiifUrlReader
+     * @var IiifUrlReader Singleton instance of the class
      */
     protected static $instance;
 

@@ -30,6 +30,7 @@ use Kitodo\Dlf\Domain\Repository\TokenRepository;
 class OaiPmhController extends AbstractController
 {
     /**
+     * @access protected
      * @var TokenRepository
      */
     protected $tokenRepository;
@@ -43,6 +44,7 @@ class OaiPmhController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
@@ -56,6 +58,7 @@ class OaiPmhController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var LibraryRepository
      */
     protected $libraryRepository;
@@ -79,18 +82,14 @@ class OaiPmhController extends AbstractController
     }
 
     /**
-     * Did an error occur?
-     *
-     * @var string
      * @access protected
+     * @var string Did an error occur?
      */
     protected $error;
 
     /**
-     * This holds the configuration for all supported metadata prefixes
-     *
-     * @var array
      * @access protected
+     * @var array This holds the configuration for all supported metadata prefixes
      */
     protected $formats = [
         'oai_dc' => [
@@ -111,6 +110,7 @@ class OaiPmhController extends AbstractController
     ];
 
     /**
+     * @access protected
      * @var array
      */
     protected $parameters = [];

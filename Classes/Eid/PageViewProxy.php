@@ -37,11 +37,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PageViewProxy
 {
     /**
+     * @access protected
      * @var RequestFactory
      */
     protected $requestFactory;
 
     /**
+     * @access protected
      * @var mixed
      */
     protected $extConf;

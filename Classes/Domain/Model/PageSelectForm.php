@@ -22,21 +22,25 @@ namespace Kitodo\Dlf\Domain\Model;
 class PageSelectForm extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @access protected
      * @var integer
      */
     protected $id;
 
     /**
+     * @access protected
      * @var string
      */
     protected $recordId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $double;
 
     /**
+     * @access protected
      * @var integer
      */
     protected $page;

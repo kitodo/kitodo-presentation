@@ -29,32 +29,32 @@ namespace Kitodo\Dlf\Domain\Model;
 class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $indexName;
 
     /**
+     * @access protected
      * @var string
      */
     protected $website;
 
     /**
-     * Contact email address of the library (used as ``adminEmail`` in responses
-     * to OAI ``Identify`` requests).
-     *
-     * @var string
+     * @access protected
+     * @var string Contact email address of the library (used as ``adminEmail`` in responses to OAI ``Identify`` requests).
      */
     protected $contact;
 
     /**
-     * image
-     *
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @access protected
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference image
      */
     protected $image;
 
@@ -62,33 +62,37 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * The label that is used as ``repositoryName`` in responses to OAI
      * ``Identify`` requests.
      *
-     * @var string
+     * @access protected
+     * @var string The label that is used as ``repositoryName`` in responses to OAI ``Identify`` requests
      */
     protected $oaiLabel;
 
     /**
-     * OAI base URL used when harvesting the library via ``kitodo:harvest``.
-     *
-     * @var string
+     * @access protected
+     * @var string OAI base URL used when harvesting the library via ``kitodo:harvest``.
      */
     protected $oaiBase;
 
     /**
+     * @access protected
      * @var string
      */
     protected $opacLabel;
 
     /**
+     * @access protected
      * @var string
      */
     protected $opacBase;
 
     /**
+     * @access protected
      * @var string
      */
     protected $unionLabel;
 
     /**
+     * @access protected
      * @var string
      */
     protected $unionBase;

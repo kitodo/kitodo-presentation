@@ -22,25 +22,28 @@ namespace Kitodo\Dlf\Domain\Model;
 class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @access protected
      * @var string|null
      */
     protected $docIds;
 
     /**
+     * @access protected
      * @var int
      */
     protected $feUserId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $sessionId;
-
 
     /**
      * @return string|null

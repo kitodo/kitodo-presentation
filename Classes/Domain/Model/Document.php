@@ -27,165 +27,195 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @access protected
      * @var \DateTime
      */
     protected $crdate;
 
     /**
+     * @access protected
      * @var \DateTime
      */
     protected $tstamp;
 
     /**
-     * This contains the representative of the raw XML / IIIF data of the document.
-     *
-     * @var AbstractDocument|null
+     * @access protected
+     * @var AbstractDocument|null This contains the representative of the raw XML / IIIF data of the document.
      */
     protected $currentDocument = null;
 
     /**
+     * @access protected
      * @var string
      */
     protected $title;
 
     /**
+     * @access protected
      * @var string
      */
     protected $prodId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $location;
 
     /**
+     * @access protected
      * @var string
      */
     protected $recordId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $opacId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $unionId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $urn;
 
     /**
+     * @access protected
      * @var string
      */
     protected $purl;
 
     /**
+     * @access protected
      * @var string
      */
     protected $titleSorting;
 
     /**
+     * @access protected
      * @var string
      */
     protected $author;
 
     /**
+     * @access protected
      * @var string
      */
     protected $year;
 
     /**
+     * @access protected
      * @var string
      */
     protected $place;
 
     /**
+     * @access protected
      * @var string
      */
     protected $thumbnail;
 
     /**
+     * @access protected
      * @var \Kitodo\Dlf\Domain\Model\Structure
      */
     protected $structure;
 
     /**
+     * @access protected
      * @var int
      */
     protected $partof = 0;
 
     /**
+     * @access protected
      * @var string
      */
     protected $volume;
 
     /**
+     * @access protected
      * @var string
      */
     protected $volumeSorting;
 
     /**
+     * @access protected
      * @var string
      */
     protected $license;
 
     /**
+     * @access protected
      * @var string
      */
     protected $terms;
 
     /**
+     * @access protected
      * @var string
      */
     protected $restrictions;
 
     /**
+     * @access protected
      * @var string
      */
     protected $outOfPrint;
 
     /**
+     * @access protected
      * @var string
      */
     protected $rightsInfo;
 
     /**
+     * @access protected
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection>
      * @Extbase\ORM\Lazy
      */
     protected $collections = null;
 
     /**
+     * @access protected
      * @var string
      */
     protected $metsLabel;
 
     /**
+     * @access protected
      * @var string
      */
     protected $metsOrderlabel;
 
     /**
+     * @access protected
      * @var \Kitodo\Dlf\Domain\Model\Library
      * @Extbase\ORM\Lazy
      */
     protected $owner;
 
     /**
+     * @access protected
      * @var int
      */
     protected $solrcore;
 
     /**
+     * @access protected
      * @var int
      */
     protected $status;
 
     /**
+     * @access protected
      * @var string
      */
     protected $documentFormat;

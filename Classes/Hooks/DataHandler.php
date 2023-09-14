@@ -38,6 +38,7 @@ class DataHandler implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
     protected $documentRepository;

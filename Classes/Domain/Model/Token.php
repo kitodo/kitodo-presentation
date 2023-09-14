@@ -22,23 +22,20 @@ namespace Kitodo\Dlf\Domain\Model;
 class Token extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
-     * The resumption token string.
-     *
-     * @var string
+     * @access protected
+     * @var string The resumption token string.
      */
     protected $token;
 
     /**
-     * Data that is used to resume the previous request.
-     *
-     * @var string
+     * @access protected
+     * @var string Data that is used to resume the previous request.
      */
     protected $options;
 
     /**
-     * Originally an identifier for the kind of token ('oai'). Not used at the moment.
-     *
-     * @var string
+     * @access protected
+     * @var string Originally an identifier for the kind of token ('oai'). Not used at the moment.
      */
     protected $ident;
 

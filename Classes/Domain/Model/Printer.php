@@ -22,21 +22,25 @@ namespace Kitodo\Dlf\Domain\Model;
 class Printer extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @access protected
      * @var string
      */
     protected $mail;
 
     /**
+     * @access protected
      * @var string
      */
     protected $name;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $print;

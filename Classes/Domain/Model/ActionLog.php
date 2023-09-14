@@ -22,26 +22,31 @@ namespace Kitodo\Dlf\Domain\Model;
 class ActionLog extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @access protected
      * @var int
      */
     protected $userId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $fileName;
 
     /**
+     * @access protected
      * @var int
      */
     protected $countPages;
 
     /**
+     * @access protected
      * @var string
      */
     protected $name;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;

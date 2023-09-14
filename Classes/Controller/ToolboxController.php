@@ -27,10 +27,8 @@ class ToolboxController extends AbstractController
 {
 
     /**
-     * This holds the current document
-     *
-     * @var \Kitodo\Dlf\Common\AbstractDocument
      * @access private
+     * @var \Kitodo\Dlf\Common\AbstractDocument This holds the current document
      */
     private $doc;
 

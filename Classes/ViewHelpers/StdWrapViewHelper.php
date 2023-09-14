@@ -17,6 +17,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 class StdWrapViewHelper extends AbstractViewHelper
 {
+    /**
+     * @access protected
+     * @var bool
+     */
     protected $escapeOutput = false;
 
     public function initializeArguments()

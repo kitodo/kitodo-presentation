@@ -59,33 +59,28 @@ use Ubl\Iiif\Tools\IiifHelper;
 final class IiifManifest extends AbstractDocument
 {
     /**
-     * This holds the manifest file as string for serialization purposes
-     * @see __sleep() / __wakeup()
-     *
-     * @var string
      * @access protected
+     * @var string This holds the manifest file as string for serialization purposes
+     *
+     * @see __sleep() / __wakeup()
      */
     protected $asJson = '';
 
     /**
-     * A PHP object representation of a IIIF manifest.
-     * @var ManifestInterface
      * @access protected
+     * @var ManifestInterface A PHP object representation of a IIIF manifest
      */
     protected $iiif;
 
     /**
-     * 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif confrms to:
-     * IIIF Metadata API 1, IIIF Presentation API 2 or 3
-     * @var string
      * @access protected
+     * @var string 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif confrms to: IIIF Metadata API 1, IIIF Presentation API 2 or 3
      */
     protected $iiifVersion;
 
     /**
-     * Document has already been analyzed if it contains fulltext for the Solr index
-     * @var bool
      * @access protected
+     * @var bool Document has already been analyzed if it contains fulltext for the Solr index
      */
     protected $hasFulltextSet = false;
 
@@ -93,26 +88,16 @@ final class IiifManifest extends AbstractDocument
      * This holds the original manifest's parsed metadata array with their corresponding
      * resource (Manifest / Sequence / Range) ID as array key
      *
-     * @var array
      * @access protected
+     * @var array This holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
      */
     protected $originalMetadataArray = [];
 
     /**
-     * Holds the mime types of linked resources in the manifest (extreacted during parsing) for later use.
-     * @var array
      * @access protected
+     * @var array Holds the mime types of linked resources in the manifest (extracted during parsing) for later use
      */
     protected $mimeTypes = [];
-
-    /**
-     * The extension key
-     *
-     * @var string
-     * @static
-     * @access public
-     */
-    public static $extKey = 'dlf';
 
     /**
      * {@inheritDoc}

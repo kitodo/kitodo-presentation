@@ -37,6 +37,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     use LoggerAwareTrait;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
     protected $documentRepository;
@@ -50,32 +51,26 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
-     * This holds the current document
-     *
-     * @var \Kitodo\Dlf\Domain\Model\Document
      * @access protected
+     * @var \Kitodo\Dlf\Domain\Model\Document This holds the current document
      */
     protected $document;
 
     /**
-     * @var array
      * @access protected
+     * @var array
      */
     protected $extConf;
 
     /**
-     * This holds the request parameter
-     *
-     * @var array
      * @access protected
+     * @var array This holds the request parameter
      */
     protected $requestData;
 
     /**
-     * This holds some common data for the fluid view
-     *
-     * @var array
      * @access protected
+     * @var array This holds some common data for the fluid view
      */
     protected $viewData;
 

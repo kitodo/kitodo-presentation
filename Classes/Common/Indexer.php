@@ -33,19 +33,18 @@ use TYPO3\CMS\Core\Core\Environment;
 class Indexer
 {
     /**
-     * The extension key
-     *
-     * @var string
      * @access public
+     * @static
+     * @var stringThe extension key
      */
     public static $extKey = 'dlf';
 
     /**
-     * Array of metadata fields' configuration
-     * @see loadIndexConf()
-     *
-     * @var array
      * @access protected
+     * @static
+     * @var array Array of metadata fields' configuration
+     *
+     * @see loadIndexConf()
      */
     protected static $fields = [
         'autocomplete' => [],
@@ -58,27 +57,25 @@ class Indexer
     ];
 
     /**
-     * Is the index configuration loaded?
-     * @see $fields
-     *
-     * @var bool
      * @access protected
+     * @static
+     * @var bool Is the index configuration loaded?
+     *
+     * @see $fields
      */
     protected static $fieldsLoaded = false;
 
     /**
-     * List of already processed documents
-     *
-     * @var array
      * @access protected
+     * @static
+     * @var array List of already processed documents
      */
     protected static $processedDocs = [];
 
     /**
-     * Instance of \Kitodo\Dlf\Common\Solr\Solr class
-     *
-     * @var Solr
      * @access protected
+     * @static
+     * @var Solr Instance of \Kitodo\Dlf\Common\Solr\Solr class
      */
     protected static $solr;
 

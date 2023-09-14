@@ -30,6 +30,7 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 class ListViewController extends AbstractController
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
@@ -43,6 +44,7 @@ class ListViewController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;
@@ -56,8 +58,8 @@ class ListViewController extends AbstractController
     }
 
     /**
-     * @var array $this->searchParams: The current search parameter
      * @access protected
+     * @var array The current search parameter
      */
     protected $searchParams;
 

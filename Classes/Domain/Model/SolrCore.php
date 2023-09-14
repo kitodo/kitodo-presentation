@@ -24,21 +24,20 @@ namespace Kitodo\Dlf\Domain\Model;
 class SolrCore extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @access protected
      * @var int
      */
     protected $pid;
 
     /**
-     * Label of the core that is displayed in the backend.
-     *
-     * @var string
+     * @access protected
+     * @var string Label of the core that is displayed in the backend.
      */
     protected $label;
 
     /**
-     * The actual name of the Solr core.
-     *
-     * @var string
+     * @access protected
+     * @var string The actual name of the Solr core.
      */
     protected $indexName;
 

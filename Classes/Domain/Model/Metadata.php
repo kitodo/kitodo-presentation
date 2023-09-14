@@ -25,87 +25,99 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @access protected
      * @var \Kitodo\Dlf\Domain\Model\Metadata
      */
     protected $l18nParent;
 
     /**
-     * Order (relative position) of this entry in metadata plugin and backend list.
-     *
-     * @var int
+     * @access protected
+     * @var int Order (relative position) of this entry in metadata plugin and backend list.
      */
     protected $sorting;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $indexName;
 
     /**
-     * The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
-     *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat>
+     * @access protected
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")
      */
     protected $format;
 
     /**
+     * @access protected
      * @var string
      */
     protected $defaultValue;
 
     /**
+     * @access protected
      * @var string
      */
     protected $wrap;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexTokenized;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexStored;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexIndexed;
 
     /**
+     * @access protected
      * @var float
      */
     protected $indexBoost;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isSortable;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isFacet;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isListed;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexAutocomplete;
 
     /**
+     * @access protected
      * @var int
      */
     protected $status;

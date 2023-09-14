@@ -29,25 +29,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Profile
 {
     /**
-     * This holds the logger
-     *
-     * @var Logger
      * @access protected
+     * @var Logger This holds the logger
      */
     protected $logger;
 
     /**
-     * This holds the client
-     *
-     * @var Client
-     * @access protected
+     * @access private
+     * @var Client This holds the client
      */
-    protected $client;
+    private $client;
 
     /**
-     * The raw ORCID profile
-     *
-     * @var \SimpleXmlElement|false
+     * @access private
+     * @var \SimpleXmlElement|false The raw ORCID profile
      **/
     private $raw = null;
 

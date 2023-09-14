@@ -13,20 +13,20 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 class SolrSearchQuery implements QueryInterface
 {
     /**
-     * @var SolrSearch
      * @access private
+     * @var SolrSearch
      */
     private $solrSearch;
 
     /**
-     * @var int
      * @access private
+     * @var int
      */
     private $limit;
 
     /**
-     * @var int
      * @access private
+     * @var int
      */
     private $offset;
 

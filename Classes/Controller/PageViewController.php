@@ -28,34 +28,28 @@ use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 class PageViewController extends AbstractController
 {
     /**
-     * Holds the controls to add to the map
-     *
-     * @var array
      * @access protected
+     * @var array Holds the controls to add to the map
      */
     protected $controls = [];
 
     /**
-     * Holds the current images' URLs and MIME types
-     *
-     * @var array
      * @access protected
+     * @var array Holds the current images' URLs and MIME types
      */
     protected $images = [];
 
     /**
-     * Holds the current fulltexts' URLs
-     *
-     * @var array
      * @access protected
+     * @var array Holds the current full texts' URLs
      */
     protected $fulltexts = [];
 
     /**
      * Holds the current AnnotationLists / AnnotationPages
      *
-     * @var array
      * @access protected
+     * @var array Holds the current AnnotationLists / AnnotationPages
      */
     protected $annotationContainers = [];
 

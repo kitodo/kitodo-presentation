@@ -49,43 +49,35 @@ use Ubl\Iiif\Tools\IiifHelper;
 abstract class AbstractDocument
 {
     /**
-     * This holds the logger
-     *
-     * @var Logger
      * @access protected
+     * @var Logger This holds the logger
      */
     protected $logger;
 
     /**
-     * This holds the PID for the configuration
-     *
-     * @var int
      * @access protected
+     * @var int This holds the PID for the configuration
      */
     protected $cPid = 0;
 
     /**
-     * The extension key
-     *
-     * @var string
      * @access public
+     * @static
+     * @var string The extension key
      */
     public static $extKey = 'dlf';
 
     /**
-     * Additional information about files (e.g., ADMID), indexed by ID.
-     *
-     * @var array
      * @access protected
+     * @var array Additional information about files (e.g., ADMID), indexed by ID.
      */
     protected $fileInfos = [];
 
     /**
-     * This holds the configuration for all supported metadata encodings
-     * @see loadFormats()
-     *
-     * @var array
      * @access protected
+     * @var array This holds the configuration for all supported metadata encodings
+     *
+     * @see loadFormats()
      */
     protected $formats = [
         'OAI' => [
@@ -103,11 +95,10 @@ abstract class AbstractDocument
     ];
 
     /**
-     * Are the available metadata formats loaded?
-     * @see $formats
-     *
-     * @var bool
      * @access protected
+     * @var bool Are the available metadata formats loaded?
+     *
+     * @see $formats
      */
     protected $formatsLoaded = false;
 
@@ -116,24 +107,20 @@ abstract class AbstractDocument
      * with motivation 'painting' if Kitodo.Presentation is configured to store text
      * annotations as fulltext.
      *
-     * @var bool
      * @access protected
+     * @var bool
      */
     protected $hasFulltext = false;
 
     /**
-     * Last searched logical and physical page
-     *
-     * @var array
      * @access protected
+     * @var array Last searched logical and physical page
      */
     protected $lastSearchedPhysicalPage = ['logicalPage' => null, 'physicalPage' => null];
 
     /**
-     * This holds the logical units
-     *
-     * @var array
      * @access protected
+     * @var array This holds the logical units
      */
     protected $logicalUnits = [];
 
@@ -141,66 +128,54 @@ abstract class AbstractDocument
      * This holds the documents' parsed metadata array with their corresponding
      * structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
      *
-     * @var array
      * @access protected
+     * @var array
      */
     protected $metadataArray = [];
 
     /**
-     * Is the metadata array loaded?
-     * @see $metadataArray
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the metadata array loaded?
+     *
+     * @see $metadataArray
      */
     protected $metadataArrayLoaded = false;
 
     /**
-     * The holds the total number of pages
-     *
-     * @var int
      * @access protected
+     * @var int The holds the total number of pages
      */
     protected $numPages = 0;
 
     /**
-     * This holds the UID of the parent document or zero if not multi-volumed
-     *
-     * @var int
      * @access protected
+     * @var int This holds the UID of the parent document or zero if not multi-volumed
      */
     protected $parentId = 0;
 
     /**
-     * This holds the physical structure
-     *
-     * @var array
      * @access protected
+     * @var array This holds the physical structure
      */
     protected $physicalStructure = [];
 
     /**
-     * This holds the physical structure metadata
-     *
-     * @var array
      * @access protected
+     * @var array This holds the physical structure metadata
      */
     protected $physicalStructureInfo = [];
 
     /**
-     * Is the physical structure loaded?
-     * @see $physicalStructure
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the physical structure loaded?
+     *
+     * @see $physicalStructure
      */
     protected $physicalStructureLoaded = false;
 
     /**
-     * This holds the PID of the document or zero if not in database
-     *
-     * @var int
      * @access protected
+     * @var int This holds the PID of the document or zero if not in database
      */
     protected $pid = 0;
 
@@ -208,117 +183,97 @@ abstract class AbstractDocument
      * This holds the documents' raw text pages with their corresponding
      * structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
      *
-     * @var array
      * @access protected
+     * @var array
      */
     protected $rawTextArray = [];
 
     /**
-     * Is the document instantiated successfully?
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the document instantiated successfully?
      */
     protected $ready = false;
 
     /**
-     * The METS file's / IIIF manifest's record identifier
-     *
-     * @var string
      * @access protected
+     * @var string The METS file's / IIIF manifest's record identifier
      */
     protected $recordId;
 
     /**
-     * This holds the singleton object of the document
-     *
-     * @var array (AbstractDocument)
-     * @static
      * @access protected
+     * @static
+     * @var array (AbstractDocument) This holds the singleton object of the document
      */
     protected static $registry = [];
 
     /**
-     * This holds the UID of the root document or zero if not multi-volumed
-     *
-     * @var int
      * @access protected
+     * @var int This holds the UID of the root document or zero if not multi-volumed
      */
     protected $rootId = 0;
 
     /**
-     * Is the root id loaded?
-     * @see $rootId
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the root id loaded?
+     *
+     * @see $rootId
      */
     protected $rootIdLoaded = false;
 
     /**
-     * This holds the smLinks between logical and physical structMap
-     *
-     * @var array
      * @access protected
+     * @var array This holds the smLinks between logical and physical structMap
      */
     protected $smLinks = ['l2p' => [], 'p2l' => []];
 
     /**
-     * Are the smLinks loaded?
-     * @see $smLinks
-     *
-     * @var bool
      * @access protected
+     * @var bool Are the smLinks loaded?
+     *
+     * @see $smLinks
      */
     protected $smLinksLoaded = false;
 
     /**
      * This holds the logical structure
      *
-     * @var array
      * @access protected
+     * @var array
      */
     protected $tableOfContents = [];
 
     /**
-     * Is the table of contents loaded?
-     * @see $tableOfContents
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the table of contents loaded?
+     *
+     * @see $tableOfContents
      */
     protected $tableOfContentsLoaded = false;
 
     /**
-     * This holds the document's thumbnail location
-     *
-     * @var string
      * @access protected
+     * @var string This holds the document's thumbnail location
      */
     protected $thumbnail = '';
 
     /**
-     * Is the document's thumbnail location loaded?
-     * @see $thumbnail
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the document's thumbnail location loaded?
+     *
+     * @see $thumbnail
      */
     protected $thumbnailLoaded = false;
 
     /**
-     * This holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
-     *
-     * @var string
      * @access protected
+     * @var string This holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
      */
     protected $toplevelId = '';
 
     /**
-     * This holds the whole XML file as \SimpleXMLElement object
-     *
-     * @var \SimpleXMLElement
      * @access protected
+     * @var \SimpleXMLElement This holds the whole XML file as \SimpleXMLElement object
      */
     protected $xml;
 

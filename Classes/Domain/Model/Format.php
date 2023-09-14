@@ -28,30 +28,26 @@ namespace Kitodo\Dlf\Domain\Model;
 class Format extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
-     * Name of the type that is used to reference it.
-     *
-     * @var string
+     * @access protected
+     * @var string Name of the type that is used to reference it.
      */
     protected $type;
 
     /**
-     * The XML root element used by this format.
-     *
-     * @var string
+     * @access protected
+     * @var string The XML root element used by this format.
      */
     protected $root;
 
     /**
-     * The XML namespace URI used by this format.
-     *
-     * @var string
+     * @access protected
+     * @var string The XML namespace URI used by this format.
      */
     protected $namespace;
 
     /**
-     * Fully qualified name of the PHP class that handles the format, or the empty string if no such class is configured.
-     *
-     * @var string
+     * @access protected
+     * @var string Fully qualified name of the PHP class that handles the format, or the empty string if no such class is configured.
      */
     protected $class;
 

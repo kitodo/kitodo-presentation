@@ -24,98 +24,74 @@ class ResultDocument
 {
 
     /**
-     * The identifier
-     *
-     * @var string
      * @access private
+     * @var string The identifier
      */
     private $id;
 
     /**
-     * The unified identifier
-     *
-     * @var string|null
      * @access private
+     * @var string|null The unified identifier
      */
     private $uid;
 
     /**
-     * The page on which result was found
-     *
-     * @var int
      * @access private
+     * @var int The page on which result was found
      */
     private $page;
 
     /**
-     * All snippets imploded to one string
-     *
-     * @var string
      * @access private
+     * @var string All snippets imploded to one string
      */
     private $snippets;
 
     /**
-     * The thumbnail URL
-     *
-     * @var string
      * @access private
+     * @var string The thumbnail URL
      */
     private $thumbnail;
 
     /**
-     * The title of the document / structure element (e.g. chapter)
-     *
-     * @var string
      * @access private
+     * @var string The title of the document / structure element (e.g. chapter)
      */
     private $title;
 
     /**
-     * It's a toplevel element?
-     *
-     * @var boolean
      * @access private
+     * @var boolean It's a toplevel element?
      */
     private $toplevel = false;
 
     /**
-     * The structure type
-     *
-     * @var string
      * @access private
+     * @var string The structure type
      */
     private $type;
 
     /**
-     * All pages in which search phrase was found
-     *
-     * @var array(Page)
      * @access private
+     * @var Page[] All pages in which search phrase was found
      */
     private $pages = [];
 
     /**
-     * All regions in which search phrase was found
-     *
-     * @var array(Region)
      * @access private
+     * @var Region[] All regions in which search phrase was found
      */
     private $regions = [];
 
     /**
-     * All highlights of search phrase
-     *
-     * @var array(Highlight)
      * @access private
+     * @var Highlight[] All highlights of search phrase
      */
     private $highlights = [];
 
     /**
-     * The snippets for given record
-     *
-     * @var array
      * @access private
+     * @var array The snippets for given record
      */
     private $snippetsForRecord = [];
 
