@@ -47,7 +47,7 @@ class PageViewController extends AbstractController
 
     /**
      * Holds the current scores' URL, MIME types and the
-	 * id of the current page
+     * id of the current page
      *
      * @var array
      * @access protected
@@ -89,8 +89,7 @@ class PageViewController extends AbstractController
     {
         // Load current document.
         $this->loadDocument();
-        if ($this->isDocMissingOrEmpty() ||
-            ($this->document->getDoc()->numPages < 1 && $this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work')) {
+        if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return '';
         } else {
@@ -305,7 +304,7 @@ class PageViewController extends AbstractController
      * @access protected
      *
      * @param int $page: Page number
-	 *
+     *
      * @return array URL and MIME type of fulltext file
      */
     protected function getScore(int $page, $specificDoc = null)
@@ -318,33 +317,33 @@ class PageViewController extends AbstractController
         }
         $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
 
-		$pageId = $doc->physicalStructure[$page];
-		$files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
+        $pageId = $doc->physicalStructure[$page];
+        $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
 
-		foreach ($fileGrpsScores as $fileGrpScore) {
-			if (isset($files[$fileGrpScore])) {
-				$loc = $files[$fileGrpScore];
-				break;
-			}
-		}
+        foreach ($fileGrpsScores as $fileGrpScore) {
+            if (isset($files[$fileGrpScore])) {
+                $loc = $files[$fileGrpScore];
+                break;
+            }
+        }
 
-		$score['mimetype'] = $doc->getFileMimeType($loc);
-		$score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
-		$score['url'] = $doc->getFileLocation($loc);
-		if ($this->settings['useInternalProxy']) {
-			// Configure @action URL for form.
-			$uri = $this->uriBuilder->reset()
-				->setTargetPageUid($GLOBALS['TSFE']->id)
-				->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-				->setArguments([
-					'eID' => 'tx_dlf_pageview_proxy',
-					'url' => $score['url'],
-					'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
-					])
-				->build();
+        $score['mimetype'] = $doc->getFileMimeType($loc);
+        $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
+        $score['url'] = $doc->getFileLocation($loc);
+        if ($this->settings['useInternalProxy']) {
+            // Configure @action URL for form.
+            $uri = $this->uriBuilder->reset()
+                ->setTargetPageUid($GLOBALS['TSFE']->id)
+                ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+                ->setArguments([
+                    'eID' => 'tx_dlf_pageview_proxy',
+                    'url' => $score['url'],
+                    'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
+                    ])
+                ->build();
 
-			$score['url'] = $uri;
-		}
+            $score['url'] = $uri;
+        }
 
         if (empty($score)) {
             $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpScore'] . '"');
@@ -408,7 +407,9 @@ class PageViewController extends AbstractController
                         $measure2Page = array_column($document->musicalStructure, 'page');
                         $docPage = $measure2Page[$this->requestData['docMeasure'][$i]];
                     }
-
+                    if ($docPage == null) {
+                        $docPage = 1;
+                    }
                     $docImage[0] = $this->getImage($docPage, $document);
                     $docScore = $this->getScore($docPage, $document);
                     $docMeasures = $this->getMeasures($docPage, $document);
