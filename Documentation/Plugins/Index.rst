@@ -512,7 +512,7 @@ Navigation
    :Default:
       By default all features are activated. The selection is stored as comma separated list.
 
-       doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation
+       doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation,measureForward,measureBack
 
  - :Property:
        pageStep
@@ -867,6 +867,8 @@ Table Of Contents
        Data type
    :Default:
        Default
+   :Description:
+       Description
 
  - :Property:
        excludeOther_
@@ -893,6 +895,24 @@ Table Of Contents
    :Data Type:
        :ref:`t3tsref:data-type-page-id`
    :Default:
+
+ - :Property:
+       titleReplacement
+   :Data Type:
+       :ref:`t3tsref:data-type-list`
+   :Default:
+   :Description:
+       List containing types for which title should be replaced
+       when the label is empty. The defined fields are used for
+       replacement. Example data:
+            0 {
+                type = issue
+                fields = type,year
+            }
+            1 {
+                type = volume
+                fields = type,volume
+            }
 
 Toolbox
 -------

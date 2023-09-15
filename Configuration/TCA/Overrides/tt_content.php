@@ -182,3 +182,9 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_view3d']
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-metadata.svg'
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Kitodo.Dlf',
+    'Annotation',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.annotation.title',
+);

@@ -57,6 +57,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
     /**
      * @var array
+     */
+    protected $documentArray;
+
+    /**
+     * @var array
      * @access protected
      */
     protected $extConf;
@@ -105,11 +110,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @access protected
      *
-     * @param  int $documentId: The document's UID (fallback: $this->requestData[id])
+     * @param mixed $documentId: The document's UID (fallback: $this->requestData[id])
      *
      * @return void
      */
-    protected function loadDocument(int $documentId = 0)
+    protected function loadDocument($documentId = 0)
     {
         // Get document ID from request data if not passed as parameter.
         if ($documentId === 0 && !empty($this->requestData['id'])) {
@@ -131,7 +136,25 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 }
             } else if (GeneralUtility::isValidUrl($documentId)) {
 
+
                 $doc = Doc::getInstance($documentId, $this->settings, true);
+
+                if ($doc->tableOfContents[0]['type'] === 'multivolume_work') { // @TODO: Change type
+                    $childDocuments = $doc->tableOfContents[0]['children'];
+                    foreach ($childDocuments as $document) {
+                        $this->documentArray[] = Doc::getInstance($document['points'], $this->settings, true);
+                    }
+                } else {
+                    $this->documentArray[] = $doc;
+                }
+                if ($this->requestData['multipleSource'] && is_array($this->requestData['multipleSource'])) {
+                    foreach ($this->requestData['multipleSource'] as $location) {
+                        $document = Doc::getInstance($location, $this->settings, true);
+                        if ($document !== null) {
+                            $this->documentArray[] = $document;
+                        }
+                    }
+                }
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
@@ -203,7 +226,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function isDocMissingOrEmpty()
     {
-        return $this->isDocMissing() || $this->document->getDoc()->numPages < 1;
+        return $this->isDocMissing() ||
+            ($this->document->getDoc()->numPages < 1 &&
+                $this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work'); //@TODO change type
     }
 
     /**
@@ -303,9 +328,20 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
         // $this->requestData['page'] may be integer or string (physical structure @ID)
         if (
             (int) $this->requestData['page'] > 0
-            || empty($this->requestData['page'])
+            || empty($this->requestData['page']
+                || is_array($this->requestData['docPage']))
         ) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+            if ($this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work') {
+                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+            } else {
+                $i = 0;
+                foreach ($this->documentArray as $document) {
+                    if ($document !== null) {
+                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                        $i++;
+                    }
+                }
+            }
         } else {
             $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
         }

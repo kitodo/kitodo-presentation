@@ -379,6 +379,20 @@ abstract class Doc
     public abstract function getFileLocation($id);
 
     /**
+     * Returns id of pb element representing the beginning of a physical page
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $pageId: The "@ID" attribute of the page node (METS)
+     * @param string $fileId: The "@ID" attribute of the file node (METS)
+     *
+     * @return string The node's id
+     */
+    public abstract function getPageBeginning($pageId, $fileId);
+
+    /**
      * This gets the MIME type of a file representing a physical page or track
      *
      * @access public

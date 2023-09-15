@@ -187,6 +187,43 @@ class ToolboxController extends AbstractController
     }
 
     /**
+     * Renders the score tool
+     *
+     * @return void
+     */
+    public function scoretool()
+    {
+        if (
+            $this->document === null
+            || $this->document->getDoc()->numPages < 1
+            || empty($this->extConf['fileGrpScore'])
+        ) {
+            // Quit without doing anything if required variables are not set.
+            return;
+        }
+        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
+        foreach ($fileGrpsScores as $fileGrpScore) {
+            foreach ($this->document->getDoc()->physicalStructureInfo as $page) {
+                if (isset($page['files'])) {
+                    $files = $page['files'];
+                } else {
+                    continue;
+                }
+                if (isset($files[$fileGrpScore])) {
+                    $scoreFile = $files[$fileGrpScore];
+                    break;
+                }
+            }
+        }
+        if (!empty($scoreFile)) {
+            $this->view->assign('score', true);
+            $this->view->assign('activateScoreInitially', MathUtility::forceIntegerInRange($this->settings['activateScoreInitially'], 0, 1, 0));
+        } else {
+            $this->view->assign('score', false);
+        }
+    }
+
+    /**
      * Renders the image download tool
      *
      * @access private

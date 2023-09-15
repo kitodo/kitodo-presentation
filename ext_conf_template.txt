@@ -22,6 +22,8 @@ fileGrpThumbs = THUMBS
 fileGrpDownload = DOWNLOAD
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpFulltext
 fileGrpFulltext = FULLTEXT
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpScore
+fileGrpScore = SCORE
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.fileGrpAudio
 fileGrpAudio = AUDIO
 # cat=IIIF; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.indexAnnotations
@@ -100,3 +102,5 @@ solrFieldTerms = terms
 solrFieldRestrictions = restrictions
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.solrFieldGeom
 solrFieldGeom = geom
+# cat=Annotations; type=string; label=LLL:EXT:dlf/Resources/Private/Language/Labels.xml:config.annotationServerUrl
+annotationServerUrl =

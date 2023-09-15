@@ -116,6 +116,15 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Doc::getPageBeginning()
+     */
+
+    public function getPageBeginning($pageId, $fileId) {
+        // TODO: Needs to be implemented
+    }
+
+    /**
+     * {@inheritDoc}
      * @see Doc::establishRecordId()
      */
     protected function establishRecordId($pid)
