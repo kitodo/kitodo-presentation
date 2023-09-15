@@ -483,7 +483,7 @@ dlfViewer.prototype.addCustomControls = function() {
 	if (this.scoresLoaded_ !== null) {
         var context = this;
 		const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
-        this.scoresLoaded_.then (function (scoreData) {
+        this.scoresLoaded_.then(function (scoreData) {
             scoreControl.loadScoreData(scoreData, tk);
 
             // Add synchronisation control
@@ -542,7 +542,7 @@ dlfViewer.prototype.addCustomControls = function() {
                 });
                 measureLayer.getSource().addFeature(feature);
 
-                if (key == context.currentMeasureId) {
+                if (key === context.currentMeasureId) {
                     feature.setStyle(dlfViewerOLStyles.selectStyle());
                     context.facsimileMeasureActive = feature;
                 }

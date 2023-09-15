@@ -249,7 +249,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     //
     // Draw boxes for each measure
     //
-    var measureCoords = this.dlfViewer.measureCoords;console.log(measureCoords);
+    var measureCoords = this.dlfViewer.measureCoords;
     var dlfViewer = this.dlfViewer;
     $( document ).ready(function() {
         $.each(measureCoords, function (key, value) {
@@ -307,7 +307,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
                 dlfViewer.verovioMeasureHover.removeClass('hover');
                 dlfViewer.verovioMeasureHover = null;
             }
-            if (dlfViewer.facsimileMeasureHover !== null && dlfViewer.facsimileMeasureHover != dlfViewer.facsimileMeasureActive) {
+            if (dlfViewer.facsimileMeasureHover !== null && dlfViewer.facsimileMeasureHover !== dlfViewer.facsimileMeasureActive) {
                 dlfViewer.facsimileMeasureHover.setStyle(undefined);
                 dlfViewer.facsimileMeasureHover = null;
             }
@@ -320,7 +320,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
             // show measure in openlayer
             if (dlfUtils.exists(dlfViewer.measureLayer)) {
                 dlfViewer.facsimileMeasureHover = dlfViewer.measureLayer.getSource().getFeatureById(measureId);
-                if (dlfViewer.facsimileMeasureHover != dlfViewer.facsimileMeasureActive) {
+                if (dlfViewer.facsimileMeasureHover !== dlfViewer.facsimileMeasureActive) {
                     if (dlfViewer.facsimileMeasureHover) {
                         dlfViewer.facsimileMeasureHover.setStyle(dlfViewerOLStyles.hoverStyle());
                     }
