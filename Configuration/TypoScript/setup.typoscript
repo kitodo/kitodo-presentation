@@ -48,7 +48,7 @@ page {
 
     # Gridstack
     gridstack = EXT:dlf/Resources/Public/Javascript/Gridstack/gridstack-all.js
-    gridstack-init = EXT:dlf/Resources/Public/Javascript/Gridstack/gridstack.js
+    gridstack-init = EXT:dlf/Resources/Public/Javascript/PageView/gridstack.js
 
     # PageView plugin
     kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
