@@ -110,11 +110,11 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @access protected
      *
-     * @param  int $documentId: The document's UID (fallback: $this->requestData[id])
+     * @param mixed $documentId: The document's UID (fallback: $this->requestData[id])
      *
      * @return void
      */
-    protected function loadDocument(int $documentId = 0)
+    protected function loadDocument($documentId = 0)
     {
         // Get document ID from request data if not passed as parameter.
         if ($documentId === 0 && !empty($this->requestData['id'])) {
@@ -138,6 +138,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
 
                 $doc = Doc::getInstance($documentId, $this->settings, true);
+
                 if ($doc->tableOfContents[0]['type'] === 'multivolume_work') { // @TODO: Change type
                     $childDocuments = $doc->tableOfContents[0]['children'];
                     foreach ($childDocuments as $document) {
@@ -225,7 +226,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function isDocMissingOrEmpty()
     {
-        return $this->isDocMissing() || $this->document->getDoc()->numPages < 1;
+        return $this->isDocMissing() ||
+            ($this->document->getDoc()->numPages < 1 &&
+                $this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work'); //@TODO change type
     }
 
     /**
