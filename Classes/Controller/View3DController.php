@@ -22,6 +22,8 @@ namespace Kitodo\Dlf\Controller;
 class View3DController extends AbstractController
 {
     /**
+     * @access public
+     *
      * @return void
      */
     public function mainAction()

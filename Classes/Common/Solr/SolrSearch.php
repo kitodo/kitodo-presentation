@@ -78,12 +78,17 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     protected $position = 0;
 
     /**
+     * Constructs SolrSearch instance.
+     *
+     * @access public
      *
      * @param DocumentRepository $documentRepository
      * @param QueryResult|Collection $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
+     *
+     * @return void
      */
     public function __construct($documentRepository, $collection, $settings, $searchParams, $listedMetadata = null)
     {
@@ -94,11 +99,25 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $this->listedMetadata = $listedMetadata;
     }
 
+    /**
+     * Gets amount of loaded documents.
+     *
+     * @access public
+     *
+     * @return int
+     */
     public function getNumLoadedDocuments()
     {
         return count($this->result['documents']);
     }
 
+    /**
+     * Count results.
+     *
+     * @access public
+     *
+     * @return int
+     */
     public function count(): int
     {
         if ($this->result === null) {
@@ -108,37 +127,88 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $this->result['numberOfToplevels'];
     }
 
+    /**
+     * Current result.
+     *
+     * @access public
+     *
+     * @return SolrSearch
+     */
     public function current()
     {
         return $this[$this->position];
     }
 
+    /**
+     * Current key.
+     *
+     * @access public
+     *
+     * @return int
+     */
     public function key()
     {
         return $this->position;
     }
 
+    /**
+     * Next key.
+     *
+     * @access public
+     *
+     * @return int
+     */
     public function next(): void
     {
         $this->position++;
     }
 
+    /**
+     * First key.
+     *
+     * @access public
+     *
+     * @return int
+     */
     public function rewind(): void
     {
         $this->position = 0;
     }
 
+    /**
+     * @access public
+     *
+     * @return bool
+     */
     public function valid(): bool
     {
         return isset($this[$this->position]);
     }
 
+    /**
+     * Checks if the document with given offset exists.
+     *
+     * @access public
+     *
+     * @param int $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset): bool
     {
         $idx = $this->result['document_keys'][$offset];
         return isset($this->result['documents'][$idx]);
     }
 
+    /**
+     * Gets the document with given offset.
+     *
+     * @access public
+     *
+     * @param int $offset
+     *
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         $idx = $this->result['document_keys'][$offset];
@@ -168,36 +238,96 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $document;
     }
 
+    /**
+     * Not supported.
+     *
+     * @access public
+     *
+     * @param int $offset
+     * @param int $value
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
     public function offsetSet($offset, $value): void
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
 
+    /**
+     * Not supported.
+     *
+     * @access public
+     *
+     * @param int $offset
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
     public function offsetUnset($offset): void
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
 
+    /**
+     * Gets SOLR results.
+     *
+     * @access public
+     *
+     * @return mixed
+     */
     public function getSolrResults()
     {
         return $this->result['solrResults'];
     }
 
+    /**
+     * Gets by UID.
+     *
+     * @access public
+     *
+     * @param int $uid
+     *
+     * @return mixed
+     */
     public function getByUid($uid)
     {
         return $this->result['documents'][$uid];
     }
 
+    /**
+     * Gets query.
+     *
+     * @access public
+     *
+     * @return SolrSearchQuery
+     */
     public function getQuery()
     {
         return new SolrSearchQuery($this);
     }
 
+    /**
+     * Gets first.
+     *
+     * @access public
+     *
+     * @return SolrSearch
+     */
     public function getFirst()
     {
         return $this[0];
     }
 
+    /**
+     * Parses results to array.
+     *
+     * @access public
+     *
+     * @return array
+     */
     public function toArray()
     {
         return array_values($this->result['documents']);
@@ -207,12 +337,23 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * Get total number of hits.
      *
      * This can be accessed in Fluid template using `.numFound`.
+     *
+     * @access public
+     *
+     * @return int
      */
     public function getNumFound()
     {
         return $this->result['numFound'];
     }
 
+    /**
+     * Prepares SOLR search.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function prepare()
     {
         // Prepare query parameters.
@@ -358,6 +499,17 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $this->submit(0, 1, false);
     }
 
+    /**
+     * Submits SOLR search.
+     *
+     * @access public
+     *
+     * @param int $start
+     * @param int $rows
+     * @param bool $processResults default value is true
+     *
+     * @return void
+     */
     public function submit($start, $rows, $processResults = true)
     {
         $params = $this->params;
@@ -462,7 +614,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     /**
      * Find all listed metadata using specified query params.
      *
+     * @access protected
+     *
      * @param int $queryParams
+     *
      * @return array
      */
     protected function fetchToplevelMetadataFromSolr($queryParams)
@@ -508,10 +663,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     /**
      * Processes a search request
      *
-     * @access public
+     * @access protected
      *
-     * @param array $parameters: Additional search parameters
-     * @param boolean $enableCache: Enable caching of Solr requests
+     * @param array $parameters Additional search parameters
+     * @param boolean $enableCache Enable caching of Solr requests
      *
      * @return array The Apache Solr Documents that were fetched
      */
@@ -608,6 +763,18 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $resultSet;
     }
 
+    /**
+     * Gets a document
+     *
+     * @access private
+     *
+     * @param array $record
+     * @param array $highlighting
+     * @param array $fields
+     * @param array $parameters
+     *
+     * @return array The Apache Solr Documents that were fetched
+     */
     private function getDocument($record, $highlighting, $fields, $parameters) {
         $resultDocument = new ResultDocument($record, $highlighting, $fields);
 

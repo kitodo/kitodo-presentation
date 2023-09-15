@@ -29,7 +29,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @access public
      *
-     * @param \SimpleXMLElement $xml: The XML to extract the raw text from
+     * @param \SimpleXMLElement $xml The XML to extract the raw text from
      *
      * @return string The raw unformatted fulltext
      */
@@ -62,7 +62,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @access public
      *
-     * @param \SimpleXMLElement $xml: The XML to extract the raw text from
+     * @param \SimpleXMLElement $xml The XML to extract the raw text from
      *
      * @return string The unformatted fulltext in MiniOCR format
      */
@@ -107,7 +107,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @access private
      *
-     * @param \SimpleXMLElement $attributes: The XML to extract the word
+     * @param \SimpleXMLElement $attributes The XML to extract the word
      *
      * @return string The parsed word extracted from attribute
      */
@@ -127,7 +127,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @access private
      *
-     * @param \SimpleXMLElement $attributes: The XML to extract the word coordinates
+     * @param \SimpleXMLElement $attributes The XML to extract the word coordinates
      *
      * @return string The parsed word coordinates extracted from attribute
      */

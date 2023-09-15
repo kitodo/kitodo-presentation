@@ -56,6 +56,8 @@ class PageViewController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
@@ -96,7 +98,7 @@ class PageViewController extends AbstractController
      *
      * @access protected
      *
-     * @param int $page: Page number
+     * @param int $page Page number
      *
      * @return array URL and MIME type of fulltext file
      */
@@ -157,9 +159,8 @@ class PageViewController extends AbstractController
      *
      * @access protected
      *
-     * @param int $page: Page number
-     * @return array An array containing the IRIs of the AnnotationLists / AnnotationPages as well as
-     *               some information about the canvas.
+     * @param int $page Page number
+     * @return array An array containing the IRIs of the AnnotationLists / AnnotationPages as well as some information about the canvas.
      */
     protected function getAnnotationContainers($page)
     {
@@ -214,7 +215,7 @@ class PageViewController extends AbstractController
      *
      * @access protected
      *
-     * @param int $page: Page number
+     * @param int $page Page number
      *
      * @return array URL and MIME type of image file
      */

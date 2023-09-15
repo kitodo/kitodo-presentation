@@ -38,6 +38,15 @@ class SolrSearchQuery implements QueryInterface
      */
     private $offset;
 
+     /**
+     * Constructs SolrSearchQuery instance.
+     *
+     * @access public
+     *
+     * @param SolrSearch $solrSearch
+     *
+     * @return void
+     */
     public function __construct($solrSearch)
     {
         $this->solrSearch = $solrSearch;
@@ -48,6 +57,15 @@ class SolrSearchQuery implements QueryInterface
 
     public function getSource() {}
 
+    /**
+     * Executes SOLR search query.
+     *
+     * @access public
+     *
+     * @param bool $returnRawQueryResult
+     *
+     * @return array
+     */
     public function execute($returnRawQueryResult = false)
     {
         $this->solrSearch->submit($this->offset, $this->limit);
@@ -63,12 +81,30 @@ class SolrSearchQuery implements QueryInterface
 
     public function setOrderings(array $orderings) {}
 
+    /**
+     * Sets limit for SOLR search query.
+     *
+     * @access public
+     *
+     * @param int $limit
+     *
+     * @return SolrSearchQuery
+     */
     public function setLimit($limit)
     {
         $this->limit = $limit;
         return $this;
     }
 
+    /**
+     * Sets offset for SOLR search query.
+     *
+     * @access public
+     *
+     * @param int $offset
+     *
+     * @return SolrSearchQuery
+     */
     public function setOffset($offset)
     {
         $this->offset = $offset;
@@ -98,11 +134,25 @@ class SolrSearchQuery implements QueryInterface
 
     public function getOrderings() {}
 
+    /**
+     * Gets limit for SOLR search query.
+     *
+     * @access public
+     *
+     * @return int
+     */
     public function getLimit()
     {
         return $this->limit;
     }
 
+    /**
+     * Gets offset for SOLR search query.
+     *
+     * @access public
+     *
+     * @return int
+     */
     public function getOffset()
     {
         return $this->offset;

@@ -86,7 +86,9 @@ class Indexer
      *
      * @access public
      *
-     * @param Document $document: The document to add
+     * @static
+     *
+     * @param Document $document The document to add
      *
      * @return bool true on success or false on failure
      */
@@ -197,8 +199,10 @@ class Indexer
      *
      * @access public
      *
-     * @param string $index_name: The metadata field's name in database
-     * @param int $pid: UID of the configuration page
+     * @static
+     *
+     * @param string $index_name The metadata field's name in database
+     * @param int $pid UID of the configuration page
      *
      * @return string The field's dynamic index name
      */
@@ -225,7 +229,9 @@ class Indexer
      *
      * @access protected
      *
-     * @param int $pid: The configuration page's UID
+     * @static
+     *
+     * @param int $pid The configuration page's UID
      *
      * @return void
      */
@@ -295,8 +301,10 @@ class Indexer
      *
      * @access protected
      *
-     * @param Document $document: The METS document
-     * @param array $logicalUnit: Array of the logical unit to process
+     * @static
+     *
+     * @param Document $document The METS document
+     * @param array $logicalUnit Array of the logical unit to process
      *
      * @return bool true on success or false on failure
      */
@@ -424,9 +432,11 @@ class Indexer
      *
      * @access protected
      *
-     * @param Document $document: The METS document
-     * @param int $page: The page number
-     * @param array $physicalUnit: Array of the physical unit to process
+     * @static
+     *
+     * @param Document $document The METS document
+     * @param int $page The page number
+     * @param array $physicalUnit Array of the physical unit to process
      *
      * @return bool true on success or false on failure
      */
@@ -511,8 +521,10 @@ class Indexer
      *
      * @access protected
      *
-     * @param int $core: UID of the Solr core
-     * @param int $pid: UID of the configuration page
+     * @static
+     *
+     * @param int $core UID of the Solr core
+     * @param int $pid UID of the configuration page
      *
      * @return bool true on success or false on failure
      */
@@ -540,10 +552,12 @@ class Indexer
      *
      * @access private
      *
+     * @static
+     *
      * @param Query $updateQuery solarium query
-     * @param Document $document: The METS document
-     * @param array $unit: Array of the logical or physical unit to process
-     * @param string $fullText: Text containing full text for indexing
+     * @param Document $document The METS document
+     * @param array $unit Array of the logical or physical unit to process
+     * @param string $fullText Text containing full text for indexing
      *
      * @return DocumentInterface
      */
@@ -567,7 +581,9 @@ class Indexer
      *
      * @access private
      *
-     * @param array|string $authors: Array or string containing author/authors
+     * @static
+     *
+     * @param array|string $authors Array or string containing author/authors
      *
      * @return array|string
      */
@@ -585,6 +601,8 @@ class Indexer
      * Prevent instantiation by hiding the constructor
      *
      * @access private
+     *
+     * @return void
      */
     private function __construct(DocumentRepository $documentRepository)
     {

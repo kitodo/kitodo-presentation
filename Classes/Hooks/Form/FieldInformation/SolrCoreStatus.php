@@ -32,8 +32,7 @@ class SolrCoreStatus extends AbstractNode
      *
      * @access public
      *
-     * @return array As defined in initializeResultArray() of AbstractNode
-     *               Allowed tags are: "<a><br><br/><div><em><i><p><strong><span><code>"
+     * @return array As defined in initializeResultArray() of AbstractNode. Allowed tags are: "<a><br><br/><div><em><i><p><strong><span><code>"
      */
     public function render(): array
     {

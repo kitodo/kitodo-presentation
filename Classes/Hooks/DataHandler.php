@@ -43,6 +43,13 @@ class DataHandler implements LoggerAwareInterface
      */
     protected $documentRepository;
 
+    /**
+     * Gets document repository
+     *
+     * @access protected
+     *
+     * @return DocumentRepository
+     */
     protected function getDocumentRepository()
     {
         if ($this->documentRepository === null) {
@@ -58,10 +65,10 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $status: 'new' or 'update'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
-     * @param array &$fieldArray: Array of field values
+     * @param string $status 'new' or 'update'
+     * @param string $table The destination table
+     * @param int $id The uid of the record
+     * @param array &$fieldArray Array of field values
      *
      * @return void
      */
@@ -190,10 +197,10 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $status: 'new' or 'update'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
-     * @param array &$fieldArray: Array of field values
+     * @param string $status 'new' or 'update'
+     * @param string $table The destination table
+     * @param int $id The uid of the record
+     * @param array &$fieldArray Array of field values
      *
      * @return void
      */
@@ -271,9 +278,9 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $command: 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
+     * @param string $command 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
+     * @param string $table The destination table
+     * @param int $id The uid of the record
      *
      * @return void
      */

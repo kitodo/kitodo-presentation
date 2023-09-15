@@ -43,8 +43,8 @@ class Mods implements MetadataInterface
      *
      * @access public
      *
-     * @param \SimpleXMLElement $xml: The XML to extract the metadata from
-     * @param array &$metadata: The metadata array to fill
+     * @param \SimpleXMLElement $xml The XML to extract the metadata from
+     * @param array &$metadata The metadata array to fill
      *
      * @return void
      */
@@ -92,6 +92,17 @@ class Mods implements MetadataInterface
         }
     }
 
+    /**
+     * Get author from ORCID API.
+     *
+     * @access private
+     *
+     * @param string $orcidId
+     * @param array $authors
+     * @param int $i
+     *
+     * @return void
+     */
     private function getAuthorFromOrcidApi($orcidId, $authors, $i) {
         $profile = new OrcidProfile($orcidId);
         $name = $profile->getFullName();
@@ -106,6 +117,16 @@ class Mods implements MetadataInterface
         }
     }
 
+    /**
+     * Get author from XML.
+     *
+     * @access private
+     *
+     * @param array $authors
+     * @param int $i
+     *
+     * @return void
+     */
     private function getAuthorFromXml($authors, $i) {
         $this->getAuthorFromXmlDisplayForm($authors, $i);
 
@@ -149,6 +170,16 @@ class Mods implements MetadataInterface
         }
     }
 
+    /**
+     * Get author from XML display form.
+     *
+     * @access private
+     *
+     * @param array $authors
+     * @param int $i
+     *
+     * @return void
+     */
     private function getAuthorFromXmlDisplayForm($authors, $i) {
         $displayForm = $authors[$i]->xpath('./mods:displayForm');
         if ($displayForm) {
@@ -180,6 +211,17 @@ class Mods implements MetadataInterface
         }
     }
 
+    /**
+     * Get holder from VIAF API.
+     *
+     * @access private
+     *
+     * @param string $viafId
+     * @param array $holders
+     * @param int $i
+     *
+     * @return void
+     */
     private function getHolderFromViafApi($viafId, $holders, $i) {
         $profile = new ViafProfile($viafId);
         $name = $profile->getFullName();
@@ -194,6 +236,16 @@ class Mods implements MetadataInterface
         }
     }
 
+    /**
+     * Get holder from XML.
+     *
+     * @access private
+     *
+     * @param array $holders
+     * @param int $i
+     *
+     * @return void
+     */
     private function getHolderFromXml($holders, $i) {
         $this->getHolderFromXmlDisplayForm($holders, $i);
         // Append "valueURI" to name using Unicode unit separator.
@@ -202,6 +254,16 @@ class Mods implements MetadataInterface
         }
     }
 
+    /**
+     * Get holder from XML display form.
+     *
+     * @access private
+     * 
+     * @param array $holders
+     * @param int $i
+     *
+     * @return void
+     */
     private function getHolderFromXmlDisplayForm($holders, $i) {
         // Check if there is a display form.
         $displayForm = $holders[$i]->xpath('./mods:displayForm');

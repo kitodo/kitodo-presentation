@@ -44,7 +44,7 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param array &$params: An array with parameters
+     * @param array &$params An array with parameters
      *
      * @return void
      */
@@ -56,46 +56,46 @@ class ItemsProcFunc implements LoggerAwareInterface
     }
 
     /**
-     * Extract typoscript configuration from site root of the plugin
+     * Extract typoScript configuration from site root of the plugin
      *
      * @access public
      *
-     * @param $params
+     * @param array $params
      *
      * @return void
      */
     public function getTyposcriptConfigFromPluginSiteRoot($params) {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $pid = $params['flexParentDatabaseRow']['pid'];
-        $rootline = BackendUtility::BEgetRootLine($pid);
-        $siterootRow = [];
-        foreach ($rootline as $_row) {
+        $rootLine = BackendUtility::BEgetRootLine($pid);
+        $siteRootRow = [];
+        foreach ($rootLine as $_row) {
             if ($_row['is_siteroot'] == '1') {
-                $siterootRow = $_row;
+                $siteRootRow = $_row;
                 break;
             }
         }
 
         try {
-            $ts = $objectManager->get(TemplateService::class, [$siterootRow['uid']]);
-            $ts->rootLine = $rootline;
-            $ts->runThroughTemplates($rootline, 0);
+            $ts = $objectManager->get(TemplateService::class, [$siteRootRow['uid']]);
+            $ts->rootLine = $rootLine;
+            $ts->runThroughTemplates($rootLine, 0);
             $ts->generateConfig();
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
 
-        $typoscriptConfig = $ts->setup;
-        $this->storagePid = $typoscriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
+        $typoScriptConfig = $ts->setup;
+        $this->storagePid = $typoScriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
 
     }
 
     /**
-     * Helper to get flexform's items array for plugin "Search"
+     * Helper to get flexForm's items array for plugin "Search"
      *
      * @access public
      *
-     * @param array &$params: An array with parameters
+     * @param array &$params An array with parameters
      *
      * @return void
      */
@@ -111,11 +111,11 @@ class ItemsProcFunc implements LoggerAwareInterface
     }
 
     /**
-     * Helper to get flexform's items array for plugin "Search"
+     * Helper to get flexForm's items array for plugin "Search"
      *
      * @access public
      *
-     * @param array &$params: An array with parameters
+     * @param array &$params An array with parameters
      */
     public function getFacetsList(array &$params): void
     {
@@ -133,11 +133,11 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param array &$params: An array with parameters
-     * @param string $fields: Comma-separated list of fields to fetch
-     * @param string $table: Table name to fetch the items from
-     * @param string $sorting: Field to sort items by (optionally appended by 'ASC' or 'DESC')
-     * @param string $andWhere: Additional AND WHERE clause
+     * @param array &$params An array with parameters
+     * @param string $fields Comma-separated list of fields to fetch
+     * @param string $table Table name to fetch the items from
+     * @param string $sorting Field to sort items by (optionally appended by 'ASC' or 'DESC')
+     * @param string $andWhere Additional AND WHERE clause
      *
      * @return void
      */

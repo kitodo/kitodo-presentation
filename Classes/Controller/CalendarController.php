@@ -32,7 +32,11 @@ class CalendarController extends AbstractController
     protected $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
     public function injectStructureRepository(StructureRepository $structureRepository)
     {
@@ -47,6 +51,8 @@ class CalendarController extends AbstractController
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */
@@ -91,8 +97,8 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
+     * @param string $content The PlugIn content
+     * @param array $conf The PlugIn configuration
      *
      * @return void
      */

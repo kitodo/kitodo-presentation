@@ -481,9 +481,10 @@ final class IiifManifest extends AbstractDocument
      *
      * @access protected
      *
-     * @param IiifResourceInterface $resource: IIIF resource, either a manifest or range.
-     * @param bool $recursive: Whether to include the child elements
-     * @param array $processedStructures: IIIF resources that already have been processed
+     * @param IiifResourceInterface $resource IIIF resource, either a manifest or range.
+     * @param bool $recursive Whether to include the child elements
+     * @param array $processedStructures IIIF resources that already have been processed
+     *
      * @return array Logical structure array
      */
     protected function getLogicalStructureInfo(IiifResourceInterface $resource, $recursive = false, &$processedStructures = [])
@@ -569,11 +570,11 @@ final class IiifManifest extends AbstractDocument
      *
      * @access public
      *
-     * @param string $id: the ID of the IIIF resource
-     * @param int $cPid: the configuration folder's id
-     * @param bool $withDescription: add description / summary to the return value
-     * @param bool $withRights: add attribution and license / rights and requiredStatement to the return value
-     * @param bool $withRelated: add related links / homepage to the return value
+     * @param string $id the ID of the IIIF resource
+     * @param int $cPid the configuration folder's id
+     * @param bool $withDescription add description / summary to the return value
+     * @param bool $withRights add attribution and license / rights and requiredStatement to the return value
+     * @param bool $withRelated add related links / homepage to the return value
      *
      * @return array
      *
@@ -730,7 +731,9 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @param RangeInterface $range: Current range whose canvases shall be linked
+     * @param RangeInterface $range Current range whose canvases shall be linked
+     * 
+     * @return void
      */
     private function smLinkRangeCanvasesRecursively(RangeInterface $range)
     {
@@ -755,6 +758,8 @@ final class IiifManifest extends AbstractDocument
      *
      * @param CanvasInterface $canvas
      * @param IiifResourceInterface $resource
+     * 
+     * @return void
      */
     private function smLinkCanvasToResource(CanvasInterface $canvas, IiifResourceInterface $resource)
     {
@@ -976,6 +981,7 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
+     * @access public
      *
      * @return string[]
      */

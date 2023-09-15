@@ -42,6 +42,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class MetadataWrapVariableViewHelper extends AbstractViewHelper
 {
     /**
+     * @access public
+     *
      * @return void
      */
     public function initializeArguments()
@@ -50,10 +52,15 @@ class MetadataWrapVariableViewHelper extends AbstractViewHelper
     }
 
     /**
+     * @access public
+     *
+     * @static
+     *
      * @param array $arguments
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
-     * @return null
+     *
+     * @return void
      */
     public static function renderStatic(
         array $arguments,

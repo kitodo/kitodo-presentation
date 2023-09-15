@@ -40,6 +40,8 @@ class CollectionRepository extends Repository
     /**
      * Finds all collections
      *
+     * @access public
+     *
      * @param string $uids separated by comma
      *
      * @return QueryResultInterface
@@ -58,6 +60,15 @@ class CollectionRepository extends Repository
         return $query->execute();
     }
 
+    /**
+     * Finds all collections
+     *
+     * @access public
+     *
+     * @param string $pages
+     *
+     * @return QueryResultInterface
+     */
     public function getCollectionForMetadata($pages)
     {
         // Get list of collections to show.
@@ -70,6 +81,8 @@ class CollectionRepository extends Repository
 
     /**
      * Finds all collection for the given settings
+     *
+     * @access public
      *
      * @param array $settings
      *
@@ -113,6 +126,16 @@ class CollectionRepository extends Repository
         return $query->execute();
     }
 
+    /**
+     * Gets index name for SOLR
+     *
+     * @access public
+     *
+     * @param array $settings
+     * @param mixed $set
+     *
+     * @return array|QueryResultInterface
+     */
     public function getIndexNameForSolr($settings, $set)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)

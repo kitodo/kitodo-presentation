@@ -25,8 +25,12 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 class NavigationController extends AbstractController
 {
     /**
-     * Method to get the page select values and use them with chash
+     * Method to get the page select values and use them with cHash
+     *
+     * @access public
+     *
      * @param PageSelectForm|NULL $pageSelectForm
+     *
      * @return void
      */
     public function pageSelectAction(PageSelectForm $pageSelectForm = NULL) {
@@ -48,6 +52,8 @@ class NavigationController extends AbstractController
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */

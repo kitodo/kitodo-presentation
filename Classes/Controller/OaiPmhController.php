@@ -35,7 +35,11 @@ class OaiPmhController extends AbstractController
     protected $tokenRepository;
 
     /**
+     * @access public
+     *
      * @param TokenRepository $tokenRepository
+     *
+     * @return void
      */
     public function injectTokenRepository(TokenRepository $tokenRepository)
     {
@@ -49,7 +53,11 @@ class OaiPmhController extends AbstractController
     protected $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
@@ -63,7 +71,11 @@ class OaiPmhController extends AbstractController
     protected $libraryRepository;
 
     /**
+     * @access public
+     *
      * @param LibraryRepository $libraryRepository
+     *
+     * @return void
      */
     public function injectLibraryRepository(LibraryRepository $libraryRepository)
     {
@@ -72,6 +84,8 @@ class OaiPmhController extends AbstractController
 
     /**
      * Initializes the current action
+     *
+     * @access public
      *
      * @return void
      */
@@ -161,9 +175,9 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $record : The full record array
+     * @param array $record The full record array
      *
-     * @return array $metadata: The mapped metadata array
+     * @return array The mapped metadata array
      */
     protected function getDcData(array $record)
     {
@@ -198,6 +212,8 @@ class OaiPmhController extends AbstractController
     }
 
     /**
+     * @access private
+     *
      * @param array $metadata The mapped metadata array
      * @param string $key The key to which record value should be assigned
      * @param string $value The key from record array
@@ -216,9 +232,9 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $record : The full record array
+     * @param array $record The full record array
      *
-     * @return string: The fetched METS XML
+     * @return string The fetched METS XML
      */
     protected function getMetsData(array $record)
     {
@@ -241,6 +257,8 @@ class OaiPmhController extends AbstractController
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */
@@ -680,6 +698,7 @@ class OaiPmhController extends AbstractController
 
     /**
      * Fetch more information for document list
+     *
      * @access protected
      *
      * @param array $documentListSet

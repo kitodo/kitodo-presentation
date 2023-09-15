@@ -35,6 +35,8 @@ class ToolboxController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
@@ -100,6 +102,8 @@ class ToolboxController extends AbstractController
      * Renders tool by the name in the toolbox.
      *
      * @access private
+     *
+     * @param string $tool name
      *
      * @return void
      */
@@ -218,7 +222,7 @@ class ToolboxController extends AbstractController
      *
      * @access private
      *
-     * @param int $page: Page number
+     * @param int $page Page number
      *
      * @return array Array of image links and image format information
      */

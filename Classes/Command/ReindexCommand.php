@@ -35,6 +35,8 @@ class ReindexCommand extends BaseCommand
     /**
      * Configure the command by defining the name, options and arguments
      *
+     * @access public
+     *
      * @return void
      */
     public function configure()
@@ -81,7 +83,9 @@ class ReindexCommand extends BaseCommand
     }
 
     /**
-     * Executes the command to index the given document to db and solr.
+     * Executes the command to index the given document to DB and SOLR.
+     *
+     * @access protected
      *
      * @param InputInterface $input The input parameters
      * @param OutputInterface $output The Symfony interface for outputs on console
