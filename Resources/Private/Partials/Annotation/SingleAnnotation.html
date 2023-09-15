@@ -1,0 +1,58 @@
+<f:comment>
+    <!--
+     * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+     *
+     * This file is part of the Kitodo and TYPO3 projects.
+     *
+     * @license GNU General Public License version 3 or later.
+     * For the full copyright and license information, please read the
+     * LICENSE.txt file that was distributed with this source code.
+    -->
+</f:comment>
+
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<details class="annotation-details"
+         data-annotation-id="{annotation.id}"
+         data-range-facsimile="{kitodo:implode(value: '{annotation.pageFacsimileRanges.{currentPage}}', delimiter: ';')}"
+         data-range-audio="{kitodo:implode(value: '{annotation.pageAudioRanges.{currentPage}}', delimiter: ';')}"
+         data-range-score="{kitodo:implode(value: '{annotation.pageScoreRanges.{currentPage}}', delimiter: ';')}">
+
+    <summary class="annotation-title">
+        <f:format.html>{annotation.title}</f:format.html>
+    </summary>
+
+    <div class="annotation-creator">
+        <f:translate key="annotation.creator.label"/> {annotation.creatorName}
+    </div>
+
+    <div class="annotation-date">
+        <f:translate key="annotation.created.label"/>
+        <f:format.date format="d.m.Y">{annotation.created}</f:format.date>
+        <br />
+        <f:translate key="annotation.modified.label"/>
+        <f:format.date format="d.m.Y">{annotation.modified}</f:format.date>
+    </div>
+
+    <div class="annotation-body">
+        <f:for each="{annotation.body}" as="bodyItem">
+            <f:if condition="{bodyItem.type} == 'TextualBody'">
+                <f:format.html>{bodyItem.value}</f:format.html>
+            </f:if>
+        </f:for>
+
+        <br />
+
+        <f:for each="{annotation.body}" as="bodyItem">
+            <f:if condition="{bodyItem.type} != 1 && {bodyItem.purpose} == 'classifying'">
+                <a href="{bodyItem.source}">
+                    {bodyItem.value}
+                </a>
+            </f:if>
+        </f:for>
+    </div>
+</details>
+
+</html>

@@ -129,6 +129,14 @@
 				<source><![CDATA[Download whole work]]></source>
 				<target><![CDATA[Ganzes Werk herunterladen]]></target>
 			</trans-unit>
+			<trans-unit id="mididownload" approved="yes">
+				<source><![CDATA[Download midi file]]></source>
+				<target><![CDATA[Midi Werk herunterladen]]></target>
+			</trans-unit>
+			<trans-unit id="scoredownload" approved="yes">
+				<source><![CDATA[Download score pdf file]]></source>
+				<target><![CDATA[Notentext herunterladen]]></target>
+			</trans-unit>
 			<trans-unit id="firstPage" approved="yes">
 				<source><![CDATA[First Page]]></source>
 				<target><![CDATA[Erste Seite]]></target>
@@ -272,6 +280,14 @@
 			<trans-unit id="rotateRight" approved="yes">
 				<source><![CDATA[Rotate Right]]></source>
 				<target><![CDATA[Ansicht nach rechts drehen]]></target>
+			</trans-unit>
+			<trans-unit id="prevMeasure">
+				<source><![CDATA[Previus Measure]]></source>
+				<target><![CDATA[Vorheriger Takt]]></target>
+			</trans-unit>
+			<trans-unit id="nextMeasure">
+				<source><![CDATA[Next Measure]]></source>
+				<target><![CDATA[Nächster Takt]]></target>
 			</trans-unit>
 			<trans-unit id="search.dateFrom" approved="yes">
 				<source><![CDATA[From]]></source>
@@ -553,6 +569,18 @@
                 <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
                 <target><![CDATA[Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
             </trans-unit>
+			<trans-unit id="annotation.creator.label" approved="yes">
+				<source><![CDATA[Annotation created by:]]></source>
+				<target><![CDATA[Annotation erstellt von:]]></target>
+			</trans-unit>
+			<trans-unit id="annotation.created.label" approved="yes">
+				<source><![CDATA[Created:]]></source>
+				<target><![CDATA[Erstellt:]]></target>
+			</trans-unit>
+			<trans-unit id="annotation.modified.label" approved="yes">
+				<source><![CDATA[Modified:]]></source>
+				<target><![CDATA[Geändert:]]></target>
+			</trans-unit>
 
 		</body>
 	</file>

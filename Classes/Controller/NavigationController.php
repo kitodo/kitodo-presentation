@@ -100,6 +100,7 @@ class NavigationController extends AbstractController
         for ($i = 1; $i <= $this->document->getDoc()->numPages; $i++) {
             $pageOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel']) : '');
         }
+
         $this->view->assign('pageOptions', $pageOptions);
 
         // prepare feature array for fluid
@@ -108,5 +109,25 @@ class NavigationController extends AbstractController
             $features[$feature] = true;
         }
         $this->view->assign('features', $features);
+
+        if ($this->document->getDoc()->numMeasures > 0) {
+            $measureOptions = [];
+            $measurePages = [];
+            for ($i = 1; $i <= $this->document->getDoc()->numMeasures; $i++) {
+                $measureOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->musicalStructureInfo[$this->document->getDoc()->musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->musicalStructureInfo[$this->document->getDoc()->musicalStructureInfo[$i]]['orderlabel']) : '');
+                $measurePages[$i] = $this->document->getDoc()->musicalStructure[$i]['page'];
+            }
+
+            if (!isset($this->requestData['measure'])) {
+                $currentMeasure = array_search($this->requestData['page'], $measurePages);
+            } else {
+                $currentMeasure = $this->requestData['measure'];
+            }
+
+            $this->view->assign('currentMeasure', $currentMeasure);
+            $this->view->assign('numMeasures', $this->document->getDoc()->numMeasures);
+            $this->view->assign('measureOptions', $measureOptions);
+            $this->view->assign('measurePages', $measurePages);
+        }
     }
 }
