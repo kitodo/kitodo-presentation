@@ -202,18 +202,18 @@ class ToolboxController extends AbstractController
             return;
         }
         $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
-		foreach ($fileGrpsScores as $fileGrpScore) {
-			foreach ($this->document->getDoc()->physicalStructureInfo as $page) {
-				if (isset($page['files'])) {
-					$files = $page['files'];
-				} else {
-					continue;
-				}
-				if (isset($files[$fileGrpScore])) {
-					$scoreFile = $files[$fileGrpScore];
-					break;
-				}
-			}
+        foreach ($fileGrpsScores as $fileGrpScore) {
+            foreach ($this->document->getDoc()->physicalStructureInfo as $page) {
+                if (isset($page['files'])) {
+                    $files = $page['files'];
+                } else {
+                    continue;
+                }
+                if (isset($files[$fileGrpScore])) {
+                    $scoreFile = $files[$fileGrpScore];
+                    break;
+                }
+            }
         }
         if (!empty($scoreFile)) {
             $this->view->assign('score', true);

@@ -289,22 +289,22 @@ final class MetsDocument extends Doc
         }
     }
 
-	/**
-	 * {@inheritDoc}
-	 * @see \Kitodo\Dlf\Common\Doc::getPageBeginning()
-	 */
+    /**
+     * {@inheritDoc}
+     * @see \Kitodo\Dlf\Common\Doc::getPageBeginning()
+     */
 
-	public function getPageBeginning($pageId, $fileId)
-	{
-		$mets = $this->mets
-			->xpath(
-				'./mets:structMap[@TYPE="PHYSICAL"]' .
-				'//mets:div[@ID="' .  $pageId .  '"]' .
-				'/mets:fptr[@FILEID="' .  $fileId .  '"]' .
-				'/mets:area/@BEGIN'
-			);
-		return empty($mets) ? '' : $mets[0]->__toString();
-	}
+    public function getPageBeginning($pageId, $fileId)
+    {
+        $mets = $this->mets
+            ->xpath(
+                './mets:structMap[@TYPE="PHYSICAL"]' .
+                '//mets:div[@ID="' .  $pageId .  '"]' .
+                '/mets:fptr[@FILEID="' .  $fileId .  '"]' .
+                '/mets:area/@BEGIN'
+            );
+        return empty($mets) ? '' : $mets[0]->__toString();
+    }
 
     /**
      * {@inheritDoc}
@@ -972,12 +972,12 @@ final class MetsDocument extends Doc
         if (!$this->fileGrpsLoaded) {
             // Get configured USE attributes.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-			$grpKeys = [ 'fileGrpImages', 'fileGrpThumbs', 'fileGrpDownload', 'fileGrpFulltext',
-				'fileGrpAudio', 'fileGrpScore' ];
-			$useGrps = [];
-			foreach ($grpKeys as $grpKey) {
-				$useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf[$grpKey]));
-			}
+            $grpKeys = [ 'fileGrpImages', 'fileGrpThumbs', 'fileGrpDownload', 'fileGrpFulltext',
+                'fileGrpAudio', 'fileGrpScore' ];
+            $useGrps = [];
+            foreach ($grpKeys as $grpKey) {
+                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf[$grpKey]));
+            }
 
             // Get all file groups.
             $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
