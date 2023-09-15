@@ -75,7 +75,7 @@ class Structure extends AbstractEntity
     }
 
     /**
-     * @param int $l18nParent
+     * @param Structure $l18nParent
      */
     public function setL18nParent(Structure $l18nParent): void
     {

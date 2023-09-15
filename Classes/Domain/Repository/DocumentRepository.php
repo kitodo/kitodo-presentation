@@ -500,7 +500,7 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param array $uids
-     * @param array $checkPartof Whether or not to also match $uids against partof.
+     * @param bool $checkPartof Whether or not to also match $uids against partof.
      *
      * @return array
      */
@@ -572,7 +572,7 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param QueryResult|Collection $collection
+     * @param QueryResult|Collection|null $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata

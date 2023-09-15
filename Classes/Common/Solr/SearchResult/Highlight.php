@@ -33,6 +33,7 @@ class Highlight
      * @access private
      * @var int The parent region's identifier
      */
+    // @phpstan-ignore-next-line
     private int $parentRegionId;
 
     /**

@@ -24,9 +24,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 
@@ -149,6 +146,8 @@ class Helper
                 if (!preg_match('/\d{8}-\d{1}/i', $id)) {
                     return false;
                 } elseif ($checksum == 10) {
+                    //TODO: Binary operation "+" between string and 1 results in an error.
+                    // @phpstan-ignore-next-line
                     return self::checkIdentifier(($digits + 1) . substr($id, -2, 2), 'SWD');
                 } elseif (substr($id, -1, 1) != $checksum) {
                     return false;
@@ -218,11 +217,10 @@ class Helper
      *
      * @static
      *
-     * @param string $content: content of file to read
+     * @param mixed $content content of file to read
      *
      * @return \SimpleXMLElement|false
      */
-    //TODO: make sure that this is called only with string then update
     public static function getXmlFileAsString($content)
     {
         // Don't make simplexml_load_string throw (when $content is an array
@@ -605,7 +603,7 @@ class Helper
         for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
             $checksum += ($i + 1) * intval(substr($digits, $i, 1));
         }
-        $checksum = substr(intval($checksum / intval(substr($digits, -1, 1))), -1, 1);
+        $checksum = substr(strval(intval($checksum / intval(substr($digits, -1, 1)))), -1, 1);
         return $base . $id . $checksum;
     }
 
@@ -723,7 +721,7 @@ class Helper
 
         // Check if "index_name" is an UID.
         if (MathUtility::canBeInterpretedAsInteger($indexName)) {
-            $indexName = self::getIndexNameFromUid($indexName, $table, $pid);
+            $indexName = self::getIndexNameFromUid((int) $indexName, $table, $pid);
         }
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
          * and not with the $indexName of the original that we receive here. So we have to determine the index_name of the

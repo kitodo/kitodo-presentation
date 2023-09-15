@@ -39,9 +39,9 @@ class DataHandler implements LoggerAwareInterface
 
     /**
      * @access protected
-     * @var DocumentRepository
+     * @var DocumentRepository|null
      */
-    protected DocumentRepository $documentRepository;
+    protected ?DocumentRepository $documentRepository;
 
     /**
      * Gets document repository

@@ -81,10 +81,8 @@ class CalendarController extends AbstractController
             case 'newspaper':
             case 'ephemera':
                 $this->forward('years', null, null, $this->requestData);
-                break;
             case 'year':
                 $this->forward('calendar', null, null, $this->requestData);
-                break;
             case 'issue':
             default:
                 break;
@@ -289,10 +287,14 @@ class CalendarController extends AbstractController
                 $max = $yearArray[count($yearArray) - 1]['title'];
                 // if we have an actual documentId it should be used, otherwise leave empty
                 for ($i = 0; $i < $max - $min + 1; $i++) {
+                    // TODO: Binary operation "+" between (array|string) and int<0, max> results in an error.
+                    // @phpstan-ignore-next-line
                     $key = array_search($min + $i, array_column($yearArray, 'title'));
                     if (is_int($key)) {
                         $yearFilled[] = $yearArray[$key];
                     } else {
+                        // TODO: Binary operation "+" between (array|string) and int<0, max> results in an error.
+                        // @phpstan-ignore-next-line
                         $yearFilled[] = ['title' => $min+$i, 'documentId' => ''];
                     }
                 }

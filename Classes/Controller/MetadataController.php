@@ -116,12 +116,14 @@ class MetadataController extends AbstractController
         $metadata = $this->getMetadata();
         $topLevelId = $this->currentDocument->toplevelId;
         // Get titledata?
-        if (empty($metadata) || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $topLevelId)) {
+        if (!$metadata || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $topLevelId)) {
+            // @phpstan-ignore-next-line
             $data = $useOriginalIiifManifestMetadata ? $this->currentDocument->getManifestMetadata($topLevelId, $this->settings['storagePid']) : $this->currentDocument->getTitledata($this->settings['storagePid']);
             $data['_id'] = $topLevelId;
             array_unshift($metadata, $data);
         }
-        if (empty($metadata)) {
+        // @phpstan-ignore-next-line
+        if (!$metadata) {
             $this->logger->warning('No metadata found for document with UID ' . $this->document->getUid());
             return;
         }
@@ -229,6 +231,8 @@ class MetadataController extends AbstractController
     private function buildIiifDataGroup(string $label, string $value): array
     {
         // NOTE: Labels are to be escaped in Fluid template
+        // TODO: Variable $scheme might not be defined.
+        // @phpstan-ignore-next-line
         if (IRI::isAbsoluteIri($value) && ($scheme = (new IRI($value))->getScheme()) == 'http' || $scheme == 'https') {
             //TODO: should really label be converted to empty string if equal to value?
             $label = $value == $label ? '' : $label;
@@ -431,6 +435,7 @@ class MetadataController extends AbstractController
         $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
         foreach ($id as $sid) {
             if ($useOriginalIiifManifestMetadata) {
+                // @phpstan-ignore-next-line
                 $data = $this->currentDocument->getManifestMetadata($sid, $this->settings['storagePid']);
             } else {
                 $data = $this->currentDocument->getMetadata($sid, $this->settings['storagePid']);

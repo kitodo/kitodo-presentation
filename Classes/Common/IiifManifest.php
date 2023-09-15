@@ -408,6 +408,8 @@ final class IiifManifest extends AbstractDocument
         $resource = $this->iiif->getContainedResourceById($id);
         if (isset($resource)) {
             if ($resource instanceof CanvasInterface) {
+                // TODO: Cannot call method getSingleService() on array<Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationInterface>. 
+                // @phpstan-ignore-next-line
                 return (!empty($resource->getImageAnnotations()) && $resource->getImageAnnotations()->getSingleService() != null) ? $resource->getImageAnnotations()[0]->getSingleService()->getId() : $id;
             } elseif ($resource instanceof ContentResourceInterface) {
                 return $resource->getSingleService() != null && $resource->getSingleService() instanceof Service ? $resource->getSingleService()->getId() : $id;
@@ -458,6 +460,8 @@ final class IiifManifest extends AbstractDocument
         } else {
             $logUnits[] = $this->iiif;
         }
+        // TODO: Variable $logUnits in empty() always exists and is not falsy.
+        // @phpstan-ignore-next-line
         if (!empty($logUnits)) {
             if (!$recursive) {
                 $details = $this->getLogicalStructureInfo($logUnits[0]);
@@ -504,7 +508,7 @@ final class IiifManifest extends AbstractDocument
         }
         $details['thumbnailId'] = $resource->getThumbnailUrl();
         $details['points'] = '';
-        // Load strucural mapping
+        // Load structural mapping
         $this->_getSmLinks();
         // Load physical structure.
         $this->_getPhysicalStructure();
@@ -516,7 +520,7 @@ final class IiifManifest extends AbstractDocument
             $startCanvas = $resource->getStartCanvasOrFirstCanvas();
             $canvases = $resource->getAllCanvases();
         }
-        if ($startCanvas != null) {
+        if (isset($startCanvas)) {
             $details['pagination'] = $startCanvas->getLabel();
             $startCanvasIndex = array_search($startCanvas, $this->iiif->getDefaultCanvases());
             if ($startCanvasIndex !== false) {
@@ -681,8 +685,12 @@ final class IiifManifest extends AbstractDocument
                     $resArray['format'] > 0 && !empty($resArray['xpath_sorting'])
                     && ($values = $iiifResource->jsonPath($resArray['xpath_sorting']) != null)
                 ) {
+                    // TODO: Call to function is_string() with true will always evaluate to false.
+                    // @phpstan-ignore-next-line
                     if (is_string($values)) {
                         $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
+                    // TODO: Instanceof between true and Flow\JSONPath\JSONPath will always evaluate to false.
+                    // @phpstan-ignore-next-line
                     } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
                         $metadata[$resArray['index_name']] = [];
                         foreach ($values->data() as $value) {
@@ -836,7 +844,7 @@ final class IiifManifest extends AbstractDocument
     /**
      * @see AbstractDocument::init()
      */
-    protected function init(string $location): void
+    protected function init(string $location, array $settings = []): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
     }

@@ -104,6 +104,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      */
     public function updateNecessary(): bool
     {
+        /** @var int */
         $numRecords = $this->getRecordsFromTable(true);
         if ($numRecords > 0) {
             return true;
@@ -146,6 +147,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     {
         $result = true;
         try {
+            /** @var int */
             $numRecords = $this->getRecordsFromTable(true);
             if ($numRecords > 0) {
                 $this->performUpdate();

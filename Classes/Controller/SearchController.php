@@ -370,7 +370,7 @@ class SearchController extends AbstractController
         $collections = null;
         if ($this->searchParams['collection']) {
             foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collections[] = $this->collectionRepository->findByUid($collectionEntry);
+                $collections[] = $this->collectionRepository->findByUid(intval($collectionEntry));
             }
         }
         if ($collections) {

@@ -87,6 +87,8 @@ class NavigationController extends AbstractController
             $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
             $widgetPage = $GLOBALS['TSFE']->fe_user->getKey('ses', 'widgetPage');
 
+            //TODO: If condition is always true. 
+            // @phpstan-ignore-next-line
             if ($searchSessionParameters) {
                 $lastSearchArguments = [
                     'tx_dlf_listview' => [

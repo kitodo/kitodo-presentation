@@ -441,9 +441,11 @@ abstract class AbstractDocument
         // Sanitize input.
         $pid = max(intval($settings['storagePid']), 0);
         if ($documentFormat == 'METS') {
-            $instance = new MetsDocument($location, $pid, $xml);
+            $instance = new MetsDocument($pid,$location, $xml, $settings);
         } elseif ($documentFormat == 'IIIF') {
-            $instance = new IiifManifest($location, $pid, $iiif);
+            // TODO: Parameter $preloadedDocument of class Kitodo\Dlf\Common\IiifManifest constructor expects SimpleXMLElement|Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface, Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity|null given.
+            // @phpstan-ignore-next-line
+            $instance = new IiifManifest($pid, $location, $iiif);
         }
 
         if (!is_null($instance)) {
@@ -750,10 +752,11 @@ abstract class AbstractDocument
      * @abstract
      *
      * @param string $location The location URL of the XML file to parse
+     * @param array $settings The extension settings
      *
      * @return void
      */
-    protected abstract function init(string $location): void;
+    protected abstract function init(string $location, array $settings): void;
 
     /**
      * Reuse any document object that might have been already loaded to determine whether document is METS or IIIF
@@ -1086,6 +1089,8 @@ abstract class AbstractDocument
     {
         if (!$this->rootIdLoaded) {
             if ($this->parentId) {
+                // TODO: Parameter $location of static method AbstractDocument::getInstance() expects string, int<min, -1>|int<1, max> given.
+                // @phpstan-ignore-next-line
                 $parent = self::getInstance($this->parentId, ['storagePid' => $this->pid]);
                 $this->rootId = $parent->rootId;
             }
@@ -1168,20 +1173,19 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @param string $location The location URL of the XML file to parse
      * @param int $pid If > 0, then only document with this PID gets loaded
+     * @param string $location The location URL of the XML file to parse
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
      */
-    protected function __construct(string $location, int $pid, $preloadedDocument)
+    protected function __construct(int $pid, string $location, $preloadedDocument, array $settings = [])
     {
         $this->pid = $pid;
         $this->setPreloadedDocument($preloadedDocument);
-        $this->init($location);
+        $this->init($location, $settings);
         $this->establishRecordId($pid);
-        return;
     }
 
     /**
@@ -1253,7 +1257,7 @@ abstract class AbstractDocument
      *
      * @param string $location
      *
-     * @return AbstractDocument|false
+     * @return MetsDocument|IiifManifest|false
      */
     private static function getDocumentCache(string $location)
     {
