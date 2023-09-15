@@ -117,7 +117,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching($query->equals('partof', $partOf));
 
         $query->setOrderings([
-            'mets_orderlabel' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+            'mets_orderlabel' => QueryInterface::ORDER_ASCENDING
         ]);
 
         return $query->execute();

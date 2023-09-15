@@ -12,7 +12,6 @@
         <l18n_diffsource></l18n_diffsource>
         <hidden>0</hidden>
         <sorting>32</sorting>
-        <l10n_state></l10n_state>
         <label>Titel</label>
         <index_name>title</index_name>
         <format>1</format>
@@ -41,7 +40,6 @@
         <l18n_diffsource></l18n_diffsource>
         <hidden>0</hidden>
         <sorting>32</sorting>
-        <l10n_state></l10n_state>
         <label>Sammlungen</label>
         <index_name>collection</index_name>
         <format>1</format>

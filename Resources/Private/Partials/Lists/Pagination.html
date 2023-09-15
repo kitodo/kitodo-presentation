@@ -1,0 +1,53 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+    <ul class="pagination">
+        <f:if condition="{pagination.previousPageNumber} && {pagination.previousPageNumber} >= {pagination.firstPageNumber}">
+            <f:then>
+                <li class="first">
+                    <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': 1}" arguments="{searchParameter: lastSearch}" title="1">1</f:link.action>
+                </li>
+                <li class="previous">
+                    <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.previousPageNumber}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'pagination.previous')}">{f:translate(key: 'prevPage')}</f:link.action>
+                </li>
+            </f:then>
+            <f:else>
+                <li class="first disabled">
+                    <span>1</span>
+                </li>
+                <li class="previous disabled">
+                    <span>{f:translate(key: 'prevPage')}</span>
+                </li>
+            </f:else>
+        </f:if>
+        <f:if condition="{pagination.hasLessPages}">
+            <li>…</li>
+        </f:if>
+        <f:for each="{pagination.allPageNumbers}" as="page">
+            <li class="{f:if(condition: '{page} == {paginator.currentPageNumber}', then:'current')}">
+                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': page}" arguments="{searchParameter: lastSearch}">{page}</f:link.action>
+            </li>
+        </f:for>
+        <f:if condition="{pagination.hasMorePages}">
+            <li>…</li>
+        </f:if>
+        <f:if condition="{pagination.nextPageNumber} && {pagination.nextPageNumber} <= {pagination.lastPageNumber}">
+            <f:then>
+                <li class="next">
+                    <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.nextPageNumber}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'nextPage')}">{f:translate(key: 'nextPage')}</f:link.action>
+                </li>
+                <li class="last">
+                    <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.lastPageNumber}" arguments="{searchParameter: lastSearch}" title="{pagination.lastPageNumber}">{pagination.lastPageNumber}</f:link.action>
+                </li>
+            </f:then>
+            <f:else>
+                <li class="next disabled">
+                    <span>{f:translate(key: 'nextPage')}</span>
+                </li>
+                <li class="last disabled">
+                    <span>{pagination.lastPageNumber}</span>
+                </li>
+            </f:else>
+        </f:if>
+    </ul>
+
+</html>

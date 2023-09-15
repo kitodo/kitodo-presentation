@@ -78,7 +78,7 @@ class SolrIndexingTest extends FunctionalTestCase
         $doc = Doc::getInstance($document->getLocation());
         $document->setDoc($doc);
 
-        $indexingSuccessful = Indexer::add($document);
+        $indexingSuccessful = Indexer::add($document, $this->documentRepository);
         $this->assertTrue($indexingSuccessful);
 
         $solrSettings = [

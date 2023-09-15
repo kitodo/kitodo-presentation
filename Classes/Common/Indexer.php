@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Core\Core\Environment;
 
 /**
  * Indexer class for the 'dlf' extension
@@ -91,7 +91,7 @@ class Indexer
      *
      * @return bool true on success or false on failure
      */
-    public static function add(Document $document)
+    public static function add(Document $document, DocumentRepository $documentRepository)
     {
         if (in_array($document->getUid(), self::$processedDocs)) {
             return true;
@@ -100,10 +100,6 @@ class Indexer
             Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Handle multi-volume documents.
             if ($parentId = $document->getPartof()) {
-                // initialize documentRepository
-                // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
-                $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-                $documentRepository = $objectManager->get(DocumentRepository::class);
                 // get parent document
                 $parent = $documentRepository->findByUid($parentId);
                 if ($parent) {
@@ -111,7 +107,7 @@ class Indexer
                     $doc = Doc::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true);
                     if ($doc !== null) {
                         $parent->setDoc($doc);
-                        $success = self::add($parent);
+                        $success = self::add($parent, $documentRepository);
                     } else {
                         Helper::log('Could not load parent document with UID ' . $document->getDoc()->parentId, LOG_SEVERITY_ERROR);
                         return false;
@@ -149,7 +145,7 @@ class Indexer
                 $updateQuery->addCommit();
                 self::$solr->service->update($updateQuery);
 
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                if (!(Environment::isCli())) {
                     if ($success) {
                         Helper::addMessage(
                             sprintf(Helper::getLanguageService()->getLL('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
@@ -170,7 +166,7 @@ class Indexer
                 }
                 return $success;
             } catch (\Exception $e) {
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                if (!(Environment::isCli())) {
                     Helper::addMessage(
                         Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
                         Helper::getLanguageService()->getLL('flash.error'),
@@ -183,7 +179,7 @@ class Indexer
                 return false;
             }
         } else {
-            if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+            if (!(Environment::isCli())) {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('flash.solrNoConnection'),
                     Helper::getLanguageService()->getLL('flash.warning'),
@@ -397,7 +393,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                if (!(Environment::isCli())) {
                     Helper::addMessage(
                         Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getLanguageService()->getLL('flash.error'),
@@ -495,7 +491,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if (!(\TYPO3_REQUESTTYPE & \TYPO3_REQUESTTYPE_CLI)) {
+                if (!(Environment::isCli())) {
                     Helper::addMessage(
                         Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()),
                         Helper::getLanguageService()->getLL('flash.error'),
@@ -591,8 +587,9 @@ class Indexer
      *
      * @access private
      */
-    private function __construct()
+    private function __construct(DocumentRepository $documentRepository)
     {
         // This is a static class, thus no instances should be created.
+        $this->documentRepository = $documentRepository;
     }
 }

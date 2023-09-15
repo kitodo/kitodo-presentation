@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-27T08:32:27Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+            <trans-unit id="aa">
+            	<source>Afar</source>
+            </trans-unit>
+            <trans-unit id="ab">
+            	<source>Abkhazian</source>
+            </trans-unit>
+            <trans-unit id="af">
+            	<source>Afrikaans</source>
+            </trans-unit>
+            <trans-unit id="am">
+            	<source>Amharic</source>
+            </trans-unit>
+            <trans-unit id="ar">
+            	<source>Arabic</source>
+            </trans-unit>
+            <trans-unit id="as">
+            	<source>Assamese</source>
+            </trans-unit>
+            <trans-unit id="ay">
+            	<source>Aymara</source>
+            </trans-unit>
+            <trans-unit id="az">
+            	<source>Azerbaijani</source>
+            </trans-unit>
+            <trans-unit id="ba">
+            	<source>Bashkir</source>
+            </trans-unit>
+            <trans-unit id="be">
+            	<source>Byelorussian</source>
+            </trans-unit>
+            <trans-unit id="bg">
+            	<source>Bulgarian</source>
+            </trans-unit>
+            <trans-unit id="bh">
+            	<source>Bihari</source>
+            </trans-unit>
+            <trans-unit id="bi">
+            	<source>Bislama</source>
+            </trans-unit>
+            <trans-unit id="bn">
+            	<source>Bengali</source>
+            </trans-unit>
+            <trans-unit id="bo">
+            	<source>Tibetan</source>
+            </trans-unit>
+            <trans-unit id="br">
+            	<source>Breton</source>
+            </trans-unit>
+            <trans-unit id="ca">
+            	<source>Catalan</source>
+            </trans-unit>
+            <trans-unit id="co">
+            	<source>Corsican</source>
+            </trans-unit>
+            <trans-unit id="cs">
+            	<source>Czech</source>
+            </trans-unit>
+            <trans-unit id="cy">
+            	<source>Welsh</source>
+            </trans-unit>
+            <trans-unit id="da">
+            	<source>Danish</source>
+            </trans-unit>
+            <trans-unit id="de">
+            	<source>German</source>
+            </trans-unit>
+            <trans-unit id="dz">
+            	<source>Dzongkha</source>
+            </trans-unit>
+            <trans-unit id="el">
+            	<source>Greek</source>
+            </trans-unit>
+            <trans-unit id="en">
+            	<source>English</source>
+            </trans-unit>
+            <trans-unit id="eo">
+            	<source>Esperanto</source>
+            </trans-unit>
+            <trans-unit id="es">
+            	<source>Spanish</source>
+            </trans-unit>
+            <trans-unit id="et">
+            	<source>Estonian</source>
+            </trans-unit>
+            <trans-unit id="eu">
+            	<source>Basque</source>
+            </trans-unit>
+            <trans-unit id="fa">
+            	<source>Persian</source>
+            </trans-unit>
+            <trans-unit id="fi">
+            	<source>Finnish</source>
+            </trans-unit>
+            <trans-unit id="fj">
+            	<source>Fijian</source>
+            </trans-unit>
+            <trans-unit id="fo">
+            	<source>Faroese</source>
+            </trans-unit>
+            <trans-unit id="fr">
+            	<source>French</source>
+            </trans-unit>
+            <trans-unit id="fy">
+            	<source>Frisian</source>
+            </trans-unit>
+            <trans-unit id="ga">
+            	<source>Irish</source>
+            </trans-unit>
+            <trans-unit id="gd">
+            	<source>Scottish Gaelic</source>
+            </trans-unit>
+            <trans-unit id="gl">
+            	<source>Galician</source>
+            </trans-unit>
+            <trans-unit id="gn">
+            	<source>Guarani</source>
+            </trans-unit>
+            <trans-unit id="gu">
+            	<source>Gujarati</source>
+            </trans-unit>
+            <trans-unit id="ha">
+            	<source>Hausa</source>
+            </trans-unit>
+            <trans-unit id="he">
+            	<source>Hebrew</source>
+            </trans-unit>
+            <trans-unit id="hi">
+            	<source>Hindi</source>
+            </trans-unit>
+            <trans-unit id="hr">
+            	<source>Croatian</source>
+            </trans-unit>
+            <trans-unit id="hu">
+            	<source>Hungarian</source>
+            </trans-unit>
+            <trans-unit id="hy">
+            	<source>Armenian</source>
+            </trans-unit>
+            <trans-unit id="ia">
+            	<source>Interlingua</source>
+            </trans-unit>
+            <trans-unit id="id">
+            	<source>Indonesian</source>
+            </trans-unit>
+            <trans-unit id="ie">
+            	<source>Interlingue, Occidental</source>
+            </trans-unit>
+            <trans-unit id="ik">
+            	<source>Inupiak</source>
+            </trans-unit>
+            <trans-unit id="is">
+            	<source>Icelandic</source>
+            </trans-unit>
+            <trans-unit id="it">
+            	<source>Italian</source>
+            </trans-unit>
+            <trans-unit id="iu">
+            	<source>Inuktitut</source>
+            </trans-unit>
+            <trans-unit id="iw">
+            	<source>Hebrew</source>
+            </trans-unit>
+            <trans-unit id="ja">
+            	<source>Japanese</source>
+            </trans-unit>
+            <trans-unit id="ji">
+            	<source>Yiddish</source>
+            </trans-unit>
+            <trans-unit id="jv">
+            	<source>Javanese</source>
+            </trans-unit>
+            <trans-unit id="jw">
+            	<source>Javanese</source>
+            </trans-unit>
+            <trans-unit id="ka">
+            	<source>Georgian</source>
+            </trans-unit>
+            <trans-unit id="kk">
+            	<source>Kazakh</source>
+            </trans-unit>
+            <trans-unit id="kl">
+            	<source>Kalaallisut, Greenlandic</source>
+            </trans-unit>
+            <trans-unit id="km">
+            	<source>Khmer</source>
+            </trans-unit>
+            <trans-unit id="kn">
+            	<source>Kannada</source>
+            </trans-unit>
+            <trans-unit id="ko">
+            	<source>Korean</source>
+            </trans-unit>
+            <trans-unit id="ks">
+            	<source>Kashmiri</source>
+            </trans-unit>
+            <trans-unit id="ku">
+            	<source>Kurdish</source>
+            </trans-unit>
+            <trans-unit id="ky">
+            	<source>Kirghiz, Kyrgyz</source>
+            </trans-unit>
+            <trans-unit id="la">
+            	<source>Latin</source>
+            </trans-unit>
+            <trans-unit id="ln">
+            	<source>Lingala</source>
+            </trans-unit>
+            <trans-unit id="lo">
+            	<source>Lao</source>
+            </trans-unit>
+            <trans-unit id="lt">
+            	<source>Lithuanian</source>
+            </trans-unit>
+            <trans-unit id="lv">
+            	<source>Latvian</source>
+            </trans-unit>
+            <trans-unit id="mg">
+            	<source>Malagasy</source>
+            </trans-unit>
+            <trans-unit id="mi">
+            	<source>Maori</source>
+            </trans-unit>
+            <trans-unit id="mk">
+            	<source>Macedonian</source>
+            </trans-unit>
+            <trans-unit id="ml">
+            	<source>Malayalam</source>
+            </trans-unit>
+            <trans-unit id="mn">
+            	<source>Mongolian</source>
+            </trans-unit>
+            <trans-unit id="mo">
+            	<source>Moldavian</source>
+            </trans-unit>
+            <trans-unit id="mr">
+            	<source>Marathi</source>
+            </trans-unit>
+            <trans-unit id="ms">
+            	<source>Malay</source>
+            </trans-unit>
+            <trans-unit id="mt">
+            	<source>Maltese</source>
+            </trans-unit>
+            <trans-unit id="my">
+            	<source>Burmese</source>
+            </trans-unit>
+            <trans-unit id="na">
+            	<source>Nauru</source>
+            </trans-unit>
+            <trans-unit id="ne">
+            	<source>Nepali</source>
+            </trans-unit>
+            <trans-unit id="nl">
+            	<source>Dutch</source>
+            </trans-unit>
+            <trans-unit id="no">
+            	<source>Norwegian</source>
+            </trans-unit>
+            <trans-unit id="oc">
+            	<source>Occitan</source>
+            </trans-unit>
+            <trans-unit id="om">
+            	<source>Oromo</source>
+            </trans-unit>
+            <trans-unit id="or">
+            	<source>Oriya</source>
+            </trans-unit>
+            <trans-unit id="pa">
+            	<source>Panjabi</source>
+            </trans-unit>
+            <trans-unit id="pl">
+            	<source>Polish</source>
+            </trans-unit>
+            <trans-unit id="ps">
+            	<source>Pushto</source>
+            </trans-unit>
+            <trans-unit id="pt">
+            	<source>Portuguese</source>
+            </trans-unit>
+            <trans-unit id="qu">
+            	<source>Quechua</source>
+            </trans-unit>
+            <trans-unit id="rm">
+            	<source>Romansh</source>
+            </trans-unit>
+            <trans-unit id="rn">
+            	<source>Rundi</source>
+            </trans-unit>
+            <trans-unit id="ro">
+            	<source>Romanian</source>
+            </trans-unit>
+            <trans-unit id="ru">
+            	<source>Russian</source>
+            </trans-unit>
+            <trans-unit id="rw">
+            	<source>Kinyarwanda</source>
+            </trans-unit>
+            <trans-unit id="sa">
+            	<source>Sanskrit</source>
+            </trans-unit>
+            <trans-unit id="sd">
+            	<source>Sindhi</source>
+            </trans-unit>
+            <trans-unit id="sg">
+            	<source>Sango</source>
+            </trans-unit>
+            <trans-unit id="sh">
+            	<source>Serbo-Croatian</source>
+            </trans-unit>
+            <trans-unit id="si">
+            	<source>Sinhalese</source>
+            </trans-unit>
+            <trans-unit id="sk">
+            	<source>Slovak</source>
+            </trans-unit>
+            <trans-unit id="sl">
+            	<source>Slovenian</source>
+            </trans-unit>
+            <trans-unit id="sm">
+            	<source>Samoan</source>
+            </trans-unit>
+            <trans-unit id="sn">
+            	<source>Shona</source>
+            </trans-unit>
+            <trans-unit id="so">
+            	<source>Somali</source>
+            </trans-unit>
+            <trans-unit id="sq">
+            	<source>Albanian</source>
+            </trans-unit>
+            <trans-unit id="sr">
+            	<source>Serbian</source>
+            </trans-unit>
+            <trans-unit id="ss">
+            	<source>Swati</source>
+            </trans-unit>
+            <trans-unit id="st">
+            	<source>Southern Sotho</source>
+            </trans-unit>
+            <trans-unit id="su">
+            	<source>Sundanese</source>
+            </trans-unit>
+            <trans-unit id="sv">
+            	<source>Swedish</source>
+            </trans-unit>
+            <trans-unit id="sw">
+            	<source>Swahili</source>
+            </trans-unit>
+            <trans-unit id="ta">
+            	<source>Tamil</source>
+            </trans-unit>
+            <trans-unit id="te">
+            	<source>Telugu</source>
+            </trans-unit>
+            <trans-unit id="tg">
+            	<source>Tajik</source>
+            </trans-unit>
+            <trans-unit id="th">
+            	<source>Thai</source>
+            </trans-unit>
+            <trans-unit id="ti">
+            	<source>Tigrinya</source>
+            </trans-unit>
+            <trans-unit id="tk">
+            	<source>Turkmen</source>
+            </trans-unit>
+            <trans-unit id="tl">
+            	<source>Tagalog</source>
+            </trans-unit>
+            <trans-unit id="tn">
+            	<source>Tswana</source>
+            </trans-unit>
+            <trans-unit id="to">
+            	<source>Tonga</source>
+            </trans-unit>
+            <trans-unit id="tr">
+            	<source>Turkish</source>
+            </trans-unit>
+            <trans-unit id="ts">
+            	<source>Tsonga</source>
+            </trans-unit>
+            <trans-unit id="tt">
+            	<source>Tatar</source>
+            </trans-unit>
+            <trans-unit id="tw">
+            	<source>Twi</source>
+            </trans-unit>
+            <trans-unit id="ug">
+            	<source>Uighur</source>
+            </trans-unit>
+            <trans-unit id="uk">
+            	<source>Ukrainian</source>
+            </trans-unit>
+            <trans-unit id="ur">
+            	<source>Urdu</source>
+            </trans-unit>
+            <trans-unit id="uz">
+            	<source>Uzbek</source>
+            </trans-unit>
+            <trans-unit id="vi">
+            	<source>Vietnamese</source>
+            </trans-unit>
+            <trans-unit id="vo">
+            	<source>Volapük</source>
+            </trans-unit>
+            <trans-unit id="wo">
+            	<source>Wolof</source>
+            </trans-unit>
+            <trans-unit id="xh">
+            	<source>Xhosa</source>
+            </trans-unit>
+            <trans-unit id="yi">
+            	<source>Yiddish</source>
+            </trans-unit>
+            <trans-unit id="yo">
+            	<source>Yoruba</source>
+            </trans-unit>
+            <trans-unit id="za">
+            	<source>Zhuang</source>
+            </trans-unit>
+            <trans-unit id="zh">
+            	<source>Chinese</source>
+            </trans-unit>
+            <trans-unit id="zu">
+            	<source>Zulu</source>
+            </trans-unit>
+		</body>
+	</file>
+</xliff>
