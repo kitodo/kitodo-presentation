@@ -30,7 +30,7 @@ class ListViewController extends AbstractController
      * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
      * @access public
@@ -39,7 +39,7 @@ class ListViewController extends AbstractController
      * 
      * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
     {
         $this->collectionRepository = $collectionRepository;
     }
@@ -48,7 +48,7 @@ class ListViewController extends AbstractController
      * @access protected
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
      * @access public
@@ -57,7 +57,7 @@ class ListViewController extends AbstractController
      *
      * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
     {
         $this->metadataRepository = $metadataRepository;
     }
@@ -75,7 +75,7 @@ class ListViewController extends AbstractController
      *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         $this->searchParams = $this->getParametersSafely('searchParameter');
 

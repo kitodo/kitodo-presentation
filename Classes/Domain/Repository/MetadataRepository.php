@@ -33,9 +33,9 @@ class MetadataRepository extends Repository
      *
      * @param array $settings
      *
-     * @return array|QueryResultInterface
+     * @return QueryResultInterface
      */
-    public function findBySettings($settings = [])
+    public function findBySettings(array $settings = []): QueryResultInterface
     {
         $query = $this->createQuery();
 

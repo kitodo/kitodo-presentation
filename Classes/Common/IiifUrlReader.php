@@ -31,7 +31,7 @@ class IiifUrlReader implements UrlReaderInterface
      * @access protected
      * @var IiifUrlReader Singleton instance of the class
      */
-    protected static $instance;
+    protected static IiifUrlReader $instance;
 
     /**
      * @see UrlReaderInterface::getContent()
@@ -55,7 +55,7 @@ class IiifUrlReader implements UrlReaderInterface
      *
      * @return IiifUrlReader
      */
-    public static function getInstance()
+    public static function getInstance(): IiifUrlReader
     {
         if (!isset(self::$instance)) {
             self::$instance = new IiifUrlReader();

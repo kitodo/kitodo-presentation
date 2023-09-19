@@ -42,7 +42,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @return ExpressionFunction[] An array of Function instances
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             $this->getDocumentTypeFunction(),
@@ -55,14 +55,14 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * @var Document
      * @access protected
      */
-    protected $document;
+    protected Document $document;
 
     /**
      * @var ConfigurationManager
      */
     protected $configurationManager;
 
-    public function injectConfigurationManager(ConfigurationManager $configurationManager)
+    public function injectConfigurationManager(ConfigurationManager $configurationManager): void
     {
         $this->configurationManager = $configurationManager;
     }
@@ -75,7 +75,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * @param DocumentRepository $documentRepository
      */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
         $this->documentRepository = $documentRepository;
     }
@@ -88,7 +88,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @return void
      */
-    protected function initializeRepositories($storagePid)
+    protected function initializeRepositories(int $storagePid): void
     {
         $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
@@ -160,7 +160,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @return void
      */
-    protected function loadDocument($requestData, int $pid)
+    protected function loadDocument(array $requestData, int $pid): void
     {
         // Try to get document format from database
         if (!empty($requestData['id'])) {

@@ -46,7 +46,7 @@ class MetadataWrapVariableViewHelper extends AbstractViewHelper
      *
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('name', 'string', 'Name of variable to create', true);
     }
@@ -66,7 +66,7 @@ class MetadataWrapVariableViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): void {
         $parser = GeneralUtility::makeInstance(TypoScriptParser::class);
         $parser->parse($renderChildrenClosure());
         $wrap = [

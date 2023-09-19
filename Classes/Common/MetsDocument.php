@@ -81,19 +81,19 @@ final class MetsDocument extends AbstractDocument
      *
      * @see __sleep() / __wakeup()
      */
-    protected $asXML = '';
+    protected string $asXML = '';
 
     /**
      * @access protected
      * @var array This maps the ID of each amdSec to the IDs of its children (techMD etc.). When an ADMID references an amdSec instead of techMD etc., this is used to iterate the child elements.
      */
-    protected $amdSecChildIds = [];
+    protected array $amdSecChildIds = [];
 
     /**
      * @access protected
      * @var array Associative array of METS metadata sections indexed by their IDs.
      */
-    protected $mdSec = [];
+    protected array $mdSec = [];
 
     /**
      * @access protected
@@ -101,13 +101,13 @@ final class MetsDocument extends AbstractDocument
      *
      * @see MetsDocument::$mdSec
      */
-    protected $mdSecLoaded = false;
+    protected bool $mdSecLoaded = false;
 
     /**
      * @access protected
      * @var array Subset of $mdSec storing only the dmdSec entries; kept for compatibility.
      */
-    protected $dmdSec = [];
+    protected array $dmdSec = [];
 
     /**
      * @access protected
@@ -115,7 +115,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @see _getFileGrps()
      */
-    protected $fileGrps = [];
+    protected array $fileGrps = [];
 
     /**
      * @access protected
@@ -123,19 +123,19 @@ final class MetsDocument extends AbstractDocument
      *
      * @see $fileGrps
      */
-    protected $fileGrpsLoaded = false;
+    protected bool $fileGrpsLoaded = false;
 
     /**
      * @access protected
      * @var \SimpleXMLElement This holds the XML file's METS part as \SimpleXMLElement object
      */
-    protected $mets;
+    protected \SimpleXMLElement $mets;
 
     /**
      * @access protected
-     * @var string|null URL of the parent document (determined via mptr element), or empty string if none is available
+     * @var string URL of the parent document (determined via mptr element), or empty string if none is available
      */
-    protected $parentHref;
+    protected string $parentHref = "";
 
     /**
      * This adds metadata from METS structural map to metadata array.
@@ -147,7 +147,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return void
      */
-    public function addMetadataFromMets(&$metadata, $id)
+    public function addMetadataFromMets(array &$metadata, string $id): void
     {
         $details = $this->getLogicalStructure($id);
         if (!empty($details)) {
@@ -160,7 +160,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::establishRecordId()
      */
-    protected function establishRecordId($pid)
+    protected function establishRecordId(int $pid): void
     {
         // Check for METS object @ID.
         if (!empty($this->mets['OBJID'])) {
@@ -179,7 +179,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getDownloadLocation()
      */
-    public function getDownloadLocation($id)
+    public function getDownloadLocation(string $id): string
     {
         $file = $this->getFileInfo($id);
         if ($file['mimeType'] === 'application/vnd.kitodo.iiif') {
@@ -222,7 +222,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getFileLocation()
      */
-    public function getFileLocation($id)
+    public function getFileLocation(string $id): string
     {
         $location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/mets:FLocat[@LOCTYPE="URL"]');
         if (
@@ -239,7 +239,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getFileMimeType()
      */
-    public function getFileMimeType($id)
+    public function getFileMimeType(string $id): string
     {
         $mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/@MIMETYPE');
         if (
@@ -256,7 +256,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getLogicalStructure()
      */
-    public function getLogicalStructure($id, $recursive = false)
+    public function getLogicalStructure(string $id, bool $recursive = false): array
     {
         $details = [];
         // Is the requested logical unit already loaded?
@@ -297,7 +297,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
-    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, $recursive = false)
+    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, bool $recursive = false): array
     {
         // Get attributes.
         foreach ($structure->attributes() as $attribute => $value) {
@@ -404,7 +404,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getMetadata()
      */
-    public function getMetadata($id, $cPid = 0)
+    public function getMetadata(string $id, int $cPid = 0): array
     {
         // Make sure $cPid is a non-negative integer.
         $cPid = max(intval($cPid), 0);
@@ -635,7 +635,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array
      */
-    protected function getMetadataIds($id)
+    protected function getMetadataIds(string $id): array
     {
         // Load amdSecChildIds concordance
         $this->_getMdSec();
@@ -682,7 +682,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getFullText()
      */
-    public function getFullText($id)
+    public function getFullText(string $id): string
     {
         $fullText = '';
 
@@ -697,7 +697,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getStructureDepth()
      */
-    public function getStructureDepth($logId)
+    public function getStructureDepth(string $logId)
     {
         $ancestors = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*');
         if (!empty($ancestors)) {
@@ -710,7 +710,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::init()
      */
-    protected function init($location)
+    protected function init(string $location): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
         // Get METS node from XML file.
@@ -734,7 +734,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::loadLocation()
      */
-    protected function loadLocation($location)
+    protected function loadLocation(string $location): bool
     {
         $fileResource = Helper::getUrl($location);
         if ($fileResource !== false) {
@@ -752,7 +752,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::ensureHasFulltextIsSet()
      */
-    protected function ensureHasFulltextIsSet()
+    protected function ensureHasFulltextIsSet(): void
     {
         // Are the fileGrps already loaded?
         if (!$this->fileGrpsLoaded) {
@@ -763,7 +763,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::setPreloadedDocument()
      */
-    protected function setPreloadedDocument($preloadedDocument)
+    protected function setPreloadedDocument($preloadedDocument): bool
     {
 
         if ($preloadedDocument instanceof \SimpleXMLElement) {
@@ -776,7 +776,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getDocument()
      */
-    protected function getDocument()
+    protected function getDocument(): \SimpleXMLElement
     {
         return $this->mets;
     }
@@ -788,7 +788,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of metadata sections with their IDs as array key
      */
-    protected function _getMdSec()
+    protected function _getMdSec(): array
     {
         if (!$this->mdSecLoaded) {
             $this->loadFormats();
@@ -838,7 +838,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of metadata sections with their IDs as array key
      */
-    protected function _getDmdSec()
+    protected function _getDmdSec(): array
     {
         $this->_getMdSec();
         return $this->dmdSec;
@@ -853,7 +853,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array|null The processed metadata section
      */
-    protected function processMdSec($element)
+    protected function processMdSec(\SimpleXMLElement $element): ?array
     {
         $mdId = (string) $element->attributes()->ID;
         if (empty($mdId)) {
@@ -894,7 +894,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of file use groups with file IDs
      */
-    protected function _getFileGrps()
+    protected function _getFileGrps(): array
     {
         if (!$this->fileGrpsLoaded) {
             // Get configured USE attributes.
@@ -955,7 +955,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::prepareMetadataArray()
      */
-    protected function prepareMetadataArray($cPid)
+    protected function prepareMetadataArray(int $cPid): void
     {
         $ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID');
         // Get all logical structure nodes with metadata.
@@ -974,7 +974,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return \SimpleXMLElement The XML's METS part as \SimpleXMLElement object
      */
-    protected function _getMets()
+    protected function _getMets(): \SimpleXMLElement
     {
         return $this->mets;
     }
@@ -982,7 +982,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::_getPhysicalStructure()
      */
-    protected function _getPhysicalStructure()
+    protected function _getPhysicalStructure(): array
     {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
@@ -1044,7 +1044,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::_getSmLinks()
      */
-    protected function _getSmLinks()
+    protected function _getSmLinks(): array
     {
         if (!$this->smLinksLoaded) {
             $smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
@@ -1062,7 +1062,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::_getThumbnail()
      */
-    protected function _getThumbnail($forceReload = false)
+    protected function _getThumbnail(bool $forceReload = false): string
     {
         if (
             !$this->thumbnailLoaded
@@ -1141,7 +1141,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::_getToplevelId()
      */
-    protected function _getToplevelId()
+    protected function _getToplevelId(): string
     {
         if (empty($this->toplevelId)) {
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
@@ -1173,11 +1173,9 @@ final class MetsDocument extends AbstractDocument
      *
      * @return string
      */
-    public function _getParentHref()
+    public function _getParentHref(): string
     {
-        if ($this->parentHref === null) {
-            $this->parentHref = '';
-
+        if (empty($this->parentHref)) {
             // Get the closest ancestor of the current document which has a MPTR child.
             $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->toplevelId . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
             if (!empty($parentMptr)) {
@@ -1196,7 +1194,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Properties to be serialized
      */
-    public function __sleep()
+    public function __sleep(): array
     {
         // \SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
         $this->asXML = $this->xml->asXML();
@@ -1210,7 +1208,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return string String representing the METS object
      */
-    public function __toString()
+    public function __toString(): string
     {
         $xml = new \DOMDocument('1.0', 'utf-8');
         $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), true));
@@ -1226,7 +1224,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return void
      */
-    public function __wakeup()
+    public function __wakeup(): void
     {
         $xml = Helper::getXmlFileAsString($this->asXML);
         if ($xml !== false) {

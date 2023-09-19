@@ -33,7 +33,7 @@ class TokenRepository extends Repository
      *
      * @return void
      */
-    public function deleteExpiredTokens($expireTime)
+    public function deleteExpiredTokens(int $expireTime): void
     {
         $query = $this->createQuery();
 

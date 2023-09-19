@@ -38,7 +38,7 @@ class StdWrapViewHelper extends AbstractViewHelper
      *
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('wrap', 'string', 'The wrap information', true);
@@ -52,7 +52,7 @@ class StdWrapViewHelper extends AbstractViewHelper
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         $wrap = $this->arguments['wrap'];
         $data = $this->arguments['data'] ?? [];

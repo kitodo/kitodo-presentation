@@ -32,7 +32,7 @@ class Client
      * @access protected
      * @var Logger This holds the logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
      * The VIAF API endpoint
@@ -40,19 +40,19 @@ class Client
      * @access private
      * @var string The VIAF API endpoint
      **/
-    private $endpoint = 'viaf.xml';
+    private string $endpoint = 'viaf.xml';
 
     /**
      * @access private
      * @var string The VIAF URL for the profile
      **/
-    private $viafUrl = null;
+    private string $viafUrl;
 
     /**
      * @access private
      * @var RequestFactoryInterface The request object
      **/
-    private $requestFactory = null;
+    private RequestFactoryInterface $requestFactory;
 
     /**
      * Constructs a new instance
@@ -64,7 +64,7 @@ class Client
      *
      * @return void
      **/
-    public function __construct($viaf, RequestFactory $requestFactory)
+    public function __construct(string $viaf, RequestFactory $requestFactory)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->viafUrl = 'http://viaf.org/viaf/' . $viaf;
@@ -80,7 +80,7 @@ class Client
      *
      * @return void
      */
-    public function setEndpoint($endpoint) {
+    public function setEndpoint(string $endpoint): void {
         $this->endpoint = $endpoint;
     }
 
@@ -110,7 +110,7 @@ class Client
      *
      * @return string
      **/
-    private function getApiEndpoint()
+    private  function getApiEndpoint(): string
     {
         return $this->viafUrl . '/' . $this->endpoint;
     }

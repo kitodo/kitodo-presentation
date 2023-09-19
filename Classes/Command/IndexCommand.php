@@ -41,7 +41,7 @@ class IndexCommand extends BaseCommand
      *
      * @return void
      */
-    public function configure()
+    public function configure(): void
     {
         $this
             ->setDescription('Index single document into database and Solr.')
@@ -88,7 +88,7 @@ class IndexCommand extends BaseCommand
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 

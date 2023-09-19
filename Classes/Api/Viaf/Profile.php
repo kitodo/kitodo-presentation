@@ -44,7 +44,7 @@ class Profile
      * @access private
      * @var \SimpleXmlElement|false The raw VIAF profile or false if not found
      **/
-    private $raw = null;
+    private $raw;
 
     /**
      * Constructs client instance
@@ -55,7 +55,7 @@ class Profile
      *
      * @return void
      **/
-    public function __construct($viaf)
+    public function __construct(string $viaf)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->client = new Client($viaf, GeneralUtility::makeInstance(RequestFactory::class));
@@ -128,7 +128,7 @@ class Profile
      *
      * @return void
      **/
-    private function getRaw()
+    private function getRaw(): void
     {
         $data = $this->client->getData();
         if (!isset($this->raw) && $data != false) {

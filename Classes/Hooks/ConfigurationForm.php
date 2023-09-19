@@ -34,7 +34,7 @@ class ConfigurationForm
      *
      * @return string Message informing the user of success or failure
      */
-    public function checkSolrConnection()
+    public function checkSolrConnection(): string
     {
         $solr = Solr::getInstance();
         if ($solr->ready) {

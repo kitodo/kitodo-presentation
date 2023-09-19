@@ -46,48 +46,48 @@ class BaseCommand extends Command
      * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
      * @access protected
      * @var DocumentRepository
      */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
     /**
      * @access protected
      * @var LibraryRepository
      */
-    protected $libraryRepository;
+    protected LibraryRepository $libraryRepository;
 
     /**
      * @access protected
      * @var StructureRepository
      */
-    protected $structureRepository;
+    protected StructureRepository $structureRepository;
 
     /**
      * @access protected
      * @var int
      */
-    protected $storagePid;
+    protected int $storagePid;
 
     /**
      * @access protected
      * @var Library
      */
-    protected $owner;
+    protected Library $owner;
 
     /**
      * @access protected
      * @var array
      */
-    protected $extConf;
+    protected array $extConf;
 
     /**
      * @var ConfigurationManager
      */
-    protected $configurationManager;
+    protected ConfigurationManager $configurationManager;
 
     public function __construct(CollectionRepository $collectionRepository,
                                 DocumentRepository   $documentRepository,
@@ -115,7 +115,7 @@ class BaseCommand extends Command
      *
      * @return bool
      */
-    protected function initializeRepositories($storagePid)
+    protected function initializeRepositories(int $storagePid): bool
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
             $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -191,11 +191,11 @@ class BaseCommand extends Command
      *
      * @access protected
      *
-     * @param int|string $doc The document uid from DB OR the location of a METS document.
+     * @param Document $doc The document instance
      *
-     * @return bool true on success
+     * @return bool true on success, false otherwise
      */
-    protected function saveToDatabase(Document $document)
+    protected function saveToDatabase(Document $document): bool
     {
         $doc = $document->getCurrentDocument();
         if ($doc === null) {
@@ -316,7 +316,7 @@ class BaseCommand extends Command
      *
      * @return int The parent document's id.
      */
-    protected function getParentDocumentUidForSaving(Document $document)
+    protected function getParentDocumentUidForSaving(Document $document): int
     {
         $doc = $document->getCurrentDocument();
 

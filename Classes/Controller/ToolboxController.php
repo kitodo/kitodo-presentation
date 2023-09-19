@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -28,9 +29,9 @@ class ToolboxController extends AbstractController
 
     /**
      * @access private
-     * @var \Kitodo\Dlf\Common\AbstractDocument This holds the current document
+     * @var AbstractDocument This holds the current document
      */
-    private $doc;
+    private AbstractDocument $doc;
 
     /**
      * The main method of the plugin
@@ -39,7 +40,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         // Load current document.
         $this->loadDocument();
@@ -61,7 +62,8 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderTool() {
+    private function renderTool(): void
+    {
         if (!empty($this->settings['tool'])) {
             switch ($this->settings['tool']) {
                 case 'tx_dlf_annotationtool':
@@ -107,7 +109,8 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderToolByName(string $tool) {
+    private function renderToolByName(string $tool): void
+    {
         $this->$tool();
         $this->view->assign($tool, true);
     }
@@ -119,7 +122,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderAnnotationTool()
+    private function renderAnnotationTool(): void
     {
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
@@ -146,7 +149,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderFulltextDownloadTool()
+    private function renderFulltextDownloadTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -169,7 +172,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderFulltextTool()
+    private function renderFulltextTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -196,7 +199,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderImageDownloadTool()
+    private function renderImageDownloadTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -226,7 +229,7 @@ class ToolboxController extends AbstractController
      *
      * @return array Array of image links and image format information
      */
-    private function getImage($page)
+    private function getImage(int $page): array
     {
         $image = [];
         // Get @USE value of METS fileGrp.
@@ -263,7 +266,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderImageManipulationTool()
+    private function renderImageManipulationTool(): void
     {
         // Set parent element for initialization.
         $parentContainer = !empty($this->settings['parentContainer']) ? $this->settings['parentContainer'] : '.tx-dlf-imagemanipulationtool';
@@ -279,7 +282,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderPdfDownloadTool()
+    private function renderPdfDownloadTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -304,7 +307,7 @@ class ToolboxController extends AbstractController
      *
      * @return array Link to downloadable page
      */
-    private function getPageLink()
+    private function getPageLink(): array
     {
         $firstPageLink = '';
         $secondPageLink = '';
@@ -351,7 +354,7 @@ class ToolboxController extends AbstractController
      *
      * @return string Link to downloadable work
      */
-    private function getWorkLink()
+    private function getWorkLink(): string
     {
         $workLink = '';
         $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
@@ -382,7 +385,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderSearchInDocumentTool()
+    private function renderSearchInDocumentTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -425,7 +428,7 @@ class ToolboxController extends AbstractController
      *
      * @return string with current document id
      */
-    private function getCurrentDocumentId()
+    private function getCurrentDocumentId(): string
     {
         $id = $this->document->getUid();
 
@@ -461,7 +464,7 @@ class ToolboxController extends AbstractController
      *
      * @return string with encrypted core name
      */
-    private function getEncryptedCoreName()
+    private function getEncryptedCoreName(): string
     {
         // Get core name.
         $name = Helper::getIndexNameFromUid($this->settings['solrcore'], 'tx_dlf_solrcores');
@@ -479,7 +482,8 @@ class ToolboxController extends AbstractController
      *
      * @return bool true if empty, false otherwise
      */
-    private function isFullTextEmpty() {
+    private function isFullTextEmpty(): bool
+    {
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             $fullTextFile = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$this->requestData['page']]]['files'][$fileGrpFulltext];

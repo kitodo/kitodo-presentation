@@ -37,7 +37,7 @@ class AudioVideoMD implements MetadataInterface
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata)
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata): void
     {
         $xml->registerXPathNamespace('audiomd', 'http://www.loc.gov/audioMD/');
         $xml->registerXPathNamespace('videomd', 'http://www.loc.gov/videoMD/');

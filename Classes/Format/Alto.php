@@ -33,7 +33,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @return string The raw unformatted fulltext
      */
-    public function getRawText(\SimpleXMLElement $xml)
+    public function getRawText(\SimpleXMLElement $xml): string
     {
         $rawText = '';
         $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
@@ -66,7 +66,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @return string The unformatted fulltext in MiniOCR format
      */
-    public function getTextAsMiniOcr(\SimpleXMLElement $xml)
+    public function getTextAsMiniOcr(\SimpleXMLElement $xml): string
     {
         $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
 
@@ -111,7 +111,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @return string The parsed word extracted from attribute
      */
-    private function getWord($attributes)
+    private function getWord(\SimpleXMLElement $attributes): string
     {
         if (!empty($attributes['SUBS_CONTENT'])) {
             if ($attributes['SUBS_TYPE'] == 'HypPart1') {
@@ -131,7 +131,7 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      *
      * @return string The parsed word coordinates extracted from attribute
      */
-    private function getCoordinates($attributes)
+    private function getCoordinates(\SimpleXMLElement $attributes): string
     {
         return (string) $attributes['HPOS'] . ' ' . (string) $attributes['VPOS'] . ' ' . (string) $attributes['WIDTH'] . ' ' . (string) $attributes['HEIGHT'];
     }
