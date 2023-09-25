@@ -10,14 +10,14 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Common;
+namespace Kitodo\Dlf\Common\Solr;
 
+use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -116,7 +116,7 @@ class Solr implements LoggerAwareInterface
     /**
      * This holds the singleton search objects with their core as array key
      *
-     * @var array (\Kitodo\Dlf\Common\Solr)
+     * @var array (\Kitodo\Dlf\Common\Solr\Solr)
      * @access protected
      */
     protected static $registry = [];
@@ -178,7 +178,7 @@ class Solr implements LoggerAwareInterface
     }
 
     /**
-     * Escape all special characters in a query string
+     * Escape special characters in a query string
      *
      * @access public
      *
@@ -188,16 +188,10 @@ class Solr implements LoggerAwareInterface
      */
     public static function escapeQuery($query)
     {
-        $helper = GeneralUtility::makeInstance(\Solarium\Core\Query\Helper::class);
-        // Escape query phrase or term.
-        if (preg_match('/^".*"$/', $query)) {
-            return $helper->escapePhrase(trim($query, '"'));
-        } else {
-            // Using a modified escape function here to retain whitespace, '*' and '?' for search truncation.
-            // @see https://github.com/solariumphp/solarium/blob/5.x/src/Core/Query/Helper.php#L70 for reference
-            /* return $helper->escapeTerm($query); */
-            return preg_replace('/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|:|\/|\\\)/', '\\\$1', $query);
-        }
+        // Escape query by disallowing range and field operators
+        // Permit operators: wildcard, boolean, fuzzy, proximity, boost, grouping
+        // https://solr.apache.org/guide/solr/latest/query-guide/standard-query-parser.html
+        return preg_replace('/(\{|}|\[|]|:|\/|\\\)/', '\\\$1', $query);
     }
 
     /**
@@ -237,7 +231,7 @@ class Solr implements LoggerAwareInterface
                 )
                 ->execute();
 
-            while ($resArray = $result->fetch()) {
+            while ($resArray = $result->fetchAssociative()) {
                 $fields[] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . ($resArray['index_stored'] ? 's' : 'u') . 'i';
             }
 
@@ -304,7 +298,7 @@ class Solr implements LoggerAwareInterface
      *
      * @param mixed $core: Name or UID of the core to load or null to get core admin endpoint
      *
-     * @return \Kitodo\Dlf\Common\Solr Instance of this class
+     * @return \Kitodo\Dlf\Common\Solr\Solr Instance of this class
      */
     public static function getInstance($core = null)
     {

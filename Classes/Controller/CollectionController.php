@@ -11,11 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Solr;
-use Kitodo\Dlf\Domain\Model\Collection;
-use Kitodo\Dlf\Domain\Model\Document;
-use Kitodo\Dlf\Domain\Model\Metadata;
+use Kitodo\Dlf\Common\Solr\Solr;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -164,9 +160,9 @@ class CollectionController extends AbstractController
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
-        $widgetPage = $this->getParametersSafely('@widget_0');
-        if (empty($widgetPage)) {
-            $widgetPage = ['currentPage' => 1];
+        $currentPage = $this->getParametersSafely('page');
+        if (empty($currentPage)) {
+            $currentPage = 1;
         }
 
         $searchParams['collection'] = $collection;
@@ -175,7 +171,7 @@ class CollectionController extends AbstractController
             $this->redirect('main', 'ListView', null,
                 [
                     'searchParameter' => $searchParams,
-                    'widgetPage' => $widgetPage
+                    'page' => $currentPage
                 ], $this->settings['targetPid']
             );
         }
@@ -192,7 +188,7 @@ class CollectionController extends AbstractController
         $this->view->assign('viewData', $this->viewData);
         $this->view->assign('documents', $solrResults);
         $this->view->assign('collection', $collection);
-        $this->view->assign('widgetPage', $widgetPage);
+        $this->view->assign('page', $currentPage);
         $this->view->assign('lastSearch', $searchParams);
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);

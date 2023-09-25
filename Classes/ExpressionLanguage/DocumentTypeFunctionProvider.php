@@ -62,6 +62,21 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     protected $documentRepository;
 
     /**
+     * @var ConfigurationManager
+     */
+    protected $configurationManager;
+    
+    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    {
+        $this->documentRepository = $documentRepository;
+    }
+
+    public function injectConfigurationManager(ConfigurationManager $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
+
+    /**
      * Initialize the extbase repositories
      *
      * @param int $storagePid The storage pid
@@ -70,17 +85,10 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     protected function initializeRepositories($storagePid)
     {
-        Helper::polyfillExtbaseClassesForTYPO3v9();
-
-        // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get(ConfigurationManager::class);
-        $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $frameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-        $configurationManager->setConfiguration($frameworkConfiguration);
-
-        $this->documentRepository = $objectManager->get(DocumentRepository::class);
+        $this->configurationManager->setConfiguration($frameworkConfiguration);
     }
 
     /**
@@ -112,7 +120,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
-                if ($this->document === null) {
+                if ($this->document === null || $this->document->getDoc() === null) {
                     return $type;
                 }
                 // Set PID for metadata definitions.
@@ -196,7 +204,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
             }
         } else {
-            $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
+            $this->logger->error('Empty UID or invalid PID "' . $pid . '" for document loading');
         }
     }
 }

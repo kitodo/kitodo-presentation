@@ -14,14 +14,15 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Solr;
-use Kitodo\Dlf\Common\SolrSearch;
+use Kitodo\Dlf\Common\Solr\SolrSearch;
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
 class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
@@ -46,7 +47,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param array $parameters
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOneByParameters($parameters)
     {
@@ -91,7 +92,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find the oldest document
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOldestDocument()
     {
@@ -116,7 +117,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching($query->equals('partof', $partOf));
 
         $query->setOrderings([
-            'mets_orderlabel' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+            'mets_orderlabel' => QueryInterface::ORDER_ASCENDING
         ]);
 
         return $query->execute();
@@ -128,7 +129,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $uid
      * @param array $settings
      *
-     * @return \Kitodo\Dlf\Domain\Model\Document|null
+     * @return Document|null
      */
     public function findOneByIdAndSettings($uid, $settings = [])
     {
@@ -208,7 +209,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Volumes are documents that are both
      *  a) "leaf" elements i.e. partof != 0
      *  b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
-
+     *
      * @param array $settings
      *
      * @return array
@@ -249,7 +250,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_documents');
@@ -294,7 +295,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                     )
                     ->execute()
-                    ->fetchColumn(0);
+                    ->fetchFirstColumn();
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -309,7 +310,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     Helper::whereExpression('tx_dlf_documents')
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -333,7 +334,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                     $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
                 )
                 ->execute()
-                ->fetchColumn(0);
+                ->fetchFirstColumn();
         }
 
         return ['titles' => $countTitles, 'volumes' => $countVolumes];
@@ -346,7 +347,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $pid
      * @param array $settings
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return \Doctrine\DBAL\ForwardCompatibility\Result
      */
     public function getTableOfContentsFromDb($uid, $pid, $settings)
     {
@@ -359,11 +360,12 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($settings['storagePid']);
         }
         // Check if there are any metadata to suggest.
-        $result = $queryBuilder
+        return $queryBuilder
             ->select(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents.title AS title',
                 'tx_dlf_documents.volume AS volume',
+                'tx_dlf_documents.year AS year',
                 'tx_dlf_documents.mets_label AS mets_label',
                 'tx_dlf_documents.mets_orderlabel AS mets_orderlabel',
                 'tx_dlf_structures_join.index_name AS type'
@@ -386,7 +388,6 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             ->addOrderBy('tx_dlf_documents.volume_sorting')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
             ->execute();
-        return $result;
     }
 
     /**
@@ -427,7 +428,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
         $statement = $connection->executeQuery($sql, $values, $types);
 
-        return $statement->fetch();
+        return $statement->fetchAssociative();
     }
 
     /**
@@ -509,7 +510,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
         // Process documents in a usable array structure
-        while ($resArray = $kitodoDocuments->fetch()) {
+        while ($resArray = $kitodoDocuments->fetchAssociative()) {
             $resArray['structure'] = $documentStructures[$resArray['structure']];
             $allDocuments[$resArray['uid']] = $resArray;
         }
@@ -540,11 +541,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find all documents with given collection from Solr
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|\Kitodo\Dlf\Domain\Model\Collection $collection
+     * @param QueryResult|Collection $collection
      * @param array $settings
      * @param array $searchParams
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $listedMetadata
-     * @return array
+     * @param QueryResult $listedMetadata
+     * @return SolrSearch
      */
     public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
     {

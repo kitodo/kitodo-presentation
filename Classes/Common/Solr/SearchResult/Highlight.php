@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Common\SolrSearchResult;
+namespace Kitodo\Dlf\Common\Solr\SearchResult;
 
 /**
  * Highlight class for the 'dlf' extension. It keeps highlight for found search phrase.

@@ -15,9 +15,8 @@ namespace Kitodo\Dlf\Hooks;
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use Kitodo\Dlf\Domain\Model\Document;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -150,7 +149,7 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             // Reset storing to current.
                             $fieldArray['index_stored'] = $resArray['is_listed'];
                         }
@@ -175,7 +174,7 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             // Reset indexing to current.
                             $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                         }
@@ -237,7 +236,7 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             if ($resArray['hidden']) {
                                 // Establish Solr connection.
                                 $solr = Solr::getInstance($resArray['core']);
@@ -254,7 +253,7 @@ class DataHandler implements LoggerAwareInterface
                                 $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
                                     $document->setDoc($doc);
-                                    Indexer::add($document);
+                                    Indexer::add($document, $this->getDocumentRepository());
                                 } else {
                                     $this->logger->error('Failed to re-index document with UID ' . $id);
                                 }
@@ -314,7 +313,7 @@ class DataHandler implements LoggerAwareInterface
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetch()) {
+            if ($resArray = $result->fetchAssociative()) {
                 switch ($command) {
                     case 'move':
                     case 'delete':
@@ -368,7 +367,7 @@ class DataHandler implements LoggerAwareInterface
                     ->setMaxResults(1)
                     ->execute();
 
-                if ($resArray = $result->fetch()) {
+                if ($resArray = $result->fetchAssociative()) {
                     // Establish Solr connection.
                     $solr = Solr::getInstance();
                     if ($solr->ready) {

@@ -16,15 +16,12 @@ use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
-use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Connection;
 use Phpoaipmh\Endpoint;
 use Phpoaipmh\Exception\BaseOaipmhException;
 
@@ -248,7 +245,7 @@ class HarvestCommand extends BaseCommand
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
-                Indexer::add($document);
+                Indexer::add($document, $this->documentRepository);
             }
         }
 

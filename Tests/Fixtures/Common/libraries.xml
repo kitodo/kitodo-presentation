@@ -10,7 +10,6 @@
         <sys_language_uid>0</sys_language_uid>
         <l18n_parent>0</l18n_parent>
         <l18n_diffsource>a:12:{s:5:&quot;label&quot;;N;s:10:&quot;index_name&quot;;N;s:7:&quot;website&quot;;N;s:7:&quot;contact&quot;;N;s:5:&quot;image&quot;;N;s:9:&quot;oai_label&quot;;N;s:8:&quot;oai_base&quot;;N;s:10:&quot;opac_label&quot;;N;s:9:&quot;opac_base&quot;;N;s:11:&quot;union_label&quot;;N;s:10:&quot;union_base&quot;;N;s:16:&quot;sys_language_uid&quot;;N;}</l18n_diffsource>
-        <l10n_state></l10n_state>
         <label>Default Library</label>
         <index_name>default</index_name>
         <website></website>

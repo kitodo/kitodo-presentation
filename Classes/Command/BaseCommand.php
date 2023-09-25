@@ -79,6 +79,26 @@ class BaseCommand extends Command
     protected $extConf;
 
     /**
+     * @var ConfigurationManager
+     */
+    protected $configurationManager;
+
+    public function __construct(CollectionRepository $collectionRepository,
+                                DocumentRepository   $documentRepository,
+                                LibraryRepository    $libraryRepository,
+                                StructureRepository  $structureRepository,
+                                ConfigurationManager $configurationManager)
+    {
+        parent::__construct();
+
+        $this->collectionRepository = $collectionRepository;
+        $this->documentRepository = $documentRepository;
+        $this->libraryRepository = $libraryRepository;
+        $this->structureRepository = $structureRepository;
+        $this->configurationManager = $configurationManager;
+    }
+
+    /**
      * Initialize the extbase repository based on the given storagePid.
      *
      * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependency Injection.
@@ -90,19 +110,10 @@ class BaseCommand extends Command
     protected function initializeRepositories($storagePid)
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-            $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+            $frameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-            $configurationManager->setConfiguration($frameworkConfiguration);
-
-            // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-            $this->collectionRepository = $objectManager->get(CollectionRepository::class);
-            $this->documentRepository = $objectManager->get(DocumentRepository::class);
-            $this->libraryRepository = $objectManager->get(LibraryRepository::class);
-            $this->structureRepository = $objectManager->get(StructureRepository::class);
+            $this->configurationManager->setConfiguration($frameworkConfiguration);
 
             // Get extension configuration.
             $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
@@ -156,7 +167,7 @@ class BaseCommand extends Command
             )
             ->execute();
 
-        while ($record = $result->fetch()) {
+        while ($record = $result->fetchAssociative()) {
             $solrCores[$record['index_name']] = $record['uid'];
         }
 
@@ -172,12 +183,11 @@ class BaseCommand extends Command
      */
     protected function saveToDatabase(Document $document)
     {
-        $success = false;
-
         $doc = $document->getDoc();
         if ($doc === null) {
-            return $success;
+            return false;
         }
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $doc->cPid = $this->storagePid;
 
         $metadata = $doc->getTitledata($this->storagePid);
@@ -214,6 +224,8 @@ class BaseCommand extends Command
                     $documentCollection->setDescription('');
                     // add to CollectionRepository
                     $this->collectionRepository->add($documentCollection);
+                    // persist collection to prevent duplicates
+                    $persistenceManager->persistAll();
                 }
                 // add to document
                 $document->addCollection($documentCollection);
@@ -258,9 +270,9 @@ class BaseCommand extends Command
             }
         }
 
-        // to be still (re-) implemented
-        // 'volume' => $metadata['volume'][0],
-        // 'volume_sorting' => $metadata['volume_sorting'][0],
+        // set volume data
+        $document->setVolume($metadata['volume'][0] ? : '');
+        $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
 
         // Get UID of parent document.
         if ($document->getDocumentFormat() === 'METS') {
@@ -275,12 +287,9 @@ class BaseCommand extends Command
             $this->documentRepository->update($document);
         }
 
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
-        $success = true;
-
-        return $success;
+        return true;
     }
 
     /**

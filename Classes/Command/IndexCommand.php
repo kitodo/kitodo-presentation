@@ -15,9 +15,7 @@ namespace Kitodo\Dlf\Command;
 use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Document;
-use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -198,7 +196,7 @@ class IndexCommand extends BaseCommand
             // save to database
             $this->saveToDatabase($document);
             // add to index
-            Indexer::add($document);
+            Indexer::add($document, $this->documentRepository);
         }
 
         $io->success('All done!');

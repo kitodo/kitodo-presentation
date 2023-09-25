@@ -11,6 +11,10 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use TYPO3\CMS\Core\Pagination\ArrayPaginator;
+use Kitodo\Dlf\Pagination\PageGridPagination;
+use Kitodo\Dlf\Pagination\PageGridPaginator;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -50,7 +54,23 @@ class PageGridController extends AbstractController
             $entryArray[] = $foundEntry;
         }
 
-        $this->view->assign('pageGridEntries', $entryArray);
+        // Get current page from request data because the parameter is shared between plugins
+        $currentPage = $this->requestData['page'];
+        if (empty($currentPage)) {
+            $currentPage = 1;
+        }
+
+        $itemsPerPage = $this->settings['paginate']['itemsPerPage'];
+        if (empty($itemsPerPage)) {
+            $itemsPerPage = 25;
+        }
+
+        $pageGridPaginator = new PageGridPaginator($entryArray, $currentPage, $itemsPerPage);
+        $pageGridPagination = new PageGridPagination($pageGridPaginator);
+
+        $pagination = $this->buildSimplePagination($pageGridPagination, $pageGridPaginator);
+        $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $pageGridPaginator ]);
+
         $this->view->assign('docUid', $this->requestData['id']);
     }
 

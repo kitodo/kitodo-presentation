@@ -11,8 +11,6 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -32,8 +30,7 @@ class NavigationController extends AbstractController
      */
     public function pageSelectAction(\Kitodo\Dlf\Domain\Model\PageSelectForm $pageSelectForm = NULL) {
         if ($pageSelectForm) {
-            $uriBuilder = $this->getControllerContext()->getUriBuilder();
-            $uri = $uriBuilder->reset()
+            $uri = $this->uriBuilder->reset()
                 ->setArguments(
                     [
                         'tx_dlf' => [

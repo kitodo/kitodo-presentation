@@ -12,16 +12,16 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Doc;
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 
 /**
  * Abstract controller class for most of the plugin controller.
@@ -322,5 +322,29 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     public function __construct()
     {
         $this->initialize();
+    }
+
+    /**
+     * build simple pagination
+     *
+     * @param PaginationInterface $pagination
+     * @param PaginatorInterface $paginator
+     * @return array
+     */
+    protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator)
+    {
+        $firstPage = $pagination->getFirstPageNumber();
+        $lastPage = $pagination->getLastPageNumber();
+
+        return [
+            'lastPageNumber' => $lastPage,
+            'firstPageNumber' => $firstPage,
+            'nextPageNumber' => ($pagination->getNextPageNumber()),
+            'previousPageNumber' => $pagination->getPreviousPageNumber(),
+            'startRecordNumber' => $pagination->getStartRecordNumber(),
+            'endRecordNumber' => $pagination->getEndRecordNumber(),
+            'currentPageNumber' => $paginator->getCurrentPageNumber(),
+            'pages' => range($firstPage, $lastPage)
+        ];
     }
 }

@@ -12,21 +12,19 @@
 
 namespace Kitodo\Dlf\Updates;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
-use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
-use TYPO3\CMS\Install\Updates\ChattyInterface;
-
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
+use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
+use TYPO3\CMS\Install\Updates\ChattyInterface;
 
 /**
  * Migrate reference of thumbnail image in collections record.
@@ -53,7 +51,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     /**
      * Array with table and fields to migrate
      *
-     * @var string
+     * @var array
      */
     protected $fieldsToMigrate = [
         'tx_dlf_collections' => 'thumbnail'
@@ -179,13 +177,13 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                     )
                     ->orderBy('uid')
                     ->execute()
-                    ->fetchAll();
+                    ->fetchAllAssociative();
                 if ($countOnly === true) {
                     $numResults += count($result);
                 } else {
                     $allResults[$table] = $result;
                 }
-            } catch (DBALException $e) {
+            } catch (Exception $e) {
                 throw new \RuntimeException(
                     'Database query failed. Error was: ' . $e->getPrevious()->getMessage(),
                     1511950673
@@ -268,7 +266,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                     'storage',
                     $queryBuilder->createNamedParameter($storageUid, \PDO::PARAM_INT)
                 )
-            )->execute()->fetch();
+            )->execute()->fetchAssociative();
 
             // the file exists
             if (is_array($existingFileRecord)) {

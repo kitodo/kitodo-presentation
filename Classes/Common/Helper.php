@@ -16,12 +16,17 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
+
 
 /**
  * Helper class for the 'dlf' extension
@@ -83,7 +88,7 @@ class Helper
      */
     public static function addMessage($message, $title, $severity, $session = false, $queue = 'kitodo.default.flashMessages')
     {
-        $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessage = GeneralUtility::makeInstance(
             \TYPO3\CMS\Core\Messaging\FlashMessage::class,
@@ -308,12 +313,12 @@ class Helper
             self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
-        // Generate random initialisation vector.
+        // Generate random initialization vector.
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
         $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
         // Encrypt data.
         $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
-        // Merge initialisation vector and encrypted data.
+        // Merge initialization vector and encrypted data.
         if ($encrypted !== false) {
             $encrypted = base64_encode($iv . $encrypted);
         }
@@ -421,7 +426,7 @@ class Helper
 
             $cache[$table] = [];
 
-            while ($row = $result->fetch()) {
+            while ($row = $result->fetchAssociative()) {
                 $cache[$table][$makeCacheKey($row['pid'], $row['uid'])]
                     = $cache[$table][$makeCacheKey(-1, $row['uid'])]
                     = $row['index_name'];
@@ -452,9 +457,9 @@ class Helper
         // Analyze code and set appropriate ISO table.
         $isoCode = strtolower(trim($code));
         if (preg_match('/^[a-z]{3}$/', $isoCode)) {
-            $file = 'EXT:dlf/Resources/Private/Data/iso-639-2b.xml';
+            $file = 'EXT:dlf/Resources/Private/Data/iso-639-2b.xlf';
         } elseif (preg_match('/^[a-z]{2}$/', $isoCode)) {
-            $file = 'EXT:dlf/Resources/Private/Data/iso-639-1.xml';
+            $file = 'EXT:dlf/Resources/Private/Data/iso-639-1.xlf';
         } else {
             // No ISO code, return unchanged.
             return $code;
@@ -499,7 +504,7 @@ class Helper
             ->where($where)
             ->execute();
 
-        $allStructures = $kitodoStructures->fetchAll();
+        $allStructures = $kitodoStructures->fetchAllAssociative();
 
         // make lookup-table indexName -> uid
         $allStructures = array_column($allStructures, 'indexName', 'uid');
@@ -613,7 +618,7 @@ class Helper
 
     /**
      * Merges two arrays recursively and actually returns the modified array.
-     * @see \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule()
+     * @see ArrayUtility::mergeRecursiveWithOverrule()
      *
      * @access public
      *
@@ -627,7 +632,7 @@ class Helper
      */
     public static function mergeRecursiveWithOverrule(array $original, array $overrule, $addKeys = true, $includeEmptyValues = true, $enableUnsetFeature = true)
     {
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
+        ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
         return $original;
     }
 
@@ -642,7 +647,7 @@ class Helper
      */
     public static function renderFlashMessages($queue = 'kitodo.default.flashMessages')
     {
-        $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
         $content = GeneralUtility::makeInstance(\Kitodo\Dlf\Common\KitodoFlashMessageRenderer::class)
@@ -671,13 +676,14 @@ class Helper
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $index_name;
         }
-        /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
-        $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+        /** @var PageRepository $pageRepository */
+        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
+        $languageContentId = $languageAspect->getContentId();
 
         // Check if "index_name" is an UID.
-        if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($index_name)) {
+        if (MathUtility::canBeInterpretedAsInteger($index_name)) {
             $index_name = self::getIndexNameFromUid($index_name, $table, $pid);
         }
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
@@ -702,42 +708,40 @@ class Helper
             ->setMaxResults(1)
             ->execute();
 
-        $allResults = $result->fetchAll();
+        $row = $result->fetchAssociative();
 
-        if (count($allResults) == 1) {
+        if ($row) {
             // Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
-            $resArray = $allResults[0];
-
             $result = $queryBuilder
                 ->select($table . '.index_name AS index_name')
                 ->from($table)
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
-                    $queryBuilder->expr()->eq($table . '.uid', $resArray['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId())),
+                    $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId)),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
+            $row = $result->fetchAssociative();
 
-            if (count($allResults) == 1) {
+            if ($row) {
                 // If there is an translated content element, overwrite the received $index_name.
-                $index_name = $allResults[0]['index_name'];
+                $index_name = $row['index_name'];
             }
         }
 
         // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
+        if (empty($labels[$table][$pid][$languageContentId][$index_name])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
-                if ($languageAspect->getContentId() > 0) {
+                if ($languageContentId > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageAspect->getContentId()))
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId))
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
@@ -756,13 +760,13 @@ class Helper
                     ->execute();
 
                 if ($result->rowCount() > 0) {
-                    while ($resArray = $result->fetch()) {
+                    while ($resArray = $result->fetchAssociative()) {
                         // Overlay localized labels if available.
-                        if ($languageAspect->getContentId() > 0) {
-                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageAspect->getContentId(), $languageAspect->getLegacyOverlayType());
+                        if ($languageContentId > 0) {
+                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageContentId, $languageAspect->getLegacyOverlayType());
                         }
                         if ($resArray) {
-                            $labels[$table][$pid][$languageAspect->getContentId()][$resArray['index_name']] = $resArray['label'];
+                            $labels[$table][$pid][$languageContentId][$resArray['index_name']] = $resArray['label'];
                         }
                     }
                 } else {
@@ -773,8 +777,8 @@ class Helper
             }
         }
 
-        if (!empty($labels[$table][$pid][$languageAspect->getContentId()][$index_name])) {
-            return $labels[$table][$pid][$languageAspect->getContentId()][$index_name];
+        if (!empty($labels[$table][$pid][$languageContentId][$index_name])) {
+            return $labels[$table][$pid][$languageContentId][$index_name];
         } else {
             return $index_name;
         }
@@ -792,14 +796,15 @@ class Helper
      */
     public static function whereExpression($table, $showHidden = false)
     {
+        // TODO: Check with applicationType; TYPO3_MODE is removed in v12
         if (\TYPO3_MODE === 'FE') {
             // Should we ignore the record's hidden flag?
             $ignoreHide = 0;
             if ($showHidden) {
                 $ignoreHide = 1;
             }
-            /** @var \TYPO3\CMS\Frontend\Page\PageRepository $pageRepository */
-            $pageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Page\PageRepository::class);
+            /** @var PageRepository $pageRepository */
+            $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
             $expression = $pageRepository->enableFields($table, $ignoreHide);
             if (!empty($expression)) {
@@ -807,13 +812,14 @@ class Helper
             } else {
                 return '';
             }
+            // TODO: Check with applicationType; TYPO3_MODE is removed in v12
         } elseif (\TYPO3_MODE === 'BE') {
             return GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table)
                 ->expr()
                 ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
-            self::log('Unexpected TYPO3_MODE "' . \TYPO3_MODE . '"', LOG_SEVERITY_ERROR);
+            self::log('Unexpected TYPO3_MODE', LOG_SEVERITY_ERROR);
             return '1=-1';
         }
     }
@@ -836,45 +842,6 @@ class Helper
     public static function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Make classname configuration from `Classes.php` available in contexts
-     * where it normally isn't, and where the classical way via TypoScript won't
-     * work either.
-     *
-     * This transforms the structure used in `Classes.php` to that used in
-     * `ext_typoscript_setup.txt`. See commit 5e6110fb for a similar approach.
-     *
-     * @deprecated Remove once we drop support for TYPO3v9
-     *
-     * @access public
-     */
-    public static function polyfillExtbaseClassesForTYPO3v9()
-    {
-        $classes = require __DIR__ . '/../../Configuration/Extbase/Persistence/Classes.php';
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get(ConfigurationManager::class);
-        $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-
-        $extbaseClassmap = &$frameworkConfiguration['persistence']['classes'];
-        if ($extbaseClassmap === null) {
-            $extbaseClassmap = [];
-        }
-
-        foreach ($classes as $className => $classConfig) {
-            $extbaseClass = &$extbaseClassmap[$className];
-            if ($extbaseClass === null) {
-                $extbaseClass = [];
-            }
-            if (!isset($extbaseClass['mapping'])) {
-                $extbaseClass['mapping'] = [];
-            }
-            $extbaseClass['mapping']['tableName'] = $classConfig['tableName'];
-        }
-
-        $configurationManager->setConfiguration($frameworkConfiguration);
     }
 
     /**
