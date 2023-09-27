@@ -11,7 +11,8 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
@@ -126,13 +127,13 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                 // find document from repository by uid
                 $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
                 if ($this->document) {
-                    $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
+                    $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
                 } else {
                     $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
                 }
             } else if (GeneralUtility::isValidUrl($documentId)) {
 
-                $doc = Doc::getInstance($documentId, $this->settings, true);
+                $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
@@ -156,7 +157,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             }
 
             if ($this->document !== null && $doc !== null) {
-                $this->document->setDoc($doc);
+                $this->document->setCurrentDocument($doc);
             }
 
         } elseif (!empty($this->requestData['recordId'])) {
@@ -164,9 +165,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             $this->document = $this->documentRepository->findOneByRecordId($this->requestData['recordId']);
 
             if ($this->document !== null) {
-                $doc = Doc::getInstance($this->document->getLocation(), $this->settings, true);
+                $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
                 if ($this->document !== null && $doc !== null) {
-                    $this->document->setDoc($doc);
+                    $this->document->setCurrentDocument($doc);
                 } else {
                     $this->logger->error('Failed to load document with record ID "' . $this->requestData['recordId'] . '"');
                 }
@@ -204,7 +205,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function isDocMissingOrEmpty()
     {
-        return $this->isDocMissing() || $this->document->getDoc()->numPages < 1;
+        return $this->isDocMissing() || $this->document->getCurrentDocument()->numPages < 1;
     }
 
     /**
@@ -214,7 +215,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function isDocMissing()
     {
-        return $this->document === null || $this->document->getDoc() === null;
+        return $this->document === null || $this->document->getCurrentDocument() === null;
     }
 
     /**
@@ -284,7 +285,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function setPage() {
         if (!empty($this->requestData['logicalPage'])) {
-            $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
+            $this->requestData['page'] = $this->document->getCurrentDocument()->getPhysicalPage($this->requestData['logicalPage']);
             // The logical page parameter should not appear again
             unset($this->requestData['logicalPage']);
         }
@@ -306,9 +307,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             (int) $this->requestData['page'] > 0
             || empty($this->requestData['page'])
         ) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
+            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
         } else {
-            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
+            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getCurrentDocument()->physicalStructure);
         }
     }
 

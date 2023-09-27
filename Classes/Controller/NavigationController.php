@@ -59,7 +59,7 @@ class NavigationController extends AbstractController
             return '';
         } else {
             // Set default values if not set.
-            if ($this->document->getDoc()->numPages > 0) {
+            if ($this->document->getCurrentDocument()->numPages > 0) {
                 $this->setPage();
                 $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
             } else {
@@ -72,7 +72,7 @@ class NavigationController extends AbstractController
         $pageSteps = $this->settings['pageStep'] * ($this->requestData['double'] + 1);
 
         $this->view->assign('pageSteps', $pageSteps);
-        $this->view->assign('numPages', $this->document->getDoc()->numPages);
+        $this->view->assign('numPages', $this->document->getCurrentDocument()->numPages);
         $this->view->assign('viewData', $this->viewData);
 
         if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'search')) {
@@ -96,8 +96,9 @@ class NavigationController extends AbstractController
         }
 
         $pageOptions = [];
-        for ($i = 1; $i <= $this->document->getDoc()->numPages; $i++) {
-            $pageOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel']) : '');
+        for ($i = 1; $i <= $this->document->getCurrentDocument()->numPages; $i++) {
+            $orderLabel = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$i]]['orderlabel'];
+            $pageOptions[$i] = '[' . $i . ']' . ($orderLabel ? ' - ' . htmlspecialchars($orderLabel) : '');
         }
         $this->view->assign('pageOptions', $pageOptions);
 

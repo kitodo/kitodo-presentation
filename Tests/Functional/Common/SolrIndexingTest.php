@@ -2,10 +2,9 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\Solr;
-use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\SolrCore;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
@@ -13,7 +12,6 @@ use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class SolrIndexingTest extends FunctionalTestCase
@@ -75,8 +73,8 @@ class SolrIndexingTest extends FunctionalTestCase
         $document->setSolrcore($core->model->getUid());
         $this->persistenceManager->persistAll();
 
-        $doc = Doc::getInstance($document->getLocation());
-        $document->setDoc($doc);
+        $doc = AbstractDocument::getInstance($document->getLocation());
+        $document->setCurrentDocument($doc);
 
         $indexingSuccessful = Indexer::add($document, $this->documentRepository);
         $this->assertTrue($indexingSuccessful);

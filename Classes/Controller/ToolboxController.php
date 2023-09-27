@@ -29,7 +29,7 @@ class ToolboxController extends AbstractController
     /**
      * This holds the current document
      *
-     * @var \Kitodo\Dlf\Common\Doc
+     * @var \Kitodo\Dlf\Common\AbstractDocument
      * @access private
      */
     private $doc;
@@ -47,7 +47,7 @@ class ToolboxController extends AbstractController
         $this->view->assign('double', $this->requestData['double']);
 
         if (!$this->isDocMissingOrEmpty()) {
-            $this->doc = $this->document->getDoc();
+            $this->doc = $this->document->getCurrentDocument();
         }
 
         $this->renderTool();

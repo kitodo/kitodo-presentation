@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Input\InputInterface;
@@ -158,11 +158,11 @@ class IndexCommand extends BaseCommand
                 $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
                 exit(1);
             } else {
-                $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
+                $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
             }
 
         } else if (GeneralUtility::isValidUrl($input->getOption('doc'))) {
-            $doc = Doc::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
+            $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
 
             if ($doc->recordId) {
                 $document = $this->documentRepository->findOneByRecordId($doc->recordId);
@@ -192,7 +192,7 @@ class IndexCommand extends BaseCommand
             if ($io->isVerbose()) {
                 $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
             }
-            $document->setDoc($doc);
+            $document->setCurrentDocument($doc);
             // save to database
             $this->saveToDatabase($document);
             // add to index

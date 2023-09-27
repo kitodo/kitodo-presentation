@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -38,9 +39,9 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * This contains the representative of the raw XML / IIIF data of the document.
      *
-     * @var \Kitodo\Dlf\Common\Doc|null
+     * @var AbstractDocument|null
      */
-    protected $doc = null;
+    protected $currentDocument = null;
 
     /**
      * @var string
@@ -204,19 +205,19 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Common\Doc
+     * @return AbstractDocument
      */
-    public function getDoc(): ?\Kitodo\Dlf\Common\Doc
+    public function getCurrentDocument(): ?AbstractDocument
     {
-        return $this->doc;
+        return $this->currentDocument;
     }
 
     /**
-     * @param \Kitodo\Dlf\Common\Doc $doc
+     * @param AbstractDocument $currentDocument
      */
-    public function setDoc(\Kitodo\Dlf\Common\Doc $doc): void
+    public function setCurrentDocument(AbstractDocument $currentDocument): void
     {
-        $this->doc = $doc;
+        $this->currentDocument = $currentDocument;
     }
 
     /**
