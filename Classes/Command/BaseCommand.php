@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Command;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -79,6 +79,26 @@ class BaseCommand extends Command
     protected $extConf;
 
     /**
+     * @var ConfigurationManager
+     */
+    protected $configurationManager;
+
+    public function __construct(CollectionRepository $collectionRepository,
+                                DocumentRepository   $documentRepository,
+                                LibraryRepository    $libraryRepository,
+                                StructureRepository  $structureRepository,
+                                ConfigurationManager $configurationManager)
+    {
+        parent::__construct();
+
+        $this->collectionRepository = $collectionRepository;
+        $this->documentRepository = $documentRepository;
+        $this->libraryRepository = $libraryRepository;
+        $this->structureRepository = $structureRepository;
+        $this->configurationManager = $configurationManager;
+    }
+
+    /**
      * Initialize the extbase repository based on the given storagePid.
      *
      * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependency Injection.
@@ -90,19 +110,10 @@ class BaseCommand extends Command
     protected function initializeRepositories($storagePid)
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-            $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+            $frameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-            $configurationManager->setConfiguration($frameworkConfiguration);
-
-            // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-            $this->collectionRepository = $objectManager->get(CollectionRepository::class);
-            $this->documentRepository = $objectManager->get(DocumentRepository::class);
-            $this->libraryRepository = $objectManager->get(LibraryRepository::class);
-            $this->structureRepository = $objectManager->get(StructureRepository::class);
+            $this->configurationManager->setConfiguration($frameworkConfiguration);
 
             // Get extension configuration.
             $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
@@ -172,7 +183,7 @@ class BaseCommand extends Command
      */
     protected function saveToDatabase(Document $document)
     {
-        $doc = $document->getDoc();
+        $doc = $document->getCurrentDocument();
         if ($doc === null) {
             return false;
         }
@@ -291,14 +302,14 @@ class BaseCommand extends Command
      */
     protected function getParentDocumentUidForSaving(Document $document)
     {
-        $doc = $document->getDoc();
+        $doc = $document->getCurrentDocument();
 
         if ($doc !== null && !empty($doc->parentHref)) {
             // find document object by record_id of parent
-            $parentDoc = Doc::getInstance($doc->parentHref, ['storagePid' => $this->storagePid]);
+            $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid]);
 
-            if ($parentDoc->recordId) {
-                $parentDocument = $this->documentRepository->findOneByRecordId($parentDoc->recordId);
+            if ($parent->recordId) {
+                $parentDocument = $this->documentRepository->findOneByRecordId($parent->recordId);
 
                 if ($parentDocument === null) {
                     // create new Document object
@@ -306,7 +317,7 @@ class BaseCommand extends Command
                 }
 
                 $parentDocument->setOwner($this->owner);
-                $parentDocument->setDoc($parentDoc);
+                $parentDocument->setCurrentDocument($parent);
                 $parentDocument->setLocation($doc->parentHref);
                 $parentDocument->setSolrcore($document->getSolrcore());
 
