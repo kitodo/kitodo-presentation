@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\Solr\SolrSearch;
 use TYPO3\CMS\Core\Pagination\AbstractPaginator;
 
 class SolrPaginator extends AbstractPaginator
