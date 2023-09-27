@@ -24,7 +24,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
@@ -57,25 +57,27 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     protected $document;
 
     /**
-     * @var DocumentRepository
-     */
-    protected $documentRepository;
-
-    /**
      * @var ConfigurationManager
      */
     protected $configurationManager;
-    
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
-    }
 
     public function injectConfigurationManager(ConfigurationManager $configurationManager)
     {
         $this->configurationManager = $configurationManager;
     }
 
+    /**
+     * @var DocumentRepository
+     */
+    protected $documentRepository;
+    
+    /**
+     * @param DocumentRepository $documentRepository
+     */
+    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    {
+        $this->documentRepository = $documentRepository;
+    }
     /**
      * Initialize the extbase repositories
      *
@@ -89,6 +91,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
         $this->configurationManager->setConfiguration($frameworkConfiguration);
+
+        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
     }
 
     /**
