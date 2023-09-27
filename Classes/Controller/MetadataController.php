@@ -11,7 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -92,7 +92,7 @@ class MetadataController extends AbstractController
             $this->setDefault('displayIiifLinks', 1);
         }
 
-        $this->doc = $this->document->getDoc();
+        $this->doc = $this->document->getCurrentDocument();
 
         $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
         $metadata = $this->getMetadata();
@@ -324,7 +324,7 @@ class MetadataController extends AbstractController
         if ($name == 'title') {
             // Get title of parent document if needed.
             if (empty(implode('', $value)) && $this->settings['getTitle'] && $this->document->getPartof()) {
-                $superiorTitle = Doc::getTitle($this->document->getPartof(), true);
+                $superiorTitle = AbstractDocument::getTitle($this->document->getPartof(), true);
                 if (!empty($superiorTitle)) {
                     $metadata[$i][$name] = ['[' . $superiorTitle . ']'];
                 }

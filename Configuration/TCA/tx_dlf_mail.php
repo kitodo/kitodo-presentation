@@ -12,7 +12,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_mail',
         'label'     => 'label',
         'sortby' => 'sorting',
         'delete' => 'deleted',
@@ -24,7 +24,7 @@ return [
     ],
     'columns' => [
         'label' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_mail',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -34,7 +34,7 @@ return [
             ],
         ],
         'name' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail.name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_mail.name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -43,7 +43,7 @@ return [
             ],
         ],
         'mail' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail.mail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_mail.mail',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -54,7 +54,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_mail.tab1,label,name,mail'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_mail.tab1,label,name,mail'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

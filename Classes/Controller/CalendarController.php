@@ -66,7 +66,7 @@ class CalendarController extends AbstractController
             return;
         }
 
-        $metadata = $this->document->getDoc()->getTitledata();
+        $metadata = $this->document->getCurrentDocument()->getTitledata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
@@ -119,7 +119,7 @@ class CalendarController extends AbstractController
 
         // Process results.
         if ($documents->count() === 0) {
-            $toc = $this->document->getDoc()->tableOfContents;
+            $toc = $this->document->getCurrentDocument()->tableOfContents;
 
             foreach ($toc[0]['children'] as $year) {
                 foreach ($year['children'] as $month) {
@@ -210,14 +210,14 @@ class CalendarController extends AbstractController
         $this->view->assign('issueData', $issueData);
 
         // Link to current year.
-        $linkTitleData = $this->document->getDoc()->getTitledata();
+        $linkTitleData = $this->document->getCurrentDocument()->getTitledata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
         $this->view->assign('calendarData', $calendarData);
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
-        $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getDoc()->tableOfContents[0]['points']);
-        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()) ?: $this->document->getDoc()->tableOfContents[0]['label']);
+        $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getCurrentDocument()->tableOfContents[0]['points']);
+        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getPartof()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
     }
 
     /**
@@ -248,7 +248,7 @@ class CalendarController extends AbstractController
         $years = [];
         // Process results.
         if (count($documents) === 0) {
-            foreach ($this->document->getDoc()->tableOfContents[0]['children'] as $id => $year) {
+            foreach ($this->document->getCurrentDocument()->tableOfContents[0]['children'] as $id => $year) {
                 $yearLabel = empty($year['label']) ? $year['orderlabel'] : $year['label'];
 
                 if (empty($yearLabel)) {
@@ -302,7 +302,7 @@ class CalendarController extends AbstractController
         }
 
         $this->view->assign('documentId', $this->document->getUid());
-        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getUid()));
+        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getUid()));
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 
 class MetsDocumentTest extends FunctionalTestCase
@@ -18,7 +18,7 @@ class MetsDocumentTest extends FunctionalTestCase
     protected function doc(string $file)
     {
         $url = 'http://web:8001/Tests/Fixtures/MetsDocument/' . $file;
-        $doc = Doc::getInstance($url);
+        $doc = AbstractDocument::getInstance($url);
         $this->assertNotNull($doc);
         return $doc;
     }

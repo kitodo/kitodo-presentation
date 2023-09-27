@@ -50,7 +50,7 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read string $toplevelId This holds the toplevel structure's @ID (METS) or the manifest's @id (IIIF)
  * @property-read string $parentHref URL of the parent document (determined via mptr element), or empty string if none is available
  */
-final class MetsDocument extends Doc
+final class MetsDocument extends AbstractDocument
 {
     /**
      * Subsections / tags that may occur within `<mets:amdSec>`.
@@ -189,7 +189,7 @@ final class MetsDocument extends Doc
     /**
      *
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::establishRecordId()
+     * @see AbstractDocument::establishRecordId()
      */
     protected function establishRecordId($pid)
     {
@@ -210,7 +210,7 @@ final class MetsDocument extends Doc
     /**
      *
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::getDownloadLocation()
+     * @see AbstractDocument::getDownloadLocation()
      */
     public function getDownloadLocation($id)
     {
@@ -236,7 +236,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::getFileLocation()
+     * @see AbstractDocument::getFileLocation()
      */
     public function getFileLocation($id)
     {
@@ -254,7 +254,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::getFileMimeType()
+     * @see AbstractDocument::getFileMimeType()
      */
     public function getFileMimeType($id)
     {
@@ -272,7 +272,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::getLogicalStructure()
+     * @see AbstractDocument::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
     {
@@ -333,14 +333,17 @@ final class MetsDocument extends Doc
         $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
         $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
         $details['volume'] = '';
-        // Set volume information only if no label is set and this is the toplevel structure element.
+        // Set volume and year information only if no label is set and this is the toplevel structure element.
         if (
             empty($details['label'])
-            && $details['id'] == $this->_getToplevelId()
+            && empty($details['orderlabel'])
         ) {
             $metadata = $this->getMetadata($details['id']);
             if (!empty($metadata['volume'][0])) {
                 $details['volume'] = $metadata['volume'][0];
+            }
+            if (!empty($metadata['year'][0])) {
+                $details['year'] = $metadata['year'][0];
             }
         }
         $details['pagination'] = '';
@@ -418,7 +421,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::getMetadata()
+     * @see AbstractDocument::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
     {
@@ -630,6 +633,7 @@ final class MetsDocument extends Doc
         if (empty($metadata['date'][0])) {
             $metadata['date'][0] = '';
         }
+
         // Files are not expected to reference a dmdSec
         if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
             return $metadata;
@@ -696,7 +700,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::getFullText()
+     * @see AbstractDocument::getFullText()
      */
     public function getFullText($id)
     {
@@ -712,7 +716,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getStructureDepth()
+     * @see AbstractDocument::getStructureDepth()
      */
     public function getStructureDepth($logId)
     {
@@ -726,7 +730,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::init()
+     * @see AbstractDocument::init()
      */
     protected function init($location)
     {
@@ -751,7 +755,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::loadLocation()
+     * @see AbstractDocument::loadLocation()
      */
     protected function loadLocation($location)
     {
@@ -770,7 +774,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::ensureHasFulltextIsSet()
+     * @see AbstractDocument::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
     {
@@ -782,7 +786,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::setPreloadedDocument()
+     * @see AbstractDocument::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)
     {
@@ -796,7 +800,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getDocument()
+     * @see AbstractDocument::getDocument()
      */
     protected function getDocument()
     {
@@ -970,7 +974,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::prepareMetadataArray()
+     * @see AbstractDocument::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
     {
@@ -998,7 +1002,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::_getPhysicalStructure()
+     * @see AbstractDocument::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
     {
@@ -1061,7 +1065,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::_getSmLinks()
+     * @see AbstractDocument::_getSmLinks()
      */
     protected function _getSmLinks()
     {
@@ -1080,7 +1084,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::_getThumbnail()
+     * @see AbstractDocument::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
     {
@@ -1160,7 +1164,7 @@ final class MetsDocument extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::_getToplevelId()
+     * @see AbstractDocument::_getToplevelId()
      */
     protected function _getToplevelId()
     {
