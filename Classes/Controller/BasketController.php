@@ -206,7 +206,7 @@ class BasketController extends AbstractController
     protected function getBasketData()
     {
         // get user session
-        $sessionId = $GLOBALS['TSFE']->fe_user->id;
+        $userSession = $GLOBALS['TSFE']->fe_user->getSession();
         $context = GeneralUtility::makeInstance(Context::class);
 
         // Checking if a user is logged in
@@ -215,18 +215,18 @@ class BasketController extends AbstractController
         if ($userIsLoggedIn) {
             $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
         } else {
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dlf_basket', '');
-            $GLOBALS['TSFE']->fe_user->sesData_change = true;
+            $userSession->set('ses', 'tx_dlf_basket', '');
+            $userSession->dataWasUpdated();
             $GLOBALS['TSFE']->fe_user->storeSessionData();
 
-            $basket = $this->basketRepository->findOneBySessionId($sessionId);
+            $basket = $this->basketRepository->findOneBySessionId($userSession->getIdentifier());
         }
 
         // session does not exist
         if ($basket === null) {
             // create new basket in db
             $basket = GeneralUtility::makeInstance(Basket::class);
-            $basket->setSessionId($sessionId);
+            $basket->setSessionId($userSession->getIdentifier());
             $basket->setFeUserId($userIsLoggedIn ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
         }
 
@@ -401,13 +401,13 @@ class BasketController extends AbstractController
             }
             // set endpage for toc and subentry based on logid
             if (($_piVars['addToBasket'] == 'subentry') or ($_piVars['addToBasket'] == 'toc')) {
-                $smLinks = $this->document->getDoc()->smLinks;
+                $smLinks = $this->document->getCurrentDocument()->smLinks;
                 $pageCounter = sizeof($smLinks['l2p'][$_piVars['logId']]);
                 $documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
             }
             // add whole document
             if ($_piVars['addToBasket'] == 'list') {
-                $documentItem['endpage'] = $this->document->getDoc()->numPages;
+                $documentItem['endpage'] = $this->document->getCurrentDocument()->numPages;
             }
             $arrayKey = $documentItem['id'] . '_' . $page;
             if (!empty($documentItem['startX'])) {

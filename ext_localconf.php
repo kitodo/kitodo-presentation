@@ -66,13 +66,13 @@ foreach ($iconArray as $key => $value) {
 $_EXTKEY = 'dlf';
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.annotationtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltextdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltextdownloadtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagedownloadtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagemanipulationtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.pdfdownloadtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_searchindocumenttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.searchindocumenttool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltexttool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.annotationtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltextdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltextdownloadtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagedownloadtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagemanipulationtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.pdfdownloadtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_searchindocumenttool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.searchindocumenttool';
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
@@ -126,11 +126,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Search',
     [
-        Search::class => 'main, search'
+        \Kitodo\Dlf\Controller\SearchController::class => 'main, search'
     ],
     // non-cacheable actions
     [
-        Search::class => 'main, search'
+        \Kitodo\Dlf\Controller\SearchController::class => 'main, search'
     ]
 );
 
@@ -138,11 +138,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Feeds',
     [
-        Feeds::class => 'main',
+        \Kitodo\Dlf\Controller\FeedsController::class => 'main',
     ],
     // non-cacheable actions
     [
-        Feeds::class => 'main',
+        \Kitodo\Dlf\Controller\FeedsController::class => 'main',
     ]
 );
 
@@ -150,11 +150,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Statistics',
     [
-        Statistics::class => 'main',
+        \Kitodo\Dlf\Controller\StatisticsController::class => 'main',
     ],
     // non-cacheable actions
     [
-        Statistics::class => '',
+        \Kitodo\Dlf\Controller\StatisticsController::class => '',
     ]
 );
 
@@ -162,11 +162,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'TableOfContents',
     [
-        TableOfContents::class => 'main',
+        \Kitodo\Dlf\Controller\TableOfContentsController::class => 'main',
     ],
     // non-cacheable actions
     [
-        TableOfContents::class => '',
+        \Kitodo\Dlf\Controller\TableOfContentsController::class => '',
     ]
 );
 
@@ -174,11 +174,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'PageGrid',
     [
-        PageGrid::class => 'main',
+        \Kitodo\Dlf\Controller\PageGridController::class => 'main',
     ],
     // non-cacheable actions
     [
-        PageGrid::class => '',
+        \Kitodo\Dlf\Controller\PageGridController::class => '',
     ]
 );
 
@@ -186,11 +186,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Navigation',
     [
-        Navigation::class => 'main, pageSelect',
+        \Kitodo\Dlf\Controller\NavigationController::class => 'main, pageSelect',
     ],
     // non-cacheable actions
     [
-        Navigation::class => 'pageSelect',
+        \Kitodo\Dlf\Controller\NavigationController::class => 'pageSelect',
     ]
 );
 
@@ -198,11 +198,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'AudioPlayer',
     [
-        AudioPlayer::class => 'main',
+        \Kitodo\Dlf\Controller\AudioPlayerController::class => 'main',
     ],
     // non-cacheable actions
     [
-        AudioPlayer::class => '',
+        \Kitodo\Dlf\Controller\AudioPlayerController::class => '',
     ]
 );
 
@@ -210,11 +210,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Calendar',
     [
-        Calendar::class => 'main, years, calendar',
+        \Kitodo\Dlf\Controller\CalendarController::class => 'main, years, calendar',
     ],
     // non-cacheable actions
     [
-        Calendar::class => '',
+        \Kitodo\Dlf\Controller\CalendarController::class => '',
     ]
 );
 
@@ -222,11 +222,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'PageView',
     [
-        PageView::class => 'main',
+        \Kitodo\Dlf\Controller\PageViewController::class => 'main',
     ],
     // non-cacheable actions
     [
-        PageView::class => '',
+        \Kitodo\Dlf\Controller\PageViewController::class => '',
     ]
 );
 
@@ -234,11 +234,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Basket',
     [
-        Basket::class => 'main, add, basket',
+        \Kitodo\Dlf\Controller\BasketController::class => 'main, add, basket',
     ],
     // non-cacheable actions
     [
-        Basket::class => 'main, add, basket',
+        \Kitodo\Dlf\Controller\BasketController::class => 'main, add, basket',
     ]
 );
 
@@ -246,11 +246,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Toolbox',
     [
-        Toolbox::class => 'main',
+        \Kitodo\Dlf\Controller\ToolboxController::class => 'main',
     ],
     // non-cacheable actions
     [
-        Toolbox::class => '',
+        \Kitodo\Dlf\Controller\ToolboxController::class => '',
     ]
 );
 
@@ -258,11 +258,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'OaiPmh',
     [
-        OaiPmh::class => 'main',
+        \Kitodo\Dlf\Controller\OaiPmhController::class => 'main',
     ],
     // non-cacheable actions
     [
-        OaiPmh::class => 'main',
+        \Kitodo\Dlf\Controller\OaiPmhController::class => 'main',
     ]
 );
 
@@ -270,11 +270,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'ListView',
     [
-        ListView::class => 'main',
+        \Kitodo\Dlf\Controller\ListViewController::class => 'main',
     ],
     // non-cacheable actions
     [
-        ListView::class => 'main',
+        \Kitodo\Dlf\Controller\ListViewController::class => 'main',
     ]
 );
 
@@ -282,33 +282,33 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Kitodo.Dlf',
     'Collection',
     [
-        Collection::class => 'list, show, showSorted'
+        \Kitodo\Dlf\Controller\CollectionController::class => 'list, show, showSorted'
     ],
     // non-cacheable actions
     [
-        Collection::class => 'showSorted',
+        \Kitodo\Dlf\Controller\CollectionController::class => 'showSorted',
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Kitodo.Dlf',
     'Metadata',
     [
-        Metadata::class => 'main',
+        \Kitodo\Dlf\Controller\MetadataController::class => 'main',
     ],
     // non-cacheable actions
     [
-        Metadata::class => '',
+        \Kitodo\Dlf\Controller\MetadataController::class => '',
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Kitodo.Dlf',
     'View3D',
     [
-        View3D::class => 'main',
+        \Kitodo\Dlf\Controller\View3DController::class => 'main',
     ],
     // non-cacheable actions
     [
-        View3D::class => '',
+        \Kitodo\Dlf\Controller\View3DController::class => '',
     ]
 );
 

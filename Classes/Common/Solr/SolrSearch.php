@@ -2,12 +2,12 @@
 
 namespace Kitodo\Dlf\Common\Solr;
 
-use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -142,7 +142,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             // get title of parent/grandparent/... if empty
             if (empty($document['title']) && $document['partOf'] > 0) {
-                $superiorTitle = Doc::getTitle($document['partOf'], true);
+                $superiorTitle = AbstractDocument::getTitle($document['partOf'], true);
                 if (!empty($superiorTitle)) {
                     $document['title'] = '[' . $superiorTitle . ']';
                 }

@@ -121,9 +121,9 @@ class SearchController extends AbstractController
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
-        $widgetPage = $this->getParametersSafely('@widget_0');
-        if (empty($widgetPage)) {
-            $widgetPage = ['currentPage' => 1];
+        $currentPage = $this->getParametersSafely('page');
+        if (empty($currentPage)) {
+            $currentPage = 1;
         }
 
         // If a targetPid is given, the results will be shown by ListView on the target page.
@@ -134,9 +134,8 @@ class SearchController extends AbstractController
                 null,
                 [
                     'searchParameter' => $this->searchParams,
-                    'widgetPage' => $widgetPage
-                ],
-                $this->settings['targetPid']
+                    'page' => $currentPage
+                ], $this->settings['targetPid']
             );
         }
 
@@ -158,7 +157,7 @@ class SearchController extends AbstractController
 
             $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
             $this->view->assign('numResults', $numResults);
-            $this->view->assign('widgetPage', $widgetPage);
+            $this->view->assign('page', $currentPage);
             $this->view->assign('lastSearch', $this->searchParams);
             $this->view->assign('listedMetadata', $listedMetadata);
             $this->view->assign('sortableMetadata', $sortableMetadata);
@@ -353,7 +352,7 @@ class SearchController extends AbstractController
      * Add the collection query string, if the collections are given.
      *
      * @access private
-     * 
+     *
      * @param string $query The current query
      *
      * @return string The collection query string

@@ -138,7 +138,6 @@
         <l18n_diffsource>a:8:{s:5:"label";N;s:10:"index_name";N;s:8:"oai_name";N;s:11:"description";N;s:9:"documents";N;s:5:"owner";N;s:6:"status";N;s:16:"sys_language_uid";N;}</l18n_diffsource>
         <hidden>0</hidden>
         <fe_group />
-        <l10n_state />
         <fe_cruser_id>0</fe_cruser_id>
         <fe_admin_lock>0</fe_admin_lock>
         <label>Musik</label>
@@ -165,7 +164,6 @@
         <l18n_diffsource>a:8:{s:5:"label";N;s:10:"index_name";N;s:8:"oai_name";N;s:11:"description";N;s:9:"documents";N;s:5:"owner";N;s:6:"status";N;s:16:"sys_language_uid";N;}</l18n_diffsource>
         <hidden>0</hidden>
         <fe_group />
-        <l10n_state />
         <fe_cruser_id>0</fe_cruser_id>
         <fe_admin_lock>0</fe_admin_lock>
         <label>Collection with single document</label>
