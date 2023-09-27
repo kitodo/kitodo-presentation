@@ -51,6 +51,7 @@ class ToolboxController extends AbstractController
         }
 
         $this->renderTool();
+        $this->view->assign('viewData', $this->viewData);
     }
 
     /**
@@ -401,6 +402,7 @@ class ToolboxController extends AbstractController
             'LABEL_QUERY_URL' => $this->settings['queryInputName'],
             'LABEL_START' => $this->settings['startInputName'],
             'LABEL_ID' => $this->settings['idInputName'],
+            'LABEL_PID' => $this->settings['pidInputName'],
             'LABEL_PAGE_URL' => $this->settings['pageInputName'],
             'LABEL_HIGHLIGHT_WORD' => $this->settings['highlightWordInputName'],
             'LABEL_ENCRYPTED' => $this->settings['encryptedInputName'],
