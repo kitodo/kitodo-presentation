@@ -63,7 +63,7 @@ class CalendarController extends AbstractController
         $this->loadDocument();
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $metadata = $this->document->getCurrentDocument()->getTitledata();
@@ -101,16 +101,16 @@ class CalendarController extends AbstractController
     public function calendarAction()
     {
         // access arguments passed by the mainAction()
-        $mainrequestData = $this->request->getArguments();
+        $mainRequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $this->requestData = array_merge($this->requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainRequestData);
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
@@ -230,16 +230,16 @@ class CalendarController extends AbstractController
     public function yearsAction()
     {
         // access arguments passed by the mainAction()
-        $mainrequestData = $this->request->getArguments();
+        $mainRequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $this->requestData = array_merge($this->requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainRequestData);
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         // Get all children of anchor. This should be the year anchor documents

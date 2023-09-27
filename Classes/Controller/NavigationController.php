@@ -56,7 +56,7 @@ class NavigationController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             // Set default values if not set.
             if ($this->document->getCurrentDocument()->numPages > 0) {

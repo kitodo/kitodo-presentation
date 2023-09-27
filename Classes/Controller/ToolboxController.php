@@ -120,7 +120,7 @@ class ToolboxController extends AbstractController
     {
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setPage();
@@ -150,7 +150,7 @@ class ToolboxController extends AbstractController
             || empty($this->extConf['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setPage();
@@ -173,7 +173,7 @@ class ToolboxController extends AbstractController
             || empty($this->extConf['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setPage();
@@ -200,7 +200,7 @@ class ToolboxController extends AbstractController
             || empty($this->settings['fileGrpsImageDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setPage();
@@ -282,7 +282,7 @@ class ToolboxController extends AbstractController
             || empty($this->extConf['fileGrpDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setPage();
@@ -386,7 +386,7 @@ class ToolboxController extends AbstractController
             || empty($this->settings['solrcore'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setPage();

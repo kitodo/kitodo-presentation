@@ -194,7 +194,7 @@ class SearchController extends AbstractController
     {
         // Quit without doing anything if no facets are configured.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
-            return '';
+            return;
         }
 
         // Get facets from plugin configuration.
