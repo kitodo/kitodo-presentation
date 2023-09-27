@@ -50,7 +50,7 @@ class ToolboxController extends AbstractController
             $this->doc = $this->document->getDoc();
         }
 
-        $this->renderTools();
+        $this->renderTool();
     }
 
     /**
@@ -61,13 +61,8 @@ class ToolboxController extends AbstractController
      * @return void
      */
     private function renderTool() {
-        if (!empty($this->settings['tools'])) {
-
-            $tools = explode(',', $this->settings['tools']);
-
-            foreach($tools as $tool)
-            {
-                switch ($tool) {
+        if (!empty($this->settings['tool'])) {
+            switch ($this->settings['tool']) {
                 case 'tx_dlf_annotationtool':
                 case 'annotationtool':
                     $this->renderToolByName('renderAnnotationTool');
@@ -98,7 +93,6 @@ class ToolboxController extends AbstractController
                     break;
                 default:
                     $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tool'] . '". This tool does not exist.');
-                }
             }
         }
     }
