@@ -63,10 +63,10 @@ class CalendarController extends AbstractController
         $this->loadDocument();
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
-        $metadata = $this->document->getDoc()->getTitledata();
+        $metadata = $this->document->getCurrentDocument()->getTitledata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
@@ -101,16 +101,16 @@ class CalendarController extends AbstractController
     public function calendarAction()
     {
         // access arguments passed by the mainAction()
-        $mainrequestData = $this->request->getArguments();
+        $mainRequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $this->requestData = array_merge($this->requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainRequestData);
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
@@ -119,7 +119,7 @@ class CalendarController extends AbstractController
 
         // Process results.
         if ($documents->count() === 0) {
-            $toc = $this->document->getDoc()->tableOfContents;
+            $toc = $this->document->getCurrentDocument()->tableOfContents;
 
             foreach ($toc[0]['children'] as $year) {
                 foreach ($year['children'] as $month) {
@@ -210,14 +210,14 @@ class CalendarController extends AbstractController
         $this->view->assign('issueData', $issueData);
 
         // Link to current year.
-        $linkTitleData = $this->document->getDoc()->getTitledata();
+        $linkTitleData = $this->document->getCurrentDocument()->getTitledata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
         $this->view->assign('calendarData', $calendarData);
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
-        $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getDoc()->tableOfContents[0]['points']);
-        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()) ?: $this->document->getDoc()->tableOfContents[0]['label']);
+        $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getCurrentDocument()->tableOfContents[0]['points']);
+        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getPartof()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
     }
 
     /**
@@ -230,16 +230,16 @@ class CalendarController extends AbstractController
     public function yearsAction()
     {
         // access arguments passed by the mainAction()
-        $mainrequestData = $this->request->getArguments();
+        $mainRequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $this->requestData = array_merge($this->requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainRequestData);
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         // Get all children of anchor. This should be the year anchor documents
@@ -248,7 +248,7 @@ class CalendarController extends AbstractController
         $years = [];
         // Process results.
         if (count($documents) === 0) {
-            foreach ($this->document->getDoc()->tableOfContents[0]['children'] as $id => $year) {
+            foreach ($this->document->getCurrentDocument()->tableOfContents[0]['children'] as $id => $year) {
                 $yearLabel = empty($year['label']) ? $year['orderlabel'] : $year['label'];
 
                 if (empty($yearLabel)) {
@@ -302,7 +302,7 @@ class CalendarController extends AbstractController
         }
 
         $this->view->assign('documentId', $this->document->getUid());
-        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getUid()));
+        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getUid()));
     }
 
     /**

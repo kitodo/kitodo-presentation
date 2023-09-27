@@ -1,0 +1,1468 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-27T08:32:27Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+            <trans-unit id="aar">
+            	<source>Afar</source>
+			</trans-unit>
+            <trans-unit id="abk">
+            	<source>Abkhazian</source>
+			</trans-unit>
+            <trans-unit id="ace">
+            	<source>Achinese</source>
+			</trans-unit>
+            <trans-unit id="ach">
+            	<source>Acoli</source>
+			</trans-unit>
+            <trans-unit id="ada">
+            	<source>Adangme</source>
+			</trans-unit>
+            <trans-unit id="ady">
+            	<source>Adyghe, Adygei</source>
+			</trans-unit>
+            <trans-unit id="afa">
+            	<source>Afro-Asiatic languages</source>
+			</trans-unit>
+            <trans-unit id="afh">
+            	<source>Afrihili</source>
+			</trans-unit>
+            <trans-unit id="afr">
+            	<source>Afrikaans</source>
+			</trans-unit>
+            <trans-unit id="ain">
+            	<source>Ainu</source>
+			</trans-unit>
+            <trans-unit id="aka">
+            	<source>Akan</source>
+			</trans-unit>
+            <trans-unit id="akk">
+            	<source>Akkadian</source>
+			</trans-unit>
+            <trans-unit id="alb">
+            	<source>Albanian</source>
+			</trans-unit>
+            <trans-unit id="ale">
+            	<source>Aleut</source>
+			</trans-unit>
+            <trans-unit id="alg">
+            	<source>Algonquian languages</source>
+			</trans-unit>
+            <trans-unit id="alt">
+            	<source>Southern Altai</source>
+			</trans-unit>
+            <trans-unit id="amh">
+            	<source>Amharic</source>
+			</trans-unit>
+            <trans-unit id="ang">
+            	<source>Old English (ca.450-1100)</source>
+			</trans-unit>
+            <trans-unit id="anp">
+            	<source>Angika</source>
+			</trans-unit>
+            <trans-unit id="apa">
+            	<source>Apache languages</source>
+			</trans-unit>
+            <trans-unit id="ara">
+            	<source>Arabic</source>
+			</trans-unit>
+            <trans-unit id="arc">
+            	<source>Official/Imperial Aramaic (700-300 BCE)</source>
+			</trans-unit>
+            <trans-unit id="arg">
+            	<source>Aragonese</source>
+			</trans-unit>
+            <trans-unit id="arm">
+            	<source>Armenian</source>
+			</trans-unit>
+            <trans-unit id="arn">
+            	<source>Mapudungun, Mapuche</source>
+			</trans-unit>
+            <trans-unit id="arp">
+            	<source>Arapaho</source>
+			</trans-unit>
+            <trans-unit id="art">
+            	<source>Artificial languages</source>
+			</trans-unit>
+            <trans-unit id="arw">
+            	<source>Arawak</source>
+			</trans-unit>
+            <trans-unit id="asm">
+            	<source>Assamese</source>
+			</trans-unit>
+            <trans-unit id="ast">
+            	<source>Asturian, Bable, Leonese, Asturleonese</source>
+			</trans-unit>
+            <trans-unit id="ath">
+            	<source>Athapascan languages</source>
+			</trans-unit>
+            <trans-unit id="aus">
+            	<source>Australian languages</source>
+			</trans-unit>
+            <trans-unit id="ava">
+            	<source>Avaric</source>
+			</trans-unit>
+            <trans-unit id="ave">
+            	<source>Avestan</source>
+			</trans-unit>
+            <trans-unit id="awa">
+            	<source>Awadhi</source>
+			</trans-unit>
+            <trans-unit id="aym">
+            	<source>Aymara</source>
+			</trans-unit>
+            <trans-unit id="aze">
+            	<source>Azerbaijani</source>
+			</trans-unit>
+            <trans-unit id="bad">
+            	<source>Banda languages</source>
+			</trans-unit>
+            <trans-unit id="bai">
+            	<source>Bamileke languages</source>
+			</trans-unit>
+            <trans-unit id="bak">
+            	<source>Bashkir</source>
+			</trans-unit>
+            <trans-unit id="bal">
+            	<source>Baluchi</source>
+			</trans-unit>
+            <trans-unit id="bam">
+            	<source>Bambara</source>
+			</trans-unit>
+            <trans-unit id="ban">
+            	<source>Balinese</source>
+			</trans-unit>
+            <trans-unit id="baq">
+            	<source>Basque</source>
+			</trans-unit>
+            <trans-unit id="bas">
+            	<source>Basa</source>
+			</trans-unit>
+            <trans-unit id="bat">
+            	<source>Baltic languages</source>
+			</trans-unit>
+            <trans-unit id="bej">
+            	<source>Beja, Bedawiyet</source>
+			</trans-unit>
+            <trans-unit id="bel">
+            	<source>Byelorussian</source>
+			</trans-unit>
+            <trans-unit id="bem">
+            	<source>Bemba</source>
+			</trans-unit>
+            <trans-unit id="ben">
+            	<source>Bengali</source>
+			</trans-unit>
+            <trans-unit id="ber">
+            	<source>Berber languages</source>
+			</trans-unit>
+            <trans-unit id="bho">
+            	<source>Bhojpuri</source>
+			</trans-unit>
+            <trans-unit id="bih">
+            	<source>Bihari languages</source>
+			</trans-unit>
+            <trans-unit id="bik">
+            	<source>Bikol</source>
+			</trans-unit>
+            <trans-unit id="bin">
+            	<source>Bini, Edo</source>
+			</trans-unit>
+            <trans-unit id="bis">
+            	<source>Bislama</source>
+			</trans-unit>
+            <trans-unit id="bla">
+            	<source>Siksika</source>
+			</trans-unit>
+            <trans-unit id="bnt">
+            	<source>Bantu</source>
+			</trans-unit>
+            <trans-unit id="bos">
+            	<source>Bosnian</source>
+			</trans-unit>
+            <trans-unit id="bra">
+            	<source>Braj</source>
+			</trans-unit>
+            <trans-unit id="bre">
+            	<source>Breton</source>
+			</trans-unit>
+            <trans-unit id="btk">
+            	<source>Batak languages</source>
+			</trans-unit>
+            <trans-unit id="bua">
+            	<source>Buriat</source>
+			</trans-unit>
+            <trans-unit id="bug">
+            	<source>Buginese</source>
+			</trans-unit>
+            <trans-unit id="bul">
+            	<source>Bulgarian</source>
+			</trans-unit>
+            <trans-unit id="bur">
+            	<source>Burmese</source>
+			</trans-unit>
+            <trans-unit id="byn">
+            	<source>Blin, Bilin</source>
+			</trans-unit>
+            <trans-unit id="cad">
+            	<source>Caddo</source>
+			</trans-unit>
+            <trans-unit id="cai">
+            	<source>Central American Indian languages</source>
+			</trans-unit>
+            <trans-unit id="car">
+            	<source>Galibi Carib</source>
+			</trans-unit>
+            <trans-unit id="cat">
+            	<source>Catalan, Valencian</source>
+			</trans-unit>
+            <trans-unit id="cau">
+            	<source>Caucasian languages</source>
+			</trans-unit>
+            <trans-unit id="ceb">
+            	<source>Cebuano</source>
+			</trans-unit>
+            <trans-unit id="cel">
+            	<source>Celtic languages</source>
+			</trans-unit>
+            <trans-unit id="cha">
+            	<source>Chamorro</source>
+			</trans-unit>
+            <trans-unit id="chb">
+            	<source>Chibcha</source>
+			</trans-unit>
+            <trans-unit id="che">
+            	<source>Chechen</source>
+			</trans-unit>
+            <trans-unit id="chg">
+            	<source>Chagatai</source>
+			</trans-unit>
+            <trans-unit id="chi">
+            	<source>Chinese</source>
+			</trans-unit>
+            <trans-unit id="chk">
+            	<source>Chuukese</source>
+			</trans-unit>
+            <trans-unit id="chm">
+            	<source>Mari</source>
+			</trans-unit>
+            <trans-unit id="chn">
+            	<source>Chinook jargon</source>
+			</trans-unit>
+            <trans-unit id="cho">
+            	<source>Choctaw</source>
+			</trans-unit>
+            <trans-unit id="chp">
+            	<source>Chipewyan, Dene Suline</source>
+			</trans-unit>
+            <trans-unit id="chr">
+            	<source>Cherokee</source>
+			</trans-unit>
+            <trans-unit id="chu">
+            	<source>Church Slavic, Old Bulgarian</source>
+			</trans-unit>
+            <trans-unit id="chv">
+            	<source>Chuvash</source>
+			</trans-unit>
+            <trans-unit id="chy">
+            	<source>Cheyenne</source>
+			</trans-unit>
+            <trans-unit id="cmc">
+            	<source>Chamic languages</source>
+			</trans-unit>
+            <trans-unit id="cop">
+            	<source>Coptic</source>
+			</trans-unit>
+            <trans-unit id="cor">
+            	<source>Cornish</source>
+			</trans-unit>
+            <trans-unit id="cos">
+            	<source>Corsican</source>
+			</trans-unit>
+            <trans-unit id="cpe">
+            	<source>English-based Creoles and pidgins</source>
+			</trans-unit>
+            <trans-unit id="cpf">
+            	<source>French-based Creoles and pidgins</source>
+			</trans-unit>
+            <trans-unit id="cpp">
+            	<source>Portuguese-based Creoles and pidgins</source>
+			</trans-unit>
+            <trans-unit id="cre">
+            	<source>Cree</source>
+			</trans-unit>
+            <trans-unit id="crh">
+            	<source>Crimean Tatar, Crimean Turkish</source>
+			</trans-unit>
+            <trans-unit id="crp">
+            	<source>Creoles and pidgins</source>
+			</trans-unit>
+            <trans-unit id="csb">
+            	<source>Kashubian</source>
+			</trans-unit>
+            <trans-unit id="cus">
+            	<source>Cushitic languages</source>
+			</trans-unit>
+            <trans-unit id="cze">
+            	<source>Czech</source>
+			</trans-unit>
+            <trans-unit id="dak">
+            	<source>Dakota</source>
+			</trans-unit>
+            <trans-unit id="dan">
+            	<source>Danish</source>
+			</trans-unit>
+            <trans-unit id="dar">
+            	<source>Dargwa</source>
+			</trans-unit>
+            <trans-unit id="day">
+            	<source>Land Dayak languages</source>
+			</trans-unit>
+            <trans-unit id="del">
+            	<source>Delaware</source>
+			</trans-unit>
+            <trans-unit id="den">
+            	<source>Slave (Athapascan)</source>
+			</trans-unit>
+            <trans-unit id="dgr">
+            	<source>Dogrib</source>
+			</trans-unit>
+            <trans-unit id="din">
+            	<source>Dinka</source>
+			</trans-unit>
+            <trans-unit id="div">
+            	<source>Divehi, Dhivehi, Maldivian</source>
+			</trans-unit>
+            <trans-unit id="doi">
+            	<source>Dogri</source>
+			</trans-unit>
+            <trans-unit id="dra">
+            	<source>Dravidian languages</source>
+			</trans-unit>
+            <trans-unit id="dsb">
+            	<source>Lower Sorbian</source>
+			</trans-unit>
+            <trans-unit id="dua">
+            	<source>Duala</source>
+			</trans-unit>
+            <trans-unit id="dum">
+            	<source>Middle Dutch (ca.1050-1350)</source>
+			</trans-unit>
+            <trans-unit id="dut">
+            	<source>Dutch</source>
+			</trans-unit>
+            <trans-unit id="dyu">
+            	<source>Dyula</source>
+			</trans-unit>
+            <trans-unit id="dzo">
+            	<source>Dzongkha</source>
+			</trans-unit>
+            <trans-unit id="efi">
+            	<source>Efik</source>
+			</trans-unit>
+            <trans-unit id="egy">
+            	<source>Ancient Egyptian</source>
+			</trans-unit>
+            <trans-unit id="eka">
+            	<source>Ekajuk</source>
+			</trans-unit>
+            <trans-unit id="elx">
+            	<source>Elamite</source>
+			</trans-unit>
+            <trans-unit id="eng">
+            	<source>English</source>
+			</trans-unit>
+            <trans-unit id="enm">
+            	<source>Middle English (1100-1500)</source>
+			</trans-unit>
+            <trans-unit id="epo">
+            	<source>Esperanto</source>
+			</trans-unit>
+            <trans-unit id="est">
+            	<source>Estonian</source>
+			</trans-unit>
+            <trans-unit id="ewe">
+            	<source>Ewe</source>
+			</trans-unit>
+            <trans-unit id="ewo">
+            	<source>Ewondo</source>
+			</trans-unit>
+            <trans-unit id="fan">
+            	<source>Fang</source>
+			</trans-unit>
+            <trans-unit id="fao">
+            	<source>Faroese</source>
+			</trans-unit>
+            <trans-unit id="fat">
+            	<source>Fanti</source>
+			</trans-unit>
+            <trans-unit id="fij">
+            	<source>Fijian</source>
+			</trans-unit>
+            <trans-unit id="fil">
+            	<source>Filipino, Pilipino</source>
+			</trans-unit>
+            <trans-unit id="fin">
+            	<source>Finnish</source>
+			</trans-unit>
+            <trans-unit id="fiu">
+            	<source>Finno-Ugrian languages</source>
+			</trans-unit>
+            <trans-unit id="fon">
+            	<source>Fon</source>
+			</trans-unit>
+            <trans-unit id="fre">
+            	<source>French</source>
+			</trans-unit>
+            <trans-unit id="frm">
+            	<source>Middle French (ca.1400-1600)</source>
+			</trans-unit>
+            <trans-unit id="fro">
+            	<source>Old French (842-ca.1400)</source>
+			</trans-unit>
+            <trans-unit id="frr">
+            	<source>Northern Frisian</source>
+			</trans-unit>
+            <trans-unit id="frs">
+            	<source>Eastern Frisian</source>
+			</trans-unit>
+            <trans-unit id="fry">
+            	<source>Western Frisian</source>
+			</trans-unit>
+            <trans-unit id="ful">
+            	<source>Fulah</source>
+			</trans-unit>
+            <trans-unit id="fur">
+            	<source>Friulian</source>
+			</trans-unit>
+            <trans-unit id="gaa">
+            	<source>Ga</source>
+			</trans-unit>
+            <trans-unit id="gay">
+            	<source>Gayo</source>
+			</trans-unit>
+            <trans-unit id="gba">
+            	<source>Gbaya</source>
+			</trans-unit>
+            <trans-unit id="gem">
+            	<source>Germanic languages</source>
+			</trans-unit>
+            <trans-unit id="geo">
+            	<source>Georgian</source>
+			</trans-unit>
+            <trans-unit id="ger">
+            	<source>German</source>
+			</trans-unit>
+            <trans-unit id="gez">
+            	<source>Geez</source>
+			</trans-unit>
+            <trans-unit id="gil">
+            	<source>Gilbertese</source>
+			</trans-unit>
+            <trans-unit id="gla">
+            	<source>Gaelic, Scottish Gaelic</source>
+			</trans-unit>
+            <trans-unit id="gle">
+            	<source>Irish</source>
+			</trans-unit>
+            <trans-unit id="glg">
+            	<source>Galician</source>
+			</trans-unit>
+            <trans-unit id="glv">
+            	<source>Manx</source>
+			</trans-unit>
+            <trans-unit id="gmh">
+            	<source>Middle High German (ca.1050-1500)</source>
+			</trans-unit>
+            <trans-unit id="goh">
+            	<source>Old High German (ca.750-1050)</source>
+			</trans-unit>
+            <trans-unit id="gon">
+            	<source>Gondi</source>
+			</trans-unit>
+            <trans-unit id="gor">
+            	<source>Gorontalo</source>
+			</trans-unit>
+            <trans-unit id="got">
+            	<source>Gothic</source>
+			</trans-unit>
+            <trans-unit id="grb">
+            	<source>Grebo</source>
+			</trans-unit>
+            <trans-unit id="grc">
+            	<source>Ancient Greek (to 1453)</source>
+			</trans-unit>
+            <trans-unit id="gre">
+            	<source>Modern Greek (1453-)</source>
+			</trans-unit>
+            <trans-unit id="grn">
+            	<source>Guarani</source>
+			</trans-unit>
+            <trans-unit id="gsw">
+            	<source>Swiss German, Alemannic, Alsatian</source>
+			</trans-unit>
+            <trans-unit id="guj">
+            	<source>Gujarati</source>
+			</trans-unit>
+            <trans-unit id="gwi">
+            	<source>Gwich'in</source>
+			</trans-unit>
+            <trans-unit id="hai">
+            	<source>Haida</source>
+			</trans-unit>
+            <trans-unit id="hat">
+            	<source>Haitian, Haitian Creole</source>
+			</trans-unit>
+            <trans-unit id="hau">
+            	<source>Hausa</source>
+			</trans-unit>
+            <trans-unit id="haw">
+            	<source>Hawaiian</source>
+			</trans-unit>
+            <trans-unit id="heb">
+            	<source>Hebrew</source>
+			</trans-unit>
+            <trans-unit id="her">
+            	<source>Herero</source>
+			</trans-unit>
+            <trans-unit id="hil">
+            	<source>Hiligaynon</source>
+			</trans-unit>
+            <trans-unit id="him">
+            	<source>Himachali languages, Western Pahari languages</source>
+			</trans-unit>
+            <trans-unit id="hin">
+            	<source>Hindi</source>
+			</trans-unit>
+            <trans-unit id="hit">
+            	<source>Hittite</source>
+			</trans-unit>
+            <trans-unit id="hmn">
+            	<source>Hmong, Mong</source>
+			</trans-unit>
+            <trans-unit id="hmo">
+            	<source>Hiri Motu</source>
+			</trans-unit>
+            <trans-unit id="hrv">
+            	<source>Croatian</source>
+			</trans-unit>
+            <trans-unit id="hsb">
+            	<source>Upper Sorbian</source>
+			</trans-unit>
+            <trans-unit id="hun">
+            	<source>Hungarian</source>
+			</trans-unit>
+            <trans-unit id="hup">
+            	<source>Hupa</source>
+			</trans-unit>
+            <trans-unit id="iba">
+            	<source>Iban</source>
+			</trans-unit>
+            <trans-unit id="ibo">
+            	<source>Igbo</source>
+			</trans-unit>
+            <trans-unit id="ice">
+            	<source>Icelandic</source>
+			</trans-unit>
+            <trans-unit id="ido">
+            	<source>Ido</source>
+			</trans-unit>
+            <trans-unit id="iii">
+            	<source>Sichuan Yi, Nuosu</source>
+			</trans-unit>
+            <trans-unit id="ijo">
+            	<source>Ijo languages</source>
+			</trans-unit>
+            <trans-unit id="iku">
+            	<source>Inuktitut</source>
+			</trans-unit>
+            <trans-unit id="ile">
+            	<source>Interlingue, Occidental</source>
+			</trans-unit>
+            <trans-unit id="ilo">
+            	<source>Iloko</source>
+			</trans-unit>
+            <trans-unit id="ina">
+            	<source>Interlingua</source>
+			</trans-unit>
+            <trans-unit id="inc">
+            	<source>Indic languages</source>
+			</trans-unit>
+            <trans-unit id="ind">
+            	<source>Indonesian</source>
+			</trans-unit>
+            <trans-unit id="ine">
+            	<source>Indo-European languages</source>
+			</trans-unit>
+            <trans-unit id="inh">
+            	<source>Ingush</source>
+			</trans-unit>
+            <trans-unit id="ipk">
+            	<source>Inupiak</source>
+			</trans-unit>
+            <trans-unit id="ira">
+            	<source>Iranian languages</source>
+			</trans-unit>
+            <trans-unit id="iro">
+            	<source>Iroquoian languages</source>
+			</trans-unit>
+            <trans-unit id="ita">
+            	<source>Italian</source>
+			</trans-unit>
+            <trans-unit id="jav">
+            	<source>Javanese</source>
+			</trans-unit>
+            <trans-unit id="jaw">
+            	<source>Javanese</source>
+			</trans-unit>
+            <trans-unit id="jbo">
+            	<source>Lojban</source>
+			</trans-unit>
+            <trans-unit id="jpn">
+            	<source>Japanese</source>
+			</trans-unit>
+            <trans-unit id="jpr">
+            	<source>Judeo-Persian</source>
+			</trans-unit>
+            <trans-unit id="jrb">
+            	<source>Judeo-Arabic</source>
+			</trans-unit>
+            <trans-unit id="kaa">
+            	<source>Kara-Kalpak</source>
+			</trans-unit>
+            <trans-unit id="kab">
+            	<source>Kabyle</source>
+			</trans-unit>
+            <trans-unit id="kac">
+            	<source>Kachin, Jingpho</source>
+			</trans-unit>
+            <trans-unit id="kal">
+            	<source>Kalaallisut, Greenlandic</source>
+			</trans-unit>
+            <trans-unit id="kam">
+            	<source>Kamba</source>
+			</trans-unit>
+            <trans-unit id="kan">
+            	<source>Kannada</source>
+			</trans-unit>
+            <trans-unit id="kar">
+            	<source>Karen languages</source>
+			</trans-unit>
+            <trans-unit id="kas">
+            	<source>Kashmiri</source>
+			</trans-unit>
+            <trans-unit id="kau">
+            	<source>Kanuri</source>
+			</trans-unit>
+            <trans-unit id="kaw">
+            	<source>Kawi</source>
+			</trans-unit>
+            <trans-unit id="kaz">
+            	<source>Kazakh</source>
+			</trans-unit>
+            <trans-unit id="kbd">
+            	<source>Kabardian</source>
+			</trans-unit>
+            <trans-unit id="kha">
+            	<source>Khasi</source>
+			</trans-unit>
+            <trans-unit id="khi">
+            	<source>Khoisan languages</source>
+			</trans-unit>
+            <trans-unit id="khm">
+            	<source>Khmer</source>
+			</trans-unit>
+            <trans-unit id="kho">
+            	<source>Khotanese, Sakan</source>
+			</trans-unit>
+            <trans-unit id="kik">
+            	<source>Kikuyu, Gikuyu</source>
+			</trans-unit>
+            <trans-unit id="kin">
+            	<source>Kinyarwanda</source>
+			</trans-unit>
+            <trans-unit id="kir">
+            	<source>Kirghiz, Kyrgyz</source>
+			</trans-unit>
+            <trans-unit id="kmb">
+            	<source>Kimbundu</source>
+			</trans-unit>
+            <trans-unit id="kok">
+            	<source>Konkani</source>
+			</trans-unit>
+            <trans-unit id="kom">
+            	<source>Komi</source>
+			</trans-unit>
+            <trans-unit id="kon">
+            	<source>Kongo</source>
+			</trans-unit>
+            <trans-unit id="kor">
+            	<source>Korean</source>
+			</trans-unit>
+            <trans-unit id="kos">
+            	<source>Kosraean</source>
+			</trans-unit>
+            <trans-unit id="kpe">
+            	<source>Kpelle</source>
+			</trans-unit>
+            <trans-unit id="krc">
+            	<source>Karachay-Balkar</source>
+			</trans-unit>
+            <trans-unit id="krl">
+            	<source>Karelian</source>
+			</trans-unit>
+            <trans-unit id="kro">
+            	<source>Kru languages</source>
+			</trans-unit>
+            <trans-unit id="kru">
+            	<source>Kurukh</source>
+			</trans-unit>
+            <trans-unit id="kua">
+            	<source>Kuanyama, Kwanyama</source>
+			</trans-unit>
+            <trans-unit id="kum">
+            	<source>Kumyk</source>
+			</trans-unit>
+            <trans-unit id="kur">
+            	<source>Kurdish</source>
+			</trans-unit>
+            <trans-unit id="kut">
+            	<source>Kutenai</source>
+			</trans-unit>
+            <trans-unit id="lad">
+            	<source>Ladino</source>
+			</trans-unit>
+            <trans-unit id="lah">
+            	<source>Lahnda</source>
+			</trans-unit>
+            <trans-unit id="lam">
+            	<source>Lamba</source>
+			</trans-unit>
+            <trans-unit id="lao">
+            	<source>Lao</source>
+			</trans-unit>
+            <trans-unit id="lat">
+            	<source>Latin</source>
+			</trans-unit>
+            <trans-unit id="lav">
+            	<source>Latvian</source>
+			</trans-unit>
+            <trans-unit id="lez">
+            	<source>Lezghian</source>
+			</trans-unit>
+            <trans-unit id="lim">
+            	<source>Limburgan, Limburgish</source>
+			</trans-unit>
+            <trans-unit id="lin">
+            	<source>Lingala</source>
+			</trans-unit>
+            <trans-unit id="lit">
+            	<source>Lithuanian</source>
+			</trans-unit>
+            <trans-unit id="lol">
+            	<source>Mongo</source>
+			</trans-unit>
+            <trans-unit id="loz">
+            	<source>Lozi</source>
+			</trans-unit>
+            <trans-unit id="ltz">
+            	<source>Luxembourgish, Letzeburgesch</source>
+			</trans-unit>
+            <trans-unit id="lua">
+            	<source>Luba-Lulua</source>
+			</trans-unit>
+            <trans-unit id="lub">
+            	<source>Luba-Katanga</source>
+			</trans-unit>
+            <trans-unit id="lug">
+            	<source>Ganda</source>
+			</trans-unit>
+            <trans-unit id="lui">
+            	<source>Luiseno</source>
+			</trans-unit>
+            <trans-unit id="lun">
+            	<source>Lunda</source>
+			</trans-unit>
+            <trans-unit id="luo">
+            	<source>Luo (Kenya and Tanzania)</source>
+			</trans-unit>
+            <trans-unit id="lus">
+            	<source>Lushai</source>
+			</trans-unit>
+            <trans-unit id="mac">
+            	<source>Macedonian</source>
+			</trans-unit>
+            <trans-unit id="mad">
+            	<source>Madurese</source>
+			</trans-unit>
+            <trans-unit id="mag">
+            	<source>Magahi</source>
+			</trans-unit>
+            <trans-unit id="mah">
+            	<source>Marshallese</source>
+			</trans-unit>
+            <trans-unit id="mai">
+            	<source>Maithili</source>
+			</trans-unit>
+            <trans-unit id="mak">
+            	<source>Makasar</source>
+			</trans-unit>
+            <trans-unit id="mal">
+            	<source>Malayalam</source>
+			</trans-unit>
+            <trans-unit id="man">
+            	<source>Mandingo</source>
+			</trans-unit>
+            <trans-unit id="mao">
+            	<source>Maori</source>
+			</trans-unit>
+            <trans-unit id="map">
+            	<source>Austronesian languages</source>
+			</trans-unit>
+            <trans-unit id="mar">
+            	<source>Marathi</source>
+			</trans-unit>
+            <trans-unit id="mas">
+            	<source>Masai</source>
+			</trans-unit>
+            <trans-unit id="may">
+            	<source>Malay</source>
+			</trans-unit>
+            <trans-unit id="mdf">
+            	<source>Moksha</source>
+			</trans-unit>
+            <trans-unit id="mdr">
+            	<source>Mandar</source>
+			</trans-unit>
+            <trans-unit id="men">
+            	<source>Mende</source>
+			</trans-unit>
+            <trans-unit id="mga">
+            	<source>Middle Irish (900-1200)</source>
+			</trans-unit>
+            <trans-unit id="mic">
+            	<source>Mi'kmaq, Micmac</source>
+			</trans-unit>
+            <trans-unit id="min">
+            	<source>Minangkabau</source>
+			</trans-unit>
+            <trans-unit id="mis">
+            	<source>Uncoded languages</source>
+			</trans-unit>
+            <trans-unit id="mkh">
+            	<source>Mon-Khmer languages</source>
+			</trans-unit>
+            <trans-unit id="mlg">
+            	<source>Malagasy</source>
+			</trans-unit>
+            <trans-unit id="mlt">
+            	<source>Maltese</source>
+			</trans-unit>
+            <trans-unit id="mnc">
+            	<source>Manchu</source>
+			</trans-unit>
+            <trans-unit id="mni">
+            	<source>Manipuri</source>
+			</trans-unit>
+            <trans-unit id="mno">
+            	<source>Manobo languages</source>
+			</trans-unit>
+            <trans-unit id="moh">
+            	<source>Mohawk</source>
+			</trans-unit>
+            <trans-unit id="mol">
+            	<source>Moldavian</source>
+			</trans-unit>
+            <trans-unit id="mon">
+            	<source>Mongolian</source>
+			</trans-unit>
+            <trans-unit id="mos">
+            	<source>Mossi</source>
+			</trans-unit>
+            <trans-unit id="mul">
+            	<source>Multiple languages</source>
+			</trans-unit>
+            <trans-unit id="mun">
+            	<source>Munda languages</source>
+			</trans-unit>
+            <trans-unit id="mus">
+            	<source>Creek</source>
+			</trans-unit>
+            <trans-unit id="mwl">
+            	<source>Mirandese</source>
+			</trans-unit>
+            <trans-unit id="mwr">
+            	<source>Marwari</source>
+			</trans-unit>
+            <trans-unit id="myn">
+            	<source>Mayan languages</source>
+			</trans-unit>
+            <trans-unit id="myv">
+            	<source>Erzya</source>
+			</trans-unit>
+            <trans-unit id="nah">
+            	<source>Nahuatl languages</source>
+			</trans-unit>
+            <trans-unit id="nai">
+            	<source>North American Indian languages</source>
+			</trans-unit>
+            <trans-unit id="nap">
+            	<source>Neapolitan</source>
+			</trans-unit>
+            <trans-unit id="nau">
+            	<source>Nauru</source>
+			</trans-unit>
+            <trans-unit id="nav">
+            	<source>Navajo, Navaho</source>
+			</trans-unit>
+            <trans-unit id="nbl">
+            	<source>South Ndebele</source>
+			</trans-unit>
+            <trans-unit id="nde">
+            	<source>North Ndebele</source>
+			</trans-unit>
+            <trans-unit id="ndo">
+            	<source>Ndonga</source>
+			</trans-unit>
+            <trans-unit id="nds">
+            	<source>Low German, Low Saxon</source>
+			</trans-unit>
+            <trans-unit id="nep">
+            	<source>Nepali</source>
+			</trans-unit>
+            <trans-unit id="new">
+            	<source>Newari, Nepal Bhasa</source>
+			</trans-unit>
+            <trans-unit id="nia">
+            	<source>Nias</source>
+			</trans-unit>
+            <trans-unit id="nic">
+            	<source>Niger-Kordofanian languages</source>
+			</trans-unit>
+            <trans-unit id="niu">
+            	<source>Niuean</source>
+			</trans-unit>
+            <trans-unit id="nno">
+            	<source>Norwegian Nynorsk</source>
+			</trans-unit>
+            <trans-unit id="nob">
+            	<source>Norwegian Bokmål</source>
+			</trans-unit>
+            <trans-unit id="nog">
+            	<source>Nogai</source>
+			</trans-unit>
+            <trans-unit id="non">
+            	<source>Old Norse</source>
+			</trans-unit>
+            <trans-unit id="nor">
+            	<source>Norwegian</source>
+			</trans-unit>
+            <trans-unit id="nqo">
+            	<source>N'Ko</source>
+			</trans-unit>
+            <trans-unit id="nso">
+            	<source>Pedi, Sepedi, Northern Sotho</source>
+			</trans-unit>
+            <trans-unit id="nub">
+            	<source>Nubian languages</source>
+			</trans-unit>
+            <trans-unit id="nwc">
+            	<source>Classical Newari, Classical Nepal Bhasa</source>
+			</trans-unit>
+            <trans-unit id="nya">
+            	<source>Chichewa, Chewa, Nyanja</source>
+			</trans-unit>
+            <trans-unit id="nym">
+            	<source>Nyamwezi</source>
+			</trans-unit>
+            <trans-unit id="nyn">
+            	<source>Nyankole</source>
+			</trans-unit>
+            <trans-unit id="nyo">
+            	<source>Nyoro</source>
+			</trans-unit>
+            <trans-unit id="nzi">
+            	<source>Nzima</source>
+			</trans-unit>
+            <trans-unit id="oci">
+            	<source>Occitan (post 1500), Provençal</source>
+			</trans-unit>
+            <trans-unit id="oji">
+            	<source>Ojibwa</source>
+			</trans-unit>
+            <trans-unit id="ori">
+            	<source>Oriya</source>
+			</trans-unit>
+            <trans-unit id="orm">
+            	<source>Oromo</source>
+			</trans-unit>
+            <trans-unit id="osa">
+            	<source>Osage</source>
+			</trans-unit>
+            <trans-unit id="oss">
+            	<source>Ossetian, Ossetic</source>
+			</trans-unit>
+            <trans-unit id="ota">
+            	<source>Ottoman Turkish (1500-1928)</source>
+			</trans-unit>
+            <trans-unit id="oto">
+            	<source>Otomian languages</source>
+			</trans-unit>
+            <trans-unit id="paa">
+            	<source>Papuan languages</source>
+			</trans-unit>
+            <trans-unit id="pag">
+            	<source>Pangasinan</source>
+			</trans-unit>
+            <trans-unit id="pal">
+            	<source>Pahlavi</source>
+			</trans-unit>
+            <trans-unit id="pam">
+            	<source>Pampanga, Kapampangan</source>
+			</trans-unit>
+            <trans-unit id="pan">
+            	<source>Panjabi, Punjabi</source>
+			</trans-unit>
+            <trans-unit id="pap">
+            	<source>Papiamento</source>
+			</trans-unit>
+            <trans-unit id="pau">
+            	<source>Palauan</source>
+			</trans-unit>
+            <trans-unit id="peo">
+            	<source>Old Persian (ca.600-400 BCE)</source>
+			</trans-unit>
+            <trans-unit id="per">
+            	<source>Persian</source>
+			</trans-unit>
+            <trans-unit id="phi">
+            	<source>Philippine languages</source>
+			</trans-unit>
+            <trans-unit id="phn">
+            	<source>Phoenician</source>
+			</trans-unit>
+            <trans-unit id="pli">
+            	<source>Pali</source>
+			</trans-unit>
+            <trans-unit id="pol">
+            	<source>Polish</source>
+			</trans-unit>
+            <trans-unit id="pon">
+            	<source>Pohnpeian</source>
+			</trans-unit>
+            <trans-unit id="por">
+            	<source>Portuguese</source>
+			</trans-unit>
+            <trans-unit id="pra">
+            	<source>Prakrit languages</source>
+			</trans-unit>
+            <trans-unit id="pro">
+            	<source>Old Provençal (to 1500)</source>
+			</trans-unit>
+            <trans-unit id="pus">
+            	<source>Pushto</source>
+			</trans-unit>
+            <trans-unit id="que">
+            	<source>Quechua</source>
+			</trans-unit>
+            <trans-unit id="raj">
+            	<source>Rajasthani</source>
+			</trans-unit>
+            <trans-unit id="rap">
+            	<source>Rapanui</source>
+			</trans-unit>
+            <trans-unit id="rar">
+            	<source>Rarotongan, Cook Islands Maori</source>
+			</trans-unit>
+            <trans-unit id="roa">
+            	<source>Romance languages</source>
+			</trans-unit>
+            <trans-unit id="roh">
+            	<source>Romansh</source>
+			</trans-unit>
+            <trans-unit id="rom">
+            	<source>Romany</source>
+			</trans-unit>
+            <trans-unit id="rum">
+            	<source>Romanian, Moldavian</source>
+			</trans-unit>
+            <trans-unit id="run">
+            	<source>Rundi</source>
+			</trans-unit>
+            <trans-unit id="rup">
+            	<source>Aromanian, Arumanian, Macedo-Romanian</source>
+			</trans-unit>
+            <trans-unit id="rus">
+            	<source>Russian</source>
+			</trans-unit>
+            <trans-unit id="sad">
+            	<source>Sandawe</source>
+			</trans-unit>
+            <trans-unit id="sag">
+            	<source>Sango</source>
+			</trans-unit>
+            <trans-unit id="sah">
+            	<source>Yakut</source>
+			</trans-unit>
+            <trans-unit id="sai">
+            	<source>South American Indian</source>
+			</trans-unit>
+            <trans-unit id="sal">
+            	<source>Salishan languages</source>
+			</trans-unit>
+            <trans-unit id="sam">
+            	<source>Samaritan Aramaic</source>
+			</trans-unit>
+            <trans-unit id="san">
+            	<source>Sanskrit</source>
+			</trans-unit>
+            <trans-unit id="sas">
+            	<source>Sasak</source>
+			</trans-unit>
+            <trans-unit id="sat">
+            	<source>Santali</source>
+			</trans-unit>
+            <trans-unit id="scn">
+            	<source>Sicilian</source>
+			</trans-unit>
+            <trans-unit id="sco">
+            	<source>Scots</source>
+			</trans-unit>
+            <trans-unit id="sel">
+            	<source>Selkup</source>
+			</trans-unit>
+            <trans-unit id="sem">
+            	<source>Semitic languages</source>
+			</trans-unit>
+            <trans-unit id="sga">
+            	<source>Old Irish (to 900)</source>
+			</trans-unit>
+            <trans-unit id="sgn">
+            	<source>Sign Languages</source>
+			</trans-unit>
+            <trans-unit id="shn">
+            	<source>Shan</source>
+			</trans-unit>
+            <trans-unit id="sid">
+            	<source>Sidamo</source>
+			</trans-unit>
+            <trans-unit id="sin">
+            	<source>Sinhalese</source>
+			</trans-unit>
+            <trans-unit id="sio">
+            	<source>Siouan languages</source>
+			</trans-unit>
+            <trans-unit id="sit">
+            	<source>Sino-Tibetan languages</source>
+			</trans-unit>
+            <trans-unit id="sla">
+            	<source>Slavic languages</source>
+			</trans-unit>
+            <trans-unit id="slo">
+            	<source>Slovak</source>
+			</trans-unit>
+            <trans-unit id="slv">
+            	<source>Slovenian</source>
+			</trans-unit>
+            <trans-unit id="sma">
+            	<source>Southern Sami</source>
+			</trans-unit>
+            <trans-unit id="sme">
+            	<source>Northern Sami</source>
+			</trans-unit>
+            <trans-unit id="smi">
+            	<source>Sami languages</source>
+			</trans-unit>
+            <trans-unit id="smj">
+            	<source>Lule Sami</source>
+			</trans-unit>
+            <trans-unit id="smn">
+            	<source>Inari Sami</source>
+			</trans-unit>
+            <trans-unit id="smo">
+            	<source>Samoan</source>
+			</trans-unit>
+            <trans-unit id="sms">
+            	<source>Skolt Sami</source>
+			</trans-unit>
+            <trans-unit id="sna">
+            	<source>Shona</source>
+			</trans-unit>
+            <trans-unit id="snd">
+            	<source>Sindhi</source>
+			</trans-unit>
+            <trans-unit id="snk">
+            	<source>Soninke</source>
+			</trans-unit>
+            <trans-unit id="sog">
+            	<source>Sogdian</source>
+			</trans-unit>
+            <trans-unit id="som">
+            	<source>Somali</source>
+			</trans-unit>
+            <trans-unit id="son">
+            	<source>Songhai languages</source>
+			</trans-unit>
+            <trans-unit id="sot">
+            	<source>Southern Sotho</source>
+			</trans-unit>
+            <trans-unit id="spa">
+            	<source>Spanish, Castilian</source>
+			</trans-unit>
+            <trans-unit id="srd">
+            	<source>Sardinian</source>
+			</trans-unit>
+            <trans-unit id="srn">
+            	<source>Sranan Tongo</source>
+			</trans-unit>
+            <trans-unit id="srp">
+            	<source>Serbian</source>
+			</trans-unit>
+            <trans-unit id="srr">
+            	<source>Serer</source>
+			</trans-unit>
+            <trans-unit id="ssa">
+            	<source>Nilo-Saharan languages</source>
+			</trans-unit>
+            <trans-unit id="ssw">
+            	<source>Swati</source>
+			</trans-unit>
+            <trans-unit id="suk">
+            	<source>Sukuma</source>
+			</trans-unit>
+            <trans-unit id="sun">
+            	<source>Sundanese</source>
+			</trans-unit>
+            <trans-unit id="sus">
+            	<source>Susu</source>
+			</trans-unit>
+            <trans-unit id="sux">
+            	<source>Sumerian</source>
+			</trans-unit>
+            <trans-unit id="swa">
+            	<source>Swahili</source>
+			</trans-unit>
+            <trans-unit id="swe">
+            	<source>Swedish</source>
+			</trans-unit>
+            <trans-unit id="syc">
+            	<source>Classical Syriac</source>
+			</trans-unit>
+            <trans-unit id="syr">
+            	<source>Syriac</source>
+			</trans-unit>
+            <trans-unit id="tah">
+            	<source>Tahitian</source>
+			</trans-unit>
+            <trans-unit id="tai">
+            	<source>Tai languages</source>
+			</trans-unit>
+            <trans-unit id="tam">
+            	<source>Tamil</source>
+			</trans-unit>
+            <trans-unit id="tat">
+            	<source>Tatar</source>
+			</trans-unit>
+            <trans-unit id="tel">
+            	<source>Telugu</source>
+			</trans-unit>
+            <trans-unit id="tem">
+            	<source>Timne</source>
+			</trans-unit>
+            <trans-unit id="ter">
+            	<source>Tereno</source>
+			</trans-unit>
+            <trans-unit id="tet">
+            	<source>Tetum</source>
+			</trans-unit>
+            <trans-unit id="tgk">
+            	<source>Tajik</source>
+			</trans-unit>
+            <trans-unit id="tgl">
+            	<source>Tagalog</source>
+			</trans-unit>
+            <trans-unit id="tha">
+            	<source>Thai</source>
+			</trans-unit>
+            <trans-unit id="tib">
+            	<source>Tibetan</source>
+			</trans-unit>
+            <trans-unit id="tig">
+            	<source>Tigre</source>
+			</trans-unit>
+            <trans-unit id="tir">
+            	<source>Tigrinya</source>
+			</trans-unit>
+            <trans-unit id="tiv">
+            	<source>Tiv</source>
+			</trans-unit>
+            <trans-unit id="tkl">
+            	<source>Tokelau</source>
+			</trans-unit>
+            <trans-unit id="tlh">
+            	<source>Klingon</source>
+			</trans-unit>
+            <trans-unit id="tli">
+            	<source>Tlingit</source>
+			</trans-unit>
+            <trans-unit id="tmh">
+            	<source>Tamashek</source>
+			</trans-unit>
+            <trans-unit id="tog">
+            	<source>Tonga (Nyasa)</source>
+			</trans-unit>
+            <trans-unit id="ton">
+            	<source>Tonga (Tonga Islands)</source>
+			</trans-unit>
+            <trans-unit id="tpi">
+            	<source>Tok Pisin</source>
+			</trans-unit>
+            <trans-unit id="tsi">
+            	<source>Tsimshian</source>
+			</trans-unit>
+            <trans-unit id="tsn">
+            	<source>Tswana</source>
+			</trans-unit>
+            <trans-unit id="tso">
+            	<source>Tsonga</source>
+			</trans-unit>
+            <trans-unit id="tuk">
+            	<source>Turkmen</source>
+			</trans-unit>
+            <trans-unit id="tum">
+            	<source>Tumbuka</source>
+			</trans-unit>
+            <trans-unit id="tup">
+            	<source>Tupi languages</source>
+			</trans-unit>
+            <trans-unit id="tur">
+            	<source>Turkish</source>
+			</trans-unit>
+            <trans-unit id="tut">
+            	<source>Altaic languages</source>
+			</trans-unit>
+            <trans-unit id="tvl">
+            	<source>Tuvalu</source>
+			</trans-unit>
+            <trans-unit id="twi">
+            	<source>Twi</source>
+			</trans-unit>
+            <trans-unit id="tyv">
+            	<source>Tuvinian</source>
+			</trans-unit>
+            <trans-unit id="udm">
+            	<source>Udmurt</source>
+			</trans-unit>
+            <trans-unit id="uga">
+            	<source>Ugaritic</source>
+			</trans-unit>
+            <trans-unit id="uig">
+            	<source>Uighur</source>
+			</trans-unit>
+            <trans-unit id="ukr">
+            	<source>Ukrainian</source>
+			</trans-unit>
+            <trans-unit id="umb">
+            	<source>Umbundu</source>
+			</trans-unit>
+            <trans-unit id="und">
+            	<source>Undetermined</source>
+			</trans-unit>
+            <trans-unit id="urd">
+            	<source>Urdu</source>
+			</trans-unit>
+            <trans-unit id="uzb">
+            	<source>Uzbek</source>
+			</trans-unit>
+            <trans-unit id="vai">
+            	<source>Vai</source>
+			</trans-unit>
+            <trans-unit id="ven">
+            	<source>Venda</source>
+			</trans-unit>
+            <trans-unit id="vie">
+            	<source>Vietnamese</source>
+			</trans-unit>
+            <trans-unit id="vol">
+            	<source>Volapük</source>
+			</trans-unit>
+            <trans-unit id="vot">
+            	<source>Votic</source>
+			</trans-unit>
+            <trans-unit id="wak">
+            	<source>Wakashan languages</source>
+			</trans-unit>
+            <trans-unit id="wal">
+            	<source>Walamo</source>
+			</trans-unit>
+            <trans-unit id="war">
+            	<source>Waray</source>
+			</trans-unit>
+            <trans-unit id="was">
+            	<source>Washo</source>
+			</trans-unit>
+            <trans-unit id="wel">
+            	<source>Welsh</source>
+			</trans-unit>
+            <trans-unit id="wen">
+            	<source>Sorbian languages</source>
+			</trans-unit>
+            <trans-unit id="wln">
+            	<source>Walloon</source>
+			</trans-unit>
+            <trans-unit id="wol">
+            	<source>Wolof</source>
+			</trans-unit>
+            <trans-unit id="xal">
+            	<source>Kalmyk, Oirat</source>
+			</trans-unit>
+            <trans-unit id="xho">
+            	<source>Xhosa</source>
+			</trans-unit>
+            <trans-unit id="yao">
+            	<source>Yao</source>
+			</trans-unit>
+            <trans-unit id="yap">
+            	<source>Yapese</source>
+			</trans-unit>
+            <trans-unit id="yid">
+            	<source>Yiddish</source>
+			</trans-unit>
+            <trans-unit id="yor">
+            	<source>Yoruba</source>
+			</trans-unit>
+            <trans-unit id="ypk">
+            	<source>Yupik languages</source>
+			</trans-unit>
+            <trans-unit id="zap">
+            	<source>Zapotec</source>
+			</trans-unit>
+            <trans-unit id="zbl">
+            	<source>Blissymbolics</source>
+			</trans-unit>
+            <trans-unit id="zen">
+            	<source>Zenaga</source>
+			</trans-unit>
+            <trans-unit id="zha">
+            	<source>Zhuang</source>
+			</trans-unit>
+            <trans-unit id="znd">
+            	<source>Zande languages</source>
+			</trans-unit>
+            <trans-unit id="zul">
+            	<source>Zulu</source>
+			</trans-unit>
+            <trans-unit id="zun">
+            	<source>Zuni</source>
+			</trans-unit>
+            <trans-unit id="zxx">
+            	<source>No linguistic content</source>
+			</trans-unit>
+            <trans-unit id="zza">
+            	<source>Zazaki</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

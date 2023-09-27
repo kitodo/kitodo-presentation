@@ -56,7 +56,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read string $thumbnail This holds the document's thumbnail location
  * @property-read string $toplevelId This holds the toplevel manifest's @id
  */
-final class IiifManifest extends Doc
+final class IiifManifest extends AbstractDocument
 {
     /**
      * This holds the manifest file as string for serialization purposes
@@ -116,7 +116,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::establishRecordId()
+     * @see AbstractDocument::establishRecordId()
      */
     protected function establishRecordId($pid)
     {
@@ -172,7 +172,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getDocument()
+     * @see AbstractDocument::getDocument()
      */
     protected function getDocument()
     {
@@ -257,7 +257,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::_getPhysicalStructure()
+     * @see AbstractDocument::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
     {
@@ -371,7 +371,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getDownloadLocation()
+     * @see AbstractDocument::getDownloadLocation()
      */
     public function getDownloadLocation($id)
     {
@@ -385,7 +385,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getFileLocation()
+     * @see AbstractDocument::getFileLocation()
      */
     public function getFileLocation($id)
     {
@@ -410,7 +410,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getFileMimeType()
+     * @see AbstractDocument::getFileMimeType()
      */
     public function getFileMimeType($id)
     {
@@ -436,7 +436,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getLogicalStructure()
+     * @see AbstractDocument::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
     {
@@ -608,7 +608,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getMetadata()
+     * @see AbstractDocument::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
     {
@@ -695,7 +695,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::_getSmLinks()
+     * @see AbstractDocument::_getSmLinks()
      */
     protected function _getSmLinks()
     {
@@ -756,7 +756,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::getFullText()
+     * @see AbstractDocument::getFullText()
      */
     //TODO: rewrite it to get full OCR
     public function getFullText($id)
@@ -824,7 +824,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::init()
+     * @see AbstractDocument::init()
      */
     protected function init($location)
     {
@@ -833,7 +833,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::loadLocation()
+     * @see AbstractDocument::loadLocation()
      */
     protected function loadLocation($location)
     {
@@ -857,7 +857,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::prepareMetadataArray()
+     * @see AbstractDocument::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
     {
@@ -867,7 +867,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Doc::setPreloadedDocument()
+     * @see AbstractDocument::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)
     {
@@ -880,7 +880,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see Docu::ensureHasFulltextIsSet()
+     * @see AbstractDocument::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
     {
@@ -927,7 +927,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::_getThumbnail()
+     * @see AbstractDocument::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
     {
@@ -936,7 +936,7 @@ final class IiifManifest extends Doc
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::_getToplevelId()
+     * @see AbstractDocument::_getToplevelId()
      */
     protected function _getToplevelId()
     {

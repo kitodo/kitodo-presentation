@@ -77,7 +77,7 @@ class AudioplayerController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setDefaultPage();
@@ -85,20 +85,19 @@ class AudioplayerController extends AbstractController
         // Check if there are any audio files available.
         $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
-            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio])) {
+            $fileGroupAudio = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio];
+            if (!empty($fileGroupAudio)) {
                 // Get audio data.
-                $this->audio['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio]);
-                $this->audio['label'] = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['label'];
-                $this->audio['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio]);
+                $this->audio['url'] = $this->document->getCurrentDocument()->getFileLocation($fileGroupAudio);
+                $this->audio['label'] = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]['label'];
+                $this->audio['mimetype'] = $this->document->getCurrentDocument()->getFileMimeType($fileGroupAudio);
                 break;
             }
         }
+
         if (!empty($this->audio)) {
             // Add jPlayer javascript.
             $this->addPlayerJS();
-        } else {
-            // Quit without doing anything if required variables are not set.
-            return '';
         }
     }
 }
