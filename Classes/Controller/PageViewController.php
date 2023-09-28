@@ -112,13 +112,15 @@ class PageViewController extends AbstractController
         // Get fulltext link.
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            $fileGroupFulltext = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]]['files'][$fileGrpFulltext];
-            if (!empty($fileGroupFulltext)) {
-                $fulltext['url'] = $this->document->getCurrentDocument()->getFileLocation($fileGroupFulltext);
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpFulltext];
+            if (!empty($fileId)) {
+                $file = $this->document->getCurrentDocument()->getFileLocation($fileId);
+                $fulltext['url'] = $file['location'];
                 if ($this->settings['useInternalProxy']) {
                     $this->configureProxyUrl($fulltext['url']);
                 }
-                $fulltext['mimetype'] = $this->document->getCurrentDocument()->getFileMimeType($fileGroupFulltext);
+                $fulltext['mimetype'] = $file['mimeType'];
                 break;
             } else {
                 $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $fileGrpFulltext . '"');
@@ -229,13 +231,15 @@ class PageViewController extends AbstractController
         $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']);
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
             // Get image link.
-            $fileGroupImage = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]]['files'][$fileGrpImages];
-            if (!empty($fileGroupImage)) {
-                $image['url'] = $this->document->getCurrentDocument()->getFileLocation($fileGroupImage);
-                $image['mimetype'] = $this->document->getCurrentDocument()->getFileMimeType($fileGroupImage);
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpImages];
+            if (!empty($fileId)) {
+                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+                $image['url'] = $file['location'];
+                $image['mimetype'] = $file['mimeType'];
 
                 // Only deliver static images via the internal PageViewProxy.
-                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL` in `OLSources.js`.)
+                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
                 if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
                     $this->configureProxyUrl($image['url']);
                 }
