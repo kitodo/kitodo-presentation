@@ -36,8 +36,6 @@ class IiifUrlReader implements UrlReaderInterface
     protected static $instance;
 
     /**
-     *
-     * {@inheritDoc}
      * @see UrlReaderInterface::getContent()
      */
     public function getContent($url)
