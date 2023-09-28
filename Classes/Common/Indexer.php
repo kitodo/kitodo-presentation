@@ -37,7 +37,7 @@ class Indexer
     /**
      * @access public
      * @static
-     * @var stringThe extension key
+     * @var string The extension key
      */
     public static $extKey = 'dlf';
 
