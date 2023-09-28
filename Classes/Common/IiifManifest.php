@@ -120,15 +120,6 @@ final class IiifManifest extends AbstractDocument
     protected $mimeTypes = [];
 
     /**
-     * The extension key
-     *
-     * @var string
-     * @static
-     * @access public
-     */
-    public static $extKey = 'dlf';
-
-    /**
      * @see AbstractDocument::establishRecordId()
      */
     protected function establishRecordId($pid)
