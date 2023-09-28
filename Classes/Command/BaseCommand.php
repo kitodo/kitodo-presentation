@@ -107,7 +107,7 @@ class BaseCommand extends Command
     /**
      * Initialize the extbase repository based on the given storagePid.
      *
-     * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependency Injection.
+     * TYPO3 10+: Find a better solution e.g. based on Symfony Dependency Injection.
      *
      * @param int $storagePid The storage pid
      *
