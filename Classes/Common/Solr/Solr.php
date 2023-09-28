@@ -105,13 +105,13 @@ class Solr implements LoggerAwareInterface
 
     /**
      * @access protected
-     * @var array (\Kitodo\Dlf\Common\Solr\Solr) This holds the singleton search objects with their core as array key
+     * @var array(Solr) This holds the singleton search objects with their core as array key
      */
     protected static $registry = [];
 
     /**
      * @access protected
-     * @var \Solarium\Client This holds the Solr service object
+     * @var Client This holds the Solr service object
      */
     protected $service;
 
