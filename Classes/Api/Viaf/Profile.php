@@ -49,7 +49,7 @@ class Profile
      *
      * @var \SimpleXmlElement|false
      **/
-    private $raw = null;
+    private $raw = false;
 
     /**
      * Constructs client instance
@@ -72,7 +72,7 @@ class Profile
     public function getData()
     {
         $this->getRaw();
-        if (!empty($this->raw)) {
+        if ($this->raw != false && !empty($this->raw)) {
             $data = [];
             $data['address'] = $this->getAddress();
             $data['fullName'] = $this->getFullName();
@@ -91,7 +91,7 @@ class Profile
     public function getAddress()
     {
         $this->getRaw();
-        if (!empty($this->raw->asXML())) {
+        if ($this->raw != false && !empty($this->raw->asXML())) {
             return (string) $this->raw->xpath('./ns1:nationalityOfEntity/ns1:data/ns1:text')[0];
         } else {
             $this->logger->warning('No address found for given VIAF URL');
@@ -107,7 +107,7 @@ class Profile
     public function getFullName()
     {
         $this->getRaw();
-        if (!empty($this->raw->asXML())) {
+        if ($this->raw != false && !empty($this->raw->asXML())) {
             $rawName = $this->raw->xpath('./ns1:mainHeadings/ns1:data/ns1:text');
             $name = (string) $rawName[0];
             $name = trim(trim(trim($name), ','), '.');
@@ -126,9 +126,11 @@ class Profile
     protected function getRaw()
     {
         $data = $this->client->getData();
-        if (!isset($this->raw) && $data != false) {
+        if ($data != false) {
             $this->raw = Helper::getXmlFileAsString($data);
-            $this->raw->registerXPathNamespace('ns1', 'http://viaf.org/viaf/terms#');
+            if ($this->raw != false && !empty($this->raw->asXML())) {
+                $this->raw->registerXPathNamespace('ns1', 'http://viaf.org/viaf/terms#');
+            }
         }
     }
 }
