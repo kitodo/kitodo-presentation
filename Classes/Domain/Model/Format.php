@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * Configured data formats and namespaces like MODS, ALTO, IIIF etc.
  * They are referenced by ``tx_dlf_metadataformat.encoded``.
@@ -26,7 +28,7 @@ namespace Kitodo\Dlf\Domain\Model;
  *
  * @access public
  */
-class Format extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Format extends AbstractEntity
 {
     /**
      * Name of the type that is used to reference it.

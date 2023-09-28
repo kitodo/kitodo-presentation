@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\ExpressionLanguage;
 
 use TYPO3\CMS\Core\ExpressionLanguage\AbstractProvider;
-use TYPO3\CMS\Core\ExpressionLanguage\FunctionsProvider\Typo3ConditionFunctionsProvider;
 
 /**
  * Wrapper class to provide variables and functions for the ExpressionLanguage.

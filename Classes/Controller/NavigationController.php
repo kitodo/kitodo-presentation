@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Domain\Model\PageSelectForm;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -25,10 +26,10 @@ class NavigationController extends AbstractController
 {
     /**
      * Method to get the page select values and use them with chash
-     * @param \Kitodo\Dlf\Domain\Model\PageSelectForm|NULL $pageSelectForm
+     * @param PageSelectForm|NULL $pageSelectForm
      * @return void
      */
-    public function pageSelectAction(\Kitodo\Dlf\Domain\Model\PageSelectForm $pageSelectForm = NULL) {
+    public function pageSelectAction(PageSelectForm $pageSelectForm = NULL) {
         if ($pageSelectForm) {
             $uri = $this->uriBuilder->reset()
                 ->setArguments(

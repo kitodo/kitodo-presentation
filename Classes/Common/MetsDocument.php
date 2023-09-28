@@ -175,8 +175,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     *
-     * {@inheritDoc}
      * @see AbstractDocument::establishRecordId()
      */
     protected function establishRecordId($pid)
@@ -196,8 +194,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     *
-     * {@inheritDoc}
      * @see AbstractDocument::getDownloadLocation()
      */
     public function getDownloadLocation($id)
@@ -241,7 +237,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileLocation()
      */
     public function getFileLocation($id)
@@ -259,7 +254,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileMimeType()
      */
     public function getFileMimeType($id)
@@ -277,7 +271,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
@@ -426,7 +419,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
@@ -705,7 +697,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFullText()
      */
     public function getFullText($id)
@@ -721,7 +712,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getStructureDepth()
      */
     public function getStructureDepth($logId)
@@ -735,7 +725,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::init()
      */
     protected function init($location)
@@ -760,7 +749,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::loadLocation()
      */
     protected function loadLocation($location)
@@ -779,7 +767,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
@@ -791,7 +778,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)
@@ -805,7 +791,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getDocument()
      */
     protected function getDocument()
@@ -968,7 +953,16 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
+     * @access protected
+     * @return array
+     */
+    protected function _getFileInfos()
+    {
+        $this->_getFileGrps();
+        return $this->fileInfos;
+    }
+
+    /**
      * @see AbstractDocument::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
@@ -996,7 +990,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
@@ -1059,7 +1052,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getSmLinks()
      */
     protected function _getSmLinks()
@@ -1078,7 +1070,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
@@ -1158,7 +1149,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getToplevelId()
      */
     protected function _getToplevelId()

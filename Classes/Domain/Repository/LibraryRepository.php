@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
 /**
  * Library repository.
  *
@@ -20,7 +22,7 @@ namespace Kitodo\Dlf\Domain\Repository;
  *
  * @access public
  */
-class LibraryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class LibraryRepository extends Repository
 {
 
 }

@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * (Basket Plugin) External printers for sending documents.
  *
@@ -20,7 +22,7 @@ namespace Kitodo\Dlf\Domain\Model;
  *
  * @access public
  */
-class Printer extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Printer extends AbstractEntity
 {
     /**
      * @var string

@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * (Basket Plugin) A basket that is bound to a frontend session.
  *
@@ -20,7 +22,7 @@ namespace Kitodo\Dlf\Domain\Model;
  *
  * @access public
  */
-class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Basket extends AbstractEntity
 {
     /**
      * @var string|null
@@ -41,7 +43,6 @@ class Basket extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @var string
      */
     protected $sessionId;
-
 
     /**
      * @return string|null

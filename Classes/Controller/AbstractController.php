@@ -23,6 +23,7 @@ use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Abstract controller class for most of the plugin controller.
@@ -34,7 +35,7 @@ use TYPO3\CMS\Core\Pagination\PaginatorInterface;
  *
  * @abstract
  */
-abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController implements LoggerAwareInterface
+abstract class AbstractController extends ActionController implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -54,7 +55,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     /**
      * This holds the current document
      *
-     * @var \Kitodo\Dlf\Domain\Model\Document
+     * @var Document
      * @access protected
      */
     protected $document;

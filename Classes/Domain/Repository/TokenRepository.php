@@ -12,8 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Token repository.
@@ -23,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @access public
  */
-class TokenRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class TokenRepository extends Repository
 {
     /**
      * Delete all expired token

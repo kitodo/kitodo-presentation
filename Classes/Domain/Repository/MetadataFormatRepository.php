@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
 /**
  * Metadata format repository.
  *
@@ -20,7 +22,7 @@ namespace Kitodo\Dlf\Domain\Repository;
  *
  * @access public
  */
-class MetadataFormatRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class MetadataFormatRepository extends Repository
 {
 
 }

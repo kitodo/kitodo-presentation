@@ -14,12 +14,7 @@ namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\Solr;
-use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\TypoScript\ConfigurationForm
@@ -46,13 +41,13 @@ class ConfigurationForm
             Helper::addMessage(
                 Helper::getLanguageService()->getLL('solr.status'),
                 Helper::getLanguageService()->getLL('solr.connected'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::OK
+                FlashMessage::OK
             );
         } else {
             Helper::addMessage(
                 Helper::getLanguageService()->getLL('solr.error'),
                 Helper::getLanguageService()->getLL('solr.notConnected'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                FlashMessage::WARNING
             );
         }
         return Helper::renderFlashMessages();

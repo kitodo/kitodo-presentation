@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Domain\Model\Library;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -61,7 +62,7 @@ class FeedsController extends AbstractController
         $requestData = $this->request->getArguments();
 
         // get library information
-        /** @var \Kitodo\Dlf\Domain\Model\Library|null $library */
+        /** @var Library|null $library */
         $library = $this->libraryRepository->findByUid($this->settings['library']);
 
         $feedMeta = [];

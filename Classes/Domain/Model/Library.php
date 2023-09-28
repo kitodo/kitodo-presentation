@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * A library institution with the following use cases:
  *
@@ -27,7 +29,7 @@ namespace Kitodo\Dlf\Domain\Model;
  *
  * @access public
  */
-class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Library extends AbstractEntity
 {
     /**
      * @var string

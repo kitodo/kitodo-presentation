@@ -38,8 +38,20 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
         $rawText = '';
         $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
         // Get all (presumed) words of the text.
-        $words = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String/@CONTENT');
-        if (!empty($words)) {
+        $strings = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String');
+        $words = [];
+        if (!empty($strings)) {
+            for ($i = 0; $i < count($strings); $i++) {
+                $attributes = $strings[$i]->attributes();
+                if (isset($attributes['SUBS_TYPE'])) {
+                    if ($attributes['SUBS_TYPE'] == 'HypPart1') {
+                        $i++;
+                        $words[] = $attributes['SUBS_CONTENT'];
+                    }
+                } else {
+                    $words[] = $attributes['CONTENT'];
+                }
+            }
             $rawText = implode(' ', $words);
         }
         return $rawText;
@@ -101,6 +113,12 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      */
     private function getWord($attributes)
     {
+        if (!empty($attributes['SUBS_CONTENT'])) {
+            if ($attributes['SUBS_TYPE'] == 'HypPart1') {
+                return htmlspecialchars((string) $attributes['SUBS_CONTENT']);
+            }
+            return ' ';
+        }
         return htmlspecialchars((string) $attributes['CONTENT']) . ' ';
     }
 
