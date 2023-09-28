@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\ExpressionLanguage;
 
 use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
@@ -29,9 +28,9 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterface, LoggerAwareInterface
@@ -51,7 +50,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * This holds the current document
      *
-     * @var \Kitodo\Dlf\Domain\Model\Document
+     * @var Document
      * @access protected
      */
     protected $document;
@@ -87,7 +86,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     protected function initializeRepositories($storagePid)
     {
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
         $this->configurationManager->setConfiguration($frameworkConfiguration);
@@ -98,7 +97,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * Shortcut function to access field values
      *
-     * @return \Symfony\Component\ExpressionLanguage\ExpressionFunction
+     * @return ExpressionFunction
      */
     protected function getDocumentTypeFunction(): ExpressionFunction
     {

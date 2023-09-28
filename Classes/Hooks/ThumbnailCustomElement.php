@@ -14,6 +14,14 @@ namespace Kitodo\Dlf\Hooks;
 
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 
+/**
+ * Custom Thumbnail element for Form
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class ThumbnailCustomElement extends AbstractFormElement
 {
     public function render()

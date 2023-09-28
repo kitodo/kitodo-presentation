@@ -29,9 +29,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * - `url` (mandatory): The URL to be proxied
  * - `uHash` (mandatory): HMAC of the URL
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class PageViewProxy

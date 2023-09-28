@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -20,9 +21,9 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 /**
  * Controller class for the plugin 'Collection'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class CollectionController extends AbstractController
@@ -146,11 +147,11 @@ class CollectionController extends AbstractController
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection $collection: The collection object
+     * @param Collection $collection: The collection object
      *
      * @return void
      */
-    public function showAction(\Kitodo\Dlf\Domain\Model\Collection $collection)
+    public function showAction(Collection $collection)
     {
         $searchParams = $this->getParametersSafely('searchParameter');
 

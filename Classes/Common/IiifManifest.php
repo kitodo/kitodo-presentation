@@ -36,25 +36,45 @@ use Ubl\Iiif\Tools\IiifHelper;
 /**
  * IiifManifest class for the 'dlf' extension.
  *
- * @author Lutz Helm <helm@ub.uni-leipzig.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
- * @property int $cPid This holds the PID for the configuration
- * @property-read bool $hasFulltext Are there any fulltext files available?
- * @property-read array $metadataArray This holds the documents' parsed metadata array
- * @property-read int $numPages The holds the total number of pages
- * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
- * @property-read array $physicalStructure This holds the physical structure
- * @property-read array $physicalStructureInfo This holds the physical structure metadata
- * @property-read int $pid This holds the PID of the document or zero if not in database
+ *
+ * @property int $cPid this holds the PID for the configuration
+ * @property-read array $formats this holds the configuration for all supported metadata encodings
+ * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
+ * @property-read bool $hasFulltext flag with information if there are any fulltext files available
+ * @property array $lastSearchedPhysicalPage the last searched logical and physical page
+ * @property array $logicalUnits this holds the logical units
+ * @property-read array $metadataArray this holds the documents' parsed metadata array
+ * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
+ * @property-read int $numPages the holds the total number of pages
+ * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
+ * @property-read array $physicalStructure this holds the physical structure
+ * @property-read array $physicalStructureInfo this holds the physical structure metadata
+ * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
+ * @property-read int $pid this holds the PID of the document or zero if not in database
+ * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
- * @property-read string $recordId The IIIF manifest's record identifier
- * @property-read int $rootId This holds the UID of the root document or zero if not multi-volumed
- * @property-read array $smLinks This holds the connections between resources and canvases
- * @property-read array $tableOfContents This holds the logical structure
- * @property-read string $thumbnail This holds the document's thumbnail location
- * @property-read string $toplevelId This holds the toplevel manifest's @id
+ * @property-read string $recordId the METS file's / IIIF manifest's record identifier
+ * @property array $registry this holds the singleton object of the document
+ * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
+ * @property-read array $smLinks this holds the smLinks between logical and physical structMap
+ * @property bool $smLinksLoaded flag with information if the smLinks are loaded
+ * @property-read array $tableOfContents this holds the logical structure
+ * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
+ * @property-read string $thumbnail this holds the document's thumbnail location
+ * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
+ * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
+ * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
+ * @property string $asJson this holds the manifest file as string for serialization purposes
+ * @property ManifestInterface $iiif a PHP object representation of a IIIF manifest
+ * @property string $iiifVersion 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif conforms to
+ * @property bool $hasFulltextSet flag if document has already been analyzed for presence of the fulltext for the Solr index
+ * @property array $originalMetadataArray this holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
+ * @property array $mimeTypes this holds the mime types of linked resources in the manifest (extracted during parsing) for later us
+ * 
  */
 final class IiifManifest extends AbstractDocument
 {
@@ -100,7 +120,15 @@ final class IiifManifest extends AbstractDocument
     protected $mimeTypes = [];
 
     /**
-     * {@inheritDoc}
+     * The extension key
+     *
+     * @var string
+     * @static
+     * @access public
+     */
+    public static $extKey = 'dlf';
+
+    /**
      * @see AbstractDocument::establishRecordId()
      */
     protected function establishRecordId($pid)
@@ -156,7 +184,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getDocument()
      */
     protected function getDocument()
@@ -241,7 +268,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getPhysicalStructure()
      */
     protected function _getPhysicalStructure()
@@ -369,7 +395,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileInfo()
      */
     public function getFileInfo($id)
@@ -386,7 +411,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileLocation()
      */
     public function getFileLocation($id)
@@ -411,7 +435,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileMimeType()
      */
     public function getFileMimeType($id)
@@ -437,7 +460,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getLogicalStructure()
      */
     public function getLogicalStructure($id, $recursive = false)
@@ -609,7 +631,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getMetadata()
      */
     public function getMetadata($id, $cPid = 0)
@@ -696,7 +717,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getSmLinks()
      */
     protected function _getSmLinks()
@@ -757,7 +777,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFullText()
      */
     //TODO: rewrite it to get full OCR
@@ -825,7 +844,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::init()
      */
     protected function init($location)
@@ -834,7 +852,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::loadLocation()
      */
     protected function loadLocation($location)
@@ -858,7 +875,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::prepareMetadataArray()
      */
     protected function prepareMetadataArray($cPid)
@@ -868,7 +884,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::setPreloadedDocument()
      */
     protected function setPreloadedDocument($preloadedDocument)
@@ -881,7 +896,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet()
@@ -928,7 +942,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getThumbnail()
      */
     protected function _getThumbnail($forceReload = false)
@@ -937,7 +950,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getToplevelId()
      */
     protected function _getToplevelId()

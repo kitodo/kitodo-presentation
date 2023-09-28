@@ -21,9 +21,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * ORCID API Client class
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  **/
 class Client
@@ -71,7 +71,7 @@ class Client
     /**
      * Constructs a new instance
      *
-     * @param string $orcid: the ORCID to search for
+     * @param string $orcid the ORCID to search for
      * @param RequestFactory $requestFactory a request object to inject
      * @return void
      **/

@@ -15,9 +15,9 @@ namespace Kitodo\Dlf\Common\Solr\SearchResult;
 /**
  * ResultDocument class for the 'dlf' extension. It keeps the result of the search in the SOLR index.
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ResultDocument

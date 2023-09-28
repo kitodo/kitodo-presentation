@@ -14,16 +14,17 @@ namespace Kitodo\Dlf\Format;
 
 use Kitodo\Dlf\Api\Orcid\Profile as OrcidProfile;
 use Kitodo\Dlf\Api\Viaf\Profile as ViafProfile;
+use Kitodo\Dlf\Common\MetadataInterface;
 
 /**
  * Metadata MODS format class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ * 
  * @access public
  */
-class Mods implements \Kitodo\Dlf\Common\MetadataInterface
+class Mods implements MetadataInterface
 {
     /**
      * @access private

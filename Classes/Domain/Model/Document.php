@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Domain\Model;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -22,9 +23,10 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Document extends AbstractEntity
 {
     /**
      * @access protected
@@ -461,7 +463,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @return \Kitodo\Dlf\Domain\Model\Structure
      */
-    public function getStructure(): Structure
+    public function getStructure(): \Kitodo\Dlf\Domain\Model\Structure
     {
         return $this->structure;
     }
@@ -469,7 +471,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @param \Kitodo\Dlf\Domain\Model\Structure $structure
      */
-    public function setStructure(Structure $structure): void
+    public function setStructure(\Kitodo\Dlf\Domain\Model\Structure $structure): void
     {
         $this->structure = $structure;
     }
@@ -626,7 +628,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @param \Kitodo\Dlf\Domain\Model\Collection $collection
      */
-    public function addCollection(Collection $collection): void
+    public function addCollection(\Kitodo\Dlf\Domain\Model\Collection $collection): void
     {
         $this->collections->attach($collection);
     }
@@ -688,7 +690,7 @@ class Document extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @param \Kitodo\Dlf\Domain\Model\Library $owner
      */
-    public function setOwner(Library $owner): void
+    public function setOwner(\Kitodo\Dlf\Domain\Model\Library $owner): void
     {
         $this->owner = $owner;
     }

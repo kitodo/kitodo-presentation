@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -20,9 +21,10 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Metadata extends AbstractEntity
 {
     /**
      * @access protected
@@ -51,6 +53,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @access protected
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
+     *
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")
      */
@@ -137,7 +140,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Domain\Model\Metadata
+     * @return Metadata
      */
     public function getL18nParent(): Metadata
     {
@@ -223,7 +226,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return void
      */
-    public function addFormat(MetadataFormat $format)
+    public function addFormat(\Kitodo\Dlf\Domain\Model\MetadataFormat $format)
     {
         $this->format->attach($format);
     }
@@ -235,7 +238,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return void
      */
-    public function removeFormat(MetadataFormat $formatToRemove)
+    public function removeFormat(\Kitodo\Dlf\Domain\Model\MetadataFormat $formatToRemove)
     {
         $this->format->detach($formatToRemove);
     }

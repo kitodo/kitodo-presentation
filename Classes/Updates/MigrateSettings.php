@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Updates;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
@@ -21,6 +20,10 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Class MigrateSettings
+ * 
+ * @package TYPO3
+ * @subpackage dlf
+ *
  * @internal
  */
 class MigrateSettings implements UpgradeWizardInterface

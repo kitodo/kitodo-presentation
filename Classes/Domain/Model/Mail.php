@@ -12,14 +12,17 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * (Basket Plugin) Recipient mail addresses for sending documents.
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class Mail extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Mail extends AbstractEntity
 {
     /**
      * @access protected

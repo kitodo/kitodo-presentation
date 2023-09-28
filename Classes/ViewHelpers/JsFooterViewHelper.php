@@ -17,7 +17,12 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Add inline JavaScript code to footer *
+ * Add inline JavaScript code to footer
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
 class JsFooterViewHelper extends AbstractViewHelper
 {

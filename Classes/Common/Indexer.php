@@ -15,6 +15,8 @@ namespace Kitodo\Dlf\Common;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
+use Solarium\Core\Query\DocumentInterface;
+use Solarium\QueryType\Update\Query\Query;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -25,9 +27,9 @@ use TYPO3\CMS\Core\Core\Environment;
 /**
  * Indexer class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class Indexer
@@ -84,7 +86,7 @@ class Indexer
      *
      * @access public
      *
-     * @param \Kitodo\Dlf\Domain\Model\Document $document: The document to add
+     * @param Document $document: The document to add
      *
      * @return bool true on success or false on failure
      */
@@ -293,7 +295,7 @@ class Indexer
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Domain\Model\Document $document: The METS document
+     * @param Document $document: The METS document
      * @param array $logicalUnit: Array of the logical unit to process
      *
      * @return bool true on success or false on failure
@@ -422,7 +424,7 @@ class Indexer
      *
      * @access protected
      *
-     * @param \Kitodo\Dlf\Domain\Model\Document $document: The METS document
+     * @param Document $document: The METS document
      * @param int $page: The page number
      * @param array $physicalUnit: Array of the physical unit to process
      *
@@ -538,12 +540,12 @@ class Indexer
      *
      * @access private
      *
-     * @param \Solarium\QueryType\Update\Query\Query $updateQuery solarium query
-     * @param \Kitodo\Dlf\Domain\Model\Document $document: The METS document
+     * @param Query $updateQuery solarium query
+     * @param Document $document: The METS document
      * @param array $unit: Array of the logical or physical unit to process
      * @param string $fullText: Text containing full text for indexing
      *
-     * @return \Solarium\Core\Query\DocumentInterface
+     * @return DocumentInterface
      */
     private static function getSolrDocument($updateQuery, $document, $unit, $fullText = '') {
         $solrDoc = $updateQuery->createDocument();

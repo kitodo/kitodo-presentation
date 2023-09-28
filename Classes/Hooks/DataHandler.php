@@ -28,9 +28,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DataHandler implements LoggerAwareInterface

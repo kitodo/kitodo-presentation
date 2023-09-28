@@ -21,6 +21,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * - `Countable`: `count()` returns the number of toplevel documents.
  * - `getNumLoadedDocuments()`: Number of toplevel documents that have been fetched from Solr.
  * - `ArrayAccess`/`Iterator`: Access *fetched* toplevel documents indexed in order of their ranking.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
 class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInterface
 {

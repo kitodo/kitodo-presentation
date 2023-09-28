@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -18,9 +19,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Controller class for plugin 'Toolbox'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ToolboxController extends AbstractController
@@ -28,7 +29,7 @@ class ToolboxController extends AbstractController
 
     /**
      * @access private
-     * @var \Kitodo\Dlf\Common\AbstractDocument This holds the current document
+     * @var AbstractDocument This holds the current document
      */
     private $doc;
 

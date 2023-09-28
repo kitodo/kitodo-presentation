@@ -28,6 +28,11 @@ use TYPO3\CMS\Install\Updates\ChattyInterface;
 
 /**
  * Migrate reference of thumbnail image in collections record.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
 class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAwareInterface
 {

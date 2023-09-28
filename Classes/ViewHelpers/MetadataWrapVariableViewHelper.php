@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Viewhelper to parse TypoScript that is used to declare wrapping of metadata
+ * View helper to parse TypoScript that is used to declare wrapping of metadata
  * fields and stores the result into a Fluid variable.
  *
  * The TypoScript should be passed as child and may contain stdWrap information
@@ -34,6 +34,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  *     {typoscript -> kitodo:metadataWrapVariable(name: 'wrapInfo')}
  *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
 class MetadataWrapVariableViewHelper extends AbstractViewHelper
 {

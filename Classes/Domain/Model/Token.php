@@ -12,14 +12,17 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * Resumption tokens for OAI-PMH interface.
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class Token extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Token extends AbstractEntity
 {
     /**
      * @access protected

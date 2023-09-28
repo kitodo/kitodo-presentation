@@ -15,9 +15,9 @@ namespace Kitodo\Dlf\Common\Solr\SearchResult;
 /**
  * Region class for the 'dlf' extension. It keeps region in which search phrase was found.
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class Region

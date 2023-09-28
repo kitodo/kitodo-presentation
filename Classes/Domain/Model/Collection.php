@@ -12,14 +12,17 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * Domain model of the 'Collection'.
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Collection extends AbstractEntity
 {
     /**
      * @access protected

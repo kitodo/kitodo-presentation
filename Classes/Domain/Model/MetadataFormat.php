@@ -12,8 +12,10 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
- * This specifies a way how a metadatum (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
+ * This specifies a way how a metadata (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
  *
  * For instance, the title of a document may be obtained from either the MODS
  * title field, or from the TEIHDR caption. This is modeled as two ``tx_dlf_metadaformat``
@@ -23,9 +25,10 @@ namespace Kitodo\Dlf\Domain\Model;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class MetadataFormat extends AbstractEntity
 {
     /**
      * @access protected

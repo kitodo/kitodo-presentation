@@ -9,6 +9,14 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 
 /**
  * Targeted towards being used in ``PaginateController`` (``<f:widget.paginate>``).
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ *
+ * @property int $limit
+ * @property int $offset
  */
 class SolrSearchQuery implements QueryInterface
 {
