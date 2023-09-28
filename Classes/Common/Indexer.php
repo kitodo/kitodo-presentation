@@ -77,7 +77,7 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var Solr Instance of \Kitodo\Dlf\Common\Solr\Solr class
+     * @var Solr Instance of Solr class
      */
     protected static $solr;
 
