@@ -401,11 +401,14 @@ abstract class AbstractDocument
         $xml = null;
         $iiif = null;
 
-        if ($instance = self::getDocCache($location) && !$forceReload) {
-            return $instance;
-        } else {
-            $instance = null;
+        if (!$forceReload) {
+            $instance = self::getDocumentCache($location);
+            if ($instance != false) {
+                return $instance;
+            }
         }
+
+        $instance = null;
 
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
@@ -444,8 +447,8 @@ abstract class AbstractDocument
             $instance = new IiifManifest($location, $pid, $iiif);
         }
 
-        if ($instance) {
-            self::setDocCache($location, $instance);
+        if (!is_null($instance)) {
+            self::setDocumentCache($location, $instance);
         }
 
         return $instance;
@@ -1243,7 +1246,7 @@ abstract class AbstractDocument
     }
 
     /**
-     * Gets Cache Hit for $doc
+     * Get Cache Hit for document instance
      *
      * @access private
      *
@@ -1251,9 +1254,9 @@ abstract class AbstractDocument
      *
      * @param string $location
      *
-     * @return Doc|false
+     * @return AbstractDocument|false
      */
-    private static function getDocCache(string $location)
+    private static function getDocumentCache(string $location)
     {
         $cacheIdentifier = md5($location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
@@ -1263,7 +1266,7 @@ abstract class AbstractDocument
     }
 
     /**
-     * Sets Cache for $doc
+     * Set Cache for document instance
      *
      * @access private
      *
@@ -1274,7 +1277,7 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    private static function setDocCache(string $location, AbstractDocument $currentDocument): void
+    private static function setDocumentCache(string $location, AbstractDocument $currentDocument): void
     {
         $cacheIdentifier = md5($location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
