@@ -52,7 +52,7 @@ class Metadata extends AbstractEntity
 
     /**
      * @access protected
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
+     * @var ObjectStorage<MetadataFormat> The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
      *
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")
@@ -204,7 +204,7 @@ class Metadata extends AbstractEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> $format
+     * @return ObjectStorage<MetadataFormat> $format
      */
     public function getFormat()
     {
@@ -212,7 +212,7 @@ class Metadata extends AbstractEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> $format
+     * @param ObjectStorage<MetadataFormat> $format
      */
     public function setFormat(ObjectStorage $format): void
     {
@@ -222,11 +222,11 @@ class Metadata extends AbstractEntity
     /**
      * Adds a Format
      *
-     * @param \Kitodo\Dlf\Domain\Model\MetadataFormat $format
+     * @param MetadataFormat $format
      *
      * @return void
      */
-    public function addFormat(\Kitodo\Dlf\Domain\Model\MetadataFormat $format)
+    public function addFormat(MetadataFormat $format)
     {
         $this->format->attach($format);
     }
@@ -234,11 +234,11 @@ class Metadata extends AbstractEntity
     /**
      * Removes a Format
      *
-     * @param \Kitodo\Dlf\Domain\Model\MetadataFormat $formatToRemove
+     * @param MetadataFormat $formatToRemove
      *
      * @return void
      */
-    public function removeFormat(\Kitodo\Dlf\Domain\Model\MetadataFormat $formatToRemove)
+    public function removeFormat(MetadataFormat $formatToRemove)
     {
         $this->format->detach($formatToRemove);
     }
