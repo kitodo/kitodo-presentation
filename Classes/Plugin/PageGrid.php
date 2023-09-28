@@ -167,21 +167,9 @@ class PageGrid extends \Kitodo\Dlf\Common\AbstractPlugin
             // Quit without doing anything if required variables are not set.
             return $content;
         }
-        if (!empty($this->piVars['logicalPage'])) {
-            $this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
-            // The logical page parameter should not appear
-            unset($this->piVars['logicalPage']);
-        }
-        // Set some variable defaults.
-        // $this->piVars['page'] may be integer or string (physical structure @ID)
-        if (
-            (int) $this->piVars['page'] > 0
-            || empty($this->piVars['page'])
-        ) {
-            $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
-        } else {
-            $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
-        }
+
+        $this->setPage();
+
         if (!empty($this->piVars['page'])) {
             $this->piVars['pointer'] = intval(floor(($this->piVars['page'] - 1) / $this->conf['limit']));
         }

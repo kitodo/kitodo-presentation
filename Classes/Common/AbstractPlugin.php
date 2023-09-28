@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Abstract plugin class for the 'dlf' extension
@@ -139,6 +140,8 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
      */
     protected function loadDocument()
     {
+        $this->sanitizeRequestData();
+
         // Check for required variable.
         if (
             !empty($this->piVars['id'])
@@ -290,6 +293,75 @@ abstract class AbstractPlugin extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin 
             $this->pi_checkCHash = false;
             // Plugins are of type "USER" by default, so convert it to "USER_INT".
             $this->cObj->convertToUserIntObject();
+        }
+    }
+
+    /**
+     * Sanitize input variables.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function sanitizeRequestData()
+    {
+        // tx_dlf[id] may only be an UID or URI.
+        if (
+            !empty($this->piVars['id'])
+            && !MathUtility::canBeInterpretedAsInteger($this->piVars['id'])
+            && !GeneralUtility::isValidUrl($this->piVars['id'])
+        ) {
+            $this->logger->warning('Invalid ID or URI "' . $this->piVars['id'] . '" for document loading');
+            unset($this->piVars['id']);
+        }
+
+        // tx_dlf[page] may only be a positive integer or valid XML ID.
+        if (
+            !empty($this->piVars['page'])
+            && !MathUtility::canBeInterpretedAsInteger($this->piVars['page'])
+            && !Helper::isValidXmlId($this->piVars['page'])
+        ) {
+            $this->piVars['page'] = 1;
+        }
+
+        // tx_dlf[double] may only be 0 or 1.
+        $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+    }
+
+    /**
+     * Sets page value.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function setPage() {
+        if (!empty($this->piVars['logicalPage'])) {
+            $this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
+            // The logical page parameter should not appear again
+            unset($this->piVars['logicalPage']);
+        }
+
+        $this->setDefaultPage();
+    }
+
+    /**
+     * Sets default page value.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function setDefaultPage() {
+        // Set default values if not set.
+        // $this->piVars['page'] may be integer or string (physical structure @ID)
+        if (
+            (int) $this->piVars['page'] > 0
+            || empty($this->piVars['page'])
+        ) {
+            $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
+        } else {
+            $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
         }
     }
 }

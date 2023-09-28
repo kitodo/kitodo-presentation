@@ -1022,6 +1022,21 @@ class Helper
     }
 
     /**
+     * Check if given value is a valid XML ID.
+     * @see https://www.w3.org/TR/xmlschema-2/#ID
+     *
+     * @access public
+     *
+     * @param mixed $id: The ID value to check
+     *
+     * @return bool: TRUE if $id is valid XML ID, FALSE otherwise
+     */
+    public static function isValidXmlId($id): bool
+    {
+        return preg_match('/^[_a-z][_a-z0-9-.]*$/i', $id) === 1;
+    }
+
+    /**
      * Prevent instantiation by hiding the constructor
      *
      * @access private

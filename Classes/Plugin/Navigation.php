@@ -111,22 +111,7 @@ class Navigation extends \Kitodo\Dlf\Common\AbstractPlugin
         } else {
             // Set default values if not set.
             if ($this->doc->numPages > 0) {
-                if (!empty($this->piVars['logicalPage'])) {
-                    $this->piVars['page'] = $this->doc->getPhysicalPage($this->piVars['logicalPage']);
-                    // The logical page parameter should not appear
-                    unset($this->piVars['logicalPage']);
-                }
-                // Set default values if not set.
-                // $this->piVars['page'] may be integer or string (physical structure @ID)
-                if (
-                    (int) $this->piVars['page'] > 0
-                    || empty($this->piVars['page'])
-                ) {
-                    $this->piVars['page'] = MathUtility::forceIntegerInRange((int) $this->piVars['page'], 1, $this->doc->numPages, 1);
-                } else {
-                    $this->piVars['page'] = array_search($this->piVars['page'], $this->doc->physicalStructure);
-                }
-                $this->piVars['double'] = MathUtility::forceIntegerInRange($this->piVars['double'], 0, 1, 0);
+                $this->setPage();
             } else {
                 $this->piVars['page'] = 0;
                 $this->piVars['double'] = 0;
