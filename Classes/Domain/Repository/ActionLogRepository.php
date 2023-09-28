@@ -12,7 +12,9 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-class ActionLogRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
+class ActionLogRepository extends Repository
 {
 
 }

@@ -449,7 +449,7 @@ class OaiPmhController extends AbstractController
             $this->error = 'idDoesNotExist';
             return;
         }
-        // create new and empty documentlist
+        // create new and empty document list
         $resultSet = [];
         if (is_array($documentSet)) {
             $resultSet['elements'] = $documentSet;

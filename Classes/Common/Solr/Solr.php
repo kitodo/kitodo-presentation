@@ -15,6 +15,9 @@ namespace Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Solarium\Client;
+use Solarium\Core\Client\Adapter\Http;
+use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -298,7 +301,7 @@ class Solr implements LoggerAwareInterface
      *
      * @param mixed $core: Name or UID of the core to load or null to get core admin endpoint
      *
-     * @return \Kitodo\Dlf\Common\Solr\Solr Instance of this class
+     * @return Solr Instance of this class
      */
     public static function getInstance($core = null)
     {
@@ -601,7 +604,7 @@ class Solr implements LoggerAwareInterface
         // Get Solr connection parameters from configuration.
         $this->loadSolrConnectionInfo();
         // Configure connection adapter.
-        $adapter = GeneralUtility::makeInstance(\Solarium\Core\Client\Adapter\Http::class);
+        $adapter = GeneralUtility::makeInstance(Http::class);
             // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
             // the timeout must be set with the adapter instead of the
             // endpoint (see below).
@@ -627,7 +630,7 @@ class Solr implements LoggerAwareInterface
             ]
         ];
         // Instantiate Solarium\Client class.
-        $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $config);
+        $this->service = GeneralUtility::makeInstance(Client::class, $config);
         $this->service->setAdapter($adapter);
             // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
             // $adapter and $eventDispatcher are mandatory arguments
@@ -647,7 +650,7 @@ class Solr implements LoggerAwareInterface
                 if ($core !== null) {
                     $result = $response->getStatusResult();
                     if (
-                        $result instanceof \Solarium\QueryType\Server\CoreAdmin\Result\StatusResult
+                        $result instanceof StatusResult
                         && $result->getUptime() > 0
                     ) {
                         // Set core name.
