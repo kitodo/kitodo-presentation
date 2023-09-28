@@ -126,7 +126,7 @@ class Document extends AbstractEntity
 
     /**
      * @access protected
-     * @var \Kitodo\Dlf\Domain\Model\Structure
+     * @var Structure
      */
     protected $structure;
 
@@ -180,7 +180,7 @@ class Document extends AbstractEntity
 
     /**
      * @access protected
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection>
+     * @var ObjectStorage<Collection>
      * @Extbase\ORM\Lazy
      */
     protected $collections = null;
@@ -199,7 +199,7 @@ class Document extends AbstractEntity
 
     /**
      * @access protected
-     * @var \Kitodo\Dlf\Domain\Model\Library
+     * @var Library
      * @Extbase\ORM\Lazy
      */
     protected $owner;
@@ -461,17 +461,17 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Domain\Model\Structure
+     * @return Structure
      */
-    public function getStructure(): \Kitodo\Dlf\Domain\Model\Structure
+    public function getStructure(): Structure
     {
         return $this->structure;
     }
 
     /**
-     * @param \Kitodo\Dlf\Domain\Model\Structure $structure
+     * @param Structure $structure
      */
-    public function setStructure(\Kitodo\Dlf\Domain\Model\Structure $structure): void
+    public function setStructure(Structure $structure): void
     {
         $this->structure = $structure;
     }
@@ -608,7 +608,7 @@ class Document extends AbstractEntity
     /**
      * Returns the collections
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
+     * @return ObjectStorage<Collection> $collections
      */
     public function getCollections()
     {
@@ -616,7 +616,7 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
+     * @param ObjectStorage<Collection> $collections
      */
     public function setCollections(?ObjectStorage $collections): void
     {
@@ -626,9 +626,9 @@ class Document extends AbstractEntity
     /**
      * Adds a collection
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection $collection
+     * @param Collection $collection
      */
-    public function addCollection(\Kitodo\Dlf\Domain\Model\Collection $collection): void
+    public function addCollection(Collection $collection): void
     {
         $this->collections->attach($collection);
     }
@@ -636,9 +636,9 @@ class Document extends AbstractEntity
     /**
      * Removes a collection
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection $collection
+     * @param Collection $collection
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> collections
+     * @return ObjectStorage<Collection> collections
      */
     public function removeCollection(Collection $collection)
     {
@@ -678,7 +678,7 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Domain\Model\Library|null
+     * @return Library|null
      */
     public function getOwner(): ?Library
     {
@@ -688,9 +688,9 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @param \Kitodo\Dlf\Domain\Model\Library $owner
+     * @param Library $owner
      */
-    public function setOwner(\Kitodo\Dlf\Domain\Model\Library $owner): void
+    public function setOwner(Library $owner): void
     {
         $this->owner = $owner;
     }
