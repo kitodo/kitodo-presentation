@@ -22,7 +22,7 @@ namespace Kitodo\Dlf\Controller;
 class View3DController extends AbstractController
 {
     /**
-     * @return string|void
+     * @return void
      */
     public function mainAction()
     {
@@ -33,7 +33,7 @@ class View3DController extends AbstractController
             || $this->document->getCurrentDocument()->metadataArray['LOG_0001']['type'][0] != 'object'
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         } else {
             $model = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['DEFAULT']));
             $this->view->assign('3d', $model);
