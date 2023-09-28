@@ -14,6 +14,14 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
+/**
+ * (Basket Plugin) Basket repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class BasketRepository extends Repository
 {
 

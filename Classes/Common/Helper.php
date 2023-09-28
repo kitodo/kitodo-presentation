@@ -33,10 +33,9 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 /**
  * Helper class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class Helper

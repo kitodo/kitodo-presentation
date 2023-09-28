@@ -19,9 +19,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Controller class for plugin 'Toolbox'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ToolboxController extends AbstractController

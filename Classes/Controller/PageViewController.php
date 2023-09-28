@@ -20,9 +20,9 @@ use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 /**
  * Controller class for the plugin 'Page View'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class PageViewController extends AbstractController

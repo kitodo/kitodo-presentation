@@ -25,6 +25,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class Format extends AbstractEntity

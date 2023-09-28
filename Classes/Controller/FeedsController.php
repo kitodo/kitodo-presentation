@@ -20,10 +20,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Controller class for the plugin 'Feeds'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class FeedsController extends AbstractController

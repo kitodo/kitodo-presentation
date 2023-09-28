@@ -15,6 +15,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
+/**
+ * Standard wrapper view helper
+ * 
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class StdWrapViewHelper extends AbstractViewHelper
 {
     protected $escapeOutput = false;

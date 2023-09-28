@@ -20,9 +20,9 @@ use Kitodo\Dlf\Common\MetadataInterface;
  * The technical reason for handling both formats here is that this makes it slightly more
  * straightforward to extract `duration` as either video duration or audio duration.
  *
- * @author Kajetan Dvoracek <kajetan.dvoracek@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class AudioVideoMD implements MetadataInterface

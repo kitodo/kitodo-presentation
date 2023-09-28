@@ -20,9 +20,9 @@ use Ubl\Iiif\Tools\UrlReaderInterface;
  * Allows the use of TYPO3 framework functions for loading remote documents in the
  * IIIF library.
  *
- * @author Lutz Helm <helm@ub.uni-leipzig.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class IiifUrlReader implements UrlReaderInterface

@@ -14,7 +14,14 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-
+/**
+ * Token repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class TokenRepository extends Repository
 {
     /**

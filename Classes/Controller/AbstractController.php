@@ -28,10 +28,12 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 /**
  * Abstract controller class for most of the plugin controller.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
+ *
+ * @abstract
  */
 abstract class AbstractController extends ActionController implements LoggerAwareInterface
 {

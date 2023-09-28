@@ -19,9 +19,9 @@ use Kitodo\Dlf\Common\MetadataInterface;
 /**
  * Metadata MODS format class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ * 
  * @access public
  */
 class Mods implements MetadataInterface

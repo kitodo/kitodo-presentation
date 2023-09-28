@@ -28,9 +28,9 @@ use Phpoaipmh\Exception\BaseOaipmhException;
 /**
  * CLI Command for harvesting OAI-PMH interfaces into database and Solr.
  *
- * @author Sebastian Meyer <sebastian.meyer@opencultureconsulting.com>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class HarvestCommand extends BaseCommand
