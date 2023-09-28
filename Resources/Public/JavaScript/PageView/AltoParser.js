@@ -163,8 +163,9 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
          * @return {Array}
          */
         feature.getTextblocks = function() {
-            if (this.get('printspace') !== undefined && this.get('printspace').get('textblocks'))
-                return this.get('printspace').get('textblocks')
+            if (this.get('printspace') !== undefined && this.get('printspace').get('textblocks')) {
+                return this.get('printspace').get('textblocks');
+            }
             return [];
         };
 
@@ -229,8 +230,9 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
         y2 = y1 + height,
         coordinatesWithoutScale = [[[x1, y1], [x2, y1], [x2, y2], [x1, y2], [x1, y1]]];
 
-    if (isNaN(width) || isNaN(height))
+    if (isNaN(width) || isNaN(height)) {
         return undefined;
+    }
 
     // If page dimensions are given in the ALTO, use them to rescale the coordinates
     var scale = 1;
@@ -260,8 +262,9 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
 dlfAltoParser.prototype.parsePrintSpaceFeature_ = function(node) {
     var printspace = $(node).find('PrintSpace');
 
-    if (printspace.length === 0)
+    if (printspace.length === 0) {
         return;
+    }
     return this.parseAltoFeature_(printspace[0]);
 };
 
