@@ -13,7 +13,7 @@
       data-namespace-typo3-fluid="true">
 
     <f:if condition="{{sortableMetadata}">
-        <f:variable name="currentPage" value="{widgetPage.currentPage - 1}" />
+        <f:variable name="currentPage" value="{pagination.currentPageNumber - 1}" />
         <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
         <f:variable name="allDocuments" value="{documents->f:count()}" />
         <f:variable name="numDocuments" value="{pageOffset + settings.list.paginate.itemsPerPage}" />

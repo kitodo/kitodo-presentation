@@ -10,38 +10,51 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Eid;
+namespace Kitodo\Dlf\Middleware;
 
 use Kitodo\Dlf\Common\Solr\Solr;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * eID search suggestions for plugin 'Search' of the 'dlf' extension
+ * Search suggestions Middleware for plugin 'Search' of the 'dlf' extension
  *
  * @author Henrik Lochmann <dev@mentalmotive.com>
  * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
+ * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class SearchSuggest
+class SearchSuggest implements MiddlewareInterface
 {
     /**
-     * The main method of the eID script
+     * The process method of the middleware.
+     *
+     * @access public
      *
      * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $handler
+     *
      * @return ResponseInterface XML response of search suggestions
      */
-    public function main(ServerRequestInterface $request)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $output = [];
+        $response = $handler->handle($request);
         // Get input parameters and decrypt core name.
         $parameters = $request->getParsedBody();
+        // Return if not this middleware
+        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/search-suggest')) {
+            return $response;
+        }
+
+        $output = [];
         $solrCore = (string) $parameters['solrcore'];
         $uHash = (string) $parameters['uHash'];
         if (hash_equals(GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'), $uHash) === false) {
@@ -66,6 +79,7 @@ class SearchSuggest
                 }
             }
         }
+
         // Create response object.
         /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);

@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Model\Collection;
@@ -64,7 +64,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
-            $doc = Doc::getInstance($parameters['location'], [], true);
+            $doc = AbstractDocument::getInstance($parameters['location'], [], true);
 
             if ($doc->recordId) {
                 $document = $this->findOneByRecordId($doc->recordId);
@@ -79,11 +79,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         if ($document !== null && $doc === null) {
-            $doc = Doc::getInstance($document->getLocation(), [], true);
+            $doc = AbstractDocument::getInstance($document->getLocation(), [], true);
         }
 
         if ($doc !== null) {
-            $document->setDoc($doc);
+            $document->setCurrentDocument($doc);
         }
 
         return $document;
@@ -117,7 +117,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching($query->equals('partof', $partOf));
 
         $query->setOrderings([
-            'mets_orderlabel' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+            'mets_orderlabel' => QueryInterface::ORDER_ASCENDING
         ]);
 
         return $query->execute();

@@ -70,16 +70,16 @@ class PageViewController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return '';
-        } else {
-            $this->setPage();
-            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+            return;
         }
+
+        $this->setPage();
+
         // Get image data.
         $this->images[0] = $this->getImage($this->requestData['page']);
         $this->fulltexts[0] = $this->getFulltext($this->requestData['page']);
         $this->annotationContainers[0] = $this->getAnnotationContainers($this->requestData['page']);
-        if ($this->requestData['double'] && $this->requestData['page'] < $this->document->getDoc()->numPages) {
+        if ($this->requestData['double'] && $this->requestData['page'] < $this->document->getCurrentDocument()->numPages) {
             $this->images[1] = $this->getImage($this->requestData['page'] + 1);
             $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
             $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
@@ -112,12 +112,15 @@ class PageViewController extends AbstractController
         // Get fulltext link.
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
-                $fulltext['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpFulltext];
+            if (!empty($fileId)) {
+                $file = $this->document->getCurrentDocument()->getFileLocation($fileId);
+                $fulltext['url'] = $file['location'];
                 if ($this->settings['useInternalProxy']) {
                     $this->configureProxyUrl($fulltext['url']);
                 }
-                $fulltext['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
+                $fulltext['mimetype'] = $file['mimeType'];
                 break;
             } else {
                 $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $fileGrpFulltext . '"');
@@ -166,9 +169,9 @@ class PageViewController extends AbstractController
      */
     protected function getAnnotationContainers($page)
     {
-        if ($this->document->getDoc() instanceof IiifManifest) {
-            $canvasId = $this->document->getDoc()->physicalStructure[$page];
-            $iiif = $this->document->getDoc()->getIiif();
+        if ($this->document->getCurrentDocument() instanceof IiifManifest) {
+            $canvasId = $this->document->getCurrentDocument()->physicalStructure[$page];
+            $iiif = $this->document->getCurrentDocument()->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
                 /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
@@ -228,12 +231,15 @@ class PageViewController extends AbstractController
         $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']);
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
             // Get image link.
-            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages])) {
-                $image['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
-                $image['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpImages];
+            if (!empty($fileId)) {
+                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+                $image['url'] = $file['location'];
+                $image['mimetype'] = $file['mimeType'];
 
                 // Only deliver static images via the internal PageViewProxy.
-                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL` in `OLSources.js`.)
+                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
                 if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
                     $this->configureProxyUrl($image['url']);
                 }

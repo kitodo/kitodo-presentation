@@ -29,6 +29,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @subpackage dlf
  * @access public
  * @property int $cPid This holds the PID for the configuration
+ * @property-read array $fileInfos Additional information about files (e.g., ADMID), indexed by ID.
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read int $numPages The holds the total number of pages
@@ -45,7 +46,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read string $toplevelId This holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @abstract
  */
-abstract class Doc
+abstract class AbstractDocument
 {
     /**
      * This holds the logger
@@ -70,6 +71,14 @@ abstract class Doc
      * @access public
      */
     public static $extKey = 'dlf';
+
+    /**
+     * Additional information about files (e.g., ADMID), indexed by ID.
+     *
+     * @var array
+     * @access protected
+     */
+    protected $fileInfos = [];
 
     /**
      * This holds the configuration for all supported metadata encodings
@@ -223,7 +232,7 @@ abstract class Doc
     /**
      * This holds the singleton object of the document
      *
-     * @var array (\Kitodo\Dlf\Common\Doc)
+     * @var array (AbstractDocument)
      * @static
      * @access protected
      */
@@ -366,6 +375,19 @@ abstract class Doc
     public abstract function getDownloadLocation($id);
 
     /**
+     * This gets all file information stored in single array.
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
+     * 
+     * @return array|null The set of file information
+     */
+    public abstract function getFileInfo($id);
+
+    /**
      * This gets the location of a file representing a physical page or track
      *
      * @access public
@@ -402,7 +424,7 @@ abstract class Doc
      * @param array $settings
      * @param bool $forceReload: Force reloading the document instead of returning the cached instance
      *
-     * @return \Kitodo\Dlf\Common\Doc|null Instance of this class, either MetsDocument or IiifManifest
+     * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
      */
     public static function &getInstance($location, $settings = [], $forceReload = false)
     {
@@ -1168,7 +1190,7 @@ abstract class Doc
 
     /**
      * This is a singleton class, thus the constructor should be private/protected
-     * (Get an instance of this class by calling \Kitodo\Dlf\Common\Doc::getInstance())
+     * (Get an instance of this class by calling AbstractDocument::getInstance())
      *
      * @access protected
      *
@@ -1267,16 +1289,16 @@ abstract class Doc
      * set Cache for $doc
      *
      * @param string $location
-     * @param Doc $doc
+     * @param AbstractDocument $currentDocument
      * @return void
      */
-    private static function setDocCache(string $location, Doc $doc)
+    private static function setDocCache(string $location, AbstractDocument $currentDocument)
     {
         $cacheIdentifier = md5($location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
 
         // Save value in cache
-        $cache->set($cacheIdentifier, $doc);
+        $cache->set($cacheIdentifier, $currentDocument);
     }
 
 }

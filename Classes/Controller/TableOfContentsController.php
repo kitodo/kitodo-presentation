@@ -63,21 +63,20 @@ class TableOfContentsController extends AbstractController
      */
     private function makeMenuArray()
     {
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
-            !empty($this->document->getDoc()->physicalStructure)
+            !empty($this->document->getCurrentDocument()->physicalStructure)
             || !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
         ) {
             $this->getAllLogicalUnits();
             // Go through table of contents and create all menu entries.
-            foreach ($this->document->getDoc()->tableOfContents as $entry) {
+            foreach ($this->document->getCurrentDocument()->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, true);
             }
         } else {
             // Go through table of contents and create top-level menu entries.
-            foreach ($this->document->getDoc()->tableOfContents as $entry) {
+            foreach ($this->document->getCurrentDocument()->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, false);
             }
             // Build table of contents from database.
@@ -111,7 +110,7 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
+     * @param array $entry : The entry's array from AbstractDocument->getLogicalStructure
      * @param bool $recursive : Whether to include the child entries
      *
      * @return array HMENU array for menu entry
@@ -186,7 +185,7 @@ class TableOfContentsController extends AbstractController
             if (
                 $entryArray['ITEM_STATE'] == 'CUR'
                 || is_string($entry['points'])
-                || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
+                || empty($this->document->getCurrentDocument()->smLinks['l2p'][$entry['id']])
             ) {
                 $entryArray['_SUB_MENU'] = [];
                 foreach ($entry['children'] as $child) {
@@ -219,7 +218,7 @@ class TableOfContentsController extends AbstractController
     {
         // If the menu entry points to the parent document,
         // resolve to the parent UID set on indexation.
-        $doc = $this->document->getDoc();
+        $doc = $this->document->getCurrentDocument();
         if (
             $doc instanceof MetsDocument
             && ($entry['points'] === $doc->parentHref || $this->isMultiElement($entry['type']))
@@ -242,16 +241,16 @@ class TableOfContentsController extends AbstractController
     private function getAllLogicalUnits() {
         if (
             !empty($this->requestData['page'])
-            && !empty($this->document->getDoc()->physicalStructure)
+            && !empty($this->document->getCurrentDocument()->physicalStructure)
         ) {
-            $this->activeEntries = array_merge((array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[0]],
-                (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]]);
+            $this->activeEntries = array_merge((array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[0]],
+                (array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]);
             if (
                 !empty($this->requestData['double'])
-                && $this->requestData['page'] < $this->document->getDoc()->numPages
+                && $this->requestData['page'] < $this->document->getCurrentDocument()->numPages
             ) {
                 $this->activeEntries = array_merge($this->activeEntries,
-                    (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page'] + 1]]);
+                    (array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page'] + 1]]);
             }
         }
     }
