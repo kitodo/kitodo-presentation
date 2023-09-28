@@ -52,6 +52,7 @@ class ToolboxController extends AbstractController
         }
 
         $this->renderTool();
+        $this->view->assign('viewData', $this->viewData);
     }
 
     /**
@@ -231,10 +232,11 @@ class ToolboxController extends AbstractController
         $fileGrps = GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
         while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
-            $fileGroup = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp];
+            $physicalStructureInfo = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]];
+            $fileId = $physicalStructureInfo['files'][$fileGrp];
             if (!empty($fileGroup)) {
-                $image['url'] = $this->doc->getDownloadLocation($fileGroup);
-                $image['mimetype'] = $this->doc->getFileMimeType($fileGroup);
+                $image['url'] = $this->doc->getDownloadLocation($fileId);
+                $image['mimetype'] = $this->doc->getFileMimeType($fileId);
                 switch ($image['mimetype']) {
                     case 'image/jpeg':
                         $image['mimetypeLabel']  = ' (JPG)';
@@ -402,6 +404,7 @@ class ToolboxController extends AbstractController
             'LABEL_QUERY_URL' => $this->settings['queryInputName'],
             'LABEL_START' => $this->settings['startInputName'],
             'LABEL_ID' => $this->settings['idInputName'],
+            'LABEL_PID' => $this->settings['pidInputName'],
             'LABEL_PAGE_URL' => $this->settings['pageInputName'],
             'LABEL_HIGHLIGHT_WORD' => $this->settings['highlightWordInputName'],
             'LABEL_ENCRYPTED' => $this->settings['encryptedInputName'],

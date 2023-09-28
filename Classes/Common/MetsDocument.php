@@ -32,7 +32,6 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read array $mdSec Associative array of METS metadata sections indexed by their IDs.
  * @property-read array $dmdSec Subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
  * @property-read array $fileGrps This holds the file ID -> USE concordance
- * @property-read array $fileInfos Additional information about files (e.g., ADMID), indexed by ID.
  * @property-read bool $hasFulltext Are there any fulltext files available?
  * @property-read array $metadataArray This holds the documents' parsed metadata array
  * @property-read \SimpleXMLElement $mets This holds the XML file's METS part as \SimpleXMLElement object
@@ -132,16 +131,6 @@ final class MetsDocument extends AbstractDocument
     protected $fileGrpsLoaded = false;
 
     /**
-     * Additional information about files (e.g., ADMID), indexed by ID.
-     * TODO: Consider using this for `getFileMimeType()` and `getFileLocation()`.
-     * @see _getFileInfos()
-     *
-     * @var array
-     * @access protected
-     */
-    protected $fileInfos = [];
-
-    /**
      * This holds the XML file's METS part as \SimpleXMLElement object
      *
      * @var \SimpleXMLElement
@@ -214,24 +203,42 @@ final class MetsDocument extends AbstractDocument
      */
     public function getDownloadLocation($id)
     {
-        $fileMimeType = $this->getFileMimeType($id);
-        $fileLocation = $this->getFileLocation($id);
-        if ($fileMimeType === 'application/vnd.kitodo.iiif') {
-            $fileLocation = (strrpos($fileLocation, 'info.json') === strlen($fileLocation) - 9) ? $fileLocation : (strrpos($fileLocation, '/') === strlen($fileLocation) ? $fileLocation . 'info.json' : $fileLocation . '/info.json');
+        $file = $this->getFileInfo($id);
+        if ($file['mimeType'] === 'application/vnd.kitodo.iiif') {
+            $file['location'] = (strrpos($file['location'], 'info.json') === strlen($file['location']) - 9) ? $file['location'] : (strrpos($file['location'], '/') === strlen($file['location']) ? $file['location'] . 'info.json' : $file['location'] . '/info.json');
             $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             IiifHelper::setUrlReader(IiifUrlReader::getInstance());
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
-            $service = IiifHelper::loadIiifResource($fileLocation);
+            $service = IiifHelper::loadIiifResource($file['location']);
             if ($service !== null && $service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
-        } elseif ($fileMimeType === 'application/vnd.netfpx') {
-            $baseURL = $fileLocation . (strpos($fileLocation, '?') === false ? '?' : '');
+        } elseif ($file['mimeType'] === 'application/vnd.netfpx') {
+            $baseURL = $file['location'] . (strpos($file['location'], '?') === false ? '?' : '');
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
             return $baseURL . '&CVT=jpeg';
         }
-        return $fileLocation;
+        return $file['location'];
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see AbstractDocument::getFileInfo()
+     */
+    public function getFileInfo($id)
+    {
+        $this->_getFileGrps();
+
+        if (isset($this->fileInfos[$id]) && empty($this->fileInfos[$id]['location'])) {
+            $this->fileInfos[$id]['location'] = $this->getFileLocation($id);
+        }
+
+        if (isset($this->fileInfos[$id]) && empty($this->fileInfos[$id]['mimeType'])) {
+            $this->fileInfos[$id]['mimeType'] = $this->getFileMimeType($id);
+        }
+
+        return $this->fileInfos[$id];
     }
 
     /**
@@ -658,7 +665,7 @@ final class MetsDocument extends AbstractDocument
     {
         // Load amdSecChildIds concordance
         $this->_getMdSec();
-        $this->_getFileInfos();
+        $fileInfo = $this->getFileInfo($id);
 
         // Get DMDID and ADMID of logical structure node
         if (!empty($this->logicalUnits[$id])) {
@@ -669,9 +676,9 @@ final class MetsDocument extends AbstractDocument
             if ($mdSec) {
                 $dmdIds = (string) $mdSec->attributes()->DMDID;
                 $admIds = (string) $mdSec->attributes()->ADMID;
-            } else if (isset($this->fileInfos[$id])) {
-                $dmdIds = $this->fileInfos[$id]['dmdId'];
-                $admIds = $this->fileInfos[$id]['admId'];
+            } else if (isset($fileInfo)) {
+                $dmdIds = $fileInfo['dmdId'];
+                $admIds = $fileInfo['admId'];
             } else {
                 $dmdIds = '';
                 $admIds = '';
@@ -959,17 +966,6 @@ final class MetsDocument extends AbstractDocument
             $this->fileGrpsLoaded = true;
         }
         return $this->fileGrps;
-    }
-
-    /**
-     *
-     * @access protected
-     * @return array
-     */
-    protected function _getFileInfos()
-    {
-        $this->_getFileGrps();
-        return $this->fileInfos;
     }
 
     /**

@@ -385,6 +385,23 @@ final class IiifManifest extends AbstractDocument
 
     /**
      * {@inheritDoc}
+     * @see AbstractDocument::getFileInfo()
+     */
+    public function getFileInfo($id)
+    {
+        if (empty($this->fileInfos[$id]['location'])) {
+            $this->fileInfos[$id]['location'] = $this->getFileLocation($id);
+        }
+
+        if (empty($this->fileInfos[$id]['mimeType'])) {
+            $this->fileInfos[$id]['mimeType'] = $this->getFileMimeType($id);
+        }
+
+        return $this->fileInfos[$id];
+    }
+
+    /**
+     * {@inheritDoc}
      * @see AbstractDocument::getFileLocation()
      */
     public function getFileLocation($id)
