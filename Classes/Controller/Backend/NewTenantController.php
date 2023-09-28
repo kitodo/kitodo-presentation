@@ -23,6 +23,7 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -62,7 +63,7 @@ class NewTenantController extends AbstractController
 
     /**
      * @access protected
-     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory LanguageFactory to get language key/values by our own.
+     * @var LocalizationFactory Language factory to get language key/values by our own.
      */
     protected $languageFactory;
 
@@ -70,7 +71,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var string Backend Template Container
      */
-    protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
+    protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
      * @access protected
