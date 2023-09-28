@@ -447,8 +447,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
 
     // exctract highlighWords from URL
     if (this.highlightWords === null) {
-        var urlParams = dlfUtils.getUrlParams();
-        this.highlightWords = urlParams['tx_dlf[highlight_word]'];
+        this.highlightWords = dlfUtils.getUrlParam('tx_dlf[highlight_word]');
     }
 
     if (!dlfUtils.exists(this.highlightLayer)) {

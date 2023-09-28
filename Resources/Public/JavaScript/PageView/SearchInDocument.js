@@ -133,12 +133,12 @@ function getCurrentQueryParams(baseUrl) {
 function getNavigationButtons(start, numFound) {
     var buttons = "";
 
-    if (start > 0) {
-        buttons += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" value="' + $('#tx-dlf-search-in-document-label-previous').text() + '" />';
+    if(start > 0) {
+        buttons += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" />';
     }
 
-    if (numFound > (start + 20)) {
-        buttons += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" value="' + $('#tx-dlf-search-in-document-label-next').text() + '" />';
+    if(numFound > (start + 20)) {
+        buttons += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" />';
     }
     return buttons;
 }
@@ -265,11 +265,14 @@ $(document).ready(function() {
 
                     addImageHighlight(data);
                 } else {
-                    resultList += '<li class="noresult">' + $('#tx-dlf-search-in-document-label-noresult').text() + '</li>';
+                    resultList += '<li class="noresult"></li>';
                 }
                 resultList += '</ul>';
                 resultList += getNavigationButtons(start, data['numFound']);
                 $('#tx-dlf-search-in-document-results').html(resultList);
+                $('.noresult').text($('#tx-dlf-search-in-document-label-noresult').text());
+                $('.button-previous').attr('value', $('#tx-dlf-search-in-document-label-previous').text());
+                $('.button-next').attr('value', $('#tx-dlf-search-in-document-label-next').text());
             },
             "json"
         )

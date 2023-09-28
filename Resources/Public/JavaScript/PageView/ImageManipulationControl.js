@@ -45,7 +45,7 @@ dlfViewerImageManipulationControl = function(options) {
      * @type {Element}
      * @private
      */
-    this.toolContainerEl_ = dlfUtils.exists(options.toolContainer) ? options.toolContainer : $(this.dic['parentContainer'])[0];
+    this.toolContainerEl_ = dlfUtils.exists(options.toolContainer) ? options.toolContainer : $.find(this.dic['parentContainer'])[0];
 
     //
     // Append open/close behavior to toolbox
