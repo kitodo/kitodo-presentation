@@ -12,7 +12,9 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-class StructureRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
+class StructureRepository extends Repository
 {
 
 }

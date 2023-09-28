@@ -12,19 +12,22 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Doctrine\DBAL\ForwardCompatibility\Result;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Structure;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class DocumentRepository extends Repository
 {
     /**
      * The controller settings passed to the repository for some special actions.
@@ -106,8 +109,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * @param int $partOf
-     * @param  \Kitodo\Dlf\Domain\Model\Structure $structure
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @param Structure $structure
+     * @return array|QueryResultInterface
      */
     public function getChildrenOfYearAnchor($partOf, $structure)
     {
@@ -143,7 +146,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
     public function findDocumentsBySettings($settings = [])
     {
@@ -174,7 +177,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param array $collections
      * @param int $limit
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
     public function findAllByCollectionsLimited($collections, $limit = 50)
     {
@@ -347,7 +350,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * @param int $pid
      * @param array $settings
      *
-     * @return \Doctrine\DBAL\ForwardCompatibility\Result
+     * @return Result
      */
     public function getTableOfContentsFromDb($uid, $pid, $settings)
     {

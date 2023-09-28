@@ -15,9 +15,11 @@ namespace Kitodo\Dlf\Domain\Repository;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+class CollectionRepository extends Repository
 {
     /**
      * Set the default ordering. This is applied to findAll(), too.
@@ -33,7 +35,7 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param string $uids separated by comma
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface
      */
     public function findAllByUids($uids)
     {
@@ -64,7 +66,7 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      *
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
     public function findCollectionsBySettings($settings = [])
     {

@@ -29,7 +29,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
@@ -68,7 +68,7 @@ class BaseCommand extends Command
     protected $storagePid;
 
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Library
+     * @var Library
      */
     protected $owner;
 
@@ -110,7 +110,7 @@ class BaseCommand extends Command
     protected function initializeRepositories($storagePid)
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $frameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+            $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
             $this->configurationManager->setConfiguration($frameworkConfiguration);

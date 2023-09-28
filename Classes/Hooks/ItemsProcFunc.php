@@ -15,9 +15,10 @@ namespace Kitodo\Dlf\Hooks;
 use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -65,7 +66,7 @@ class ItemsProcFunc implements LoggerAwareInterface
     public function getTyposcriptConfigFromPluginSiteRoot($params) {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $pid = $params['flexParentDatabaseRow']['pid'];
-        $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($pid);
+        $rootline = BackendUtility::BEgetRootLine($pid);
         $siterootRow = [];
         foreach ($rootline as $_row) {
             if ($_row['is_siteroot'] == '1') {
@@ -75,7 +76,7 @@ class ItemsProcFunc implements LoggerAwareInterface
         }
 
         try {
-            $ts = $objectManager->get(\TYPO3\CMS\Core\TypoScript\TemplateService::class, [$siterootRow['uid']]);
+            $ts = $objectManager->get(TemplateService::class, [$siterootRow['uid']]);
             $ts->rootLine = $rootline;
             $ts->runThroughTemplates($rootline, 0);
             $ts->generateConfig();

@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Format;
 
+use Kitodo\Dlf\Common\MetadataInterface;
+
 /**
  * Process AudioMD and VideoMD metadata.
  *
@@ -23,7 +25,7 @@ namespace Kitodo\Dlf\Format;
  * @subpackage dlf
  * @access public
  */
-class AudioVideoMD implements \Kitodo\Dlf\Common\MetadataInterface
+class AudioVideoMD implements MetadataInterface
 {
     /**
      * Extract some essential AudioMD/VideoMD metadata.
