@@ -105,9 +105,6 @@ final class IiifManifest extends AbstractDocument
     protected $hasFulltextSet = false;
 
     /**
-     * This holds the original manifest's parsed metadata array with their corresponding
-     * resource (Manifest / Sequence / Range) ID as array key
-     *
      * @access protected
      * @var array This holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
      */
