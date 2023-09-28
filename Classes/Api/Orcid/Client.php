@@ -29,12 +29,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Client
 {
     /**
-     * @var string constant for API hostname endpoint
+     * @var string constant for API hostname
      **/
     const HOSTNAME  = 'orcid.org';
 
     /**
-     * @var string constant for API version endpoint
+     * @var string constant for API version
      **/
     const VERSION   = '3.0';
 
