@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
@@ -68,7 +69,7 @@ class Collection extends AbstractEntity
 
     /**
      * @access protected
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference thumbnail
+     * @var FileReference thumbnail
      */
     protected $thumbnail = null;
 
@@ -211,15 +212,15 @@ class Collection extends AbstractEntity
     /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
-    public function getThumbnail(): ?\TYPO3\CMS\Extbase\Domain\Model\FileReference
+    public function getThumbnail(): ?FileReference
     {
         return $this->thumbnail;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $thumbnail
+     * @param FileReference $thumbnail
      */
-    public function setThumbnail(?\TYPO3\CMS\Extbase\Domain\Model\FileReference $thumbnail): void
+    public function setThumbnail(?FileReference $thumbnail): void
     {
         $this->thumbnail = $thumbnail;
     }
