@@ -203,4 +203,4 @@ DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment = function(uri) {
         return null;
     }
     return uri.split("#")[0];
-}
+};

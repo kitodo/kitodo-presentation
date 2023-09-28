@@ -164,7 +164,7 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
          */
         feature.getTextblocks = function() {
             if (this.get('printspace') !== undefined && this.get('printspace').get('textblocks'))
-                return this.get('printspace').get('textblocks')
+                return this.get('printspace').get('textblocks');
             return [];
         };
 
