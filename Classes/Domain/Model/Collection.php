@@ -92,9 +92,9 @@ class Collection extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @param string $feCruserId
+     * @param int $feCruserId
      */
-    public function setFeCruserId(string $feCruserId): void
+    public function setFeCruserId(int $feCruserId): void
     {
         $this->feCruserId = $feCruserId;
     }
