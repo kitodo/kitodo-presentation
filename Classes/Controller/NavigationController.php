@@ -57,15 +57,14 @@ class NavigationController extends AbstractController
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
+        }
+
+        // Set default values if not set.
+        if ($this->document->getCurrentDocument()->numPages > 0) {
+            $this->setPage();
         } else {
-            // Set default values if not set.
-            if ($this->document->getCurrentDocument()->numPages > 0) {
-                $this->setPage();
-                $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
-            } else {
-                $this->requestData['page'] = 0;
-                $this->requestData['double'] = 0;
-            }
+            $this->requestData['page'] = 0;
+            $this->requestData['double'] = 0;
         }
 
         // Steps for X pages backward / forward. Double page view uses double steps.
