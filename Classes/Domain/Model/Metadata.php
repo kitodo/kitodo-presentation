@@ -28,7 +28,7 @@ class Metadata extends AbstractEntity
 {
     /**
      * @access protected
-     * @var \Kitodo\Dlf\Domain\Model\Metadata
+     * @var Metadata
      */
     protected $l18nParent;
 
