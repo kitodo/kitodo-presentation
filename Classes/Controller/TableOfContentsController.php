@@ -63,7 +63,6 @@ class TableOfContentsController extends AbstractController
      */
     private function makeMenuArray()
     {
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
