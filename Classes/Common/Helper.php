@@ -45,7 +45,7 @@ class Helper
      * @static
      * @var string The extension key
      */
-    public static $extKey = 'dlf';
+    public static string $extKey = 'dlf';
 
     /**
      * @access protected
@@ -54,7 +54,7 @@ class Helper
      *
      * @see openssl_get_cipher_methods() for options
      */
-    protected static $cipherAlgorithm = 'aes-256-ctr';
+    protected static string $cipherAlgorithm = 'aes-256-ctr';
 
     /**
      * @access protected
@@ -63,14 +63,14 @@ class Helper
      * 
      * @see openssl_get_md_methods() for options
      */
-    protected static $hashAlgorithm = 'sha256';
+    protected static string $hashAlgorithm = 'sha256';
 
     /**
      * @access protected
      * @static
      * @var array The locallang array for flash messages
      */
-    protected static $messages = [];
+    protected static array $messages = [];
 
     /**
      * Generates a flash message and adds it to a message queue.
@@ -87,7 +87,7 @@ class Helper
      *
      * @return FlashMessageQueue The queue the message was added to
      */
-    public static function addMessage($message, $title, $severity, $session = false, $queue = 'kitodo.default.flashMessages')
+    public static function addMessage(string $message, string $title, int $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
@@ -113,7 +113,7 @@ class Helper
      *
      * @return bool Is $id a valid GNL identifier of the given $type?
      */
-    public static function checkIdentifier($id, $type)
+    public static function checkIdentifier(string $id, string $type): bool
     {
         $digits = substr($id, 0, 8);
         $checksum = 0;
@@ -180,7 +180,7 @@ class Helper
      *
      * @return mixed The decrypted value or false on error
      */
-    public static function decrypt($encrypted)
+    public static function decrypt(string $encrypted)
     {
         if (
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
@@ -222,6 +222,7 @@ class Helper
      *
      * @return \SimpleXMLElement|false
      */
+    //TODO: make sure that this is called only with string then update
     public static function getXmlFileAsString($content)
     {
         // Don't make simplexml_load_string throw (when $content is an array
@@ -255,7 +256,7 @@ class Helper
      *
      * @return void
      */
-    public static function log($message, $severity = 0)
+    public static function log(string $message, int $severity = 0): void
     {
         $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
 
@@ -288,7 +289,7 @@ class Helper
      *
      * @return mixed Hashed string or false on error
      */
-    public static function digest($string)
+    public static function digest(string $string)
     {
         if (!in_array(self::$hashAlgorithm, openssl_get_md_methods(true))) {
             self::log('OpenSSL library doesn\'t support hash algorithm', LOG_SEVERITY_ERROR);
@@ -310,7 +311,7 @@ class Helper
      *
      * @return mixed Encrypted string or false on error
      */
-    public static function encrypt($string)
+    public static function encrypt(string $string)
     {
         if (
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
@@ -346,7 +347,7 @@ class Helper
      *
      * @return string The unqualified class name
      */
-    public static function getUnqualifiedClassName($qualifiedClassName)
+    public static function getUnqualifiedClassName(string $qualifiedClassName): string
     {
         $nameParts = explode('\\', $qualifiedClassName);
         return end($nameParts);
@@ -363,7 +364,7 @@ class Helper
      *
      * @return string The cleaned up string
      */
-    public static function getCleanString($string)
+    public static function getCleanString(string $string): string
     {
         // Convert to lowercase.
         $string = strtolower($string);
@@ -387,7 +388,7 @@ class Helper
      *
      * @return array Array of hook objects for the class
      */
-    public static function getHookObjects($scriptRelPath)
+    public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
@@ -411,7 +412,7 @@ class Helper
      *
      * @return string "index_name" for the given UID
      */
-    public static function getIndexNameFromUid($uid, $table, $pid = -1)
+    public static function getIndexNameFromUid(int $uid, string $table, int $pid = -1): string
     {
         // Sanitize input.
         $uid = max(intval($uid), 0);
@@ -472,7 +473,7 @@ class Helper
      *
      * @return string Localized full name of language or unchanged input
      */
-    public static function getLanguageName($code)
+    public static function getLanguageName(string $code): string
     {
         // Analyze code and set appropriate ISO table.
         $isoCode = strtolower(trim($code));
@@ -504,7 +505,7 @@ class Helper
      *
      * @return array
      */
-    public static function getDocumentStructures($pid = -1)
+    public static function getDocumentStructures(int $pid = -1): array
     {
         // TODO: Against redundancy with getIndexNameFromUid
 
@@ -549,7 +550,7 @@ class Helper
      *
      * @return string Uniform Resource Name as string
      */
-    public static function getURN($base, $id)
+    public static function getURN(string $base, string $id): string
     {
         $concordance = [
             '0' => 1,
@@ -619,7 +620,7 @@ class Helper
      *
      * @return bool Is $id a valid PPN?
      */
-    public static function isPPN($id)
+    public static function isPPN(string $id): bool
     {
         return self::checkIdentifier($id, 'PPN');
     }
@@ -635,7 +636,7 @@ class Helper
      *
      * @return bool
      */
-    public static function isValidHttpUrl($url)
+    public static function isValidHttpUrl(string $url): bool
     {
         if (!GeneralUtility::isValidUrl($url)) {
             return false;
@@ -664,7 +665,7 @@ class Helper
      *
      * @return array Merged array
      */
-    public static function mergeRecursiveWithOverrule(array $original, array $overrule, $addKeys = true, $includeEmptyValues = true, $enableUnsetFeature = true)
+    public static function mergeRecursiveWithOverrule(array $original, array $overrule, bool $addKeys = true, bool $includeEmptyValues = true, bool $enableUnsetFeature = true): array
     {
         ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
         return $original;
@@ -681,7 +682,7 @@ class Helper
      *
      * @return string All flash messages in the queue rendered as HTML.
      */
-    public static function renderFlashMessages($queue = 'kitodo.default.flashMessages')
+    public static function renderFlashMessages(string $queue = 'kitodo.default.flashMessages'): string
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
@@ -704,7 +705,7 @@ class Helper
      *
      * @return string Localized label for $index_name
      */
-    public static function translate($index_name, $table, $pid)
+    public static function translate(string $index_name, string $table, string $pid): string
     {
         // Load labels into static variable for future use.
         static $labels = [];
@@ -834,7 +835,7 @@ class Helper
      *
      * @return string Additional WHERE expression
      */
-    public static function whereExpression($table, $showHidden = false)
+    public static function whereExpression(string $table, bool $showHidden = false): string
     {
         // TODO: Check with applicationType; TYPO3_MODE is removed in v12
         if (\TYPO3_MODE === 'FE') {

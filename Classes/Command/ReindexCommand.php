@@ -39,7 +39,7 @@ class ReindexCommand extends BaseCommand
      *
      * @return void
      */
-    public function configure()
+    public function configure(): void
     {
         $this
             ->setDescription('Reindex a collection into database and Solr.')
@@ -92,7 +92,7 @@ class ReindexCommand extends BaseCommand
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 

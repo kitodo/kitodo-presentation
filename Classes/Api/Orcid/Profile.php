@@ -32,19 +32,19 @@ class Profile
      * @access protected
      * @var Logger This holds the logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
      * @access private
      * @var Client This holds the client
      */
-    private $client;
+    private Client $client;
 
     /**
      * @access private
      * @var \SimpleXmlElement|false The raw ORCID profile
      **/
-    private $raw = null;
+    private $raw;
 
     /**
      * Constructs client instance
@@ -55,7 +55,7 @@ class Profile
      *
      * @return void
      **/
-    public function __construct($orcid)
+    public function __construct(string $orcid)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->client = new Client($orcid, GeneralUtility::makeInstance(RequestFactory::class));
@@ -151,7 +151,7 @@ class Profile
      *
      * @return void
      **/
-    private function getRaw($endpoint)
+    private function getRaw(string $endpoint): void
     {
         $this->client->setEndpoint($endpoint);
         $data = $this->client->getData();

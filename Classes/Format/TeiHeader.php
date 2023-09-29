@@ -34,7 +34,7 @@ class TeiHeader implements MetadataInterface
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata)
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata): void
     {
         $xml->registerXPathNamespace('teihdr', 'http://www.tei-c.org/ns/1.0');
     }

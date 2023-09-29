@@ -24,19 +24,19 @@ class SolrSearchQuery implements QueryInterface
      * @access private
      * @var SolrSearch
      */
-    private $solrSearch;
+    private SolrSearch $solrSearch;
 
     /**
      * @access private
      * @var int
      */
-    private $limit;
+    private int $limit;
 
     /**
      * @access private
      * @var int
      */
-    private $offset;
+    private int $offset;
 
      /**
      * Constructs SolrSearchQuery instance.
@@ -90,7 +90,7 @@ class SolrSearchQuery implements QueryInterface
      *
      * @return SolrSearchQuery
      */
-    public function setLimit($limit)
+    public function setLimit($limit): SolrSearchQuery
     {
         $this->limit = $limit;
         return $this;
@@ -105,7 +105,7 @@ class SolrSearchQuery implements QueryInterface
      *
      * @return SolrSearchQuery
      */
-    public function setOffset($offset)
+    public function setOffset($offset): SolrSearchQuery
     {
         $this->offset = $offset;
         return $this;
@@ -141,7 +141,7 @@ class SolrSearchQuery implements QueryInterface
      *
      * @return int
      */
-    public function getLimit()
+    public function getLimit(): int
     {
         return $this->limit;
     }
@@ -153,7 +153,7 @@ class SolrSearchQuery implements QueryInterface
      *
      * @return int
      */
-    public function getOffset()
+    public function getOffset(): int
     {
         return $this->offset;
     }

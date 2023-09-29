@@ -39,7 +39,7 @@ class Indexer
      * @static
      * @var string The extension key
      */
-    public static $extKey = 'dlf';
+    public static string $extKey = 'dlf';
 
     /**
      * @access protected
@@ -48,7 +48,7 @@ class Indexer
      *
      * @see loadIndexConf()
      */
-    protected static $fields = [
+    protected static array $fields = [
         'autocomplete' => [],
         'facets' => [],
         'sortables' => [],
@@ -65,21 +65,21 @@ class Indexer
      *
      * @see $fields
      */
-    protected static $fieldsLoaded = false;
+    protected static bool $fieldsLoaded = false;
 
     /**
      * @access protected
      * @static
      * @var array List of already processed documents
      */
-    protected static $processedDocs = [];
+    protected static array $processedDocs = [];
 
     /**
      * @access protected
      * @static
      * @var Solr Instance of Solr class
      */
-    protected static $solr;
+    protected static Solr $solr;
 
     /**
      * Insert given document into Solr index
@@ -92,7 +92,7 @@ class Indexer
      *
      * @return bool true on success or false on failure
      */
-    public static function add(Document $document, DocumentRepository $documentRepository)
+    public static function add(Document $document, DocumentRepository $documentRepository): bool
     {
         if (in_array($document->getUid(), self::$processedDocs)) {
             return true;
@@ -206,7 +206,7 @@ class Indexer
      *
      * @return string The field's dynamic index name
      */
-    public static function getIndexFieldName($index_name, $pid = 0)
+    public static function getIndexFieldName(string $index_name, int $pid = 0): string
     {
         // Sanitize input.
         $pid = max(intval($pid), 0);
@@ -235,7 +235,7 @@ class Indexer
      *
      * @return void
      */
-    protected static function loadIndexConf($pid)
+    protected static function loadIndexConf(int $pid): void
     {
         if (!self::$fieldsLoaded) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -308,7 +308,7 @@ class Indexer
      *
      * @return bool true on success or false on failure
      */
-    protected static function processLogical(Document $document, array $logicalUnit)
+    protected static function processLogical(Document $document, array $logicalUnit): bool
     {
         $success = true;
         $doc = $document->getCurrentDocument();
@@ -440,7 +440,7 @@ class Indexer
      *
      * @return bool true on success or false on failure
      */
-    protected static function processPhysical(Document $document, $page, array $physicalUnit)
+    protected static function processPhysical(Document $document, int $page, array $physicalUnit): bool
     {
         $doc = $document->getCurrentDocument();
         $doc->cPid = $document->getPid();
@@ -528,23 +528,20 @@ class Indexer
      *
      * @return bool true on success or false on failure
      */
-    protected static function solrConnect($core, $pid = 0)
+    protected static function solrConnect(int $core, int $pid = 0): bool
     {
         // Get Solr instance.
-        if (!self::$solr) {
-            // Connect to Solr server.
-            $solr = Solr::getInstance($core);
-            if ($solr->ready) {
-                self::$solr = $solr;
-                // Load indexing configuration if needed.
-                if ($pid) {
-                    self::loadIndexConf($pid);
-                }
-            } else {
-                return false;
+        // Connect to Solr server.
+        $solr = Solr::getInstance($core);
+        if ($solr->ready) {
+            self::$solr = $solr;
+            // Load indexing configuration if needed.
+            if ($pid) {
+                self::loadIndexConf($pid);
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -561,7 +558,8 @@ class Indexer
      *
      * @return DocumentInterface
      */
-    private static function getSolrDocument($updateQuery, $document, $unit, $fullText = '') {
+    private static function getSolrDocument(Query $updateQuery, Document $document, array $unit, string $fullText = ''): DocumentInterface
+    {
         $solrDoc = $updateQuery->createDocument();
         // Create unique identifier from document's UID and unit's XML ID.
         $solrDoc->setField('id', $document->getUid() . $unit['id']);
@@ -587,7 +585,8 @@ class Indexer
      *
      * @return array|string
      */
-    private static function removeAppendsFromAuthor($authors) {
+    private static function removeAppendsFromAuthor($authors)
+    {
         if (is_array($authors)) {
             foreach ($authors as $i => $author) {
                 $splitName = explode(chr(31), $author);
