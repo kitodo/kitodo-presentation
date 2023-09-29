@@ -38,6 +38,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     use LoggerAwareTrait;
 
     /**
+     * @access public
+     *
      * @return ExpressionFunction[] An array of Function instances
      */
     public function getFunctions()
@@ -80,6 +82,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * Initialize the extbase repositories
      *
+     * @access protected
+     *
      * @param int $storagePid The storage pid
      *
      * @return void
@@ -96,6 +100,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
     /**
      * Shortcut function to access field values
+     *
+     * @access protected
      *
      * @return ExpressionFunction
      */
@@ -149,8 +155,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @access protected
      *
-     * @param array $requestData: The request data
-     * @param int $pid: Storage Pid
+     * @param array $requestData The request data
+     * @param int $pid Storage Pid
      *
      * @return void
      */

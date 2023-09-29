@@ -65,6 +65,8 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     ];
 
     /**
+     * @access public
+     *
      * @return string Unique identifier of this updater
      */
     public function getIdentifier(): string
@@ -75,6 +77,8 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     /**
      * Return the speaking name of this wizard
      *
+     * @access public
+     *
      * @return string
      */
     public function getTitle(): string
@@ -84,6 +88,8 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
 
     /**
      * Get description
+     *
+     * @access public
      *
      * @return string Longer description of this updater
      */
@@ -98,6 +104,8 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      * Is used to determine whether a wizard needs to be run.
      * Check if data for migration exists.
      *
+     * @access public
+     *
      * @return bool
      */
     public function updateNecessary(): bool
@@ -110,6 +118,8 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     }
 
     /**
+     * @access public
+     *
      * @return string[] All new fields and tables must exist
      */
     public function getPrerequisites(): array
@@ -120,6 +130,8 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     }
 
     /**
+     * @access public
+     *
      * @param OutputInterface $output
      */
     public function setOutput(OutputInterface $output): void
@@ -131,6 +143,8 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      * Execute the update
      *
      * Called when a wizard reports that an update is necessary
+     *
+     * @access public
      *
      * @return bool
      */
@@ -155,7 +169,10 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      *
      * Work based on BackendLayoutIconUpdateWizard::class
      *
+     * @access public
+     *
      * @return array|int
+     *
      * @throws \RuntimeException
      */
     protected function getRecordsFromTable($countOnly = false)
@@ -209,6 +226,8 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     /**
      * Performs the database update.
      *
+     * @access public
+     *
      * @return bool TRUE on success, FALSE on error
      */
     protected function performUpdate(): bool
@@ -235,8 +254,13 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     /**
      * Migrates a single field.
      *
+     * @access public
+     *
      * @param string $table
      * @param array $row
+     *
+     * @return void
+     *
      * @throws \Exception
      */
     protected function migrateField($table, $row)

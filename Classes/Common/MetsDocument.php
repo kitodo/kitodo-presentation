@@ -140,12 +140,12 @@ final class MetsDocument extends AbstractDocument
     /**
      * This adds metadata from METS structural map to metadata array.
      *
-     * @access	public
+     * @access public
      *
-     * @param	array	&$metadata: The metadata array to extend
-     * @param	string	$id: The "@ID" attribute of the logical structure node
+     * @param array &$metadata The metadata array to extend
+     * @param string $id The "@ID" attribute of the logical structure node
      *
-     * @return  void
+     * @return void
      */
     public function addMetadataFromMets(&$metadata, $id)
     {
@@ -292,8 +292,8 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @param \SimpleXMLElement $structure: The logical structure node
-     * @param bool $recursive: Whether to include the child elements
+     * @param \SimpleXMLElement $structure The logical structure node
+     * @param bool $recursive Whether to include the child elements
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
@@ -631,7 +631,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @param string $id: The "@ID" attribute of the file node
+     * @param string $id The "@ID" attribute of the file node
      *
      * @return array
      */
@@ -831,6 +831,13 @@ final class MetsDocument extends AbstractDocument
         return $this->mdSec;
     }
 
+    /**
+     * Gets the document's metadata sections
+     *
+     * @access protected
+     *
+     * @return array Array of metadata sections with their IDs as array key
+     */
     protected function _getDmdSec()
     {
         $this->_getMdSec();
@@ -1161,6 +1168,8 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * Try to determine URL of parent document.
+     *
+     * @access public
      *
      * @return string
      */

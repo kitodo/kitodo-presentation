@@ -27,6 +27,8 @@ class TokenRepository extends Repository
     /**
      * Delete all expired token
      *
+     * @access public
+     *
      * @param int $expireTime
      *
      * @return void

@@ -29,8 +29,8 @@ class KitodoProductionHacks
      *
      * @access public
      *
-     * @param \SimpleXMLElement &$xml: The XML object
-     * @param mixed $record_id: The record identifier
+     * @param \SimpleXMLElement &$xml The XML object
+     * @param mixed $record_id The record identifier
      *
      * @return void
      */

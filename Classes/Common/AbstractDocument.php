@@ -313,6 +313,7 @@ abstract class AbstractDocument
      *
      * @param int $pid: ID of the configuration page with the recordId config
      *
+     * @return void
      */
     protected abstract function establishRecordId($pid);
 
@@ -335,9 +336,9 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param string $id: The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
+     * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
      *
-     * @return string    The file's location as URL
+     * @return string The file's location as URL
      */
     public abstract function getDownloadLocation($id);
 
@@ -361,7 +362,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param string $id: The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
+     * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
      *
      * @return string The file's location as URL
      */
@@ -374,7 +375,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param string $id: The "@ID" attribute of the file node
+     * @param string $id The "@ID" attribute of the file node
      *
      * @return string The file's MIME type
      */
@@ -387,9 +388,9 @@ abstract class AbstractDocument
      *
      * @static
      *
-     * @param string $location: The URL of XML file or the IRI of the IIIF resource
+     * @param string $location The URL of XML file or the IRI of the IIIF resource
      * @param array $settings
-     * @param bool $forceReload: Force reloading the document instead of returning the cached instance
+     * @param bool $forceReload Force reloading the document instead of returning the cached instance
      *
      * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
      */
@@ -457,9 +458,9 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param string $id: The "@ID" attribute of the logical structure node (METS) or
+     * @param string $id The "@ID" attribute of the logical structure node (METS) or
      * the "@id" property of the Manifest / Range (IIIF)
-     * @param bool $recursive: Whether to include the child elements / resources
+     * @param bool $recursive Whether to include the child elements / resources
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
@@ -472,10 +473,9 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param string $id: The "@ID" attribute of the logical structure node (METS) or the "@id" property
+     * @param string $id The "@ID" attribute of the logical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
-     * @param int $cPid: The PID for the metadata definitions
-     *                       (defaults to $this->cPid or $this->pid)
+     * @param int $cPid The PID for the metadata definitions (defaults to $this->cPid or $this->pid)
      *
      * @return array The logical structure node's / the IIIF resource's parsed metadata array
      */
@@ -486,7 +486,7 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param string $logicalPage: The label (or a part of the label) of the logical page
+     * @param string $logicalPage The label (or a part of the label) of the logical page
      *
      * @return int The physical page number
      */
@@ -519,7 +519,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param string $id: The "@ID" attribute of the physical structure node (METS) or the "@id" property
+     * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
      *
      * @return string The OCR full text
@@ -531,7 +531,7 @@ abstract class AbstractDocument
      * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
      * to be given in the Canvas' / Manifest's "seeAlso" property.
      *
-     * @param string $id: The "@ID" attribute of the physical structure node (METS) or the "@id" property
+     * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
      *
      * @return string The OCR full text
@@ -596,7 +596,7 @@ abstract class AbstractDocument
      *
      * @access private
      *
-     * @param string $fileContent: content of the XML file
+     * @param string $fileContent content of the XML file
      *
      * @return string The format of the OCR full text
      */
@@ -619,8 +619,8 @@ abstract class AbstractDocument
      *
      * @static
      *
-     * @param int $uid: The UID of the document
-     * @param bool $recursive: Search superior documents for a title, too?
+     * @param int $uid The UID of the document
+     * @param bool $recursive Search superior documents for a title, too?
      *
      * @return string The title of the document itself or a parent document
      */
@@ -673,7 +673,7 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param int $cPid: The PID for the metadata definitions
+     * @param int $cPid The PID for the metadata definitions
      *
      * @return array The logical structure node's / resource's parsed metadata array
      */
@@ -704,11 +704,11 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @param array $structure: logical structure array
-     * @param int $depth: current tree depth
-     * @param string $logId: ID of the logical structure whose depth is requested
+     * @param array $structure logical structure array
+     * @param int $depth current tree depth
+     * @param string $logId ID of the logical structure whose depth is requested
      *
-     * @return int|bool: false if structure with $logId is not a child of this substructure,
+     * @return int|bool false if structure with $logId is not a child of this substructure,
      * or the actual depth.
      */
     protected function getTreeDepth($structure, $depth, $logId)
@@ -731,7 +731,8 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param string $logId: The id of the logical structure element whose depth is requested
+     * @param string $logId The id of the logical structure element whose depth is requested
+     *
      * @return int|bool tree depth as integer or false if no element with $logId exists within the TOC.
      */
     public function getStructureDepth($logId)
@@ -746,7 +747,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param string $location:The location URL of the XML file to parse
+     * @param string $location The location URL of the XML file to parse
      *
      * @return void
      */
@@ -759,7 +760,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: any instance that has already been loaded
+     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument any instance that has already been loaded
      *
      * @return bool true if $preloadedDocument can actually be reused, false if it has to be loaded again
      */
@@ -772,7 +773,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param string $location: The URL of the file to load
+     * @param string $location The URL of the file to load
      *
      * @return bool true on success or false on failure
      */
@@ -783,7 +784,7 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @param string $location: The URL of the file to load
+     * @param string $location The URL of the file to load
      *
      * @return bool true on success or false on failure
      */
@@ -805,6 +806,8 @@ abstract class AbstractDocument
      * @access protected
      *
      * @abstract
+     *
+     * @return void
      */
     protected abstract function ensureHasFulltextIsSet();
 
@@ -852,7 +855,7 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param \SimpleXMLElement|\DOMXPath &$obj: \SimpleXMLElement or \DOMXPath object
+     * @param \SimpleXMLElement|\DOMXPath &$obj \SimpleXMLElement or \DOMXPath object
      *
      * @return void
      */
@@ -949,6 +952,8 @@ abstract class AbstractDocument
      * @abstract
      *
      * @param int $cPid
+     *
+     * @return void
      */
     protected abstract function prepareMetadataArray($cPid);
 
@@ -1124,7 +1129,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param bool $forceReload: Force reloading the thumbnail instead of returning the cached value
+     * @param bool $forceReload Force reloading the thumbnail instead of returning the cached value
      *
      * @return string The document's thumbnail location
      */
@@ -1146,7 +1151,7 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @param int $value: The new PID for the metadata definitions
+     * @param int $value The new PID for the metadata definitions
      *
      * @return void
      */
@@ -1161,9 +1166,9 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @param string $location: The location URL of the XML file to parse
-     * @param int $pid: If > 0, then only document with this PID gets loaded
-     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument: Either null or the \SimpleXMLElement
+     * @param string $location The location URL of the XML file to parse
+     * @param int $pid If > 0, then only document with this PID gets loaded
+     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
@@ -1182,7 +1187,7 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param string $var: Name of variable to get
+     * @param string $var Name of variable to get
      *
      * @return mixed Value of $this->$var
      */
@@ -1205,7 +1210,7 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param string $var: Name of variable to check
+     * @param string $var Name of variable to check
      *
      * @return bool true if variable is set and not empty, false otherwise
      */
@@ -1219,8 +1224,8 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param string $var: Name of variable to set
-     * @param mixed $value: New value of variable
+     * @param string $var Name of variable to set
+     * @param mixed $value New value of variable
      *
      * @return void
      */
@@ -1238,9 +1243,14 @@ abstract class AbstractDocument
     }
 
     /**
-     * get Cache Hit for $doc
+     * Gets Cache Hit for $doc
+     *
+     * @access private
+     *
+     * @static
      *
      * @param string $location
+     *
      * @return Doc|false
      */
     private static function getDocCache(string $location)
@@ -1253,10 +1263,15 @@ abstract class AbstractDocument
     }
 
     /**
-     * set Cache for $doc
+     * Sets Cache for $doc
+     *
+     * @access private
+     *
+     * @static
      *
      * @param string $location
      * @param AbstractDocument $currentDocument
+     *
      * @return void
      */
     private static function setDocCache(string $location, AbstractDocument $currentDocument)

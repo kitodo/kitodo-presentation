@@ -49,6 +49,8 @@ class Profile
     /**
      * Constructs client instance
      *
+     * @access public
+     *
      * @param string $orcid: the ORCID to search for
      *
      * @return void
@@ -61,6 +63,8 @@ class Profile
 
     /**
      * Get the ORCID profile data
+     *
+     * @access public
      *
      * @return array|false
      **/
@@ -82,6 +86,8 @@ class Profile
     /**
      * Get the address
      *
+     * @access public
+     *
      * @return string|false
      **/
     public function getAddress()
@@ -99,6 +105,8 @@ class Profile
     /**
      * Get the email
      *
+     * @access public
+     *
      * @return string|false
      **/
     public function getEmail()
@@ -115,6 +123,8 @@ class Profile
 
     /**
      * Get the full name
+     *
+     * @access public
      *
      * @return string|false
      **/
@@ -135,11 +145,13 @@ class Profile
     /**
      * Get the ORCID part of profile data for given endpoint
      *
-     * @param string  $endpoint the shortname of the endpoint
+     * @access private
+     *
+     * @param string $endpoint the shortname of the endpoint
      *
      * @return void
      **/
-    protected function getRaw($endpoint)
+    private function getRaw($endpoint)
     {
         $this->client->setEndpoint($endpoint);
         $data = $this->client->getData();

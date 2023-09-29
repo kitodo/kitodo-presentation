@@ -24,6 +24,13 @@ use TYPO3\CMS\Core\ExpressionLanguage\AbstractProvider;
  */
 class DocumentTypeProvider extends AbstractProvider
 {
+    /**
+     * Construct the instance
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->expressionLanguageProviders = [

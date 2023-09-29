@@ -53,8 +53,11 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 
     /**
      * Render method
+     * 
+     * @access public
      *
      * @param FlashMessage[] $flashMessages
+     *
      * @return string Representation of the flash message
      */
     public function render(array $flashMessages): string
@@ -64,6 +67,8 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 
     /**
      * Gets the message severity class name
+     *
+     * @access public
      *
      * @param FlashMessage $flashMessage
      *
@@ -77,6 +82,8 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
     /**
      * Gets the message severity icon name
      *
+     * @access public
+     *
      * @param FlashMessage $flashMessage
      *
      * @return string The message severity icon name
@@ -89,7 +96,10 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
     /**
      * Gets the message rendered as clean and secure markup
      *
+     * @access public
+     *
      * @param FlashMessage[] $flashMessages
+     *
      * @return string
      */
     protected function getMessageAsMarkup(array $flashMessages): string

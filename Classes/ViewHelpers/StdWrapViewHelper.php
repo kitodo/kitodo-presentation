@@ -31,6 +31,13 @@ class StdWrapViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
+    /**
+     * Initializes arguments.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function initializeArguments()
     {
         parent::initializeArguments();
@@ -40,6 +47,8 @@ class StdWrapViewHelper extends AbstractViewHelper
 
     /**
      * Wraps the given value
+     *
+     * @access public
      *
      * @return string
      */

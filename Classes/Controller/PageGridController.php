@@ -30,6 +30,8 @@ class PageGridController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
@@ -78,8 +80,8 @@ class PageGridController extends AbstractController
      *
      * @access protected
      *
-     * @param int $number: The page to render
-     * @param string $fileGrpThumbs: the file group(s) of thumbs
+     * @param int $number The page to render
+     * @param string $fileGrpThumbs the file group(s) of thumbs
      *
      * @return array The rendered entry ready for fluid
      */

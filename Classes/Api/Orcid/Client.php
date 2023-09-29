@@ -71,8 +71,11 @@ class Client
     /**
      * Constructs a new instance
      *
+     * @access public
+     *
      * @param string $orcid the ORCID to search for
      * @param RequestFactory $requestFactory a request object to inject
+     *
      * @return void
      **/
     public function __construct($orcid, RequestFactory $requestFactory)
@@ -85,7 +88,9 @@ class Client
     /**
      * Sets API endpoint
      *
-     * @param string  $endpoint the shortname of the endpoint
+     * @access public
+     *
+     * @param string $endpoint the shortname of the endpoint
      *
      * @return void
      */
@@ -95,6 +100,8 @@ class Client
 
     /**
      * Get the profile data
+     *
+     * @access public
      *
      * @return object|bool
      **/
@@ -112,6 +119,8 @@ class Client
 
     /**
      * Creates the qualified API endpoint for retrieving the desired data
+     *
+     * @access private
      *
      * @return string
      **/

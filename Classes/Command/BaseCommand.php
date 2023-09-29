@@ -109,6 +109,8 @@ class BaseCommand extends Command
      *
      * TYPO3 10+: Find a better solution e.g. based on Symfony Dependency Injection.
      *
+     * @access protected
+     *
      * @param int $storagePid The storage pid
      *
      * @return bool
@@ -134,6 +136,8 @@ class BaseCommand extends Command
     /**
      * Return matching uid of Solr core depending on the input value.
      *
+     * @access protected
+     *
      * @param array $solrCores array of the valid Solr cores
      * @param string|bool|null $inputSolrId possible uid or name of Solr core
      *
@@ -151,6 +155,8 @@ class BaseCommand extends Command
 
     /**
      * Fetches all Solr cores on given page.
+     *
+     * @access protected
      *
      * @param int $pageId The UID of the Solr core or 0 to disable indexing
      *
@@ -183,7 +189,9 @@ class BaseCommand extends Command
     /**
      * Update or insert document to database
      *
-     * @param int|string $doc The document uid from DB OR the location of a mets document.
+     * @access protected
+     *
+     * @param int|string $doc The document uid from DB OR the location of a METS document.
      *
      * @return bool true on success
      */
@@ -303,6 +311,8 @@ class BaseCommand extends Command
      * Currently only applies to METS documents.
      *
      * @access protected
+     * 
+     * @param Document $document for which parent UID should be taken
      *
      * @return int The parent document's id.
      */

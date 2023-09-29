@@ -77,11 +77,13 @@ class Helper
      *
      * @access public
      *
-     * @param string $message: The body of the message
-     * @param string $title: The title of the message
-     * @param int $severity: The message's severity
-     * @param bool $session: Should the message be saved in the user's session?
-     * @param string $queue: The queue's unique identifier
+     * @static
+     *
+     * @param string $message The body of the message
+     * @param string $title The title of the message
+     * @param int $severity The message's severity
+     * @param bool $session Should the message be saved in the user's session?
+     * @param string $queue The queue's unique identifier
      *
      * @return FlashMessageQueue The queue the message was added to
      */
@@ -104,9 +106,10 @@ class Helper
      *
      * @access public
      *
-     * @param string $id: The identifier to check
-     * @param string $type: What type is the identifier supposed to be?
-     *                      Possible values: PPN, IDN, PND, ZDB, SWD, GKD
+     * @static
+     *
+     * @param string $id The identifier to check
+     * @param string $type What type is the identifier supposed to be? Possible values: PPN, IDN, PND, ZDB, SWD, GKD
      *
      * @return bool Is $id a valid GNL identifier of the given $type?
      */
@@ -171,7 +174,9 @@ class Helper
      *
      * @access public
      *
-     * @param string $encrypted: The encrypted value to decrypt
+     * @static
+     *
+     * @param string $encrypted The encrypted value to decrypt
      *
      * @return mixed The decrypted value or false on error
      */
@@ -211,6 +216,8 @@ class Helper
      *
      * @access public
      *
+     * @static
+     *
      * @param string $content: content of file to read
      *
      * @return \SimpleXMLElement|false
@@ -241,9 +248,10 @@ class Helper
      *
      * @access public
      *
-     * @param string $message: The message to log
-     * @param int $severity: The severity of the message
-     *                       0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
+     * @static
+     *
+     * @param string $message The message to log
+     * @param int $severity The severity of the message 0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
      *
      * @return void
      */
@@ -274,7 +282,9 @@ class Helper
      *
      * @access public
      *
-     * @param string $string: The string to encrypt
+     * @static
+     *
+     * @param string $string The string to encrypt
      *
      * @return mixed Hashed string or false on error
      */
@@ -294,7 +304,9 @@ class Helper
      *
      * @access public
      *
-     * @param string $string: The string to encrypt
+     * @static
+     *
+     * @param string $string The string to encrypt
      *
      * @return mixed Encrypted string or false on error
      */
@@ -328,13 +340,15 @@ class Helper
      *
      * @access public
      *
-     * @param string $qualifiedClassname: The qualified class name from get_class()
+     * @static
+     *
+     * @param string $qualifiedClassName The qualified class name from get_class()
      *
      * @return string The unqualified class name
      */
-    public static function getUnqualifiedClassName($qualifiedClassname)
+    public static function getUnqualifiedClassName($qualifiedClassName)
     {
-        $nameParts = explode('\\', $qualifiedClassname);
+        $nameParts = explode('\\', $qualifiedClassName);
         return end($nameParts);
     }
 
@@ -343,7 +357,9 @@ class Helper
      *
      * @access public
      *
-     * @param string $string: The string to clean up
+     * @static
+     *
+     * @param string $string The string to clean up
      *
      * @return string The cleaned up string
      */
@@ -365,7 +381,9 @@ class Helper
      *
      * @access public
      *
-     * @param string $scriptRelPath: The path to the class file
+     * @static
+     *
+     * @param string $scriptRelPath The path to the class file
      *
      * @return array Array of hook objects for the class
      */
@@ -385,9 +403,11 @@ class Helper
      *
      * @access public
      *
-     * @param int $uid: The UID of the record
-     * @param string $table: Get the "index_name" from this table
-     * @param int $pid: Get the "index_name" from this page
+     * @static
+     *
+     * @param int $uid The UID of the record
+     * @param string $table Get the "index_name" from this table
+     * @param int $pid Get the "index_name" from this page
      *
      * @return string "index_name" for the given UID
      */
@@ -446,7 +466,9 @@ class Helper
      *
      * @access public
      *
-     * @param string $code: ISO 639-1 or ISO 639-2/B language code
+     * @static
+     *
+     * @param string $code ISO 639-1 or ISO 639-2/B language code
      *
      * @return string Localized full name of language or unchanged input
      */
@@ -474,7 +496,11 @@ class Helper
     /**
      * Get all document structures as array
      *
-     * @param int $pid: Get the "index_name" from this page only
+     * @access public
+     *
+     * @static
+     *
+     * @param int $pid Get the "index_name" from this page only
      *
      * @return array
      */
@@ -516,8 +542,10 @@ class Helper
      *
      * @access public
      *
-     * @param string $base: The namespace and base URN
-     * @param string $id: The object's identifier
+     * @static
+     *
+     * @param string $base The namespace and base URN
+     * @param string $id The object's identifier
      *
      * @return string Uniform Resource Name as string
      */
@@ -585,7 +613,9 @@ class Helper
      *
      * @access public
      *
-     * @param string $id: The identifier to check
+     * @static
+     *
+     * @param string $id The identifier to check
      *
      * @return bool Is $id a valid PPN?
      */
@@ -596,6 +626,10 @@ class Helper
 
     /**
      * Determine whether or not $url is a valid URL using HTTP or HTTPS scheme.
+     *
+     * @access public
+     *
+     * @static
      *
      * @param string $url
      *
@@ -620,11 +654,13 @@ class Helper
      *
      * @access public
      *
-     * @param array $original: Original array
-     * @param array $overrule: Overrule array, overruling the original array
-     * @param bool $addKeys: If set to false, keys that are not found in $original will not be set
-     * @param bool $includeEmptyValues: If set, values from $overrule will overrule if they are empty
-     * @param bool $enableUnsetFeature: If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
+     * @static
+     *
+     * @param array $original Original array
+     * @param array $overrule Overrule array, overruling the original array
+     * @param bool $addKeys If set to false, keys that are not found in $original will not be set
+     * @param bool $includeEmptyValues If set, values from $overrule will overrule if they are empty
+     * @param bool $enableUnsetFeature If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
      *
      * @return array Merged array
      */
@@ -638,8 +674,10 @@ class Helper
      * Fetches and renders all available flash messages from the queue.
      *
      * @access public
+     * 
+     * @static
      *
-     * @param string $queue: The queue's unique identifier
+     * @param string $queue The queue's unique identifier
      *
      * @return string All flash messages in the queue rendered as HTML.
      */
@@ -658,9 +696,11 @@ class Helper
      *
      * @access public
      *
-     * @param string $index_name: The internal "index_name" to translate
-     * @param string $table: Get the translation from this table
-     * @param string $pid: Get the translation from this page
+     * @static
+     *
+     * @param string $index_name The internal "index_name" to translate
+     * @param string $table Get the translation from this table
+     * @param string $pid Get the translation from this page
      *
      * @return string Localized label for $index_name
      */
@@ -787,8 +827,10 @@ class Helper
      *
      * @access public
      *
-     * @param string $table: Table name as defined in TCA
-     * @param bool $showHidden: Ignore the hidden flag?
+     * @static
+     *
+     * @param string $table Table name as defined in TCA
+     * @param bool $showHidden Ignore the hidden flag?
      *
      * @return string Additional WHERE expression
      */
@@ -826,6 +868,8 @@ class Helper
      * Prevent instantiation by hiding the constructor
      *
      * @access private
+     *
+     * @return void
      */
     private function __construct()
     {
@@ -834,6 +878,10 @@ class Helper
 
     /**
      * Returns the LanguageService
+     *
+     * @access public
+     *
+     * @static
      *
      * @return LanguageService
      */
@@ -848,6 +896,8 @@ class Helper
      * This method respects the User Agent settings from extConf
      *
      * @access public
+     *
+     * @static
      *
      * @param string $url
      *
@@ -887,9 +937,11 @@ class Helper
      *
      * @access public
      *
-     * @param mixed $id: The ID value to check
+     * @static
      *
-     * @return bool: TRUE if $id is valid XML ID, FALSE otherwise
+     * @param mixed $id The ID value to check
+     *
+     * @return bool TRUE if $id is valid XML ID, FALSE otherwise
      */
     public static function isValidXmlId($id): bool
     {

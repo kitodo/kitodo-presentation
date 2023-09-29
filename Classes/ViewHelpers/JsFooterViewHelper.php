@@ -28,6 +28,8 @@ class JsFooterViewHelper extends AbstractViewHelper
 {
     /**
      * Initialize arguments.
+     *
+     * @access public
      */
     public function initializeArguments()
     {
@@ -36,6 +38,9 @@ class JsFooterViewHelper extends AbstractViewHelper
     }
 
     /**
+     * @access public
+     *
+     * @static
      *
      * @param array $arguments
      * @param \Closure $renderChildrenClosure

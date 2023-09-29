@@ -57,8 +57,11 @@ class Client
     /**
      * Constructs a new instance
      *
+     * @access public
+     *
      * @param string $viaf the VIAF identifier of the profile
      * @param RequestFactory $requestFactory a request object to inject
+     *
      * @return void
      **/
     public function __construct($viaf, RequestFactory $requestFactory)
@@ -71,7 +74,9 @@ class Client
     /**
      * Sets API endpoint
      *
-     * @param string  $endpoint the shortname of the endpoint
+     * @access public
+     *
+     * @param string $endpoint the shortname of the endpoint
      *
      * @return void
      */
@@ -81,6 +86,8 @@ class Client
 
     /**
      * Get the profile data
+     *
+     * @access public
      *
      * @return object|bool
      **/
@@ -98,10 +105,12 @@ class Client
 
     /**
      * Creates the qualified API endpoint for retrieving the desired data
+     * 
+     * @access private
      *
      * @return string
      **/
-    protected function getApiEndpoint()
+    private function getApiEndpoint()
     {
         return $this->viafUrl . '/' . $this->endpoint;
     }

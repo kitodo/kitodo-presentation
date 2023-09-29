@@ -49,6 +49,8 @@ class IiifUrlReader implements UrlReaderInterface
     /**
      * Return a singleton instance.
      *
+     * @access public
+     *
      * @static
      *
      * @return IiifUrlReader

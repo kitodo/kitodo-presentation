@@ -120,7 +120,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $core: The name of the new core. If empty, the next available core name is used.
+     * @param string $core The name of the new core. If empty, the next available core name is used.
      *
      * @return string The name of the new core
      */
@@ -168,7 +168,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $query: The query string
+     * @param string $query The query string
      *
      * @return string The escaped query string
      */
@@ -185,8 +185,8 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $query: The query string
-     * @param int $pid: The PID for the field configuration
+     * @param string $query The query string
+     * @param int $pid The PID for the field configuration
      *
      * @return string The escaped query string
      */
@@ -282,7 +282,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param mixed $core: Name or UID of the core to load or null to get core admin endpoint
+     * @param mixed $core Name or UID of the core to load or null to get core admin endpoint
      *
      * @return Solr Instance of this class
      */
@@ -323,7 +323,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param int $number: Number to start with
+     * @param int $number Number to start with
      *
      * @return int First unused core number found
      */
@@ -383,7 +383,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param array $parameters: Additional search parameters
+     * @param array $parameters Additional search parameters
      *
      * @return array The Apache Solr Documents that were fetched
      */
@@ -476,7 +476,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param int $value: The new PID for the metadata definitions
+     * @param int $value The new PID for the metadata definitions
      *
      * @return void
      */
@@ -490,7 +490,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param int $value: The max number of results
+     * @param int $value The max number of results
      *
      * @return void
      */
@@ -504,7 +504,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param array $value: The query parameters
+     * @param array $value The query parameters
      *
      * @return void
      */
@@ -518,7 +518,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to get
+     * @param string $var Name of variable to get
      *
      * @return mixed Value of $this->$var
      */
@@ -541,7 +541,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to check
+     * @param string $var Name of variable to check
      *
      * @return bool true if variable is set and not empty, false otherwise
      */
@@ -555,8 +555,8 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to set
-     * @param mixed $value: New value of variable
+     * @param string $var Name of variable to set
+     * @param mixed $value New value of variable
      *
      * @return void
      */
@@ -578,7 +578,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param string|null $core: The name of the core to use or null for core admin endpoint
+     * @param string|null $core The name of the core to use or null for core admin endpoint
      *
      * @return void
      */

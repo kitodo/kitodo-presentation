@@ -28,6 +28,11 @@ class StdOutStream implements StreamInterface, SelfEmittableStreamInterface
 {
     use StreamDecoratorTrait;
 
+    /**
+     * @access public
+     * 
+     * @return void
+     */
     public function emit()
     {
         // Disable output buffering
