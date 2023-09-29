@@ -26,7 +26,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Document repository.
@@ -124,7 +123,7 @@ class DocumentRepository extends Repository
      * @param int $partOf
      * @param Structure $structure
      *
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function getChildrenOfYearAnchor($partOf, $structure)
     {
@@ -164,7 +163,7 @@ class DocumentRepository extends Repository
      *
      * @param array $settings
      *
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function findDocumentsBySettings($settings = [])
     {
@@ -197,7 +196,7 @@ class DocumentRepository extends Repository
      * @param array $collections
      * @param int $limit
      *
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function findAllByCollectionsLimited($collections, $limit = 50)
     {
