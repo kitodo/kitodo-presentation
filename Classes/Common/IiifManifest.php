@@ -36,89 +36,90 @@ use Ubl\Iiif\Tools\IiifHelper;
 /**
  * IiifManifest class for the 'dlf' extension.
  *
- * @author Lutz Helm <helm@ub.uni-leipzig.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
- * @property int $cPid This holds the PID for the configuration
- * @property-read bool $hasFulltext Are there any fulltext files available?
- * @property-read array $metadataArray This holds the documents' parsed metadata array
- * @property-read int $numPages The holds the total number of pages
- * @property-read int $parentId This holds the UID of the parent document or zero if not multi-volumed
- * @property-read array $physicalStructure This holds the physical structure
- * @property-read array $physicalStructureInfo This holds the physical structure metadata
- * @property-read int $pid This holds the PID of the document or zero if not in database
+ *
+ * @property int $cPid this holds the PID for the configuration
+ * @property-read array $formats this holds the configuration for all supported metadata encodings
+ * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
+ * @property-read bool $hasFulltext flag with information if there are any fulltext files available
+ * @property array $lastSearchedPhysicalPage the last searched logical and physical page
+ * @property array $logicalUnits this holds the logical units
+ * @property-read array $metadataArray this holds the documents' parsed metadata array
+ * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
+ * @property-read int $numPages the holds the total number of pages
+ * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
+ * @property-read array $physicalStructure this holds the physical structure
+ * @property-read array $physicalStructureInfo this holds the physical structure metadata
+ * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
+ * @property-read int $pid this holds the PID of the document or zero if not in database
+ * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
- * @property-read string $recordId The IIIF manifest's record identifier
- * @property-read int $rootId This holds the UID of the root document or zero if not multi-volumed
- * @property-read array $smLinks This holds the connections between resources and canvases
- * @property-read array $tableOfContents This holds the logical structure
- * @property-read string $thumbnail This holds the document's thumbnail location
- * @property-read string $toplevelId This holds the toplevel manifest's @id
+ * @property-read string $recordId the METS file's / IIIF manifest's record identifier
+ * @property array $registry this holds the singleton object of the document
+ * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
+ * @property-read array $smLinks this holds the smLinks between logical and physical structMap
+ * @property bool $smLinksLoaded flag with information if the smLinks are loaded
+ * @property-read array $tableOfContents this holds the logical structure
+ * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
+ * @property-read string $thumbnail this holds the document's thumbnail location
+ * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
+ * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
+ * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
+ * @property string $asJson this holds the manifest file as string for serialization purposes
+ * @property ManifestInterface $iiif a PHP object representation of a IIIF manifest
+ * @property string $iiifVersion 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif conforms to
+ * @property bool $hasFulltextSet flag if document has already been analyzed for presence of the fulltext for the Solr index
+ * @property array $originalMetadataArray this holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
+ * @property array $mimeTypes this holds the mime types of linked resources in the manifest (extracted during parsing) for later us
+ * 
  */
 final class IiifManifest extends AbstractDocument
 {
     /**
-     * This holds the manifest file as string for serialization purposes
+     * @access protected
+     * @var string This holds the manifest file as string for serialization purposes
+     *
      * @see __sleep() / __wakeup()
-     *
-     * @var string
+     */
+    protected string $asJson = '';
+
+    /**
      * @access protected
+     * @var ManifestInterface A PHP object representation of a IIIF manifest
      */
-    protected $asJson = '';
+    protected ManifestInterface $iiif;
 
     /**
-     * A PHP object representation of a IIIF manifest.
-     * @var ManifestInterface
      * @access protected
+     * @var string 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif confrms to: IIIF Metadata API 1, IIIF Presentation API 2 or 3
      */
-    protected $iiif;
+    protected string $iiifVersion;
 
     /**
-     * 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif confrms to:
-     * IIIF Metadata API 1, IIIF Presentation API 2 or 3
-     * @var string
      * @access protected
+     * @var bool Document has already been analyzed if it contains fulltext for the Solr index
      */
-    protected $iiifVersion;
+    protected bool $hasFulltextSet = false;
 
     /**
-     * Document has already been analyzed if it contains fulltext for the Solr index
-     * @var bool
      * @access protected
+     * @var array This holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
      */
-    protected $hasFulltextSet = false;
+    protected array $originalMetadataArray = [];
 
     /**
-     * This holds the original manifest's parsed metadata array with their corresponding
-     * resource (Manifest / Sequence / Range) ID as array key
-     *
-     * @var array
      * @access protected
+     * @var array Holds the mime types of linked resources in the manifest (extracted during parsing) for later use
      */
-    protected $originalMetadataArray = [];
+    protected array $mimeTypes = [];
 
     /**
-     * Holds the mime types of linked resources in the manifest (extreacted during parsing) for later use.
-     * @var array
-     * @access protected
-     */
-    protected $mimeTypes = [];
-
-    /**
-     * The extension key
-     *
-     * @var string
-     * @static
-     * @access public
-     */
-    public static $extKey = 'dlf';
-
-    /**
-     * {@inheritDoc}
      * @see AbstractDocument::establishRecordId()
      */
-    protected function establishRecordId($pid)
+    protected function establishRecordId(int $pid): void
     {
         if ($this->iiif !== null) {
             /*
@@ -171,10 +172,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getDocument()
      */
-    protected function getDocument()
+    protected function getDocument(): IiifResourceInterface
     {
         return $this->iiif;
     }
@@ -188,7 +188,7 @@ final class IiifManifest extends AbstractDocument
      * @return string 'IIIF1' if the resource is a Metadata API 1 resource, 'IIIF2' / 'IIIF3' if
      * the resource is a Presentation API 2 / 3 resource
      */
-    public function getIiifVersion()
+    public function getIiifVersion(): string
     {
         if (!isset($this->iiifVersion)) {
             if ($this->iiif instanceof AbstractIiifResource1) {
@@ -208,7 +208,7 @@ final class IiifManifest extends AbstractDocument
      * @var bool
      * @access protected
      */
-    protected $useGrpsLoaded = false;
+    protected bool $useGrpsLoaded = false;
 
     /**
      * Holds the configured useGrps as array.
@@ -216,7 +216,7 @@ final class IiifManifest extends AbstractDocument
      * @var array
      * @access protected
      */
-    protected $useGrps = [];
+    protected array $useGrps = [];
 
     /**
      * IiifManifest also populates the physical structure array entries for matching
@@ -230,7 +230,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @return array|string
      */
-    protected function getUseGroups($use)
+    protected function getUseGroups(string $use)
     {
         if (!$this->useGrpsLoaded) {
             // Get configured USE attributes.
@@ -256,10 +256,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getPhysicalStructure()
      */
-    protected function _getPhysicalStructure()
+    protected function _getPhysicalStructure(): array
     {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
@@ -373,7 +372,7 @@ final class IiifManifest extends AbstractDocument
      * {@inheritDoc}
      * @see AbstractDocument::getDownloadLocation()
      */
-    public function getDownloadLocation($id)
+    public function getDownloadLocation(string $id): string
     {
         $fileLocation = $this->getFileLocation($id);
         $resource = $this->iiif->getContainedResourceById($fileLocation);
@@ -384,10 +383,25 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
+     * @see AbstractDocument::getFileInfo()
+     */
+    public function getFileInfo($id)
+    {
+        if (empty($this->fileInfos[$id]['location'])) {
+            $this->fileInfos[$id]['location'] = $this->getFileLocation($id);
+        }
+
+        if (empty($this->fileInfos[$id]['mimeType'])) {
+            $this->fileInfos[$id]['mimeType'] = $this->getFileMimeType($id);
+        }
+
+        return $this->fileInfos[$id];
+    }
+
+    /**
      * @see AbstractDocument::getFileLocation()
      */
-    public function getFileLocation($id)
+    public function getFileLocation(string $id): string
     {
         if ($id == null) {
             return null;
@@ -409,10 +423,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFileMimeType()
      */
-    public function getFileMimeType($id)
+    public function getFileMimeType(string $id): string
     {
         $fileResource = $this->iiif->getContainedResourceById($id);
         if ($fileResource instanceof CanvasInterface) {
@@ -435,10 +448,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getLogicalStructure()
      */
-    public function getLogicalStructure($id, $recursive = false)
+    public function getLogicalStructure(string $id, bool $recursive = false): array
     {
         $details = [];
         if (!$recursive && !empty($this->logicalUnits[$id])) {
@@ -469,12 +481,13 @@ final class IiifManifest extends AbstractDocument
      *
      * @access protected
      *
-     * @param IiifResourceInterface $resource: IIIF resource, either a manifest or range.
-     * @param bool $recursive: Whether to include the child elements
-     * @param array $processedStructures: IIIF resources that already have been processed
+     * @param IiifResourceInterface $resource IIIF resource, either a manifest or range.
+     * @param bool $recursive Whether to include the child elements
+     * @param array $processedStructures IIIF resources that already have been processed
+     *
      * @return array Logical structure array
      */
-    protected function getLogicalStructureInfo(IiifResourceInterface $resource, $recursive = false, &$processedStructures = [])
+    protected function getLogicalStructureInfo(IiifResourceInterface $resource, bool $recursive = false, array &$processedStructures = []): array
     {
         $details = [];
         $details['id'] = $resource->getId();
@@ -557,17 +570,16 @@ final class IiifManifest extends AbstractDocument
      *
      * @access public
      *
-     * @param string $id: the ID of the IIIF resource
-     * @param int $cPid: the configuration folder's id
-     * @param bool $withDescription: add description / summary to the return value
-     * @param bool $withRights: add attribution and license / rights and requiredStatement to the return value
-     * @param bool $withRelated: add related links / homepage to the return value
+     * @param string $id the ID of the IIIF resource
+     * @param bool $withDescription add description / summary to the return value
+     * @param bool $withRights add attribution and license / rights and requiredStatement to the return value
+     * @param bool $withRelated add related links / homepage to the return value
      *
      * @return array
      *
      * @todo This method is still in experimental; the method signature may change.
      */
-    public function getManifestMetadata($id, $cPid = 0, $withDescription = true, $withRights = true, $withRelated = true)
+    public function getManifestMetadata(string $id, bool $withDescription = true, bool $withRights = true, bool $withRelated = true): array
     {
         if (!empty($this->originalMetadataArray[$id])) {
             return $this->originalMetadataArray[$id];
@@ -607,10 +619,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getMetadata()
      */
-    public function getMetadata($id, $cPid = 0)
+    public function getMetadata(string $id, int $cPid = 0): array
     {
         if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
             return $this->metadataArray[$id];
@@ -694,10 +705,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getSmLinks()
      */
-    protected function _getSmLinks()
+    protected function _getSmLinks(): array
     {
         if (!$this->smLinksLoaded && isset($this->iiif) && $this->iiif instanceof ManifestInterface) {
             if (!empty($this->iiif->getDefaultCanvases())) {
@@ -720,9 +730,11 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @param RangeInterface $range: Current range whose canvases shall be linked
+     * @param RangeInterface $range Current range whose canvases shall be linked
+     * 
+     * @return void
      */
-    private function smLinkRangeCanvasesRecursively(RangeInterface $range)
+    private function smLinkRangeCanvasesRecursively(RangeInterface $range): void
     {
         // map range's canvases including all child ranges' canvases
         if (!$range->isTopRange()) {
@@ -745,8 +757,10 @@ final class IiifManifest extends AbstractDocument
      *
      * @param CanvasInterface $canvas
      * @param IiifResourceInterface $resource
+     * 
+     * @return void
      */
-    private function smLinkCanvasToResource(CanvasInterface $canvas, IiifResourceInterface $resource)
+    private function smLinkCanvasToResource(CanvasInterface $canvas, IiifResourceInterface $resource): void
     {
         $this->smLinks['l2p'][$resource->getId()][] = $canvas->getId();
         if (!is_array($this->smLinks['p2l'][$canvas->getId()]) || !in_array($resource->getId(), $this->smLinks['p2l'][$canvas->getId()])) {
@@ -755,11 +769,10 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getFullText()
      */
     //TODO: rewrite it to get full OCR
-    public function getFullText($id)
+    public function getFullText(string $id): string
     {
         $rawText = '';
         // Get text from raw text array if available.
@@ -817,25 +830,23 @@ final class IiifManifest extends AbstractDocument
      *
      * @return IiifResourceInterface
      */
-    public function getIiif()
+    public function getIiif(): IiifResourceInterface
     {
         return $this->iiif;
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::init()
      */
-    protected function init($location)
+    protected function init(string $location): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::loadLocation()
      */
-    protected function loadLocation($location)
+    protected function loadLocation(string $location): bool
     {
         $fileResource = GeneralUtility::getUrl($location);
         if ($fileResource !== false) {
@@ -856,20 +867,18 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::prepareMetadataArray()
      */
-    protected function prepareMetadataArray($cPid)
+    protected function prepareMetadataArray(int $cPid): void
     {
         $id = $this->iiif->getId();
         $this->metadataArray[(string) $id] = $this->getMetadata((string) $id, $cPid);
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::setPreloadedDocument()
      */
-    protected function setPreloadedDocument($preloadedDocument)
+    protected function setPreloadedDocument($preloadedDocument): bool
     {
         if ($preloadedDocument instanceof ManifestInterface) {
             $this->iiif = $preloadedDocument;
@@ -879,10 +888,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::ensureHasFulltextIsSet()
      */
-    protected function ensureHasFulltextIsSet()
+    protected function ensureHasFulltextIsSet(): void
     {
         /*
          *  TODO Check annotations and annotation lists of canvas for ALTO documents.
@@ -926,19 +934,17 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getThumbnail()
      */
-    protected function _getThumbnail($forceReload = false)
+    protected function _getThumbnail(bool $forceReload = false): string
     {
         return $this->iiif->getThumbnailUrl();
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::_getToplevelId()
      */
-    protected function _getToplevelId()
+    protected function _getToplevelId(): string
     {
         if (empty($this->toplevelId)) {
             if (isset($this->iiif)) {
@@ -956,7 +962,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @return void
      */
-    public function __wakeup()
+    public function __wakeup(): void
     {
         $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         IiifHelper::setUrlReader(IiifUrlReader::getInstance());
@@ -974,10 +980,11 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
+     * @access public
      *
      * @return string[]
      */
-    public function __sleep()
+    public function __sleep(): array
     {
         // TODO implement serializiation in IIIF library
         $jsonArray = $this->iiif->getOriginalJsonArray();

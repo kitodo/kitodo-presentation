@@ -22,25 +22,31 @@ use Ubl\Iiif\Context\IRI;
 /**
  * Controller class for the plugin 'Metadata'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class MetadataController extends AbstractController
 {
     /**
-     * @var Doc
+     * @access private
+     * @var AbstractDocument
      */
     private $doc;
 
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
@@ -48,12 +54,17 @@ class MetadataController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
@@ -61,12 +72,17 @@ class MetadataController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var StructureRepository
      */
     protected $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
     public function injectStructureRepository(StructureRepository $structureRepository)
     {
@@ -74,6 +90,8 @@ class MetadataController extends AbstractController
     }
 
     /**
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
@@ -116,8 +134,8 @@ class MetadataController extends AbstractController
      *
      * @access protected
      *
-     * @param array $metadata: The metadata array
-     * @param bool $useOriginalIiifManifestMetadata: Output IIIF metadata as simple key/value pairs?
+     * @param array $metadata The metadata array
+     * @param bool $useOriginalIiifManifestMetadata Output IIIF metadata as simple key/value pairs?
      *
      * @return string The metadata array ready for output
      */
@@ -400,8 +418,8 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param array $id: An array with ids
-     * @param array $metadata: An array with metadata
+     * @param array $id An array with ids
+     * @param array $metadata An array with metadata
      *
      * @return array metadata
      */

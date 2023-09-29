@@ -14,28 +14,27 @@ namespace Kitodo\Dlf\Format;
 
 use Kitodo\Dlf\Api\Orcid\Profile as OrcidProfile;
 use Kitodo\Dlf\Api\Viaf\Profile as ViafProfile;
+use Kitodo\Dlf\Common\MetadataInterface;
 
 /**
  * Metadata MODS format class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ * 
  * @access public
  */
-class Mods implements \Kitodo\Dlf\Common\MetadataInterface
+class Mods implements MetadataInterface
 {
     /**
-     * The metadata XML
-     *
-     * @var \SimpleXMLElement
+     * @access private
+     * @var \SimpleXMLElement The metadata XML
      **/
     private $xml;
 
     /**
-     * The metadata array
-     *
-     * @var array
+     * @access private
+     * @var array The metadata array
      **/
     private $metadata;
 
@@ -44,12 +43,12 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
      *
      * @access public
      *
-     * @param \SimpleXMLElement $xml: The XML to extract the metadata from
-     * @param array &$metadata: The metadata array to fill
+     * @param \SimpleXMLElement $xml The XML to extract the metadata from
+     * @param array &$metadata The metadata array to fill
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata)
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata): void
     {
         $this->xml = $xml;
         $this->metadata = $metadata;
@@ -71,7 +70,8 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
      *
      * @return void
      */
-    private function getAuthors() {
+    private function getAuthors(): void
+    {
         $authors = $this->xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]="aut"]');
 
         // Get "author" and "author_sorting" again if that was too sophisticated.
@@ -93,7 +93,19 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         }
     }
 
-    private function getAuthorFromOrcidApi($orcidId, $authors, $i) {
+    /**
+     * Get author from ORCID API.
+     *
+     * @access private
+     *
+     * @param string $orcidId
+     * @param array $authors
+     * @param int $i
+     *
+     * @return void
+     */
+    private function getAuthorFromOrcidApi(string $orcidId, array $authors, int $i): void
+    {
         $profile = new OrcidProfile($orcidId);
         $name = $profile->getFullName();
         if (!empty($name)) {
@@ -107,7 +119,18 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         }
     }
 
-    private function getAuthorFromXml($authors, $i) {
+    /**
+     * Get author from XML.
+     *
+     * @access private
+     *
+     * @param array $authors
+     * @param int $i
+     *
+     * @return void
+     */
+    private function getAuthorFromXml(array $authors, int $i): void
+    {
         $this->getAuthorFromXmlDisplayForm($authors, $i);
 
         $nameParts = $authors[$i]->xpath('./mods:namePart');
@@ -150,7 +173,18 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         }
     }
 
-    private function getAuthorFromXmlDisplayForm($authors, $i) {
+    /**
+     * Get author from XML display form.
+     *
+     * @access private
+     *
+     * @param array $authors
+     * @param int $i
+     *
+     * @return void
+     */
+    private function getAuthorFromXmlDisplayForm(array $authors, int $i): void
+    {
         $displayForm = $authors[$i]->xpath('./mods:displayForm');
         if ($displayForm) {
             $this->metadata['author'][$i] = (string) $displayForm[0];
@@ -164,7 +198,8 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
      *
      * @return void
      */
-    private function getHolders() {
+    private function getHolders(): void
+    {
         $holders = $this->xml->xpath('./mods:name[./mods:role/mods:roleTerm[@type="code" and @authority="marcrelator"]="prv"]');
 
         if (!empty($holders)) {
@@ -181,7 +216,19 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         }
     }
 
-    private function getHolderFromViafApi($viafId, $holders, $i) {
+    /**
+     * Get holder from VIAF API.
+     *
+     * @access private
+     *
+     * @param string $viafId
+     * @param array $holders
+     * @param int $i
+     *
+     * @return void
+     */
+    private function getHolderFromViafApi(string $viafId, array $holders, int $i): void
+    {
         $profile = new ViafProfile($viafId);
         $name = $profile->getFullName();
         if (!empty($name)) {
@@ -195,7 +242,18 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         }
     }
 
-    private function getHolderFromXml($holders, $i) {
+    /**
+     * Get holder from XML.
+     *
+     * @access private
+     *
+     * @param array $holders
+     * @param int $i
+     *
+     * @return void
+     */
+    private function getHolderFromXml(array $holders, int $i): void
+    {
         $this->getHolderFromXmlDisplayForm($holders, $i);
         // Append "valueURI" to name using Unicode unit separator.
         if (isset($holders[$i]['valueURI'])) {
@@ -203,7 +261,18 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
         }
     }
 
-    private function getHolderFromXmlDisplayForm($holders, $i) {
+    /**
+     * Get holder from XML display form.
+     *
+     * @access private
+     * 
+     * @param array $holders
+     * @param int $i
+     *
+     * @return void
+     */
+    private function getHolderFromXmlDisplayForm(array $holders, int $i): void
+    {
         // Check if there is a display form.
         $displayForm = $holders[$i]->xpath('./mods:displayForm');
         if ($displayForm) {
@@ -218,7 +287,8 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
      *
      * @return void
      */
-    private function getPlaces() {
+    private function getPlaces(): void
+    {
         $places = $this->xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:place/mods:placeTerm');
         // Get "place" and "place_sorting" again if that was to sophisticated.
         if (empty($places)) {
@@ -242,7 +312,8 @@ class Mods implements \Kitodo\Dlf\Common\MetadataInterface
      *
      * @return void
      */
-    private function getYears() {
+    private function getYears(): void
+    {
         // Get "year_sorting".
         if (($years_sorting = $this->xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]'))) {
             foreach ($years_sorting as $year_sorting) {

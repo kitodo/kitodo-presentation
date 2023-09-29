@@ -11,24 +11,29 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Domain\Model\PageSelectForm;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Controller class for the plugin 'Navigation'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class NavigationController extends AbstractController
 {
     /**
-     * Method to get the page select values and use them with chash
-     * @param \Kitodo\Dlf\Domain\Model\PageSelectForm|NULL $pageSelectForm
+     * Method to get the page select values and use them with cHash
+     *
+     * @access public
+     *
+     * @param PageSelectForm|NULL $pageSelectForm
+     *
      * @return void
      */
-    public function pageSelectAction(\Kitodo\Dlf\Domain\Model\PageSelectForm $pageSelectForm = NULL) {
+    public function pageSelectAction(PageSelectForm $pageSelectForm = NULL) {
         if ($pageSelectForm) {
             $uri = $this->uriBuilder->reset()
                 ->setArguments(
@@ -48,6 +53,8 @@ class NavigationController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
@@ -57,15 +64,14 @@ class NavigationController extends AbstractController
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
+        }
+
+        // Set default values if not set.
+        if ($this->document->getCurrentDocument()->numPages > 0) {
+            $this->setPage();
         } else {
-            // Set default values if not set.
-            if ($this->document->getCurrentDocument()->numPages > 0) {
-                $this->setPage();
-                $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
-            } else {
-                $this->requestData['page'] = 0;
-                $this->requestData['double'] = 0;
-            }
+            $this->requestData['page'] = 0;
+            $this->requestData['double'] = 0;
         }
 
         // Steps for X pages backward / forward. Double page view uses double steps.
