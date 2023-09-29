@@ -26,7 +26,7 @@ class View3DController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         // Load current document.
         $this->loadDocument();

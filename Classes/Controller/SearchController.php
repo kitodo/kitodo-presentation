@@ -15,12 +15,11 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\Solr;
-use Kitodo\Dlf\Domain\Repository\CollectionRepository;
-use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Solarium\Component\Result\FacetSet;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 
 /**
  * Controller class for the plugin 'Search'.
@@ -36,7 +35,7 @@ class SearchController extends AbstractController
      * @access protected
      * @var CollectionRepository
      */
-    protected CollectionRepository $collectionRepository;
+    protected $collectionRepository;
 
     /**
      * @access public
@@ -45,7 +44,7 @@ class SearchController extends AbstractController
      *
      * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
         $this->collectionRepository = $collectionRepository;
     }
@@ -54,7 +53,7 @@ class SearchController extends AbstractController
      * @access protected
      * @var MetadataRepository
      */
-    protected MetadataRepository $metadataRepository;
+    protected $metadataRepository;
 
     /**
      * @access public
@@ -63,7 +62,7 @@ class SearchController extends AbstractController
      *
      * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
         $this->metadataRepository = $metadataRepository;
     }
@@ -72,7 +71,7 @@ class SearchController extends AbstractController
      * @access protected
      * @var array The current search parameter
      */
-    protected ?array $searchParams;
+    protected $searchParams;
 
     /**
      * Search Action
@@ -81,7 +80,7 @@ class SearchController extends AbstractController
      *
      * @return void
      */
-    public function searchAction(): void
+    public function searchAction()
     {
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
@@ -99,7 +98,7 @@ class SearchController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         $listViewSearch = false;
         // Quit without doing anything if required variables are not set.
@@ -200,9 +199,9 @@ class SearchController extends AbstractController
      *
      * @access protected
      *
-     * @return void HTML output of facets menu
+     * @return string HTML output of facets menu
      */
-    protected function addFacetsMenu(): void
+    protected function addFacetsMenu()
     {
         // Quit without doing anything if no facets are configured.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
@@ -227,7 +226,7 @@ class SearchController extends AbstractController
      *
      * @return array HMENU array
      */
-    public function makeFacetsMenuArray(array $facets): array
+    public function makeFacetsMenuArray($facets)
     {
         // Set default value for facet search.
         $search = [
@@ -368,8 +367,7 @@ class SearchController extends AbstractController
      *
      * @return string The collection query string
      */
-    private function addCollectionsQuery(string $query): string
-    {
+    private function addCollectionsQuery($query) {
         // if collections are given, we prepare the collections query string
         // extract collections from collection parameter
         $collections = null;
@@ -423,7 +421,7 @@ class SearchController extends AbstractController
      *
      * @return array The array for the facet's menu entry
      */
-    private function getFacetsMenuEntry(string $field, string $value, int $count, array $search, string &$state): array
+    private function getFacetsMenuEntry($field, $value, $count, $search, &$state)
     {
         $entryArray = [];
         $entryArray['title'] = $this->translateValue($field, $value);
@@ -458,14 +456,13 @@ class SearchController extends AbstractController
      *
      * @access private
      *
-     * @param FacetSet|null $facet
+     * @param array $facet
      * @param array $facetCollectionArray
      * @param array $search
      *
      * @return array menu array
      */
-    private function processResults(?FacetSet $facet, array $facetCollectionArray, array $search): array
-    {
+    private function processResults($facet, $facetCollectionArray, $search) {
         $menuArray = [];
 
         if ($facet) {
@@ -513,7 +510,7 @@ class SearchController extends AbstractController
      *
      * @return string
      */
-    private function translateValue(string $field, string $value): string
+    private function translateValue($field, $value)
     {
         switch ($field) {
             case 'owner_faceting':
@@ -540,7 +537,7 @@ class SearchController extends AbstractController
      *
      * @return string The extended search form or an empty string
      */
-    private function addExtendedSearch(): string
+    private function addExtendedSearch()
     {
         // Quit without doing anything if no fields for extended search are selected.
         if (

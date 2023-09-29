@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Doctrine\DBAL\ForwardCompatibility\Result;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -43,11 +42,11 @@ class CollectionRepository extends Repository
      *
      * @access public
      *
-     * @param array $uids
+     * @param string $uids separated by comma
      *
-     * @return array|QueryResultInterface
+     * @return QueryResultInterface
      */
-    public function findAllByUids(array $uids)
+    public function findAllByUids($uids)
     {
         $query = $this->createQuery();
 
@@ -68,9 +67,9 @@ class CollectionRepository extends Repository
      *
      * @param string $pages
      *
-     * @return array|QueryResultInterface
+     * @return QueryResultInterface
      */
-    public function getCollectionForMetadata(string $pages)
+    public function getCollectionForMetadata($pages)
     {
         // Get list of collections to show.
         $query = $this->createQuery();
@@ -89,7 +88,7 @@ class CollectionRepository extends Repository
      *
      * @return array|QueryResultInterface
      */
-    public function findCollectionsBySettings(array $settings = [])
+    public function findCollectionsBySettings($settings = [])
     {
         $query = $this->createQuery();
 
@@ -135,9 +134,9 @@ class CollectionRepository extends Repository
      * @param array $settings
      * @param mixed $set
      *
-     * @return Result
+     * @return array|QueryResultInterface
      */
-    public function getIndexNameForSolr(array $settings, string $set): Result
+    public function getIndexNameForSolr($settings, $set)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
@@ -162,9 +161,10 @@ class CollectionRepository extends Repository
                 $where,
                 Helper::whereExpression('tx_dlf_collections')
             )
-            ->setMaxResults(1);
+            ->setMaxResults(1)
+            ->execute();
 
-        return $result->execute();
+        return $result;
     }
 
 }

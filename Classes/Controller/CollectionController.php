@@ -32,7 +32,7 @@ class CollectionController extends AbstractController
      * @access protected
      * @var CollectionRepository
      */
-    protected CollectionRepository $collectionRepository;
+    protected $collectionRepository;
 
     /**
      * @access public
@@ -41,7 +41,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
         $this->collectionRepository = $collectionRepository;
     }
@@ -50,7 +50,7 @@ class CollectionController extends AbstractController
      * @access protected
      * @var MetadataRepository
      */
-    protected MetadataRepository $metadataRepository;
+    protected $metadataRepository;
 
     /**
      * @access public
@@ -59,7 +59,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
         $this->metadataRepository = $metadataRepository;
     }
@@ -71,7 +71,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function listAction(): void
+    public function listAction()
     {
         $solr = Solr::getInstance($this->settings['solrcore']);
 
@@ -161,7 +161,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function showAction(Collection $collection): void
+    public function showAction(Collection $collection)
     {
         $searchParams = $this->getParametersSafely('searchParameter');
 
@@ -214,7 +214,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function showSortedAction(): void
+    public function showSortedAction()
     {
         // if search was triggered, get search parameters from POST variables
         $searchParams = $this->getParametersSafely('searchParameter');

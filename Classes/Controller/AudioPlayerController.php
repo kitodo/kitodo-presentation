@@ -32,7 +32,7 @@ class AudioplayerController extends AbstractController
      * @access protected
      * @var array Holds the current audio file's URL, MIME type and optional label
      */
-    protected array $audio = [];
+    protected $audio = [];
 
     /**
      * Adds Player javascript
@@ -41,7 +41,7 @@ class AudioplayerController extends AbstractController
      *
      * @return void
      */
-    protected function addPlayerJS(): void
+    protected function addPlayerJS()
     {
         // Inline CSS.
         $inlineCSS = '#tx-dlf-audio { width: 100px; height: 100px; }';
@@ -73,7 +73,7 @@ class AudioplayerController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         // Load current document.
         $this->loadDocument();

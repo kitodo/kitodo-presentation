@@ -47,25 +47,25 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var int
      */
-    protected int $pid;
+    protected $pid;
 
     /**
      * @access protected
      * @var array
      */
-    protected array $pageInfo;
+    protected $pageInfo;
 
     /**
      * @access protected
      * @var array All configured site languages
      */
-    protected array $siteLanguages;
+    protected $siteLanguages;
 
     /**
      * @access protected
      * @var LocalizationFactory Language factory to get language key/values by our own.
      */
-    protected LocalizationFactory $languageFactory;
+    protected $languageFactory;
 
     /**
      * @access protected
@@ -77,7 +77,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var FormatRepository
      */
-    protected FormatRepository $formatRepository;
+    protected $formatRepository;
 
     /**
      * @access public
@@ -86,7 +86,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function injectFormatRepository(FormatRepository $formatRepository): void
+    public function injectFormatRepository(FormatRepository $formatRepository)
     {
         $this->formatRepository = $formatRepository;
     }
@@ -95,7 +95,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var MetadataRepository
      */
-    protected MetadataRepository $metadataRepository;
+    protected $metadataRepository;
 
     /**
      * @access public
@@ -104,7 +104,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
         $this->metadataRepository = $metadataRepository;
     }
@@ -113,7 +113,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var StructureRepository
      */
-    protected StructureRepository $structureRepository;
+    protected $structureRepository;
 
     /**
      * @access public
@@ -122,7 +122,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function injectStructureRepository(StructureRepository $structureRepository): void
+    public function injectStructureRepository(StructureRepository $structureRepository)
     {
         $this->structureRepository = $structureRepository;
     }
@@ -131,7 +131,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var SolrCoreRepository
      */
-    protected SolrCoreRepository $solrCoreRepository;
+    protected $solrCoreRepository;
 
     /**
      * @access public
@@ -140,7 +140,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository): void
+    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository)
     {
         $this->solrCoreRepository = $solrCoreRepository;
     }
@@ -152,7 +152,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    protected function initializeAction(): void
+    protected function initializeAction()
     {
         $this->pid = (int) GeneralUtility::_GP('id');
 
@@ -178,7 +178,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function addFormatAction(): void
+    public function addFormatAction()
     {
         // Include formats definition file.
         $formatsDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
@@ -220,7 +220,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function addMetadataAction(): void
+    public function addMetadataAction()
     {
         // Include metadata definition file.
         $metadataDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/MetadataDefaults.php');
@@ -299,7 +299,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function addSolrCoreAction(): void
+    public function addSolrCoreAction()
     {
         $doPersist = false;
 
@@ -335,7 +335,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function addStructureAction(): void
+    public function addStructureAction()
     {
         // Include structure definition file.
         $structureDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/StructureDefaults.php');
@@ -391,7 +391,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    protected function initializeView(ViewInterface $view): void
+    protected function initializeView(ViewInterface $view)
     {
         /** @var BackendTemplateView $view */
         parent::initializeView($view);
@@ -411,7 +411,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function indexAction(): void
+    public function indexAction()
     {
         $recordInfos = [];
 
@@ -443,7 +443,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function errorAction(): void
+    public function errorAction()
     {
     }
 
@@ -458,7 +458,7 @@ class NewTenantController extends AbstractController
      *
      * @return string
      */
-    protected function getLLL(string $index, string $lang, array $langArray): string
+    protected function getLLL($index, $lang, $langArray)
     {
         if (isset($langArray[$lang][$index][0]['target'])) {
             return $langArray[$lang][$index][0]['target'];

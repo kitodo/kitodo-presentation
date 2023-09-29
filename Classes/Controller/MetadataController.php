@@ -33,13 +33,13 @@ class MetadataController extends AbstractController
      * @access private
      * @var AbstractDocument
      */
-    private AbstractDocument $doc;
+    private $doc;
 
     /**
      * @access protected
      * @var CollectionRepository
      */
-    protected CollectionRepository $collectionRepository;
+    protected $collectionRepository;
 
     /**
      * @access public
@@ -48,7 +48,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
         $this->collectionRepository = $collectionRepository;
     }
@@ -57,7 +57,7 @@ class MetadataController extends AbstractController
      * @access protected
      * @var MetadataRepository
      */
-    protected MetadataRepository $metadataRepository;
+    protected $metadataRepository;
 
     /**
      * @access public
@@ -66,7 +66,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
+    public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
         $this->metadataRepository = $metadataRepository;
     }
@@ -75,7 +75,7 @@ class MetadataController extends AbstractController
      * @access protected
      * @var StructureRepository
      */
-    protected StructureRepository $structureRepository;
+    protected $structureRepository;
 
     /**
      * @access public
@@ -84,7 +84,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    public function injectStructureRepository(StructureRepository $structureRepository): void
+    public function injectStructureRepository(StructureRepository $structureRepository)
     {
         $this->structureRepository = $structureRepository;
     }
@@ -94,7 +94,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         // Load current document.
         $this->loadDocument();
@@ -137,9 +137,9 @@ class MetadataController extends AbstractController
      * @param array $metadata The metadata array
      * @param bool $useOriginalIiifManifestMetadata Output IIIF metadata as simple key/value pairs?
      *
-     * @return void
+     * @return string The metadata array ready for output
      */
-    protected function printMetadata(array $metadata, bool $useOriginalIiifManifestMetadata = false): void
+    protected function printMetadata(array $metadata, $useOriginalIiifManifestMetadata = false)
     {
         if ($useOriginalIiifManifestMetadata) {
             $iiifData = $this->buildIiifData($metadata);
@@ -253,7 +253,7 @@ class MetadataController extends AbstractController
      *
      * @return array The raw metadata array ready for output
      */
-    private function buildMetaCObjData(array $metadata): array
+    private function buildMetaCObjData(array $metadata)
     {
         $metaCObjData = [];
 
@@ -279,7 +279,7 @@ class MetadataController extends AbstractController
      *
      * @return array URLs
      */
-    private function buildUrlFromMetadata(array $metadata): array
+    private function buildUrlFromMetadata(array $metadata)
     {
         $buildUrl = [];
 
@@ -306,7 +306,7 @@ class MetadataController extends AbstractController
      *
      * @return array external URLs
      */
-    private function buildExternalUrlFromMetadata(array $metadata): array
+    private function buildExternalUrlFromMetadata(array $metadata)
     {
         $externalUrl = [];
 
@@ -338,8 +338,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseMetadata(int $i, string $name, $value, array &$metadata): void
-    {
+    private function parseMetadata(int $i, string $name, $value, array &$metadata) : void {
         if ($name == 'title') {
             // Get title of parent document if needed.
             if (empty(implode('', $value)) && $this->settings['getTitle'] && $this->document->getPartof()) {
@@ -385,7 +384,7 @@ class MetadataController extends AbstractController
      *
      * @return array metadata
      */
-    private function getMetadata(): array
+    private function getMetadata()
     {
         $metadata = [];
         if ($this->settings['rootline'] < 2) {
@@ -424,7 +423,7 @@ class MetadataController extends AbstractController
      *
      * @return array metadata
      */
-    private function getMetadataForIds(array $id, array $metadata): array
+    private function getMetadataForIds($id, $metadata)
     {
         $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->doc instanceof IiifManifest;
         foreach ($id as $sid) {
@@ -451,8 +450,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function setDefault(string $setting, int $value): void
-    {
+    private function setDefault($setting, $value) {
         if (!isset($this->settings[$setting])) {
             $this->settings[$setting] = $value;
         }

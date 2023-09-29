@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Doctrine\DBAL\ForwardCompatibility\DriverResultStatement;
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
@@ -27,7 +26,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Document repository.
@@ -43,7 +41,7 @@ class DocumentRepository extends Repository
      * @access protected
      * @var array The controller settings passed to the repository for some special actions.
      */
-    protected array $settings;
+    protected $settings;
 
     /**
      * Find one document by given parameters
@@ -62,7 +60,7 @@ class DocumentRepository extends Repository
      *
      * @return Document|null
      */
-    public function findOneByParameters(array $parameters): ?Document
+    public function findOneByParameters($parameters)
     {
         $doc = null;
         $document = null;
@@ -109,7 +107,7 @@ class DocumentRepository extends Repository
      *
      * @return Document|null
      */
-    public function findOldestDocument(): ?Document
+    public function findOldestDocument()
     {
         $query = $this->createQuery();
 
@@ -125,9 +123,9 @@ class DocumentRepository extends Repository
      * @param int $partOf
      * @param Structure $structure
      *
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function getChildrenOfYearAnchor(int $partOf, Structure $structure)
+    public function getChildrenOfYearAnchor($partOf, $structure)
     {
         $query = $this->createQuery();
 
@@ -151,7 +149,7 @@ class DocumentRepository extends Repository
      *
      * @return Document|null
      */
-    public function findOneByIdAndSettings($uid, $settings = []): ?Document
+    public function findOneByIdAndSettings($uid, $settings = [])
     {
         $settings = ['documentSets' => $uid];
 
@@ -165,9 +163,9 @@ class DocumentRepository extends Repository
      *
      * @param array $settings
      *
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findDocumentsBySettings(array $settings = [])
+    public function findDocumentsBySettings($settings = [])
     {
         $query = $this->createQuery();
 
@@ -198,9 +196,9 @@ class DocumentRepository extends Repository
      * @param array $collections
      * @param int $limit
      *
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findAllByCollectionsLimited(array $collections, int $limit = 50)
+    public function findAllByCollectionsLimited($collections, $limit = 50)
     {
         $query = $this->createQuery();
 
@@ -240,7 +238,7 @@ class DocumentRepository extends Repository
      *
      * @return array
      */
-    public function getStatisticsForSelectedCollection(array $settings): array
+    public function getStatisticsForSelectedCollection($settings)
     {
         if ($settings['collections']) {
             // Include only selected collections.
@@ -377,7 +375,7 @@ class DocumentRepository extends Repository
      *
      * @return Result
      */
-    public function getTableOfContentsFromDb(int $uid, int $pid, array $settings): Result
+    public function getTableOfContentsFromDb($uid, $pid, $settings)
     {
         // Build table of contents from database.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -428,7 +426,7 @@ class DocumentRepository extends Repository
      *
      * @return array The found document object
      */
-    public function getOaiRecord(array $settings, array $parameters): array
+    public function getOaiRecord($settings, $parameters)
     {
         $where = '';
 
@@ -466,11 +464,12 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
+     * @param array $settings
      * @param array $documentsToProcess
      *
-     * @return DriverResultStatement The found document objects
+     * @return array The found document objects
      */
-    public function getOaiDocumentList(array $documentsToProcess): DriverResultStatement
+    public function getOaiDocumentList($settings, $documentsToProcess)
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('tx_dlf_documents');
@@ -504,11 +503,11 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param array $uids
-     * @param bool $checkPartof Whether or not to also match $uids against partof.
+     * @param array $checkPartof Whether or not to also match $uids against partof.
      *
      * @return array
      */
-    public function findAllByUids(array $uids, bool $checkPartof = false): array
+    public function findAllByUids($uids, $checkPartof = false)
     {
         // get all documents from db we are talking about
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
@@ -558,7 +557,7 @@ class DocumentRepository extends Repository
      *
      * @return array
      */
-    public function findChildrenOfEach(array $uids): array
+    public function findChildrenOfEach(array $uids)
     {
         $allDocuments = $this->findAllByUids($uids, true);
 
@@ -576,14 +575,14 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param QueryResult|Collection|null $collection
+     * @param QueryResult|Collection $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrByCollection($collection, array $settings, array $searchParams, QueryResult $listedMetadata = null): SolrSearch
+    public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
     {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)

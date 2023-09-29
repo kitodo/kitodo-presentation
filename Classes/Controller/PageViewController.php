@@ -31,19 +31,19 @@ class PageViewController extends AbstractController
      * @access protected
      * @var array Holds the controls to add to the map
      */
-    protected array $controls = [];
+    protected $controls = [];
 
     /**
      * @access protected
      * @var array Holds the current images' URLs and MIME types
      */
-    protected array $images = [];
+    protected $images = [];
 
     /**
      * @access protected
      * @var array Holds the current full texts' URLs
      */
-    protected array $fulltexts = [];
+    protected $fulltexts = [];
 
     /**
      * Holds the current AnnotationLists / AnnotationPages
@@ -51,7 +51,7 @@ class PageViewController extends AbstractController
      * @access protected
      * @var array Holds the current AnnotationLists / AnnotationPages
      */
-    protected array $annotationContainers = [];
+    protected $annotationContainers = [];
 
     /**
      * The main method of the plugin
@@ -60,7 +60,7 @@ class PageViewController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         // Load current document.
         $this->loadDocument();
@@ -102,7 +102,7 @@ class PageViewController extends AbstractController
      *
      * @return array URL and MIME type of fulltext file
      */
-    protected function getFulltext(int $page): array
+    protected function getFulltext($page)
     {
         $fulltext = [];
         // Get fulltext link.
@@ -111,7 +111,7 @@ class PageViewController extends AbstractController
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
             $fileId = $physicalStructureInfo['files'][$fileGrpFulltext];
             if (!empty($fileId)) {
-                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+                $file = $this->document->getCurrentDocument()->getFileLocation($fileId);
                 $fulltext['url'] = $file['location'];
                 if ($this->settings['useInternalProxy']) {
                     $this->configureProxyUrl($fulltext['url']);
@@ -135,7 +135,7 @@ class PageViewController extends AbstractController
      *
      * @return void
      */
-    protected function addViewerJS(): void
+    protected function addViewerJS()
     {
         // Viewer configuration.
         $viewerConfiguration = '$(document).ready(function() {
@@ -162,7 +162,7 @@ class PageViewController extends AbstractController
      * @param int $page Page number
      * @return array An array containing the IRIs of the AnnotationLists / AnnotationPages as well as some information about the canvas.
      */
-    protected function getAnnotationContainers(int $page): array
+    protected function getAnnotationContainers($page)
     {
         if ($this->document->getCurrentDocument() instanceof IiifManifest) {
             $canvasId = $this->document->getCurrentDocument()->physicalStructure[$page];
@@ -219,7 +219,7 @@ class PageViewController extends AbstractController
      *
      * @return array URL and MIME type of image file
      */
-    protected function getImage(int $page): array
+    protected function getImage($page)
     {
         $image = [];
         // Get @USE value of METS fileGrp.

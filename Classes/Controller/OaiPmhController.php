@@ -32,7 +32,7 @@ class OaiPmhController extends AbstractController
      * @access protected
      * @var TokenRepository
      */
-    protected TokenRepository $tokenRepository;
+    protected $tokenRepository;
 
     /**
      * @access public
@@ -41,7 +41,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    public function injectTokenRepository(TokenRepository $tokenRepository): void
+    public function injectTokenRepository(TokenRepository $tokenRepository)
     {
         $this->tokenRepository = $tokenRepository;
     }
@@ -50,7 +50,7 @@ class OaiPmhController extends AbstractController
      * @access protected
      * @var CollectionRepository
      */
-    protected CollectionRepository $collectionRepository;
+    protected $collectionRepository;
 
     /**
      * @access public
@@ -59,7 +59,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
+    public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
         $this->collectionRepository = $collectionRepository;
     }
@@ -68,7 +68,7 @@ class OaiPmhController extends AbstractController
      * @access protected
      * @var LibraryRepository
      */
-    protected LibraryRepository $libraryRepository;
+    protected $libraryRepository;
 
     /**
      * @access public
@@ -77,7 +77,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    public function injectLibraryRepository(LibraryRepository $libraryRepository): void
+    public function injectLibraryRepository(LibraryRepository $libraryRepository)
     {
         $this->libraryRepository = $libraryRepository;
     }
@@ -89,7 +89,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    public function initializeAction(): void
+    public function initializeAction()
     {
         $this->request->setFormat('xml');
     }
@@ -98,13 +98,13 @@ class OaiPmhController extends AbstractController
      * @access protected
      * @var string Did an error occur?
      */
-    protected string $error;
+    protected $error;
 
     /**
      * @access protected
      * @var array This holds the configuration for all supported metadata prefixes
      */
-    protected array $formats = [
+    protected $formats = [
         'oai_dc' => [
             'schema' => 'http://www.openarchives.org/OAI/2.0/oai_dc.xsd',
             'namespace' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
@@ -126,7 +126,7 @@ class OaiPmhController extends AbstractController
      * @access protected
      * @var array
      */
-    protected array $parameters = [];
+    protected $parameters = [];
 
     /**
      * Delete expired resumption tokens
@@ -135,7 +135,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function deleteExpiredTokens(): void
+    protected function deleteExpiredTokens()
     {
         // Delete expired resumption tokens.
         $this->tokenRepository->deleteExpiredTokens($this->settings['expired']);
@@ -148,7 +148,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function getUrlParams(): void
+    protected function getUrlParams()
     {
         $allowedParams = [
             'verb',
@@ -179,7 +179,7 @@ class OaiPmhController extends AbstractController
      *
      * @return array The mapped metadata array
      */
-    protected function getDcData(array $record): array
+    protected function getDcData(array $record)
     {
         $metadata = [];
 
@@ -220,8 +220,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    private function addDcData(&$metadata, $key, $value): void
-    {
+    private function addDcData(&$metadata, $key, $value) {
         if (!empty($value)) {
             $metadata[] = [$key => $value];
         }
@@ -237,7 +236,7 @@ class OaiPmhController extends AbstractController
      *
      * @return string The fetched METS XML
      */
-    protected function getMetsData(array $record): string
+    protected function getMetsData(array $record)
     {
         $mets = null;
         // Load METS file.
@@ -263,7 +262,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         // Get allowed GET and POST variables.
         $this->getUrlParams();
@@ -331,7 +330,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function verbGetRecord(): void
+    protected function verbGetRecord()
     {
         if (count($this->parameters) !== 3 || empty($this->parameters['metadataPrefix']) || empty($this->parameters['identifier'])) {
             $this->error = 'badArgument';
@@ -384,7 +383,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function verbIdentify(): void
+    protected function verbIdentify()
     {
         $library = $this->libraryRepository->findByUid($this->settings['library']);
 
@@ -434,7 +433,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function verbListIdentifiers(): void
+    protected function verbListIdentifiers()
     {
         // If we have a resumption token we can continue our work
         if (!empty($this->parameters['resumptionToken'])) {
@@ -489,7 +488,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function verbListMetadataFormats(): void
+    protected function verbListMetadataFormats()
     {
         $resArray = [];
         // check for the optional "identifier" parameter
@@ -522,7 +521,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function verbListRecords(): void
+    protected function verbListRecords()
     {
         // Check for invalid arguments.
         if (!empty($this->parameters['resumptionToken'])) {
@@ -578,7 +577,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function verbListSets(): void
+    protected function verbListSets()
     {
         // It is required to set a oai_name inside the collection record to be shown in oai-pmh plugin.
         $this->settings['hideEmptyOaiNames'] = true;
@@ -595,7 +594,7 @@ class OaiPmhController extends AbstractController
      *
      * @return array|null Array of matching records
      */
-    protected function fetchDocumentUIDs(): ?array
+    protected function fetchDocumentUIDs()
     {
         $solr_query = '';
         // Check "set" for valid value.
@@ -638,7 +637,7 @@ class OaiPmhController extends AbstractController
                 $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
             } else {
                 $this->error = 'badArgument';
-                return null;
+                return;
             }
         }
         $until = "*";
@@ -689,7 +688,7 @@ class OaiPmhController extends AbstractController
         $result = $solr->search_raw($parameters);
         if (empty($result)) {
             $this->error = 'noRecordsMatch';
-            return null;
+            return;
         }
         foreach ($result as $doc) {
             $documentSet[] = $doc->uid;
@@ -706,7 +705,7 @@ class OaiPmhController extends AbstractController
      *
      * @return array of enriched records
      */
-    protected function generateOutputForDocumentList(array $documentListSet): array
+    protected function generateOutputForDocumentList(array $documentListSet)
     {
         $documentsToProcess = array_splice($documentListSet['elements'], 0, (int) $this->settings['limit']);
         if (empty($documentsToProcess)) {
@@ -715,7 +714,7 @@ class OaiPmhController extends AbstractController
         }
         $verb = $this->parameters['verb'];
 
-        $documents = $this->documentRepository->getOaiDocumentList($documentsToProcess);
+        $documents = $this->documentRepository->getOaiDocumentList($this->settings, $documentsToProcess);
 
         $records = [];
         while ($resArray = $documents->fetchAssociative()) {
@@ -760,7 +759,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    protected function generateResumptionTokenForDocumentListSet(array $documentListSet, int $numShownDocuments): void
+    protected function generateResumptionTokenForDocumentListSet(array $documentListSet, int $numShownDocuments)
     {
         // The cursor specifies how many elements have already been returned in previous requests
         // See http://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl

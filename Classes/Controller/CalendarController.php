@@ -29,7 +29,7 @@ class CalendarController extends AbstractController
      * @access protected
      * @var StructureRepository
      */
-    protected StructureRepository $structureRepository;
+    protected $structureRepository;
 
     /**
      * @access public
@@ -38,7 +38,7 @@ class CalendarController extends AbstractController
      *
      * @return void
      */
-    public function injectStructureRepository(StructureRepository $structureRepository): void
+    public function injectStructureRepository(StructureRepository $structureRepository)
     {
         $this->structureRepository = $structureRepository;
     }
@@ -47,7 +47,7 @@ class CalendarController extends AbstractController
      * @access protected
      * @var array This holds all issues for the list view.
      */
-    protected array $allIssues = [];
+    protected $allIssues = [];
 
     /**
      * The main method of the plugin
@@ -56,7 +56,7 @@ class CalendarController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         // Set initial document (anchor or year file) if configured.
         if (empty($this->requestData['id']) && !empty($this->settings['initialDocument'])) {
@@ -97,9 +97,12 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
+     * @param string $content The PlugIn content
+     * @param array $conf The PlugIn configuration
+     *
      * @return void
      */
-    public function calendarAction(): void
+    public function calendarAction()
     {
         // access arguments passed by the mainAction()
         $mainRequestData = $this->request->getArguments();
@@ -228,7 +231,7 @@ class CalendarController extends AbstractController
      *
      * @return void
      */
-    public function yearsAction(): void
+    public function yearsAction()
     {
         // access arguments passed by the mainAction()
         $mainRequestData = $this->request->getArguments();
@@ -317,9 +320,9 @@ class CalendarController extends AbstractController
      * @param int $firstMonth 1 for January, 2 for February, ... 12 for December
      * @param int $lastMonth 1 for January, 2 for February, ... 12 for December
      *
-     * @return void
+     * @return string Content for template subpart
      */
-    protected function getCalendarYear(array &$calendarData, array $calendarIssuesByMonth, int $year, int $firstMonth = 1, int $lastMonth = 12): void
+    protected function getCalendarYear(&$calendarData, $calendarIssuesByMonth, $year, $firstMonth = 1, $lastMonth = 12)
     {
         for ($i = $firstMonth; $i <= $lastMonth; $i++) {
             $key = $year . '-' . $i;

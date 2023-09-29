@@ -31,12 +31,12 @@ class FeedsController extends AbstractController
      * @access protected
      * @var LibraryRepository
      */
-    protected LibraryRepository $libraryRepository;
+    protected $libraryRepository;
 
     /**
      * @param LibraryRepository $libraryRepository
      */
-    public function injectLibraryRepository(LibraryRepository $libraryRepository): void
+    public function injectLibraryRepository(LibraryRepository $libraryRepository)
     {
         $this->libraryRepository = $libraryRepository;
     }
@@ -48,7 +48,7 @@ class FeedsController extends AbstractController
      *
      * @return void
      */
-    public function initializeAction(): void
+    public function initializeAction()
     {
         $this->request->setFormat('xml');
     }
@@ -60,7 +60,7 @@ class FeedsController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         // access to GET parameter tx_dlf_feeds['collection']
         $requestData = $this->request->getArguments();

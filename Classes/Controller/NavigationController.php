@@ -33,7 +33,7 @@ class NavigationController extends AbstractController
      *
      * @return void
      */
-    public function pageSelectAction(PageSelectForm $pageSelectForm = NULL): void {
+    public function pageSelectAction(PageSelectForm $pageSelectForm = NULL) {
         if ($pageSelectForm) {
             $uri = $this->uriBuilder->reset()
                 ->setArguments(
@@ -57,7 +57,7 @@ class NavigationController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         // Load current document.
         $this->loadDocument();

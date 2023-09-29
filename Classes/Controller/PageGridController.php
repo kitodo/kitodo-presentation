@@ -34,7 +34,7 @@ class PageGridController extends AbstractController
      *
      * @return void
      */
-    public function mainAction(): void
+    public function mainAction()
     {
         $this->loadDocument();
         if (
@@ -85,7 +85,7 @@ class PageGridController extends AbstractController
      *
      * @return array The rendered entry ready for fluid
      */
-    protected function getEntry(int $number, string $fileGrpThumbs): array
+    protected function getEntry($number, $fileGrpThumbs)
     {
         // Set pagination.
         $entry['pagination'] = htmlspecialchars($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['orderlabel']);
