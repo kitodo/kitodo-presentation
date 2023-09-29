@@ -12,30 +12,32 @@
 
 namespace Kitodo\Dlf\Format;
 
+use Kitodo\Dlf\Common\MetadataInterface;
+
 /**
  * Process AudioMD and VideoMD metadata.
  *
  * The technical reason for handling both formats here is that this makes it slightly more
  * straightforward to extract `duration` as either video duration or audio duration.
  *
- * @author Kajetan Dvoracek <kajetan.dvoracek@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class AudioVideoMD implements \Kitodo\Dlf\Common\MetadataInterface
+class AudioVideoMD implements MetadataInterface
 {
     /**
      * Extract some essential AudioMD/VideoMD metadata.
      *
      * @access public
      *
-     * @param \SimpleXMLElement $xml: The XML to extract the metadata from
-     * @param array &$metadata: The metadata array to fill
+     * @param \SimpleXMLElement $xml The XML to extract the metadata from
+     * @param array &$metadata The metadata array to fill
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata)
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata): void
     {
         $xml->registerXPathNamespace('audiomd', 'http://www.loc.gov/audioMD/');
         $xml->registerXPathNamespace('videomd', 'http://www.loc.gov/videoMD/');

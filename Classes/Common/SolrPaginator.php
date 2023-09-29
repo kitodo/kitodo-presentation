@@ -20,12 +20,12 @@ class SolrPaginator extends AbstractPaginator
     /**
      * @var SolrSearch
      */
-    private $solrSearch;
+    private SolrSearch $solrSearch;
 
     /**
      * @var array
      */
-    private $paginatedItems = [];
+    private array $paginatedItems = [];
 
     public function __construct(
         SolrSearch $solrSearch,

@@ -18,11 +18,21 @@ use TYPO3\CMS\Core\Http\SelfEmittableStreamInterface;
 
 /**
  * Stream decorator to allow printing a stream to standard output in chunks.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
 class StdOutStream implements StreamInterface, SelfEmittableStreamInterface
 {
     use StreamDecoratorTrait;
 
+    /**
+     * @access public
+     * 
+     * @return void
+     */
     public function emit()
     {
         // Disable output buffering
