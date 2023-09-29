@@ -144,7 +144,7 @@ class Profile
 
     /**
      * Get the ORCID part of profile data for given endpoint
-     * 
+     *
      * @access private
      *
      * @param string $endpoint the shortname of the endpoint
