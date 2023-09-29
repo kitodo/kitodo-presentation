@@ -616,7 +616,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access protected
      *
-     * @param int $queryParams
+     * @param array $queryParams
      *
      * @return array
      */
