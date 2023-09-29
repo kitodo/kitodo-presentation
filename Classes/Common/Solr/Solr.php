@@ -124,7 +124,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string The name of the new core
      */
-    public static function createCore(string $core = ''): string
+    public static function createCore($core = ''): string
     {
         // Get next available core name if none given.
         if (empty($core)) {
@@ -286,7 +286,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return Solr Instance of this class
      */
-    public static function getInstance($core = null): Solr
+    public static function getInstance($core = null)
     {
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
@@ -530,7 +530,7 @@ class Solr implements LoggerAwareInterface
             || !method_exists($this, $method)
         ) {
             $this->logger->warning('There is no getter function for property "' . $var . '"');
-            return null;
+            return;
         } else {
             return $this->$method();
         }

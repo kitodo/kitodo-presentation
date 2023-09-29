@@ -125,9 +125,9 @@ class DocumentRepository extends Repository
      * @param int $partOf
      * @param Structure $structure
      *
-     * @return QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function getChildrenOfYearAnchor(int $partOf, Structure $structure): QueryResultInterface
+    public function getChildrenOfYearAnchor(int $partOf, Structure $structure)
     {
         $query = $this->createQuery();
 
@@ -165,9 +165,9 @@ class DocumentRepository extends Repository
      *
      * @param array $settings
      *
-     * @return QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function findDocumentsBySettings(array $settings = []): QueryResultInterface
+    public function findDocumentsBySettings(array $settings = [])
     {
         $query = $this->createQuery();
 
@@ -198,9 +198,9 @@ class DocumentRepository extends Repository
      * @param array $collections
      * @param int $limit
      *
-     * @return QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function findAllByCollectionsLimited(array $collections, int $limit = 50): QueryResultInterface
+    public function findAllByCollectionsLimited(array $collections, int $limit = 50)
     {
         $query = $this->createQuery();
 
@@ -576,7 +576,7 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param QueryResult|Collection $collection
+     * @param QueryResult|Collection|null $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata

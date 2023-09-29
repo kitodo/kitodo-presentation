@@ -87,7 +87,7 @@ class Helper
      *
      * @return FlashMessageQueue The queue the message was added to
      */
-    public static function addMessage(string $message, string $title, int $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages') : FlashMessageQueue
+    public static function addMessage(string $message, string $title, int $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);

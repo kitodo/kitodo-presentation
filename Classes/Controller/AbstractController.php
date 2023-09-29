@@ -59,9 +59,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
     /**
      * @access protected
-     * @var Document This holds the current document
+     * @var Document|null This holds the current document
      */
-    protected Document $document;
+    protected ?Document $document;
 
     /**
      * @access protected

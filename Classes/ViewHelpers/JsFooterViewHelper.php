@@ -51,7 +51,8 @@ class JsFooterViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ): void {
+    ): void
+    {
         $inlineCode = $arguments['inlineCode'];
 
         /** @var $pageRenderer PageRenderer */

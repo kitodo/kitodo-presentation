@@ -31,9 +31,9 @@ class Region
 
     /**
      * @access private
-     * @var int The identifier of the page in which text was found
+     * @var int|null The identifier of the page in which text was found
      */
-    private int $pageId;
+    private ?int $pageId;
 
     /**
      * @access private
@@ -117,9 +117,9 @@ class Region
      *
      * @access public
      *
-     * @return int The region's page identifier
+     * @return int|null The region's page identifier
      */
-    public function getPageId(): int
+    public function getPageId(): ?int
     {
         return $this->pageId;
     }

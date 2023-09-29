@@ -66,7 +66,8 @@ class MetadataWrapVariableViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ): void {
+    ): void
+    {
         $parser = GeneralUtility::makeInstance(TypoScriptParser::class);
         $parser->parse($renderChildrenClosure());
         $wrap = [

@@ -42,7 +42,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @return ExpressionFunction[] An array of Function instances
      */
-    public function getFunctions(): array
+    public function getFunctions()
     {
         return [
             $this->getDocumentTypeFunction(),

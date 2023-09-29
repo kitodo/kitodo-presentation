@@ -74,9 +74,9 @@ class BaseCommand extends Command
 
     /**
      * @access protected
-     * @var Library
+     * @var Library|null
      */
-    protected Library $owner;
+    protected ?Library $owner;
 
     /**
      * @access protected

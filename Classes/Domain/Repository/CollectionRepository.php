@@ -45,9 +45,9 @@ class CollectionRepository extends Repository
      *
      * @param array $uids
      *
-     * @return QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function findAllByUids(array $uids): QueryResultInterface
+    public function findAllByUids(array $uids)
     {
         $query = $this->createQuery();
 
@@ -68,9 +68,9 @@ class CollectionRepository extends Repository
      *
      * @param string $pages
      *
-     * @return QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function getCollectionForMetadata(string $pages): QueryResultInterface
+    public function getCollectionForMetadata(string $pages)
     {
         // Get list of collections to show.
         $query = $this->createQuery();
@@ -87,9 +87,9 @@ class CollectionRepository extends Repository
      *
      * @param array $settings
      *
-     * @return QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function findCollectionsBySettings(array $settings = []): QueryResultInterface
+    public function findCollectionsBySettings(array $settings = [])
     {
         $query = $this->createQuery();
 

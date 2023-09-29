@@ -135,7 +135,7 @@ final class MetsDocument extends AbstractDocument
      * @access protected
      * @var string URL of the parent document (determined via mptr element), or empty string if none is available
      */
-    protected string $parentHref = "";
+    protected string $parentHref = '';
 
     /**
      * This adds metadata from METS structural map to metadata array.

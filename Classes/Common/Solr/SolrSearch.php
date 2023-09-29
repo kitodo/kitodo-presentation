@@ -38,7 +38,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
-     * @var QueryResult|Collection
+     * @var QueryResult|Collection|null
      */
     private $collection;
 
@@ -84,7 +84,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access public
      *
      * @param DocumentRepository $documentRepository
-     * @param QueryResult|Collection $collection
+     * @param QueryResult|Collection|null $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
@@ -133,9 +133,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access public
      *
-     * @return SolrSearch
+     * @return array
      */
-    public function current(): SolrSearch
+    public function current(): array
     {
         return $this[$this->position];
     }
@@ -615,11 +615,8 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     /**
      * Find all listed metadata using specified query params.
      *
-<<<<<<< HEAD
      * @access protected
      *
-=======
->>>>>>> ddf84fd2 (Consistently use type declaration for parameters and return values)
      * @param array $queryParams
      *
      * @return array
