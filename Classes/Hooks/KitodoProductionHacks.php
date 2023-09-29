@@ -15,9 +15,9 @@ namespace Kitodo\Dlf\Hooks;
 /**
  * Hooks and hacks for Kitodo.Production
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class KitodoProductionHacks
@@ -29,12 +29,12 @@ class KitodoProductionHacks
      *
      * @access public
      *
-     * @param \SimpleXMLElement &$xml: The XML object
-     * @param mixed $record_id: The record identifier
+     * @param \SimpleXMLElement &$xml The XML object
+     * @param mixed $record_id The record identifier
      *
      * @return void
      */
-    public function construct_postProcessRecordId(\SimpleXMLElement &$xml, &$record_id)
+    public function construct_postProcessRecordId(\SimpleXMLElement &$xml, &$record_id): void
     {
         if (!$record_id) {
             $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');

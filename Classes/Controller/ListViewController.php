@@ -19,23 +19,25 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 /**
  * Controller class for the plugin 'ListView'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
- * @author Frank Ulrich Weber <fuw@zeutschel.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ListViewController extends AbstractController
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     * 
+     * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
@@ -43,12 +45,17 @@ class ListViewController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
@@ -56,13 +63,15 @@ class ListViewController extends AbstractController
     }
 
     /**
-     * @var array $this->searchParams: The current search parameter
      * @access protected
+     * @var array The current search parameter
      */
     protected $searchParams;
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */

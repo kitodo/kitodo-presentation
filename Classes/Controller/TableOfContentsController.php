@@ -18,9 +18,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Controller class for plugin 'Table Of Contents'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class TableOfContentsController extends AbstractController
@@ -28,8 +28,8 @@ class TableOfContentsController extends AbstractController
     /**
      * This holds the active entries according to the currently selected page
      *
-     * @var array
      * @access protected
+     * @var array This holds the active entries according to the currently selected page
      */
     protected $activeEntries = [];
 
@@ -63,7 +63,6 @@ class TableOfContentsController extends AbstractController
      */
     private function makeMenuArray()
     {
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
@@ -111,8 +110,8 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array $entry : The entry's array from AbstractDocument->getLogicalStructure
-     * @param bool $recursive : Whether to include the child entries
+     * @param array $entry The entry's array from AbstractDocument->getLogicalStructure
+     * @param bool $recursive Whether to include the child entries
      *
      * @return array HMENU array for menu entry
      */
@@ -213,6 +212,7 @@ class TableOfContentsController extends AbstractController
      * @access private
      *
      * @param array $entry
+     *
      * @return array
      */
     private function resolveMenuEntry($entry)
