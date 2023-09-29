@@ -404,7 +404,7 @@ final class IiifManifest extends AbstractDocument
     public function getFileLocation(string $id): string
     {
         if ($id == null) {
-            return "";
+            return '';
         }
         $resource = $this->iiif->getContainedResourceById($id);
         if (isset($resource)) {
