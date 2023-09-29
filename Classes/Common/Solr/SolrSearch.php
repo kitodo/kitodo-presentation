@@ -753,7 +753,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
 
             // Save value in cache.
-            if (!empty($resultSet) && $enableCache === true) {
+            if (!empty($resultSet['documents']) && $enableCache === true) {
                 $cache->set($cacheIdentifier, $resultSet);
             }
         } else {
