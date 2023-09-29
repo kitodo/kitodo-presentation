@@ -67,90 +67,73 @@ use Ubl\Iiif\Services\AbstractImageService;
 final class MetsDocument extends AbstractDocument
 {
     /**
-     * Subsections / tags that may occur within `<mets:amdSec>`.
+     * @access protected
+     * @var string[] Subsections / tags that may occur within `<mets:amdSec>`
      *
      * @link https://www.loc.gov/standards/mets/docs/mets.v1-9.html#amdSec
      * @link https://www.loc.gov/standards/mets/docs/mets.v1-9.html#mdSecType
-     *
-     * @var string[]
      */
     protected const ALLOWED_AMD_SEC = ['techMD', 'rightsMD', 'sourceMD', 'digiprovMD'];
 
     /**
-     * This holds the whole XML file as string for serialization purposes
-     * @see __sleep() / __wakeup()
-     *
-     * @var string
      * @access protected
+     * @var string This holds the whole XML file as string for serialization purposes
+     *
+     * @see __sleep() / __wakeup()
      */
     protected $asXML = '';
 
     /**
-     * This maps the ID of each amdSec to the IDs of its children (techMD etc.).
-     * When an ADMID references an amdSec instead of techMD etc., this is used to iterate the child elements.
-     *
-     * @var array
      * @access protected
+     * @var array This maps the ID of each amdSec to the IDs of its children (techMD etc.). When an ADMID references an amdSec instead of techMD etc., this is used to iterate the child elements.
      */
     protected $amdSecChildIds = [];
 
     /**
-     * Associative array of METS metadata sections indexed by their IDs.
-     *
-     * @var array
      * @access protected
+     * @var array Associative array of METS metadata sections indexed by their IDs.
      */
     protected $mdSec = [];
 
     /**
-     * Are the METS file's metadata sections loaded?
-     * @see MetsDocument::$mdSec
-     *
-     * @var bool
      * @access protected
+     * @var bool Are the METS file's metadata sections loaded?
+     *
+     * @see MetsDocument::$mdSec
      */
     protected $mdSecLoaded = false;
 
     /**
-     * Subset of $mdSec storing only the dmdSec entries; kept for compatibility.
-     *
-     * @var array
      * @access protected
+     * @var array Subset of $mdSec storing only the dmdSec entries; kept for compatibility.
      */
     protected $dmdSec = [];
 
     /**
-     * This holds the file ID -> USE concordance
-     * @see _getFileGrps()
-     *
-     * @var array
      * @access protected
+     * @var array This holds the file ID -> USE concordance
+     *
+     * @see _getFileGrps()
      */
     protected $fileGrps = [];
 
     /**
-     * Are the image file groups loaded?
-     * @see $fileGrps
-     *
-     * @var bool
      * @access protected
+     * @var bool Are the image file groups loaded?
+     *
+     * @see $fileGrps
      */
     protected $fileGrpsLoaded = false;
 
     /**
-     * This holds the XML file's METS part as \SimpleXMLElement object
-     *
-     * @var \SimpleXMLElement
      * @access protected
+     * @var \SimpleXMLElement This holds the XML file's METS part as \SimpleXMLElement object
      */
     protected $mets;
 
     /**
-     * URL of the parent document (determined via mptr element),
-     * or empty string if none is available
-     *
-     * @var string|null
      * @access protected
+     * @var string|null URL of the parent document (determined via mptr element), or empty string if none is available
      */
     protected $parentHref;
 

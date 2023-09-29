@@ -29,44 +29,42 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Client
 {
     /**
-     * constants for API endpoint
+     * @var string constant for API hostname
      **/
     const HOSTNAME  = 'orcid.org';
+
+    /**
+     * @var string constant for API version
+     **/
     const VERSION   = '3.0';
 
     /**
-     * This holds the logger
-     *
-     * @var Logger
      * @access protected
+     * @var Logger This holds the logger
      */
     protected $logger;
 
     /**
-     * The ORCID API endpoint
-     *
-     * @var string
+     * @access private
+     * @var string The ORCID API endpoint
      **/
     private $endpoint = 'record';
 
     /**
-     * The ORCID API access level
-     *
-     * @var string
+     * @access private
+     * @var string The ORCID API access level
      **/
     private $level = 'pub';
 
     /**
-     * The ORCID ID to search for
-     *
-     * @var string
+     * @access private
+     * @var string The ORCID ID to search for
      **/
     private $orcid = null;
 
     /**
-     * The request object
-     *
-     * @var RequestFactoryInterface
+     * @access private
+     * @var RequestFactoryInterface The request object
      **/
     private $requestFactory = null;
 

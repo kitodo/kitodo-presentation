@@ -27,87 +27,100 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Metadata extends AbstractEntity
 {
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Metadata
+     * @access protected
+     * @var Metadata
      */
     protected $l18nParent;
 
     /**
-     * Order (relative position) of this entry in metadata plugin and backend list.
-     *
-     * @var int
+     * @access protected
+     * @var int Order (relative position) of this entry in metadata plugin and backend list.
      */
     protected $sorting;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $indexName;
 
     /**
-     * The formats that encode this metadata (local IRRE field to ``tx_dlf_metadataformat``).
+     * @access protected
+     * @var ObjectStorage<MetadataFormat> The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat>
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")
      */
     protected $format;
 
     /**
+     * @access protected
      * @var string
      */
     protected $defaultValue;
 
     /**
+     * @access protected
      * @var string
      */
     protected $wrap;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexTokenized;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexStored;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexIndexed;
 
     /**
+     * @access protected
      * @var float
      */
     protected $indexBoost;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isSortable;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isFacet;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isListed;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexAutocomplete;
 
     /**
+     * @access protected
      * @var int
      */
     protected $status;
@@ -191,7 +204,7 @@ class Metadata extends AbstractEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> $format
+     * @return ObjectStorage<MetadataFormat> $format
      */
     public function getFormat()
     {
@@ -199,7 +212,7 @@ class Metadata extends AbstractEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> $format
+     * @param ObjectStorage<MetadataFormat> $format
      */
     public function setFormat(ObjectStorage $format): void
     {
@@ -209,11 +222,11 @@ class Metadata extends AbstractEntity
     /**
      * Adds a Format
      *
-     * @param \Kitodo\Dlf\Domain\Model\MetadataFormat $format
+     * @param MetadataFormat $format
      *
      * @return void
      */
-    public function addFormat(\Kitodo\Dlf\Domain\Model\MetadataFormat $format)
+    public function addFormat(MetadataFormat $format)
     {
         $this->format->attach($format);
     }
@@ -221,11 +234,11 @@ class Metadata extends AbstractEntity
     /**
      * Removes a Format
      *
-     * @param \Kitodo\Dlf\Domain\Model\MetadataFormat $formatToRemove
+     * @param MetadataFormat $formatToRemove
      *
      * @return void
      */
-    public function removeFormat(\Kitodo\Dlf\Domain\Model\MetadataFormat $formatToRemove)
+    public function removeFormat(MetadataFormat $formatToRemove)
     {
         $this->format->detach($formatToRemove);
     }

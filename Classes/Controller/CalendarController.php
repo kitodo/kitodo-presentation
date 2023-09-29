@@ -26,6 +26,7 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 class CalendarController extends AbstractController
 {
     /**
+     * @access protected
      * @var StructureRepository
      */
     protected $structureRepository;
@@ -39,10 +40,8 @@ class CalendarController extends AbstractController
     }
 
     /**
-     * This holds all issues for the list view.
-     *
-     * @var array
      * @access protected
+     * @var array This holds all issues for the list view.
      */
     protected $allIssues = [];
 

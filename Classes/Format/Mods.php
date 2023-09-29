@@ -27,16 +27,14 @@ use Kitodo\Dlf\Common\MetadataInterface;
 class Mods implements MetadataInterface
 {
     /**
-     * The metadata XML
-     *
-     * @var \SimpleXMLElement
+     * @access private
+     * @var \SimpleXMLElement The metadata XML
      **/
     private $xml;
 
     /**
-     * The metadata array
-     *
-     * @var array
+     * @access private
+     * @var array The metadata array
      **/
     private $metadata;
 

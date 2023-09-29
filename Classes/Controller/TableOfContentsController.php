@@ -28,8 +28,8 @@ class TableOfContentsController extends AbstractController
     /**
      * This holds the active entries according to the currently selected page
      *
-     * @var array
      * @access protected
+     * @var array This holds the active entries according to the currently selected page
      */
     protected $activeEntries = [];
 

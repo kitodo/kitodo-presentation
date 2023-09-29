@@ -24,34 +24,26 @@ class Page
 {
 
     /**
-     * The identifier of the page
-     *
-     * @var int
      * @access private
+     * @var int The identifier of the page
      */
     private $id;
 
     /**
-     * The name of the page
-     *
-     * @var string
      * @access private
+     * @var string The name of the page
      */
     private $name;
 
     /**
-     * The width of found page
-     *
-     * @var int
      * @access private
+     * @var int The width of found page
      */
     private $width;
 
     /**
-     * The height of found page
-     *
-     * @var int
      * @access private
+     * @var int The height of found page
      */
     private $height;
 

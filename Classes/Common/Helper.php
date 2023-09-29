@@ -41,36 +41,34 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 class Helper
 {
     /**
-     * The extension key
-     *
-     * @var string
      * @access public
+     * @static
+     * @var string The extension key
      */
     public static $extKey = 'dlf';
 
     /**
-     * This holds the cipher algorithm
-     * @see openssl_get_cipher_methods() for options
-     *
-     * @var string
      * @access protected
+     * @static
+     * @var string This holds the cipher algorithm
+     *
+     * @see openssl_get_cipher_methods() for options
      */
     protected static $cipherAlgorithm = 'aes-256-ctr';
 
     /**
-     * This holds the hash algorithm
-     * @see openssl_get_md_methods() for options
-     *
-     * @var string
      * @access protected
+     * @static
+     * @var string This holds the hash algorithm
+     * 
+     * @see openssl_get_md_methods() for options
      */
     protected static $hashAlgorithm = 'sha256';
 
     /**
-     * The locallang array for flash messages
-     *
-     * @var array
      * @access protected
+     * @static
+     * @var array The locallang array for flash messages
      */
     protected static $messages = [];
 

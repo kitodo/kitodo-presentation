@@ -32,6 +32,7 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 class SearchController extends AbstractController
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
@@ -45,6 +46,7 @@ class SearchController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;
@@ -58,8 +60,8 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @var array $this->searchParams: The current search parameter
      * @access protected
+     * @var array The current search parameter
      */
     protected $searchParams;
 

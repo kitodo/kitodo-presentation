@@ -29,165 +29,195 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Document extends AbstractEntity
 {
     /**
+     * @access protected
      * @var \DateTime
      */
     protected $crdate;
 
     /**
+     * @access protected
      * @var \DateTime
      */
     protected $tstamp;
 
     /**
-     * This contains the representative of the raw XML / IIIF data of the document.
-     *
-     * @var AbstractDocument|null
+     * @access protected
+     * @var AbstractDocument|null This contains the representative of the raw XML / IIIF data of the document.
      */
     protected $currentDocument = null;
 
     /**
+     * @access protected
      * @var string
      */
     protected $title;
 
     /**
+     * @access protected
      * @var string
      */
     protected $prodId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $location;
 
     /**
+     * @access protected
      * @var string
      */
     protected $recordId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $opacId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $unionId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $urn;
 
     /**
+     * @access protected
      * @var string
      */
     protected $purl;
 
     /**
+     * @access protected
      * @var string
      */
     protected $titleSorting;
 
     /**
+     * @access protected
      * @var string
      */
     protected $author;
 
     /**
+     * @access protected
      * @var string
      */
     protected $year;
 
     /**
+     * @access protected
      * @var string
      */
     protected $place;
 
     /**
+     * @access protected
      * @var string
      */
     protected $thumbnail;
 
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Structure
+     * @access protected
+     * @var Structure
      */
     protected $structure;
 
     /**
+     * @access protected
      * @var int
      */
     protected $partof = 0;
 
     /**
+     * @access protected
      * @var string
      */
     protected $volume;
 
     /**
+     * @access protected
      * @var string
      */
     protected $volumeSorting;
 
     /**
+     * @access protected
      * @var string
      */
     protected $license;
 
     /**
+     * @access protected
      * @var string
      */
     protected $terms;
 
     /**
+     * @access protected
      * @var string
      */
     protected $restrictions;
 
     /**
+     * @access protected
      * @var string
      */
     protected $outOfPrint;
 
     /**
+     * @access protected
      * @var string
      */
     protected $rightsInfo;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection>
+     * @access protected
+     * @var ObjectStorage<Collection>
      * @Extbase\ORM\Lazy
      */
     protected $collections = null;
 
     /**
+     * @access protected
      * @var string
      */
     protected $metsLabel;
 
     /**
+     * @access protected
      * @var string
      */
     protected $metsOrderlabel;
 
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Library
+     * @access protected
+     * @var Library
      * @Extbase\ORM\Lazy
      */
     protected $owner;
 
     /**
+     * @access protected
      * @var int
      */
     protected $solrcore;
 
     /**
+     * @access protected
      * @var int
      */
     protected $status;
 
     /**
+     * @access protected
      * @var string
      */
     protected $documentFormat;
@@ -431,17 +461,17 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Domain\Model\Structure
+     * @return Structure
      */
-    public function getStructure(): \Kitodo\Dlf\Domain\Model\Structure
+    public function getStructure(): Structure
     {
         return $this->structure;
     }
 
     /**
-     * @param \Kitodo\Dlf\Domain\Model\Structure $structure
+     * @param Structure $structure
      */
-    public function setStructure(\Kitodo\Dlf\Domain\Model\Structure $structure): void
+    public function setStructure(Structure $structure): void
     {
         $this->structure = $structure;
     }
@@ -578,7 +608,7 @@ class Document extends AbstractEntity
     /**
      * Returns the collections
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
+     * @return ObjectStorage<Collection> $collections
      */
     public function getCollections()
     {
@@ -586,7 +616,7 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> $collections
+     * @param ObjectStorage<Collection> $collections
      */
     public function setCollections(?ObjectStorage $collections): void
     {
@@ -596,9 +626,9 @@ class Document extends AbstractEntity
     /**
      * Adds a collection
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection $collection
+     * @param Collection $collection
      */
-    public function addCollection(\Kitodo\Dlf\Domain\Model\Collection $collection): void
+    public function addCollection(Collection $collection): void
     {
         $this->collections->attach($collection);
     }
@@ -606,9 +636,9 @@ class Document extends AbstractEntity
     /**
      * Removes a collection
      *
-     * @param \Kitodo\Dlf\Domain\Model\Collection $collection
+     * @param Collection $collection
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\Collection> collections
+     * @return ObjectStorage<Collection> collections
      */
     public function removeCollection(Collection $collection)
     {
@@ -648,7 +678,7 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Domain\Model\Library|null
+     * @return Library|null
      */
     public function getOwner(): ?Library
     {
@@ -658,9 +688,9 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @param \Kitodo\Dlf\Domain\Model\Library $owner
+     * @param Library $owner
      */
-    public function setOwner(\Kitodo\Dlf\Domain\Model\Library $owner): void
+    public function setOwner(Library $owner): void
     {
         $this->owner = $owner;
     }

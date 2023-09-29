@@ -30,11 +30,13 @@ use Ubl\Iiif\Context\IRI;
 class MetadataController extends AbstractController
 {
     /**
+     * @access private
      * @var Doc
      */
     private $doc;
 
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
@@ -48,6 +50,7 @@ class MetadataController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;
@@ -61,6 +64,7 @@ class MetadataController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var StructureRepository
      */
     protected $structureRepository;

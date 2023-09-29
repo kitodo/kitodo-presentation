@@ -40,6 +40,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     use LoggerAwareTrait;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
     protected $documentRepository;
@@ -53,32 +54,26 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * This holds the current document
-     *
-     * @var Document
      * @access protected
+     * @var Document This holds the current document
      */
     protected $document;
 
     /**
-     * @var array
      * @access protected
+     * @var array
      */
     protected $extConf;
 
     /**
-     * This holds the request parameter
-     *
-     * @var array
      * @access protected
+     * @var array This holds the request parameter
      */
     protected $requestData;
 
     /**
-     * This holds some common data for the fluid view
-     *
-     * @var array
      * @access protected
+     * @var array This holds some common data for the fluid view
      */
     protected $viewData;
 

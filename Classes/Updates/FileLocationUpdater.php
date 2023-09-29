@@ -39,24 +39,26 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     use LoggerAwareTrait;
 
     /**
+     * @access protected
      * @var OutputInterface
      */
     protected $output;
 
     /**
+     * @access protected
      * @var ResourceStorage
      */
     protected $storage;
 
     /**
+     * @access protected
      * @var Logger
      */
     protected $logger;
 
     /**
-     * Array with table and fields to migrate
-     *
-     * @var array
+     * @access protected
+     * @var array Array with table and fields to migrate
      */
     protected $fieldsToMigrate = [
         'tx_dlf_collections' => 'thumbnail'

@@ -25,21 +25,25 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Basket extends AbstractEntity
 {
     /**
+     * @access protected
      * @var string|null
      */
     protected $docIds;
 
     /**
+     * @access protected
      * @var int
      */
     protected $feUserId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $sessionId;

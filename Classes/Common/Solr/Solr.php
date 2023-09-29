@@ -49,90 +49,69 @@ class Solr implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * This holds the Solr configuration
-     *
-     * @var array
      * @access protected
+     * @var array This holds the Solr configuration
      */
     protected $config = [];
 
     /**
-     * This holds the core name
-     *
-     * @var string|null
      * @access protected
+     * @var string|null This holds the core name
      */
     protected $core = null;
 
     /**
-     * This holds the PID for the configuration
-     *
-     * @var int
      * @access protected
+     * @var int This holds the PID for the configuration
      */
     protected $cPid = 0;
 
     /**
-     * The extension key
-     *
-     * @var string
      * @access public
+     * @static
+     * @var string The extension key
      */
     public static $extKey = 'dlf';
 
     /**
-     * The fields for SOLR index
-     *
-     * @var array
      * @access public
+     * @var array The fields for SOLR index
      */
     public static $fields = [];
 
     /**
-     * This holds the max results
-     *
-     * @var int
      * @access protected
+     * @var int This holds the max results
      */
     protected $limit = 50000;
 
     /**
-     * This holds the number of hits for last search
-     *
-     * @var int
      * @access protected
+     * @var int This holds the number of hits for last search
      */
     protected $numberOfHits = 0;
 
     /**
-     * This holds the additional query parameters
-     *
-     * @var array
      * @access protected
+     * @var array This holds the additional query parameters
      */
     protected $params = [];
 
     /**
-     * Is the search instantiated successfully?
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the search instantiated successfully?
      */
     protected $ready = false;
 
     /**
-     * This holds the singleton search objects with their core as array key
-     *
-     * @var array (\Kitodo\Dlf\Common\Solr\Solr)
      * @access protected
+     * @var array(Solr) This holds the singleton search objects with their core as array key
      */
     protected static $registry = [];
 
     /**
-     * This holds the Solr service object
-     *
-     * @var \Solarium\Client
      * @access protected
+     * @var Client This holds the Solr service object
      */
     protected $service;
 

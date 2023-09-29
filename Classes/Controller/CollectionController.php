@@ -29,6 +29,7 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 class CollectionController extends AbstractController
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
@@ -42,6 +43,7 @@ class CollectionController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;

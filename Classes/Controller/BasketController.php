@@ -36,6 +36,7 @@ use TYPO3\CMS\Core\Context\Context;
 class BasketController extends AbstractController
 {
     /**
+     * @access protected
      * @var BasketRepository
      */
     protected $basketRepository;
@@ -49,6 +50,7 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MailRepository
      */
     protected $mailRepository;
@@ -62,6 +64,7 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var PrinterRepository
      */
     protected $printerRepository;
@@ -75,6 +78,7 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var ActionLogRepository
      */
     protected $actionLogRepository;

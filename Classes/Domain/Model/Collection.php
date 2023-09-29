@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
@@ -25,63 +26,73 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Collection extends AbstractEntity
 {
     /**
+     * @access protected
      * @var int
      */
     protected $feCruserId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $feGroup;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $indexName;
 
     /**
+     * @access protected
      * @var string
      */
     protected $indexSearch;
 
     /**
+     * @access protected
      * @var string
      */
     protected $oaiName;
 
     /**
+     * @access protected
      * @var string
      */
     protected $description;
 
     /**
-     * thumbnail
-     *
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @access protected
+     * @var FileReference thumbnail
      */
     protected $thumbnail = null;
 
     /**
+     * @access protected
      * @var int
      */
     protected $priority;
 
     /**
+     * @access protected
      * @var int
      */
     protected $documents;
 
     /**
+     * @access protected
      * @var int
      */
     protected $owner;
 
     /**
+     * @access protected
      * @var int
      */
     protected $status;
@@ -201,15 +212,15 @@ class Collection extends AbstractEntity
     /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
-    public function getThumbnail(): ?\TYPO3\CMS\Extbase\Domain\Model\FileReference
+    public function getThumbnail(): ?FileReference
     {
         return $this->thumbnail;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $thumbnail
+     * @param FileReference $thumbnail
      */
-    public function setThumbnail(?\TYPO3\CMS\Extbase\Domain\Model\FileReference $thumbnail): void
+    public function setThumbnail(?FileReference $thumbnail): void
     {
         $this->thumbnail = $thumbnail;
     }

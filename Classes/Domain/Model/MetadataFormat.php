@@ -31,37 +31,32 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class MetadataFormat extends AbstractEntity
 {
     /**
-     * UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
-     *
-     * @var int
+     * @access protected
+     * @var int UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
      */
     protected $parentId;
 
     /**
-     * UID of the ``tx_dlf_format`` in which this metadata entry is encoded.
-     *
-     * @var int
+     * @access protected
+     * @var int UID of the ``tx_dlf_format`` in which this metadata entry is encoded.
      */
     protected $encoded;
 
     /**
-     * XPath/JSONPath expression to extract the metadata (relative to the data format root).
-     *
-     * @var string
+     * @access protected
+     * @var string XPath/JSONPath expression to extract the metadata (relative to the data format root).
      */
     protected $xpath;
 
     /**
-     * XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadata.
-     *
-     * @var string
+     * @access protected
+     * @var string XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadata.
      */
     protected $xpathSorting;
 
     /**
-     * Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
-     *
-     * @var int
+     * @access protected
+     * @var int Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
      */
     protected $mandatory;
 

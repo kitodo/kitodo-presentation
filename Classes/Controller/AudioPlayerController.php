@@ -29,8 +29,8 @@ class AudioplayerController extends AbstractController
     /**
      * Holds the current audio file's URL, MIME type and optional label
      *
-     * @var array
      * @access protected
+     * @var array Holds the current audio file's URL, MIME type and optional label
      */
     protected $audio = [];
 

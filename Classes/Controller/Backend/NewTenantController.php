@@ -23,6 +23,7 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -43,37 +44,37 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 class NewTenantController extends AbstractController
 {
     /**
+     * @access protected
      * @var int
      */
     protected $pid;
 
     /**
+     * @access protected
      * @var array
      */
     protected $pageInfo;
 
     /**
-     * All configured site languages
-     *
-     * @var array
+     * @access protected
+     * @var array All configured site languages
      */
     protected $siteLanguages;
 
     /**
-     * LanguageFactory to get language key/values by our own.
-     *
-     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory
+     * @access protected
+     * @var LocalizationFactory Language factory to get language key/values by our own.
      */
     protected $languageFactory;
 
     /**
-     * Backend Template Container
-     *
-     * @var string
+     * @access protected
+     * @var string Backend Template Container
      */
-    protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
+    protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
+     * @access protected
      * @var FormatRepository
      */
     protected $formatRepository;
@@ -87,6 +88,7 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;
@@ -100,6 +102,7 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var StructureRepository
      */
     protected $structureRepository;
@@ -113,6 +116,7 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var SolrCoreRepository
      */
     protected $solrCoreRepository;

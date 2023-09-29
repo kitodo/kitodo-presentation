@@ -30,9 +30,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 class CollectionRepository extends Repository
 {
     /**
-     * Set the default ordering. This is applied to findAll(), too.
-     *
-     * @var array
+     * @access protected
+     * @var array Set the default ordering. This is applied to findAll(), too.
      */
     protected $defaultOrderings = [
         'label' => QueryInterface::ORDER_ASCENDING,

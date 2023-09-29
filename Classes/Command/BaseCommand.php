@@ -43,38 +43,44 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 class BaseCommand extends Command
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
     protected $documentRepository;
 
     /**
+     * @access protected
      * @var LibraryRepository
      */
     protected $libraryRepository;
 
     /**
+     * @access protected
      * @var StructureRepository
      */
     protected $structureRepository;
 
     /**
+     * @access protected
      * @var int
      */
     protected $storagePid;
 
     /**
+     * @access protected
      * @var Library
      */
     protected $owner;
 
     /**
-     * @var array
      * @access protected
+     * @var array
      */
     protected $extConf;
 
@@ -101,7 +107,7 @@ class BaseCommand extends Command
     /**
      * Initialize the extbase repository based on the given storagePid.
      *
-     * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependency Injection.
+     * TYPO3 10+: Find a better solution e.g. based on Symfony Dependency Injection.
      *
      * @param int $storagePid The storage pid
      *

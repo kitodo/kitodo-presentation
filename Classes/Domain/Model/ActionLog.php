@@ -25,26 +25,31 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class ActionLog extends AbstractEntity
 {
     /**
+     * @access protected
      * @var int
      */
     protected $userId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $fileName;
 
     /**
+     * @access protected
      * @var int
      */
     protected $countPages;
 
     /**
+     * @access protected
      * @var string
      */
     protected $name;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;

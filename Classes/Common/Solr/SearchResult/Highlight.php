@@ -24,50 +24,38 @@ class Highlight
 {
 
     /**
-     * The identifier in form 'w_h_x_y'
-     *
-     * @var string
      * @access private
+     * @var string The identifier in form 'w_h_x_y'
      */
     private $id;
 
     /**
-     * The parent region's identifier
-     *
-     * @var int
      * @access private
+     * @var int The parent region's identifier
      */
     private $parentRegionId;
 
     /**
-     * The horizontal beginning position of found highlight
-     *
-     * @var int
      * @access private
+     * @var int The horizontal beginning position of found highlight
      */
     private $xBeginPosition;
 
     /**
-     * The horizontal ending position of found highlight
-     *
-     * @var int
      * @access private
+     * @var int The horizontal ending position of found highlight
      */
     private $xEndPosition;
 
     /**
-     * The vertical beginning position of found highlight
-     *
-     * @var int
      * @access private
+     * @var int The vertical beginning position of found highlight
      */
     private $yBeginPosition;
 
     /**
-     * The vertical ending position of found highlight
-     *
-     * @var int
      * @access private
+     * @var int The vertical ending position of found highlight
      */
     private $yEndPosition;
 

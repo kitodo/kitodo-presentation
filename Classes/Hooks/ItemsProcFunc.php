@@ -34,6 +34,7 @@ class ItemsProcFunc implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * @access protected
      * @var int
      */
     protected $storagePid;

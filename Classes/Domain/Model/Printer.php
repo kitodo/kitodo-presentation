@@ -25,21 +25,25 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Printer extends AbstractEntity
 {
     /**
+     * @access protected
      * @var string
      */
     protected $mail;
 
     /**
+     * @access protected
      * @var string
      */
     protected $name;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $print;

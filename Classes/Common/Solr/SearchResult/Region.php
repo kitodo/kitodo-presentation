@@ -24,74 +24,56 @@ class Region
 {
 
     /**
-     * The identifier of the region
-     *
-     * @var int
      * @access private
+     * @var int The identifier of the region
      */
     private $id;
 
     /**
-     * The identifier of the page in which text was found
-     *
-     * @var int
      * @access private
+     * @var int The identifier of the page in which text was found
      */
     private $pageId;
 
     /**
-     * The horizontal beginning position of found region
-     *
-     * @var int
      * @access private
+     * @var int The horizontal beginning position of found region
      */
     private $xBeginPosition;
 
     /**
-     * The horizontal ending position of found region
-     *
-     * @var int
      * @access private
+     * @var int The horizontal ending position of found region
      */
     private $xEndPosition;
 
     /**
-     * The vertical beginning position of found region
-     *
-     * @var int
      * @access private
+     * @var int The vertical beginning position of found region
      */
     private $yBeginPosition;
 
     /**
-     * The vertical ending position of found region
-     *
-     * @var int
      * @access private
+     * @var int The vertical ending position of found region
      */
     private $yEndPosition;
 
     /**
-     * The width of found region
-     *
-     * @var int
      * @access private
+     * @var int The width of found region
      */
     private $width;
 
     /**
-     * The height of found region
-     *
-     * @var int
      * @access private
+     * @var int The height of found region
      */
     private $height;
 
     /**
-     * The text of found region
-     *
-     * @var string
      * @access private
+     * @var string The text of found region
      */
     private $text;
 

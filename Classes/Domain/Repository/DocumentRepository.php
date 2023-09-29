@@ -38,10 +38,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class DocumentRepository extends Repository
 {
     /**
-     * The controller settings passed to the repository for some special actions.
-     *
-     * @var array
      * @access protected
+     * @var array The controller settings passed to the repository for some special actions.
      */
     protected $settings;
 

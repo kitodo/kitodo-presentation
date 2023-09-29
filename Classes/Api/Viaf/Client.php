@@ -29,31 +29,28 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Client
 {
     /**
-     * This holds the logger
-     *
-     * @var Logger
      * @access protected
+     * @var Logger This holds the logger
      */
     protected $logger;
 
     /**
      * The VIAF API endpoint
      *
-     * @var string
+     * @access private
+     * @var string The VIAF API endpoint
      **/
     private $endpoint = 'viaf.xml';
 
     /**
-     * The VIAF URL for the profile
-     *
-     * @var string
+     * @access private
+     * @var string The VIAF URL for the profile
      **/
     private $viafUrl = null;
 
     /**
-     * The request object
-     *
-     * @var RequestFactoryInterface
+     * @access private
+     * @var RequestFactoryInterface The request object
      **/
     private $requestFactory = null;
 
