@@ -15,7 +15,6 @@ namespace Kitodo\Dlf\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\Repository;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Mail repository.
@@ -35,7 +34,7 @@ class MailRepository extends Repository
      *
      * @param int @pid
      * 
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function findAllWithPid($pid)
     {
