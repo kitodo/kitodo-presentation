@@ -338,7 +338,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseMetadata(int $i, string $name, $value, array &$metadata) : void
+    private function parseMetadata(int $i, string $name, $value, array &$metadata): void
     {
         if ($name == 'title') {
             // Get title of parent document if needed.
