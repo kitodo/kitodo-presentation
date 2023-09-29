@@ -466,7 +466,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return Client Apache Solr service object
      */
-    protected function _getService() : Client
+    protected function _getService(): Client
     {
         return $this->service;
     }
