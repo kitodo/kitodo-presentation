@@ -263,7 +263,7 @@ final class IiifManifest extends AbstractDocument
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
             if ($this->iiif == null || !($this->iiif instanceof ManifestInterface)) {
-                return null;
+                return [];
             }
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $iiifId = $this->iiif->getId();
@@ -404,7 +404,7 @@ final class IiifManifest extends AbstractDocument
     public function getFileLocation(string $id): string
     {
         if ($id == null) {
-            return null;
+            return '';
         }
         $resource = $this->iiif->getContainedResourceById($id);
         if (isset($resource)) {
