@@ -89,6 +89,7 @@ class Indexer
      * @static
      *
      * @param Document $document The document to add
+     * @param DocumentRepository $documentRepository The document repository for search of parent
      *
      * @return bool true on success or false on failure
      */
