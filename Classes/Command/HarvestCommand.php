@@ -28,9 +28,9 @@ use Phpoaipmh\Exception\BaseOaipmhException;
 /**
  * CLI Command for harvesting OAI-PMH interfaces into database and Solr.
  *
- * @author Sebastian Meyer <sebastian.meyer@opencultureconsulting.com>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class HarvestCommand extends BaseCommand
@@ -38,9 +38,11 @@ class HarvestCommand extends BaseCommand
     /**
      * Configure the command by defining the name, options and arguments
      *
+     * @access public
+     *
      * @return void
      */
-    public function configure()
+    public function configure(): void
     {
         $this
             ->setDescription('Harvest OAI-PMH contents into database and Solr.')
@@ -90,14 +92,16 @@ class HarvestCommand extends BaseCommand
     }
 
     /**
-     * Executes the command to index the given document to db and solr.
+     * Executes the command to index the given document to DB and SOLR.
+     * 
+     * @access protected
      *
      * @param InputInterface $input The input parameters
      * @param OutputInterface $output The Symfony interface for outputs on console
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 
@@ -257,12 +261,14 @@ class HarvestCommand extends BaseCommand
     /**
      * Handles OAI errors
      *
+     * @access protected
+     *
      * @param BaseoaipmhException $exception Instance of exception thrown
      * @param SymfonyStyle $io
      *
      * @return void
      */
-    protected function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io)
+    protected function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io): void
     {
         $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $exception->getMessage());
     }

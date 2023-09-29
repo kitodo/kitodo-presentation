@@ -12,7 +12,17 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-class ActionLogRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
+/**
+ * (Basket Plugin) Action log repository for mails and printouts.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class ActionLogRepository extends Repository
 {
 
 }

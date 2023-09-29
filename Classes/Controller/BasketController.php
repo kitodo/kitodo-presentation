@@ -19,27 +19,34 @@ use Kitodo\Dlf\Domain\Repository\ActionLogRepository;
 use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
+use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Context\Context;
 
 /**
  * Controller class for the plugin 'Basket'.
  *
- * @author Christopher Timm <timm@effective-webwork.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class BasketController extends AbstractController
 {
     /**
+     * @access protected
      * @var BasketRepository
      */
     protected $basketRepository;
 
     /**
+     * @access public
+     *
      * @param BasketRepository $basketRepository
+     *
+     * @return void
      */
     public function injectBasketRepository(BasketRepository $basketRepository)
     {
@@ -47,12 +54,17 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MailRepository
      */
     protected $mailRepository;
 
     /**
+     * @access public
+     *
      * @param MailRepository $mailRepository
+     *
+     * @return void
      */
     public function injectMailRepository(MailRepository $mailRepository)
     {
@@ -60,12 +72,17 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var PrinterRepository
      */
     protected $printerRepository;
 
     /**
+     * @access public
+     *
      * @param PrinterRepository $printerRepository
+     *
+     * @return void
      */
     public function injectPrinterRepository(PrinterRepository $printerRepository)
     {
@@ -73,12 +90,17 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var ActionLogRepository
      */
     protected $actionLogRepository;
 
     /**
+     * @access public
+     *
      * @param ActionLogRepository $actionLogRepository
+     *
+     * @return void
      */
     public function injectActionLogRepository(ActionLogRepository $actionLogRepository)
     {
@@ -87,6 +109,8 @@ class BasketController extends AbstractController
 
     /**
      * Different actions which depends on the chosen action (form)
+     * 
+     * @access public
      *
      * @return void
      */
@@ -135,6 +159,8 @@ class BasketController extends AbstractController
     /**
      * Add documents to the basket
      *
+     * @access public
+     *
      * @return void
      */
     public function addAction()
@@ -153,6 +179,8 @@ class BasketController extends AbstractController
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */
@@ -200,6 +228,8 @@ class BasketController extends AbstractController
 
     /**
      * The basket data from user session.
+     * 
+     * @access protected
      *
      * @return Basket The found data from user session.
      */
@@ -238,8 +268,7 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $data: DocumentData
-     * @param array $template: Template information
+     * @param array $data DocumentData
      *
      * @return string One basket entry
      */
@@ -288,13 +317,14 @@ class BasketController extends AbstractController
     }
 
     /**
-     * Returns the downloadurl configured in the basket
+     * Returns the download url configured in the basket
      *
      * @access protected
      *
-     * @param int $id: Document id
+     * @param int $id Document id
+     * @param array $data DocumentData
      *
-     * @return mixed download url or false
+     * @return string|false download url or false
      */
     protected function getDocumentData($id, $data)
     {
@@ -360,8 +390,8 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $_piVars: piVars
-     * @param Basket $basket: basket object
+     * @param array $_piVars piVars
+     * @param Basket $basket basket object
      *
      * @return array Basket data and JavaScript output
      */
@@ -465,8 +495,8 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $_piVars: plugin variables
-     * @param Basket $basket: basket object
+     * @param array $_piVars plugin variables
+     * @param Basket $basket basket object
      *
      * @return Basket basket
      */
@@ -544,9 +574,9 @@ class BasketController extends AbstractController
                 $mailBody = $hookObj->customizeMailBody($mailText, $pdfUrl);
             }
         }
-        $from = \TYPO3\CMS\Core\Utility\MailUtility::getSystemFrom();
+        $from = MailUtility::getSystemFrom();
         // send mail
-        $mail = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
+        $mail = GeneralUtility::makeInstance(MailMessage::class);
         // Prepare and send the message
         $mail
             // subject
@@ -583,6 +613,7 @@ class BasketController extends AbstractController
      * Sends document information to an external printer (url)
      *
      * @access protected
+     *
      * @param Basket basket object
      *
      * @return void
