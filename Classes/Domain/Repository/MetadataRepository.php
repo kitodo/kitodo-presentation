@@ -29,6 +29,8 @@ class MetadataRepository extends Repository
     /**
      * Finds all collection for the given settings
      *
+     * @access public
+     *
      * @param array $settings
      *
      * @return array|QueryResultInterface

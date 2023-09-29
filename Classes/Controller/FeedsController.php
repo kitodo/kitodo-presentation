@@ -44,6 +44,8 @@ class FeedsController extends AbstractController
     /**
      * Initializes the current action
      *
+     * @access public
+     *
      * @return void
      */
     public function initializeAction()
@@ -53,6 +55,8 @@ class FeedsController extends AbstractController
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */

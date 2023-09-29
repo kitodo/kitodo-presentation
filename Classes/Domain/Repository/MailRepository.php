@@ -27,6 +27,15 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 class MailRepository extends Repository
 {
 
+    /**
+     * Find all mails by pid.
+     *
+     * @access public
+     *
+     * @param int @pid
+     * 
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
     public function findAllWithPid($pid)
     {
         /** @var Typo3QuerySettings $querySettings */

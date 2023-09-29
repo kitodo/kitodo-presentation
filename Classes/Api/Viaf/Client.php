@@ -32,7 +32,7 @@ class Client
      * @access protected
      * @var Logger This holds the logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
      * The VIAF API endpoint
@@ -40,28 +40,31 @@ class Client
      * @access private
      * @var string The VIAF API endpoint
      **/
-    private $endpoint = 'viaf.xml';
+    private string $endpoint = 'viaf.xml';
 
     /**
      * @access private
      * @var string The VIAF URL for the profile
      **/
-    private $viafUrl = null;
+    private string $viafUrl;
 
     /**
      * @access private
      * @var RequestFactoryInterface The request object
      **/
-    private $requestFactory = null;
+    private RequestFactoryInterface $requestFactory;
 
     /**
      * Constructs a new instance
      *
+     * @access public
+     *
      * @param string $viaf the VIAF identifier of the profile
      * @param RequestFactory $requestFactory a request object to inject
+     *
      * @return void
      **/
-    public function __construct($viaf, RequestFactory $requestFactory)
+    public function __construct(string $viaf, RequestFactory $requestFactory)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->viafUrl = 'http://viaf.org/viaf/' . $viaf;
@@ -71,16 +74,20 @@ class Client
     /**
      * Sets API endpoint
      *
-     * @param string  $endpoint the shortname of the endpoint
+     * @access public
+     *
+     * @param string $endpoint the shortname of the endpoint
      *
      * @return void
      */
-    public function setEndpoint($endpoint) {
+    public function setEndpoint(string $endpoint): void {
         $this->endpoint = $endpoint;
     }
 
     /**
      * Get the profile data
+     *
+     * @access public
      *
      * @return object|bool
      **/
@@ -98,10 +105,12 @@ class Client
 
     /**
      * Creates the qualified API endpoint for retrieving the desired data
+     * 
+     * @access private
      *
      * @return string
      **/
-    protected function getApiEndpoint()
+    private  function getApiEndpoint(): string
     {
         return $this->viafUrl . '/' . $this->endpoint;
     }

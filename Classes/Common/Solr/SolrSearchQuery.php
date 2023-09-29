@@ -24,20 +24,29 @@ class SolrSearchQuery implements QueryInterface
      * @access private
      * @var SolrSearch
      */
-    private $solrSearch;
+    private SolrSearch $solrSearch;
 
     /**
      * @access private
      * @var int
      */
-    private $limit;
+    private int $limit;
 
     /**
      * @access private
      * @var int
      */
-    private $offset;
+    private int $offset;
 
+     /**
+     * Constructs SolrSearchQuery instance.
+     *
+     * @access public
+     *
+     * @param SolrSearch $solrSearch
+     *
+     * @return void
+     */
     public function __construct($solrSearch)
     {
         $this->solrSearch = $solrSearch;
@@ -48,6 +57,15 @@ class SolrSearchQuery implements QueryInterface
 
     public function getSource() {}
 
+    /**
+     * Executes SOLR search query.
+     *
+     * @access public
+     *
+     * @param bool $returnRawQueryResult
+     *
+     * @return array
+     */
     public function execute($returnRawQueryResult = false)
     {
         $this->solrSearch->submit($this->offset, $this->limit);
@@ -63,13 +81,31 @@ class SolrSearchQuery implements QueryInterface
 
     public function setOrderings(array $orderings) {}
 
-    public function setLimit($limit)
+    /**
+     * Sets limit for SOLR search query.
+     *
+     * @access public
+     *
+     * @param int $limit
+     *
+     * @return SolrSearchQuery
+     */
+    public function setLimit($limit): SolrSearchQuery
     {
         $this->limit = $limit;
         return $this;
     }
 
-    public function setOffset($offset)
+    /**
+     * Sets offset for SOLR search query.
+     *
+     * @access public
+     *
+     * @param int $offset
+     *
+     * @return SolrSearchQuery
+     */
+    public function setOffset($offset): SolrSearchQuery
     {
         $this->offset = $offset;
         return $this;
@@ -98,12 +134,26 @@ class SolrSearchQuery implements QueryInterface
 
     public function getOrderings() {}
 
-    public function getLimit()
+    /**
+     * Gets limit for SOLR search query.
+     *
+     * @access public
+     *
+     * @return int
+     */
+    public function getLimit(): int
     {
         return $this->limit;
     }
 
-    public function getOffset()
+    /**
+     * Gets offset for SOLR search query.
+     *
+     * @access public
+     *
+     * @return int
+     */
+    public function getOffset(): int
     {
         return $this->offset;
     }

@@ -38,7 +38,11 @@ class SearchController extends AbstractController
     protected $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
@@ -52,7 +56,11 @@ class SearchController extends AbstractController
     protected $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
@@ -67,6 +75,8 @@ class SearchController extends AbstractController
 
     /**
      * Search Action
+     *
+     * @access public
      *
      * @return void
      */
@@ -83,6 +93,8 @@ class SearchController extends AbstractController
      * Main action
      *
      * This shows the search form and optional the facets and extended search form.
+     *
+     * @access public
      *
      * @return void
      */
@@ -210,8 +222,7 @@ class SearchController extends AbstractController
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
+     * @param array $facets
      *
      * @return array HMENU array
      */
@@ -402,11 +413,11 @@ class SearchController extends AbstractController
      *
      * @access private
      *
-     * @param string $field: The facet's index_name
-     * @param string $value: The facet's value
-     * @param int $count: Number of hits for this facet
-     * @param array $search: The parameters of the current search query
-     * @param string &$state: The state of the parent item
+     * @param string $field The facet's index_name
+     * @param string $value The facet's value
+     * @param int $count Number of hits for this facet
+     * @param array $search The parameters of the current search query
+     * @param string &$state The state of the parent item
      *
      * @return array The array for the facet's menu entry
      */
@@ -492,8 +503,10 @@ class SearchController extends AbstractController
     /**
      * Translates value depending on the index name.
      *
-     * @param string $field: The facet's index_name
-     * @param string $value: The facet's value
+     * @access private
+     *
+     * @param string $field The facet's index_name
+     * @param string $value The facet's value
      *
      * @return string
      */
