@@ -207,7 +207,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
             if ($this->document !== null) {
                 $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
-                if ($this->document !== null && $doc !== null) {
+                if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {
                     $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
