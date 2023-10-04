@@ -185,8 +185,7 @@ DlfIiifAnnotationParser.prototype.getXYWHForAnnotation = function (annotation) {
             x2: this.width - 1,
             y2: this.height - 1
         };
-    }
-    else {
+    } else {
         return {
             x1: parseInt(xywh[0]),
             y1: parseInt(xywh[1]),
