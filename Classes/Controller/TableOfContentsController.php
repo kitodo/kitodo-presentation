@@ -110,8 +110,8 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array $entry : The entry's array from AbstractDocument->getLogicalStructure
-     * @param bool $recursive : Whether to include the child entries
+     * @param array $entry The entry's array from AbstractDocument->getLogicalStructure
+     * @param bool $recursive Whether to include the child entries
      *
      * @return array HMENU array for menu entry
      */
@@ -212,6 +212,7 @@ class TableOfContentsController extends AbstractController
      * @access private
      *
      * @param array $entry
+     *
      * @return array
      */
     private function resolveMenuEntry($entry)

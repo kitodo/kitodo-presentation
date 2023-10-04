@@ -80,7 +80,11 @@ class NewTenantController extends AbstractController
     protected $formatRepository;
 
     /**
+     * @access public
+     *
      * @param FormatRepository $formatRepository
+     *
+     * @return void
      */
     public function injectFormatRepository(FormatRepository $formatRepository)
     {
@@ -94,7 +98,11 @@ class NewTenantController extends AbstractController
     protected $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
@@ -108,7 +116,11 @@ class NewTenantController extends AbstractController
     protected $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
     public function injectStructureRepository(StructureRepository $structureRepository)
     {
@@ -122,7 +134,11 @@ class NewTenantController extends AbstractController
     protected $solrCoreRepository;
 
     /**
+     * @access public
+     *
      * @param SolrCoreRepository $solrCoreRepository
+     *
+     * @return void
      */
     public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository)
     {
@@ -132,6 +148,9 @@ class NewTenantController extends AbstractController
     /**
      * Initialization for all actions
      *
+     * @access protected
+     *
+     * @return void
      */
     protected function initializeAction()
     {
@@ -154,6 +173,10 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding formats records
+     *
+     * @access public
+     *
+     * @return void
      */
     public function addFormatAction()
     {
@@ -192,6 +215,10 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding metadata records
+     *
+     * @access public
+     *
+     * @return void
      */
     public function addMetadataAction()
     {
@@ -267,6 +294,10 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding Solr core records
+     *
+     * @access public
+     *
+     * @return void
      */
     public function addSolrCoreAction()
     {
@@ -299,6 +330,10 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding structure records
+     *
+     * @access public
+     *
+     * @return void
      */
     public function addStructureAction()
     {
@@ -349,8 +384,11 @@ class NewTenantController extends AbstractController
 
     /**
      * Set up the doc header properly here
+     * 
+     * @access protected
      *
      * @param ViewInterface $view
+     *
      * @return void
      */
     protected function initializeView(ViewInterface $view)
@@ -371,6 +409,7 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
+     * @return void
      */
     public function indexAction()
     {
@@ -402,6 +441,7 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
+     * @return void
      */
     public function errorAction()
     {
@@ -409,12 +449,14 @@ class NewTenantController extends AbstractController
 
     /**
      * Get language label for given key and language.
+     * 
+     * @access protected
      *
      * @param string $index
      * @param string $lang
      * @param array $langArray
      *
-     * @access public
+     * @return string
      */
     protected function getLLL($index, $lang, $langArray)
     {

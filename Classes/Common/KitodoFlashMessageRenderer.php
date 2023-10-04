@@ -30,9 +30,9 @@ use TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface;
 class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 {
     /**
-     * @var string The message severity class names
+     * @var array The message severity class names
      */
-    protected static $classes = [
+    protected static array $classes = [
         FlashMessage::NOTICE => 'notice',
         FlashMessage::INFO => 'info',
         FlashMessage::OK => 'success',
@@ -41,9 +41,9 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
     ];
 
     /**
-     * @var string The message severity icon names
+     * @var array The message severity icon names
      */
-    protected static $icons = [
+    protected static array $icons = [
         FlashMessage::NOTICE => 'lightbulb-o',
         FlashMessage::INFO => 'info',
         FlashMessage::OK => 'check',
@@ -53,8 +53,11 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 
     /**
      * Render method
+     * 
+     * @access public
      *
      * @param FlashMessage[] $flashMessages
+     *
      * @return string Representation of the flash message
      */
     public function render(array $flashMessages): string
@@ -64,6 +67,8 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 
     /**
      * Gets the message severity class name
+     *
+     * @access public
      *
      * @param FlashMessage $flashMessage
      *
@@ -77,6 +82,8 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
     /**
      * Gets the message severity icon name
      *
+     * @access public
+     *
      * @param FlashMessage $flashMessage
      *
      * @return string The message severity icon name
@@ -89,7 +96,10 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
     /**
      * Gets the message rendered as clean and secure markup
      *
+     * @access public
+     *
      * @param FlashMessage[] $flashMessages
+     *
      * @return string
      */
     protected function getMessageAsMarkup(array $flashMessages): string

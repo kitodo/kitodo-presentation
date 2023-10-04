@@ -54,6 +54,8 @@ class DocumentRepository extends Repository
      *
      * Currently used by EXT:slub_digitalcollections
      *
+     * @access public
+     *
      * @param array $parameters
      *
      * @return Document|null
@@ -101,6 +103,8 @@ class DocumentRepository extends Repository
     /**
      * Find the oldest document
      *
+     * @access public
+     *
      * @return Document|null
      */
     public function findOldestDocument()
@@ -114,9 +118,12 @@ class DocumentRepository extends Repository
     }
 
     /**
+     * @access public
+     *
      * @param int $partOf
      * @param Structure $structure
-     * @return array|QueryResultInterface
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function getChildrenOfYearAnchor($partOf, $structure)
     {
@@ -135,6 +142,8 @@ class DocumentRepository extends Repository
     /**
      * Finds all documents for the given settings
      *
+     * @access public
+     *
      * @param int $uid
      * @param array $settings
      *
@@ -150,9 +159,11 @@ class DocumentRepository extends Repository
     /**
      * Finds all documents for the given settings
      *
+     * @access public
+     *
      * @param array $settings
      *
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function findDocumentsBySettings($settings = [])
     {
@@ -180,10 +191,12 @@ class DocumentRepository extends Repository
     /**
      * Finds all documents for the given collections
      *
+     * @access public
+     *
      * @param array $collections
      * @param int $limit
      *
-     * @return array|QueryResultInterface
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function findAllByCollectionsLimited($collections, $limit = 50)
     {
@@ -218,6 +231,8 @@ class DocumentRepository extends Repository
      * Volumes are documents that are both
      *  a) "leaf" elements i.e. partof != 0
      *  b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
+     *
+     * @access public
      *
      * @param array $settings
      *
@@ -352,6 +367,8 @@ class DocumentRepository extends Repository
     /**
      * Build table of contents
      *
+     * @access public
+     *
      * @param int $uid
      * @param int $pid
      * @param array $settings
@@ -402,6 +419,8 @@ class DocumentRepository extends Repository
     /**
      * Find one document by given settings and identifier
      *
+     * @access public
+     *
      * @param array $settings
      * @param array $parameters
      *
@@ -443,6 +462,8 @@ class DocumentRepository extends Repository
     /**
      * Finds all documents for the given settings
      *
+     * @access public
+     *
      * @param array $settings
      * @param array $documentsToProcess
      *
@@ -478,6 +499,8 @@ class DocumentRepository extends Repository
 
     /**
      * Finds all documents with given uids
+     *
+     * @access public
      *
      * @param array $uids
      * @param array $checkPartof Whether or not to also match $uids against partof.
@@ -528,7 +551,7 @@ class DocumentRepository extends Repository
     }
 
     /**
-     *
+     * @access public
      *
      * @param array $uids
      *
@@ -550,10 +573,13 @@ class DocumentRepository extends Repository
     /**
      * Find all documents with given collection from Solr
      *
+     * @access public
+     *
      * @param QueryResult|Collection $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
+     *
      * @return SolrSearch
      */
     public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)

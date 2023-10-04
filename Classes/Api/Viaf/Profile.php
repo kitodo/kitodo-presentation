@@ -44,16 +44,18 @@ class Profile
      * @access private
      * @var \SimpleXmlElement|false The raw VIAF profile or false if not found
      **/
-    private $raw = null;
+    private $raw = false;
 
     /**
      * Constructs client instance
      *
-     * @param string $viaf: the VIAF identifier of the profile
+     * @access public
+     *
+     * @param string $viaf the VIAF identifier of the profile
      *
      * @return void
      **/
-    public function __construct($viaf)
+    public function __construct(string $viaf)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->client = new Client($viaf, GeneralUtility::makeInstance(RequestFactory::class));
@@ -62,12 +64,14 @@ class Profile
     /**
      * Get the VIAF profile data
      *
+     * @access public
+     *
      * @return array|false
      **/
     public function getData()
     {
         $this->getRaw();
-        if (!empty($this->raw)) {
+        if ($this->raw !== false && !empty($this->raw)) {
             $data = [];
             $data['address'] = $this->getAddress();
             $data['fullName'] = $this->getFullName();
@@ -81,12 +85,14 @@ class Profile
     /**
      * Get the address
      *
+     * @access public
+     *
      * @return string|false
      **/
     public function getAddress()
     {
         $this->getRaw();
-        if (!empty($this->raw->asXML())) {
+        if ($this->raw !== false && !empty($this->raw->asXML())) {
             return (string) $this->raw->xpath('./ns1:nationalityOfEntity/ns1:data/ns1:text')[0];
         } else {
             $this->logger->warning('No address found for given VIAF URL');
@@ -97,12 +103,14 @@ class Profile
     /**
      * Get the full name
      *
+     * @access public
+     *
      * @return string|false
      **/
     public function getFullName()
     {
         $this->getRaw();
-        if (!empty($this->raw->asXML())) {
+        if ($this->raw !== false && !empty($this->raw->asXML())) {
             $rawName = $this->raw->xpath('./ns1:mainHeadings/ns1:data/ns1:text');
             $name = (string) $rawName[0];
             $name = trim(trim(trim($name), ','), '.');
@@ -116,14 +124,18 @@ class Profile
     /**
      * Get the VIAF raw profile data
      *
+     * @access private
+     *
      * @return void
      **/
-    protected function getRaw()
+    private function getRaw(): void
     {
         $data = $this->client->getData();
-        if (!isset($this->raw) && $data != false) {
+        if ($data != false) {
             $this->raw = Helper::getXmlFileAsString($data);
-            $this->raw->registerXPathNamespace('ns1', 'http://viaf.org/viaf/terms#');
+            if ($this->raw != false && !empty($this->raw->asXML())) {
+                $this->raw->registerXPathNamespace('ns1', 'http://viaf.org/viaf/terms#');
+            }
         }
     }
 }

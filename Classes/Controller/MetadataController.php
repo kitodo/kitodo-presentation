@@ -42,7 +42,11 @@ class MetadataController extends AbstractController
     protected $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
@@ -56,7 +60,11 @@ class MetadataController extends AbstractController
     protected $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
@@ -70,7 +78,11 @@ class MetadataController extends AbstractController
     protected $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
     public function injectStructureRepository(StructureRepository $structureRepository)
     {
@@ -78,6 +90,8 @@ class MetadataController extends AbstractController
     }
 
     /**
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
@@ -121,8 +135,8 @@ class MetadataController extends AbstractController
      *
      * @access protected
      *
-     * @param array $metadata: The metadata array
-     * @param bool $useOriginalIiifManifestMetadata: Output IIIF metadata as simple key/value pairs?
+     * @param array $metadata The metadata array
+     * @param bool $useOriginalIiifManifestMetadata Output IIIF metadata as simple key/value pairs?
      *
      * @return string The metadata array ready for output
      */
@@ -406,8 +420,8 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param array $id: An array with ids
-     * @param array $metadata: An array with metadata
+     * @param array $id An array with ids
+     * @param array $metadata An array with metadata
      *
      * @return array metadata
      */

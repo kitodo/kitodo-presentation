@@ -45,7 +45,7 @@ class Helper
      * @static
      * @var string The extension key
      */
-    public static $extKey = 'dlf';
+    public static string $extKey = 'dlf';
 
     /**
      * @access protected
@@ -54,7 +54,7 @@ class Helper
      *
      * @see openssl_get_cipher_methods() for options
      */
-    protected static $cipherAlgorithm = 'aes-256-ctr';
+    protected static string $cipherAlgorithm = 'aes-256-ctr';
 
     /**
      * @access protected
@@ -63,29 +63,31 @@ class Helper
      * 
      * @see openssl_get_md_methods() for options
      */
-    protected static $hashAlgorithm = 'sha256';
+    protected static string $hashAlgorithm = 'sha256';
 
     /**
      * @access protected
      * @static
      * @var array The locallang array for flash messages
      */
-    protected static $messages = [];
+    protected static array $messages = [];
 
     /**
      * Generates a flash message and adds it to a message queue.
      *
      * @access public
      *
-     * @param string $message: The body of the message
-     * @param string $title: The title of the message
-     * @param int $severity: The message's severity
-     * @param bool $session: Should the message be saved in the user's session?
-     * @param string $queue: The queue's unique identifier
+     * @static
+     *
+     * @param string $message The body of the message
+     * @param string $title The title of the message
+     * @param int $severity The message's severity
+     * @param bool $session Should the message be saved in the user's session?
+     * @param string $queue The queue's unique identifier
      *
      * @return FlashMessageQueue The queue the message was added to
      */
-    public static function addMessage($message, $title, $severity, $session = false, $queue = 'kitodo.default.flashMessages')
+    public static function addMessage(string $message, string $title, int $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
@@ -104,13 +106,14 @@ class Helper
      *
      * @access public
      *
-     * @param string $id: The identifier to check
-     * @param string $type: What type is the identifier supposed to be?
-     *                      Possible values: PPN, IDN, PND, ZDB, SWD, GKD
+     * @static
+     *
+     * @param string $id The identifier to check
+     * @param string $type What type is the identifier supposed to be? Possible values: PPN, IDN, PND, ZDB, SWD, GKD
      *
      * @return bool Is $id a valid GNL identifier of the given $type?
      */
-    public static function checkIdentifier($id, $type)
+    public static function checkIdentifier(string $id, string $type): bool
     {
         $digits = substr($id, 0, 8);
         $checksum = 0;
@@ -171,11 +174,13 @@ class Helper
      *
      * @access public
      *
-     * @param string $encrypted: The encrypted value to decrypt
+     * @static
+     *
+     * @param string $encrypted The encrypted value to decrypt
      *
      * @return mixed The decrypted value or false on error
      */
-    public static function decrypt($encrypted)
+    public static function decrypt(string $encrypted)
     {
         if (
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
@@ -211,10 +216,13 @@ class Helper
      *
      * @access public
      *
+     * @static
+     *
      * @param string $content: content of file to read
      *
      * @return \SimpleXMLElement|false
      */
+    //TODO: make sure that this is called only with string then update
     public static function getXmlFileAsString($content)
     {
         // Don't make simplexml_load_string throw (when $content is an array
@@ -241,13 +249,14 @@ class Helper
      *
      * @access public
      *
-     * @param string $message: The message to log
-     * @param int $severity: The severity of the message
-     *                       0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
+     * @static
+     *
+     * @param string $message The message to log
+     * @param int $severity The severity of the message 0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
      *
      * @return void
      */
-    public static function log($message, $severity = 0)
+    public static function log(string $message, int $severity = 0): void
     {
         $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
 
@@ -274,11 +283,13 @@ class Helper
      *
      * @access public
      *
-     * @param string $string: The string to encrypt
+     * @static
+     *
+     * @param string $string The string to encrypt
      *
      * @return mixed Hashed string or false on error
      */
-    public static function digest($string)
+    public static function digest(string $string)
     {
         if (!in_array(self::$hashAlgorithm, openssl_get_md_methods(true))) {
             self::log('OpenSSL library doesn\'t support hash algorithm', LOG_SEVERITY_ERROR);
@@ -294,11 +305,13 @@ class Helper
      *
      * @access public
      *
-     * @param string $string: The string to encrypt
+     * @static
+     *
+     * @param string $string The string to encrypt
      *
      * @return mixed Encrypted string or false on error
      */
-    public static function encrypt($string)
+    public static function encrypt(string $string)
     {
         if (
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
@@ -328,13 +341,15 @@ class Helper
      *
      * @access public
      *
-     * @param string $qualifiedClassname: The qualified class name from get_class()
+     * @static
+     *
+     * @param string $qualifiedClassName The qualified class name from get_class()
      *
      * @return string The unqualified class name
      */
-    public static function getUnqualifiedClassName($qualifiedClassname)
+    public static function getUnqualifiedClassName(string $qualifiedClassName): string
     {
-        $nameParts = explode('\\', $qualifiedClassname);
+        $nameParts = explode('\\', $qualifiedClassName);
         return end($nameParts);
     }
 
@@ -343,11 +358,13 @@ class Helper
      *
      * @access public
      *
-     * @param string $string: The string to clean up
+     * @static
+     *
+     * @param string $string The string to clean up
      *
      * @return string The cleaned up string
      */
-    public static function getCleanString($string)
+    public static function getCleanString(string $string): string
     {
         // Convert to lowercase.
         $string = strtolower($string);
@@ -365,11 +382,13 @@ class Helper
      *
      * @access public
      *
-     * @param string $scriptRelPath: The path to the class file
+     * @static
+     *
+     * @param string $scriptRelPath The path to the class file
      *
      * @return array Array of hook objects for the class
      */
-    public static function getHookObjects($scriptRelPath)
+    public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
@@ -385,13 +404,15 @@ class Helper
      *
      * @access public
      *
-     * @param int $uid: The UID of the record
-     * @param string $table: Get the "index_name" from this table
-     * @param int $pid: Get the "index_name" from this page
+     * @static
+     *
+     * @param int $uid The UID of the record
+     * @param string $table Get the "index_name" from this table
+     * @param int $pid Get the "index_name" from this page
      *
      * @return string "index_name" for the given UID
      */
-    public static function getIndexNameFromUid($uid, $table, $pid = -1)
+    public static function getIndexNameFromUid(int $uid, string $table, int $pid = -1): string
     {
         // Sanitize input.
         $uid = max(intval($uid), 0);
@@ -446,11 +467,13 @@ class Helper
      *
      * @access public
      *
-     * @param string $code: ISO 639-1 or ISO 639-2/B language code
+     * @static
+     *
+     * @param string $code ISO 639-1 or ISO 639-2/B language code
      *
      * @return string Localized full name of language or unchanged input
      */
-    public static function getLanguageName($code)
+    public static function getLanguageName(string $code): string
     {
         // Analyze code and set appropriate ISO table.
         $isoCode = strtolower(trim($code));
@@ -474,11 +497,15 @@ class Helper
     /**
      * Get all document structures as array
      *
-     * @param int $pid: Get the "index_name" from this page only
+     * @access public
+     *
+     * @static
+     *
+     * @param int $pid Get the "index_name" from this page only
      *
      * @return array
      */
-    public static function getDocumentStructures($pid = -1)
+    public static function getDocumentStructures(int $pid = -1): array
     {
         // TODO: Against redundancy with getIndexNameFromUid
 
@@ -516,12 +543,14 @@ class Helper
      *
      * @access public
      *
-     * @param string $base: The namespace and base URN
-     * @param string $id: The object's identifier
+     * @static
+     *
+     * @param string $base The namespace and base URN
+     * @param string $id The object's identifier
      *
      * @return string Uniform Resource Name as string
      */
-    public static function getURN($base, $id)
+    public static function getURN(string $base, string $id): string
     {
         $concordance = [
             '0' => 1,
@@ -585,11 +614,13 @@ class Helper
      *
      * @access public
      *
-     * @param string $id: The identifier to check
+     * @static
+     *
+     * @param string $id The identifier to check
      *
      * @return bool Is $id a valid PPN?
      */
-    public static function isPPN($id)
+    public static function isPPN(string $id): bool
     {
         return self::checkIdentifier($id, 'PPN');
     }
@@ -597,11 +628,15 @@ class Helper
     /**
      * Determine whether or not $url is a valid URL using HTTP or HTTPS scheme.
      *
+     * @access public
+     *
+     * @static
+     *
      * @param string $url
      *
      * @return bool
      */
-    public static function isValidHttpUrl($url)
+    public static function isValidHttpUrl(string $url): bool
     {
         if (!GeneralUtility::isValidUrl($url)) {
             return false;
@@ -620,15 +655,17 @@ class Helper
      *
      * @access public
      *
-     * @param array $original: Original array
-     * @param array $overrule: Overrule array, overruling the original array
-     * @param bool $addKeys: If set to false, keys that are not found in $original will not be set
-     * @param bool $includeEmptyValues: If set, values from $overrule will overrule if they are empty
-     * @param bool $enableUnsetFeature: If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
+     * @static
+     *
+     * @param array $original Original array
+     * @param array $overrule Overrule array, overruling the original array
+     * @param bool $addKeys If set to false, keys that are not found in $original will not be set
+     * @param bool $includeEmptyValues If set, values from $overrule will overrule if they are empty
+     * @param bool $enableUnsetFeature If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
      *
      * @return array Merged array
      */
-    public static function mergeRecursiveWithOverrule(array $original, array $overrule, $addKeys = true, $includeEmptyValues = true, $enableUnsetFeature = true)
+    public static function mergeRecursiveWithOverrule(array $original, array $overrule, bool $addKeys = true, bool $includeEmptyValues = true, bool $enableUnsetFeature = true): array
     {
         ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
         return $original;
@@ -638,12 +675,14 @@ class Helper
      * Fetches and renders all available flash messages from the queue.
      *
      * @access public
+     * 
+     * @static
      *
-     * @param string $queue: The queue's unique identifier
+     * @param string $queue The queue's unique identifier
      *
      * @return string All flash messages in the queue rendered as HTML.
      */
-    public static function renderFlashMessages($queue = 'kitodo.default.flashMessages')
+    public static function renderFlashMessages(string $queue = 'kitodo.default.flashMessages'): string
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
@@ -658,13 +697,15 @@ class Helper
      *
      * @access public
      *
-     * @param string $index_name: The internal "index_name" to translate
-     * @param string $table: Get the translation from this table
-     * @param string $pid: Get the translation from this page
+     * @static
+     *
+     * @param string $index_name The internal "index_name" to translate
+     * @param string $table Get the translation from this table
+     * @param string $pid Get the translation from this page
      *
      * @return string Localized label for $index_name
      */
-    public static function translate($index_name, $table, $pid)
+    public static function translate(string $index_name, string $table, string $pid): string
     {
         // Load labels into static variable for future use.
         static $labels = [];
@@ -787,12 +828,14 @@ class Helper
      *
      * @access public
      *
-     * @param string $table: Table name as defined in TCA
-     * @param bool $showHidden: Ignore the hidden flag?
+     * @static
+     *
+     * @param string $table Table name as defined in TCA
+     * @param bool $showHidden Ignore the hidden flag?
      *
      * @return string Additional WHERE expression
      */
-    public static function whereExpression($table, $showHidden = false)
+    public static function whereExpression(string $table, bool $showHidden = false): string
     {
         // TODO: Check with applicationType; TYPO3_MODE is removed in v12
         if (\TYPO3_MODE === 'FE') {
@@ -826,6 +869,8 @@ class Helper
      * Prevent instantiation by hiding the constructor
      *
      * @access private
+     *
+     * @return void
      */
     private function __construct()
     {
@@ -834,6 +879,10 @@ class Helper
 
     /**
      * Returns the LanguageService
+     *
+     * @access public
+     *
+     * @static
      *
      * @return LanguageService
      */
@@ -848,6 +897,8 @@ class Helper
      * This method respects the User Agent settings from extConf
      *
      * @access public
+     *
+     * @static
      *
      * @param string $url
      *
@@ -887,9 +938,11 @@ class Helper
      *
      * @access public
      *
-     * @param mixed $id: The ID value to check
+     * @static
      *
-     * @return bool: TRUE if $id is valid XML ID, FALSE otherwise
+     * @param mixed $id The ID value to check
+     *
+     * @return bool TRUE if $id is valid XML ID, FALSE otherwise
      */
     public static function isValidXmlId($id): bool
     {

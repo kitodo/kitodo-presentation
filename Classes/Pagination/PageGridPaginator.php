@@ -24,17 +24,17 @@ final class PageGridPaginator extends AbstractPaginator
     /**
      * @var array
      */
-    private $items;
+    private array $items;
 
     /**
      * @var int
      */
-    public $publicItemsPerPage;
+    public int $publicItemsPerPage;
 
     /**
      * @var array
      */
-    private $paginatedItems = [];
+    private array $paginatedItems = [];
 
     public function __construct(
         array $items,

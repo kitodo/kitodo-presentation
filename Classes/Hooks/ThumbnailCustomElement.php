@@ -24,7 +24,15 @@ use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
  */
 class ThumbnailCustomElement extends AbstractFormElement
 {
-    public function render()
+
+    /**
+     * Renders thumbnail custom element.
+     *
+     * @access public
+     *
+     * @return array
+     */
+    public function render(): array
     {
         // Custom TCA properties and other data can be found in $this->data, for example the above
         // parameters are available in $this->data['parameterArray']['fieldConf']['config']['parameters']
