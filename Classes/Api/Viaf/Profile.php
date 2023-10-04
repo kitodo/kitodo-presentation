@@ -71,7 +71,7 @@ class Profile
     public function getData()
     {
         $this->getRaw();
-        if ($this->raw != false && !empty($this->raw)) {
+        if ($this->raw !== false && !empty($this->raw)) {
             $data = [];
             $data['address'] = $this->getAddress();
             $data['fullName'] = $this->getFullName();
@@ -92,7 +92,7 @@ class Profile
     public function getAddress()
     {
         $this->getRaw();
-        if ($this->raw != false && !empty($this->raw->asXML())) {
+        if ($this->raw !== false && !empty($this->raw->asXML())) {
             return (string) $this->raw->xpath('./ns1:nationalityOfEntity/ns1:data/ns1:text')[0];
         } else {
             $this->logger->warning('No address found for given VIAF URL');
@@ -110,7 +110,7 @@ class Profile
     public function getFullName()
     {
         $this->getRaw();
-        if ($this->raw != false && !empty($this->raw->asXML())) {
+        if ($this->raw !== false && !empty($this->raw->asXML())) {
             $rawName = $this->raw->xpath('./ns1:mainHeadings/ns1:data/ns1:text');
             $name = (string) $rawName[0];
             $name = trim(trim(trim($name), ','), '.');
