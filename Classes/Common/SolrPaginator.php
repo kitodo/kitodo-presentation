@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Common\Solr\SolrSearch;
 use TYPO3\CMS\Core\Pagination\AbstractPaginator;
 
 class SolrPaginator extends AbstractPaginator
@@ -19,12 +20,12 @@ class SolrPaginator extends AbstractPaginator
     /**
      * @var SolrSearch
      */
-    private $solrSearch;
+    private SolrSearch $solrSearch;
 
     /**
      * @var array
      */
-    private $paginatedItems = [];
+    private array $paginatedItems = [];
 
     public function __construct(
         SolrSearch $solrSearch,

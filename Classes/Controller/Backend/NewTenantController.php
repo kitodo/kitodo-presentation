@@ -23,6 +23,7 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,52 +36,55 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 /**
  * Controller class for the backend module 'New Tenant'.
  *
- * @author Christopher Timm <timm@effective-webwork.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class NewTenantController extends AbstractController
 {
     /**
+     * @access protected
      * @var int
      */
     protected $pid;
 
     /**
+     * @access protected
      * @var array
      */
     protected $pageInfo;
 
     /**
-     * All configured site languages
-     *
-     * @var array
+     * @access protected
+     * @var array All configured site languages
      */
     protected $siteLanguages;
 
     /**
-     * LanguageFactory to get language key/values by our own.
-     *
-     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory
+     * @access protected
+     * @var LocalizationFactory Language factory to get language key/values by our own.
      */
     protected $languageFactory;
 
     /**
-     * Backend Template Container
-     *
-     * @var string
+     * @access protected
+     * @var string Backend Template Container
      */
-    protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
+    protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
+     * @access protected
      * @var FormatRepository
      */
     protected $formatRepository;
 
     /**
+     * @access public
+     *
      * @param FormatRepository $formatRepository
+     *
+     * @return void
      */
     public function injectFormatRepository(FormatRepository $formatRepository)
     {
@@ -88,12 +92,17 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
@@ -101,12 +110,17 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var StructureRepository
      */
     protected $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
     public function injectStructureRepository(StructureRepository $structureRepository)
     {
@@ -114,12 +128,17 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var SolrCoreRepository
      */
     protected $solrCoreRepository;
 
     /**
+     * @access public
+     *
      * @param SolrCoreRepository $solrCoreRepository
+     *
+     * @return void
      */
     public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository)
     {
@@ -129,6 +148,9 @@ class NewTenantController extends AbstractController
     /**
      * Initialization for all actions
      *
+     * @access protected
+     *
+     * @return void
      */
     protected function initializeAction()
     {
@@ -151,6 +173,10 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding formats records
+     *
+     * @access public
+     *
+     * @return void
      */
     public function addFormatAction()
     {
@@ -189,6 +215,10 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding metadata records
+     *
+     * @access public
+     *
+     * @return void
      */
     public function addMetadataAction()
     {
@@ -264,6 +294,10 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding Solr core records
+     *
+     * @access public
+     *
+     * @return void
      */
     public function addSolrCoreAction()
     {
@@ -296,6 +330,10 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding structure records
+     *
+     * @access public
+     *
+     * @return void
      */
     public function addStructureAction()
     {
@@ -346,8 +384,11 @@ class NewTenantController extends AbstractController
 
     /**
      * Set up the doc header properly here
+     * 
+     * @access protected
      *
      * @param ViewInterface $view
+     *
      * @return void
      */
     protected function initializeView(ViewInterface $view)
@@ -368,6 +409,7 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
+     * @return void
      */
     public function indexAction()
     {
@@ -399,6 +441,7 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
+     * @return void
      */
     public function errorAction()
     {
@@ -406,12 +449,14 @@ class NewTenantController extends AbstractController
 
     /**
      * Get language label for given key and language.
+     * 
+     * @access protected
      *
      * @param string $index
      * @param string $lang
      * @param array $langArray
      *
-     * @access public
+     * @return string
      */
     protected function getLLL($index, $lang, $langArray)
     {

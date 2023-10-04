@@ -13,18 +13,24 @@
 namespace Kitodo\Dlf\ExpressionLanguage;
 
 use TYPO3\CMS\Core\ExpressionLanguage\AbstractProvider;
-use TYPO3\CMS\Core\ExpressionLanguage\FunctionsProvider\Typo3ConditionFunctionsProvider;
 
 /**
  * Wrapper class to provide variables and functions for the ExpressionLanguage.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DocumentTypeProvider extends AbstractProvider
 {
+    /**
+     * Construct the instance
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->expressionLanguageProviders = [

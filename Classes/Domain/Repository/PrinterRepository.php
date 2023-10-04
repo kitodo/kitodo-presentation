@@ -12,7 +12,17 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-class PrinterRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
+/**
+ * Printer repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class PrinterRepository extends Repository
 {
 
 }

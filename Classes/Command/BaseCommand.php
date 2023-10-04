@@ -29,59 +29,65 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * Base class for CLI Command classes.
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class BaseCommand extends Command
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
     /**
+     * @access protected
      * @var LibraryRepository
      */
-    protected $libraryRepository;
+    protected LibraryRepository $libraryRepository;
 
     /**
+     * @access protected
      * @var StructureRepository
      */
-    protected $structureRepository;
+    protected StructureRepository $structureRepository;
 
     /**
+     * @access protected
      * @var int
      */
-    protected $storagePid;
+    protected int $storagePid;
 
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Library
-     */
-    protected $owner;
-
-    /**
-     * @var array
      * @access protected
+     * @var Library|null
      */
-    protected $extConf;
+    protected ?Library $owner;
+
+    /**
+     * @access protected
+     * @var array
+     */
+    protected array $extConf;
 
     /**
      * @var ConfigurationManager
      */
-    protected $configurationManager;
+    protected ConfigurationManager $configurationManager;
 
     public function __construct(CollectionRepository $collectionRepository,
                                 DocumentRepository   $documentRepository,
@@ -101,16 +107,18 @@ class BaseCommand extends Command
     /**
      * Initialize the extbase repository based on the given storagePid.
      *
-     * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependency Injection.
+     * TYPO3 10+: Find a better solution e.g. based on Symfony Dependency Injection.
+     *
+     * @access protected
      *
      * @param int $storagePid The storage pid
      *
      * @return bool
      */
-    protected function initializeRepositories($storagePid)
+    protected function initializeRepositories(int $storagePid): bool
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $frameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+            $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
             $this->configurationManager->setConfiguration($frameworkConfiguration);
@@ -127,6 +135,8 @@ class BaseCommand extends Command
 
     /**
      * Return matching uid of Solr core depending on the input value.
+     *
+     * @access protected
      *
      * @param array $solrCores array of the valid Solr cores
      * @param string|bool|null $inputSolrId possible uid or name of Solr core
@@ -145,6 +155,8 @@ class BaseCommand extends Command
 
     /**
      * Fetches all Solr cores on given page.
+     *
+     * @access protected
      *
      * @param int $pageId The UID of the Solr core or 0 to disable indexing
      *
@@ -177,11 +189,13 @@ class BaseCommand extends Command
     /**
      * Update or insert document to database
      *
-     * @param int|string $doc The document uid from DB OR the location of a mets document.
+     * @access protected
      *
-     * @return bool true on success
+     * @param Document $doc The document instance
+     *
+     * @return bool true on success, false otherwise
      */
-    protected function saveToDatabase(Document $document)
+    protected function saveToDatabase(Document $document): bool
     {
         $doc = $document->getCurrentDocument();
         if ($doc === null) {
@@ -297,10 +311,12 @@ class BaseCommand extends Command
      * Currently only applies to METS documents.
      *
      * @access protected
+     * 
+     * @param Document $document for which parent UID should be taken
      *
      * @return int The parent document's id.
      */
-    protected function getParentDocumentUidForSaving(Document $document)
+    protected function getParentDocumentUidForSaving(Document $document): int
     {
         $doc = $document->getCurrentDocument();
 
@@ -325,7 +341,7 @@ class BaseCommand extends Command
 
                 if ($success === true) {
                     // add to index
-                    Indexer::add($parentDocument);
+                    Indexer::add($parentDocument, $this->documentRepository);
                     return $parentDocument->getUid();
                 }
             }
