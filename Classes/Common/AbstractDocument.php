@@ -403,7 +403,7 @@ abstract class AbstractDocument
 
         if (!$forceReload) {
             $instance = self::getDocumentCache($location);
-            if ($instance != false) {
+            if ($instance !== false) {
                 return $instance;
             }
         }
