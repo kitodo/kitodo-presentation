@@ -604,9 +604,7 @@ class Indexer
      *
      * @return void
      */
-    private function __construct(DocumentRepository $documentRepository)
+    private function __construct()
     {
-        // This is a static class, thus no instances should be created.
-        $this->documentRepository = $documentRepository;
     }
 }
