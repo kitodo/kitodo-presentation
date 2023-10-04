@@ -42,7 +42,7 @@ class HarvestCommand extends BaseCommand
      *
      * @return void
      */
-    public function configure()
+    public function configure(): void
     {
         $this
             ->setDescription('Harvest OAI-PMH contents into database and Solr.')
@@ -101,7 +101,7 @@ class HarvestCommand extends BaseCommand
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 
@@ -268,7 +268,7 @@ class HarvestCommand extends BaseCommand
      *
      * @return void
      */
-    protected function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io)
+    protected function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io): void
     {
         $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $exception->getMessage());
     }

@@ -40,13 +40,13 @@ class PageViewProxy
      * @access protected
      * @var RequestFactory
      */
-    protected $requestFactory;
+    protected RequestFactory $requestFactory;
 
     /**
      * @access protected
-     * @var mixed
+     * @var array
      */
-    protected $extConf;
+    protected array $extConf;
 
     /**
      * Constructs the instance
@@ -100,7 +100,7 @@ class PageViewProxy
         ResponseInterface $fromResponse,
         ResponseInterface $toResponse,
         array $headerNames
-    ) {
+    ): ResponseInterface {
         $result = $toResponse;
 
         foreach ($headerNames as $headerName) {
@@ -233,7 +233,7 @@ class PageViewProxy
      *
      * @return ResponseInterface
      */
-    public function main(ServerRequestInterface $request)
+    public function main(ServerRequestInterface $request): ResponseInterface
     {
         switch ($request->getMethod()) {
             case 'OPTIONS':

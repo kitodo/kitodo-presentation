@@ -42,25 +42,19 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      * @access protected
      * @var OutputInterface
      */
-    protected $output;
+    protected OutputInterface $output;
 
     /**
      * @access protected
      * @var ResourceStorage
      */
-    protected $storage;
-
-    /**
-     * @access protected
-     * @var Logger
-     */
-    protected $logger;
+    protected ResourceStorage $storage;
 
     /**
      * @access protected
      * @var array Array with table and fields to migrate
      */
-    protected $fieldsToMigrate = [
+    protected array $fieldsToMigrate = [
         'tx_dlf_collections' => 'thumbnail'
     ];
 
@@ -175,7 +169,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      *
      * @throws \RuntimeException
      */
-    protected function getRecordsFromTable($countOnly = false)
+    protected function getRecordsFromTable(bool $countOnly = false)
     {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $allResults = [];
@@ -263,7 +257,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      *
      * @throws \Exception
      */
-    protected function migrateField($table, $row)
+    protected function migrateField(string $table, array $row): void
     {
         $fieldItem = trim($row[$this->fieldsToMigrate[$table]]);
 

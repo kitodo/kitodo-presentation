@@ -48,7 +48,7 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @return void
      */
-    public function toolList(&$params)
+    public function toolList(array &$params): void
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
             $params['items'][] = [Helper::getLanguageService()->sL($label), $class];
@@ -64,7 +64,8 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @return void
      */
-    public function getTyposcriptConfigFromPluginSiteRoot($params) {
+    public function getTyposcriptConfigFromPluginSiteRoot(array $params): void
+    {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $pid = $params['flexParentDatabaseRow']['pid'];
         $rootLine = BackendUtility::BEgetRootLine($pid);
@@ -99,7 +100,7 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @return void
      */
-    public function extendedSearchList(&$params)
+    public function extendedSearchList(array &$params): void
     {
         $this->generateList(
             $params,
@@ -141,7 +142,7 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function generateList(&$params, $fields, $table, $sorting, $andWhere = '')
+    protected function generateList(array &$params, string $fields, string $table, string $sorting, string $andWhere = ''): void
     {
         $this->getTyposcriptConfigFromPluginSiteRoot($params);
 

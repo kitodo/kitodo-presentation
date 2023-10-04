@@ -52,68 +52,68 @@ class Solr implements LoggerAwareInterface
      * @access protected
      * @var array This holds the Solr configuration
      */
-    protected $config = [];
+    protected array $config = [];
 
     /**
      * @access protected
      * @var string|null This holds the core name
      */
-    protected $core = null;
+    protected ?string $core = null;
 
     /**
      * @access protected
      * @var int This holds the PID for the configuration
      */
-    protected $cPid = 0;
+    protected int $cPid = 0;
 
     /**
      * @access public
      * @static
      * @var string The extension key
      */
-    public static $extKey = 'dlf';
+    public static string $extKey = 'dlf';
 
     /**
      * @access public
      * @var array The fields for SOLR index
      */
-    public static $fields = [];
+    public static array $fields = [];
 
     /**
      * @access protected
      * @var int This holds the max results
      */
-    protected $limit = 50000;
+    protected int $limit = 50000;
 
     /**
      * @access protected
      * @var int This holds the number of hits for last search
      */
-    protected $numberOfHits = 0;
+    protected int $numberOfHits = 0;
 
     /**
      * @access protected
      * @var array This holds the additional query parameters
      */
-    protected $params = [];
+    protected array $params = [];
 
     /**
      * @access protected
      * @var bool Is the search instantiated successfully?
      */
-    protected $ready = false;
+    protected bool $ready = false;
 
     /**
      * @access protected
      * @var array(Solr) This holds the singleton search objects with their core as array key
      */
-    protected static $registry = [];
+    protected static array $registry = [];
 
     /**
      * @access protected
      * @var Client This holds the Solr service object
      */
-    protected $service;
+    protected Client $service;
 
     /**
      * Add a new core to Apache Solr
@@ -124,7 +124,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string The name of the new core
      */
-    public static function createCore($core = '')
+    public static function createCore($core = ''): string
     {
         // Get next available core name if none given.
         if (empty($core)) {
@@ -172,7 +172,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string The escaped query string
      */
-    public static function escapeQuery($query)
+    public static function escapeQuery(string $query): string
     {
         // Escape query by disallowing range and field operators
         // Permit operators: wildcard, boolean, fuzzy, proximity, boost, grouping
@@ -190,7 +190,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string The escaped query string
      */
-    public static function escapeQueryKeepField($query, $pid)
+    public static function escapeQueryKeepField(string $query, int $pid): string
     {
         // Is there a field query?
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
@@ -241,7 +241,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return array fields
      */
-    public static function getFields()
+    public static function getFields(): array
     {
         if (empty(self::$fields)) {
             $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
@@ -327,7 +327,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int First unused core number found
      */
-    public static function getNextCoreNumber($number = 0)
+    public static function getNextCoreNumber(int $number = 0): int
     {
         $number = max(intval($number), 0);
         // Check if core already exists.
@@ -346,7 +346,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function loadSolrConnectionInfo()
+    protected function loadSolrConnectionInfo(): void
     {
         if (empty($this->config)) {
             $config = [];
@@ -387,7 +387,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw($parameters = [])
+    public function search_raw(array $parameters = []): array
     {
         // Set additional query parameters.
         $parameters['start'] = 0;
@@ -418,7 +418,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string|null The core name of the current query endpoint or null if core admin endpoint
      */
-    protected function _getCore()
+    protected function _getCore(): ?string
     {
         return $this->core;
     }
@@ -430,7 +430,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int The max number of results
      */
-    protected function _getLimit()
+    protected function _getLimit(): int
     {
         return $this->limit;
     }
@@ -442,7 +442,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int Total number of hits for last search
      */
-    protected function _getNumberOfHits()
+    protected function _getNumberOfHits(): int
     {
         return $this->numberOfHits;
     }
@@ -454,7 +454,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return bool Is the search instantiated successfully?
      */
-    protected function _getReady()
+    protected function _getReady(): bool
     {
         return $this->ready;
     }
@@ -464,9 +464,9 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @return \Solarium\Client Apache Solr service object
+     * @return Client Apache Solr service object
      */
-    protected function _getService()
+    protected function _getService(): Client
     {
         return $this->service;
     }
@@ -480,7 +480,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function _setCPid($value)
+    protected function _setCPid(int $value): void
     {
         $this->cPid = max(intval($value), 0);
     }
@@ -494,7 +494,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function _setLimit($value)
+    protected function _setLimit(int $value): void
     {
         $this->limit = max(intval($value), 0);
     }
@@ -508,7 +508,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function _setParams(array $value)
+    protected function _setParams(array $value): void
     {
         $this->params = $value;
     }
@@ -522,7 +522,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return mixed Value of $this->$var
      */
-    public function __get($var)
+    public function __get(string $var)
     {
         $method = '_get' . ucfirst($var);
         if (
@@ -545,7 +545,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return bool true if variable is set and not empty, false otherwise
      */
-    public function __isset($var)
+    public function __isset(string $var): bool
     {
         return !empty($this->__get($var));
     }
@@ -560,7 +560,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    public function __set($var, $value)
+    public function __set(string $var, $value): void
     {
         $method = '_set' . ucfirst($var);
         if (
@@ -582,7 +582,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function __construct($core)
+    protected function __construct(?string $core)
     {
         // Get Solr connection parameters from configuration.
         $this->loadSolrConnectionInfo();

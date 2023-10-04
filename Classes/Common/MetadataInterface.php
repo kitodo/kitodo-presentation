@@ -34,5 +34,5 @@ interface MetadataInterface
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata);
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata): void;
 }

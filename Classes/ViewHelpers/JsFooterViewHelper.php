@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -31,7 +32,7 @@ class JsFooterViewHelper extends AbstractViewHelper
      *
      * @access public
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('inlineCode', 'string', 'Inline JavaScript', true);
@@ -50,10 +51,11 @@ class JsFooterViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): void
+    {
         $inlineCode = $arguments['inlineCode'];
 
-        /** @var $pageRenderer PageRenderer */
+        /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $pageRenderer->addJsFooterInlineCode('js-dlf-inline-footer', $inlineCode);
     }

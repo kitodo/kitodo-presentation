@@ -5,9 +5,10 @@ namespace Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
+use Solarium\QueryType\Select\Result\Document;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -33,11 +34,11 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access private
      * @var DocumentRepository
      */
-    private $documentRepository;
+    private DocumentRepository $documentRepository;
 
     /**
      * @access private
-     * @var QueryResult|Collection
+     * @var QueryResult|Collection|null
      */
     private $collection;
 
@@ -45,25 +46,25 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access private
      * @var array
      */
-    private $settings;
+    private array $settings;
 
     /**
      * @access private
      * @var array
      */
-    private $searchParams;
+    private array $searchParams;
 
     /**
      * @access private
      * @var QueryResult
      */
-    private $listedMetadata;
+    private ?QueryResult $listedMetadata;
 
     /**
      * @access private
      * @var array
      */
-    private $params;
+    private array $params;
 
     /**
      * @access private
@@ -75,7 +76,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access private
      * @var int
      */
-    protected $position = 0;
+    protected int $position = 0;
 
     /**
      * Constructs SolrSearch instance.
@@ -83,14 +84,14 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access public
      *
      * @param DocumentRepository $documentRepository
-     * @param QueryResult|Collection $collection
+     * @param QueryResult|Collection|null $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
      *
      * @return void
      */
-    public function __construct($documentRepository, $collection, $settings, $searchParams, $listedMetadata = null)
+    public function __construct(DocumentRepository $documentRepository, $collection, array $settings, array $searchParams, QueryResult $listedMetadata = null)
     {
         $this->documentRepository = $documentRepository;
         $this->collection = $collection;
@@ -106,7 +107,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return int
      */
-    public function getNumLoadedDocuments()
+    public function getNumLoadedDocuments(): int
     {
         return count($this->result['documents']);
     }
@@ -132,9 +133,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access public
      *
-     * @return SolrSearch
+     * @return array
      */
-    public function current()
+    public function current(): array
     {
         return $this[$this->position];
     }
@@ -146,7 +147,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return int
      */
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
@@ -620,7 +621,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return array
      */
-    protected function fetchToplevelMetadataFromSolr($queryParams)
+    protected function fetchToplevelMetadataFromSolr(array $queryParams): array
     {
         // Prepare query parameters.
         $params = $queryParams;
@@ -768,14 +769,14 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access private
      *
-     * @param array $record
+     * @param Document $record
      * @param array $highlighting
      * @param array $fields
      * @param array $parameters
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    private function getDocument($record, $highlighting, $fields, $parameters) {
+    private function getDocument(Document $record, array $highlighting, array $fields, $parameters) {
         $resultDocument = new ResultDocument($record, $highlighting, $fields);
 
         $document = [
