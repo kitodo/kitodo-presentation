@@ -20,6 +20,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
+use TYPO3\CMS\Core\ExpressionLanguage\RequestWrapper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
@@ -206,7 +207,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
             if ($this->document !== null) {
                 $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
-                if ($this->document !== null && $doc !== null) {
+                if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {
                     $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');

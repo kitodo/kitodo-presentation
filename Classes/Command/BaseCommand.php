@@ -222,7 +222,7 @@ class BaseCommand extends Command
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
         $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
-        $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0], 'tx_dlf_structures');
+        $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
         $document->setStructure($structure);
 
         if (is_array($metadata['collection'])) {

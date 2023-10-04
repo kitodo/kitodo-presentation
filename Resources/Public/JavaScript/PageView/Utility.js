@@ -437,7 +437,9 @@ dlfUtils.fetchIIPData = function (imageSourceObj) {
         url: dlfViewerSource.IIP.getMetdadataURL(imageSourceObj.url) //'http://localhost:8000/fcgi-bin/iipsrv.fcgi?FIF=F4713/HD7.tif&obj=IIP,1.0&obj=Max-size&obj=Tile-size&obj=Resolution-number',
     }).done(cb);
     function cb(response, type) {
-        if (type !== 'success') throw new Error('Problems while fetching ImageProperties.xml');
+        if (type !== 'success') {
+            throw new Error('Problems while fetching ImageProperties.xml');
+        }
 
         var imageDataObj = $.extend({
             src: imageSourceObj.url,
@@ -614,7 +616,9 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
         };
     }
 
-    if (image === undefined) return [];
+    if (image === undefined) {
+        return [];
+    }
 
     var scale = image.scale,
         offset = opt_offset !== undefined ? opt_offset : 0;

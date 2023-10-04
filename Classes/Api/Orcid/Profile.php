@@ -44,7 +44,7 @@ class Profile
      * @access private
      * @var \SimpleXmlElement|false The raw ORCID profile
      **/
-    private $raw;
+    private $raw = false;
 
     /**
      * Constructs client instance
@@ -71,7 +71,7 @@ class Profile
     public function getData()
     {
         $this->getRaw('person');
-        if (!empty($this->raw)) {
+        if ($this->raw !== false && !empty($this->raw)) {
             $data = [];
             $data['address'] = $this->getAddress();
             $data['email'] = $this->getEmail();
@@ -93,7 +93,7 @@ class Profile
     public function getAddress()
     {
         $this->getRaw('address');
-        if (!empty($this->raw)) {
+        if ($this->raw !== false && !empty($this->raw)) {
             $this->raw->registerXPathNamespace('address', 'http://www.orcid.org/ns/address');
             return (string) $this->raw->xpath('./address:address/address:country')[0];
         } else {
@@ -112,7 +112,7 @@ class Profile
     public function getEmail()
     {
         $this->getRaw('email');
-        if (!empty($this->raw)) {
+        if ($this->raw !== false && !empty($this->raw)) {
             $this->raw->registerXPathNamespace('email', 'http://www.orcid.org/ns/email');
             return (string) $this->raw->xpath('./email:email/email:email')[0];
         } else {
@@ -131,7 +131,7 @@ class Profile
     public function getFullName()
     {
         $this->getRaw('personal-details');
-        if (!empty($this->raw)) {
+        if ($this->raw !== false && !empty($this->raw)) {
             $this->raw->registerXPathNamespace('personal-details', 'http://www.orcid.org/ns/personal-details');
             $givenNames = $this->raw->xpath('./personal-details:name/personal-details:given-names');
             $familyName = $this->raw->xpath('./personal-details:name/personal-details:family-name');
@@ -155,7 +155,7 @@ class Profile
     {
         $this->client->setEndpoint($endpoint);
         $data = $this->client->getData();
-        if (!isset($this->raw) && $data != false) {
+        if ($data != false) {
             $this->raw = Helper::getXmlFileAsString($data);
         }
     }

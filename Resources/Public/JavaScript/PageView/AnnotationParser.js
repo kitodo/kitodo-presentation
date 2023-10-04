@@ -145,12 +145,14 @@ DlfIiifAnnotationParser.prototype.parseGeometry = function(annotation) {
     var xywh = this.getXYWHForAnnotation(annotation),
         coordinatesWithoutScale = [[[xywh.x1, xywh.y1], [xywh.x2, xywh.y1], [xywh.x2, xywh.y2], [xywh.x1, xywh.y2], [xywh.x1, xywh.y1]]];
 
-    if (isNaN(xywh.width) || isNaN(xywh.height))
+    if (isNaN(xywh.width) || isNaN(xywh.height)) {
         return undefined;
+    }
 
     // return geometry without rescale
-    if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_))
+    if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_)) {
         return new ol.geom.Polygon(coordinatesWithoutScale);
+    }
 
     // rescale coordinates
     var scale = this.image_.width / this.width_,
@@ -174,22 +176,25 @@ DlfIiifAnnotationParser.prototype.parseGeometry = function(annotation) {
 DlfIiifAnnotationParser.prototype.getXYWHForAnnotation = function (annotation) {
     var fragmentPos = annotation.on.indexOf("#xywh="),
         xywh = fragmentPos > -1 ? annotation.on.substr(fragmentPos+6).split(",") : undefined;
-    if (xywh === undefined) return {
-        x1: 0,
-        y1: 0,
-        width: this.width,
-        height: this.height,
-        x2: this.width - 1,
-        y2: this.height - 1
-    };
-    return {
-        x1: parseInt(xywh[0]),
-        y1: parseInt(xywh[1]),
-        width: parseInt(xywh[2]),
-        height: parseInt(xywh[3]),
-        x2: parseInt(xywh[0]) + parseInt(xywh[2]) - 1,
-        y2: parseInt(xywh[1]) + parseInt(xywh[3]) - 1
-    };
+    if (xywh === undefined) {
+        return {
+            x1: 0,
+            y1: 0,
+            width: this.width,
+            height: this.height,
+            x2: this.width - 1,
+            y2: this.height - 1
+        };
+    } else {
+        return {
+            x1: parseInt(xywh[0]),
+            y1: parseInt(xywh[1]),
+            width: parseInt(xywh[2]),
+            height: parseInt(xywh[3]),
+            x2: parseInt(xywh[0]) + parseInt(xywh[2]) - 1,
+            y2: parseInt(xywh[1]) + parseInt(xywh[3]) - 1
+        };
+    }
 };
 
 /**
@@ -203,4 +208,4 @@ DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment = function(uri) {
         return null;
     }
     return uri.split("#")[0];
-}
+};
