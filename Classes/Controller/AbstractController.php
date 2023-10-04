@@ -23,26 +23,34 @@ use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Abstract controller class for most of the plugin controller.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
+ *
+ * @abstract
  */
-abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController implements LoggerAwareInterface
+abstract class AbstractController extends ActionController implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
     protected $documentRepository;
 
     /**
+     * @access public
+     *
      * @param DocumentRepository $documentRepository
+     *
+     * @return void
      */
     public function injectDocumentRepository(DocumentRepository $documentRepository)
     {
@@ -50,32 +58,26 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
-     * This holds the current document
-     *
-     * @var \Kitodo\Dlf\Domain\Model\Document
      * @access protected
+     * @var Document This holds the current document
      */
     protected $document;
 
     /**
-     * @var array
      * @access protected
+     * @var array
      */
     protected $extConf;
 
     /**
-     * This holds the request parameter
-     *
-     * @var array
      * @access protected
+     * @var array This holds the request parameter
      */
     protected $requestData;
 
     /**
-     * This holds some common data for the fluid view
-     *
-     * @var array
      * @access protected
+     * @var array This holds some common data for the fluid view
      */
     protected $viewData;
 
@@ -83,6 +85,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      * Initialize the plugin controller
      *
      * @access protected
+     *
      * @return void
      */
     protected function initialize()
@@ -107,7 +110,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      *
      * @access protected
      *
-     * @param  int $documentId: The document's UID (fallback: $this->requestData[id])
+     * @param int $documentId The document's UID (fallback: $this->requestData[id])
      *
      * @return void
      */
@@ -201,6 +204,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     /**
      * Checks if doc is missing or is empty (no pages)
      *
+     * @access protected
+     *
      * @return boolean
      */
     protected function isDocMissingOrEmpty()
@@ -210,6 +215,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
     /**
      * Checks if doc is missing
+     *
+     * @access protected
      *
      * @return boolean
      */
@@ -221,6 +228,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     /**
      * Returns the LanguageService
      *
+     * @access protected
+     *
      * @return LanguageService
      */
     protected function getLanguageService(): LanguageService
@@ -229,8 +238,9 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
     }
 
     /**
-     * Safely gets Parameters from request
-     * if they exist
+     * Safely gets Parameters from request if they exist
+     *
+     * @access protected
      *
      * @param string $parameterName
      *

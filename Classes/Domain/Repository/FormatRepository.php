@@ -12,7 +12,17 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-class FormatRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
+/**
+ * Format repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class FormatRepository extends Repository
 {
 
 }
