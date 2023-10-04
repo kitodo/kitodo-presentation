@@ -21,21 +21,25 @@ use Kitodo\Dlf\Domain\Repository\TokenRepository;
 /**
  * Controller class for the plugin 'OAI-PMH Interface'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class OaiPmhController extends AbstractController
 {
     /**
+     * @access protected
      * @var TokenRepository
      */
     protected $tokenRepository;
 
     /**
+     * @access public
+     *
      * @param TokenRepository $tokenRepository
+     *
+     * @return void
      */
     public function injectTokenRepository(TokenRepository $tokenRepository)
     {
@@ -43,12 +47,17 @@ class OaiPmhController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
@@ -56,12 +65,17 @@ class OaiPmhController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var LibraryRepository
      */
     protected $libraryRepository;
 
     /**
+     * @access public
+     *
      * @param LibraryRepository $libraryRepository
+     *
+     * @return void
      */
     public function injectLibraryRepository(LibraryRepository $libraryRepository)
     {
@@ -71,6 +85,8 @@ class OaiPmhController extends AbstractController
     /**
      * Initializes the current action
      *
+     * @access public
+     *
      * @return void
      */
     public function initializeAction()
@@ -79,18 +95,14 @@ class OaiPmhController extends AbstractController
     }
 
     /**
-     * Did an error occur?
-     *
-     * @var string
      * @access protected
+     * @var string Did an error occur?
      */
     protected $error;
 
     /**
-     * This holds the configuration for all supported metadata prefixes
-     *
-     * @var array
      * @access protected
+     * @var array This holds the configuration for all supported metadata prefixes
      */
     protected $formats = [
         'oai_dc' => [
@@ -111,6 +123,7 @@ class OaiPmhController extends AbstractController
     ];
 
     /**
+     * @access protected
      * @var array
      */
     protected $parameters = [];
@@ -162,9 +175,9 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $record : The full record array
+     * @param array $record The full record array
      *
-     * @return array $metadata: The mapped metadata array
+     * @return array The mapped metadata array
      */
     protected function getDcData(array $record)
     {
@@ -199,6 +212,8 @@ class OaiPmhController extends AbstractController
     }
 
     /**
+     * @access private
+     *
      * @param array $metadata The mapped metadata array
      * @param string $key The key to which record value should be assigned
      * @param string $value The key from record array
@@ -217,9 +232,9 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $record : The full record array
+     * @param array $record The full record array
      *
-     * @return string: The fetched METS XML
+     * @return string The fetched METS XML
      */
     protected function getMetsData(array $record)
     {
@@ -242,6 +257,8 @@ class OaiPmhController extends AbstractController
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */
@@ -449,7 +466,7 @@ class OaiPmhController extends AbstractController
             $this->error = 'idDoesNotExist';
             return;
         }
-        // create new and empty documentlist
+        // create new and empty document list
         $resultSet = [];
         if (is_array($documentSet)) {
             $resultSet['elements'] = $documentSet;
@@ -681,6 +698,7 @@ class OaiPmhController extends AbstractController
 
     /**
      * Fetch more information for document list
+     *
      * @access protected
      *
      * @param array $documentListSet

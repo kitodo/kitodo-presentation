@@ -18,21 +18,25 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 /**
  * Controller class for the plugin 'Calendar'.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class CalendarController extends AbstractController
 {
     /**
+     * @access protected
      * @var StructureRepository
      */
     protected $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
     public function injectStructureRepository(StructureRepository $structureRepository)
     {
@@ -40,15 +44,15 @@ class CalendarController extends AbstractController
     }
 
     /**
-     * This holds all issues for the list view.
-     *
-     * @var array
      * @access protected
+     * @var array This holds all issues for the list view.
      */
     protected $allIssues = [];
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */
@@ -93,8 +97,8 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
+     * @param string $content The PlugIn content
+     * @param array $conf The PlugIn configuration
      *
      * @return void
      */

@@ -24,23 +24,25 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 /**
  * Controller class for the plugin 'Search'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
- * @author Frank Ulrich Weber <fuw@zeutschel.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class SearchController extends AbstractController
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
     protected $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
@@ -48,12 +50,17 @@ class SearchController extends AbstractController
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
     protected $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
@@ -61,13 +68,15 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @var array $this->searchParams: The current search parameter
      * @access protected
+     * @var array The current search parameter
      */
     protected $searchParams;
 
     /**
      * Search Action
+     *
+     * @access public
      *
      * @return void
      */
@@ -84,6 +93,8 @@ class SearchController extends AbstractController
      * Main action
      *
      * This shows the search form and optional the facets and extended search form.
+     *
+     * @access public
      *
      * @return void
      */
@@ -211,8 +222,7 @@ class SearchController extends AbstractController
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
+     * @param array $facets
      *
      * @return array HMENU array
      */
@@ -403,11 +413,11 @@ class SearchController extends AbstractController
      *
      * @access private
      *
-     * @param string $field: The facet's index_name
-     * @param string $value: The facet's value
-     * @param int $count: Number of hits for this facet
-     * @param array $search: The parameters of the current search query
-     * @param string &$state: The state of the parent item
+     * @param string $field The facet's index_name
+     * @param string $value The facet's value
+     * @param int $count Number of hits for this facet
+     * @param array $search The parameters of the current search query
+     * @param string &$state The state of the parent item
      *
      * @return array The array for the facet's menu entry
      */
@@ -493,8 +503,10 @@ class SearchController extends AbstractController
     /**
      * Translates value depending on the index name.
      *
-     * @param string $field: The facet's index_name
-     * @param string $value: The facet's value
+     * @access private
+     *
+     * @param string $field The facet's index_name
+     * @param string $value The facet's value
      *
      * @return string
      */

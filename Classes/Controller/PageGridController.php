@@ -20,16 +20,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Controller class for the plugin 'Page Grid'.
  *
- * @author Henrik Lochmann <dev@mentalmotive.com>
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class PageGridController extends AbstractController
 {
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */
@@ -79,8 +80,8 @@ class PageGridController extends AbstractController
      *
      * @access protected
      *
-     * @param int $number: The page to render
-     * @param string $fileGrpThumbs: the file group(s) of thumbs
+     * @param int $number The page to render
+     * @param string $fileGrpThumbs the file group(s) of thumbs
      *
      * @return array The rendered entry ready for fluid
      */
