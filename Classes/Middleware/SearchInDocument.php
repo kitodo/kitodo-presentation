@@ -26,10 +26,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Search in document Middleware for plugin 'Search' of the 'dlf' extension
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class SearchInDocument implements MiddlewareInterface
@@ -168,11 +167,11 @@ class SearchInDocument implements MiddlewareInterface
      *
      * @access private
      *
-     * @param array|object $parameters parsed from request body
+     * @param array $parameters parsed from request body
      *
      * @return string SOLR query
      */
-    private function getQuery($parameters)
+    private function getQuery(array $parameters): string
     {
         return $this->fields['fulltext'] . ':(' . Solr::escapeQuery((string) $parameters['q']) . ') AND ' . $this->fields['uid'] . ':' . $this->getUid($parameters['uid']);
     }
@@ -187,7 +186,7 @@ class SearchInDocument implements MiddlewareInterface
      *
      * @return int|string uid of the document
      */
-    private function getUid($uid)
+    private function getUid(string $uid)
     {
         return is_numeric($uid) ? intval($uid) : $uid;
     }

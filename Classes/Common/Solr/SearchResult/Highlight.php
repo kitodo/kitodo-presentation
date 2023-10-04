@@ -15,61 +15,49 @@ namespace Kitodo\Dlf\Common\Solr\SearchResult;
 /**
  * Highlight class for the 'dlf' extension. It keeps highlight for found search phrase.
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class Highlight
 {
 
     /**
-     * The identifier in form 'w_h_x_y'
-     *
-     * @var string
      * @access private
+     * @var string The identifier in form 'w_h_x_y'
      */
-    private $id;
+    private string $id;
 
     /**
-     * The parent region's identifier
-     *
-     * @var int
      * @access private
+     * @var int The parent region's identifier
      */
-    private $parentRegionId;
+    private int $parentRegionId;
 
     /**
-     * The horizontal beginning position of found highlight
-     *
-     * @var int
      * @access private
+     * @var int The horizontal beginning position of found highlight
      */
-    private $xBeginPosition;
+    private int $xBeginPosition;
 
     /**
-     * The horizontal ending position of found highlight
-     *
-     * @var int
      * @access private
+     * @var int The horizontal ending position of found highlight
      */
-    private $xEndPosition;
+    private int $xEndPosition;
 
     /**
-     * The vertical beginning position of found highlight
-     *
-     * @var int
      * @access private
+     * @var int The vertical beginning position of found highlight
      */
-    private $yBeginPosition;
+    private int $yBeginPosition;
 
     /**
-     * The vertical ending position of found highlight
-     *
-     * @var int
      * @access private
+     * @var int The vertical ending position of found highlight
      */
-    private $yEndPosition;
+    private int $yEndPosition;
 
     /**
      * The constructor for highlight.
@@ -80,7 +68,7 @@ class Highlight
      *
      * @return void
      */
-    public function __construct($highlight)
+    public function __construct(array $highlight)
     {
         $this->parentRegionId = $highlight['parentRegionIdx'];
         $this->xBeginPosition = $highlight['ulx'];
@@ -97,7 +85,7 @@ class Highlight
      *
      * @return string The highlight's identifier
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -109,7 +97,7 @@ class Highlight
      *
      * @return int The highlight's horizontal beginning position
      */
-    public function getXBeginPosition()
+    public function getXBeginPosition(): int
     {
         return $this->xBeginPosition;
     }
@@ -121,7 +109,7 @@ class Highlight
      *
      * @return int The highlight's horizontal ending position
      */
-    public function getXEndPosition()
+    public function getXEndPosition(): int
     {
         return $this->xEndPosition;
     }
@@ -133,7 +121,7 @@ class Highlight
      *
      * @return int The highlight's vertical beginning position
      */
-    public function getYBeginPosition()
+    public function getYBeginPosition(): int
     {
         return $this->yBeginPosition;
     }
@@ -145,7 +133,7 @@ class Highlight
      *
      * @return int The highlight's vertical ending position
      */
-    public function getYEndPosition()
+    public function getYEndPosition(): int
     {
         return $this->yEndPosition;
     }

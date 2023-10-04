@@ -12,7 +12,17 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-class LibraryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+use TYPO3\CMS\Extbase\Persistence\Repository;
+
+/**
+ * Library repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class LibraryRepository extends Repository
 {
 
 }

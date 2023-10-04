@@ -12,36 +12,44 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * (Basket Plugin) Action log for mails and printouts.
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class ActionLog extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class ActionLog extends AbstractEntity
 {
     /**
+     * @access protected
      * @var int
      */
     protected $userId;
 
     /**
+     * @access protected
      * @var string
      */
     protected $fileName;
 
     /**
+     * @access protected
      * @var int
      */
     protected $countPages;
 
     /**
+     * @access protected
      * @var string
      */
     protected $name;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;

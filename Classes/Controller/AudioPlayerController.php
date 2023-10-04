@@ -19,9 +19,9 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 /**
  * Controller class for the plugin 'AudioPlayer'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class AudioplayerController extends AbstractController
@@ -29,8 +29,8 @@ class AudioplayerController extends AbstractController
     /**
      * Holds the current audio file's URL, MIME type and optional label
      *
-     * @var array
      * @access protected
+     * @var array Holds the current audio file's URL, MIME type and optional label
      */
     protected $audio = [];
 
@@ -69,6 +69,8 @@ class AudioplayerController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
@@ -85,12 +87,14 @@ class AudioplayerController extends AbstractController
         // Check if there are any audio files available.
         $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
-            $fileGroupAudio = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio];
-            if (!empty($fileGroupAudio)) {
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpAudio];
+            if (!empty($fileId)) {
                 // Get audio data.
-                $this->audio['url'] = $this->document->getCurrentDocument()->getFileLocation($fileGroupAudio);
-                $this->audio['label'] = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]['label'];
-                $this->audio['mimetype'] = $this->document->getCurrentDocument()->getFileMimeType($fileGroupAudio);
+                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+                $this->audio['url'] = $file['location'];
+                $this->audio['label'] = $physicalStructureInfo['label'];
+                $this->audio['mimetype'] = $file['mimeType'];
                 break;
             }
         }

@@ -326,36 +326,51 @@ dlfAltoParser.prototype.parseTextLineFeatures_ = function(node) {
  * @private
  */
 dlfAltoParser.prototype.parseContentFeatures_ = function(node) {
-    var textlineContentElements = $(node).children(),
-        textlineContentFeatures = [];
+    var textLineContentElements = $(node).children(),
+        textLineContentFeatures = [];
 
-    for (var i = 0; i < textlineContentElements.length; i++) {
-        var feature = this.parseFeatureWithGeometry_(textlineContentElements[i]),
+    for (var i = 0; i < textLineContentElements.length; i++) {
+        var feature = this.parseFeatureWithGeometry_(textLineContentElements[i]),
             fulltext = '';
 
-        // parse fulltexts
-        switch (textlineContentElements[i].nodeName.toLowerCase()) {
+        // parse full texts
+        switch (textLineContentElements[i].nodeName.toLowerCase()) {
             case 'string':
-                fulltext = textlineContentElements[i].getAttribute('CONTENT');
+                fulltext = this.parseString_(textLineContentElements[i]);
                 break;
             case 'sp':
                 fulltext = ' ';
                 break;
             case 'hyp':
-                fulltext = '-';
+                fulltext = '';
                 break;
             default:
                 fulltext = '';
         };
         feature.setProperties({fulltext});
 
-        textlineContentFeatures.push(feature);
+        textLineContentFeatures.push(feature);
     };
 
-    return textlineContentFeatures;
+    return textLineContentFeatures;
 };
 
-
+/**
+ *
+ * @param {Element}
+ * @return {string}
+ * @private
+ */
+dlfAltoParser.prototype.parseString_ = function(textLineContentElement) {
+    var hyphen = textLineContentElement.getAttribute('SUBS_TYPE')
+    if (typeof(hyphen) != 'undefined' && hyphen != null) {
+        if (hyphen == 'HypPart1') {
+            return textLineContentElement.getAttribute('SUBS_CONTENT');
+        }
+        return '';
+    };
+    return textLineContentElement.getAttribute('CONTENT');
+};
 
 /**
  *
