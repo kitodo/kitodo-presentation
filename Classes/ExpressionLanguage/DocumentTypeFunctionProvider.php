@@ -29,9 +29,9 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterface, LoggerAwareInterface
@@ -39,6 +39,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     use LoggerAwareTrait;
 
     /**
+     * @access public
+     *
      * @return ExpressionFunction[] An array of Function instances
      */
     public function getFunctions()
@@ -51,17 +53,17 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * This holds the current document
      *
-     * @var \Kitodo\Dlf\Domain\Model\Document
+     * @var Document
      * @access protected
      */
-    protected $document;
+    protected Document $document;
 
     /**
      * @var ConfigurationManager
      */
     protected $configurationManager;
 
-    public function injectConfigurationManager(ConfigurationManager $configurationManager)
+    public function injectConfigurationManager(ConfigurationManager $configurationManager): void
     {
         $this->configurationManager = $configurationManager;
     }
@@ -74,18 +76,20 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * @param DocumentRepository $documentRepository
      */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
         $this->documentRepository = $documentRepository;
     }
     /**
      * Initialize the extbase repositories
      *
+     * @access protected
+     *
      * @param int $storagePid The storage pid
      *
      * @return void
      */
-    protected function initializeRepositories($storagePid)
+    protected function initializeRepositories(int $storagePid): void
     {
         $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
@@ -98,7 +102,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * Shortcut function to access field values
      *
-     * @return \Symfony\Component\ExpressionLanguage\ExpressionFunction
+     * @access protected
+     *
+     * @return ExpressionFunction
      */
     protected function getDocumentTypeFunction(): ExpressionFunction
     {
@@ -150,12 +156,12 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @access protected
      *
-     * @param array $requestData: The request data
-     * @param int $pid: Storage Pid
+     * @param array $requestData The request data
+     * @param int $pid Storage Pid
      *
      * @return void
      */
-    protected function loadDocument($requestData, int $pid)
+    protected function loadDocument(array $requestData, int $pid): void
     {
         // Try to get document format from database
         if (!empty($requestData['id'])) {

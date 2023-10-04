@@ -15,14 +15,23 @@ namespace Kitodo\Dlf\Domain\Repository;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+/**
+ * Collection repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class CollectionRepository extends Repository
 {
     /**
-     * Set the default ordering. This is applied to findAll(), too.
-     *
-     * @var array
+     * @access protected
+     * @var array Set the default ordering. This is applied to findAll(), too.
      */
     protected $defaultOrderings = [
         'label' => QueryInterface::ORDER_ASCENDING,
@@ -31,9 +40,11 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds all collections
      *
+     * @access public
+     *
      * @param string $uids separated by comma
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface
      */
     public function findAllByUids($uids)
     {
@@ -49,6 +60,15 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
+    /**
+     * Finds all collections
+     *
+     * @access public
+     *
+     * @param string $pages
+     *
+     * @return QueryResultInterface
+     */
     public function getCollectionForMetadata($pages)
     {
         // Get list of collections to show.
@@ -62,9 +82,11 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds all collection for the given settings
      *
+     * @access public
+     *
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
     public function findCollectionsBySettings($settings = [])
     {
@@ -104,6 +126,16 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
+    /**
+     * Gets index name for SOLR
+     *
+     * @access public
+     *
+     * @param array $settings
+     * @param mixed $set
+     *
+     * @return array|QueryResultInterface
+     */
     public function getIndexNameForSolr($settings, $set)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)

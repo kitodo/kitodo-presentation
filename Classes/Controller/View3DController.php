@@ -14,14 +14,16 @@ namespace Kitodo\Dlf\Controller;
 /**
  * Plugin 'View3D' for the 'dlf' extension
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class View3DController extends AbstractController
 {
     /**
+     * @access public
+     *
      * @return void
      */
     public function mainAction()
