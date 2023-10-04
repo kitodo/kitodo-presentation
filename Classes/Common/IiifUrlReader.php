@@ -20,25 +20,21 @@ use Ubl\Iiif\Tools\UrlReaderInterface;
  * Allows the use of TYPO3 framework functions for loading remote documents in the
  * IIIF library.
  *
- * @author Lutz Helm <helm@ub.uni-leipzig.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class IiifUrlReader implements UrlReaderInterface
 {
     /**
-     * Singleton instance of the class
-     *
      * @access protected
-     * @var IiifUrlReader
+     * @var IiifUrlReader Singleton instance of the class
      */
-    protected static $instance;
+    protected static IiifUrlReader $instance;
 
     /**
-     *
-     * {@inheritDoc}
-     * @see \Ubl\Iiif\Tools\UrlReaderInterface::getContent()
+     * @see UrlReaderInterface::getContent()
      */
     public function getContent($url)
     {
@@ -53,11 +49,13 @@ class IiifUrlReader implements UrlReaderInterface
     /**
      * Return a singleton instance.
      *
+     * @access public
+     *
      * @static
      *
      * @return IiifUrlReader
      */
-    public static function getInstance()
+    public static function getInstance(): IiifUrlReader
     {
         if (!isset(self::$instance)) {
             self::$instance = new IiifUrlReader();
