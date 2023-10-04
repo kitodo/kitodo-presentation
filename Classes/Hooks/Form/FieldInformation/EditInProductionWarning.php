@@ -14,13 +14,14 @@ namespace Kitodo\Dlf\Hooks\Form\FieldInformation;
 
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Backend\Form\AbstractNode;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 
 /**
  * FieldInformation renderType for TYPO3 FormEngine
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class EditInProductionWarning extends AbstractNode
@@ -43,7 +44,7 @@ class EditInProductionWarning extends AbstractNode
             Helper::addMessage(
                 htmlspecialchars(Helper::getLanguageService()->getLL('flash.editInProductionWarning')),
                 '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                FlashMessage::WARNING
             );
             // Add message to result array.
             $result['html'] = Helper::renderFlashMessages();

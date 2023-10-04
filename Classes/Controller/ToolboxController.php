@@ -18,24 +18,24 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Controller class for plugin 'Toolbox'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ToolboxController extends AbstractController
 {
 
     /**
-     * This holds the current document
-     *
-     * @var \Kitodo\Dlf\Common\AbstractDocument
      * @access private
+     * @var \Kitodo\Dlf\Common\AbstractDocument This holds the current document
      */
     private $doc;
 
     /**
      * The main method of the plugin
+     *
+     * @access public
      *
      * @return void
      */
@@ -102,6 +102,8 @@ class ToolboxController extends AbstractController
      * Renders tool by the name in the toolbox.
      *
      * @access private
+     *
+     * @param string $tool name
      *
      * @return void
      */
@@ -220,7 +222,7 @@ class ToolboxController extends AbstractController
      *
      * @access private
      *
-     * @param int $page: Page number
+     * @param int $page Page number
      *
      * @return array Array of image links and image format information
      */
@@ -231,10 +233,11 @@ class ToolboxController extends AbstractController
         $fileGrps = GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
         while ($fileGrp = @array_pop($fileGrps)) {
             // Get image link.
-            $fileGroup = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]]['files'][$fileGrp];
+            $physicalStructureInfo = $this->doc->physicalStructureInfo[$this->doc->physicalStructure[$page]];
+            $fileId = $physicalStructureInfo['files'][$fileGrp];
             if (!empty($fileGroup)) {
-                $image['url'] = $this->doc->getDownloadLocation($fileGroup);
-                $image['mimetype'] = $this->doc->getFileMimeType($fileGroup);
+                $image['url'] = $this->doc->getDownloadLocation($fileId);
+                $image['mimetype'] = $this->doc->getFileMimeType($fileId);
                 switch ($image['mimetype']) {
                     case 'image/jpeg':
                         $image['mimetypeLabel']  = ' (JPG)';

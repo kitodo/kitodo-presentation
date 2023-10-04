@@ -12,6 +12,9 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * A library institution with the following use cases:
  *
@@ -24,71 +27,73 @@ namespace Kitodo\Dlf\Domain\Model;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Library extends AbstractEntity
 {
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $indexName;
 
     /**
+     * @access protected
      * @var string
      */
     protected $website;
 
     /**
-     * Contact email address of the library (used as ``adminEmail`` in responses
-     * to OAI ``Identify`` requests).
-     *
-     * @var string
+     * @access protected
+     * @var string Contact email address of the library (used as ``adminEmail`` in responses to OAI ``Identify`` requests).
      */
     protected $contact;
 
     /**
-     * image
-     *
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @access protected
+     * @var FileReference image
      */
     protected $image;
 
     /**
-     * The label that is used as ``repositoryName`` in responses to OAI
-     * ``Identify`` requests.
-     *
-     * @var string
+     * @access protected
+     * @var string The label that is used as ``repositoryName`` in responses to OAI ``Identify`` requests
      */
     protected $oaiLabel;
 
     /**
-     * OAI base URL used when harvesting the library via ``kitodo:harvest``.
-     *
-     * @var string
+     * @access protected
+     * @var string OAI base URL used when harvesting the library via ``kitodo:harvest``.
      */
     protected $oaiBase;
 
     /**
+     * @access protected
      * @var string
      */
     protected $opacLabel;
 
     /**
+     * @access protected
      * @var string
      */
     protected $opacBase;
 
     /**
+     * @access protected
      * @var string
      */
     protected $unionLabel;
 
     /**
+     * @access protected
      * @var string
      */
     protected $unionBase;
@@ -158,17 +163,17 @@ class Library extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @return FileReference
      */
-    public function getImage(): \TYPO3\CMS\Extbase\Domain\Model\FileReference
+    public function getImage(): FileReference
     {
         return $this->image;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $image
+     * @param FileReference $image
      */
-    public function setImage(\TYPO3\CMS\Extbase\Domain\Model\FileReference $image): void
+    public function setImage(FileReference $image): void
     {
         $this->image = $image;
     }

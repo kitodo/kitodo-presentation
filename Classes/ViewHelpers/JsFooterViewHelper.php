@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -17,20 +18,30 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Add inline JavaScript code to footer *
+ * Add inline JavaScript code to footer
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
 class JsFooterViewHelper extends AbstractViewHelper
 {
     /**
      * Initialize arguments.
+     *
+     * @access public
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('inlineCode', 'string', 'Inline JavaScript', true);
     }
 
     /**
+     * @access public
+     *
+     * @static
      *
      * @param array $arguments
      * @param \Closure $renderChildrenClosure
@@ -40,10 +51,11 @@ class JsFooterViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): void
+    {
         $inlineCode = $arguments['inlineCode'];
 
-        /** @var $pageRenderer PageRenderer */
+        /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $pageRenderer->addJsFooterInlineCode('js-dlf-inline-footer', $inlineCode);
     }

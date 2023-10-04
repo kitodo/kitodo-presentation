@@ -28,9 +28,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DataHandler implements LoggerAwareInterface
@@ -38,11 +38,19 @@ class DataHandler implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
-    protected function getDocumentRepository()
+    /**
+     * Gets document repository
+     *
+     * @access protected
+     *
+     * @return DocumentRepository
+     */
+    protected function getDocumentRepository(): DocumentRepository
     {
         if ($this->documentRepository === null) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -57,14 +65,14 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $status: 'new' or 'update'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
-     * @param array &$fieldArray: Array of field values
+     * @param string $status 'new' or 'update'
+     * @param string $table The destination table
+     * @param int $id The uid of the record
+     * @param array &$fieldArray Array of field values
      *
      * @return void
      */
-    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray)
+    public function processDatamap_postProcessFieldArray(string $status, string $table, int $id, array &$fieldArray): void
     {
         if ($status == 'new') {
             switch ($table) {
@@ -189,14 +197,14 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $status: 'new' or 'update'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
-     * @param array &$fieldArray: Array of field values
+     * @param string $status 'new' or 'update'
+     * @param string $table The destination table
+     * @param int $id The uid of the record
+     * @param array &$fieldArray Array of field values
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray)
+    public function processDatamap_afterDatabaseOperations(string $status, string $table, int $id, array &$fieldArray): void
     {
         if ($status == 'update') {
             switch ($table) {
@@ -260,7 +268,7 @@ class DataHandler implements LoggerAwareInterface
                             }
                         }
                     }
-                break;
+                    break;
             }
         }
     }
@@ -270,13 +278,13 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $command: 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
+     * @param string $command 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
+     * @param string $table The destination table
+     * @param int $id The uid of the record
      *
      * @return void
      */
-    public function processCmdmap_postProcess($command, $table, $id)
+    public function processCmdmap_postProcess(string $command, string $table, int $id): void
     {
         if (
             in_array($command, ['move', 'delete', 'undelete'])
@@ -335,7 +343,7 @@ class DataHandler implements LoggerAwareInterface
                         $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                         if ($document !== null && $doc !== null) {
                             $document->setCurrentDocument($doc);
-                            Indexer::add($document);
+                            Indexer::add($document, $this->getDocumentRepository());
                         } else {
                             $this->logger->error('Failed to re-index document with UID ' . $id);
                         }
