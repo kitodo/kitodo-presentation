@@ -92,7 +92,7 @@ class SolrIndexingTest extends FunctionalTestCase
         // Check that the title stored in Solr matches the title of database entry
         $docTitleInSolr = false;
         foreach ($solrSearch->getSolrResults()['documents'] as $solrDoc) {
-            if ($solrDoc['toplevel'] && $solrDoc['uid'] === $document->getUid()) {
+            if ($solrDoc['toplevel'] && intval($solrDoc['uid']) === intval($document->getUid())) {
                 $this->assertEquals($document->getTitle(), $solrDoc['title']);
                 $docTitleInSolr = true;
                 break;

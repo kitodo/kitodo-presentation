@@ -15,6 +15,9 @@ namespace Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Solarium\Client;
+use Solarium\Core\Client\Adapter\Http;
+use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -24,121 +27,104 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Solr class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
- * @property-read string|null $core This holds the core name for the current instance
- * @property-write int $cPid This holds the PID for the configuration
- * @property int $limit This holds the max results
- * @property-read int $numberOfHits This holds the number of hits for last search
- * @property-write array $params This holds the additional query parameters
- * @property-read bool $ready Is the Solr service instantiated successfully?
- * @property-read \Solarium\Client $service This holds the Solr service object
+ *
+ * @property array $config this holds the Solr configuration
+ * @property-read string|null $core this holds the core name for the current instance
+ * @property-write int $cPid this holds the PID for the configuration
+ * @property-read string $extKey the extension key
+ * @property array $fields the fields for SOLR index
+ * @property int $limit this holds the max results
+ * @property-read int $numberOfHits this holds the number of hits for last search
+ * @property-write array $params this holds the additional query parameters
+ * @property-read bool $ready flag if the Solr service is instantiated successfully
+ * @property array $registry this holds the singleton search objects with their core as array key
+ * @property-read \Solarium\Client $service this holds the Solr service object
  */
 class Solr implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
-     * This holds the Solr configuration
-     *
-     * @var array
      * @access protected
+     * @var array This holds the Solr configuration
      */
-    protected $config = [];
+    protected array $config = [];
 
     /**
-     * This holds the core name
-     *
-     * @var string|null
      * @access protected
+     * @var string|null This holds the core name
      */
-    protected $core = null;
+    protected ?string $core = null;
 
     /**
-     * This holds the PID for the configuration
-     *
-     * @var int
      * @access protected
+     * @var int This holds the PID for the configuration
      */
-    protected $cPid = 0;
+    protected int $cPid = 0;
 
     /**
-     * The extension key
-     *
-     * @var string
      * @access public
+     * @static
+     * @var string The extension key
      */
-    public static $extKey = 'dlf';
+    public static string $extKey = 'dlf';
 
     /**
-     * The fields for SOLR index
-     *
-     * @var array
      * @access public
+     * @var array The fields for SOLR index
      */
-    public static $fields = [];
+    public static array $fields = [];
 
     /**
-     * This holds the max results
-     *
-     * @var int
      * @access protected
+     * @var int This holds the max results
      */
-    protected $limit = 50000;
+    protected int $limit = 50000;
 
     /**
-     * This holds the number of hits for last search
-     *
-     * @var int
      * @access protected
+     * @var int This holds the number of hits for last search
      */
-    protected $numberOfHits = 0;
+    protected int $numberOfHits = 0;
 
     /**
-     * This holds the additional query parameters
-     *
-     * @var array
      * @access protected
+     * @var array This holds the additional query parameters
      */
-    protected $params = [];
+    protected array $params = [];
 
     /**
-     * Is the search instantiated successfully?
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the search instantiated successfully?
      */
-    protected $ready = false;
+    protected bool $ready = false;
 
     /**
-     * This holds the singleton search objects with their core as array key
-     *
-     * @var array (\Kitodo\Dlf\Common\Solr\Solr)
      * @access protected
+     * @var array(Solr) This holds the singleton search objects with their core as array key
      */
-    protected static $registry = [];
+    protected static array $registry = [];
 
     /**
-     * This holds the Solr service object
-     *
-     * @var \Solarium\Client
      * @access protected
+     * @var Client This holds the Solr service object
      */
-    protected $service;
+    protected Client $service;
 
     /**
      * Add a new core to Apache Solr
      *
      * @access public
      *
-     * @param string $core: The name of the new core. If empty, the next available core name is used.
+     * @param string $core The name of the new core. If empty, the next available core name is used.
      *
      * @return string The name of the new core
      */
-    public static function createCore($core = '')
+    public static function createCore($core = ''): string
     {
         // Get next available core name if none given.
         if (empty($core)) {
@@ -182,11 +168,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $query: The query string
+     * @param string $query The query string
      *
      * @return string The escaped query string
      */
-    public static function escapeQuery($query)
+    public static function escapeQuery(string $query): string
     {
         // Escape query by disallowing range and field operators
         // Permit operators: wildcard, boolean, fuzzy, proximity, boost, grouping
@@ -199,12 +185,12 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $query: The query string
-     * @param int $pid: The PID for the field configuration
+     * @param string $query The query string
+     * @param int $pid The PID for the field configuration
      *
      * @return string The escaped query string
      */
-    public static function escapeQueryKeepField($query, $pid)
+    public static function escapeQueryKeepField(string $query, int $pid): string
     {
         // Is there a field query?
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
@@ -255,7 +241,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return array fields
      */
-    public static function getFields()
+    public static function getFields(): array
     {
         if (empty(self::$fields)) {
             $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
@@ -296,9 +282,9 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param mixed $core: Name or UID of the core to load or null to get core admin endpoint
+     * @param mixed $core Name or UID of the core to load or null to get core admin endpoint
      *
-     * @return \Kitodo\Dlf\Common\Solr\Solr Instance of this class
+     * @return Solr Instance of this class
      */
     public static function getInstance($core = null)
     {
@@ -337,11 +323,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param int $number: Number to start with
+     * @param int $number Number to start with
      *
      * @return int First unused core number found
      */
-    public static function getNextCoreNumber($number = 0)
+    public static function getNextCoreNumber(int $number = 0): int
     {
         $number = max(intval($number), 0);
         // Check if core already exists.
@@ -360,7 +346,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function loadSolrConnectionInfo()
+    protected function loadSolrConnectionInfo(): void
     {
         if (empty($this->config)) {
             $config = [];
@@ -397,11 +383,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param array $parameters: Additional search parameters
+     * @param array $parameters Additional search parameters
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw($parameters = [])
+    public function search_raw(array $parameters = []): array
     {
         // Set additional query parameters.
         $parameters['start'] = 0;
@@ -432,7 +418,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string|null The core name of the current query endpoint or null if core admin endpoint
      */
-    protected function _getCore()
+    protected function _getCore(): ?string
     {
         return $this->core;
     }
@@ -444,7 +430,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int The max number of results
      */
-    protected function _getLimit()
+    protected function _getLimit(): int
     {
         return $this->limit;
     }
@@ -456,7 +442,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int Total number of hits for last search
      */
-    protected function _getNumberOfHits()
+    protected function _getNumberOfHits(): int
     {
         return $this->numberOfHits;
     }
@@ -468,7 +454,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return bool Is the search instantiated successfully?
      */
-    protected function _getReady()
+    protected function _getReady(): bool
     {
         return $this->ready;
     }
@@ -478,9 +464,9 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @return \Solarium\Client Apache Solr service object
+     * @return Client Apache Solr service object
      */
-    protected function _getService()
+    protected function _getService(): Client
     {
         return $this->service;
     }
@@ -490,11 +476,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param int $value: The new PID for the metadata definitions
+     * @param int $value The new PID for the metadata definitions
      *
      * @return void
      */
-    protected function _setCPid($value)
+    protected function _setCPid(int $value): void
     {
         $this->cPid = max(intval($value), 0);
     }
@@ -504,11 +490,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param int $value: The max number of results
+     * @param int $value The max number of results
      *
      * @return void
      */
-    protected function _setLimit($value)
+    protected function _setLimit(int $value): void
     {
         $this->limit = max(intval($value), 0);
     }
@@ -518,11 +504,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param array $value: The query parameters
+     * @param array $value The query parameters
      *
      * @return void
      */
-    protected function _setParams(array $value)
+    protected function _setParams(array $value): void
     {
         $this->params = $value;
     }
@@ -532,11 +518,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to get
+     * @param string $var Name of variable to get
      *
      * @return mixed Value of $this->$var
      */
-    public function __get($var)
+    public function __get(string $var)
     {
         $method = '_get' . ucfirst($var);
         if (
@@ -555,11 +541,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to check
+     * @param string $var Name of variable to check
      *
      * @return bool true if variable is set and not empty, false otherwise
      */
-    public function __isset($var)
+    public function __isset(string $var): bool
     {
         return !empty($this->__get($var));
     }
@@ -569,12 +555,12 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to set
-     * @param mixed $value: New value of variable
+     * @param string $var Name of variable to set
+     * @param mixed $value New value of variable
      *
      * @return void
      */
-    public function __set($var, $value)
+    public function __set(string $var, $value): void
     {
         $method = '_set' . ucfirst($var);
         if (
@@ -592,16 +578,16 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param string|null $core: The name of the core to use or null for core admin endpoint
+     * @param string|null $core The name of the core to use or null for core admin endpoint
      *
      * @return void
      */
-    protected function __construct($core)
+    protected function __construct(?string $core)
     {
         // Get Solr connection parameters from configuration.
         $this->loadSolrConnectionInfo();
         // Configure connection adapter.
-        $adapter = GeneralUtility::makeInstance(\Solarium\Core\Client\Adapter\Http::class);
+        $adapter = GeneralUtility::makeInstance(Http::class);
             // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
             // the timeout must be set with the adapter instead of the
             // endpoint (see below).
@@ -627,7 +613,7 @@ class Solr implements LoggerAwareInterface
             ]
         ];
         // Instantiate Solarium\Client class.
-        $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $config);
+        $this->service = GeneralUtility::makeInstance(Client::class, $config);
         $this->service->setAdapter($adapter);
             // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
             // $adapter and $eventDispatcher are mandatory arguments
@@ -647,7 +633,7 @@ class Solr implements LoggerAwareInterface
                 if ($core !== null) {
                     $result = $response->getStatusResult();
                     if (
-                        $result instanceof \Solarium\QueryType\Server\CoreAdmin\Result\StatusResult
+                        $result instanceof StatusResult
                         && $result->getUptime() > 0
                     ) {
                         // Set core name.
