@@ -290,7 +290,7 @@ DlfAnnotationControl.prototype.disableAnnotationSelect = function() {
         if (this.layers_.hasOwnProperty(key)) {
             this.map.removeLayer(this.layers_[String(key)]);
         }
-    };
+    }
     var className = 'fulltext-visible';
     $("#tx-dlf-tools-annotations").removeClass(className)
         .text(this.dic['annotations-on'])

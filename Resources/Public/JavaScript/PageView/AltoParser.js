@@ -249,7 +249,7 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
             // In ALTO, the y coordinate increases downwards;
             // in OL, it increases upwards.
             0 - (scale * coordinatesWithoutScale[0][i][1])]);
-    };
+    }
 
     return new ol.geom.Polygon([coordinatesRescale]);
 };
@@ -285,11 +285,11 @@ dlfAltoParser.prototype.parseTextBlockFeatures_ = function(node) {
         // aggregated fulltexts
         for (var j = 0; j < textlines.length; j++) {
             fulltext += textlines[j].get('fulltext') + '\n';
-        };
+        }
         feature.setProperties({'fulltext':fulltext});
 
         textblockFeatures.push(feature);
-    };
+    }
 
     return textblockFeatures;
 };
@@ -311,11 +311,11 @@ dlfAltoParser.prototype.parseTextLineFeatures_ = function(node) {
         // parse fulltexts
         for (var j = 0; j < fulltextElements.length; j++) {
             fulltext += fulltextElements[j].get('fulltext');
-        };
+        }
         feature.setProperties({'fulltext':fulltext});
 
         textlineFeatures.push(feature);
-    };
+    }
 
     return textlineFeatures;
 };
@@ -346,11 +346,11 @@ dlfAltoParser.prototype.parseContentFeatures_ = function(node) {
                 break;
             default:
                 fulltext = '';
-        };
+        }
         feature.setProperties({fulltext});
 
         textLineContentFeatures.push(feature);
-    };
+    }
 
     return textLineContentFeatures;
 };
@@ -381,6 +381,6 @@ dlfAltoParser.prototype.parseString_ = function(textLineContentElement) {
 dlfAltoParser.prototype.parseXML_ = function(document) {
     if (typeof document === 'string' || document instanceof String) {
         return $.parseXML(document);
-    };
+    }
     return document;
 };
