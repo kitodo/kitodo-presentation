@@ -507,21 +507,14 @@ dlfUtils.getCookie = function (name) {
 
 /**
  * Returns url parameters
- * @returns {Object|undefined}
+ * @returns {string|null}
  */
-dlfUtils.getUrlParams = function () {
+dlfUtils.getUrlParam = function (param) {
     if (Object.prototype.hasOwnProperty.call(location, 'search')) {
-        var search = decodeURIComponent(location.search).slice(1).split('&'),
-            params = {};
-
-        search.forEach(function (item) {
-            var s = item.split('=');
-            params[s[0]] = s[1];
-        });
-
-        return params;
+        const urlParams = new URLSearchParams(location.search);
+        return urlParams.get(param);
     }
-    return undefined;
+    return null;
 };
 
 /**
