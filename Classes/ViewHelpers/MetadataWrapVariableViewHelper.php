@@ -42,24 +42,32 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class MetadataWrapVariableViewHelper extends AbstractViewHelper
 {
     /**
+     * @access public
+     *
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('name', 'string', 'Name of variable to create', true);
     }
 
     /**
+     * @access public
+     *
+     * @static
+     *
      * @param array $arguments
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
-     * @return null
+     *
+     * @return void
      */
     public static function renderStatic(
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): void
+    {
         $parser = GeneralUtility::makeInstance(TypoScriptParser::class);
         $parser->parse($renderChildrenClosure());
         $wrap = [

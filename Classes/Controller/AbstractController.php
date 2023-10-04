@@ -46,7 +46,11 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected $documentRepository;
 
     /**
+     * @access public
+     *
      * @param DocumentRepository $documentRepository
+     *
+     * @return void
      */
     public function injectDocumentRepository(DocumentRepository $documentRepository)
     {
@@ -81,6 +85,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * Initialize the plugin controller
      *
      * @access protected
+     *
      * @return void
      */
     protected function initialize()
@@ -105,7 +110,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access protected
      *
-     * @param  int $documentId: The document's UID (fallback: $this->requestData[id])
+     * @param int $documentId The document's UID (fallback: $this->requestData[id])
      *
      * @return void
      */
@@ -199,6 +204,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     /**
      * Checks if doc is missing or is empty (no pages)
      *
+     * @access protected
+     *
      * @return boolean
      */
     protected function isDocMissingOrEmpty()
@@ -208,6 +215,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
     /**
      * Checks if doc is missing
+     *
+     * @access protected
      *
      * @return boolean
      */
@@ -219,6 +228,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     /**
      * Returns the LanguageService
      *
+     * @access protected
+     *
      * @return LanguageService
      */
     protected function getLanguageService(): LanguageService
@@ -227,8 +238,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * Safely gets Parameters from request
-     * if they exist
+     * Safely gets Parameters from request if they exist
+     *
+     * @access protected
      *
      * @param string $parameterName
      *

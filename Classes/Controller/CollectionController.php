@@ -35,7 +35,11 @@ class CollectionController extends AbstractController
     protected $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository)
     {
@@ -49,7 +53,11 @@ class CollectionController extends AbstractController
     protected $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
     public function injectMetadataRepository(MetadataRepository $metadataRepository)
     {
@@ -58,6 +66,8 @@ class CollectionController extends AbstractController
 
     /**
      * Show a list of collections
+     *
+     * @access public
      *
      * @return void
      */
@@ -147,7 +157,7 @@ class CollectionController extends AbstractController
      *
      * @access protected
      *
-     * @param Collection $collection: The collection object
+     * @param Collection $collection The collection object
      *
      * @return void
      */
@@ -155,7 +165,7 @@ class CollectionController extends AbstractController
     {
         $searchParams = $this->getParametersSafely('searchParameter');
 
-        // Instaniate the Solr. Without Solr present, we can't do anything.
+        // Instantiate the Solr. Without Solr present, we can't do anything.
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
@@ -200,7 +210,7 @@ class CollectionController extends AbstractController
     /**
      * This is an uncached helper action to make sorting possible on collection single views.
      *
-     * @access protected
+     * @access public
      *
      * @return void
      */

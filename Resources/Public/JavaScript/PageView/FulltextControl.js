@@ -490,7 +490,7 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     }
 
     var className = 'fulltext-visible';
-    $("#tx-dlf-tools-fulltext").removeClass(className)
+    $("#tx-dlf-tools-fulltext").removeClass(className);
 
     if(this.activateFullTextInitially === 0) {
         $("#tx-dlf-tools-fulltext")

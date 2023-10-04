@@ -29,20 +29,20 @@ interface FulltextInterface
      *
      * @access public
      *
-     * @param \SimpleXMLElement $xml: The XML to extract the metadata from
+     * @param \SimpleXMLElement $xml The XML to extract the metadata from
      *
      * @return string The raw unformatted fulltext
      */
-    public function getRawText(\SimpleXMLElement $xml);
+    public function getRawText(\SimpleXMLElement $xml): string;
 
     /**
      * This extracts the fulltext data from ALTO XML and returns it in MiniOCR format
      *
      * @access public
      *
-     * @param \SimpleXMLElement $xml: The XML to extract the raw text from
+     * @param \SimpleXMLElement $xml The XML to extract the raw text from
      *
      * @return string The unformatted fulltext in MiniOCR format
      */
-    public function getTextAsMiniOcr(\SimpleXMLElement $xml);
+    public function getTextAsMiniOcr(\SimpleXMLElement $xml): string;
 }

@@ -340,4 +340,4 @@ DlfAnnotationControl.prototype.fetchAnnotationContainersFromServer = function(an
         annotationListData.push(parser.parseAnnotationList(responseJson, canvas.id));
     });
     return annotationListData;
-}
+};

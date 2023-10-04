@@ -27,25 +27,25 @@ class Page
      * @access private
      * @var int The identifier of the page
      */
-    private $id;
+    private int $id;
 
     /**
      * @access private
      * @var string The name of the page
      */
-    private $name;
+    private string $name;
 
     /**
      * @access private
      * @var int The width of found page
      */
-    private $width;
+    private int $width;
 
     /**
      * @access private
      * @var int The height of found page
      */
-    private $height;
+    private int $height;
 
     /**
      * The constructor for region.
@@ -57,7 +57,7 @@ class Page
      *
      * @return void
      */
-    public function __construct($id, $page)
+    public function __construct(int $id, array $page)
     {
         $this->id = $id;
         $this->name = $page['id'];
@@ -72,7 +72,7 @@ class Page
      *
      * @return int The page's identifier
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -84,7 +84,7 @@ class Page
      *
      * @return string The page's name
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -96,7 +96,7 @@ class Page
      *
      * @return int The page's width
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
@@ -108,7 +108,7 @@ class Page
      *
      * @return int The page's height
      */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->height;
     }
