@@ -382,9 +382,11 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
     var controls = [];
 
     for (var i in controlNames) {
-        var control = this.createControl(controlNames[i], layers);
-        if (control !== null) {
-            controls.push(control);
+        if (controlNames.hasOwnProperty(i)) {
+            var control = this.createControl(controlNames[i], layers);
+            if (control !== null) {
+                controls.push(control);
+            }
         }
     }
 
