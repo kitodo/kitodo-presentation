@@ -640,7 +640,7 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
             // set index
             dlfUtils.RUNNING_INDEX += 1;
             features[i].setId('' + dlfUtils.RUNNING_INDEX);
-            }
+        }
     }
 
     return features;
