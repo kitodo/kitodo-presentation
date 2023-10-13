@@ -231,19 +231,19 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
  * @param {string} orientation
  * @param {string} key
  * @param {Array.<number>|undefined} opt_baseValue
- * @param {string=} opt_title
- * @param {Function=} opt_labelFn
+ * @param {string=} optTitle
+ * @param {Function=} optLabelFn
  * @return {Element}
  * @private
  */
-dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, orientation, key, opt_baseValues, opt_title, opt_labelFn){
-    var title = dlfUtils.exists('opt_title') ? opt_title : '',
+dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, orientation, key, optBaseValues, optTitle, optLabelFn){
+    var title = dlfUtils.exists('optTitle') ? optTitle : '',
         sliderEl = $('<div class="slider slider-imagemanipulation ' + className + '" title="' + title + '" data-type="' +
             key +'"></div>'),
-        baseMin = dlfUtils.exists(opt_baseValues) ? opt_baseValues[1] : 0,
-        baseMax = dlfUtils.exists(opt_baseValues) ? opt_baseValues[2] : 100,
-        steps = dlfUtils.exists(opt_baseValues) ? opt_baseValues[3] : 1,
-        startValue = dlfUtils.exists(opt_baseValues) ? opt_baseValues[0] : 100;
+        baseMin = dlfUtils.exists(optBaseValues) ? optBaseValues[1] : 0,
+        baseMax = dlfUtils.exists(optBaseValues) ? optBaseValues[2] : 100,
+        steps = dlfUtils.exists(optBaseValues) ? optBaseValues[3] : 1,
+        startValue = dlfUtils.exists(optBaseValues) ? optBaseValues[0] : 100;
 
     /**
      * @param {Object} event
@@ -252,17 +252,17 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
     var update = $.proxy(function(event, ui){
         var value = ui['value'],
                 element = valueEl[0],
-                labelValue = dlfUtils.exists(opt_labelFn) ? opt_labelFn(value) : value + '%';
+                labelValue = dlfUtils.exists(optLabelFn) ? optLabelFn(value) : value + '%';
 
         if (orientation === 'vertical') {
-            var style_top = 100 - ((value - baseMin) / (baseMax - baseMin) * 100);
-            element.style.top = style_top + '%';
+            var styleTop = 100 - ((value - baseMin) / (baseMax - baseMin) * 100);
+            element.style.top = styleTop + '%';
             element.innerHTML = labelValue;
             return;
         }
 
-        var style_left = (value - baseMin) / (baseMax - baseMin) * 100;
-        element.style.left = style_left + '%';
+        var styleLeft = (value - baseMin) / (baseMax - baseMin) * 100;
+        element.style.left = styleLeft + '%';
         element.innerHTML = labelValue;
 
         // update filters.
@@ -281,7 +281,7 @@ dlfViewerImageManipulationControl.prototype.createSlider_ = function(className, 
     });
 
     // append tooltips
-    var innerHtml = dlfUtils.exists(opt_labelFn) && dlfUtils.exists(opt_baseValues) ? opt_labelFn(opt_baseValues[0]) : '100%',
+    var innerHtml = dlfUtils.exists(optLabelFn) && dlfUtils.exists(optBaseValues) ? optLabelFn(optBaseValues[0]) : '100%',
             valueEl = $('<div class="tooltip value ' + className + '">' + innerHtml + '</div>');
     $(sliderEl).append(valueEl);
 

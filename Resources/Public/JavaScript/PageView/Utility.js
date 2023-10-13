@@ -599,11 +599,11 @@ dlfUtils.setCookie = function (name, value, samesite) {
  * @param {Object} imageObj
  * @param {number} width
  * @param {number} height
- * @param {number=} opt_offset
+ * @param {number=} optOffset
  * @deprecated
  * @return {Array.<ol.Feature>}
  */
-dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_offset) {
+dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffset) {
 
     // update size / scale settings of imageObj
     var image = void 0;
@@ -621,7 +621,7 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
     }
 
     var scale = image.scale,
-        offset = opt_offset !== undefined ? opt_offset : 0;
+        offset = optOffset !== undefined ? optOffset : 0;
 
     // do rescaling and set a id
     for (var i in features) {

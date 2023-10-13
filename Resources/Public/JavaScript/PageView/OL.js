@@ -65,11 +65,11 @@ ol.Map.prototype.zoomOut = function() {
  * Zooms to given point
  * @param {Array.<number>} center
  * @param {number} zoomLevel
- * @param {number=} opt_duration
+ * @param {number=} optDuration
  */
-ol.Map.prototype.zoomTo = function(center, zoomLevel, opt_duration) {
+ol.Map.prototype.zoomTo = function(center, zoomLevel, optDuration) {
     var view = this.getView(),
-        duration = opt_duration !== undefined ? opt_duration : 500;
+        duration = optDuration !== undefined ? optDuration : 500;
     view.animate({
         center,
         'zoom': zoomLevel,
