@@ -464,7 +464,7 @@ class PageViewController extends AbstractController
                             fulltexts: ' . json_encode($this->fulltexts) . ',
                             score: ' . json_encode($this->scores) . ',
                             annotationContainers: ' . json_encode($this->annotationContainers) . ',
-                            measureCoords: ' . json_encode($this->measures) . ',
+                            measureCoords: ' . json_encode($docMeasures['measureCoordsCurrentSite']) . ',
                             useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
                             verovioAnnotations: ' . json_encode($this->verovioAnnotations) . ',
                             currentMeasureId: "' . $currentMeasureId . '"
