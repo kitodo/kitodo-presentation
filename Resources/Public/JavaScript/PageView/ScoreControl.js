@@ -249,7 +249,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     //
     // Draw boxes for each measure
     //
-    var measureCoords = this.dlfViewer.measureCoords;
+    var measureCoords = this.dlfViewer.measureCoords.measureCoordsCurrentSite;
     var dlfViewer = this.dlfViewer;
     $( document ).ready(function() {
         $.each(measureCoords, function (key, value) {

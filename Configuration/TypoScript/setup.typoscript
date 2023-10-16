@@ -38,17 +38,13 @@ page {
     kitodo-audioPlayer = EXT:dlf/Resources/Public/JavaScript/AudioPlayer/AudioPlayer.js
 
     # Verovio plugin
-    kitodo-verovio = EXT:dlf/Resources/Public/Javascript/Verovio/verovio-toolkit.js
-    kitodo-svgtopdfkit = EXT:dlf/Resources/Public/Javascript/Verovio/svgtopdfkit.js
-    kitodo-saveas = EXT:dlf/Resources/Public/Javascript/Verovio/saveas.js
-    kitodo-pdf= EXT:dlf/Resources/Public/Javascript/Verovio/pdfkit.js
-    kitodo-pdfkita = EXT:dlf/Resources/Public/Javascript/Verovio/blobStream.js
-    wildwebmidi = EXT:dlf/Resources/Public/Javascript/Midiplayer/wildwebmidi.js
-    midiPlayer = EXT:dlf/Resources/Public/Javascript/Midiplayer/midiplayer.js
-
-    # Gridstack
-    gridstack = EXT:dlf/Resources/Public/Javascript/Gridstack/gridstack-all.js
-    gridstack-init = EXT:dlf/Resources/Public/Javascript/PageView/gridstack.js
+    kitodo-verovio = EXT:dlf/Resources/Public/JavaScript/Verovio/verovio-toolkit.js
+    kitodo-svgtopdfkit = EXT:dlf/Resources/Public/JavaScript/Verovio/svgtopdfkit.js
+    kitodo-saveas = EXT:dlf/Resources/Public/JavaScript/Verovio/saveas.js
+    kitodo-pdf= EXT:dlf/Resources/Public/JavaScript/Verovio/pdfkit.js
+    kitodo-pdfkita = EXT:dlf/Resources/Public/JavaScript/Verovio/blobstream.js
+    wildwebmidi = EXT:dlf/Resources/Public/JavaScript/Midiplayer/wildwebmidi.js
+    midiPlayer = EXT:dlf/Resources/Public/JavaScript/Midiplayer/midiplayer.js
 
     # PageView plugin
     kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
@@ -64,15 +60,23 @@ page {
     kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextDownloadControl.js
     kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextControl.js
     kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/JavaScript/PageView/FullTextUtility.js
-    kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/Javascript/PageView/ScoreControl.js
-    kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/Javascript/PageView/ScoreUtility.js
-    kitodo-pageView-syncControl = EXT:dlf/Resources/Public/Javascript/PageView/SyncControl.js
+    kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreControl.js
+    kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreUtility.js
+    kitodo-pageView-syncControl = EXT:dlf/Resources/Public/JavaScript/PageView/SyncControl.js
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
     kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
 
   }
 }
+
+[like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
+page.includeJSFooter {
+    # Gridstack
+    gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack-all.js
+    gridstack-init = EXT:dlf/Resources/Public/JavaScript/PageView/gridstack.js
+}
+[end]
 
 plugin.tx_dlf_pagegrid {
     settings {

@@ -17,6 +17,8 @@
 <f:variable name="metaSectionCObj" value="{metaCObjData.{sectionIterator.index}}" />
 
 <f:variable name="wrappedValues"><f:spaceless>
+<f:if condition="{kitodo:isArray(subject: '{documentMetadataSection.{configObject.indexName}}')}">
+        <f:then>
     <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
         <f:variable name="buildUrlVariable" value="{buildUrl.{sectionIterator.index}}" />
         <f:if condition="{buildUrlVariable.{configObject.indexName}}">
@@ -57,6 +59,11 @@
             </f:else>
         </f:if>
     </f:for>
+        </f:then>
+        <f:else>
+            <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionCObj}">{value}</kitodo:stdWrap>
+        </f:else>
+</f:if>
 </f:spaceless></f:variable>
 
 <f:if condition="{wrappedValues}">

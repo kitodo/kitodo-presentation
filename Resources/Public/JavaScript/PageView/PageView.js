@@ -514,7 +514,7 @@ dlfViewer.prototype.addCustomControls = function() {
 
             var i = 0, xLow = 0, xHigh = 0, yLow = 0, yHigh = 0;
 
-            $.each(this.measureCoords, function(key, value) {
+            $.each(this.measureCoords.measureCoordsCurrentSite, function(key, value) {
                 var splitValue = value.split(","),
                     x1 = splitValue[0],
                     y1 = splitValue[1],

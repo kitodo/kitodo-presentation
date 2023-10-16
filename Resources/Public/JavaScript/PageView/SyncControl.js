@@ -53,7 +53,7 @@ class SyncViewsControl extends ol.control.Control {
  * @constructor
  * @param {ol.Map} map
  */
-const dlfViewerSyncControl = function(dlfViewer, sync = true) {
+const dlfViewerSyncControl = function(dlfViewer, sync = false) {
     this.dlfViewer = dlfViewer;
     this.sync = sync;
     this.dx = 0;

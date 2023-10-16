@@ -30,7 +30,7 @@ class AnnotationController extends AbstractController
      */
     public function mainAction()
     {
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
 
         if (
             $this->document === null

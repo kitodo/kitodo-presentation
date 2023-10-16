@@ -139,7 +139,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
 
                 $doc = Doc::getInstance($documentId, $this->settings, true);
 
-                if ($doc->tableOfContents[0]['type'] === 'multivolume_work') { // @TODO: Change type
+                if (isset($this->settings['multiViewType']) && $doc->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
                     $childDocuments = $doc->tableOfContents[0]['children'];
                     foreach ($childDocuments as $document) {
                         $this->documentArray[] = Doc::getInstance($document['points'], $this->settings, true);
@@ -226,9 +226,8 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
      */
     protected function isDocMissingOrEmpty()
     {
-        return $this->isDocMissing() ||
-            ($this->document->getDoc()->numPages < 1 &&
-                $this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work'); //@TODO change type
+        $multiViewType = $this->settings['multiViewType'] ?? '';
+        return $this->isDocMissing() || ($this->document->getDoc()->numPages < 1 && $this->document->getDoc()->tableOfContents[0]['type'] !== $multiViewType);
     }
 
     /**
@@ -331,9 +330,7 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
             || empty($this->requestData['page']
                 || is_array($this->requestData['docPage']))
         ) {
-            if ($this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work') {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
+            if (isset($this->settings['multiViewType']) && $this->document->getDoc()->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
                 $i = 0;
                 foreach ($this->documentArray as $document) {
                     if ($document !== null) {
@@ -341,10 +338,14 @@ abstract class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\Acti
                         $i++;
                     }
                 }
+            } else {
+                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
             }
         } else {
             $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
         }
+        // reassign viewData to get correct page
+        $this->viewData['requestData'] = $this->requestData;
     }
 
     /**
