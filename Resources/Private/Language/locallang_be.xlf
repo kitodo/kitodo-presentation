@@ -254,6 +254,9 @@
 			<trans-unit id="plugins.pageview.flexform.useInternalProxy">
 				<source><![CDATA[Use Internal Proxy]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.multiViewType" approved="yes">
+				<source><![CDATA[Document type for displaying the multiview]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.pageview.title">
 				<source><![CDATA[Kitodo: Pageview]]></source>
 			</trans-unit>

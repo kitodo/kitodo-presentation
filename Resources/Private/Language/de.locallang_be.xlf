@@ -393,6 +393,10 @@
 				<source><![CDATA[Use Internal Proxy]]></source>
 				<target><![CDATA[Internen Proxy verwenden]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.pageview.flexform.multiViewTypemultiViewType" approved="yes">
+				<source><![CDATA[Document type for displaying the multiview]]></source>
+				<target><![CDATA[Dokumenttyp für die Anzeige der Multiview]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.pageview.title" approved="yes">
 				<source><![CDATA[Kitodo: Pageview]]></source>
 				<target><![CDATA[Kitodo: Seitenansicht]]></target>
