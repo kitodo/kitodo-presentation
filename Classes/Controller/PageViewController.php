@@ -446,6 +446,13 @@ class PageViewController extends AbstractController
                     }
                 });';
         } else {
+            $currentMeasureId = '';
+            if ($this->requestData['measure']) {
+                $docPage = $this->requestData['page'];
+                $docMeasures = $this->getMeasures($docPage);
+                $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
+            }
+
             // Viewer configuration.
             $viewerConfiguration = '$(document).ready(function() {
                     if (dlfUtils.exists(dlfViewer)) {
@@ -459,7 +466,8 @@ class PageViewController extends AbstractController
                             annotationContainers: ' . json_encode($this->annotationContainers) . ',
                             measureCoords: ' . json_encode($this->measures) . ',
                             useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
-                            verovioAnnotations: ' . json_encode($this->verovioAnnotations) . '
+                            verovioAnnotations: ' . json_encode($this->verovioAnnotations) . ',
+                            currentMeasureId: "' . $currentMeasureId . '"
                         });
                     }
                 });';
