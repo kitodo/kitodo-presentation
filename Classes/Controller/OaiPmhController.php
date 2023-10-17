@@ -685,7 +685,7 @@ class OaiPmhController extends AbstractController
             ]
         ];
         $parameters['query'] = $solr_query;
-        $result = $solr->search_raw($parameters);
+        $result = $solr->searchRaw($parameters);
         if (empty($result)) {
             $this->error = 'noRecordsMatch';
             return;

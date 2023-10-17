@@ -170,8 +170,8 @@ final class MetsDocument extends AbstractDocument
         $hookObjects = Helper::getHookObjects('Classes/Common/MetsDocument.php');
         // Apply hooks.
         foreach ($hookObjects as $hookObj) {
-            if (method_exists($hookObj, 'construct_postProcessRecordId')) {
-                $hookObj->construct_postProcessRecordId($this->xml, $this->recordId);
+            if (method_exists($hookObj, 'postProcessRecordId')) {
+                $hookObj->postProcessRecordId($this->xml, $this->recordId);
             }
         }
     }
