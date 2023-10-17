@@ -637,8 +637,6 @@ class Document extends AbstractEntity
      * Removes a collection
      *
      * @param Collection $collection
-     *
-     * @return ObjectStorage<Collection> collections
      */
     public function removeCollection(Collection $collection)
     {

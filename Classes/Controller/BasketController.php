@@ -39,7 +39,7 @@ class BasketController extends AbstractController
      * @access protected
      * @var BasketRepository
      */
-    protected $basketRepository;
+    protected BasketRepository $basketRepository;
 
     /**
      * @access public
@@ -48,7 +48,7 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    public function injectBasketRepository(BasketRepository $basketRepository)
+    public function injectBasketRepository(BasketRepository $basketRepository): void
     {
         $this->basketRepository = $basketRepository;
     }
@@ -57,7 +57,7 @@ class BasketController extends AbstractController
      * @access protected
      * @var MailRepository
      */
-    protected $mailRepository;
+    protected MailRepository $mailRepository;
 
     /**
      * @access public
@@ -66,7 +66,7 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    public function injectMailRepository(MailRepository $mailRepository)
+    public function injectMailRepository(MailRepository $mailRepository): void
     {
         $this->mailRepository = $mailRepository;
     }
@@ -75,7 +75,7 @@ class BasketController extends AbstractController
      * @access protected
      * @var PrinterRepository
      */
-    protected $printerRepository;
+    protected PrinterRepository $printerRepository;
 
     /**
      * @access public
@@ -84,7 +84,7 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    public function injectPrinterRepository(PrinterRepository $printerRepository)
+    public function injectPrinterRepository(PrinterRepository $printerRepository): void
     {
         $this->printerRepository = $printerRepository;
     }
@@ -93,7 +93,7 @@ class BasketController extends AbstractController
      * @access protected
      * @var ActionLogRepository
      */
-    protected $actionLogRepository;
+    protected ActionLogRepository $actionLogRepository;
 
     /**
      * @access public
@@ -102,7 +102,7 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    public function injectActionLogRepository(ActionLogRepository $actionLogRepository)
+    public function injectActionLogRepository(ActionLogRepository $actionLogRepository): void
     {
         $this->actionLogRepository = $actionLogRepository;
     }
@@ -114,7 +114,7 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    public function basketAction()
+    public function basketAction(): void
     {
         $basket = $this->getBasketData();
 
@@ -132,7 +132,7 @@ class BasketController extends AbstractController
                 $pdfUrl = $this->settings['pdfgenerate'];
                 foreach ($this->requestData['selected'] as $docValue) {
                     if ($docValue['id']) {
-                        $docData = $this->getDocumentData($docValue['id'], $docValue);
+                        $docData = $this->getDocumentData((int) $docValue['id'], $docValue);
                         $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                         $this->redirectToUri($pdfUrl);
                     }
@@ -143,7 +143,7 @@ class BasketController extends AbstractController
         if ($this->requestData['print_action']) {
             // open selected documents
             if (isset($this->requestData['selected'])) {
-                $this->printDocument($basket);
+                $this->printDocument();
             }
         }
         // action send mail
@@ -163,7 +163,7 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    public function addAction()
+    public function addAction(): void
     {
         $basket = $this->getBasketData();
 
@@ -184,7 +184,7 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         $basket = $this->getBasketData();
 
@@ -233,7 +233,7 @@ class BasketController extends AbstractController
      *
      * @return Basket The found data from user session.
      */
-    protected function getBasketData()
+    protected function getBasketData(): Basket
     {
         // get user session
         $userSession = $GLOBALS['TSFE']->fe_user->getSession();
@@ -270,9 +270,9 @@ class BasketController extends AbstractController
      *
      * @param array $data DocumentData
      *
-     * @return string One basket entry
+     * @return array One basket entry
      */
-    protected function getEntry($data)
+    protected function getEntry(array $data): array
     {
         if (is_object($data)) {
             $data = get_object_vars($data);
@@ -286,7 +286,7 @@ class BasketController extends AbstractController
         $endY = $data['endY'];
         $rotation = $data['rotation'];
 
-        $docData = $this->getDocumentData($id, $data);
+        $docData = $this->getDocumentData((int) $id, $data);
 
         $entryArray['BASKETDATA'] = $docData;
 
@@ -324,9 +324,9 @@ class BasketController extends AbstractController
      * @param int $id Document id
      * @param array $data DocumentData
      *
-     * @return string|false download url or false
+     * @return array|false download url or false
      */
-    protected function getDocumentData($id, $data)
+    protected function getDocumentData(int $id, array $data)
     {
         // get document instance to load further information
         $this->loadDocument((int) $id);
@@ -386,16 +386,16 @@ class BasketController extends AbstractController
     }
 
     /**
-     * Adds documents to the basket
+     * Adds documents to the basket and includes JS
      *
      * @access protected
      *
      * @param array $piVars piVars
      * @param Basket $basket basket object
      *
-     * @return array Basket data and JavaScript output
+     * @return Basket|null Basket data
      */
-    protected function addToBasket($piVars, $basket)
+    protected function addToBasket(array $piVars, Basket $basket): ?Basket
     {
         $output = '';
 
@@ -427,7 +427,7 @@ class BasketController extends AbstractController
             $this->loadDocument((int) $documentItem['id']);
             if ($this->isDocMissing()) {
                 // Quit without doing anything if required variables are not set.
-                return;
+                return null;
             }
             // set endpage for toc and subentry based on logid
             if (($piVars['addToBasket'] == 'subentry') or ($piVars['addToBasket'] == 'toc')) {
@@ -500,7 +500,7 @@ class BasketController extends AbstractController
      *
      * @return Basket basket
      */
-    protected function removeFromBasket($piVars, $basket)
+    protected function removeFromBasket(array $piVars, Basket $basket): Basket
     {
         if (!empty($basket->getDocIds())) {
             $items = json_decode($basket->getDocIds());
@@ -539,7 +539,7 @@ class BasketController extends AbstractController
      *
      * @return void
      */
-    protected function sendMail()
+    protected function sendMail(): void
     {
         // send mail
         $mailId = $this->requestData['mail_action'];
@@ -553,7 +553,7 @@ class BasketController extends AbstractController
         foreach ($this->requestData['selected'] as $docValue) {
             if ($docValue['id']) {
                 $explodeId = explode("_", $docValue['id']);
-                $docData = $this->getDocumentData($explodeId[0], $docValue);
+                $docData = $this->getDocumentData((int) $explodeId[0], $docValue);
                 $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                 $pages = (abs(intval($docValue['startpage']) - intval($docValue['endpage'])));
                 if ($pages === 0) {
@@ -614,17 +614,15 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param Basket basket object
-     *
      * @return void
      */
-    protected function printDocument($basket)
+    protected function printDocument(): void
     {
         $pdfUrl = $this->settings['pdfprint'];
         $numberOfPages = 0;
         foreach ($this->requestData['selected'] as $docId => $docValue) {
             if ($docValue['id']) {
-                $docData = $this->getDocumentData($docValue['id'], $docValue);
+                $docData = $this->getDocumentData((int) $docValue['id'], $docValue);
                 $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                 $numberOfPages += $docData['pageNums'];
             }
@@ -642,7 +640,7 @@ class BasketController extends AbstractController
             foreach ($this->requestData['selected'] as $docId => $docValue) {
                 if ($docValue['id']) {
                     $explodeId = explode("_", $docId);
-                    $docData = $this->getDocumentData($explodeId[0], $docValue);
+                    $docData = $this->getDocumentData((int) $explodeId[0], $docValue);
                     $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                     $numberOfPages += $docData['pageNums'];
                 }

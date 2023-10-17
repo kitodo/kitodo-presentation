@@ -22,6 +22,7 @@ use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
@@ -47,25 +48,25 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var int
      */
-    protected $pid;
+    protected int $pid;
 
     /**
      * @access protected
      * @var array
      */
-    protected $pageInfo;
+    protected array $pageInfo;
 
     /**
      * @access protected
      * @var array All configured site languages
      */
-    protected $siteLanguages;
+    protected array $siteLanguages;
 
     /**
      * @access protected
      * @var LocalizationFactory Language factory to get language key/values by our own.
      */
-    protected $languageFactory;
+    protected LocalizationFactory $languageFactory;
 
     /**
      * @access protected
@@ -77,7 +78,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var FormatRepository
      */
-    protected $formatRepository;
+    protected FormatRepository $formatRepository;
 
     /**
      * @access public
@@ -86,7 +87,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function injectFormatRepository(FormatRepository $formatRepository)
+    public function injectFormatRepository(FormatRepository $formatRepository): void
     {
         $this->formatRepository = $formatRepository;
     }
@@ -95,7 +96,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
      * @access public
@@ -104,7 +105,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
     {
         $this->metadataRepository = $metadataRepository;
     }
@@ -113,7 +114,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var StructureRepository
      */
-    protected $structureRepository;
+    protected StructureRepository $structureRepository;
 
     /**
      * @access public
@@ -122,7 +123,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function injectStructureRepository(StructureRepository $structureRepository)
+    public function injectStructureRepository(StructureRepository $structureRepository): void
     {
         $this->structureRepository = $structureRepository;
     }
@@ -131,7 +132,7 @@ class NewTenantController extends AbstractController
      * @access protected
      * @var SolrCoreRepository
      */
-    protected $solrCoreRepository;
+    protected SolrCoreRepository $solrCoreRepository;
 
     /**
      * @access public
@@ -140,7 +141,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository)
+    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository): void
     {
         $this->solrCoreRepository = $solrCoreRepository;
     }
@@ -152,7 +153,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         $this->pid = (int) GeneralUtility::_GP('id');
 
@@ -178,7 +179,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function addFormatAction()
+    public function addFormatAction(): void
     {
         // Include formats definition file.
         $formatsDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
@@ -220,7 +221,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function addMetadataAction()
+    public function addMetadataAction(): void
     {
         // Include metadata definition file.
         $metadataDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/MetadataDefaults.php');
@@ -299,7 +300,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function addSolrCoreAction()
+    public function addSolrCoreAction(): void
     {
         $doPersist = false;
 
@@ -335,7 +336,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function addStructureAction()
+    public function addStructureAction(): void
     {
         // Include structure definition file.
         $structureDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/StructureDefaults.php');
@@ -391,7 +392,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView(ViewInterface $view): void
     {
         /** @var BackendTemplateView $view */
         parent::initializeView($view);
@@ -411,7 +412,7 @@ class NewTenantController extends AbstractController
      *
      * @return void
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $recordInfos = [];
 
@@ -441,7 +442,7 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function errorAction()
     {
@@ -458,7 +459,7 @@ class NewTenantController extends AbstractController
      *
      * @return string
      */
-    protected function getLLL($index, $lang, $langArray)
+    protected function getLLL(string $index, string $lang, array $langArray): string
     {
         if (isset($langArray[$lang][$index][0]['target'])) {
             return $langArray[$lang][$index][0]['target'];
