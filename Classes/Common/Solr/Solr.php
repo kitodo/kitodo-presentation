@@ -284,7 +284,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return Solr Instance of this class
      */
-    public static function getInstance($core = null)
+    public static function getInstance($core = null): Solr
     {
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
