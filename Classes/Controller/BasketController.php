@@ -390,30 +390,30 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $_piVars piVars
+     * @param array $piVars piVars
      * @param Basket $basket basket object
      *
      * @return array Basket data and JavaScript output
      */
-    protected function addToBasket($_piVars, $basket)
+    protected function addToBasket($piVars, $basket)
     {
         $output = '';
 
-        if (!$_piVars['startpage']) {
+        if (!$piVars['startpage']) {
             $page = 0;
         } else {
-            $page = (int) $_piVars['startpage'];
+            $page = (int) $piVars['startpage'];
         }
-        if ($page != null || $_piVars['addToBasket'] == 'list') {
+        if ($page != null || $piVars['addToBasket'] == 'list') {
             $documentItem = [
-                'id' => (int) $_piVars['id'],
-                'startpage' => (int) $_piVars['startpage'],
-                'endpage' => !isset($_piVars['endpage']) || $_piVars['endpage'] === "" ? "" : (int) $_piVars['endpage'],
-                'startX' => !isset($_piVars['startX']) || $_piVars['startX'] === "" ? "" : (int) $_piVars['startX'],
-                'startY' => !isset($_piVars['startY']) || $_piVars['startY'] === "" ? "" : (int) $_piVars['startY'],
-                'endX' => !isset($_piVars['endX']) || $_piVars['endX'] === "" ? "" : (int) $_piVars['endX'],
-                'endY' => !isset($_piVars['endY']) || $_piVars['endY'] === "" ? "" : (int) $_piVars['endY'],
-                'rotation' => !isset($_piVars['rotation']) || $_piVars['rotation'] === "" ? "" : (int) $_piVars['rotation']
+                'id' => (int) $piVars['id'],
+                'startpage' => (int) $piVars['startpage'],
+                'endpage' => !isset($piVars['endpage']) || $piVars['endpage'] === "" ? "" : (int) $piVars['endpage'],
+                'startX' => !isset($piVars['startX']) || $piVars['startX'] === "" ? "" : (int) $piVars['startX'],
+                'startY' => !isset($piVars['startY']) || $piVars['startY'] === "" ? "" : (int) $piVars['startY'],
+                'endX' => !isset($piVars['endX']) || $piVars['endX'] === "" ? "" : (int) $piVars['endX'],
+                'endY' => !isset($piVars['endY']) || $piVars['endY'] === "" ? "" : (int) $piVars['endY'],
+                'rotation' => !isset($piVars['rotation']) || $piVars['rotation'] === "" ? "" : (int) $piVars['rotation']
             ];
 
             // update basket
@@ -430,13 +430,13 @@ class BasketController extends AbstractController
                 return;
             }
             // set endpage for toc and subentry based on logid
-            if (($_piVars['addToBasket'] == 'subentry') or ($_piVars['addToBasket'] == 'toc')) {
+            if (($piVars['addToBasket'] == 'subentry') or ($piVars['addToBasket'] == 'toc')) {
                 $smLinks = $this->document->getCurrentDocument()->smLinks;
-                $pageCounter = sizeof($smLinks['l2p'][$_piVars['logId']]);
+                $pageCounter = sizeof($smLinks['l2p'][$piVars['logId']]);
                 $documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
             }
             // add whole document
-            if ($_piVars['addToBasket'] == 'list') {
+            if ($piVars['addToBasket'] == 'list') {
                 $documentItem['endpage'] = $this->document->getCurrentDocument()->numPages;
             }
             $arrayKey = $documentItem['id'] . '_' . $page;
@@ -495,18 +495,18 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $_piVars plugin variables
+     * @param array $piVars plugin variables
      * @param Basket $basket basket object
      *
      * @return Basket basket
      */
-    protected function removeFromBasket($_piVars, $basket)
+    protected function removeFromBasket($piVars, $basket)
     {
         if (!empty($basket->getDocIds())) {
             $items = json_decode($basket->getDocIds());
             $items = get_object_vars($items);
         }
-        foreach ($_piVars['selected'] as $value) {
+        foreach ($piVars['selected'] as $value) {
             if (isset($value['id'])) {
                 $arrayKey = $value['id'] . '_' . $value['startpage'];
                 if (!empty($value['startX'])) {

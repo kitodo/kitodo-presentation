@@ -699,13 +699,13 @@ class Helper
      *
      * @static
      *
-     * @param string $index_name The internal "index_name" to translate
+     * @param string $indexName The internal "index_name" to translate
      * @param string $table Get the translation from this table
      * @param string $pid Get the translation from this page
      *
-     * @return string Localized label for $index_name
+     * @return string Localized label for $indexName
      */
-    public static function translate(string $index_name, string $table, string $pid): string
+    public static function translate(string $indexName, string $table, string $pid): string
     {
         // Load labels into static variable for future use.
         static $labels = [];
@@ -713,7 +713,7 @@ class Helper
         $pid = max(intval($pid), 0);
         if (!$pid) {
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
-            return $index_name;
+            return $indexName;
         }
         /** @var PageRepository $pageRepository */
         $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
@@ -722,8 +722,8 @@ class Helper
         $languageContentId = $languageAspect->getContentId();
 
         // Check if "index_name" is an UID.
-        if (MathUtility::canBeInterpretedAsInteger($index_name)) {
-            $index_name = self::getIndexNameFromUid($index_name, $table, $pid);
+        if (MathUtility::canBeInterpretedAsInteger($indexName)) {
+            $indexName = self::getIndexNameFromUid($indexName, $table, $pid);
         }
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
          * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
