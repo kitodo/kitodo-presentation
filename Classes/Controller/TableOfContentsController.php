@@ -31,7 +31,7 @@ class TableOfContentsController extends AbstractController
      * @access protected
      * @var array This holds the active entries according to the currently selected page
      */
-    protected $activeEntries = [];
+    protected array $activeEntries = [];
 
     /**
      * The main method of the plugin
@@ -40,7 +40,7 @@ class TableOfContentsController extends AbstractController
      *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         // Load current document.
         $this->loadDocument();
@@ -61,7 +61,7 @@ class TableOfContentsController extends AbstractController
      *
      * @return array HMENU array
      */
-    private function makeMenuArray()
+    private function makeMenuArray(): array
     {
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
@@ -115,7 +115,7 @@ class TableOfContentsController extends AbstractController
      *
      * @return array HMENU array for menu entry
      */
-    private function getMenuEntry(array $entry, $recursive = false)
+    private function getMenuEntry(array $entry, bool $recursive = false): array
     {
         $entry = $this->resolveMenuEntry($entry);
 
@@ -215,7 +215,7 @@ class TableOfContentsController extends AbstractController
      *
      * @return array
      */
-    private function resolveMenuEntry($entry)
+    private function resolveMenuEntry(array $entry): array
     {
         // If the menu entry points to the parent document,
         // resolve to the parent UID set on indexation.
@@ -239,7 +239,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return void
      */
-    private function getAllLogicalUnits() {
+    private function getAllLogicalUnits(): void
+    {
         if (
             !empty($this->requestData['page'])
             && !empty($this->document->getCurrentDocument()->physicalStructure)
@@ -265,7 +266,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return string
      */
-    private function getTranslatedType($type) {
+    private function getTranslatedType(string $type): string
+    {
         return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
     }
 
@@ -285,7 +287,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return bool
      */
-    private function isMultiElement($type) {
+    private function isMultiElement(string $type): bool
+    {
         return $type === 'multivolume_work' || $type === 'multipart_manuscript';
     }
     /**
@@ -297,7 +300,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return string
      */
-    private function setTitle($entry) {
+    private function setTitle(array $entry): string
+    {
         if (empty($entry['label']) && empty($entry['orderlabel'])) {
             foreach ($this->settings['titleReplacements'] as $titleReplacement) {
                 if ($entry['type'] == $titleReplacement['type']) {
@@ -327,7 +331,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return void
      */
-    private function sortMenu(&$menu) {
+    private function sortMenu(array &$menu): void
+    {
         if ($menu[0]['type'] == $this->getTranslatedType("newspaper")) {
             $this->sortSubMenu($menu);
         }
@@ -345,7 +350,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return void
      */
-    private function sortSubMenu(&$menu) {
+    private function sortSubMenu(array &$menu): void
+    {
         usort($menu[0]['_SUB_MENU'], function ($firstElement, $secondElement) {
             if (!empty($firstElement['orderlabel'])) {
                 return $firstElement['orderlabel'] <=> $secondElement['orderlabel'];
