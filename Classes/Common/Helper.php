@@ -741,7 +741,7 @@ class Helper
             ->from($table)
             ->where(
                 $queryBuilder->expr()->eq($table . '.pid', $pid),
-                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($index_name)),
+                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($indexName)),
                 self::whereExpression($table, true)
             )
             ->setMaxResults(1)
@@ -767,12 +767,12 @@ class Helper
 
             if ($row) {
                 // If there is an translated content element, overwrite the received $index_name.
-                $index_name = $row['index_name'];
+                $indexName = $row['index_name'];
             }
         }
 
         // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$languageContentId][$index_name])) {
+        if (empty($labels[$table][$pid][$languageContentId][$indexName])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
@@ -816,10 +816,10 @@ class Helper
             }
         }
 
-        if (!empty($labels[$table][$pid][$languageContentId][$index_name])) {
-            return $labels[$table][$pid][$languageContentId][$index_name];
+        if (!empty($labels[$table][$pid][$languageContentId][$indexName])) {
+            return $labels[$table][$pid][$languageContentId][$indexName];
         } else {
-            return $index_name;
+            return $indexName;
         }
     }
 
