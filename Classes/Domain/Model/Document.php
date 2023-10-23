@@ -637,8 +637,10 @@ class Document extends AbstractEntity
      * Removes a collection
      *
      * @param Collection $collection
+     *
+     * @return void
      */
-    public function removeCollection(Collection $collection)
+    public function removeCollection(Collection $collection): void
     {
         $this->collections->detach($collection);
     }

@@ -442,7 +442,7 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
-     * @return ResponseInterface
+     * @return void
      */
     public function errorAction()
     {
