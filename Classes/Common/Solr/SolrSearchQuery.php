@@ -55,6 +55,7 @@ class SolrSearchQuery implements QueryInterface
         $this->limit = count($solrSearch);
     }
 
+    // this class contains a lot of methods which are inherited but not implemented
     // @phpstan-ignore-next-line
     public function getSource() {}
 
