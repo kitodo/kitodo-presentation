@@ -441,7 +441,7 @@ abstract class AbstractDocument
         // Sanitize input.
         $pid = max(intval($settings['storagePid']), 0);
         if ($documentFormat == 'METS') {
-            $instance = new MetsDocument($pid,$location, $xml, $settings);
+            $instance = new MetsDocument($pid, $location, $xml, $settings);
         } elseif ($documentFormat == 'IIIF') {
             // TODO: Parameter $preloadedDocument of class Kitodo\Dlf\Common\IiifManifest constructor expects SimpleXMLElement|Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface, Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity|null given.
             // @phpstan-ignore-next-line
