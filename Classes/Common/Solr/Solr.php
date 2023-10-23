@@ -35,13 +35,10 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @property array $config this holds the Solr configuration
  * @property-read string|null $core this holds the core name for the current instance
  * @property-write int $cPid this holds the PID for the configuration
- * @property-read string $extKey the extension key
- * @property array $fields the fields for SOLR index
  * @property int $limit this holds the max results
  * @property-read int $numberOfHits this holds the number of hits for last search
  * @property-write array $params this holds the additional query parameters
  * @property-read bool $ready flag if the Solr service is instantiated successfully
- * @property array $registry this holds the singleton search objects with their core as array key
  * @property-read \Solarium\Client $service this holds the Solr service object
  */
 class Solr implements LoggerAwareInterface
@@ -75,6 +72,7 @@ class Solr implements LoggerAwareInterface
 
     /**
      * @access public
+     * @static
      * @var array The fields for SOLR index
      */
     public static array $fields = [];
@@ -286,7 +284,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return Solr Instance of this class
      */
-    public static function getInstance($core = null)
+    public static function getInstance($core = null): Solr
     {
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
