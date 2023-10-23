@@ -56,7 +56,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
-     * @var QueryResult
+     * @var QueryResult|null
      */
     private ?QueryResult $listedMetadata;
 
@@ -157,7 +157,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access public
      *
-     * @return int
+     * @return void
      */
     public function next(): void
     {
@@ -169,7 +169,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access public
      *
-     * @return int
+     * @return void
      */
     public function rewind(): void
     {
