@@ -116,10 +116,10 @@ class CollectionController extends AbstractController
             } else {
                 $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
             }
-            $partOfNothing = $solr->search_raw($params);
+            $partOfNothing = $solr->searchRaw($params);
 
             $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
-            $partOfSomething = $solr->search_raw($params);
+            $partOfSomething = $solr->searchRaw($params);
             // Titles are all documents that are "root" elements i.e. partof == 0
             $collectionInfo['titles'] = [];
             foreach ($partOfNothing as $doc) {

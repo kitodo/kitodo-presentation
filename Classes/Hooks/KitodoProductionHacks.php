@@ -34,7 +34,7 @@ class KitodoProductionHacks
      *
      * @return void
      */
-    public function construct_postProcessRecordId(\SimpleXMLElement &$xml, &$recordId): void
+    public function postProcessRecordId(\SimpleXMLElement &$xml, &$recordId): void
     {
         if (!$recordId) {
             $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');

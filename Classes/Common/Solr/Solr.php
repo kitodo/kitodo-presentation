@@ -385,7 +385,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw(array $parameters = []): array
+    public function searchRaw(array $parameters = []): array
     {
         // Set additional query parameters.
         $parameters['start'] = 0;
