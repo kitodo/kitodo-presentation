@@ -111,7 +111,7 @@ class PageViewController extends AbstractController
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
             $fileId = $physicalStructureInfo['files'][$fileGrpFulltext];
             if (!empty($fileId)) {
-                $file = $this->document->getCurrentDocument()->getFileLocation($fileId);
+                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
                 $fulltext['url'] = $file['location'];
                 if ($this->settings['useInternalProxy']) {
                     $this->configureProxyUrl($fulltext['url']);
