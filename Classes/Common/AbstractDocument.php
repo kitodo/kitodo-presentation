@@ -391,7 +391,7 @@ abstract class AbstractDocument
      * @param array $settings
      * @param bool $forceReload Force reloading the document instead of returning the cached instance
      *
-     * @return MetsDocument|IiifManifest|null Instance of this class, either MetsDocument or IiifManifest
+     * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
      */
     public static function &getInstance(string $location, array $settings = [], bool $forceReload = false)
     {
@@ -1257,7 +1257,7 @@ abstract class AbstractDocument
      *
      * @param string $location
      *
-     * @return MetsDocument|IiifManifest|false
+     * @return AbstractDocument|false
      */
     private static function getDocumentCache(string $location)
     {
