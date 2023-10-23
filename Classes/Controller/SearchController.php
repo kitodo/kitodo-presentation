@@ -266,7 +266,7 @@ class SearchController extends AbstractController
             }
         }
 
-        $collectionsQuery = $this->addCollectionsQuery($searchParams['query']);
+        $collectionsQuery = $this->addCollectionsQuery($search['query']);
         if (!empty($collectionsQuery)) {
             $search['params']['filterquery'][]['query'] = $collectionsQuery;
         }
