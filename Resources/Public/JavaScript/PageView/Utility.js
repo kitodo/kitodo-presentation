@@ -599,11 +599,11 @@ dlfUtils.setCookie = function (name, value, samesite) {
  * @param {Object} imageObj
  * @param {number} width
  * @param {number} height
- * @param {number=} opt_offset
+ * @param {number=} optOffset
  * @deprecated
  * @return {Array.<ol.Feature>}
  */
-dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_offset) {
+dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffset) {
 
     // update size / scale settings of imageObj
     var image = void 0;
@@ -621,24 +621,26 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
     }
 
     var scale = image.scale,
-        offset = opt_offset !== undefined ? opt_offset : 0;
+        offset = optOffset !== undefined ? optOffset : 0;
 
     // do rescaling and set a id
     for (var i in features) {
 
-        var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
-            newCoordinates = [];
+        if (features.hasOwnProperty(i)) {
+            var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
+                newCoordinates = [];
 
-        for (var j = 0; j < oldCoordinates.length; j++) {
-            newCoordinates.push(
-              [offset + scale * oldCoordinates[j][0], 0 - scale * oldCoordinates[j][1]]);
+            for (var j = 0; j < oldCoordinates.length; j++) {
+                newCoordinates.push(
+                  [offset + scale * oldCoordinates[j][0], 0 - scale * oldCoordinates[j][1]]);
+            }
+
+            features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
+
+            // set index
+            dlfUtils.RUNNING_INDEX += 1;
+            features[i].setId('' + dlfUtils.RUNNING_INDEX);
         }
-
-        features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
-
-        // set index
-        dlfUtils.RUNNING_INDEX += 1;
-        features[i].setId('' + dlfUtils.RUNNING_INDEX);
     }
 
     return features;
