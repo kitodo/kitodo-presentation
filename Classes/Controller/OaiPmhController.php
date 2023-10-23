@@ -714,7 +714,7 @@ class OaiPmhController extends AbstractController
         }
         $verb = $this->parameters['verb'];
 
-        $documents = $this->documentRepository->getOaiDocumentList($this->settings, $documentsToProcess);
+        $documents = $this->documentRepository->getOaiDocumentList($documentsToProcess);
 
         $records = [];
         while ($resArray = $documents->fetchAssociative()) {
