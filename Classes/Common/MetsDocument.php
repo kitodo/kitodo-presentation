@@ -170,8 +170,8 @@ final class MetsDocument extends AbstractDocument
         $hookObjects = Helper::getHookObjects('Classes/Common/MetsDocument.php');
         // Apply hooks.
         foreach ($hookObjects as $hookObj) {
-            if (method_exists($hookObj, 'construct_postProcessRecordId')) {
-                $hookObj->construct_postProcessRecordId($this->xml, $this->recordId);
+            if (method_exists($hookObj, 'postProcessRecordId')) {
+                $hookObj->postProcessRecordId($this->xml, $this->recordId);
             }
         }
     }
@@ -299,6 +299,7 @@ final class MetsDocument extends AbstractDocument
      */
     protected function getLogicalStructureInfo(\SimpleXMLElement $structure, bool $recursive = false): array
     {
+        $attributes = [];
         // Get attributes.
         foreach ($structure->attributes() as $attribute => $value) {
             $attributes[$attribute] = (string) $value;
@@ -943,16 +944,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @access protected
-     * @return array
-     */
-    protected function _getFileInfos()
-    {
-        $this->_getFileGrps();
-        return $this->fileInfos;
-    }
-
-    /**
      * @see AbstractDocument::prepareMetadataArray()
      */
     protected function prepareMetadataArray(int $cPid): void
@@ -1029,12 +1020,11 @@ final class MetsDocument extends AbstractDocument
                     }
                 }
                 // Sort array by keys (= @ORDER).
-                if (ksort($elements)) {
-                    // Set total number of pages/tracks.
-                    $this->numPages = count($elements);
-                    // Merge and re-index the array to get nice numeric indexes.
-                    $this->physicalStructure = array_merge($physSeq, $elements);
-                }
+                ksort($elements);
+                // Set total number of pages/tracks.
+                $this->numPages = count($elements);
+                // Merge and re-index the array to get numeric indexes.
+                $this->physicalStructure = array_merge($physSeq, $elements);
             }
             $this->physicalStructureLoaded = true;
         }
