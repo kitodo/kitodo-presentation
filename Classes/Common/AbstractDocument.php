@@ -209,7 +209,7 @@ abstract class AbstractDocument
      * @access protected
      * @var string The METS file's / IIIF manifest's record identifier
      */
-    protected ?string $recordId;
+    protected string $recordId = '';
 
     /**
      * @access protected
