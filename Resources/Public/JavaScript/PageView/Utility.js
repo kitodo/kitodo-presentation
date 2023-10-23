@@ -626,19 +626,21 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
     // do rescaling and set a id
     for (var i in features) {
 
-        var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
-            newCoordinates = [];
+        if (features.hasOwnProperty(i)) {
+            var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
+                newCoordinates = [];
 
-        for (var j = 0; j < oldCoordinates.length; j++) {
-            newCoordinates.push(
-              [offset + scale * oldCoordinates[j][0], 0 - scale * oldCoordinates[j][1]]);
+            for (var j = 0; j < oldCoordinates.length; j++) {
+                newCoordinates.push(
+                  [offset + scale * oldCoordinates[j][0], 0 - scale * oldCoordinates[j][1]]);
+            }
+
+            features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
+
+            // set index
+            dlfUtils.RUNNING_INDEX += 1;
+            features[i].setId('' + dlfUtils.RUNNING_INDEX);
         }
-
-        features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
-
-        // set index
-        dlfUtils.RUNNING_INDEX += 1;
-        features[i].setId('' + dlfUtils.RUNNING_INDEX);
     }
 
     return features;
