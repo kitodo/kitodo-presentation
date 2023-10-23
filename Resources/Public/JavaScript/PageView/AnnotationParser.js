@@ -10,12 +10,12 @@
 
 /**
  * @constructor
- * @param {Object=} opt_imageObj
- * @param {number=} opt_width
- * @param {number=} opt_height
- * @param {number=} opt_offset
+ * @param {Object=} optImageObj
+ * @param {number=} optWidth
+ * @param {number=} optHeight
+ * @param {number=} optOffset
  */
-var DlfIiifAnnotationParser = function(opt_imageObj, opt_width, opt_height, opt_offset) {
+var DlfIiifAnnotationParser = function(optImageObj, optWidth, optHeight, optOffset) {
 
     // get width and height either from image info.json or from canvas information
 
@@ -23,25 +23,25 @@ var DlfIiifAnnotationParser = function(opt_imageObj, opt_width, opt_height, opt_
      * @type {Object|undefined}
      * @private
      */
-    this.image_ = dlfUtils.exists(opt_imageObj) ? opt_imageObj : undefined;
+    this.image_ = dlfUtils.exists(optImageObj) ? optImageObj : undefined;
 
     /**
      * @type {number|undefined}
      * @private
      */
-    this.width_ = dlfUtils.exists(opt_width) ? opt_width : undefined;
+    this.width_ = dlfUtils.exists(optWidth) ? optWidth : undefined;
 
     /**
      * @type {number|undefined}
      * @private
      */
-    this.height_ = dlfUtils.exists(opt_height) ? opt_height : undefined;
+    this.height_ = dlfUtils.exists(optHeight) ? optHeight : undefined;
 
     /**
      * @type {number|undefined}
      * @private
      */
-    this.offset_ = dlfUtils.exists(opt_offset) ? opt_offset : undefined;
+    this.offset_ = dlfUtils.exists(optOffset) ? optOffset : undefined;
 };
 
 /**
