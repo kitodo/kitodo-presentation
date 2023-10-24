@@ -88,13 +88,13 @@ final class IiifManifest extends AbstractDocument
 
     /**
      * @access protected
-     * @var ManifestInterface A PHP object representation of a IIIF manifest
+     * @var ManifestInterface|null A PHP object representation of a IIIF manifest
      */
-    protected ManifestInterface $iiif;
+    protected ?ManifestInterface $iiif;
 
     /**
      * @access protected
-     * @var string 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif confrms to: IIIF Metadata API 1, IIIF Presentation API 2 or 3
+     * @var string 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif conforms to: IIIF Metadata API 1, IIIF Presentation API 2 or 3
      */
     protected string $iiifVersion;
 
@@ -263,7 +263,7 @@ final class IiifManifest extends AbstractDocument
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
             if ($this->iiif == null || !($this->iiif instanceof ManifestInterface)) {
-                return null;
+                return [];
             }
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $iiifId = $this->iiif->getId();
@@ -369,7 +369,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * {@inheritDoc}
      * @see AbstractDocument::getDownloadLocation()
      */
     public function getDownloadLocation(string $id): string
@@ -404,7 +403,7 @@ final class IiifManifest extends AbstractDocument
     public function getFileLocation(string $id): string
     {
         if ($id == null) {
-            return null;
+            return '';
         }
         $resource = $this->iiif->getContainedResourceById($id);
         if (isset($resource)) {
@@ -417,9 +416,8 @@ final class IiifManifest extends AbstractDocument
             } elseif ($resource instanceof AnnotationContainerInterface) {
                 return $id;
             }
-        } else {
-            return $id;
         }
+        return $id;
     }
 
     /**
@@ -986,7 +984,7 @@ final class IiifManifest extends AbstractDocument
      */
     public function __sleep(): array
     {
-        // TODO implement serializiation in IIIF library
+        // TODO implement serialization in IIIF library
         $jsonArray = $this->iiif->getOriginalJsonArray();
         $this->asJson = json_encode($jsonArray);
         return ['uid', 'pid', 'recordId', 'parentId', 'asJson'];

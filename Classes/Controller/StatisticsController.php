@@ -30,7 +30,7 @@ class StatisticsController extends AbstractController
      *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         $foundNumbers = $this->documentRepository->getStatisticsForSelectedCollection($this->settings);
 

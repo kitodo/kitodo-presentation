@@ -18,36 +18,36 @@
 
 /**
  * @constructor
- * @param {Object=} opt_imageObj
- * @param {number=} opt_width
- * @param {number=} opt_height
- * @param {number=} opt_offset
+ * @param {Object=} optImageObj
+ * @param {number=} optWidth
+ * @param {number=} optHeight
+ * @param {number=} optOffset
  */
-var dlfAltoParser = function(opt_imageObj, opt_width, opt_height, opt_offset) {
+var dlfAltoParser = function(optImageObj, optWidth, optHeight, optOffset) {
 
     /**
      * @type {Object|undefined}
      * @private
      */
-    this.image_ = dlfUtils.exists(opt_imageObj) ? opt_imageObj : undefined;
+    this.image_ = dlfUtils.exists(optImageObj) ? optImageObj : undefined;
 
     /**
      * @type {number|undefined}
      * @private
      */
-    this.width_ = dlfUtils.exists(opt_width) ? opt_width : undefined;
+    this.width_ = dlfUtils.exists(optWidth) ? optWidth : undefined;
 
     /**
      * @type {number|undefined}
      * @private
      */
-    this.height_ = dlfUtils.exists(opt_height) ? opt_height : undefined;
+    this.height_ = dlfUtils.exists(optHeight) ? optHeight : undefined;
 
     /**
      * @type {number|undefined}
      * @private
      */
-    this.offset_ = dlfUtils.exists(opt_offset) ? opt_offset : undefined;
+    this.offset_ = dlfUtils.exists(optOffset) ? optOffset : undefined;
 };
 
 /**
@@ -163,8 +163,9 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
          * @return {Array}
          */
         feature.getTextblocks = function() {
-            if (this.get('printspace') !== undefined && this.get('printspace').get('textblocks'))
-                return this.get('printspace').get('textblocks')
+            if (this.get('printspace') !== undefined && this.get('printspace').get('textblocks')) {
+                return this.get('printspace').get('textblocks');
+            }
             return [];
         };
 
@@ -229,8 +230,9 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
         y2 = y1 + height,
         coordinatesWithoutScale = [[[x1, y1], [x2, y1], [x2, y2], [x1, y2], [x1, y1]]];
 
-    if (isNaN(width) || isNaN(height))
+    if (isNaN(width) || isNaN(height)) {
         return undefined;
+    }
 
     // If page dimensions are given in the ALTO, use them to rescale the coordinates
     var scale = 1;
@@ -247,7 +249,7 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
             // In ALTO, the y coordinate increases downwards;
             // in OL, it increases upwards.
             0 - (scale * coordinatesWithoutScale[0][i][1])]);
-    };
+    }
 
     return new ol.geom.Polygon([coordinatesRescale]);
 };
@@ -260,8 +262,9 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
 dlfAltoParser.prototype.parsePrintSpaceFeature_ = function(node) {
     var printspace = $(node).find('PrintSpace');
 
-    if (printspace.length === 0)
+    if (printspace.length === 0) {
         return;
+    }
     return this.parseAltoFeature_(printspace[0]);
 };
 
@@ -282,11 +285,11 @@ dlfAltoParser.prototype.parseTextBlockFeatures_ = function(node) {
         // aggregated fulltexts
         for (var j = 0; j < textlines.length; j++) {
             fulltext += textlines[j].get('fulltext') + '\n';
-        };
+        }
         feature.setProperties({'fulltext':fulltext});
 
         textblockFeatures.push(feature);
-    };
+    }
 
     return textblockFeatures;
 };
@@ -308,11 +311,11 @@ dlfAltoParser.prototype.parseTextLineFeatures_ = function(node) {
         // parse fulltexts
         for (var j = 0; j < fulltextElements.length; j++) {
             fulltext += fulltextElements[j].get('fulltext');
-        };
+        }
         feature.setProperties({'fulltext':fulltext});
 
         textlineFeatures.push(feature);
-    };
+    }
 
     return textlineFeatures;
 };
@@ -343,11 +346,11 @@ dlfAltoParser.prototype.parseContentFeatures_ = function(node) {
                 break;
             default:
                 fulltext = '';
-        };
+        }
         feature.setProperties({fulltext});
 
         textLineContentFeatures.push(feature);
-    };
+    }
 
     return textLineContentFeatures;
 };
@@ -378,6 +381,6 @@ dlfAltoParser.prototype.parseString_ = function(textLineContentElement) {
 dlfAltoParser.prototype.parseXML_ = function(document) {
     if (typeof document === 'string' || document instanceof String) {
         return $.parseXML(document);
-    };
+    }
     return document;
 };

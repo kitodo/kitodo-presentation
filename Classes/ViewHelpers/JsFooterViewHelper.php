@@ -55,7 +55,7 @@ class JsFooterViewHelper extends AbstractViewHelper
     {
         $inlineCode = $arguments['inlineCode'];
 
-        /** @var $pageRenderer PageRenderer */
+        /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $pageRenderer->addJsFooterInlineCode('js-dlf-inline-footer', $inlineCode);
     }

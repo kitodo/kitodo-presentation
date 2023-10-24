@@ -32,7 +32,7 @@ class CollectionController extends AbstractController
      * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
      * @access public
@@ -41,7 +41,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
     {
         $this->collectionRepository = $collectionRepository;
     }
@@ -50,7 +50,7 @@ class CollectionController extends AbstractController
      * @access protected
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
      * @access public
@@ -59,7 +59,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
     {
         $this->metadataRepository = $metadataRepository;
     }
@@ -71,7 +71,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function listAction()
+    public function listAction(): void
     {
         $solr = Solr::getInstance($this->settings['solrcore']);
 
@@ -116,10 +116,10 @@ class CollectionController extends AbstractController
             } else {
                 $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
             }
-            $partOfNothing = $solr->search_raw($params);
+            $partOfNothing = $solr->searchRaw($params);
 
             $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
-            $partOfSomething = $solr->search_raw($params);
+            $partOfSomething = $solr->searchRaw($params);
             // Titles are all documents that are "root" elements i.e. partof == 0
             $collectionInfo['titles'] = [];
             foreach ($partOfNothing as $doc) {
@@ -161,7 +161,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function showAction(Collection $collection)
+    public function showAction(Collection $collection): void
     {
         $searchParams = $this->getParametersSafely('searchParameter');
 
@@ -214,7 +214,7 @@ class CollectionController extends AbstractController
      *
      * @return void
      */
-    public function showSortedAction()
+    public function showSortedAction(): void
     {
         // if search was triggered, get search parameters from POST variables
         $searchParams = $this->getParametersSafely('searchParameter');

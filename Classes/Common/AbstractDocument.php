@@ -47,7 +47,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
- * @property array $registry this holds the singleton object of the document
  * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
  * @property-read array $smLinks this holds the smLinks between logical and physical structMap
  * @property bool $smLinksLoaded flag with information if the smLinks are loaded
@@ -83,7 +82,7 @@ abstract class AbstractDocument
      * @access protected
      * @var array Additional information about files (e.g., ADMID), indexed by ID.
      */
-    protected $fileInfos = [];
+    protected array $fileInfos = [];
 
     /**
      * @access protected
@@ -210,7 +209,7 @@ abstract class AbstractDocument
      * @access protected
      * @var string The METS file's / IIIF manifest's record identifier
      */
-    protected ?string $recordId;
+    protected string $recordId = '';
 
     /**
      * @access protected
@@ -311,11 +310,11 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param int $pid: ID of the configuration page with the recordId config
+     * @param int $pid ID of the configuration page with the recordId config
      *
      * @return void
      */
-    protected abstract function establishRecordId(int $pid);
+    protected abstract function establishRecordId(int $pid): void;
 
     /**
      * Source document PHP object which is represented by a Document instance
@@ -392,20 +391,23 @@ abstract class AbstractDocument
      * @param array $settings
      * @param bool $forceReload Force reloading the document instead of returning the cached instance
      *
-     * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
+     * @return MetsDocument|IiifManifest|null Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false): ?AbstractDocument
+    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false)
     {
         // Create new instance depending on format (METS or IIIF) ...
         $documentFormat = null;
         $xml = null;
         $iiif = null;
 
-        if ($instance = self::getDocCache($location) && !$forceReload) {
-            return $instance;
-        } else {
-            $instance = null;
+        if (!$forceReload) {
+            $instance = self::getDocumentCache($location);
+            if ($instance !== false) {
+                return $instance;
+            }
         }
+
+        $instance = null;
 
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
@@ -444,8 +446,8 @@ abstract class AbstractDocument
             $instance = new IiifManifest($location, $pid, $iiif);
         }
 
-        if ($instance) {
-            self::setDocCache($location, $instance);
+        if (!is_null($instance)) {
+            self::setDocumentCache($location, $instance);
         }
 
         return $instance;
@@ -1243,7 +1245,7 @@ abstract class AbstractDocument
     }
 
     /**
-     * Gets Cache Hit for $doc
+     * Get Cache Hit for document instance
      *
      * @access private
      *
@@ -1251,9 +1253,9 @@ abstract class AbstractDocument
      *
      * @param string $location
      *
-     * @return Doc|false
+     * @return AbstractDocument|false
      */
-    private static function getDocCache(string $location)
+    private static function getDocumentCache(string $location)
     {
         $cacheIdentifier = md5($location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
@@ -1263,7 +1265,7 @@ abstract class AbstractDocument
     }
 
     /**
-     * Sets Cache for $doc
+     * Set Cache for document instance
      *
      * @access private
      *
@@ -1274,7 +1276,7 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    private static function setDocCache(string $location, AbstractDocument $currentDocument): void
+    private static function setDocumentCache(string $location, AbstractDocument $currentDocument): void
     {
         $cacheIdentifier = md5($location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');

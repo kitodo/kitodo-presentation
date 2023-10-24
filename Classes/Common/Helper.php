@@ -699,13 +699,13 @@ class Helper
      *
      * @static
      *
-     * @param string $index_name The internal "index_name" to translate
+     * @param string $indexName The internal "index_name" to translate
      * @param string $table Get the translation from this table
      * @param string $pid Get the translation from this page
      *
-     * @return string Localized label for $index_name
+     * @return string Localized label for $indexName
      */
-    public static function translate(string $index_name, string $table, string $pid): string
+    public static function translate(string $indexName, string $table, string $pid): string
     {
         // Load labels into static variable for future use.
         static $labels = [];
@@ -713,7 +713,7 @@ class Helper
         $pid = max(intval($pid), 0);
         if (!$pid) {
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
-            return $index_name;
+            return $indexName;
         }
         /** @var PageRepository $pageRepository */
         $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
@@ -722,12 +722,12 @@ class Helper
         $languageContentId = $languageAspect->getContentId();
 
         // Check if "index_name" is an UID.
-        if (MathUtility::canBeInterpretedAsInteger($index_name)) {
-            $index_name = self::getIndexNameFromUid($index_name, $table, $pid);
+        if (MathUtility::canBeInterpretedAsInteger($indexName)) {
+            $indexName = self::getIndexNameFromUid($indexName, $table, $pid);
         }
         /* $labels already contains the translated content element, but with the index_name of the translated content element itself
-         * and not with the $index_name of the original that we receive here. So we have to determine the index_name of the
-         * associated translated content element. E.g. $labels['title0'] != $index_name = title. */
+         * and not with the $indexName of the original that we receive here. So we have to determine the index_name of the
+         * associated translated content element. E.g. $labels['title0'] != $indexName = title. */
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table);
@@ -741,7 +741,7 @@ class Helper
             ->from($table)
             ->where(
                 $queryBuilder->expr()->eq($table . '.pid', $pid),
-                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($index_name)),
+                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($indexName)),
                 self::whereExpression($table, true)
             )
             ->setMaxResults(1)
@@ -766,13 +766,13 @@ class Helper
             $row = $result->fetchAssociative();
 
             if ($row) {
-                // If there is an translated content element, overwrite the received $index_name.
-                $index_name = $row['index_name'];
+                // If there is an translated content element, overwrite the received $indexName.
+                $indexName = $row['index_name'];
             }
         }
 
         // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$languageContentId][$index_name])) {
+        if (empty($labels[$table][$pid][$languageContentId][$indexName])) {
             // Check if this table is allowed for translation.
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
@@ -816,10 +816,10 @@ class Helper
             }
         }
 
-        if (!empty($labels[$table][$pid][$languageContentId][$index_name])) {
-            return $labels[$table][$pid][$languageContentId][$index_name];
+        if (!empty($labels[$table][$pid][$languageContentId][$indexName])) {
+            return $labels[$table][$pid][$languageContentId][$indexName];
         } else {
-            return $index_name;
+            return $indexName;
         }
     }
 

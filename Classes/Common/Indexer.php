@@ -202,12 +202,12 @@ class Indexer
      *
      * @static
      *
-     * @param string $index_name The metadata field's name in database
+     * @param string $indexName The metadata field's name in database
      * @param int $pid UID of the configuration page
      *
      * @return string The field's dynamic index name
      */
-    public static function getIndexFieldName(string $index_name, int $pid = 0): string
+    public static function getIndexFieldName(string $indexName, int $pid = 0): string
     {
         // Sanitize input.
         $pid = max(intval($pid), 0);
@@ -218,11 +218,11 @@ class Indexer
         // Load metadata configuration.
         self::loadIndexConf($pid);
         // Build field's suffix.
-        $suffix = (in_array($index_name, self::$fields['tokenized']) ? 't' : 'u');
-        $suffix .= (in_array($index_name, self::$fields['stored']) ? 's' : 'u');
-        $suffix .= (in_array($index_name, self::$fields['indexed']) ? 'i' : 'u');
-        $index_name .= '_' . $suffix;
-        return $index_name;
+        $suffix = (in_array($indexName, self::$fields['tokenized']) ? 't' : 'u');
+        $suffix .= (in_array($indexName, self::$fields['stored']) ? 's' : 'u');
+        $suffix .= (in_array($indexName, self::$fields['indexed']) ? 'i' : 'u');
+        $indexName .= '_' . $suffix;
+        return $indexName;
     }
 
     /**
@@ -604,9 +604,7 @@ class Indexer
      *
      * @return void
      */
-    private function __construct(DocumentRepository $documentRepository)
+    private function __construct()
     {
-        // This is a static class, thus no instances should be created.
-        $this->documentRepository = $documentRepository;
     }
 }
