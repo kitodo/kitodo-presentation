@@ -43,11 +43,13 @@ class AudioVideoMD implements MetadataInterface
         $xml->registerXPathNamespace('audiomd', 'http://www.loc.gov/audioMD/');
         $xml->registerXPathNamespace('videomd', 'http://www.loc.gov/videoMD/');
 
-        if (!empty($audioDuration = (string) $xml->xpath('./audiomd:audioInfo/audiomd:duration')[0])) {
+        $audioDuration = (string) $xml->xpath('./audiomd:audioInfo/audiomd:duration')[0];
+        if (!empty($audioDuration)) {
             $metadata['audio_duration'] = [$audioDuration];
         }
 
-        if (!empty($videoDuration = (string) $xml->xpath('./videomd:videoInfo/videomd:duration')[0])) {
+        $videoDuration = (string) $xml->xpath('./videomd:videoInfo/videomd:duration')[0];
+        if (!empty($videoDuration)) {
             $metadata['video_duration'] = [$videoDuration];
         }
 
