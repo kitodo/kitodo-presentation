@@ -39,19 +39,27 @@ class Mods implements MetadataInterface
     private $metadata;
 
     /**
+     * @access private
+     * @var bool The metadata array
+     **/
+    private $useExternalApis;
+
+    /**
      * This extracts the essential MODS metadata from XML
      *
      * @access public
      *
      * @param \SimpleXMLElement $xml The XML to extract the metadata from
      * @param array &$metadata The metadata array to fill
+     * @param bool $useExternalApis true if external APIs should be called, false otherwise
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata): void
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata, bool $useExternalApis): void
     {
         $this->xml = $xml;
         $this->metadata = $metadata;
+        $this->useExternalApis = $useExternalApis;
 
         $this->xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
@@ -84,7 +92,7 @@ class Mods implements MetadataInterface
                 $authors[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
                 $identifier = $authors[$i]->xpath('./mods:name/mods:nameIdentifier[@type="orcid"]');
-                if ($this->settings['useExternalApisForMetadata'] && !empty((string) $identifier[0])) {
+                if ($this->useExternalApis && !empty((string) $identifier[0])) {
                     $this->getAuthorFromOrcidApi((string) $identifier[0], $authors, $i);
                 } else {
                     $this->getAuthorFromXml($authors, $i);
@@ -207,7 +215,7 @@ class Mods implements MetadataInterface
                 $holders[$i]->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
 
                 $identifier = $holders[$i]->xpath('./mods:name/mods:nameIdentifier[@type="viaf"]');
-                if ($this->settings['useExternalApisForMetadata'] && !empty((string) $identifier[0])) {
+                if ($this->useExternalApis && !empty((string) $identifier[0])) {
                     $this->getHolderFromViafApi((string) $identifier[0], $holders, $i);
                 } else {
                     $this->getHolderFromXml($holders, $i);

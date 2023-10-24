@@ -31,12 +31,12 @@ class Client
     /**
      * @var string constant for API hostname
      **/
-    const HOSTNAME  = 'orcid.org';
+    const HOSTNAME = 'orcid.org';
 
     /**
      * @var string constant for API version
      **/
-    const VERSION   = '3.0';
+    const VERSION = '3.0';
 
     /**
      * @access protected

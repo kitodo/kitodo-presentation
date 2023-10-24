@@ -73,7 +73,7 @@ class SolrIndexingTest extends FunctionalTestCase
         $document->setSolrcore($core->model->getUid());
         $this->persistenceManager->persistAll();
 
-        $doc = AbstractDocument::getInstance($document->getLocation());
+        $doc = AbstractDocument::getInstance($document->getLocation(), ['useExternalApisForMetadata' => 0]);
         $document->setCurrentDocument($doc);
 
         $indexingSuccessful = Indexer::add($document, $this->documentRepository);

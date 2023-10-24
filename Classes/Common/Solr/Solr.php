@@ -528,7 +528,7 @@ class Solr implements LoggerAwareInterface
             || !method_exists($this, $method)
         ) {
             $this->logger->warning('There is no getter function for property "' . $var . '"');
-            return;
+            return null;
         } else {
             return $this->$method();
         }

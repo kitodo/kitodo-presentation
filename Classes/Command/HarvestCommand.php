@@ -187,6 +187,7 @@ class HarvestCommand extends BaseCommand
         if (
             !is_array($input->getOption('set'))
             && !empty($input->getOption('set'))
+            && !empty($oai)
         ) {
             $setsAvailable = $oai->listSets();
             foreach ($setsAvailable as $setAvailable) {
@@ -201,9 +202,14 @@ class HarvestCommand extends BaseCommand
             }
         }
 
+        $identifiers = [];
         // Get OAI record identifiers to process.
         try {
-            $identifiers = $oai->listIdentifiers('mets', $from, $until, $set);
+            if (!empty($oai)) {
+                $identifiers = $oai->listIdentifiers('mets', $from, $until, $set);
+            } else {
+                $io->error('ERROR: OAI interface does not exist.');
+            }
         } catch (BaseoaipmhException $exception) {
             $this->handleOaiError($exception, $io);
         }

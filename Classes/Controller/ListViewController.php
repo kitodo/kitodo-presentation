@@ -83,7 +83,7 @@ class ListViewController extends AbstractController
         $collection = null;
         if ($this->searchParams['collection']) {
             foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collection[] = $this->collectionRepository->findByUid($collectionEntry);
+                $collection[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
         }
 
@@ -92,6 +92,8 @@ class ListViewController extends AbstractController
         if (empty($currentPage)) {
             $currentPage = 1;
         }
+        //TODO: Undefined variable: $widgetPage
+        // @phpstan-ignore-next-line
         $GLOBALS['TSFE']->fe_user->setKey('ses', 'widgetPage', $widgetPage);
 
         // get all sortable metadata records
@@ -103,6 +105,7 @@ class ListViewController extends AbstractController
         $solrResults = null;
         $numResults = 0;
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
+            // @phpstan-ignore-next-line
             $solrResults = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
             $numResults = $solrResults->getNumFound();
 

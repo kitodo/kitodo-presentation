@@ -104,6 +104,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     protected function getDlfConfiguration()
     {
         return [
+            'useExternalApisForMetadata' => 0,
             'fileGrpImages' => 'DEFAULT,MAX',
             'fileGrpThumbs' => 'THUMBS',
             'fileGrpDownload' => 'DOWNLOAD',

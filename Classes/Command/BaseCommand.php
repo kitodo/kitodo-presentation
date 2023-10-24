@@ -191,7 +191,7 @@ class BaseCommand extends Command
      *
      * @access protected
      *
-     * @param Document $doc The document instance
+     * @param Document $document The document instance
      *
      * @return bool true on success, false otherwise
      */

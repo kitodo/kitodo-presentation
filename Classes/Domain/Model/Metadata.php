@@ -148,7 +148,7 @@ class Metadata extends AbstractEntity
     }
 
     /**
-     * @param int $l18nParent
+     * @param Metadata $l18nParent
      */
     public function setL18nParent(Metadata $l18nParent): void
     {

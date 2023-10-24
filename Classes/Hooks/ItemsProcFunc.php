@@ -86,6 +86,8 @@ class ItemsProcFunc implements LoggerAwareInterface
             $this->logger->error($e->getMessage());
         }
 
+        // TODO: Variable $ts might not be defined.
+        // @phpstan-ignore-next-line
         $typoScriptConfig = $ts->setup;
         $this->storagePid = $typoScriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
 
@@ -161,10 +163,8 @@ class ItemsProcFunc implements LoggerAwareInterface
             ->orderBy($sorting)
             ->execute();
 
-        while ($resArray = $result->fetch(\PDO::FETCH_NUM)) {
-            if ($resArray) {
-                $params['items'][] = $resArray;
-            }
+        while ($resArray = $result->fetchNumeric()) {
+            $params['items'][] = $resArray;
         }
     }
 }

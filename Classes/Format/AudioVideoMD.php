@@ -34,22 +34,29 @@ class AudioVideoMD implements MetadataInterface
      *
      * @param \SimpleXMLElement $xml The XML to extract the metadata from
      * @param array &$metadata The metadata array to fill
+     * @param bool $useExternalApis true if external APIs should be called, false otherwise
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata): void
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata, bool $useExternalApis = false): void
     {
         $xml->registerXPathNamespace('audiomd', 'http://www.loc.gov/audioMD/');
         $xml->registerXPathNamespace('videomd', 'http://www.loc.gov/videoMD/');
 
-        if (!empty($audioDuration = (string) $xml->xpath('./audiomd:audioInfo/audiomd:duration')[0])) {
+        $audioDuration = (string) $xml->xpath('./audiomd:audioInfo/audiomd:duration')[0];
+        if (!empty($audioDuration)) {
             $metadata['audio_duration'] = [$audioDuration];
         }
 
-        if (!empty($videoDuration = (string) $xml->xpath('./videomd:videoInfo/videomd:duration')[0])) {
+        $videoDuration = (string) $xml->xpath('./videomd:videoInfo/videomd:duration')[0];
+        if (!empty($videoDuration)) {
             $metadata['video_duration'] = [$videoDuration];
         }
 
         $metadata['duration'] = $metadata['video_duration'] ?: $metadata['audio_duration'] ?: [];
+
+        if ($useExternalApis) {
+            // TODO?
+        }
     }
 }

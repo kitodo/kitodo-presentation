@@ -138,6 +138,12 @@ final class MetsDocument extends AbstractDocument
     protected string $parentHref = '';
 
     /**
+     * @access protected
+     * @var array the extension settings
+     */
+    protected array $settings = [];
+
+    /**
      * This adds metadata from METS structural map to metadata array.
      *
      * @access public
@@ -467,7 +473,7 @@ final class MetsDocument extends AbstractDocument
                         class_exists($class)
                         && ($obj = GeneralUtility::makeInstance($class)) instanceof MetadataInterface
                     ) {
-                        $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata);
+                        $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata, $this->settings['useExternalApisForMetadata']);
                     } else {
                         $this->logger->warning('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->mdSec[$dmdId]['type'] . '"');
                     }
@@ -711,9 +717,10 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::init()
      */
-    protected function init(string $location): void
+    protected function init(string $location, array $settings): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
+        $this->settings = $settings;
         // Get METS node from XML file.
         $this->registerNamespaces($this->xml);
         $mets = $this->xml->xpath('//mets:mets');
@@ -1221,7 +1228,7 @@ final class MetsDocument extends AbstractDocument
             $this->asXML = '';
             $this->xml = $xml;
             // Rebuild the unserializable properties.
-            $this->init('');
+            $this->init('', $this->settings);
         } else {
             $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
             $this->logger->error('Could not load XML after deserialization');
