@@ -140,12 +140,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
-                        $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
-                    }
-
-                    if ($this->document === null) {
-                        // create new dummy Document object
-                        $this->document = GeneralUtility::makeInstance(Document::class);
+                        // find document from repository by recordId
+                        $docFromRepository = $this->documentRepository->findOneByRecordId($doc->recordId);
+                        if ($docFromRepository !== null) {
+                            $this->document = $docFromRepository;
+                        } else {
+                            // create new dummy Document object
+                            $this->document = GeneralUtility::makeInstance(Document::class);
+                        }
                     }
 
                     // Make sure configuration PID is set when applicable
