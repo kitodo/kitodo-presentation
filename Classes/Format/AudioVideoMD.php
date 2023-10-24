@@ -56,7 +56,6 @@ class AudioVideoMD implements MetadataInterface
         $metadata['duration'] = $metadata['video_duration'] ?: $metadata['audio_duration'] ?: [];
 
         if ($useExternalApis) {
-            // @phpstan-ignore-next-line
             // TODO?
         }
     }
