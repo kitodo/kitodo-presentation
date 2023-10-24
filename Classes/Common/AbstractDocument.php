@@ -756,7 +756,7 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    protected abstract function init(string $location, array $settings): void;
+    abstract protected function init(string $location, array $settings): void;
 
     /**
      * Reuse any document object that might have been already loaded to determine whether document is METS or IIIF
