@@ -52,7 +52,7 @@ class Metadata extends AbstractEntity
 
     /**
      * @access protected
-     * @var ObjectStorage<MetadataFormat> The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
+     * @var ObjectStorage<MetadataFormat> The formats that encode this metadata (local IRRE field to ``tx_dlf_metadataformat``).
      *
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")

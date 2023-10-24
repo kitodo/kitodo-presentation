@@ -43,7 +43,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      * @var DocumentRepository
      */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
     /**
      * @access public
@@ -52,7 +52,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    public function injectDocumentRepository(DocumentRepository $documentRepository)
+    public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
         $this->documentRepository = $documentRepository;
     }
@@ -61,25 +61,25 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      * @var Document This holds the current document
      */
-    protected $document;
+    protected Document $document;
 
     /**
      * @access protected
      * @var array
      */
-    protected $extConf;
+    protected array $extConf;
 
     /**
      * @access protected
      * @var array This holds the request parameter
      */
-    protected $requestData;
+    protected array $requestData;
 
     /**
      * @access protected
      * @var array This holds some common data for the fluid view
      */
-    protected $viewData;
+    protected array $viewData;
 
     /**
      * Initialize the plugin controller
@@ -88,7 +88,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
 
@@ -114,7 +114,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function loadDocument(int $documentId = 0)
+    protected function loadDocument(int $documentId = 0): void
     {
         // Get document ID from request data if not passed as parameter.
         if ($documentId === 0 && !empty($this->requestData['id'])) {
@@ -140,12 +140,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
-                        $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
-                    }
-
-                    if ($this->document === null) {
-                        // create new dummy Document object
-                        $this->document = GeneralUtility::makeInstance(Document::class);
+                        // find document from repository by recordId
+                        $docFromRepository = $this->documentRepository->findOneByRecordId($doc->recordId);
+                        if ($docFromRepository !== null) {
+                            $this->document = $docFromRepository;
+                        } else {
+                            // create new dummy Document object
+                            $this->document = GeneralUtility::makeInstance(Document::class);
+                        }
                     }
 
                     // Make sure configuration PID is set when applicable
@@ -189,7 +191,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function configureProxyUrl(&$url) {
+    protected function configureProxyUrl(string &$url): void {
         $this->uriBuilder->reset()
             ->setTargetPageUid($GLOBALS['TSFE']->id)
             ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
@@ -206,9 +208,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access protected
      *
-     * @return boolean
+     * @return bool
      */
-    protected function isDocMissingOrEmpty()
+    protected function isDocMissingOrEmpty(): bool
     {
         return $this->isDocMissing() || $this->document->getCurrentDocument()->numPages < 1;
     }
@@ -218,9 +220,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access protected
      *
-     * @return boolean
+     * @return bool
      */
-    protected function isDocMissing()
+    protected function isDocMissing(): bool
     {
         return $this->document === null || $this->document->getCurrentDocument() === null;
     }
@@ -246,7 +248,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return null|string|array
      */
-    protected function getParametersSafely($parameterName)
+    protected function getParametersSafely(string $parameterName)
     {
         if ($this->request->hasArgument($parameterName)) {
             return $this->request->getArgument($parameterName);
@@ -261,7 +263,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function sanitizeRequestData()
+    protected function sanitizeRequestData(): void
     {
         // tx_dlf[id] may only be an UID or URI.
         if (
@@ -293,7 +295,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function setPage() {
+    protected function setPage(): void {
         if (!empty($this->requestData['logicalPage'])) {
             $this->requestData['page'] = $this->document->getCurrentDocument()->getPhysicalPage($this->requestData['logicalPage']);
             // The logical page parameter should not appear again
@@ -310,7 +312,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function setDefaultPage() {
+    protected function setDefaultPage(): void {
         // Set default values if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
         if (
@@ -344,7 +346,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param PaginatorInterface $paginator
      * @return array
      */
-    protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator)
+    protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator): array
     {
         $firstPage = $pagination->getFirstPageNumber();
         $lastPage = $pagination->getLastPageNumber();

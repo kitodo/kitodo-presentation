@@ -685,7 +685,7 @@ class OaiPmhController extends AbstractController
             ]
         ];
         $parameters['query'] = $solr_query;
-        $result = $solr->search_raw($parameters);
+        $result = $solr->searchRaw($parameters);
         if (empty($result)) {
             $this->error = 'noRecordsMatch';
             return;
@@ -714,7 +714,7 @@ class OaiPmhController extends AbstractController
         }
         $verb = $this->parameters['verb'];
 
-        $documents = $this->documentRepository->getOaiDocumentList($this->settings, $documentsToProcess);
+        $documents = $this->documentRepository->getOaiDocumentList($documentsToProcess);
 
         $records = [];
         while ($resArray = $documents->fetchAssociative()) {

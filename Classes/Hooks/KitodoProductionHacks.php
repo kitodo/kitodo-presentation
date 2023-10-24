@@ -30,13 +30,13 @@ class KitodoProductionHacks
      * @access public
      *
      * @param \SimpleXMLElement &$xml The XML object
-     * @param mixed $record_id The record identifier
+     * @param mixed $recordId The record identifier
      *
      * @return void
      */
-    public function construct_postProcessRecordId(\SimpleXMLElement &$xml, &$record_id): void
+    public function postProcessRecordId(\SimpleXMLElement &$xml, &$recordId): void
     {
-        if (!$record_id) {
+        if (!$recordId) {
             $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
             if (($divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
@@ -59,7 +59,7 @@ class KitodoProductionHacks
                 foreach ($dmdIds as $dmdId) {
                     $recordIds = $xml->xpath('//mets:dmdSec[@ID="' . $dmdId . '"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
                     if (!empty($recordIds)) {
-                        $record_id = (string) $recordIds[0];
+                        $recordId = (string) $recordIds[0];
                         break;
                     }
                 }
