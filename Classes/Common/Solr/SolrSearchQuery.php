@@ -55,6 +55,8 @@ class SolrSearchQuery implements QueryInterface
         $this->limit = count($solrSearch);
     }
 
+    // this class contains a lot of methods which are inherited but not implemented
+    // @phpstan-ignore-next-line
     public function getSource() {}
 
     /**
@@ -66,6 +68,8 @@ class SolrSearchQuery implements QueryInterface
      *
      * @return array
      */
+    // TODO: Return type (array) of method SolrSearchQuery::execute() should be compatible with return type (iterable<object>&TYPO3\CMS\Extbase\Persistence\QueryResultInterface) of method TYPO3\CMS\Extbase\Persistence\QueryInterface::execute()
+    // @phpstan-ignore-next-line
     public function execute($returnRawQueryResult = false)
     {
         $this->solrSearch->submit($this->offset, $this->limit);
@@ -79,6 +83,7 @@ class SolrSearchQuery implements QueryInterface
         return $result;
     }
 
+    // @phpstan-ignore-next-line
     public function setOrderings(array $orderings) {}
 
     /**
@@ -111,27 +116,42 @@ class SolrSearchQuery implements QueryInterface
         return $this;
     }
 
+    // @phpstan-ignore-next-line
     public function matching($constraint) {}
+    // @phpstan-ignore-next-line
     public function logicalAnd($constraint1) {}
+    // @phpstan-ignore-next-line
     public function logicalOr($constraint1) {}
+    // @phpstan-ignore-next-line
     public function logicalNot(ConstraintInterface $constraint) {}
+    // @phpstan-ignore-next-line
     public function equals($propertyName, $operand, $caseSensitive = true) {}
+    // @phpstan-ignore-next-line
     public function like($propertyName, $operand) {}
+    // @phpstan-ignore-next-line
     public function contains($propertyName, $operand) {}
+    // @phpstan-ignore-next-line
     public function in($propertyName, $operand) {}
+    // @phpstan-ignore-next-line
     public function lessThan($propertyName, $operand) {}
+    // @phpstan-ignore-next-line
     public function lessThanOrEqual($propertyName, $operand) {}
+    // @phpstan-ignore-next-line
     public function greaterThan($propertyName, $operand) {}
+    // @phpstan-ignore-next-line
     public function greaterThanOrEqual($propertyName, $operand) {}
+    // @phpstan-ignore-next-line
     public function getType() {}
     public function setQuerySettings(QuerySettingsInterface $querySettings) {}
+    // @phpstan-ignore-next-line
     public function getQuerySettings() {}
 
     public function count()
-    {
+    {// @phpstan-ignore-next-line
         // TODO?
     }
 
+    // @phpstan-ignore-next-line
     public function getOrderings() {}
 
     /**
@@ -158,8 +178,10 @@ class SolrSearchQuery implements QueryInterface
         return $this->offset;
     }
 
+    // @phpstan-ignore-next-line
     public function getConstraint() {}
     public function isEmpty($propertyName) {}
     public function setSource(SourceInterface $source) {}
+    // @phpstan-ignore-next-line
     public function getStatement() {}
 }

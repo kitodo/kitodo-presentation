@@ -31,12 +31,6 @@ class Highlight
 
     /**
      * @access private
-     * @var int The parent region's identifier
-     */
-    private int $parentRegionId;
-
-    /**
-     * @access private
      * @var int The horizontal beginning position of found highlight
      */
     private int $xBeginPosition;
@@ -70,7 +64,8 @@ class Highlight
      */
     public function __construct(array $highlight)
     {
-        $this->parentRegionId = $highlight['parentRegionIdx'];
+        // there is also possibility to access parentRegionIdx
+        // $this->parentRegionId = $highlight['parentRegionIdx'];
         $this->xBeginPosition = $highlight['ulx'];
         $this->xEndPosition = $highlight['lrx'];
         $this->yBeginPosition = $highlight['uly'];

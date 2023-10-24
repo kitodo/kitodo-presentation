@@ -43,7 +43,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @return ExpressionFunction[] An array of Function instances
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             $this->getDocumentTypeFunction(),
@@ -53,10 +53,10 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * This holds the current document
      *
-     * @var Document
+     * @var Document|null
      * @access protected
      */
-    protected Document $document;
+    protected ?Document $document;
 
     /**
      * @var ConfigurationManager

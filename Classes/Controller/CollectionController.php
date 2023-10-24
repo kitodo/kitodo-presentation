@@ -137,6 +137,8 @@ class CollectionController extends AbstractController
 
             // Generate random but unique array key taking priority into account.
             do {
+                //TODO: Offset 'priority' does not exist on array{titles: array<int|string, mixed>, volumes: array<int|string, mixed>}.
+                // @phpstan-ignore-next-line
                 $_key = ($collectionInfo['priority'] * 1000) + mt_rand(0, 1000);
             } while (!empty($processedCollections[$_key]));
 

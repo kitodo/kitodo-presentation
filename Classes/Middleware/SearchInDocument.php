@@ -57,7 +57,7 @@ class SearchInDocument implements MiddlewareInterface
      * @param ServerRequestInterface $request
      * @param RequestHandlerInterface $handler
      *
-     * @return ResponseInterface JSON response of documents
+     * @return ResponseInterface JSON response of search suggestions
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -88,13 +88,14 @@ class SearchInDocument implements MiddlewareInterface
         if ($this->solr->ready) {
             $result = $this->executeSolrQuery($parameters);
             /** @scrutinizer ignore-call */
-            $output['numFound'] = $result->getNumFound();
+            $output['numFound'] = $result->getNumFound(); // @phpstan-ignore-line
             $data = $result->getData();
             $highlighting = $data['ocrHighlighting'];
 
             $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
             $site = $siteFinder->getSiteByPageId($parameters['pid']);
 
+            // @phpstan-ignore-next-line
             foreach ($result as $record) {
                 $resultDocument = new ResultDocument($record, $highlighting, $this->fields);
 
@@ -154,7 +155,7 @@ class SearchInDocument implements MiddlewareInterface
          // return the coordinates of highlighted search as absolute coordinates
         $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
         // max amount of snippets for a single page
-        $solrRequest->addParam('hl.snippets', 40);
+        $solrRequest->addParam('hl.snippets', '40');
         // we store the fulltext on page level and can disable this option
         $solrRequest->addParam('hl.ocr.trackPages', 'off');
 

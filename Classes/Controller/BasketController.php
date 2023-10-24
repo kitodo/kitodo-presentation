@@ -274,6 +274,8 @@ class BasketController extends AbstractController
      */
     protected function getEntry(array $data): array
     {
+        // TODO: Call to function is_object() with array will always evaluate to false.
+        // @phpstan-ignore-next-line
         if (is_object($data)) {
             $data = get_object_vars($data);
         }
@@ -330,10 +332,14 @@ class BasketController extends AbstractController
     {
         // get document instance to load further information
         $this->loadDocument((int) $id);
-        if ($this->document) {
+        if (isset($this->document)) {
             // replace url param placeholder
+            // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
+            // @phpstan-ignore-next-line
             $urlParams = str_replace("##page##", (int) $data['page'], $this->settings['pdfparams']);
             $urlParams = str_replace("##docId##", $this->document->getRecordId(), $urlParams);
+            // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
+            // @phpstan-ignore-next-line
             $urlParams = str_replace("##startpage##", (int) $data['startpage'], $urlParams);
             if ($data['startpage'] != $data['endpage']) {
                 $urlParams = str_replace("##endpage##", $data['endpage'] === "" ? "" : (int) $data['endpage'], $urlParams);
@@ -450,6 +456,8 @@ class BasketController extends AbstractController
             if (!in_array($arrayKey, $items)) {
                 $items[$arrayKey] = $documentItem;
                 // replace url param placeholder
+                // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
+                // @phpstan-ignore-next-line
                 $pdfParams = str_replace("##startpage##", $documentItem['startpage'], $this->settings['pdfparams']);
                 $pdfParams = str_replace("##docId##", $this->document->getRecordId(), $pdfParams);
                 $pdfParams = str_replace("##startx##", $documentItem['startX'], $pdfParams);

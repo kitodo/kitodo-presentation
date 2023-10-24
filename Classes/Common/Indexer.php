@@ -532,8 +532,8 @@ class Indexer
     protected static function solrConnect(int $core, int $pid = 0): bool
     {
         // Get Solr instance.
-        // Connect to Solr server.
         $solr = Solr::getInstance($core);
+        // Connect to Solr server.
         if ($solr->ready) {
             self::$solr = $solr;
             // Load indexing configuration if needed.

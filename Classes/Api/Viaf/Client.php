@@ -35,8 +35,6 @@ class Client
     protected Logger $logger;
 
     /**
-     * The VIAF API endpoint
-     *
      * @access private
      * @var string The VIAF API endpoint
      **/
@@ -110,7 +108,7 @@ class Client
      *
      * @return string
      **/
-    private  function getApiEndpoint(): string
+    private function getApiEndpoint(): string
     {
         return $this->viafUrl . '/' . $this->endpoint;
     }
