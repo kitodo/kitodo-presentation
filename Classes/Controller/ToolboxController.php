@@ -68,8 +68,7 @@ class ToolboxController extends AbstractController
 
             $tools = explode(',', $this->settings['tools']);
 
-            foreach($tools as $tool)
-            {
+            foreach($tools as $tool) {
                 switch ($tool) {
                     case 'tx_dlf_annotationtool':
                     case 'annotationtool':
