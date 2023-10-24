@@ -83,7 +83,7 @@ class ListViewController extends AbstractController
         $collection = null;
         if ($this->searchParams['collection']) {
             foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collection[] = $this->collectionRepository->findByUid(intval($collectionEntry));
+                $collection[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
         }
 
