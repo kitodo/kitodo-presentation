@@ -23,7 +23,6 @@ parameters:
             - '#Constant LOG_SEVERITY_NOTICE not found\.#'
             - '#Constant LOG_SEVERITY_WARNING not found\.#'
             - '#Constant TYPO3_MODE not found\.#'
-            - '#Method Kitodo\\Dlf\\Controller\\Backend\\NewTenantController::errorAction\(\) should return Psr\\Http\\Message\\ResponseInterface but return statement is missing\.#'
     level: 5
     paths:
         - ../Classes/
