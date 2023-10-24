@@ -148,7 +148,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                             // create new dummy Document object
                             $this->document = GeneralUtility::makeInstance(Document::class);
                         }
-                     }
+                    }
 
                     // Make sure configuration PID is set when applicable
                     if ($doc->cPid == 0) {
