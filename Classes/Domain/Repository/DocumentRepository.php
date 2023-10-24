@@ -464,12 +464,11 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $settings
      * @param array $documentsToProcess
      *
-     * @return array The found document objects
+     * @return Result The found document objects
      */
-    public function getOaiDocumentList($settings, $documentsToProcess)
+    public function getOaiDocumentList($documentsToProcess): Result
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('tx_dlf_documents');
@@ -492,9 +491,7 @@ class DocumentRepository extends Repository
         ];
 
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
-        $documents = $connection->executeQuery($sql, $values, $types);
-
-        return $documents;
+        return $connection->executeQuery($sql, $values, $types);
     }
 
     /**
