@@ -236,14 +236,10 @@ class SearchController extends AbstractController
                     'facetset' => [
                         'facet' => []
                     ]
-                ]
+                ],
+                'filterquery' => []
             ]
         ];
-
-        // Set needed parameters for facet search.
-        if (empty($search['params']['filterquery'])) {
-            $search['params']['filterquery'] = [];
-        }
 
         $fields = Solr::getFields();
 
@@ -256,7 +252,7 @@ class SearchController extends AbstractController
             // If the query already is a fulltext query e.g using the facets
             $searchParams['query'] = empty($matches[1]) ? $searchParams['query'] : $matches[1];
             // Search in fulltext field if applicable. Query must not be empty!
-            if (!empty($this->searchParams['query'])) {
+            if (!empty($searchParams['query'])) {
                 $search['query'] = $fields['fulltext'] . ':(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
             }
         } else {
