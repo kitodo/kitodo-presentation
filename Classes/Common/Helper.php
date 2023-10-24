@@ -603,7 +603,7 @@ class Helper
         for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
             $checksum += ($i + 1) * intval(substr($digits, $i, 1));
         }
-        $checksum = substr((string) (intval($checksum / intval(substr($digits, -1, 1))), -1, 1);
+        $checksum = substr((string) (intval($checksum / intval(substr($digits, -1, 1)))), -1, 1);
         return $base . $id . $checksum;
     }
 
