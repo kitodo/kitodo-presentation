@@ -22,7 +22,7 @@ class TeiHeaderTest extends UnitTestCase
      */
     public function extract(): void
     {
-        //TODO: TeiHeader class has no usefull implementation.
-        $this->assertTrue(false);
+        //TODO: TeiHeader class has no useful implementation.
+        $this->markTestSkipped('Implement test when TeiHeader class is implemented.');
     }
 }
