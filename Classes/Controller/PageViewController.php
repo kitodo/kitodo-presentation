@@ -150,7 +150,7 @@ class PageViewController extends AbstractController
             'maxPage' => $this->requestData['page'] + $this->requestData['double']
         ];
 
-        $initDoc = $this->document->getDoc()->toArray($this->uriBuilder, $config);
+        $initDoc = $this->document->getCurrentDocument()->toArray($this->uriBuilder, $config);
 
         // Viewer configuration.
         $viewerConfiguration = '
