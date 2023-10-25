@@ -53,7 +53,7 @@ class ModsTest extends UnitTestCase
         $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsAuthorNoAutRoleTerm.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata);
+        $mods->extractMetadata($xml,$this->metadata, false);
 
         $this->assertEquals(
             [
@@ -73,7 +73,7 @@ class ModsTest extends UnitTestCase
         $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsAuthorWithAutRoleTerm.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata);
+        $mods->extractMetadata($xml,$this->metadata, false);
         $this->assertEquals(
             [
                 'May, Jack, I',
@@ -95,7 +95,7 @@ class ModsTest extends UnitTestCase
         $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata);
+        $mods->extractMetadata($xml,$this->metadata, false);
 
         $this->assertEquals(
             [
@@ -124,7 +124,7 @@ class ModsTest extends UnitTestCase
         $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata);
+        $mods->extractMetadata($xml,$this->metadata, false);
 
         $this->assertEquals(
             [
@@ -153,7 +153,7 @@ class ModsTest extends UnitTestCase
         $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectonicEd.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata);
+        $mods->extractMetadata($xml,$this->metadata, false);
 
         $this->assertEquals(
             [
@@ -182,7 +182,7 @@ class ModsTest extends UnitTestCase
         $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectonicEd.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata);
+        $mods->extractMetadata($xml,$this->metadata, false);
 
         $this->assertEquals(
             [
