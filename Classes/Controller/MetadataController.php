@@ -384,6 +384,25 @@ class MetadataController extends AbstractController
         }
     }
 
+     /**
+     * Get metadata for given id array.
+     *
+     * @access private
+     *
+     * @param array $toc table of content
+     * @param array &$output metadata
+     *
+     * @return void
+     */
+    private function getIds($toc, &$output) {
+        foreach ($toc as $entry) {
+            $output[$entry['id']] = true;
+            if (is_array($entry['children'])) {
+                $this->getIds($entry['children'], $output);
+            }
+        }
+    }
+
     /**
      * Get metadata for given id array.
      *
@@ -403,15 +422,8 @@ class MetadataController extends AbstractController
                 // Collect IDs of all logical structures. This is a flattened tree, so the
                 // order also works for rootline configurations.
                 $allIds = [];
-                function getIds($toc, &$output) {
-                    foreach ($toc as $entry) {
-                        $output[$entry['id']] = true;
-                        if (is_array($entry['children'])) {
-                            getIds($entry['children'], $output);
-                        }
-                    }
-                }
-                getIds($this->currentDocument->tableOfContents, $allIds);
+
+                $this->getIds($this->currentDocument->tableOfContents, $allIds);
 
                 $idIsActive = [];
                 foreach ($ids as $id) {
