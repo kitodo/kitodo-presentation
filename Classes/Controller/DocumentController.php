@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Controller;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Provide document JSON for client side access
@@ -39,7 +38,7 @@ class DocumentController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return;
         }
-        
+
         $this->setPage();
 
         $metadataUrl = null;
@@ -49,11 +48,13 @@ class DocumentController extends AbstractController
                 ->reset()
                 ->setTargetPageUid((int) $this->settings['targetPidMetadata'])
                 ->setCreateAbsoluteUri(true)
-                ->setArguments([
-                    'tx_dlf' => [
-                        'id' => $this->requestData['id'],
-                    ],
-                ])
+                ->setArguments(
+                    [
+                        'tx_dlf' => [
+                            'id' => $this->requestData['id'],
+                        ],
+                    ]
+                )
                 ->build();
         }
 
@@ -65,7 +66,7 @@ class DocumentController extends AbstractController
                 ? array_merge($imageFileGroups, $fulltextFileGroups)
                 : [],
         ];
-        $tx_dlf_loaded = [
+        $loaded = [
             'state' => [
                 'documentId' => $this->requestData['id'],
                 'page' => $this->requestData['page'],
@@ -83,7 +84,7 @@ class DocumentController extends AbstractController
 
         $docConfiguration = '
             window.addEventListener("DOMContentLoaded", function() {
-                const tx_dlf_loaded = ' . json_encode($tx_dlf_loaded) . ';
+                const tx_dlf_loaded = ' . json_encode($loaded) . ';
                 window.dispatchEvent(new CustomEvent("tx-dlf-documentLoaded", {
                     detail: {
                         docController: new dlfController(tx_dlf_loaded)
@@ -116,17 +117,21 @@ class DocumentController extends AbstractController
         //       page: \d+
         //       double: 0|1
 
-        $make = function ($page, $double, $pagegrid) {
+        $make = function ($page, $double, $pageGrid) {
             $result = $this->uriBuilder->reset()
-                ->setTargetPageUid($GLOBALS['TSFE']->id)
+                ->setTargetPageUid($this->configurationManager->getContentObject()->data['pid'])
                 ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                ->setArguments([
-                    'tx_dlf' => array_merge($this->requestData, [
-                        'page' => $page,
-                        'double' => $double,
-                        'pagegrid' => $pagegrid
-                    ]),
-                ])
+                ->setArguments(
+                    [
+                        'tx_dlf' => array_merge(
+                            $this->requestData, [
+                                'page' => $page,
+                                'double' => $double,
+                                'pagegrid' => $pageGrid
+                            ]
+                        ),
+                    ]
+                )
                 ->build();
 
             $cHashIdx = strpos($result, '&cHash=');
@@ -154,7 +159,7 @@ class DocumentController extends AbstractController
 
             if ($first[$i] === '2') {
                 $placeholder = 'PAGE_NO';
-            } else if ($first[$i] === '1') {
+            } elseif ($first[$i] === '1') {
                 $placeholder = 'DOUBLE_PAGE';
             } else {
                 $placeholder = 'PAGE_GRID';
@@ -166,5 +171,4 @@ class DocumentController extends AbstractController
 
         return $result;
     }
-
 }
