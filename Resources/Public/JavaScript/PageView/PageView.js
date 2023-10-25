@@ -17,12 +17,11 @@
 
 /**
  * @typedef {{
- *  div: string;
- *  progressElementId?: string;
- *  images?: dlf.ImageDesc[] | [];
- *  fulltexts?: dlf.FulltextDesc[] | [];
- *  controls?: ('OverviewMap' | 'ZoomPanel')[];
- *  initDoc: dlf.Document;
+ * div: string;
+ * progressElementId?: string;
+ * images?: dlf.ImageDesc[] | [];
+ * fulltexts?: dlf.FulltextDesc[] | [];
+ * controls?: ('OverviewMap' | 'ZoomPanel')[];
  * }} DlfViewerConfig
  *
  * @typedef {any} DlfDocument
@@ -90,7 +89,7 @@ var dlfViewer = function(settings){
      * @type {JQueryStatic.Deferred[]}
      * @private
      */
-    this.fulltextsLoaded_ = {};
+    this.fulltextsLoaded = {};
 
     /**
      * IIIF annotation lists URLs for the current canvas
@@ -188,18 +187,13 @@ var dlfViewer = function(settings){
      * Cache of promises / jQuery Deferred returned by `initLayer()`.
      * This has two benefits:
      * - Switching to a page that has already been visited is basically instantaneous.
-     *   When relying on browser cache, there still is a flicker.
+     * When relying on browser cache, there still is a flicker.
      * - It may allow to prefetch pages that are likely to be visited next (TODO(client-side): do that).
      *
      * @type {Record<string, JQueryStatic.Deferred>}
      * @private
      */
     this.layersCache = {};
-
-    /**
-     * @private
-     */
-    this.initDoc = settings.initDoc;
 
     /**
      * @type {dlfController | null}
@@ -297,7 +291,7 @@ dlfViewer.prototype.countPages = function () {
  *
  * @param {JQueryStatic.Deferred | undefined} currentFulltext
  */
-dlfViewer.prototype.updateFulltext = function (currentFulltext) {
+dlfViewer.prototype.updateFulltext = function(currentFulltext) {
     if (!this.fulltextControl) {
         this.fulltextControl = new dlfViewerFullTextControl(this.map);
     }
@@ -305,18 +299,18 @@ dlfViewer.prototype.updateFulltext = function (currentFulltext) {
         this.fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map);
     }
     if (currentFulltext !== undefined && this.images.length === 1) {
-        $('#tx-dlf-tools-fulltext').show();
+        $("#tx-dlf-tools-fulltext").show();
 
         currentFulltext
-            .then( (fulltextData) => {
+            .then((fulltextData) => {
                 this.fulltextControl.loadFulltextData(fulltextData);
                 this.fulltextDownloadControl.setFulltextData(fulltextData);
             })
-            .catch( () => {
+            .catch(() => {
                 this.fulltextControl.deactivate();
             });
     } else {
-        $('#tx-dlf-tools-fulltext').hide();
+        $("#tx-dlf-tools-fulltext").hide();
         this.fulltextControl.deactivate();
     }
 };
@@ -328,33 +322,28 @@ dlfViewer.prototype.updateFulltext = function (currentFulltext) {
  * @param {Array.<string>} controlNames
  */
 dlfViewer.prototype.addCustomControls = function() {
-    var annotationControl = undefined,
-        imageManipulationControl = undefined,
-        images = this.images;
+    var annotationControl = undefined;
+    var imageManipulationControl = undefined;
 
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
-	const currentFulltext = this.fulltextsLoaded_[`${this.getVisiblePages()[0].pageNo}-0`];
+    const currentFulltext = this.fulltextsLoaded[`${this.getVisiblePages()[0].pageNo}-0`];
+
     this.updateFulltext(currentFulltext);
 
-    if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
-        && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
+    if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
         // Adds annotation behavior only if there are annotations available and view is single page
         annotationControl = new DlfAnnotationControl(this.map, this.images[0], this.annotationContainers[0]);
         if (this.fulltextControl !== undefined) {
             $(this.fulltextControl).on("activate-fulltext", $.proxy(annotationControl.deactivate, annotationControl));
             $(annotationControl).on("activate-annotations", $.proxy(this.fulltextControl.deactivate, this.fulltextControl));
         }
-    }
-    else {
-        $('#tx-dlf-tools-annotations').remove();
+    } else {
+        $("#tx-dlf-tools-annotations").remove();
     }
 
-    //
     // Add image manipulation tool if container is added.
-    //
-    if ($('#tx-dlf-tools-imagetools').length > 0) {
-
+    if ($("#tx-dlf-tools-imagetools").length > 0) {
         // should be called if cors is enabled
         imageManipulationControl = new dlfViewerImageManipulationControl({
             controlTarget: $('.tx-dlf-tools-imagetools')[0],
@@ -527,7 +516,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         var self = this;
         var values = decodeURIComponent(this.highlightWords).split(';');
 
-		const currentFulltext = this.fulltextsLoaded_[this.getVisiblePages()[0].pageNo];
+		const currentFulltext = this.fulltextsLoaded[this.getVisiblePages()[0].pageNo];
         $.when.apply($, currentFulltext)
             .done(function (fulltextData, fulltextDataImageTwo) {
                 var stringFeatures = [];
@@ -653,10 +642,9 @@ dlfViewer.prototype.init = function(controlNames) {
 
 dlfViewer.prototype.getVisiblePages = function () {
     if (this.docController === null) {
-        return this.initDoc.pages.map( (page, i) => ({
-            pageNo: this.initDoc.query.minPage + i,
-            pageObj: page
-        }));
+        /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+        console.error("No document controller found");
+        return;
     } else {
         return this.docController.getVisiblePages();
     }
@@ -713,7 +701,7 @@ dlfViewer.prototype.loadPages = function (visiblePages) {
 
             let i = 0;
             for (const page of pages) {
-                this.updateFulltext(this.fulltextsLoaded_[`${page.pageNo}-${i}`]);
+                this.updateFulltext(this.fulltextsLoaded[`${page.pageNo}-${i}`]);
                 i++;
             }
         });
@@ -755,14 +743,13 @@ dlfViewer.prototype.initLayer = function (imageSourceObjs) {
 };
 
 /**
- * Start loading fulltexts and store them to `fulltextsLoaded_` (as jQuery deferred objects).
+ * Start loading fulltexts and store them to `fulltextsLoaded` (as jQuery deferred objects).
  *
  * @param {dlf.PageObject[]} visiblePages
  * @private
  */
 dlfViewer.prototype.initLoadFulltexts = function (visiblePages) {
     if (this.docController === null) {
-        // TODO(client-side): Make it work then docController === null
         return;
     }
 
@@ -774,8 +761,8 @@ dlfViewer.prototype.initLoadFulltexts = function (visiblePages) {
 
         const fulltext = this.docController.findFileByKind(visiblePages[i].pageNo, 'fulltext');
         if (fulltext !== undefined) {
-            if (!(key in this.fulltextsLoaded_) && dlfUtils.isFulltextDescriptor(fulltext)) {
-                this.fulltextsLoaded_[key] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
+            if (!(key in this.fulltextsLoaded) && dlfUtils.isFulltextDescriptor(fulltext)) {
+                this.fulltextsLoaded[key] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
             }
         } else {
             /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
