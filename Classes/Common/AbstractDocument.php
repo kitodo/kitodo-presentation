@@ -537,7 +537,7 @@ abstract class AbstractDocument
      *
      * @return array
      */
-    public abstract function getAllFiles();
+    abstract public function getAllFiles(): array;
 
     /**
      * This is a singleton class, thus an instance must be created by this method
@@ -560,8 +560,16 @@ abstract class AbstractDocument
         $iiif = null;
 
         if (!$forceReload) {
+<<<<<<< HEAD
             $instance = GeneralUtility::makeInstance(DocumentCacheManager::class)->get($location);
             if ($instance !== false) {
+=======
+            $instance = self::getDocumentCache($location);
+            if (isset(self::$registry[$location])) {
+                return self::$registry[$location];
+            } elseif ($instance !== false) {
+                self::$registry[$location] = $instance;
+>>>>>>> 7c6581c3 (Fix Codacy errors)
                 return $instance;
             }
         }
@@ -1210,7 +1218,7 @@ abstract class AbstractDocument
             ];
 
             foreach ($this->physicalStructureInfo[$this->physicalStructure[$page]]['files'] as $fileGrp => $fileId) {
-                if ($allFiles === null) {
+                if (!$allFiles) {
                     $file = [
                         'url' => $this->getFileLocation($fileId),
                         'mimetype' => $this->getFileMimeType($fileId),
@@ -1233,11 +1241,13 @@ abstract class AbstractDocument
                         ->reset()
                         ->setTargetPageUid($GLOBALS['TSFE']->id)
                         ->setCreateAbsoluteUri($forceAbsoluteUrl)
-                        ->setArguments([
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $file['url'],
-                            'uHash' => GeneralUtility::hmac($file['url'], 'PageViewProxy')
-                        ])
+                        ->setArguments(
+                            [
+                                'eID' => 'tx_dlf_pageview_proxy',
+                                'url' => $file['url'],
+                                'uHash' => GeneralUtility::hmac($file['url'], 'PageViewProxy')
+                            ]
+                        )
                         ->build();
                 }
 
