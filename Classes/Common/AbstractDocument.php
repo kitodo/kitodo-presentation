@@ -1231,9 +1231,6 @@ abstract class AbstractDocument
 
     public function toArray($uriBuilder, array $config = [])
     {
-        $proxyFileGroups = $config['proxyFileGroups'] ?? [];
-        $forceAbsoluteUrl = $config['forceAbsoluteUrl'] ?? false;
-
         $this->magicGetSmLinks();
         $this->magicGetPhysicalStructure();
 
