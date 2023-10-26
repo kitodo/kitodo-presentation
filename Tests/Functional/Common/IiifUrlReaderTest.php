@@ -20,7 +20,8 @@ class IiifUrlReaderTest extends FunctionalTestCase
      * @test
      * @group getContent
      */
-    public function getContentCheck() {
+    public function getContentCheck()
+    {
         $iiifUrlReader = new IiifUrlReader();
 
         $correctUrl = 'http://web:8001/Tests/Fixtures/Common/correct.txt';
