@@ -51,21 +51,21 @@ class MetadataRepositoryTest extends FunctionalTestCase
     public function canFindBySettings(): void
     {
         $metadataByLabel = $this->findBySettings([]);
-        $this->assertEquals(6, sizeof($metadataByLabel));
+        $this->assertCount(6, $metadataByLabel);
         $this->assertEquals(
             'Ort, Untertitel, Autor, Institution, Sammlungen, Titel',
             implode(', ', array_keys($metadataByLabel))
         );
 
         $metadataByLabel = $this->findBySettings(['is_listed' => true]);
-        $this->assertEquals(3, sizeof($metadataByLabel));
+        $this->assertCount(3, $metadataByLabel);
         $this->assertEquals(
             'Autor, Institution, Titel',
             implode(', ', array_keys($metadataByLabel))
         );
 
         $metadataByLabel = $this->findBySettings(['is_sortable' => true]);
-        $this->assertEquals(4, sizeof($metadataByLabel));
+        $this->assertCount(4, $metadataByLabel);
         $this->assertEquals(
             'Ort, Untertitel, Autor, Titel',
             implode(', ', array_keys($metadataByLabel))
@@ -75,7 +75,7 @@ class MetadataRepositoryTest extends FunctionalTestCase
             'is_sortable' => true,
             'is_listed' => true
         ]);
-        $this->assertEquals(2, sizeof($metadataByLabel));
+        $this->assertCount(2, $metadataByLabel);
         $this->assertEquals(
             'Autor, Titel',
             implode(', ', array_keys($metadataByLabel))
