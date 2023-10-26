@@ -2,7 +2,6 @@
 
 namespace Kitodo\Dlf\Tests\Unit\Format;
 
-use Kitodo\Dlf\Format\TeiHeader ;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class TeiHeaderTest extends UnitTestCase

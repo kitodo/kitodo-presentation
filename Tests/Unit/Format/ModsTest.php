@@ -50,10 +50,10 @@ class ModsTest extends UnitTestCase
      */
     public function extractAuthorsIfNoAutRoleTermAssigned(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsAuthorNoAutRoleTerm.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsAuthorNoAutRoleTerm.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata, false);
+        $mods->extractMetadata($xml, $this->metadata, false);
 
         $this->assertEquals(
             [
@@ -70,10 +70,10 @@ class ModsTest extends UnitTestCase
      */
     public function extractAuthorsWithAutRoleTermAssigned(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsAuthorWithAutRoleTerm.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsAuthorWithAutRoleTerm.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata, false);
+        $mods->extractMetadata($xml, $this->metadata, false);
         $this->assertEquals(
             [
                 'May, Jack, I',
@@ -92,10 +92,10 @@ class ModsTest extends UnitTestCase
      */
     public function extractPlaces(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata, false);
+        $mods->extractMetadata($xml, $this->metadata, false);
 
         $this->assertEquals(
             [
@@ -121,10 +121,10 @@ class ModsTest extends UnitTestCase
      */
     public function extractYears(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata, false);
+        $mods->extractMetadata($xml, $this->metadata, false);
 
         $this->assertEquals(
             [
@@ -150,10 +150,10 @@ class ModsTest extends UnitTestCase
      */
     public function extractPlacesWithElectronicEdInside(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectonicEd.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectonicEd.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata, false);
+        $mods->extractMetadata($xml, $this->metadata, false);
 
         $this->assertEquals(
             [
@@ -179,10 +179,10 @@ class ModsTest extends UnitTestCase
      */
     public function extractYearsWithElectronicEdInside(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectonicEd.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectonicEd.xml');
         $mods = new Mods();
 
-        $mods->extractMetadata($xml,$this->metadata, false);
+        $mods->extractMetadata($xml, $this->metadata, false);
 
         $this->assertEquals(
             [

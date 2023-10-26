@@ -26,12 +26,12 @@ class AudioVideoMDTest extends UnitTestCase
      */
     public function canExtractDuration(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/audioVideo.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/audioVideo.xml');
         $audioVideoMD = new AudioVideoMD();
 
         $videoXml = $xml->xpath('//mets:xmlData')[0];
 
-        $audioVideoMD->extractMetadata($videoXml,$this->metadata);
+        $audioVideoMD->extractMetadata($videoXml, $this->metadata);
 
         $this->assertEquals(
             [

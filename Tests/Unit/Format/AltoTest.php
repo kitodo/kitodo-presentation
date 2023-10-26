@@ -13,7 +13,7 @@ class AltoTest extends UnitTestCase
      */
     public function getRawData(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/alto.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/alto.xml');
         $alto = new Alto();
 
         $rawText = $alto->getRawText($xml);
@@ -27,7 +27,7 @@ class AltoTest extends UnitTestCase
      */
     public function getTextAsMiniOcr(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/alto.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/alto.xml');
         $alto = new Alto();
 
         $rawText = $alto->getTextAsMiniOcr($xml);
@@ -65,7 +65,7 @@ class AltoTest extends UnitTestCase
      */
     public function getTextAsMiniOcrNoTextBlock(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/altoNoTextBlock.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/altoNoTextBlock.xml');
         $alto = new Alto();
 
         $rawText = $alto->getTextAsMiniOcr($xml);
@@ -79,7 +79,7 @@ class AltoTest extends UnitTestCase
      */
     public function getTextAsMiniOcrNoTextline(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/altoNoTextLine.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/altoNoTextLine.xml');
         $alto = new Alto();
 
         $rawText = $alto->getTextAsMiniOcr($xml);
@@ -93,7 +93,7 @@ class AltoTest extends UnitTestCase
      */
     public function getTextAsMiniOcrNoString(): void
     {
-        $xml = simplexml_load_file( __DIR__ . '/../../Fixtures/Format/altoNoString.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/altoNoString.xml');
         $alto = new Alto();
 
         $rawText = $alto->getTextAsMiniOcr($xml);
