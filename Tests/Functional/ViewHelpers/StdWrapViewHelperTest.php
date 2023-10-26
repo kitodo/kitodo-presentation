@@ -32,7 +32,8 @@ class StdWrapViewHelperTest extends FunctionalTestCase
     public function renderWithStdWrap(): void
     {
         $view = new StandaloneView();
-        $view->assign('metadataWrap',
+        $view->assign(
+            'metadataWrap',
             [
                 'key' => ['wrap' => '<label>|</label>'],
                 'value' => ['required' => 1, 'wrap' => '<li>|</li>'],

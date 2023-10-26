@@ -33,7 +33,8 @@ class MetadataWrapVariableViewHelperTest extends FunctionalTestCase
     {
         $view = new StandaloneView();
 
-        $view->assign('configObject',
+        $view->assign(
+            'configObject',
             [ 'wrap' => 'all.wrap = <article class="shlb-metadata-text-item metadata-title">|</article>
                  key.wrap = <label>|</label>
                  value.required = 1
