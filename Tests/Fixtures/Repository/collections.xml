@@ -15,7 +15,6 @@
         </l18n_diffsource>
         <hidden>0</hidden>
         <fe_group/>
-        <l10n_state/>
         <fe_cruser_id>0</fe_cruser_id>
         <fe_admin_lock>0</fe_admin_lock>
         <label>Musik</label>
@@ -44,7 +43,6 @@
         </l18n_diffsource>
         <hidden>0</hidden>
         <fe_group/>
-        <l10n_state/>
         <fe_cruser_id>0</fe_cruser_id>
         <fe_admin_lock>0</fe_admin_lock>
         <label>Collection with single document</label>
@@ -73,7 +71,6 @@
         </l18n_diffsource>
         <hidden>0</hidden>
         <fe_group/>
-        <l10n_state/>
         <fe_cruser_id>1</fe_cruser_id>
         <fe_admin_lock>0</fe_admin_lock>
         <label>Geschichte</label>
@@ -102,7 +99,6 @@
         </l18n_diffsource>
         <hidden>0</hidden>
         <fe_group/>
-        <l10n_state/>
         <fe_cruser_id>1</fe_cruser_id>
         <fe_admin_lock>0</fe_admin_lock>
         <label>Bildende Kunst</label>
