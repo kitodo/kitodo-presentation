@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tx_dlf_mail>
+        <uid>101</uid>
+        <pid>30000</pid>
+        <deleted>0</deleted>
+        <sorting>10</sorting>
+        <mail>Mail</mail>
+        <name>Name</name>
+        <label>Mail-Label-1</label>
+    </tx_dlf_mail>
+    <tx_dlf_mail>
+        <uid>102</uid>
+        <pid>30000</pid>
+        <deleted>0</deleted>
+        <sorting>10</sorting>
+        <mail>Mail</mail>
+        <name>Name</name>
+        <label>Mail-Label-2</label>
+    </tx_dlf_mail>
+    <tx_dlf_mail>
+        <uid>103</uid>
+        <pid>20000</pid>
+        <deleted>0</deleted>
+        <sorting>10</sorting>
+        <mail>Mail</mail>
+        <name>Name</name>
+        <label>Mail-Label-3</label>
+    </tx_dlf_mail>
+    <tx_dlf_mail>
+        <uid>104</uid>
+        <pid>20000</pid>
+        <deleted>0</deleted>
+        <sorting>10</sorting>
+        <mail>Mail</mail>
+        <name>Name</name>
+        <label>Mail-Label-4</label>
+    </tx_dlf_mail>
+</dataset>
