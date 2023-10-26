@@ -80,10 +80,12 @@ class MetadataRepositoryTest extends FunctionalTestCase
             implode(', ', array_keys($metadataByLabel))
         );
 
-        $metadataByLabel = $this->findBySettings([
-            'is_sortable' => true,
-            'is_listed' => true
-        ]);
+        $metadataByLabel = $this->findBySettings(
+            [
+                'is_sortable' => true,
+                'is_listed' => true
+            ]
+        );
         $this->assertCount(2, $metadataByLabel);
         $this->assertEquals(
             'Autor, Titel',

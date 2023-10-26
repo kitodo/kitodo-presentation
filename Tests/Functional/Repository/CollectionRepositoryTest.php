@@ -105,8 +105,8 @@ class CollectionRepositoryTest extends FunctionalTestCase
 
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
-            'index_name' => ['Geschichte', 'collection-with-single-document'],
-            'show_userdefined' => true
+                'index_name' => ['Geschichte', 'collection-with-single-document'],
+                'show_userdefined' => true
             ]
         );
         $this->assertCount(2, $collectionsByLabel);
