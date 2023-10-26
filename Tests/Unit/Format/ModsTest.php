@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Unit\Format;
 
 use Kitodo\Dlf\Format\Mods;
@@ -150,7 +160,7 @@ class ModsTest extends UnitTestCase
      */
     public function extractPlacesWithElectronicEdInside(): void
     {
-        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectonicEd.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectronicEd.xml');
         $mods = new Mods();
 
         $mods->extractMetadata($xml, $this->metadata, false);
@@ -179,7 +189,7 @@ class ModsTest extends UnitTestCase
      */
     public function extractYearsWithElectronicEdInside(): void
     {
-        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectonicEd.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectronicEd.xml');
         $mods = new Mods();
 
         $mods->extractMetadata($xml, $this->metadata, false);
