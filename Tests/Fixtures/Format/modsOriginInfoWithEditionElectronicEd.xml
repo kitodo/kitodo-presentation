@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xmlns:videomd="http://www.loc.gov/videoMD/"
+           xmlns:dv="http://dfg-viewer.de/"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/videoMD/ https://www.loc.gov/standards/amdvmd/videoMD.xsd">
+
+    <mods:name type="personal">
+        <mods:namePart>Alterman, Eric</mods:namePart>
+        <mods:displayForm>Eric Alterman</mods:displayForm>
+        <mods:role>
+            <mods:roleTerm authority="marcrelator" type="code">aut</mods:roleTerm>
+        </mods:role>
+    </mods:name>
+
+    <mods:typeOfResource valueURI="http://d-nb.info/gnd/4017102-4">Film</mods:typeOfResource>
+    <mods:genre>Werbefilm</mods:genre>
+    <mods:originInfo eventType="digitisation">
+        <mods:place>
+            <mods:placeTerm type="text" valueURI="http://d-nb.info/gnd/4012995-0">Dresden</mods:placeTerm>
+        </mods:place>
+        <mods:publisher>SLUB</mods:publisher>
+        <mods:publisher>Filmverband Sachsen</mods:publisher>
+        <mods:publisher>Stiftung Deutsches Hygiene-Museum</mods:publisher>
+        <mods:dateIssued encoding="iso8601" keyDate="yes">2019</mods:dateIssued>
+        <mods:edition>[Electronic ed.]</mods:edition>
+    </mods:originInfo>
+
+    <mods:originInfo eventType="digitisation">
+        <mods:place>
+            <mods:placeTerm type="text" valueURI="http://d-nb.info/gnd/4012995-0">Hamburg</mods:placeTerm>
+        </mods:place>
+        <mods:dateIssued encoding="iso8601" keyDate="yes">2018</mods:dateIssued>
+        <mods:edition>[Electronic ed.]</mods:edition>
+    </mods:originInfo>
+
+    <mods:originInfo eventType="digitisation">
+        <mods:place>
+            <mods:placeTerm type="text" valueURI="http://d-nb.info/gnd/4012995-0">Berlin</mods:placeTerm>
+        </mods:place>
+        <mods:dateIssued encoding="iso8601" keyDate="yes">2021</mods:dateIssued>
+        <mods:edition>[Electronic ed.]</mods:edition>
+    </mods:originInfo>
+
+    <mods:originInfo eventType="digitisation">
+        <mods:place>
+            <mods:placeTerm type="text" valueURI="http://d-nb.info/gnd/4012995-0">München</mods:placeTerm>
+        </mods:place>
+        <mods:dateIssued encoding="iso8601" keyDate="yes">2020</mods:dateIssued>
+        <mods:edition>[Electronic ed.]</mods:edition>
+    </mods:originInfo>
+
+    <mods:language displayLabel="Sprachfassung: Deutsch">
+        <mods:languageTerm type="code" authority="iso639-2b">ger</mods:languageTerm>
+    </mods:language>
+    <mods:physicalDescription>
+        <mods:form>positiv, farbig, 24 fps, Bildseitenverhältnis 1,375:1, 2048 px horizontal, Codec: Apple ProRes (HQ)
+            4444, Container: Quicktime .mov
+        </mods:form>
+        <mods:reformattingQuality>access</mods:reformattingQuality>
+        <mods:internetMediaType>video/quicktime</mods:internetMediaType>
+        <mods:extent>1 Online-Ressource (1 min, 30 s)</mods:extent>
+        <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+    </mods:physicalDescription>
+    <mods:abstract>[Inhaltsbeschreibung]</mods:abstract>
+    <mods:relatedItem type="original">
+        <mods:titleInfo>
+            <mods:title>Odol-Mundwasser, 3 Werbespots</mods:title>
+        </mods:titleInfo>
+        <mods:name type="corporate">
+            <mods:nameIdentifier type="gnd" typeURI="http://id.loc.gov/vocabulary/identifiers/gnd">2180770-X
+            </mods:nameIdentifier>
+            <mods:displayForm>Stiftung Deutsches Hygiene-Museum</mods:displayForm>
+            <mods:role>
+                <mods:roleTerm authority="marcrelator" type="code">oth</mods:roleTerm>
+            </mods:role>
+        </mods:name>
+        <mods:typeOfResource valueURI="http://d-nb.info/gnd/4017102-4">Film</mods:typeOfResource>
+        <mods:genre>Werbefilm</mods:genre>
+        <mods:originInfo eventType="digitisation">
+            <mods:place>
+                <mods:placeTerm type="text" valueURI="http://d-nb.info/gnd/4012995-0">Dresden</mods:placeTerm>
+            </mods:place>
+            <mods:publisher>SLUB</mods:publisher>
+            <mods:publisher>Filmverband Sachsen</mods:publisher>
+            <mods:publisher>Stiftung Deutsches Hygiene-Museum</mods:publisher>
+            <mods:dateIssued encoding="iso8601" keyDate="yes" point="start">1965</mods:dateIssued>
+            <mods:dateIssued encoding="iso8601" point="end">1975</mods:dateIssued>
+        </mods:originInfo>
+        <mods:language displayLabel="Sprachfassung: Deutsch">
+            <mods:languageTerm type="code" authority="iso639-2b">ger</mods:languageTerm>
+        </mods:language>
+        <mods:physicalDescription>
+            <mods:form>Nativ-Scan mit Overscan, Videocodec FFV1 Version 3, Container: Matroska</mods:form>
+            <mods:reformattingQuality>preservation</mods:reformattingQuality>
+            <mods:internetMediaType>video/quicktime</mods:internetMediaType>
+            <mods:extent>1 Online-Ressource (1 min, 16 s)</mods:extent>
+            <mods:digitalOrigin>digitized other analog</mods:digitalOrigin>
+            <mods:note>Acetat mit Lichtton, Umkehr-Positiv, farbig ; 16 mm</mods:note>
+        </mods:physicalDescription>
+        <mods:note type="reproduction">Bearbeitete digitale Ausgabe eines Exemplars aus dem Bestand der Stiftung
+            Deutsches Hygiene-Museum Dresden
+        </mods:note>
+        <mods:note type="credits">Die Digitalisierung des Films erfolgte im Rahmen des Programms „Sicherung des
+            audiovisuellen Erbes in Sachsen“ des Filmverband Sachsen (2019) und der Sächsischen Landesbibliothek –
+            Staats- und Universitätsbibliothek Dresden in Kooperation mit: Stiftung Deutsches Hygiene-Museum Dresden,
+            gefördert durch: Sächsisches Staatsministerium für Wissenschaft und Kunst
+        </mods:note>
+        <mods:identifier type="kxp">1703800354</mods:identifier>
+        <mods:location>
+            <mods:physicalLocation valueURI="https://ld.zdb-services.de/resource/organisations/DE-14">DE-14
+            </mods:physicalLocation>
+            <mods:shelfLocator>Odol 2915 (Rolle 2)</mods:shelfLocator>
+        </mods:location>
+    </mods:relatedItem>
+    <mods:identifier type="kxp">1703800435</mods:identifier>
+    <mods:identifier type="purl">http://digital.slub-dresden.de/id1703800435</mods:identifier>
+    <mods:identifier type="urn">urn:nbn:de:bsz:14-db-id17038004351</mods:identifier>
+    <mods:location>
+        <mods:physicalLocation valueURI="https://ld.zdb-services.de/resource/organisations/DE-14">DE-14
+        </mods:physicalLocation>
+        <mods:url access="object in context">https://digital.slub-dresden.de/id1703800435</mods:url>
+    </mods:location>
+    <mods:accessCondition xlink:href="https://creativecommons.org/publicdomain/mark/1.0/" type="use and reproduction">
+        Public Domain Mark 1.0
+    </mods:accessCondition>
+    <mods:accessCondition xlink:href="http://purl.org/coar/access_right/c_abf2" displayLabel="Access Status"
+                          type="restriction on access">Open Access
+    </mods:accessCondition>
+    <mods:extension>
+    </mods:extension>
+    <mods:recordInfo>
+        <mods:recordIdentifier source="http://digital.slub-dresden.de/oai/">oai:de:slub-dresden:db:id-1703800435
+        </mods:recordIdentifier>
+    </mods:recordInfo>
+</mods:mods>
+
