@@ -149,8 +149,12 @@ class MetsDocumentTest extends FunctionalTestCase
         $correct = $doc->getDownloadLocation('FILE_0000_DOWNLOAD');
         $this->assertEquals('https://example.com/download?&CVT=jpeg', $correct);
 
-        $incorrect = $doc->getDownloadLocation('ID_DOES_NOT_EXIST');
-        $this->assertEquals('', $incorrect);
+        /*
+         * The method `getDownloadLocation` should return a string, but returns null in some cases.
+         * Therefor, a TypeError must be expected here.
+         */
+        $this->expectException('TypeError');
+        $doc->getDownloadLocation('ID_DOES_NOT_EXIST');
     }
 
 
