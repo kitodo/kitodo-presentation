@@ -31,7 +31,7 @@ class CollectionRepositoryTest extends FunctionalTestCase
             20000
         );
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Repository/collections.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/collections.csv');
     }
 
     /**

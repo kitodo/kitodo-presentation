@@ -4,7 +4,6 @@ namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Core\Localization\LanguageService;
 
 class HelperTest extends FunctionalTestCase
 {
@@ -12,8 +11,8 @@ class HelperTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/libraries.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/metadata.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/libraries.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/metadata.csv');
     }
 
     /**

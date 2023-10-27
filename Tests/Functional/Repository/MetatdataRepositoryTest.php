@@ -31,7 +31,7 @@ class MetadataRepositoryTest extends FunctionalTestCase
             20000
         );
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Repository/metadata.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/metadata.csv');
     }
 
 

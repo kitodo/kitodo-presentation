@@ -20,9 +20,9 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/metadata.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/MetsDocument/metadata_mets.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/metadata.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/MetsDocument/metadata_mets.csv');
     }
 
     protected function doc(string $file)
