@@ -6,16 +6,16 @@
     <mets:fileSec>
         <mets:fileGrp USE="FULLTEXT">
             <mets:file ID="FULLTEXT_0001" MIMETYPE="application/pdf">
-                <mets:FLocat LOCTYPE="URL" xlink:href="fulltext_0001.xml"/>
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/fulltext_0001.xml"/>
             </mets:file>
             <mets:file ID="FULLTEXT_0002" MIMETYPE="application/pdf">
-                <mets:FLocat LOCTYPE="URL" xlink:href="fulltext_0001.xml"/>
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/fulltext_002.xml"/>
             </mets:file>
             <mets:file ID="FULLTEXT_0003" MIMETYPE="application/pdf">
-                <mets:FLocat LOCTYPE="URL" xlink:href="http://web:8001/Tests/Fixtures/MetsDocument/fulltext_0001.xml"/>
+                <mets:FLocat LOCTYPE="URL" xlink:href="http://web:8001/Tests/Fixtures/MetsDocument/fulltext_0003.xml"/>
             </mets:file>
             <mets:file ID="FULLTEXT_0004" MIMETYPE="application/pdf">
-                <mets:FLocat LOCTYPE="URL" xlink:href="fulltext_0001.xml"/>
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/fulltext_0003.xml"/>
             </mets:file>
         </mets:fileGrp>
         <mets:fileGrp USE="DEFAULT">
