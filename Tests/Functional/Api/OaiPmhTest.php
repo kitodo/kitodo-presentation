@@ -11,6 +11,7 @@ use Phpoaipmh\Endpoint;
 use Phpoaipmh\Exception\OaipmhException;
 use SimpleXMLElement;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class OaiPmhTest extends FunctionalTestCase
 {
@@ -33,6 +34,16 @@ class OaiPmhTest extends FunctionalTestCase
     /** @var string */
     protected $oaiUrlNoStoragePid;
 
+    /**
+     * @var PersistenceManager
+     */
+    protected $persistenceManager;
+
+    /**
+     * @var SolrCoreRepository
+     */
+    protected $solrCoreRepository;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -47,7 +58,7 @@ class OaiPmhTest extends FunctionalTestCase
         $this->importDataSet(__DIR__ . '/../../Fixtures/OaiPmh/pages.xml');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/OaiPmh/solrcores.csv');
 
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, 20000);
 
         $this->setUpOaiSolr();
