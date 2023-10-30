@@ -43,7 +43,7 @@ class TokenRepositoryTest extends FunctionalTestCase
     {
         parent::tearDown();
 
-        //unlink(__DIR__ . '/../../Fixtures/Repository/tokenTemp.xml');
+        unlink(__DIR__ . '/../../Fixtures/Repository/tokenTemp.csv');
     }
 
     /**
@@ -52,31 +52,39 @@ class TokenRepositoryTest extends FunctionalTestCase
      */
     public function deleteExpiredTokens(): void
     {
-        /*$xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Repository/token.xml');
+        $inputCsvFile = __DIR__ . '/../../Fixtures/Repository/token.csv';
+        $outputCsvFile = __DIR__ . '/../../Fixtures/Repository/tokenTemp.csv';
+
+        $inputCsvData = file_get_contents($inputCsvFile);
+        $csvData = str_getcsv($inputCsvData, "\n");
 
         $expireTime = 3600;
         $i = 1;
-        foreach ($xml as $node) {
-            if ($i % 2 == 0) {
-                $node->tstamp = time() - $expireTime - random_int(10, 3600);
-            } else {
-                $node->tstamp = time() - $expireTime + random_int(10, 3600);
+
+        foreach ($csvData as $key => &$row) {
+            if ($key > 1) {
+                $columns = str_getcsv($row, ",");
+                if ($i % 2 == 0) {
+                    $columns[3] = time() - $expireTime - rand(10, 3600);
+                } else {
+                    $columns[3] = time() - $expireTime + rand(10, 3600);
+                }
+                $row = implode(",", $columns);
+                $i++;
             }
-            $i++;
         }
 
-        $xml->saveXML(__DIR__ . '/../../Fixtures/Repository/tokenTemp.xml');
+        $outputCsvData = implode("\n", $csvData);
+        file_put_contents($outputCsvFile, $outputCsvData);
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Repository/tokenTemp.xml');*/
-
-        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/token.csv');
-        //$this->tokenRepository->deleteExpiredTokens($expireTime);
+        $this->importCSVDataSet($outputCsvFile);
+        $this->tokenRepository->deleteExpiredTokens($expireTime);
 
         $this->persistenceManager->persistAll();
 
         $tokens = $this->tokenRepository->findAll();
 
-        //$this->assertEquals(2, $tokens->count());
+        $this->assertEquals(2, $tokens->count());
 
         $tokenUids = [];
         foreach ($tokens as $token) {
