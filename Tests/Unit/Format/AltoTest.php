@@ -28,7 +28,7 @@ class AltoTest extends UnitTestCase
 
         $rawText = $alto->getRawText($xml);
 
-        $this->assertEquals('Bürgertum und Bürgerlichkeit in Dresden DRESDNER HEFTE', $rawText);
+        self::assertEquals('Bürgertum und Bürgerlichkeit in Dresden DRESDNER HEFTE', $rawText);
     }
 
     /**
@@ -66,7 +66,7 @@ class AltoTest extends UnitTestCase
         </ocr>
         XML;
 
-        $this->assertXmlStringEqualsXmlString($miniOCR, $rawText);
+        self::assertXmlStringEqualsXmlString($miniOCR, $rawText);
     }
 
     /**
@@ -80,7 +80,7 @@ class AltoTest extends UnitTestCase
 
         $rawText = $alto->getTextAsMiniOcr($xml);
 
-        $this->assertEquals('', $rawText);
+        self::assertEquals('', $rawText);
     }
 
     /**
@@ -94,7 +94,7 @@ class AltoTest extends UnitTestCase
 
         $rawText = $alto->getTextAsMiniOcr($xml);
 
-        $this->assertXmlStringEqualsXmlString('<?xml version="1.0"?><ocr><b/><b/></ocr>', $rawText);
+        self::assertXmlStringEqualsXmlString('<?xml version="1.0"?><ocr><b/><b/></ocr>', $rawText);
     }
 
     /**
@@ -108,7 +108,7 @@ class AltoTest extends UnitTestCase
 
         $rawText = $alto->getTextAsMiniOcr($xml);
 
-        $this->assertXmlStringEqualsXmlString(
+        self::assertXmlStringEqualsXmlString(
             '<?xml version="1.0"?><ocr><b><l/><l/></b><b><l/><l/></b></ocr>',
             $rawText
         );

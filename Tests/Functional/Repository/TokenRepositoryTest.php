@@ -76,14 +76,14 @@ class TokenRepositoryTest extends FunctionalTestCase
 
         $tokens = $this->tokenRepository->findAll();
 
-        $this->assertEquals(2, $tokens->count());
+        self::assertEquals(2, $tokens->count());
 
         $tokenUids = [];
         foreach ($tokens as $token) {
             $tokenUids[$token->getUid()] = $token;
         }
 
-        $this->assertArrayHasKey('101', $tokenUids);
-        $this->assertArrayHasKey('103', $tokenUids);
+        self::assertArrayHasKey('101', $tokenUids);
+        self::assertArrayHasKey('103', $tokenUids);
     }
 }

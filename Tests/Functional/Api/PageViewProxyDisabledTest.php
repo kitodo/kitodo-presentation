@@ -31,6 +31,6 @@ class PageViewProxyDisabledTest extends FunctionalTestCase
             'uHash' => $uHash,
         ]);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        self::assertEquals(404, $response->getStatusCode());
     }
 }

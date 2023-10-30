@@ -197,7 +197,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             $GLOBALS['LANG'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)->create($locale);
         } else {
             $typo3MajorVersion = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version())['version_main'];
-            $this->assertEquals(9, $typo3MajorVersion);
+            self::assertEquals(9, $typo3MajorVersion);
 
             $lang = new LanguageService();
             $lang->init($locale);
@@ -210,6 +210,6 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      */
     protected function assertArrayMatches(array $sub, array $super, string $message = '')
     {
-        $this->assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
+        self::assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
     }
 }
