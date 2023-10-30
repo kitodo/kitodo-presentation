@@ -10,6 +10,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
@@ -60,8 +61,15 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      */
     protected $disableJsonWrappedResponse = false;
 
-    /** @var ObjectManager */
+    /**
+     * @var ObjectManager
+     */
     protected $objectManager;
+
+    /**
+     * @var PersistenceManager
+     */
+    protected $persistenceManager;
 
     /**
      * @var string
@@ -91,6 +99,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         parent::setUp();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
         $this->baseUrl = 'http://web:8000/public/typo3temp/var/tests/functional-' . $this->identifier . '/';
         $this->httpClient = new HttpClient([

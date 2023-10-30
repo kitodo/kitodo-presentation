@@ -12,13 +12,9 @@ use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class SolrIndexingTest extends FunctionalTestCase
 {
-    /** @var PersistenceManager */
-    protected $persistenceManager;
-
     /** @var CollectionRepository */
     protected $collectionRepository;
 
@@ -34,8 +30,6 @@ class SolrIndexingTest extends FunctionalTestCase
 
         // Needed for Indexer::add, which uses the language service
         Bootstrap::initializeLanguageObject();
-
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
         $this->collectionRepository = $this->initializeRepository(CollectionRepository::class, 20000);
         $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 20000);
