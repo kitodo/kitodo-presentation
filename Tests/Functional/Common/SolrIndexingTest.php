@@ -41,9 +41,9 @@ class SolrIndexingTest extends FunctionalTestCase
         $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 20000);
         $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, 20000);
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/libraries.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/metadata.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/libraries.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/metadata.csv');
     }
 
     /**
@@ -124,7 +124,7 @@ class SolrIndexingTest extends FunctionalTestCase
     {
         $core = $this->createSolrCore();
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/documents_fulltext.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/documents_fulltext.csv');
         $this->importSolrDocuments($core->solr, __DIR__ . '/../../Fixtures/Common/documents_1.solr.json');
         $this->importSolrDocuments($core->solr, __DIR__ . '/../../Fixtures/Common/documents_fulltext.solr.json');
 

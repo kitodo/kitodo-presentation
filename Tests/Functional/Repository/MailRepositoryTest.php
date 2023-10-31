@@ -31,7 +31,7 @@ class MailRepositoryTest extends FunctionalTestCase
             20000
         );
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Repository/mail.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/mail.csv');
     }
 
     /**

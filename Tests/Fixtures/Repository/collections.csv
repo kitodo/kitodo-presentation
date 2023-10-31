@@ -1,0 +1,6 @@
+"tx_dlf_collections",,,,,,,,,,,,,,,,,,,,,,,
+,"uid","pid","tstamp","crdate","cruser_id","deleted","sys_language_uid","l18n_parent","l18n_diffsource","hidden","fe_group","fe_cruser_id","fe_admin_lock","label","index_name","index_search","oai_name","description","thumbnail","priority","documents","owner","status"
+,1101,20000,1631279509,1631279509,2,0,0,0,"a:8:{s:5:"label";N;s:10:"index_name";N;s:8:"oai_name";N;s:11:"description";N;s:9:"documents";N;s:5:"owner";N;s:6:"status";N;s:16:"sys_language_uid";N;}",0,0,0,0,"Musik","Musik",,"music",,,3,0,0,0
+,1102,20000,1631279509,1631279509,2,0,0,0,"a:8:{s:5:"label";N;s:10:"index_name";N;s:8:"oai_name";N;s:11:"description";N;s:9:"documents";N;s:5:"owner";N;s:6:"status";N;s:16:"sys_language_uid";N;}",,0,0,0,"Collection with single document","collection-with-single-document",,"collection-with-single-document",,,4,0,0,0
+,1103,20000,1631279509,1631279509,2,0,0,0,"a:8:{s:5:"label";N;s:10:"index_name";N;s:8:"oai_name";N;s:11:"description";N;s:9:"documents";N;s:5:"owner";N;s:6:"status";N;s:16:"sys_language_uid";N;}",0,,1,0,"Geschichte","Geschichte","*:*","history",,,4,0,0,0
+,1104,20000,1631279509,1631279509,2,0,0,0,"a:8:{s:5:"label";N;s:10:"index_name";N;s:8:"oai_name";N;s:11:"description";N;s:9:"documents";N;s:5:"owner";N;s:6:"status";N;s:16:"sys_language_uid";N;}",0,,1,0,"Bildende Kunst","bildende-kunst",,,,,4,0,0,0
