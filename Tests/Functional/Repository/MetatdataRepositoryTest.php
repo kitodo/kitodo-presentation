@@ -42,8 +42,8 @@ class MetadataRepositoryTest extends FunctionalTestCase
     protected function findBySettings($settings)
     {
         $metadata = $this->metadataRepository->findBySettings($settings);
-        $this->assertNotNull($metadata);
-        $this->assertInstanceOf(QueryResult::class, $metadata);
+        self::assertNotNull($metadata);
+        self::assertInstanceOf(QueryResult::class, $metadata);
 
         $metadataByLabel = [];
         foreach ($metadata as $mdata) {
@@ -60,22 +60,22 @@ class MetadataRepositoryTest extends FunctionalTestCase
     public function canFindBySettings(): void
     {
         $metadataByLabel = $this->findBySettings([]);
-        $this->assertCount(6, $metadataByLabel);
-        $this->assertEquals(
+        self::assertCount(6, $metadataByLabel);
+        self::assertEquals(
             'Ort, Untertitel, Autor, Institution, Sammlungen, Titel',
             implode(', ', array_keys($metadataByLabel))
         );
 
         $metadataByLabel = $this->findBySettings(['is_listed' => true]);
-        $this->assertCount(3, $metadataByLabel);
-        $this->assertEquals(
+        self::assertCount(3, $metadataByLabel);
+        self::assertEquals(
             'Autor, Institution, Titel',
             implode(', ', array_keys($metadataByLabel))
         );
 
         $metadataByLabel = $this->findBySettings(['is_sortable' => true]);
-        $this->assertCount(4, $metadataByLabel);
-        $this->assertEquals(
+        self::assertCount(4, $metadataByLabel);
+        self::assertEquals(
             'Ort, Untertitel, Autor, Titel',
             implode(', ', array_keys($metadataByLabel))
         );
@@ -86,8 +86,8 @@ class MetadataRepositoryTest extends FunctionalTestCase
                 'is_listed' => true
             ]
         );
-        $this->assertCount(2, $metadataByLabel);
-        $this->assertEquals(
+        self::assertCount(2, $metadataByLabel);
+        self::assertEquals(
             'Autor, Titel',
             implode(', ', array_keys($metadataByLabel))
         );

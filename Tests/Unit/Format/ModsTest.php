@@ -65,7 +65,7 @@ class ModsTest extends UnitTestCase
 
         $mods->extractMetadata($xml, $this->metadata, false);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "AnonymousGiven1 AnonymousFamily1",
                 "AnonymousFamily2, AnonymousGiven2"
@@ -84,7 +84,7 @@ class ModsTest extends UnitTestCase
         $mods = new Mods();
 
         $mods->extractMetadata($xml, $this->metadata, false);
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'May, Jack, I',
                 'John Paul, Pope, 1920-2005',
@@ -107,7 +107,7 @@ class ModsTest extends UnitTestCase
 
         $mods->extractMetadata($xml, $this->metadata, false);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "Dresden",
                 "Hamburg",
@@ -117,7 +117,7 @@ class ModsTest extends UnitTestCase
             $this->metadata['place']
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "Dresden",
             ],
@@ -136,7 +136,7 @@ class ModsTest extends UnitTestCase
 
         $mods->extractMetadata($xml, $this->metadata, false);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "2019",
                 "2018",
@@ -146,7 +146,7 @@ class ModsTest extends UnitTestCase
             $this->metadata['year']
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "2019",
             ],
@@ -165,7 +165,7 @@ class ModsTest extends UnitTestCase
 
         $mods->extractMetadata($xml, $this->metadata, false);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "Dresden",
                 "Hamburg",
@@ -175,7 +175,7 @@ class ModsTest extends UnitTestCase
             $this->metadata['place']
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "Dresden",
             ],
@@ -194,7 +194,7 @@ class ModsTest extends UnitTestCase
 
         $mods->extractMetadata($xml, $this->metadata, false);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "2019",
                 "2018",
@@ -204,7 +204,7 @@ class ModsTest extends UnitTestCase
             $this->metadata['year']
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 "2019",
             ],

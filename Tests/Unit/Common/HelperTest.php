@@ -10,7 +10,7 @@ class HelperTest extends UnitTestCase
     public function assertInvalidXml($xml)
     {
         $result = Helper::getXmlFileAsString($xml);
-        $this->assertEquals(false, $result);
+        self::assertEquals(false, $result);
     }
 
     /**
@@ -19,14 +19,14 @@ class HelperTest extends UnitTestCase
      */
     public function invalidXmlYieldsFalse(): void
     {
-        $this->assertInvalidXml(false);
-        $this->assertInvalidXml(null);
-        $this->assertInvalidXml(1);
-        $this->assertInvalidXml([]);
-        $this->assertInvalidXml(new \stdClass());
-        $this->assertInvalidXml('');
-        $this->assertInvalidXml('not xml');
-        $this->assertInvalidXml('<tag-not-closed>');
+        self::assertInvalidXml(false);
+        self::assertInvalidXml(null);
+        self::assertInvalidXml(1);
+        self::assertInvalidXml([]);
+        self::assertInvalidXml(new \stdClass());
+        self::assertInvalidXml('');
+        self::assertInvalidXml('not xml');
+        self::assertInvalidXml('<tag-not-closed>');
     }
 
     /**
@@ -42,7 +42,7 @@ class HelperTest extends UnitTestCase
 </root>
 XML;
         $node = Helper::getXmlFileAsString($xml);
-        $this->assertIsObject($node);
-        $this->assertEquals('root', $node->getName());
+        self::assertIsObject($node);
+        self::assertEquals('root', $node->getName());
     }
 }

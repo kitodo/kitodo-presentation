@@ -32,13 +32,13 @@ class DocumentRepositoryTest extends FunctionalTestCase
     public function canRetrieveDocument(): void
     {
         $document = $this->documentRepository->findByUid(1001);
-        $this->assertNotNull($document);
-        $this->assertEquals('METS', $document->getDocumentFormat());
-        $this->assertNotEmpty($document->getTitle());
-        $this->assertEquals('Default Library', $document->getOwner()->getLabel());
+        self::assertNotNull($document);
+        self::assertEquals('METS', $document->getDocumentFormat());
+        self::assertNotEmpty($document->getTitle());
+        self::assertEquals('Default Library', $document->getOwner()->getLabel());
 
         $doc = AbstractDocument::getInstance($document->getLocation());
-        $this->assertInstanceOf(MetsDocument::class, $doc);
+        self::assertInstanceOf(MetsDocument::class, $doc);
     }
 
     /**
@@ -47,8 +47,8 @@ class DocumentRepositoryTest extends FunctionalTestCase
     public function canFindOldestDocument(): void
     {
         $document = $this->documentRepository->findOldestDocument();
-        $this->assertNotNull($document);
-        $this->assertEquals(1002, $document->getUid());
+        self::assertNotNull($document);
+        self::assertEquals(1002, $document->getUid());
     }
 
     /**
@@ -58,13 +58,13 @@ class DocumentRepositoryTest extends FunctionalTestCase
     {
         $document = $this->documentRepository->findByUid(1001);
         $collections = $document->getCollections();
-        $this->assertInstanceOf(LazyObjectStorage::class, $collections);
+        self::assertInstanceOf(LazyObjectStorage::class, $collections);
 
         $collectionsByLabel = [];
         foreach ($collections as $collection) {
             $collectionsByLabel[$collection->getLabel()] = $collection;
         }
 
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
     }
 }

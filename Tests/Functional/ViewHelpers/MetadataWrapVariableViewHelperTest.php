@@ -48,7 +48,7 @@ class MetadataWrapVariableViewHelperTest extends FunctionalTestCase
         );
         $view->render();
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'key' => ['wrap' => '<label>|</label>'],
                 'value' => ['required' => 1, 'wrap' => '<li>|</li>'],

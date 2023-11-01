@@ -26,9 +26,9 @@ class IiifUrlReaderTest extends FunctionalTestCase
 
         $correctUrl = 'http://web:8001/Tests/Fixtures/Common/correct.txt';
         $expected = "Correct result\n";
-        $this->assertSame($expected, $iiifUrlReader->getContent($correctUrl));
+        self::assertSame($expected, $iiifUrlReader->getContent($correctUrl));
 
         $incorrectUrl = 'http://web:8001/incorrectPath';
-        $this->assertSame('', $iiifUrlReader->getContent($incorrectUrl));
+        self::assertSame('', $iiifUrlReader->getContent($incorrectUrl));
     }
 }

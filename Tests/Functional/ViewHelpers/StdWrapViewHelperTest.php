@@ -54,7 +54,7 @@ class StdWrapViewHelperTest extends FunctionalTestCase
             </html>'
         );
 
-        $this->assertXmlStringEqualsXmlString(
+        self::assertXmlStringEqualsXmlString(
             '<html xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers">
               <article class="shlb-metadata-text-item metadata-title">
                 <label>Label</label>
@@ -74,7 +74,7 @@ class StdWrapViewHelperTest extends FunctionalTestCase
             </html>'
         );
 
-        $this->assertXmlStringEqualsXmlString(
+        self::assertXmlStringEqualsXmlString(
             '<html xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers">
               <article class="shlb-metadata-text-item metadata-title">
                 <label>Label</label>
