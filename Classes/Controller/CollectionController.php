@@ -135,15 +135,13 @@ class CollectionController extends AbstractController
                 unset($collectionInfo['volumes'][$doc->partof]);
             }
 
-            // Generate random but unique array key taking priority into account.
+            // Generate random but unique array key taking amount of documents into account.
             do {
-                //TODO: Offset 'priority' does not exist on array{titles: array<int|string, mixed>, volumes: array<int|string, mixed>}.
-                // @phpstan-ignore-next-line
-                $_key = ($collectionInfo['priority'] * 1000) + mt_rand(0, 1000);
-            } while (!empty($processedCollections[$_key]));
+                $key = (count($collectionInfo['titles']) * 100) + mt_rand(0, 1000);
+            } while (!empty($processedCollections[$key]));
 
-            $processedCollections[$_key]['collection'] = $collection;
-            $processedCollections[$_key]['info'] = $collectionInfo;
+            $processedCollections[$key]['collection'] = $collection;
+            $processedCollections[$key]['info'] = $collectionInfo;
         }
 
         // Randomize sorting?
