@@ -82,20 +82,15 @@ class NavigationController extends AbstractController
         $this->view->assign('numPages', $this->document->getCurrentDocument()->numPages);
         $this->view->assign('viewData', $this->viewData);
 
-        if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'search')) {
-            $lastSearchArguments = [];
-            $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
+        $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
+        if ($searchSessionParameters) {
             $widgetPage = $GLOBALS['TSFE']->fe_user->getKey('ses', 'widgetPage');
+            $lastSearchArguments = [
+                'tx_dlf_listview' => [
+                    'searchParameter' => $searchSessionParameters
+                ]
+            ];
 
-            //TODO: If condition is always true.
-            // @phpstan-ignore-next-line
-            if ($searchSessionParameters) {
-                $lastSearchArguments = [
-                    'tx_dlf_listview' => [
-                        'searchParameter' => $searchSessionParameters
-                    ]
-                ];
-            }
             if ($widgetPage) {
                 $lastSearchArguments['tx_dlf_listview']['@widget_0'] = $widgetPage;
             }
