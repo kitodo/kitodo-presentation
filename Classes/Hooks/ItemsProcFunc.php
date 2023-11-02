@@ -82,15 +82,11 @@ class ItemsProcFunc implements LoggerAwareInterface
             $ts->rootLine = $rootLine;
             $ts->runThroughTemplates($rootLine, 0);
             $ts->generateConfig();
+            $typoScriptConfig = $ts->setup;
+            $this->storagePid = $typoScriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
-
-        // TODO: Variable $ts might not be defined.
-        // @phpstan-ignore-next-line
-        $typoScriptConfig = $ts->setup;
-        $this->storagePid = $typoScriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
-
     }
 
     /**
