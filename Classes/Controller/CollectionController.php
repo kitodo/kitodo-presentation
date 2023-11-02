@@ -196,7 +196,8 @@ class CollectionController extends AbstractController
      *
      * @return array
      */
-    private function processCollections($collections, $solr) {
+    private function processCollections(array $collections, Solr $solr): array
+    {
         $processedCollections = [];
 
         // Process results.
@@ -218,6 +219,8 @@ class CollectionController extends AbstractController
 
             $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
             $partOfSomething = $solr->searchRaw($params);
+
+            $collectionInfo = [];
             // Titles are all documents that are "root" elements i.e. partof == 0
             $collectionInfo['titles'] = [];
             foreach ($partOfNothing as $doc) {
@@ -235,7 +238,7 @@ class CollectionController extends AbstractController
 
             // Generate random but unique array key taking amount of documents into account.
             do {
-                $key = (count($collectionInfo['titles']) * 100) + mt_rand(0, 1000);
+                $key = (count($collectionInfo['titles']) * 100) + random_int(0, 1000);
             } while (!empty($processedCollections[$key]));
 
             $processedCollections[$key]['collection'] = $collection;
