@@ -92,9 +92,6 @@ class ListViewController extends AbstractController
         if (empty($currentPage)) {
             $currentPage = 1;
         }
-        //TODO: Undefined variable: $widgetPage
-        // @phpstan-ignore-next-line
-        $GLOBALS['TSFE']->fe_user->setKey('ses', 'widgetPage', $widgetPage);
 
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
