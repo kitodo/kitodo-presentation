@@ -72,7 +72,7 @@ class DataHandler implements LoggerAwareInterface
      *
      * @return void
      */
-    public function processDatamap_postProcessFieldArray(string $status, string $table, int $id, array &$fieldArray): void
+    public function processDatamap_postProcessFieldArray(string $status, string $table, string $id, array &$fieldArray): void
     {
         if ($status == 'new') {
             switch ($table) {
@@ -204,7 +204,7 @@ class DataHandler implements LoggerAwareInterface
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations(string $status, string $table, int $id, array &$fieldArray): void
+    public function processDatamap_afterDatabaseOperations(string $status, string $table, string $id, array &$fieldArray): void
     {
         if ($status == 'update') {
             switch ($table) {
