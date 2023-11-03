@@ -231,9 +231,8 @@ class MetadataController extends AbstractController
     private function buildIiifDataGroup(string $label, string $value): array
     {
         // NOTE: Labels are to be escaped in Fluid template
-        // TODO: Variable $scheme might not be defined.
-        // @phpstan-ignore-next-line
-        if (IRI::isAbsoluteIri($value) && ($scheme = (new IRI($value))->getScheme()) == 'http' || $scheme == 'https') {
+        $scheme = (new IRI($value))->getScheme();
+        if (IRI::isAbsoluteIri($value) && ($scheme == 'http' || $scheme == 'https')) {
             //TODO: should really label be converted to empty string if equal to value?
             $label = $value == $label ? '' : $label;
             $buildUrl = true;
