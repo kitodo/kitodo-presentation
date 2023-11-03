@@ -115,10 +115,10 @@ class MetadataController extends AbstractController
         $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
         $metadata = $this->getMetadata();
         $topLevelId = $this->currentDocument->toplevelId;
-        // Get titledata?
+        // Get toplevel metadata?
         if (!$metadata || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $topLevelId)) {
             // @phpstan-ignore-next-line
-            $data = $useOriginalIiifManifestMetadata ? $this->currentDocument->getManifestMetadata($topLevelId, $this->settings['storagePid']) : $this->currentDocument->getTitledata($this->settings['storagePid']);
+            $data = $useOriginalIiifManifestMetadata ? $this->currentDocument->getManifestMetadata($topLevelId, $this->settings['storagePid']) : $this->currentDocument->getToplevelMetadata($this->settings['storagePid']);
             $data['_id'] = $topLevelId;
             array_unshift($metadata, $data);
         }

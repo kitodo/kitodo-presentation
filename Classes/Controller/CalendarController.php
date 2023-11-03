@@ -70,7 +70,7 @@ class CalendarController extends AbstractController
             return;
         }
 
-        $metadata = $this->document->getCurrentDocument()->getTitledata();
+        $metadata = $this->document->getCurrentDocument()->getToplevelMetadata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
@@ -209,7 +209,7 @@ class CalendarController extends AbstractController
         $this->view->assign('issueData', $issueData);
 
         // Link to current year.
-        $linkTitleData = $this->document->getCurrentDocument()->getTitledata();
+        $linkTitleData = $this->document->getCurrentDocument()->getToplevelMetadata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
         $this->view->assign('calendarData', $calendarData);

@@ -681,26 +681,23 @@ abstract class AbstractDocument
      *
      * @return array The logical structure node's / resource's parsed metadata array
      */
-    public function getTitledata(int $cPid = 0): array
+    public function getToplevelMetadata(int $cPid = 0): array
     {
-        $titledata = $this->getMetadata($this->_getToplevelId(), $cPid);
-        // Add information from METS structural map to titledata array.
+        $toplevelMetadata = $this->getMetadata($this->_getToplevelId(), $cPid);
+        // Add information from METS structural map to toplevel metadata array.
         if ($this instanceof MetsDocument) {
-            $this->addMetadataFromMets($titledata, $this->_getToplevelId());
+            $this->addMetadataFromMets($toplevelMetadata, $this->_getToplevelId());
         }
         // Set record identifier for METS file / IIIF manifest if not present.
-        if (
-            is_array($titledata)
-            && array_key_exists('record_id', $titledata)
-        ) {
+        if (array_key_exists('record_id', $toplevelMetadata)) {
             if (
                 !empty($this->recordId)
-                && !in_array($this->recordId, $titledata['record_id'])
+                && !in_array($this->recordId, $toplevelMetadata['record_id'])
             ) {
-                array_unshift($titledata['record_id'], $this->recordId);
+                array_unshift($toplevelMetadata['record_id'], $this->recordId);
             }
         }
-        return $titledata;
+        return $toplevelMetadata;
     }
 
     /**
