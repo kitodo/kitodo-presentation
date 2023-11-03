@@ -473,7 +473,7 @@ final class MetsDocument extends AbstractDocument
                         class_exists($class)
                         && ($obj = GeneralUtility::makeInstance($class)) instanceof MetadataInterface
                     ) {
-                        $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata, $this->settings['useExternalApisForMetadata']);
+                        $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata, GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey)['useExternalApisForMetadata']);
                     } else {
                         $this->logger->warning('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->mdSec[$dmdId]['type'] . '"');
                     }
