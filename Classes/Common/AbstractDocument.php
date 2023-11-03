@@ -289,46 +289,6 @@ abstract class AbstractDocument
     protected \SimpleXMLElement $xml;
 
     /**
-     * This clears the static registry to prevent memory exhaustion
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @return void
-     */
-    public static function clearRegistry(): void
-    {
-        // Reset registry array.
-        self::$registry = [];
-    }
-
-    /**
-     * This ensures that the recordId, if existent, is retrieved from the document
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param int $pid ID of the configuration page with the recordId config
-     *
-     * @return void
-     */
-    abstract protected function establishRecordId(int $pid): void;
-
-    /**
-     * Source document PHP object which is represented by a Document instance
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return \SimpleXMLElement|IiifResourceInterface An PHP object representation of
-     * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
-     */
-    abstract protected function getDocument();
-
-    /**
      * This gets the location of a downloadable file for a physical page or track
      *
      * @access public
@@ -379,6 +339,188 @@ abstract class AbstractDocument
      * @return string The file's MIME type
      */
     abstract public function getFileMimeType(string $id): string;
+
+    /**
+     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas. Text might be
+     * given as ALTO for METS or as annotations or ALTO for IIIF resources.
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
+     * of the Manifest / Range (IIIF)
+     *
+     * @return string The OCR full text
+     */
+    abstract public function getFullText(string $id): string;
+
+    /**
+     * This gets details about a logical structure element
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id The "@ID" attribute of the logical structure node (METS) or
+     * the "@id" property of the Manifest / Range (IIIF)
+     * @param bool $recursive Whether to include the child elements / resources
+     *
+     * @return array Array of the element's id, label, type and physical page indexes/mptr link
+     */
+    abstract public function getLogicalStructure(string $id, bool $recursive = false): array;
+
+    /**
+     * This extracts all the metadata for a logical structure node
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id The "@ID" attribute of the logical structure node (METS) or the "@id" property
+     * of the Manifest / Range (IIIF)
+     * @param int $cPid The PID for the metadata definitions (defaults to $this->cPid or $this->pid)
+     *
+     * @return array The logical structure node's / the IIIF resource's parsed metadata array
+     */
+    abstract public function getMetadata(string $id, int $cPid = 0): array;
+
+    /**
+     * Analyze the document if it contains any fulltext that needs to be indexed.
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return void
+     */
+    abstract protected function ensureHasFulltextIsSet(): void;
+
+    /**
+     * This ensures that the recordId, if existent, is retrieved from the document
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param int $pid ID of the configuration page with the recordId config
+     *
+     * @return void
+     */
+    abstract protected function establishRecordId(int $pid): void;
+
+    /**
+     * Source document PHP object which is represented by a Document instance
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return \SimpleXMLElement|IiifResourceInterface An PHP object representation of
+     * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
+     */
+    abstract protected function getDocument();
+
+    /**
+     * This builds an array of the document's physical structure
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return array Array of physical elements' id, type, label and file representations ordered
+     * by "@ORDER" attribute / IIIF Sequence's Canvases
+     */
+    abstract protected function _getPhysicalStructure(): array;
+
+    /**
+     * This returns the smLinks between logical and physical structMap (METS) and models the
+     * relation between IIIF Canvases and Manifests / Ranges in the same way
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return array The links between logical and physical nodes / Range, Manifest and Canvas
+     */
+    abstract protected function _getSmLinks(): array;
+
+    /**
+     * This returns the document's thumbnail location
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param bool $forceReload Force reloading the thumbnail instead of returning the cached value
+     *
+     * @return string The document's thumbnail location
+     */
+    abstract protected function _getThumbnail(bool $forceReload = false): string;
+
+    /**
+     * This returns the ID of the toplevel logical structure node
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return string The logical structure node's ID
+     */
+    abstract protected function _getToplevelId(): string;
+
+    /**
+     * This sets some basic class properties
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param string $location The location URL of the XML file to parse
+     * @param array $settings The extension settings
+     *
+     * @return void
+     */
+    abstract protected function init(string $location, array $settings): void;
+
+    /**
+     * METS/IIIF specific part of loading a location
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param string $location The URL of the file to load
+     *
+     * @return bool true on success or false on failure
+     */
+    abstract protected function loadLocation(string $location): bool;
+
+    /**
+     * Format specific part of building the document's metadata array
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param int $cPid
+     *
+     * @return void
+     */
+    abstract protected function prepareMetadataArray(int $cPid): void;
+
+    /**
+     * Reuse any document object that might have been already loaded to determine whether document is METS or IIIF
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument any instance that has already been loaded
+     *
+     * @return bool true if $preloadedDocument can actually be reused, false if it has to be loaded again
+     */
+    abstract protected function setPreloadedDocument($preloadedDocument): bool;
 
     /**
      * This is a singleton class, thus an instance must be created by this method
@@ -456,34 +598,19 @@ abstract class AbstractDocument
     }
 
     /**
-     * This gets details about a logical structure element
+     * This clears the static registry to prevent memory exhaustion
      *
      * @access public
      *
-     * @abstract
+     * @static
      *
-     * @param string $id The "@ID" attribute of the logical structure node (METS) or
-     * the "@id" property of the Manifest / Range (IIIF)
-     * @param bool $recursive Whether to include the child elements / resources
-     *
-     * @return array Array of the element's id, label, type and physical page indexes/mptr link
+     * @return void
      */
-    abstract public function getLogicalStructure(string $id, bool $recursive = false): array;
-
-    /**
-     * This extracts all the metadata for a logical structure node
-     *
-     * @access public
-     *
-     * @abstract
-     *
-     * @param string $id The "@ID" attribute of the logical structure node (METS) or the "@id" property
-     * of the Manifest / Range (IIIF)
-     * @param int $cPid The PID for the metadata definitions (defaults to $this->cPid or $this->pid)
-     *
-     * @return array The logical structure node's / the IIIF resource's parsed metadata array
-     */
-    abstract public function getMetadata(string $id, int $cPid = 0): array;
+    public static function clearRegistry(): void
+    {
+        // Reset registry array.
+        self::$registry = [];
+    }
 
     /**
      * This returns the first corresponding physical page number of a given logical page label
@@ -514,21 +641,6 @@ abstract class AbstractDocument
         }
         return 1;
     }
-
-    /**
-     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas. Text might be
-     * given as ALTO for METS or as annotations or ALTO for IIIF resources.
-     *
-     * @access public
-     *
-     * @abstract
-     *
-     * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
-     * of the Manifest / Range (IIIF)
-     *
-     * @return string The OCR full text
-     */
-    abstract public function getFullText(string $id): string;
 
     /**
      * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
@@ -742,46 +854,6 @@ abstract class AbstractDocument
     }
 
     /**
-     * This sets some basic class properties
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param string $location The location URL of the XML file to parse
-     * @param array $settings The extension settings
-     *
-     * @return void
-     */
-    abstract protected function init(string $location, array $settings): void;
-
-    /**
-     * Reuse any document object that might have been already loaded to determine whether document is METS or IIIF
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument any instance that has already been loaded
-     *
-     * @return bool true if $preloadedDocument can actually be reused, false if it has to be loaded again
-     */
-    abstract protected function setPreloadedDocument($preloadedDocument): bool;
-
-    /**
-     * METS/IIIF specific part of loading a location
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param string $location The URL of the file to load
-     *
-     * @return bool true on success or false on failure
-     */
-    abstract protected function loadLocation(string $location): bool;
-
-    /**
      * Load XML file / IIIF resource from URL
      *
      * @access protected
@@ -801,17 +873,6 @@ abstract class AbstractDocument
         }
         return false;
     }
-
-    /**
-     * Analyze the document if it contains any fulltext that needs to be indexed.
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return void
-     */
-    abstract protected function ensureHasFulltextIsSet(): void;
 
     /**
      * Register all available data formats
@@ -947,19 +1008,6 @@ abstract class AbstractDocument
     }
 
     /**
-     * Format specific part of building the document's metadata array
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param int $cPid
-     *
-     * @return void
-     */
-    abstract protected function prepareMetadataArray(int $cPid): void;
-
-    /**
      * This builds an array of the document's metadata
      *
      * @access protected
@@ -1009,18 +1057,6 @@ abstract class AbstractDocument
     {
         return $this->parentId;
     }
-
-    /**
-     * This builds an array of the document's physical structure
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return array Array of physical elements' id, type, label and file representations ordered
-     * by "@ORDER" attribute / IIIF Sequence's Canvases
-     */
-    abstract protected function _getPhysicalStructure(): array;
 
     /**
      * This gives an array of the document's physical structure metadata
@@ -1097,18 +1133,6 @@ abstract class AbstractDocument
     }
 
     /**
-     * This returns the smLinks between logical and physical structMap (METS) and models the
-     * relation between IIIF Canvases and Manifests / Ranges in the same way
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return array The links between logical and physical nodes / Range, Manifest and Canvas
-     */
-    abstract protected function _getSmLinks(): array;
-
-    /**
      * This builds an array of the document's logical structure
      *
      * @access protected
@@ -1125,30 +1149,6 @@ abstract class AbstractDocument
         }
         return $this->tableOfContents;
     }
-
-    /**
-     * This returns the document's thumbnail location
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param bool $forceReload Force reloading the thumbnail instead of returning the cached value
-     *
-     * @return string The document's thumbnail location
-     */
-    abstract protected function _getThumbnail(bool $forceReload = false): string;
-
-    /**
-     * This returns the ID of the toplevel logical structure node
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return string The logical structure node's ID
-     */
-    abstract protected function _getToplevelId(): string;
 
     /**
      * This sets $this->cPid via __set()
