@@ -314,7 +314,7 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    protected abstract function establishRecordId(int $pid): void;
+    abstract protected function establishRecordId(int $pid): void;
 
     /**
      * Source document PHP object which is represented by a Document instance
@@ -326,7 +326,7 @@ abstract class AbstractDocument
      * @return \SimpleXMLElement|IiifResourceInterface An PHP object representation of
      * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
      */
-    protected abstract function getDocument();
+    abstract protected function getDocument();
 
     /**
      * This gets the location of a downloadable file for a physical page or track
@@ -339,7 +339,7 @@ abstract class AbstractDocument
      *
      * @return string The file's location as URL
      */
-    public abstract function getDownloadLocation(string $id): string;
+    abstract public function getDownloadLocation(string $id): string;
 
     /**
      * This gets all file information stored in single array.
@@ -352,7 +352,7 @@ abstract class AbstractDocument
      * 
      * @return array|null The set of file information
      */
-    public abstract function getFileInfo($id);
+    abstract public function getFileInfo($id): ?array;
 
     /**
      * This gets the location of a file representing a physical page or track
@@ -365,7 +365,7 @@ abstract class AbstractDocument
      *
      * @return string The file's location as URL
      */
-    public abstract function getFileLocation(string $id): string;
+    abstract public function getFileLocation(string $id): string;
 
     /**
      * This gets the MIME type of a file representing a physical page or track
@@ -378,7 +378,7 @@ abstract class AbstractDocument
      *
      * @return string The file's MIME type
      */
-    public abstract function getFileMimeType(string $id): string;
+    abstract public function getFileMimeType(string $id): string;
 
     /**
      * This is a singleton class, thus an instance must be created by this method
@@ -468,7 +468,7 @@ abstract class AbstractDocument
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
-    public abstract function getLogicalStructure(string $id, bool $recursive = false): array;
+    abstract public function getLogicalStructure(string $id, bool $recursive = false): array;
 
     /**
      * This extracts all the metadata for a logical structure node
@@ -483,7 +483,7 @@ abstract class AbstractDocument
      *
      * @return array The logical structure node's / the IIIF resource's parsed metadata array
      */
-    public abstract function getMetadata(string $id, int $cPid = 0): array;
+    abstract public function getMetadata(string $id, int $cPid = 0): array;
 
     /**
      * This returns the first corresponding physical page number of a given logical page label
@@ -528,7 +528,7 @@ abstract class AbstractDocument
      *
      * @return string The OCR full text
      */
-    public abstract function getFullText(string $id): string;
+    abstract public function getFullText(string $id): string;
 
     /**
      * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
@@ -766,7 +766,7 @@ abstract class AbstractDocument
      *
      * @return bool true if $preloadedDocument can actually be reused, false if it has to be loaded again
      */
-    protected abstract function setPreloadedDocument($preloadedDocument): bool;
+    abstract protected function setPreloadedDocument($preloadedDocument): bool;
 
     /**
      * METS/IIIF specific part of loading a location
@@ -779,7 +779,7 @@ abstract class AbstractDocument
      *
      * @return bool true on success or false on failure
      */
-    protected abstract function loadLocation(string $location): bool;
+    abstract protected function loadLocation(string $location): bool;
 
     /**
      * Load XML file / IIIF resource from URL
@@ -811,7 +811,7 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    protected abstract function ensureHasFulltextIsSet();
+    abstract protected function ensureHasFulltextIsSet(): void;
 
     /**
      * Register all available data formats
@@ -957,7 +957,7 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    protected abstract function prepareMetadataArray(int $cPid): void;
+    abstract protected function prepareMetadataArray(int $cPid): void;
 
     /**
      * This builds an array of the document's metadata
@@ -1020,7 +1020,7 @@ abstract class AbstractDocument
      * @return array Array of physical elements' id, type, label and file representations ordered
      * by "@ORDER" attribute / IIIF Sequence's Canvases
      */
-    protected abstract function _getPhysicalStructure(): array;
+    abstract protected function _getPhysicalStructure(): array;
 
     /**
      * This gives an array of the document's physical structure metadata
@@ -1106,7 +1106,7 @@ abstract class AbstractDocument
      *
      * @return array The links between logical and physical nodes / Range, Manifest and Canvas
      */
-    protected abstract function _getSmLinks(): array;
+    abstract protected function _getSmLinks(): array;
 
     /**
      * This builds an array of the document's logical structure
@@ -1137,7 +1137,7 @@ abstract class AbstractDocument
      *
      * @return string The document's thumbnail location
      */
-    protected abstract function _getThumbnail(bool $forceReload = false): string;
+    abstract protected function _getThumbnail(bool $forceReload = false): string;
 
     /**
      * This returns the ID of the toplevel logical structure node
@@ -1148,7 +1148,7 @@ abstract class AbstractDocument
      *
      * @return string The logical structure node's ID
      */
-    protected abstract function _getToplevelId(): string;
+    abstract protected function _getToplevelId(): string;
 
     /**
      * This sets $this->cPid via __set()
