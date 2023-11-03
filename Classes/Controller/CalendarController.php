@@ -283,19 +283,15 @@ class CalendarController extends AbstractController
                 $yearFilled = [];
                 $min = $yearArray[0]['title'];
                 // round the starting decade down to zero for equal rows
-                $min = substr_replace($min, "0", -1);
-                $max = $yearArray[count($yearArray) - 1]['title'];
+                $min = (int) substr_replace($min, "0", -1);
+                $max = (int) $yearArray[count($yearArray) - 1]['title'];
                 // if we have an actual documentId it should be used, otherwise leave empty
                 for ($i = 0; $i < $max - $min + 1; $i++) {
-                    // TODO: Binary operation "+" between (array|string) and int<0, max> results in an error.
-                    // @phpstan-ignore-next-line
                     $key = array_search($min + $i, array_column($yearArray, 'title'));
                     if (is_int($key)) {
                         $yearFilled[] = $yearArray[$key];
                     } else {
-                        // TODO: Binary operation "+" between (array|string) and int<0, max> results in an error.
-                        // @phpstan-ignore-next-line
-                        $yearFilled[] = ['title' => $min+$i, 'documentId' => ''];
+                        $yearFilled[] = ['title' => $min + $i, 'documentId' => ''];
                     }
                 }
                 $yearArray = $yearFilled;
