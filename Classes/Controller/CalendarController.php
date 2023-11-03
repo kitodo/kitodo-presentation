@@ -112,91 +112,8 @@ class CalendarController extends AbstractController
             return;
         }
 
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
+        $calendarData = $this->buildCalendar();
 
-        $issues = [];
-
-        // Process results.
-        if ($documents->count() === 0) {
-            $toc = $this->document->getCurrentDocument()->tableOfContents;
-
-            foreach ($toc[0]['children'] as $year) {
-                foreach ($year['children'] as $month) {
-                    foreach ($month['children'] as $day) {
-                        foreach ($day['children'] as $issue) {
-                            $title = $issue['label'] ?: $issue['orderlabel'];
-                            if (strtotime($title) !== false) {
-                                $title = strftime('%x', strtotime($title));
-                            }
-
-                            $issues[] = [
-                                'uid' => $issue['points'],
-                                'title' => $title,
-                                'year' => $day['orderlabel'],
-                            ];
-                        }
-                    }
-                }
-            }
-        } else {
-            /** @var Document $document */
-            foreach ($documents as $document) {
-                // Set title for display in calendar view.
-                if (!empty($document->getTitle())) {
-                    $title = $document->getTitle();
-                } else {
-                    $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
-                    if (strtotime($title) !== false) {
-                        $title = strftime('%x', strtotime($title));
-                    }
-                }
-                $issues[] = [
-                    'uid' => $document->getUid(),
-                    'title' => $title,
-                    'year' => $document->getYear()
-                ];
-            }
-        }
-
-        //  We need an array of issues with year => month => day number as key.
-        $calendarIssuesByYear = [];
-        foreach ($issues as $issue) {
-            $dateTimestamp = strtotime($issue['year']);
-            if ($dateTimestamp !== false) {
-                $_year = date('Y', $dateTimestamp);
-                $_month = date('n', $dateTimestamp);
-                $_day = date('j', $dateTimestamp);
-                $calendarIssuesByYear[$_year][$_month][$_day][] = $issue;
-            } else {
-                $this->logger->warning('Document with UID ' . $issue['uid'] . 'has no valid date of publication');
-            }
-        }
-        // Sort by years.
-        ksort($calendarIssuesByYear);
-        // Build calendar for year (default) or season.
-        $calendarData = [];
-        $iteration = 1;
-        foreach ($calendarIssuesByYear as $year => $calendarIssuesByMonth) {
-            // Sort by months.
-            ksort($calendarIssuesByMonth);
-            // Default: First month is January, last month is December.
-            $firstMonth = 1;
-            $lastMonth = 12;
-            // Show calendar from first issue up to end of season if applicable.
-            if (
-                empty($this->settings['showEmptyMonths'])
-                && count($calendarIssuesByYear) > 1
-            ) {
-                if ($iteration == 1) {
-                    $firstMonth = (int) key($calendarIssuesByMonth);
-                } elseif ($iteration == count($calendarIssuesByYear)) {
-                    end($calendarIssuesByMonth);
-                    $lastMonth = (int) key($calendarIssuesByMonth);
-                }
-            }
-            $this->getCalendarYear($calendarData, $calendarIssuesByMonth, $year, $firstMonth, $lastMonth);
-            $iteration++;
-        }
         // Prepare list as alternative view.
         $issueData = [];
         foreach ($this->allIssues as $dayTimestamp => $issues) {
@@ -431,5 +348,166 @@ class CalendarController extends AbstractController
                 }
             }
         }
+    }
+
+    /**
+     * Build calendar for year (default) or season.
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function buildCalendar(): array
+    {
+        $issuesByYear = $this->getIssuesByYear();
+
+        $calendarData = [];
+        $iteration = 1;
+        foreach ($issuesByYear as $year => $issuesByMonth) {
+            // Sort by months.
+            ksort($issuesByMonth);
+            // Default: First month is January, last month is December.
+            $firstMonth = 1;
+            $lastMonth = 12;
+            // Show calendar from first issue up to end of season if applicable.
+            if (
+                empty($this->settings['showEmptyMonths'])
+                && count($issuesByYear) > 1
+            ) {
+                if ($iteration == 1) {
+                    $firstMonth = (int) key($issuesByMonth);
+                } elseif ($iteration == count($issuesByYear)) {
+                    end($issuesByMonth);
+                    $lastMonth = (int) key($issuesByMonth);
+                }
+            }
+            $this->getCalendarYear($calendarData, $issuesByMonth, $year, $firstMonth, $lastMonth);
+            $iteration++;
+        }
+
+        return $calendarData;
+    }
+
+    /**
+     * Get issues by year
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function getIssuesByYear(): array
+    {
+        $issues = $this->getIssues();
+
+        //  We need an array of issues with year => month => day number as key.
+        $issuesByYear = [];
+
+        foreach ($issues as $issue) {
+            $dateTimestamp = strtotime($issue['year']);
+            if ($dateTimestamp !== false) {
+                $_year = date('Y', $dateTimestamp);
+                $_month = date('n', $dateTimestamp);
+                $_day = date('j', $dateTimestamp);
+                $issuesByYear[$_year][$_month][$_day][] = $issue;
+            } else {
+                $this->logger->warning('Document with UID ' . $issue['uid'] . 'has no valid date of publication');
+            }
+        }
+        // Sort by years.
+        ksort($issuesByYear);
+
+        return $issuesByYear;
+    }
+
+    /**
+     * Gets issues from table of contents or documents.
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function getIssues(): array
+    {
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
+
+        $issues = [];
+
+        // Process results.
+        if ($documents->count() === 0) {
+            $issues = $this->getIssuesFromTableOfContents();
+        } else {
+            $issues = $this->getIssuesFromDocuments($documents);
+        }
+
+        return $issues;
+    }
+
+    /**
+     * Gets issues from table of contents.
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function getIssuesFromTableOfContents(): array
+    {
+        $issues = [];
+
+        $toc = $this->document->getCurrentDocument()->tableOfContents;
+
+        foreach ($toc[0]['children'] as $year) {
+            foreach ($year['children'] as $month) {
+                foreach ($month['children'] as $day) {
+                    foreach ($day['children'] as $issue) {
+                        $title = $issue['label'] ?: $issue['orderlabel'];
+                        if (strtotime($title) !== false) {
+                            $title = strftime('%x', strtotime($title));
+                        }
+
+                        $issues[] = [
+                            'uid' => $issue['points'],
+                            'title' => $title,
+                            'year' => $day['orderlabel'],
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $issues;
+    }
+
+    /**
+     * Gets issues from documents.
+     *
+     * @access private
+     *
+     * @param array $documents to create issues
+     *
+     * @return array
+     */
+    private function getIssuesFromDocuments(array $documents): array
+    {
+        $issues = [];
+
+        /** @var Document $document */
+        foreach ($documents as $document) {
+            // Set title for display in calendar view.
+            if (!empty($document->getTitle())) {
+                $title = $document->getTitle();
+            } else {
+                $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
+                if (strtotime($title) !== false) {
+                    $title = strftime('%x', strtotime($title));
+                }
+            }
+            $issues[] = [
+                'uid' => $document->getUid(),
+                'title' => $title,
+                'year' => $document->getYear()
+            ];
+        }
+
+        return $issues;
     }
 }
