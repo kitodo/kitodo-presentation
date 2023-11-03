@@ -210,7 +210,7 @@ final class MetsDocument extends AbstractDocument
      * {@inheritDoc}
      * @see AbstractDocument::getFileInfo()
      */
-    public function getFileInfo($id)
+    public function getFileInfo($id): ?array
     {
         $this->_getFileGrps();
 

@@ -384,7 +384,7 @@ final class IiifManifest extends AbstractDocument
     /**
      * @see AbstractDocument::getFileInfo()
      */
-    public function getFileInfo($id)
+    public function getFileInfo($id): ?array
     {
         if (empty($this->fileInfos[$id]['location'])) {
             $this->fileInfos[$id]['location'] = $this->getFileLocation($id);
