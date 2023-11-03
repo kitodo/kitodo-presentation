@@ -43,7 +43,7 @@ class AudioVideoMDTest extends UnitTestCase
 
         $audioVideoMD->extractMetadata($videoXml, $this->metadata);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 'duration' => ["00:01:30.07"],
                 'video_duration' => ["00:01:30.07"],

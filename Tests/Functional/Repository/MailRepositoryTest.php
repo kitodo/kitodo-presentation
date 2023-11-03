@@ -31,7 +31,7 @@ class MailRepositoryTest extends FunctionalTestCase
             20000
         );
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Repository/mail.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/mail.csv');
     }
 
     /**
@@ -41,16 +41,16 @@ class MailRepositoryTest extends FunctionalTestCase
     public function canFindAllWithPid(): void
     {
         $mails = $this->mailRepository->findAllWithPid(30000);
-        $this->assertNotNull($mails);
-        $this->assertInstanceOf(QueryResult::class, $mails);
+        self::assertNotNull($mails);
+        self::assertInstanceOf(QueryResult::class, $mails);
 
         $mailByLabel = [];
         foreach ($mails as $mail) {
             $mailByLabel[$mail->getLabel()] = $mail;
         }
 
-        $this->assertEquals(2, $mails->count());
-        $this->assertArrayHasKey('Mail-Label-1', $mailByLabel);
-        $this->assertArrayHasKey('Mail-Label-2', $mailByLabel);
+        self::assertEquals(2, $mails->count());
+        self::assertArrayHasKey('Mail-Label-1', $mailByLabel);
+        self::assertArrayHasKey('Mail-Label-2', $mailByLabel);
     }
 }

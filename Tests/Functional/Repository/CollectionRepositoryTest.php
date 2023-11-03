@@ -31,7 +31,7 @@ class CollectionRepositoryTest extends FunctionalTestCase
             20000
         );
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Repository/collections.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/collections.csv');
     }
 
     /**
@@ -41,16 +41,16 @@ class CollectionRepositoryTest extends FunctionalTestCase
     public function canFindAllByUids(): void
     {
         $collections = $this->collectionRepository->findAllByUids([1101, 1102]);
-        $this->assertNotNull($collections);
-        $this->assertInstanceOf(QueryResult::class, $collections);
+        self::assertNotNull($collections);
+        self::assertInstanceOf(QueryResult::class, $collections);
 
         $collectionsByLabel = [];
         foreach ($collections as $collection) {
             $collectionsByLabel[$collection->getLabel()] = $collection;
         }
 
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
     }
 
     /**
@@ -60,18 +60,18 @@ class CollectionRepositoryTest extends FunctionalTestCase
     public function canGetCollectionForMetadata(): void
     {
         $collections = $this->collectionRepository->getCollectionForMetadata("20000");
-        $this->assertNotNull($collections);
-        $this->assertInstanceOf(QueryResult::class, $collections);
+        self::assertNotNull($collections);
+        self::assertInstanceOf(QueryResult::class, $collections);
 
         $collectionsByLabel = [];
         foreach ($collections as $collection) {
             $collectionsByLabel[$collection->getLabel()] = $collection;
         }
 
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
-        $this->assertArrayHasKey('Geschichte', $collectionsByLabel);
-        $this->assertArrayHasKey('Bildende Kunst', $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertArrayHasKey('Geschichte', $collectionsByLabel);
+        self::assertArrayHasKey('Bildende Kunst', $collectionsByLabel);
     }
 
     /**
@@ -81,8 +81,8 @@ class CollectionRepositoryTest extends FunctionalTestCase
     protected function findCollectionsBySettings($settings): array
     {
         $collections = $this->collectionRepository->findCollectionsBySettings($settings);
-        $this->assertNotNull($collections);
-        $this->assertInstanceOf(QueryResult::class, $collections);
+        self::assertNotNull($collections);
+        self::assertInstanceOf(QueryResult::class, $collections);
 
         $collectionsByLabel = [];
         foreach ($collections as $collection) {
@@ -99,9 +99,9 @@ class CollectionRepositoryTest extends FunctionalTestCase
     public function canFindCollectionsBySettings(): void
     {
         $collectionsByLabel = $this->findCollectionsBySettings(['collections' => '1101, 1102']);
-        $this->assertCount(2, $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertCount(2, $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
 
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
@@ -109,30 +109,30 @@ class CollectionRepositoryTest extends FunctionalTestCase
                 'show_userdefined' => true
             ]
         );
-        $this->assertCount(2, $collectionsByLabel);
-        $this->assertArrayHasKey('Geschichte', $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertCount(2, $collectionsByLabel);
+        self::assertArrayHasKey('Geschichte', $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
 
         $collectionsByLabel = $this->findCollectionsBySettings(['show_userdefined' => true]);
-        $this->assertCount(4, $collectionsByLabel);
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
-        $this->assertArrayHasKey('Geschichte', $collectionsByLabel);
-        $this->assertArrayHasKey('Bildende Kunst', $collectionsByLabel);
-        $this->assertEquals(
+        self::assertCount(4, $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertArrayHasKey('Geschichte', $collectionsByLabel);
+        self::assertArrayHasKey('Bildende Kunst', $collectionsByLabel);
+        self::assertEquals(
             'Bildende Kunst, Collection with single document, Geschichte, Musik',
             implode(', ', array_keys($collectionsByLabel))
         );
 
         $collectionsByLabel = $this->findCollectionsBySettings(['show_userdefined' => false]);
-        $this->assertCount(2, $collectionsByLabel);
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertCount(2, $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
 
         $collectionsByLabel = $this->findCollectionsBySettings(['hideEmptyOaiNames' => true]);
-        $this->assertCount(2, $collectionsByLabel);
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertCount(2, $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
 
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
@@ -140,10 +140,10 @@ class CollectionRepositoryTest extends FunctionalTestCase
                 'show_userdefined' => true
             ]
         );
-        $this->assertCount(3, $collectionsByLabel);
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
-        $this->assertArrayHasKey('Geschichte', $collectionsByLabel);
+        self::assertCount(3, $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertArrayHasKey('Geschichte', $collectionsByLabel);
 
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
@@ -151,11 +151,11 @@ class CollectionRepositoryTest extends FunctionalTestCase
                 'show_userdefined' => true
             ]
         );
-        $this->assertCount(4, $collectionsByLabel);
-        $this->assertArrayHasKey('Musik', $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
-        $this->assertArrayHasKey('Geschichte', $collectionsByLabel);
-        $this->assertArrayHasKey('Bildende Kunst', $collectionsByLabel);
+        self::assertCount(4, $collectionsByLabel);
+        self::assertArrayHasKey('Musik', $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertArrayHasKey('Geschichte', $collectionsByLabel);
+        self::assertArrayHasKey('Bildende Kunst', $collectionsByLabel);
 
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
@@ -166,9 +166,9 @@ class CollectionRepositoryTest extends FunctionalTestCase
             ]
         );
 
-        $this->assertCount(2, $collectionsByLabel);
-        $this->assertArrayHasKey('Collection with single document', $collectionsByLabel);
-        $this->assertArrayHasKey('Geschichte', $collectionsByLabel);
+        self::assertCount(2, $collectionsByLabel);
+        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
+        self::assertArrayHasKey('Geschichte', $collectionsByLabel);
     }
 
     /**
@@ -181,20 +181,20 @@ class CollectionRepositoryTest extends FunctionalTestCase
             ['show_userdefined' => true, 'storagePid' => '20000'], 'history'
         );
         $result = $indexName->fetchAllAssociative();
-        $this->assertEquals(1, $indexName->rowCount());
-        $this->assertEquals('Geschichte', $result[0]['index_name']);
-        $this->assertEquals('*:*', $result[0]['index_query']);
-        $this->assertEquals('1103', $result[0]['uid']);
+        self::assertEquals(1, $indexName->rowCount());
+        self::assertEquals('Geschichte', $result[0]['index_name']);
+        self::assertEquals('*:*', $result[0]['index_query']);
+        self::assertEquals('1103', $result[0]['uid']);
 
         $indexName = $this->collectionRepository->getIndexNameForSolr(
             ['show_userdefined' => false, 'storagePid' => '20000'], 'history'
         );
-        $this->assertEquals(0, $indexName->rowCount());
+        self::assertEquals(0, $indexName->rowCount());
 
         $indexName = $this->collectionRepository->getIndexNameForSolr(
             ['show_userdefined' => false, 'storagePid' => '20000'], 'collection-with-single-document'
         );
-        $this->assertEquals(1, $indexName->rowCount());
-        $this->assertEquals('collection-with-single-document', $indexName->fetchOne());
+        self::assertEquals(1, $indexName->rowCount());
+        self::assertEquals('collection-with-single-document', $indexName->fetchOne());
     }
 }
