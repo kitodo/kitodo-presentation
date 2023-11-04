@@ -204,7 +204,7 @@ class BaseCommand extends Command
         $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $doc->cPid = $this->storagePid;
 
-        $metadata = $doc->getTitledata($this->storagePid);
+        $metadata = $doc->getToplevelMetadata($this->storagePid);
 
         // set title data
         $document->setTitle($metadata['title'][0] ? : '');

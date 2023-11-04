@@ -1080,7 +1080,7 @@ final class MetsDocument extends AbstractDocument
                 return $this->thumbnail;
             }
             $strctId = $this->_getToplevelId();
-            $metadata = $this->getTitledata($cPid);
+            $metadata = $this->getToplevelMetadata($cPid);
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_structures');
