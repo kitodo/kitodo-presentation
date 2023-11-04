@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
@@ -34,6 +35,12 @@ class MetadataController extends AbstractController
      * @var AbstractDocument
      */
     private $currentDocument;
+
+    /**
+     * @access private
+     * @var bool
+     */
+    private $useOriginalIiifManifestMetadata;
 
     /**
      * @access protected
@@ -111,14 +118,19 @@ class MetadataController extends AbstractController
         }
 
         $this->currentDocument = $this->document->getCurrentDocument();
+        $this->useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
 
-        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
         $metadata = $this->getMetadata();
         $topLevelId = $this->currentDocument->toplevelId;
         // Get toplevel metadata?
         if (!$metadata || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $topLevelId)) {
-            // @phpstan-ignore-next-line
-            $data = $useOriginalIiifManifestMetadata ? $this->currentDocument->getManifestMetadata($topLevelId, $this->settings['storagePid']) : $this->currentDocument->getToplevelMetadata($this->settings['storagePid']);
+            $data = [];
+            if ($this->useOriginalIiifManifestMetadata) {
+                // @phpstan-ignore-next-line
+                $data = $this->currentDocument->getManifestMetadata($topLevelId, $this->settings['storagePid']);
+            } else {
+                $data = $this->currentDocument->getToplevelMetadata($this->settings['storagePid']);
+            }
             $data['_id'] = $topLevelId;
             array_unshift($metadata, $data);
         }
@@ -129,7 +141,7 @@ class MetadataController extends AbstractController
         }
         ksort($metadata);
 
-        $this->printMetadata($metadata, $useOriginalIiifManifestMetadata);
+        $this->printMetadata($metadata);
     }
 
     /**
@@ -138,16 +150,14 @@ class MetadataController extends AbstractController
      * @access protected
      *
      * @param array $metadata The metadata array
-     * @param bool $useOriginalIiifManifestMetadata Output IIIF metadata as simple key/value pairs?
      *
      * @return void
      */
-    protected function printMetadata(array $metadata, bool $useOriginalIiifManifestMetadata = false): void
+    protected function printMetadata(array $metadata): void
     {
-        if ($useOriginalIiifManifestMetadata) {
-            $iiifData = $this->buildIiifData($metadata);
+        if ($this->useOriginalIiifManifestMetadata) {
             $this->view->assign('useIiif', true);
-            $this->view->assign('iiifData', $iiifData);
+            $this->view->assign('iiifData', $this->buildIiifData($metadata));
         } else {
             // findBySettings also sorts entries by the `sorting` field
             $metadataResult = $this->metadataRepository->findBySettings([
@@ -431,9 +441,8 @@ class MetadataController extends AbstractController
      */
     private function getMetadataForIds(array $id, array $metadata): array
     {
-        $useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
         foreach ($id as $sid) {
-            if ($useOriginalIiifManifestMetadata) {
+            if ($this->useOriginalIiifManifestMetadata) {
                 // @phpstan-ignore-next-line
                 $data = $this->currentDocument->getManifestMetadata($sid, $this->settings['storagePid']);
             } else {
