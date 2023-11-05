@@ -67,12 +67,12 @@ class DataHandler implements LoggerAwareInterface
      *
      * @param string $status 'new' or 'update'
      * @param string $table The destination table
-     * @param int $id The uid of the record
+     * @param int|string $id The uid of the record
      * @param array &$fieldArray Array of field values
      *
      * @return void
      */
-    public function processDatamap_postProcessFieldArray(string $status, string $table, string $id, array &$fieldArray): void
+    public function processDatamap_postProcessFieldArray(string $status, string $table, $id, array &$fieldArray): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
     {
         if ($status == 'new') {
             switch ($table) {
@@ -199,12 +199,12 @@ class DataHandler implements LoggerAwareInterface
      *
      * @param string $status 'new' or 'update'
      * @param string $table The destination table
-     * @param int $id The uid of the record
+     * @param int|string $id The uid of the record
      * @param array &$fieldArray Array of field values
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations(string $status, string $table, string $id, array &$fieldArray): void
+    public function processDatamap_afterDatabaseOperations(string $status, string $table, $id, array &$fieldArray): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
     {
         if ($status == 'update') {
             switch ($table) {
@@ -251,19 +251,19 @@ class DataHandler implements LoggerAwareInterface
                                 if ($solr->ready) {
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
-                                    $updateQuery->addDeleteQuery('uid:' . $id);
+                                    $updateQuery->addDeleteQuery('uid:' . intval($id));
                                     $updateQuery->addCommit();
                                     $solr->service->update($updateQuery);
                                 }
                             } else {
                                 // Reindex document.
-                                $document = $this->getDocumentRepository()->findByUid($id);
+                                $document = $this->getDocumentRepository()->findByUid(intval($id));
                                 $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
                                     $document->setCurrentDocument($doc);
                                     Indexer::add($document, $this->getDocumentRepository());
                                 } else {
-                                    $this->logger->error('Failed to re-index document with UID ' . $id);
+                                    $this->logger->error('Failed to re-index document with UID ' . intval($id));
                                 }
                             }
                         }
@@ -280,11 +280,11 @@ class DataHandler implements LoggerAwareInterface
      *
      * @param string $command 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
      * @param string $table The destination table
-     * @param int $id The uid of the record
+     * @param int|string $id The uid of the record
      *
      * @return void
      */
-    public function processCmdmap_postProcess(string $command, string $table, int $id): void
+    public function processCmdmap_postProcess(string $command, string $table, $id): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
     {
         if (
             in_array($command, ['move', 'delete', 'undelete'])
@@ -330,7 +330,7 @@ class DataHandler implements LoggerAwareInterface
                         if ($solr->ready) {
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
-                            $updateQuery->addDeleteQuery('uid:' . $id);
+                            $updateQuery->addDeleteQuery('uid:' . intval($id));
                             $updateQuery->addCommit();
                             $solr->service->update($updateQuery);
                             if ($command == 'delete') {
@@ -339,13 +339,13 @@ class DataHandler implements LoggerAwareInterface
                         }
                     case 'undelete':
                         // Reindex document.
-                        $document = $this->getDocumentRepository()->findByUid($id);
+                        $document = $this->getDocumentRepository()->findByUid(intval($id));
                         $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                         if ($document !== null && $doc !== null) {
                             $document->setCurrentDocument($doc);
                             Indexer::add($document, $this->getDocumentRepository());
                         } else {
-                            $this->logger->error('Failed to re-index document with UID ' . $id);
+                            $this->logger->error('Failed to re-index document with UID ' . intval($id));
                         }
                         break;
                 }
