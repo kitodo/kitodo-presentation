@@ -151,7 +151,7 @@ class DataHandler implements LoggerAwareInterface
                             ->select($table . '.is_listed AS is_listed')
                             ->from($table)
                             ->where(
-                                $queryBuilder->expr()->eq($table . '.uid', intval($id)),
+                                $queryBuilder->expr()->eq($table . '.uid', (int) $id),
                                 Helper::whereExpression($table)
                             )
                             ->setMaxResults(1)
@@ -176,7 +176,7 @@ class DataHandler implements LoggerAwareInterface
                             ->select($table . '.index_autocomplete AS index_autocomplete')
                             ->from($table)
                             ->where(
-                                $queryBuilder->expr()->eq($table . '.uid', intval($id)),
+                                $queryBuilder->expr()->eq($table . '.uid', (int) $id),
                                 Helper::whereExpression($table)
                             )
                             ->setMaxResults(1)
@@ -238,7 +238,7 @@ class DataHandler implements LoggerAwareInterface
                             ->where(
                                 $queryBuilder->expr()->eq(
                                     'tx_dlf_documents_join.uid',
-                                    intval($id)
+                                    (int) $id
                                 )
                             )
                             ->setMaxResults(1)
@@ -251,19 +251,19 @@ class DataHandler implements LoggerAwareInterface
                                 if ($solr->ready) {
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
-                                    $updateQuery->addDeleteQuery('uid:' . intval($id));
+                                    $updateQuery->addDeleteQuery('uid:' . (int) $id);
                                     $updateQuery->addCommit();
                                     $solr->service->update($updateQuery);
                                 }
                             } else {
                                 // Reindex document.
-                                $document = $this->getDocumentRepository()->findByUid(intval($id));
+                                $document = $this->getDocumentRepository()->findByUid((int) $id);
                                 $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
                                     $document->setCurrentDocument($doc);
                                     Indexer::add($document, $this->getDocumentRepository());
                                 } else {
-                                    $this->logger->error('Failed to re-index document with UID ' . intval($id));
+                                    $this->logger->error('Failed to re-index document with UID ' . (string) $id);
                                 }
                             }
                         }
@@ -315,7 +315,7 @@ class DataHandler implements LoggerAwareInterface
                 ->where(
                     $queryBuilder->expr()->eq(
                         'tx_dlf_documents_join.uid',
-                        intval($id)
+                        (int) $id
                     )
                 )
                 ->setMaxResults(1)
@@ -330,7 +330,7 @@ class DataHandler implements LoggerAwareInterface
                         if ($solr->ready) {
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
-                            $updateQuery->addDeleteQuery('uid:' . intval($id));
+                            $updateQuery->addDeleteQuery('uid:' . (int) $id);
                             $updateQuery->addCommit();
                             $solr->service->update($updateQuery);
                             if ($command == 'delete') {
@@ -339,13 +339,13 @@ class DataHandler implements LoggerAwareInterface
                         }
                     case 'undelete':
                         // Reindex document.
-                        $document = $this->getDocumentRepository()->findByUid(intval($id));
+                        $document = $this->getDocumentRepository()->findByUid((int) $id);
                         $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                         if ($document !== null && $doc !== null) {
                             $document->setCurrentDocument($doc);
                             Indexer::add($document, $this->getDocumentRepository());
                         } else {
-                            $this->logger->error('Failed to re-index document with UID ' . intval($id));
+                            $this->logger->error('Failed to re-index document with UID ' . (string) $id);
                         }
                         break;
                 }
@@ -371,7 +371,7 @@ class DataHandler implements LoggerAwareInterface
                         'tx_dlf_solrcores.index_name AS core'
                     )
                     ->from('tx_dlf_solrcores')
-                    ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', intval($id)))
+                    ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', (int) $id))
                     ->setMaxResults(1)
                     ->execute();
 
