@@ -22,10 +22,27 @@
         <f:if condition="{pagination.hasLessPages}">
             <li>…</li>
         </f:if>
-        <f:for each="{pagination.allPageNumbers}" as="page">
-            <li class="{f:if(condition: '{page} == {paginator.currentPageNumber}', then:'current')}">
-                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': page}" arguments="{searchParameter: lastSearch}">{page}</f:link.action>
-            </li>
+        <f:comment>add pages between first and last page</f:comment>
+        <f:for each="{pagination.pages}" as="page">
+            <f:switch expression="{page}">
+                <f:comment>If page 1 is not to be output twice, please remove the comment</f:comment>
+                <f:comment>
+                    <f:case value="1">
+                        <f:comment>don't add first page a second time</f:comment>
+                    </f:case>
+                </f:comment>
+                <f:comment>If last page is not to be output twice, please remove the comment</f:comment>
+                <f:comment>
+                    <f:case value="{pagination.lastPageNumber}">
+                        <f:comment>don't add last page a second time</f:comment>
+                    </f:case>
+                </f:comment>
+                <f:defaultCase>
+                    <li class="{f:if(condition: '{page} == {paginator.currentPageNumber}', then:'current')}">
+                        <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': page}" arguments="{searchParameter: lastSearch}">{page}</f:link.action>
+                    </li>
+                </f:defaultCase>
+            </f:switch>
         </f:for>
         <f:if condition="{pagination.hasMorePages}">
             <li>…</li>
