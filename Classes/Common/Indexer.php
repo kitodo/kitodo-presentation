@@ -56,8 +56,7 @@ class Indexer
         'sortables' => [],
         'indexed' => [],
         'stored' => [],
-        'tokenized' => [],
-        'fieldboost' => []
+        'tokenized' => []
     ];
 
     /**
@@ -305,11 +304,6 @@ class Indexer
                 if ($indexing['index_autocomplete']) {
                     self::$fields['autocomplete'][] = $indexing['index_name'];
                 }
-                if ($indexing['index_boost'] > 0.0) {
-                    self::$fields['fieldboost'][$indexing['index_name']] = floatval($indexing['index_boost']);
-                } else {
-                    self::$fields['fieldboost'][$indexing['index_name']] = false;
-                }
             }
             self::$fieldsLoaded = true;
         }
@@ -337,7 +331,7 @@ class Indexer
         if (!empty($metadata)) {
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'general');
             $validator = new DocumentValidator($metadata, explode(',', $extConf['requiredMetadataFields']));
-
+            
             if ($validator->hasAllMandatoryMetadataFields()) {
                 $metadata['author'] = self::removeAppendsFromAuthor($metadata['author']);
                 // set Owner if available
@@ -357,8 +351,8 @@ class Indexer
                 }
                 // There can be only one toplevel unit per UID, independently of backend configuration
                 $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
-                $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
-                $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
+                $solrDoc->setField('title', $metadata['title'][0]);
+                $solrDoc->setField('volume', $metadata['volume'][0]);
                 // verify date formatting
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
@@ -384,16 +378,16 @@ class Indexer
                     in_array('collection', self::$fields['facets'])
                     && empty($metadata['collection'])
                     && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
-                ) {
-                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
-                }
-                try {
-                    $updateQuery->addDocument($solrDoc);
-                    self::$solr->service->update($updateQuery);
-                } catch (\Exception $e) {
-                    self::handleException($e->getMessage());
-                    return false;
-                }
+                    ) {
+                        $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
+                    }
+                    try {
+                        $updateQuery->addDocument($solrDoc);
+                        self::$solr->service->update($updateQuery);
+                    } catch (\Exception $e) {
+                        self::handleException($e->getMessage());
+                        return false;
+                    }
             } else {
                 Helper::log('Tip: If "record_id" field is missing then there is possibility that METS file still contains it but with the wrong source type attribute in "recordIdentifier" element', LOG_SEVERITY_NOTICE);
                 return false;
@@ -445,7 +439,7 @@ class Indexer
                 }
             }
             $solrDoc->setField('toplevel', false);
-            $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
+            $solrDoc->setField('type', $physicalUnit['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
             $solrDoc->setField('location', $document->getLocation());
 
@@ -520,7 +514,7 @@ class Indexer
                 !empty($data)
                 && substr($indexName, -8) !== '_sorting'
             ) {
-                $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data, self::$fields['fieldboost'][$indexName]);
+                $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data);
                 if (in_array($indexName, self::$fields['sortables'])) {
                     // Add sortable fields to index.
                     $solrDoc->setField($indexName . '_sorting', $metadata[$indexName . '_sorting'][0]);
@@ -626,7 +620,7 @@ class Indexer
         $solrDoc->setField('partof', $document->getPartof());
         $solrDoc->setField('root', $document->getCurrentDocument()->rootId);
         $solrDoc->setField('sid', $unit['id']);
-        $solrDoc->setField('type', $unit['type'], self::$fields['fieldboost']['type']);
+        $solrDoc->setField('type', $unit['type']);
         $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->toplevelId]['collection']);
         $solrDoc->setField('fulltext', $fullText);
         return $solrDoc;
