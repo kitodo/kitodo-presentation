@@ -103,6 +103,7 @@ class SearchControllerTest extends AbstractControllerTest
         ];
         $settings = [
             'solrcore' => 4,
+            'storagePid' => 0,
             'facets' => 'type',
             'facetCollections' => '1'
         ];

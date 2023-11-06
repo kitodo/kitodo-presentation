@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;

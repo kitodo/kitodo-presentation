@@ -34,7 +34,8 @@ class MetadataControllerTest extends AbstractControllerTest
     public function canMainAction()
     {
         $settings = [
-            'solrcore' => 4
+            'solrcore' => 4,
+            'storagePid' => 0
         ];
         $templateHtml = '<html>
             mets_label:<f:for each="{documentMetadataSections}" as="section"><f:for each="{section.mets_label}" as="entry">{entry}</f:for></f:for>
