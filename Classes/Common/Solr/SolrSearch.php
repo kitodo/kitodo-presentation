@@ -57,7 +57,13 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access private
      * @var QueryResult|null
      */
-    private ?QueryResult $listedMetadata;
+    private QueryResult $listedMetadata;
+
+    /**
+     * @access private
+     * @var QueryResult|null
+     */
+    private QueryResult $indexedMetadata;
 
     /**
      * @access private
@@ -90,13 +96,14 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return void
      */
-    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null)
+    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null, QueryResult $indexedMetadata = null)
     {
         $this->documentRepository = $documentRepository;
         $this->collections = $collections;
         $this->settings = $settings;
         $this->searchParams = $searchParams;
         $this->listedMetadata = $listedMetadata;
+        $this->indexedMetadata = $indexedMetadata;
     }
 
     /**
@@ -663,6 +670,21 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         ];
         if ($enableCache === false || ($entry = $cache->get($cacheIdentifier)) === false) {
             $selectQuery = $solr->service->createSelect($parameters);
+
+            $edismax = $selectQuery->getEDisMax();
+
+            $queryFields = '';
+
+            if ($this->indexedMetadata) {
+                foreach ($this->indexedMetadata as $metadata) {
+                    if ($metadata->getIndexIndexed()) {
+                        $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . ($metadata->getIndexIndexed() ? 'i' : 'u');
+                        $queryFields .= $listMetadataRecord.'^'.$metadata->getIndexBoost().' ';
+                    }
+                }
+            }
+
+            $edismax->setQueryFields($queryFields);
 
             $grouping = $selectQuery->getGrouping();
             $grouping->addField('uid');
