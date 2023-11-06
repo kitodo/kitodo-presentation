@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
-use Kitodo\Dlf\Common\Solr;
-use Kitodo\Dlf\Common\SolrSearch;
+use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
@@ -22,18 +22,20 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 class SolrSearchTest extends FunctionalTestCase
 {
     static array $databaseFixtures = [
-        __DIR__ . '/../../Fixtures/Common/solrcores.xml'
+        __DIR__ . '/../../Fixtures/Common/solrcores.csv'
     ];
 
     static array $solrFixtures = [
         __DIR__ . '/../../Fixtures/Common/documents_1.solr.json'
     ];
 
+    private Solr $solr;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->setUpData(self::$databaseFixtures);
-        $this->setUpSolr(4, 0, self::$solrFixtures);
+        $this->solr = $this->setUpSolr(4, 0, self::$solrFixtures);
     }
 
     /**
@@ -42,9 +44,13 @@ class SolrSearchTest extends FunctionalTestCase
     public function canPrepareAndSubmit()
     {
         $documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
-        $settings = ['solrcore' => 4];
+        $settings = ['solrcore' => 4, 'storagePid' => 0];
 
-        $params1 = [];
+        $resultSet = $this->solr->searchRaw(['core' => 4, 'collection' => 1]);
+        $this->assertCount(33, $resultSet);
+
+
+        $params1 = ['query' => '*'];
         $search = new SolrSearch($documentRepository, null, $settings, $params1);
         $search->prepare();
         $this->assertEquals(33, $search->getNumFound());
@@ -69,7 +75,7 @@ class SolrSearchTest extends FunctionalTestCase
     protected function setUpData($databaseFixtures): void
     {
         foreach ($databaseFixtures as $filePath) {
-            $this->importDataSet($filePath);
+            $this->importCSVDataSet($filePath);
         }
         $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->initializeRepository(DocumentRepository::class, 0);

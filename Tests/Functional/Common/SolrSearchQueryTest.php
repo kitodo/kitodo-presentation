@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
-use Kitodo\Dlf\Common\Solr;
-use Kitodo\Dlf\Common\SolrSearch;
+use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
@@ -23,9 +23,9 @@ class SolrSearchQueryTest extends FunctionalTestCase
 {
 
     static array $databaseFixtures = [
-        __DIR__ . '/../../Fixtures/Common/documents_1.xml',
-        __DIR__ . '/../../Fixtures/Common/pages.xml',
-        __DIR__ . '/../../Fixtures/Common/solrcores.xml'
+        __DIR__ . '/../../Fixtures/Common/documents_1.csv',
+        __DIR__ . '/../../Fixtures/Common/pages.csv',
+        __DIR__ . '/../../Fixtures/Common/solrcores.csv'
     ];
 
     static array $solrFixtures = [
@@ -63,7 +63,7 @@ class SolrSearchQueryTest extends FunctionalTestCase
     protected function setUpData($databaseFixtures): void
     {
         foreach ($databaseFixtures as $filePath) {
-            $this->importDataSet($filePath);
+            $this->importCSVDataSet($filePath);
         }
         $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->initializeRepository(DocumentRepository::class, 0);

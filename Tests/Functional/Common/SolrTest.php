@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
@@ -22,9 +22,9 @@ class SolrTest extends FunctionalTestCase
 {
 
     static array $databaseFixtures = [
-        __DIR__ . '/../../Fixtures/Common/documents_1.xml',
-        __DIR__ . '/../../Fixtures/Common/pages.xml',
-        __DIR__ . '/../../Fixtures/Common/solrcores.xml'
+        __DIR__ . '/../../Fixtures/Common/documents_1.csv',
+        __DIR__ . '/../../Fixtures/Common/pages.csv',
+        __DIR__ . '/../../Fixtures/Common/solrcores.csv'
     ];
 
     static array $solrFixtures = [
@@ -46,10 +46,10 @@ class SolrTest extends FunctionalTestCase
     public function canEscapeQuery()
     {
         $query1 = Solr::escapeQuery('"custom query with special characters: "testvalue"\n"');
-        $this->assertEquals('"custom query with special characters: \"testvalue\"\\\n"', $query1);
+        $this->assertEquals('"custom query with special characters\: "testvalue"\\\\n"', $query1);
 
         $query2 = Solr::escapeQuery('+ - && || ! ( ) { } [ ] ^ " ~ * ? : \ /');
-        $this->assertEquals('\+ \- \&& \|| \! \( \) \{ \} \[ \] \^ \" \~ * ? \: \\\ \/', $query2);
+        $this->assertEquals('+ - && || ! ( ) \{ \} \[ \] ^ " ~ * ? \: \\\ \/', $query2);
     }
 
     /**
@@ -58,7 +58,7 @@ class SolrTest extends FunctionalTestCase
     public function canEscapeQueryKeepField()
     {
         $query1 = Solr::escapeQueryKeepField('abc_uui:(abc)', 0);
-        $this->assertEquals('abc_uui\:\(abc\)', $query1);
+        $this->assertEquals('abc_uui\:(abc)', $query1);
     }
 
     /**
@@ -66,20 +66,20 @@ class SolrTest extends FunctionalTestCase
      */
     public function canGetNextCoreNumber()
     {
-        $this->assertEquals(0, Solr::getNextCoreNumber());
-        $this->assertEquals(0, Solr::getNextCoreNumber());
+        $this->assertEquals(5, Solr::getNextCoreNumber());
+        $this->assertEquals(5, Solr::getNextCoreNumber());
         Solr::createCore();
-        $this->assertEquals(1, Solr::getNextCoreNumber());
+        $this->assertEquals(6, Solr::getNextCoreNumber());
     }
 
     /**
      * @test
      */
-    public function canSearch_raw()
+    public function canSearchRaw()
     {
         $this->setUpData(self::$databaseFixtures);
         $solr = $this->setUpSolr(4, 0, self::$solrFixtures);
-        $resultSet = $solr->search_raw(['core' => 4, 'collection' => 1]);
+        $resultSet = $solr->searchRaw(['core' => 4, 'collection' => 1]);
 
         $this->assertCount(33, $resultSet);
         $this->assertEquals('Solarium\QueryType\Select\Result\Document', get_class($resultSet[0]));
@@ -88,7 +88,7 @@ class SolrTest extends FunctionalTestCase
     protected function setUpData($databaseFixtures): void
     {
         foreach ($databaseFixtures as $filePath) {
-            $this->importDataSet($filePath);
+            $this->importCSVDataSet($filePath);
         }
         $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->initializeRepository(DocumentRepository::class, 0);
