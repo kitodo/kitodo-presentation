@@ -45,6 +45,7 @@ class ListViewControllerTest extends AbstractControllerTest
         ];
         $settings = [
             'solrcore' => 4,
+            'storagePid' => 2,
             'dont_show_single' => 'some_value',
             'randomize' => ''
         ];
