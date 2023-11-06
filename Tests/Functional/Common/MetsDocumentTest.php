@@ -40,12 +40,12 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('av_beispiel.xml');
 
-        $titledata = $doc->getTitledata(20000);
+        $toplevelMetadata = $doc->getToplevelMetadata(20000);
 
-        self::assertEquals(['Odol-Mundwasser, 3 Werbespots'], $titledata['title']);
-        self::assertEquals(['24'], $titledata['frame_rate']);
-        self::assertEquals(['Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden'], $titledata['dvrights_owner']);
-        self::assertEquals(['https://katalog.slub-dresden.de/id/0-1703800435'], $titledata['dvlinks_reference']);
+        self::assertEquals(['Odol-Mundwasser, 3 Werbespots'], $toplevelMetadata['title']);
+        self::assertEquals(['24'], $toplevelMetadata['frame_rate']);
+        self::assertEquals(['Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden'], $toplevelMetadata['dvrights_owner']);
+        self::assertEquals(['https://katalog.slub-dresden.de/id/0-1703800435'], $toplevelMetadata['dvlinks_reference']);
 
         self::assertEquals([
             'DMDLOG_0000' => $doc->mdSec['DMDLOG_0000'],
@@ -112,11 +112,11 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('two_dmdsec.xml');
 
-        $titledata = $doc->getTitledata(20000);
+        $toplevelMetadata = $doc->getToplevelMetadata(20000);
         $toc = $doc->tableOfContents[0] ?? [];
 
         self::assertEquals('DMDLOG_0000 DMDLOG_0000b', $toc['dmdId']); // TODO: Do we want the raw (non-split) value here?
-        self::assertEquals('Test Value in DMDLOG_0000', $titledata['test_value'][0]);
+        self::assertEquals('Test Value in DMDLOG_0000', $toplevelMetadata['test_value'][0]);
     }
 
     /**
