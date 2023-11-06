@@ -113,7 +113,7 @@ final class MetsDocument extends AbstractDocument
      * @access protected
      * @var array This holds the file ID -> USE concordance
      *
-     * @see _getFileGrps()
+     * @see magicGetFileGrps()
      */
     protected array $fileGrps = [];
 
@@ -212,7 +212,7 @@ final class MetsDocument extends AbstractDocument
      */
     public function getFileInfo($id): ?array
     {
-        $this->_getFileGrps();
+        $this->magicGetFileGrps();
 
         if (isset($this->fileInfos[$id]) && empty($this->fileInfos[$id]['location'])) {
             $this->fileInfos[$id]['location'] = $this->getFileLocation($id);
@@ -344,9 +344,9 @@ final class MetsDocument extends AbstractDocument
         }
         $details['thumbnailId'] = '';
         // Load smLinks.
-        $this->_getSmLinks();
+        $this->magicGetSmLinks();
         // Load physical structure.
-        $this->_getPhysicalStructure();
+        $this->magicGetPhysicalStructure();
         // Get the physical page or external file this structure element is pointing at.
         $details['points'] = '';
         // Is there a mptr node?
@@ -368,7 +368,7 @@ final class MetsDocument extends AbstractDocument
             }
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
-        } elseif ($details['id'] == $this->_getToplevelId()) {
+        } elseif ($details['id'] == $this->magicGetToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
             $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
@@ -384,7 +384,7 @@ final class MetsDocument extends AbstractDocument
         }
         // Get the files this structure element is pointing at.
         $details['files'] = [];
-        $fileUse = $this->_getFileGrps();
+        $fileUse = $this->magicGetFileGrps();
         // Get the file representations from fileSec node.
         foreach ($structure->children('http://www.loc.gov/METS/')->fptr as $fptr) {
             // Check if file has valid @USE attribute.
@@ -445,7 +445,7 @@ final class MetsDocument extends AbstractDocument
         $hasMetadataSection = [];
         // Load available metadata formats and metadata sections.
         $this->loadFormats();
-        $this->_getMdSec();
+        $this->magicGetMdSec();
         // Get the structure's type.
         if (!empty($this->logicalUnits[$id])) {
             $metadata['type'] = [$this->logicalUnits[$id]['type']];
@@ -645,7 +645,7 @@ final class MetsDocument extends AbstractDocument
     protected function getMetadataIds(string $id): array
     {
         // Load amdSecChildIds concordance
-        $this->_getMdSec();
+        $this->magicGetMdSec();
         $fileInfo = $this->getFileInfo($id);
 
         // Get DMDID and ADMID of logical structure node
@@ -694,7 +694,7 @@ final class MetsDocument extends AbstractDocument
         $fullText = '';
 
         // Load fileGrps and check for full text files.
-        $this->_getFileGrps();
+        $this->magicGetFileGrps();
         if ($this->hasFulltext) {
             $fullText = $this->getFullTextFromXml($id);
         }
@@ -764,7 +764,7 @@ final class MetsDocument extends AbstractDocument
     {
         // Are the fileGrps already loaded?
         if (!$this->fileGrpsLoaded) {
-            $this->_getFileGrps();
+            $this->magicGetFileGrps();
         }
     }
 
@@ -796,7 +796,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of metadata sections with their IDs as array key
      */
-    protected function _getMdSec(): array
+    protected function magicGetMdSec(): array
     {
         if (!$this->mdSecLoaded) {
             $this->loadFormats();
@@ -846,9 +846,9 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of metadata sections with their IDs as array key
      */
-    protected function _getDmdSec(): array
+    protected function magicGetDmdSec(): array
     {
-        $this->_getMdSec();
+        $this->magicGetMdSec();
         return $this->dmdSec;
     }
 
@@ -902,7 +902,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of file use groups with file IDs
      */
-    protected function _getFileGrps(): array
+    protected function magicGetFileGrps(): array
     {
         if (!$this->fileGrpsLoaded) {
             // Get configured USE attributes.
@@ -972,15 +972,15 @@ final class MetsDocument extends AbstractDocument
      *
      * @return \SimpleXMLElement The XML's METS part as \SimpleXMLElement object
      */
-    protected function _getMets(): \SimpleXMLElement
+    protected function magicGetMets(): \SimpleXMLElement
     {
         return $this->mets;
     }
 
     /**
-     * @see AbstractDocument::_getPhysicalStructure()
+     * @see AbstractDocument::magicGetPhysicalStructure()
      */
-    protected function _getPhysicalStructure(): array
+    protected function magicGetPhysicalStructure(): array
     {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
@@ -988,7 +988,7 @@ final class MetsDocument extends AbstractDocument
             $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div');
             if (!empty($elementNodes)) {
                 // Get file groups.
-                $fileUse = $this->_getFileGrps();
+                $fileUse = $this->magicGetFileGrps();
                 // Get the physical sequence's metadata.
                 $physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
                 $physSeq[0] = (string) $physNode[0]['ID'];
@@ -1039,9 +1039,9 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::_getSmLinks()
+     * @see AbstractDocument::magicGetSmLinks()
      */
-    protected function _getSmLinks(): array
+    protected function magicGetSmLinks(): array
     {
         if (!$this->smLinksLoaded) {
             $smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
@@ -1057,9 +1057,9 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::_getThumbnail()
+     * @see AbstractDocument::magicGetThumbnail()
      */
-    protected function _getThumbnail(bool $forceReload = false): string
+    protected function magicGetThumbnail(bool $forceReload = false): string
     {
         if (
             !$this->thumbnailLoaded
@@ -1079,7 +1079,7 @@ final class MetsDocument extends AbstractDocument
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
-            $strctId = $this->_getToplevelId();
+            $strctId = $this->magicGetToplevelId();
             $metadata = $this->getToplevelMetadata($cPid);
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -1111,12 +1111,12 @@ final class MetsDocument extends AbstractDocument
                     }
                 }
                 // Load smLinks.
-                $this->_getSmLinks();
+                $this->magicGetSmLinks();
                 // Get thumbnail location.
                 $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
                 while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
                     if (
-                        $this->_getPhysicalStructure()
+                        $this->magicGetPhysicalStructure()
                         && !empty($this->smLinks['l2p'][$strctId])
                         && !empty($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$fileGrpThumb])
                     ) {
@@ -1136,16 +1136,16 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::_getToplevelId()
+     * @see AbstractDocument::magicGetToplevelId()
      */
-    protected function _getToplevelId(): string
+    protected function magicGetToplevelId(): string
     {
         if (empty($this->toplevelId)) {
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
             $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]');
             if (!empty($divs)) {
                 // Load smLinks.
-                $this->_getSmLinks();
+                $this->magicGetSmLinks();
                 foreach ($divs as $div) {
                     $id = (string) $div['ID'];
                     // Are there physical structure nodes for this logical structure?
@@ -1170,7 +1170,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return string
      */
-    public function _getParentHref(): string
+    public function magicGetParentHref(): string
     {
         if (empty($this->parentHref)) {
             // Get the closest ancestor of the current document which has a MPTR child.

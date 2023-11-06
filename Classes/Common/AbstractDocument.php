@@ -431,7 +431,7 @@ abstract class AbstractDocument
      * @return array Array of physical elements' id, type, label and file representations ordered
      * by "@ORDER" attribute / IIIF Sequence's Canvases
      */
-    abstract protected function _getPhysicalStructure(): array;
+    abstract protected function magicGetPhysicalStructure(): array;
 
     /**
      * This returns the smLinks between logical and physical structMap (METS) and models the
@@ -443,7 +443,7 @@ abstract class AbstractDocument
      *
      * @return array The links between logical and physical nodes / Range, Manifest and Canvas
      */
-    abstract protected function _getSmLinks(): array;
+    abstract protected function magicGetSmLinks(): array;
 
     /**
      * This returns the document's thumbnail location
@@ -456,7 +456,7 @@ abstract class AbstractDocument
      *
      * @return string The document's thumbnail location
      */
-    abstract protected function _getThumbnail(bool $forceReload = false): string;
+    abstract protected function magicGetThumbnail(bool $forceReload = false): string;
 
     /**
      * This returns the ID of the toplevel logical structure node
@@ -467,7 +467,7 @@ abstract class AbstractDocument
      *
      * @return string The logical structure node's ID
      */
-    abstract protected function _getToplevelId(): string;
+    abstract protected function magicGetToplevelId(): string;
 
     /**
      * This sets some basic class properties
@@ -658,7 +658,7 @@ abstract class AbstractDocument
         // Load available text formats, ...
         $this->loadFormats();
         // ... physical structure ...
-        $this->_getPhysicalStructure();
+        $this->magicGetPhysicalStructure();
         // ... and extension configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
@@ -795,10 +795,10 @@ abstract class AbstractDocument
      */
     public function getToplevelMetadata(int $cPid = 0): array
     {
-        $toplevelMetadata = $this->getMetadata($this->_getToplevelId(), $cPid);
+        $toplevelMetadata = $this->getMetadata($this->magicGetToplevelId(), $cPid);
         // Add information from METS structural map to toplevel metadata array.
         if ($this instanceof MetsDocument) {
-            $this->addMetadataFromMets($toplevelMetadata, $this->_getToplevelId());
+            $this->addMetadataFromMets($toplevelMetadata, $this->magicGetToplevelId());
         }
         // Set record identifier for METS file / IIIF manifest if not present.
         if (array_key_exists('record_id', $toplevelMetadata)) {
@@ -850,7 +850,7 @@ abstract class AbstractDocument
      */
     public function getStructureDepth(string $logId)
     {
-        return $this->getTreeDepth($this->_getTableOfContents(), 1, $logId);
+        return $this->getTreeDepth($this->magicGetTableOfContents(), 1, $logId);
     }
 
     /**
@@ -989,7 +989,7 @@ abstract class AbstractDocument
      *
      * @return int The PID of the metadata definitions
      */
-    protected function _getCPid(): int
+    protected function magicGetCPid(): int
     {
         return $this->cPid;
     }
@@ -1001,7 +1001,7 @@ abstract class AbstractDocument
      *
      * @return bool Are there any fulltext files available?
      */
-    protected function _getHasFulltext(): bool
+    protected function magicGetHasFulltext(): bool
     {
         $this->ensureHasFulltextIsSet();
         return $this->hasFulltext;
@@ -1014,7 +1014,7 @@ abstract class AbstractDocument
      *
      * @return array Array of metadata with their corresponding logical structure node ID as key
      */
-    protected function _getMetadataArray(): array
+    protected function magicGetMetadataArray(): array
     {
         // Set metadata definitions' PID.
         $cPid = ($this->cPid ? $this->cPid : $this->pid);
@@ -1040,9 +1040,9 @@ abstract class AbstractDocument
      *
      * @return int The total number of pages and/or tracks
      */
-    protected function _getNumPages(): int
+    protected function magicGetNumPages(): int
     {
-        $this->_getPhysicalStructure();
+        $this->magicGetPhysicalStructure();
         return $this->numPages;
     }
 
@@ -1053,7 +1053,7 @@ abstract class AbstractDocument
      *
      * @return int The UID of the parent document or zero if not applicable
      */
-    protected function _getParentId(): int
+    protected function magicGetParentId(): int
     {
         return $this->parentId;
     }
@@ -1065,12 +1065,12 @@ abstract class AbstractDocument
      *
      * @return array Array of elements' type, label and file representations ordered by "@ID" attribute / Canvas order
      */
-    protected function _getPhysicalStructureInfo(): array
+    protected function magicGetPhysicalStructureInfo(): array
     {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
             // Build physical structure array.
-            $this->_getPhysicalStructure();
+            $this->magicGetPhysicalStructure();
         }
         return $this->physicalStructureInfo;
     }
@@ -1082,7 +1082,7 @@ abstract class AbstractDocument
      *
      * @return int The PID of the document or zero if not in database
      */
-    protected function _getPid(): int
+    protected function magicGetPid(): int
     {
         return $this->pid;
     }
@@ -1094,7 +1094,7 @@ abstract class AbstractDocument
      *
      * @return bool Is the document instantiated successfully?
      */
-    protected function _getReady(): bool
+    protected function magicGetReady(): bool
     {
         return $this->ready;
     }
@@ -1106,7 +1106,7 @@ abstract class AbstractDocument
      *
      * @return mixed The METS file's / IIIF manifest's record identifier
      */
-    protected function _getRecordId()
+    protected function magicGetRecordId()
     {
         return $this->recordId;
     }
@@ -1118,7 +1118,7 @@ abstract class AbstractDocument
      *
      * @return int The UID of the root document or zero if not applicable
      */
-    protected function _getRootId(): int
+    protected function magicGetRootId(): int
     {
         if (!$this->rootIdLoaded) {
             if ($this->parentId) {
@@ -1139,7 +1139,7 @@ abstract class AbstractDocument
      *
      * @return array Array of structure nodes' id, label, type and physical page indexes/mptr / Canvas link with original hierarchy preserved
      */
-    protected function _getTableOfContents(): array
+    protected function magicGetTableOfContents(): array
     {
         // Is there no logical structure array yet?
         if (!$this->tableOfContentsLoaded) {
@@ -1196,7 +1196,7 @@ abstract class AbstractDocument
      */
     public function __get(string $var)
     {
-        $method = '_get' . ucfirst($var);
+        $method = 'magicGet' . ucfirst($var);
         if (
             !property_exists($this, $var)
             || !method_exists($this, $method)

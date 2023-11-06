@@ -256,9 +256,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::_getPhysicalStructure()
+     * @see AbstractDocument::magicGetPhysicalStructure()
      */
-    protected function _getPhysicalStructure(): array
+    protected function magicGetPhysicalStructure(): array
     {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
@@ -500,7 +500,7 @@ final class IiifManifest extends AbstractDocument
         $details['volume'] = '';
         $details['pagination'] = '';
         $cPid = ($this->cPid ? $this->cPid : $this->pid);
-        if ($details['id'] == $this->_getToplevelId()) {
+        if ($details['id'] == $this->magicGetToplevelId()) {
             $metadata = $this->getMetadata($details['id'], $cPid);
             if (!empty($metadata['type'][0])) {
                 $details['type'] = $metadata['type'][0];
@@ -509,9 +509,9 @@ final class IiifManifest extends AbstractDocument
         $details['thumbnailId'] = $resource->getThumbnailUrl();
         $details['points'] = '';
         // Load structural mapping
-        $this->_getSmLinks();
+        $this->magicGetSmLinks();
         // Load physical structure.
-        $this->_getPhysicalStructure();
+        $this->magicGetPhysicalStructure();
         $canvases = [];
         if ($resource instanceof ManifestInterface) {
             $startCanvas = $resource->getStartCanvasOrFirstCanvas();
@@ -711,9 +711,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::_getSmLinks()
+     * @see AbstractDocument::magicGetSmLinks()
      */
-    protected function _getSmLinks(): array
+    protected function magicGetSmLinks(): array
     {
         if (!$this->smLinksLoaded && isset($this->iiif) && $this->iiif instanceof ManifestInterface) {
             if (!empty($this->iiif->getDefaultCanvases())) {
@@ -788,7 +788,7 @@ final class IiifManifest extends AbstractDocument
         $this->ensureHasFulltextIsSet();
         if ($this->hasFulltext) {
             // Load physical structure ...
-            $this->_getPhysicalStructure();
+            $this->magicGetPhysicalStructure();
             // ... and extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
@@ -940,17 +940,17 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::_getThumbnail()
+     * @see AbstractDocument::magicGetThumbnail()
      */
-    protected function _getThumbnail(bool $forceReload = false): string
+    protected function magicGetThumbnail(bool $forceReload = false): string
     {
         return $this->iiif->getThumbnailUrl();
     }
 
     /**
-     * @see AbstractDocument::_getToplevelId()
+     * @see AbstractDocument::magicGetToplevelId()
      */
-    protected function _getToplevelId(): string
+    protected function magicGetToplevelId(): string
     {
         if (empty($this->toplevelId)) {
             if (isset($this->iiif)) {
