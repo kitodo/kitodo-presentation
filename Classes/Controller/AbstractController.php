@@ -171,7 +171,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
             if ($this->document !== null) {
                 $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
-                if ($this->document !== null && $doc !== null) {
+                if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {
                     $this->logger->error('Failed to load document with record ID "' . $this->requestData['recordId'] . '"');
