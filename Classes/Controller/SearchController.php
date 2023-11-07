@@ -167,7 +167,7 @@ class SearchController extends AbstractController
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
                 // @phpstan-ignore-next-line
-                $solrResults = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
+                $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
                 $numResults = $solrResults->getNumFound();
 
                 $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
