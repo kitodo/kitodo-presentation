@@ -300,6 +300,40 @@ The collection plugin shows one collection, all collections or selected collecti
        :ref:`t3tsref:data-type-page-id`
    :Default:
 
+Document
+--------
+
+:typoscript:`plugin.tx_dlf_document`
+
+.. t3-field-list-table::
+  :header-rows: 1
+
+  - :Property:
+        Property
+    :Data Type:
+        Data Type
+    :Default:
+        Default
+
+  - :Property:
+        excludeOther_
+    :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+    :Default:
+        1
+
+  - :Property:
+        useInternalProxy
+    :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+    :Default:
+        0
+
+  - :Property:
+        targetPidMetadata
+    :Data Type:
+        :ref:`t3tsref:data-type-page-id`
+    :Default:
 
 Feeds
 -----
@@ -471,6 +505,13 @@ Metadata
 
  - :Property:
         showFull
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+       1
+
+ - :Property:
+        prerenderAllSections
    :Data Type:
         :ref:`t3tsref:data-type-boolean`
    :Default:
@@ -881,6 +922,13 @@ Table Of Contents
        basketButton
    :Data Type:
        :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
+        showFull
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
    :Default:
        0
 
