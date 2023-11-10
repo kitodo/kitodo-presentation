@@ -1,5 +1,6 @@
 parameters:
     ignoreErrors:
+            - '#Return type \(void\) of method Kitodo\\Dlf\\Controller\\Backend\\NewTenantController::errorAction\(\) should be compatible with return type \(Psr\\Http\\Message\\ResponseInterface\) of method TYPO3\\CMS\\Extbase\\Mvc\\Controller\\ActionController::errorAction\(\)#'
             - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::countByPid\(\)\.#'
             - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIsListed\(\)\.#'
             - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIsSortable\(\)\.#'
