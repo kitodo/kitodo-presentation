@@ -437,6 +437,17 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * Error function - there is nothing to do at the moment.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function errorAction()
+    {
+    }
+
+    /**
      * Get language label for given key and language.
      * 
      * @access protected
