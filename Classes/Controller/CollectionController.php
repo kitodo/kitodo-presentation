@@ -11,8 +11,10 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\SolrPaginator;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -198,7 +200,20 @@ class CollectionController extends AbstractController
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         // get all documents of given collection
-        $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+        $solrResults = null;
+        if (is_array($searchParams) && !empty($searchParams)) {
+            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+
+            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
+            if (empty($itemsPerPage)) {
+                $itemsPerPage = 25;
+            }
+            $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
+            $simplePagination = new SimplePagination($solrPaginator);
+
+            $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
+            $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
+        }
 
         $this->view->assign('viewData', $this->viewData);
         $this->view->assign('documents', $solrResults);
