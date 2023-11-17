@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Common\SolrPaginator;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -21,6 +22,7 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Solarium\Component\Result\FacetSet;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -166,6 +168,16 @@ class SearchController extends AbstractController
             if (!$listViewSearch) {
                 $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
                 $numResults = $solrResults->getNumFound();
+
+                $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
+                if (empty($itemsPerPage)) {
+                    $itemsPerPage = 25;
+                }
+                $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
+                $simplePagination = new SimplePagination($solrPaginator);
+
+                $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
+                $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
             }
 
             $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
