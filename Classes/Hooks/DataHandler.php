@@ -258,7 +258,7 @@ class DataHandler implements LoggerAwareInterface
                             } else {
                                 // Reindex document.
                                 $document = $this->getDocumentRepository()->findByUid((int) $id);
-                                $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                                $doc = AbstractDocument::getInstance($document->getLocation(), 0, ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
                                     $document->setCurrentDocument($doc);
                                     Indexer::add($document, $this->getDocumentRepository());
@@ -340,7 +340,7 @@ class DataHandler implements LoggerAwareInterface
                     case 'undelete':
                         // Reindex document.
                         $document = $this->getDocumentRepository()->findByUid((int) $id);
-                        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                        $doc = AbstractDocument::getInstance($document->getLocation(), 0, ['storagePid' => $document->getPid()], true);
                         if ($document !== null && $doc !== null) {
                             $document->setCurrentDocument($doc);
                             Indexer::add($document, $this->getDocumentRepository());
