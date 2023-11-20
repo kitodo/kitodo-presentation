@@ -70,6 +70,12 @@ abstract class AbstractDocument
     protected int $configPid = 0;
 
     /**
+     * @access protected
+     * @var int This holds the page ID for the requests
+     */
+    protected int $pageId = 0;
+
+    /**
      * @access public
      * @static
      * @var string The extension key
@@ -547,12 +553,13 @@ abstract class AbstractDocument
      * @static
      *
      * @param string $location The URL of XML file or the IRI of the IIIF resource
+     * @param int $pageId
      * @param array $settings
      * @param bool $forceReload Force reloading the document instead of returning the cached instance
      *
      * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false)
+    public static function &getInstance(string $location, int $pageId = 0, array $settings = [], bool $forceReload = false)
     {
         // Create new instance depending on format (METS or IIIF) ...
         $documentFormat = null;
@@ -560,16 +567,8 @@ abstract class AbstractDocument
         $iiif = null;
 
         if (!$forceReload) {
-<<<<<<< HEAD
             $instance = GeneralUtility::makeInstance(DocumentCacheManager::class)->get($location);
             if ($instance !== false) {
-=======
-            $instance = self::getDocumentCache($location);
-            if (isset(self::$registry[$location])) {
-                return self::$registry[$location];
-            } elseif ($instance !== false) {
-                self::$registry[$location] = $instance;
->>>>>>> 7c6581c3 (Fix Codacy errors)
                 return $instance;
             }
         }
@@ -599,9 +598,9 @@ abstract class AbstractDocument
         }
 
         if ($documentFormat == 'METS') {
-            $instance = new MetsDocument($location, $xml, $settings);
+            $instance = new MetsDocument($location, $pageId, $xml, $settings);
         } elseif ($iiif instanceof IiifResourceInterface) {
-            $instance = new IiifManifest($location, $iiif, $settings);
+            $instance = new IiifManifest($location, $pageId, $iiif);
         }
 
         if ($instance !== null) {
@@ -1024,7 +1023,9 @@ abstract class AbstractDocument
     {
         if (!$this->rootIdLoaded) {
             if ($this->parentId) {
-                $parent = self::getInstance((string) $this->parentId, ['storagePid' => $this->configPid]);
+                // TODO: Parameter $location of static method AbstractDocument::getInstance() expects string, int<min, -1>|int<1, max> given.
+                // @phpstan-ignore-next-line
+                $parent = self::getInstance($this->parentId, $this->pageId, ['storagePid' => $this->pid]);
                 $this->rootId = $parent->rootId;
             }
             $this->rootIdLoaded = true;
@@ -1073,17 +1074,19 @@ abstract class AbstractDocument
      * @access protected
      *
      * @param string $location The location URL of the XML file to parse
+     * @param int $pageId
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
      */
-    protected function __construct(string $location, $preloadedDocument, array $settings = [])
+    protected function __construct(string $location, int $pageId, $preloadedDocument, array $settings = [])
     {
         // Note: Any change here might require an update in function __sleep
         // of class MetsDocument and class IiifManifest, too.
         $storagePid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
         $this->configPid = $storagePid;
+        $this->pageId = $pageId;
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location, $settings);
@@ -1239,7 +1242,7 @@ abstract class AbstractDocument
                     // Configure @action URL for form.
                     $file['url'] = $uriBuilder
                         ->reset()
-                        ->setTargetPageUid($GLOBALS['TSFE']->id)
+                        ->setTargetPageUid($this->pageId)
                         ->setCreateAbsoluteUri($forceAbsoluteUrl)
                         ->setArguments(
                             [
