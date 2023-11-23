@@ -359,7 +359,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
             // for compatibility reasons
             foreach (range($firstPage, $lastPage) as $i) {
-                $pages[$i] = array('label' => $i, 'startRecordNumber' => $i);
+                $pages[$i] = ['label' => $i, 'startRecordNumber' => $i];
             };
 
             // some variables doubled for compatibility reasons
@@ -394,7 +394,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
             $aktPageNumber = $paginator->getCurrentPageNumber();
 
-            $pages = array();
+            $pages = [];
             // calculation of the values for the page links within the loop
             // <f:for each="{pagination.pagesG}" as="page">
             foreach (range($firstPage, $lastPage) as $i) {
@@ -412,7 +412,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 //      argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"
                 //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
                 //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
-                $pages[$i] = array('label' => $i, 'startRecordNumber' => $startRecordNumber);
+                $pages[$i] = ['label' => $i, 'startRecordNumber' => $startRecordNumber];
             };
 
             $nextPageNumber = $pages[$aktPageNumber + 1]['startRecordNumber'];
