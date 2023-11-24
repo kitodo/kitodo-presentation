@@ -356,12 +356,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         $lastStartRecordNumberGrid = 0; // due to validity outside the loop
         foreach (range($firstPage, $lastPage) as $i) {
-            // detect which pagination is active: ListView or GridView            
+            // detect which pagination is active: ListView or GridView
             if (get_class($pagination) == 'TYPO3\CMS\Core\Pagination\SimplePagination') {  // ListView
                 $lastStartRecordNumberGrid = $i; // save last $startRecordNumber for LastPage button
 
                 $pages[$i] = [
-                    'label' => $i, 
+                    'label' => $i,
                     'startRecordNumber' => $i
                 ];
             } else { // GridView
@@ -382,7 +382,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
                 //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
                 $pages[$i] = [
-                    'label' => $i, 
+                    'label' => $i,
                     'startRecordNumber' => $startRecordNumber
                 ];
             }
