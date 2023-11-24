@@ -348,97 +348,62 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator): array
     {
-        // detect which pagination is active
-        // ListView or GridView
-        if (get_class($pagination) == 'TYPO3\CMS\Core\Pagination\SimplePagination') {
-            //=========================================================
-            // ListView
-            //=========================================================
-            $firstPage = $pagination->getFirstPageNumber();
-            $lastPage = $pagination->getLastPageNumber();
-            $aktPageNumber = $paginator->getCurrentPageNumber();
+        $firstPage = $pagination->getFirstPageNumber();
+        $lastPage = $pagination->getLastPageNumber();
+        $currentPageNumber = $paginator->getCurrentPageNumber();
 
-            // for compatibility reasons (for $pagesG)
-            foreach (range($firstPage, $lastPage) as $i) {
-                $pages[$i] = ['label' => $i, 'startRecordNumber' => $i];
+        $pages = [];
+        $pagesSect = [];
+        $aRange = [];
+        $nRange = 5;    // ToDo: should be made configurable
+
+        // lower limit of the range
+        $nBottom = $currentPageNumber - $nRange;
+        // upper limit of the range
+        $nTop = $currentPageNumber + $nRange;
+        // page range
+        for ($i = $nBottom; $i <= $nTop; $i++) {
+            if ($i > 0 and $i <= $lastPage) {
+                array_push($aRange, $i);
             };
+        };
 
-            $pagesSect = [];
-            $aRange = [];
-            $nRange = 5;
+        // check whether the first screen page is > 1, if yes then points must be added
+        if ($aRange[0] > 1) {
+            array_push($pagesSect, [
+                                    'label' => '...', 
+                                    'startRecordNumber' => '...'
+                                   ]);
+        };        
 
-            // lower limit of the range
-            $nBottom = $aktPageNumber - $nRange;
-            // upper limit of the range
-            $nTop = $aktPageNumber + $nRange;
-            // page range
-            for ($i = $nBottom; $i <= $nTop; $i++) {
-                if ($i > 0 and $i <= $lastPage) {
-                    array_push($aRange, $i);
-                };
-            };
+        foreach (range($firstPage, $lastPage) as $i) {
+            // detect which pagination is active: ListView or GridView
+            if (get_class($pagination) == 'TYPO3\CMS\Core\Pagination\SimplePagination') {  // ListView
+                $lastStartRecordNumberGrid = $i; // save last $startRecordNumber for LastPage button
 
-            // check whether the first screen page is > 1, if yes then points must be added
-            if ($aRange[0] > 1) {
-                array_push($pagesSect, ['label' => '...', 'startRecordNumber' => '...']);
-            };
-            // calculate values for page links within the loop
-            // but this time only max $nRange before and after the current page
-            // <f:for each="{pagination.pagesR}" as="page">
-            foreach (range($firstPage, $lastPage) as $i) {
+                $pages[$i] = [
+                    'label' => $i, 
+                    'startRecordNumber' => $i
+                ];
+
+                // Check if screen page is in range
+                // <f:for each="{pagination.pagesR}" as="page">
                 if (in_array($i, $aRange)) {
-                    array_push($pagesSect, ['label' => $i, 'startRecordNumber' => $i]);
+                    array_push($pagesSect, [
+                                            'label' => $i, 
+                                            'startRecordNumber' => $i
+                                           ]);
                 };
-            };
-            // check whether the last element from $aRange <= last screen page, if yes then points must be added
-            if ($aRange[array_key_last($aRange)] < $lastPage) {
-                array_push($pagesSect, ['label' => '...', 'startRecordNumber' => '...']);
-            };
+            } else { // GridView
+                // to calculate the values for generation the links for the pagination pages
+                $itemsPerPage = $paginator->getPublicItemsPerPage();
 
-            // some variables doubled for compatibility reasons
-            return [
-                'lastPageNumber' => $lastPage,
-                'lastPageNumberG' => $lastPage,
-                'firstPageNumber' => $firstPage,
-                'nextPageNumber' => $pagination->getNextPageNumber(),
-                'nextPageNumberG' => $pagination->getNextPageNumber(),
-                'previousPageNumber' => $pagination->getPreviousPageNumber(),
-                'previousPageNumberG' => $pagination->getPreviousPageNumber(),
-                'startRecordNumber' => $pagination->getStartRecordNumber(),
-                'endRecordNumber' => $pagination->getEndRecordNumber(),
-                'currentPageNumber' => $paginator->getCurrentPageNumber(),
-                'pages' => range($firstPage, $lastPage),
-                'pagesG' => range($firstPage, $lastPage),
-                'pagesR' => $pagesSect,
-            ];
-
-        } else {
-            //=========================================================
-            // GridView
-            //=========================================================
-
-            // to calculate the values for generation the links for the pagination pages
-            $itemsPerPage = $paginator->getPublicItemsPerPage();
-
-            $firstPage = $pagination->getFirstPageNumber();
-            $lastPage = $pagination->getLastPageNumber();
-
-            // last page as last value from $startRecordNumber
-            $lastStartRecordNumberGrid = 0;
-
-            $aktPageNumber = $paginator->getCurrentPageNumber();
-
-            $pages = [];
-            // calculation of the values for the page links within the loop
-            // <f:for each="{pagination.pagesG}" as="page">
-            foreach (range($firstPage, $lastPage) as $i) {
-                // calculation of the startRecordNumber
                 $startRecordNumber = $itemsPerPage * $i;
                 $startRecordNumber = $startRecordNumber + 1;
                 $startRecordNumber = $startRecordNumber - $itemsPerPage;
 
-                // save last startRecordNumer for LastPage button
-                $lastStartRecordNumberGrid = $startRecordNumber;
+                $lastStartRecordNumberGrid = $startRecordNumber; // save last $startRecordNumber for LastPage button
+
                 // array with label as screen/pagination page number
                 // and startRecordNumer for correct structure of the link
                 //<f:link.action action="{action}"
@@ -446,93 +411,60 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 //      argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"
                 //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
                 //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
-                $pages[$i] = ['label' => $i, 'startRecordNumber' => $startRecordNumber];
-            };
+                $pages[$i] = [
+                    'label' => $i, 
+                    'startRecordNumber' => $startRecordNumber
+                ];
 
-            $pagesSect = [];
-            $aRange = [];
-            $nRange = 5;    // ToDo: make this value configurable
-
-            // lower limit of the range
-            $nBottom = $aktPageNumber - $nRange;
-            // upper limit of the range
-            $nTop = $aktPageNumber + $nRange;
-            // page range
-            for ($i = $nBottom; $i <= $nTop; $i++) {
-                if ($i > 0 and $i <= $lastPage) {
-                    array_push($aRange, $i);
-                };
-            };
-
-            // check whether the first screen page is > 1, if yes then points must be added
-            if ($aRange[0] > 1) {
-                array_push($pagesSect, ['label' => '...', 'startRecordNumber' => '...']);
-            };
-
-            // calculate values for page links within the loop
-            // but this time only max $nRange befor and after the current page
-            // <f:for each="{pagination.pagesG}" as="page">
-            foreach (range($firstPage, $lastPage) as $i) {
-                // calculate startRecordNumber
-                $startRecordNumber = $itemsPerPage * $i;
-                $startRecordNumber = $startRecordNumber + 1;
-                $startRecordNumber = $startRecordNumber - $itemsPerPage;
-
-                // save last startRecordNumer for LastPage button
-                $lastStartRecordNumberGrid = $startRecordNumber;
-                // array with label as screen page number
-                // and startRecordNumer for correct structure of the link
-                //<f:link.action action="{action}"
-                //      addQueryString="true"
-                //      argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"
-                //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
-                //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
                 // Check if screen page is in range
                 if (in_array($i, $aRange)) {
-                    array_push($pagesSect, ['label' => $i, 'startRecordNumber' => $startRecordNumber]);
+                    array_push($pagesSect, [
+                                            'label' => $i, 
+                                            'startRecordNumber' => $startRecordNumber
+                                           ]);
                 };
             };
+        };
 
-            // check whether the last element from $aRange <= last screen page, if yes then points must be added
-            if ($aRange[array_key_last($aRange)] < $lastPage) {
-                array_push($pagesSect, ['label' => '...', 'startRecordNumber' => '...']);
-            };
+        // check whether the last element from $aRange <= last screen page, if yes then points must be added
+        if ($aRange[array_key_last($aRange)] < $lastPage) {
+            array_push($pagesSect, [
+                                    'label' => '...', 
+                                    'startRecordNumber' => '...']);
+        };
 
+        $nextPageNumber = $pages[$currentPageNumber + 1]['startRecordNumber'];
+        $previousPageNumber = $pages[$currentPageNumber - 1]['startRecordNumber'];
 
-            $nextPageNumber = $pages[$aktPageNumber + 1]['startRecordNumber'];
-            $previousPageNumber = $pages[$aktPageNumber - 1]['startRecordNumber'];
-
-            // 'startRecordNumber' is not required in GridView, only the variant for each loop is required
-            // 'endRecordNumber' is not required in both views
-            //
-            // lastPageNumber       =>  last screen page
-            // lastPageNumber       =>  Document page to build the last screen page. This is the first document
-            //                          of the last block of 10 (or less) documents on the last screen page
-            // firstPageNumber      =>  always 1
-            // nextPageNumber       =>  Document page to build the next screen page
-            // nextPageNumberG      =>  Number of the screen page for the next screen page
-            // previousPageNumber   =>  Document page to build up the previous screen page
-            // previousPageNumberG  =>  Number of the screen page for the previous screen page
-            // currentPageNumber    =>  Number of the current screen page
-            // pagesG               =>  Array with two keys
-            //    label             =>  Number of the screen page
-            //    startRecordNumber =>  First document of this block of 10 documents on the same screen page
-
-            return [
-                'lastPageNumber' => $lastPage,
-                'lastPageNumberG' => $lastStartRecordNumberGrid,
-                'firstPageNumber' => $firstPage,
-                'nextPageNumber' => $nextPageNumber,
-                'nextPageNumberG' => $paginator->getCurrentPageNumber() + 1,
-                'previousPageNumber' => $previousPageNumber,
-                'previousPageNumberG' => $paginator->getCurrentPageNumber() - 1,
-                'startRecordNumber' => $pagination->getStartRecordNumber(),
-                'endRecordNumber' => $pagination->getEndRecordNumber(),
-                'currentPageNumber' => $paginator->getCurrentPageNumber(),
-                'pages' => range($firstPage, $lastPage),
-                'pagesG' => $pages,
-                'pagesR' => $pagesSect
-            ];
-        }
+        // 'startRecordNumber' is not required in GridView, only the variant for each loop is required
+        // 'endRecordNumber' is not required in both views
+        //
+        // lastPageNumber       =>  last screen page
+        // lastPageNumber       =>  Document page to build the last screen page. This is the first document
+        //                          of the last block of 10 (or less) documents on the last screen page
+        // firstPageNumber      =>  always 1
+        // nextPageNumber       =>  Document page to build the next screen page
+        // nextPageNumberG      =>  Number of the screen page for the next screen page
+        // previousPageNumber   =>  Document page to build up the previous screen page
+        // previousPageNumberG  =>  Number of the screen page for the previous screen page
+        // currentPageNumber    =>  Number of the current screen page
+        // pagesG               =>  Array with two keys
+        //    label             =>  Number of the screen page
+        //    startRecordNumber =>  First document of this block of 10 documents on the same screen page
+        return [
+            'lastPageNumber' => $lastPage,
+            'lastPageNumberG' => $lastStartRecordNumberGrid,
+            'firstPageNumber' => $firstPage,
+            'nextPageNumber' => $nextPageNumber,
+            'nextPageNumberG' => $currentPageNumber + 1,
+            'previousPageNumber' => $previousPageNumber,
+            'previousPageNumberG' => $currentPageNumber - 1,
+            'startRecordNumber' => $pagination->getStartRecordNumber(),
+            'endRecordNumber' => $pagination->getEndRecordNumber(),
+            'currentPageNumber' => $currentPageNumber,
+            'pages' => range($firstPage, $lastPage),
+            'pagesG' => $pages,
+            'pagesR' => $pagesSect
+        ];
     }
 }
