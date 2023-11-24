@@ -386,10 +386,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 // Check if screen page is in range
                 // <f:for each="{pagination.pagesR}" as="page">
                 if (in_array($i, $aRange)) {
-                    array_push($pagesSect, [
-                        'label' => $i,
-                        'startRecordNumber' => $i
-                    ]);
+                    array_push($pagesSect, ['label' => $i, 'startRecordNumber' => $i]);
                 };
             } else { // GridView
                 // to calculate the values for generation the links for the pagination pages
@@ -409,14 +406,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
                 //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
                 $pages[$i] = [
-                    'label' => $i, 
+                    'label' => $i,
                     'startRecordNumber' => $startRecordNumber
                 ];
 
                 // Check if screen page is in range
                 if (in_array($i, $aRange)) {
                     array_push($pagesSect, [
-                        'label' => $i, 
+                        'label' => $i,
                         'startRecordNumber' => $startRecordNumber
                     ]);
                 };
