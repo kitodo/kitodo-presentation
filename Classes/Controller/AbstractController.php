@@ -375,7 +375,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                                     'startRecordNumber' => '...'
                                    ]);
         };        
-
+        $lastStartRecordNumberGrid = 0; // due to validity outside the loop
         foreach (range($firstPage, $lastPage) as $i) {
             // detect which pagination is active: ListView or GridView
             if (get_class($pagination) == 'TYPO3\CMS\Core\Pagination\SimplePagination') {  // ListView
