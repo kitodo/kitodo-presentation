@@ -412,10 +412,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
                 // Check if screen page is in range
                 if (in_array($i, $aRange)) {
-                    array_push($pagesSect, [
-                        'label' => $i,
-                        'startRecordNumber' => $startRecordNumber
-                    ]);
+                    array_push($pagesSect, ['label' => $i,'startRecordNumber' => $startRecordNumber]);
                 };
             };
         };
