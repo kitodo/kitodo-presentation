@@ -371,10 +371,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // check whether the first screen page is > 1, if yes then points must be added
         if ($aRange[0] > 1) {
             array_push($pagesSect, [
-                                    'label' => '...', 
-                                    'startRecordNumber' => '...'
-                                   ]);
-        };        
+                'label' => '...',
+                'startRecordNumber' => '...'
+            ]);
+        };
         $lastStartRecordNumberGrid = 0; // due to validity outside the loop
         foreach (range($firstPage, $lastPage) as $i) {
             // detect which pagination is active: ListView or GridView
@@ -382,7 +382,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 $lastStartRecordNumberGrid = $i; // save last $startRecordNumber for LastPage button
 
                 $pages[$i] = [
-                    'label' => $i, 
+                    'label' => $i,
                     'startRecordNumber' => $i
                 ];
 
@@ -390,9 +390,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 // <f:for each="{pagination.pagesR}" as="page">
                 if (in_array($i, $aRange)) {
                     array_push($pagesSect, [
-                                            'label' => $i, 
-                                            'startRecordNumber' => $i
-                                           ]);
+                        'label' => $i,
+                        'startRecordNumber' => $i
+                    ]);
                 };
             } else { // GridView
                 // to calculate the values for generation the links for the pagination pages
@@ -412,16 +412,16 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
                 //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
                 $pages[$i] = [
-                    'label' => $i, 
+                    'label' => $i,
                     'startRecordNumber' => $startRecordNumber
                 ];
 
                 // Check if screen page is in range
                 if (in_array($i, $aRange)) {
                     array_push($pagesSect, [
-                                            'label' => $i, 
-                                            'startRecordNumber' => $startRecordNumber
-                                           ]);
+                        'label' => $i,
+                        'startRecordNumber' => $startRecordNumber
+                    ]);
                 };
             };
         };
@@ -429,8 +429,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // check whether the last element from $aRange <= last screen page, if yes then points must be added
         if ($aRange[array_key_last($aRange)] < $lastPage) {
             array_push($pagesSect, [
-                                    'label' => '...', 
-                                    'startRecordNumber' => '...']);
+                'label' => '...',
+                'startRecordNumber' => '...'
+            ]);
         };
 
         $nextPageNumber = $pages[$currentPageNumber + 1]['startRecordNumber'];
