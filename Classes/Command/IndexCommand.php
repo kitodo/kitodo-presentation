@@ -75,6 +75,12 @@ class IndexCommand extends BaseCommand
                 'o',
                 InputOption::VALUE_OPTIONAL,
                 '[UID|index_name] of the Library which should be set as owner of the document.'
+            )
+            ->addOption(
+                'softCommit',
+                null,
+                InputOption::VALUE_NONE,
+                'If this option is set, documents are just added to the index by a soft commit.'
             );
     }
 
@@ -188,13 +194,13 @@ class IndexCommand extends BaseCommand
             if ($io->isVerbose()) {
                 $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
             }
-            $isSaved = $this->saveToDatabase($document);
+            $isSaved = $this->saveToDatabase($document, $input->getOption('softCommit'));
 
             if ($isSaved) {
                 if ($io->isVerbose()) {
                     $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on Solr core ' . $solrCoreUid . '.');
                 }
-                $isSaved = Indexer::add($document, $this->documentRepository);
+                $isSaved = Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
             } else {
                 $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] . ') in this document.');
                 return BaseCommand::FAILURE;

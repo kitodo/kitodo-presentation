@@ -91,10 +91,11 @@ class Indexer
      *
      * @param Document $document The document to add
      * @param DocumentRepository $documentRepository The document repository for search of parent
+     * @param bool $softCommit If true, documents are just added by a soft commit to the index
      *
      * @return bool true on success or false on failure
      */
-    public static function add(Document $document, DocumentRepository $documentRepository): bool
+    public static function add(Document $document, DocumentRepository $documentRepository, bool $softCommit = false): bool
     {
         if (in_array($document->getUid(), self::$processedDocs)) {
             return true;
@@ -144,7 +145,7 @@ class Indexer
                 }
                 // Commit all changes.
                 $updateQuery = self::$solr->service->createUpdate();
-                $updateQuery->addCommit();
+                $updateQuery->addCommit($softCommit, null, null);
                 self::$solr->service->update($updateQuery);
 
                 if (!(Environment::isCli())) {
