@@ -195,10 +195,11 @@ class BaseCommand extends Command
      * @access protected
      *
      * @param Document $document The document instance
+     * @param bool $softCommit If true, documents are just added to the index by a soft commit
      *
      * @return bool true on success, false otherwise
      */
-    protected function saveToDatabase(Document $document): bool
+    protected function saveToDatabase(Document $document, bool $softCommit = false): bool
     {
         $doc = $document->getCurrentDocument();
         if ($doc === null) {
@@ -255,7 +256,7 @@ class BaseCommand extends Command
 
             // Get UID of parent document.
             if ($document->getDocumentFormat() === 'METS') {
-                $document->setPartof($this->getParentDocumentUidForSaving($document));
+                $document->setPartof($this->getParentDocumentUidForSaving($document, $softCommit));
             }
 
             if ($document->getUid() === null) {
@@ -281,10 +282,11 @@ class BaseCommand extends Command
      * @access protected
      *
      * @param Document $document for which parent UID should be taken
+     * @param bool $softCommit If true, documents are just added to the index by a soft commit
      *
      * @return int The parent document's id.
      */
-    protected function getParentDocumentUidForSaving(Document $document): int
+    protected function getParentDocumentUidForSaving(Document $document, bool $softCommit = false): int
     {
         $doc = $document->getCurrentDocument();
 
@@ -305,11 +307,11 @@ class BaseCommand extends Command
                 $parentDocument->setLocation($doc->parentHref);
                 $parentDocument->setSolrcore($document->getSolrcore());
 
-                $success = $this->saveToDatabase($parentDocument);
+                $success = $this->saveToDatabase($parentDocument, $softCommit);
 
                 if ($success === true) {
                     // add to index
-                    Indexer::add($parentDocument, $this->documentRepository);
+                    Indexer::add($parentDocument, $this->documentRepository, $softCommit);
                     return $parentDocument->getUid();
                 }
             }
