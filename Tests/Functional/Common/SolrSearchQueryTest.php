@@ -46,7 +46,7 @@ class SolrSearchQueryTest extends FunctionalTestCase
     public function canExecute()
     {
         $documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
-        $settings = ['solrcore' => 4];
+        $settings = ['solrcore' => 4, 'storagePid' => 0];
 
         $params = ['query' => '10 Keyboard pieces'];
         $search = new SolrSearch($documentRepository, null, $settings, $params);
