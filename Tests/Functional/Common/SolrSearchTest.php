@@ -21,11 +21,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class SolrSearchTest extends FunctionalTestCase
 {
-    static array $databaseFixtures = [
+    private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Common/solrcores.csv'
     ];
 
-    static array $solrFixtures = [
+    private static array $solrFixtures = [
         __DIR__ . '/../../Fixtures/Common/documents_1.solr.json'
     ];
 
@@ -50,7 +50,6 @@ class SolrSearchTest extends FunctionalTestCase
 
         $resultSet = $this->solr->searchRaw(['core' => 4, 'collection' => 1]);
         $this->assertCount(33, $resultSet);
-
 
         $params1 = ['query' => '*'];
         $search = new SolrSearch($documentRepository, null, $settings, $params1);

@@ -21,13 +21,13 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 class SolrTest extends FunctionalTestCase
 {
 
-    static array $databaseFixtures = [
+    private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Common/documents_1.csv',
         __DIR__ . '/../../Fixtures/Common/pages.csv',
         __DIR__ . '/../../Fixtures/Common/solrcores.csv'
     ];
 
-    static array $solrFixtures = [
+    private static array $solrFixtures = [
         __DIR__ . '/../../Fixtures/Common/documents_1.solr.json'
     ];
 
@@ -115,6 +115,4 @@ class SolrTest extends FunctionalTestCase
         $this->persistenceManager->persistAll();
         return $solr;
     }
-
-
 }
