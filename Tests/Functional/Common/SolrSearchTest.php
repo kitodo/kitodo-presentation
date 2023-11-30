@@ -35,7 +35,7 @@ class SolrSearchTest extends FunctionalTestCase
     {
         parent::setUp();
         $this->setUpData(self::$databaseFixtures);
-        $this->solr = $this->setUpSolr(4, 0, self::$solrFixtures);
+        $this->solr = $this->setUpSolr(5, 0, self::$solrFixtures);
     }
 
     /**
@@ -43,12 +43,10 @@ class SolrSearchTest extends FunctionalTestCase
      */
     public function canPrepareAndSubmit()
     {
-        $this->markTestSkipped('Does not work in combination with other tests.');
-
         $documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
-        $settings = ['solrcore' => 4, 'storagePid' => 0];
+        $settings = ['solrcore' => 5, 'storagePid' => 0];
 
-        $resultSet = $this->solr->searchRaw(['core' => 4, 'collection' => 1]);
+        $resultSet = $this->solr->searchRaw(['core' => 5, 'collection' => 1]);
         $this->assertCount(33, $resultSet);
 
         $params1 = ['query' => '*'];
