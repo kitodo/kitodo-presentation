@@ -494,8 +494,8 @@ final class IiifManifest extends AbstractDocument
         $details = [];
         $details['id'] = $resource->getId();
         $details['dmdId'] = '';
-        $details['label'] = $resource->getLabelForDisplay() !== null ? $resource->getLabelForDisplay() : '';
-        $details['orderlabel'] = $resource->getLabelForDisplay() !== null ? $resource->getLabelForDisplay() : '';
+        $details['label'] = $resource->getLabelForDisplay() ?? '';
+        $details['orderlabel'] = $resource->getLabelForDisplay() ?? '';
         $details['contentIds'] = '';
         $details['volume'] = '';
         $details['pagination'] = '';
