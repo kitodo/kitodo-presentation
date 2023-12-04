@@ -30,6 +30,7 @@ class SolrSearchTest extends FunctionalTestCase
     ];
 
     private Solr $solr;
+    private SolrCoreRepository $solrCoreRepository;
 
     public function setUp(): void
     {
@@ -44,7 +45,8 @@ class SolrSearchTest extends FunctionalTestCase
     public function canPrepareAndSubmit()
     {
         $documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
-        $settings = ['solrcore' => 5, 'storagePid' => 0];
+        $solrCoreName = $this->solrCoreRepository->findByUid(5)->getIndexName();
+        $settings = ['solrcore' => $solrCoreName, 'storagePid' => 0];
 
         $resultSet = $this->solr->searchRaw(['core' => 5, 'collection' => 1]);
         $this->assertCount(33, $resultSet);
