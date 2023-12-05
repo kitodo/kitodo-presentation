@@ -1,0 +1,4 @@
+"tx_dlf_solrcores",,,,,,,,
+,"uid","pid","tstamp","crdate","cruser_id","deleted","label","index_name"
+,4,0,1631254345,1631186030,1,0,"Common Solr Testing Core",
+,5,0,1631254346,1631186030,1,0,"Common Solr Testing Core 2",

@@ -47,7 +47,7 @@ class OaiPmhTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/metadata.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/libraries.csv');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/pages.csv');
         $this->importDataSet(__DIR__ . '/../../Fixtures/OaiPmh/pages.xml');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/OaiPmh/solrcores.csv');
 
