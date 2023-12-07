@@ -442,11 +442,10 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
-     * @return ResponseInterface
+     * @return void
      */
-    public function errorAction(): ResponseInterface
+    public function errorAction(): void
     {
-        return parent::errorAction();
     }
 
     /**
