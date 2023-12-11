@@ -549,7 +549,7 @@ final class MetsDocument extends AbstractDocument
                 )
                 ->execute();
             // Merge both result sets.
-            $allResults = array_merge($resultWithFormat->fetchAll(), $resultWithoutFormat->fetchAll());
+            $allResults = array_merge($resultWithFormat->fetchAllAssociative(), $resultWithoutFormat->fetchAllAssociative());
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
@@ -1097,7 +1097,7 @@ final class MetsDocument extends AbstractDocument
                 ->setMaxResults(1)
                 ->execute();
 
-            $allResults = $result->fetchAll();
+            $allResults = $result->fetchAllAssociative();
 
             if (count($allResults) == 1) {
                 $resArray = $allResults[0];
