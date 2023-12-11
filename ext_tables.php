@@ -13,7 +13,7 @@
 // Register backend module.
 if (\TYPO3_MODE === 'BE') {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'Kitodo.Dlf',
+        'Dlf',
         'tools', // Main area
         'newTenantModule', // Name of the module
         'bottom', // Position of the module
