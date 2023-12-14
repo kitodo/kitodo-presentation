@@ -62,7 +62,6 @@ dlfFulltextSegments.prototype.populate = function (features) {
 dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
     for (var i = 0; i < this.segments_.length; i++) {
         var segment = this.segments_[i];
-
         if (ol.extent.containsCoordinate(segment.extent, coordinate)) {
             return segment.feature;
         }
@@ -157,6 +156,13 @@ var dlfViewerFullTextControl = function(map) {
      * @private
      */
     this.lastRenderedFeatures_ = undefined;
+    
+    /**
+     * @type {Array}
+     * @private
+     */
+     this.positions = {};
+     
 
     /**
      * @type {dlfFulltextSegments}
@@ -329,6 +335,21 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
     }
 };
 
+/** 
+ * Calculate positions of text lines for scrolling
+ */
+dlfViewerFullTextControl.prototype.calculatePositions = function() {
+    this.positions.length = 0;
+    
+    let texts = $('#tx-dlf-fulltextselection').children('span.textline');
+    let offset = $('#' + texts[0].id).position().top;
+    
+    for(let text of texts) {
+        let pos = $('#' + text.id).position().top;
+        this.positions[text.id] = pos - offset;
+    }
+};
+
 /**
  * Handle layers for click
  * @param {ol.Feature|undefined} feature
@@ -416,7 +437,7 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
 
         if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
             targetElem.addClass('highlight');
-            setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement);
+            setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement, this.positions);
             hoverSourceTextline_.addFeature(textlineFeature);
         }
     }
@@ -427,10 +448,10 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
  * @param {any} element
  * @param {string} fullTextScrollElement
  */
-dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement) {
+dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement, positions) {
     if (element.hasClass('highlight')) {
         $(fullTextScrollElement).animate({
-            scrollTop: element.offset().top
+            scrollTop: positions[element[0].id]
         }, 500);
     }
 };
@@ -576,6 +597,7 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
             target.append(document.createElement('br'), document.createElement('br'));
         }
 
+        this.calculatePositions();
         this.lastRenderedFeatures_ = features;
     }
 };
