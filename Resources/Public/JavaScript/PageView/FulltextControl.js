@@ -336,6 +336,16 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
 };
 
 /** 
+ * Recalculate position of text lines if full text container was resized
+ */
+dlfViewerFullTextControl.prototype.onResize = function() {
+    if (this.element != undefined && this.element.css('width') != this.lastHeight) {
+        this.lastHeight = this.element.css('width');
+        this.calculatePositions();
+    }
+};
+
+/**
  * Calculate positions of text lines for scrolling
  */
 dlfViewerFullTextControl.prototype.calculatePositions = function() {
@@ -437,6 +447,7 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
 
         if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
             targetElem.addClass('highlight');
+            this.onResize();
             setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement, this.positions);
             hoverSourceTextline_.addFeature(textlineFeature);
         }
