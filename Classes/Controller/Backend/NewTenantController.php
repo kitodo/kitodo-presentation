@@ -447,8 +447,7 @@ class NewTenantController extends AbstractController
     // @phpstan-ignore-next-line
     public function errorAction(): void
     {
-        // TODO revert when migriting to TYPO3 11
-        // (this change is made to keep it compatible with TYPO3 10)
+        // TODO: Call parent::errorAction() when dropping support for TYPO3 v10.
     }
 
     /**
