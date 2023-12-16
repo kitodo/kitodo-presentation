@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Controller class for the plugin 'Calendar'.
@@ -218,7 +219,7 @@ class CalendarController extends AbstractController
         }
 
         $this->view->assign('documentId', $this->document->getUid());
-        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getUid()));
+        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle((int) $this->document->getUid()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
     }
 
     /**
@@ -482,11 +483,11 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array $documents to create issues
+     * @param array|QueryResultInterface $documents to create issues
      *
      * @return array
      */
-    private function getIssuesFromDocuments(array $documents): array
+    private function getIssuesFromDocuments($documents): array
     {
         $issues = [];
 
