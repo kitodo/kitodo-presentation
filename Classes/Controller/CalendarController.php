@@ -12,8 +12,10 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Generator;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Controller class for the plugin 'Calendar'.
@@ -218,7 +220,7 @@ class CalendarController extends AbstractController
         }
 
         $this->view->assign('documentId', $this->document->getUid());
-        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getUid()));
+        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle((int) $this->document->getUid()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
     }
 
     /**
@@ -397,12 +399,10 @@ class CalendarController extends AbstractController
      */
     private function getIssuesByYear(): array
     {
-        $issues = $this->getIssues();
-
         //  We need an array of issues with year => month => day number as key.
         $issuesByYear = [];
 
-        foreach ($issues as $issue) {
+        foreach ($this->getIssues() as $issue) {
             $dateTimestamp = strtotime($issue['year']);
             if ($dateTimestamp !== false) {
                 $_year = date('Y', $dateTimestamp);
@@ -424,22 +424,18 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return array
+     * @return Generator
      */
-    private function getIssues(): array
+    private function getIssues(): Generator
     {
         $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
 
-        $issues = [];
-
         // Process results.
         if ($documents->count() === 0) {
-            $issues = $this->getIssuesFromTableOfContents();
-        } else {
-            $issues = $this->getIssuesFromDocuments($documents);
+            return $this->getIssuesFromTableOfContents();
         }
 
-        return $issues;
+        return $this->getIssuesFromDocuments($documents);
     }
 
     /**
@@ -447,12 +443,10 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return array
+     * @return Generator
      */
-    private function getIssuesFromTableOfContents(): array
+    private function getIssuesFromTableOfContents(): Generator
     {
-        $issues = [];
-
         $toc = $this->document->getCurrentDocument()->tableOfContents;
 
         foreach ($toc[0]['children'] as $year) {
@@ -464,7 +458,7 @@ class CalendarController extends AbstractController
                             $title = strftime('%x', strtotime($title));
                         }
 
-                        $issues[] = [
+                        yield [
                             'uid' => $issue['points'],
                             'title' => $title,
                             'year' => $day['orderlabel'],
@@ -473,8 +467,6 @@ class CalendarController extends AbstractController
                 }
             }
         }
-
-        return $issues;
     }
 
     /**
@@ -482,14 +474,12 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array $documents to create issues
+     * @param array|QueryResultInterface $documents to create issues
      *
-     * @return array
+     * @return Generator
      */
-    private function getIssuesFromDocuments(array $documents): array
+    private function getIssuesFromDocuments($documents): Generator
     {
-        $issues = [];
-
         /** @var Document $document */
         foreach ($documents as $document) {
             // Set title for display in calendar view.
@@ -501,13 +491,11 @@ class CalendarController extends AbstractController
                     $title = strftime('%x', strtotime($title));
                 }
             }
-            $issues[] = [
+            yield [
                 'uid' => $document->getUid(),
                 'title' => $title,
                 'year' => $document->getYear()
             ];
         }
-
-        return $issues;
     }
 }
