@@ -442,11 +442,12 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
-     * @return ResponseInterface
+     * @return void
      */
-    public function errorAction(): ResponseInterface
+    // @phpstan-ignore-next-line
+    public function errorAction(): void
     {
-        return parent::errorAction();
+        // TODO: Call parent::errorAction() when dropping support for TYPO3 v10.
     }
 
     /**
