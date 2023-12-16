@@ -478,7 +478,7 @@ class CalendarController extends AbstractController
      *
      * @return Generator
      */
-    private function getIssuesFromDocuments($documents): array
+    private function getIssuesFromDocuments($documents): Generator
     {
         /** @var Document $document */
         foreach ($documents as $document) {
