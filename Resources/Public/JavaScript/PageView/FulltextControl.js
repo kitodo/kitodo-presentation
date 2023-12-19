@@ -85,7 +85,7 @@ var dlfViewerFullTextControl = function(map) {
      * @type {Object}
      * @private
      */
-    this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
+    this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').data('dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
         {
             'fulltext':'Fulltext',
@@ -357,7 +357,7 @@ dlfViewerFullTextControl.prototype.onResize = function() {
 dlfViewerFullTextControl.prototype.calculatePositions = function() {
     this.positions.length = 0;
     
-    let texts = $(this.fullTextScrollElement).children('span.textline');
+    let texts = $('html').find(this.fullTextScrollElement).children('span.textline');
     let offset = $('#' + texts[0].id).position().top;
     
     for(let text of texts) {
@@ -536,8 +536,8 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
         .attr('title', this.dic['fulltext-on']);
     }
 
-    $(this.fullTextScrollElement).removeClass(className);
-    $(this.fullTextScrollElement).hide();
+    $('html').find(this.fullTextScrollElement).removeClass(className);
+    $('html').find(this.fullTextScrollElement).hide();
 
     $('body').removeClass(className);
 
@@ -569,8 +569,8 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
         .attr('title', this.dic['fulltext-off']);
     }
 
-    $(this.fullTextScrollElement).addClass(className);
-    $(this.fullTextScrollElement).show();
+    $('html').find(this.fullTextScrollElement).addClass(className);
+    $('html').find(this.fullTextScrollElement).show();
     $('body').addClass(className);
 };
 
