@@ -111,7 +111,7 @@ var dlfViewerFullTextControl = function(map) {
      * @type {string}
      * @private
      */
-    let regex = /[^A-Za-z0-9\.\-\#\s]/g;
+    let regex = /[^A-Za-z0-9\.\-\#\s_]/g;
     let fullTextScrollElementUnChecked = this.dic['full-text-scroll-element'];
     if (regex.fullTextScrollElementUnChecked) {
         this.fullTextScrollElement = "";
