@@ -242,7 +242,7 @@ var dlfViewerFullTextControl = function(map) {
         this)
     };
 
-    $(this.fullTextScrollElement).text(this.dic['fulltext-loading']);
+    $('html').find(this.fullTextScrollElement).text(this.dic['fulltext-loading']);
 
     this.changeActiveBehaviour();
 };
