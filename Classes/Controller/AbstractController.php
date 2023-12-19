@@ -366,6 +366,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 ];
             } else { // GridView
                 // to calculate the values for generation the links for the pagination pages
+                /** @var Kitodo\Dlf\Pagination\PageGridPaginator $paginator */
                 $itemsPerPage = $paginator->getPublicItemsPerPage();
 
                 $startRecordNumber = $itemsPerPage * $i;
