@@ -24,8 +24,8 @@ class ItemsProcFuncTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Hooks/pages.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Hooks/metadata.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/metadata.csv');
         $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
 

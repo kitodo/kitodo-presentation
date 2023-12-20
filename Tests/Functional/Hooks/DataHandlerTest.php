@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Hooks;
 
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Hooks\DataHandler;
@@ -26,9 +26,9 @@ class DataHandlerTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Hooks/documents.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Hooks/metadata.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Hooks/solrcores.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/documents.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/metadata.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/solrcores.csv');
         $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
 
