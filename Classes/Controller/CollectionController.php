@@ -252,6 +252,7 @@ class CollectionController extends AbstractController
             }
 
             // Generate random but unique array key taking amount of documents into account.
+            $key = 0;
             do {
                 if ($collection instanceof Collection) {
                     $key = ($collection->getPriority() * 1000) + random_int(0, 1000);
