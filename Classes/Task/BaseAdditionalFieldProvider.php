@@ -1,0 +1,295 @@
+<?php
+
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+namespace Kitodo\Dlf\Task;
+
+use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
+use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Connection;
+
+/**
+ * Base class for additional fields classes of scheduler tasks.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
+{
+    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
+    {}
+
+    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
+    {
+        $fieldsValid = true;
+
+        Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_tasks.xlf');
+
+        if (isset($submittedData['doc']) && empty($submittedData['doc'])) {
+            Helper::addMessage(
+                Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->getLL('additionalFields.error'), 
+                FlashMessage::ERROR,
+                true,
+                'core.template.flashMessages');
+            $fieldsValid = false;
+        }
+
+        if ((isset($submittedData['lib']) && intval($submittedData['lib']) <= 0)) {
+            if($submittedData['uid']) {
+                Helper::addMessage(
+                    Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                    Helper::getLanguageService()->getLL('additionalFields.error'),
+                    FlashMessage::ERROR,
+                    true,
+                    'core.template.flashMessages');
+                $fieldsValid = false;
+            }
+            else {
+                Helper::addMessage(
+                    Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                    Helper::getLanguageService()->getLL('additionalFields.warning'),
+                    FlashMessage::WARNING,
+                    true,
+                    'core.template.flashMessages');
+            }
+        }
+
+        if ((isset($submittedData['pid']) && intval($submittedData['pid']) <= 0) || !isset($submittedData['pid'])) {
+            Helper::addMessage(
+                Helper::getLanguageService()->getLL('additionalFields.pid') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->getLL('additionalFields.error'),
+                FlashMessage::ERROR,
+                true,
+                'core.template.flashMessages');
+            $fieldsValid = false;
+        }
+
+        if ((isset($submittedData['solr']) && intval($submittedData['solr']) <= 0) || !isset($submittedData['solr'])) {
+            if($submittedData['uid']) {
+                Helper::addMessage(
+                    Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                    Helper::getLanguageService()->getLL('additionalFields.error'),
+                    FlashMessage::ERROR,
+                    true,
+                    'core.template.flashMessages');
+                $fieldsValid = false;
+            }
+            else {
+                Helper::addMessage(
+                    Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                    Helper::getLanguageService()->getLL('additionalFields.warning'),
+                    FlashMessage::WARNING,
+                    true,
+                    'core.template.flashMessages');
+            }
+        }
+
+        if (((isset($submittedData['coll']) && isset($submittedData['all'])) || (!isset($submittedData['coll']) && !isset($submittedData['all'])))
+            && !isset($submittedData['doc']) && !isset($submittedData['lib'])) {
+            if($submittedData['uid']) {
+                Helper::addMessage(
+                    Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
+                    Helper::getLanguageService()->getLL('additionalFields.error'),
+                    FlashMessage::ERROR,
+                    true,
+                    'core.template.flashMessages');
+                $fieldsValid = false;
+            }
+            else {
+                Helper::addMessage(
+                    Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
+                    Helper::getLanguageService()->getLL('additionalFields.warning'),
+                    FlashMessage::WARNING,
+                    true,
+                    'core.template.flashMessages');
+            }
+        }
+        return $fieldsValid;
+    }
+
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
+    {
+        $task->setDryRun(!empty($submittedData['dryRun']));
+        if (isset($submittedData['doc'])) {
+            $task->setDoc(htmlspecialchars($submittedData['doc']));
+        }
+        if (isset($submittedData['lib'])) {
+            $task->setLib(intval($submittedData['lib']));
+        }
+        if (isset($submittedData['coll']) && is_array($submittedData['coll'])) {
+            $task->setColl($submittedData['coll']);
+        } else {
+            $task->setColl([]);
+        }
+        if (isset($submittedData['pid'])) {
+            $task->setPid(intval($submittedData['pid']));
+        }
+        if (isset($submittedData['solr'])) {
+            $task->setSolr(intval($submittedData['solr']));
+        }
+        if (isset($submittedData['owner'])) {
+            $task->setOwner(htmlspecialchars($submittedData['owner']));
+        }
+        $task->setAll(!empty($submittedData['all']));
+        if (isset($submittedData['from'])) {
+            $task->setFrom(htmlspecialchars($submittedData['from']));
+        }
+        if (isset($submittedData['until'])) {
+            $task->setUntil(htmlspecialchars($submittedData['until']));
+        }
+        if (isset($submittedData['set'])) {
+            $task->setSet(htmlspecialchars($submittedData['set']));
+        }
+    }
+
+    /**
+     * Return HTML for dry run checkbox
+     *
+     * @access protected
+     *
+     * @param bool $dryRun
+     *
+     * @return string HTML for dry run checkbox
+     */
+    protected function getDryRunField(bool $dryRun): array
+    {
+        $fieldName = 'dryRun';
+        $fieldId = 'task_' . $fieldName;
+        $fieldHtml = '<input type="checkbox" name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '" value="1"' . ($dryRun ? ' checked="checked"' : '') . '>';
+        return [
+            'code' => $fieldHtml,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:additionalFields.dryRun',
+            'cshKey' => '_MOD_system_txschedulerM1',
+            'cshLabel' => $fieldId
+        ];
+    }
+
+    /**
+     * Return HTML for solr dropdown
+     *
+     * @access protected
+     *
+     * @param int $solr UID of the selected Solr core
+     * @param int $pid UID of the selected storage page
+     *
+     * @return string HTML for solr dropdown
+     */
+    protected function getSolrField(int $solr, int $pid): array
+    {
+        $fieldName = 'solr';
+        $fieldId = 'task_' . $fieldName;
+
+        $allSolrCores = $this->getSolrCores($pid);
+        $options = [];
+        $options[] = '<option value="-1"></option>';
+        foreach ($allSolrCores as $label => $uid) {
+            $options[] = '<option value="' . $uid . '" ' . ($solr == $uid ? 'selected' : '') . ' >' . $label . '</option>';
+        };
+        $fieldHtml = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '">' . implode("\n", $options) . '</select>';
+        return [
+            'code' => $fieldHtml,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:additionalFields.solr',
+            'cshKey' => '_MOD_system_txschedulerM1',
+            'cshLabel' => $fieldId
+        ];
+    }
+
+    /**
+     * Return html for page dropdown
+     *
+     * @access protected
+     *
+     * @param int $pid UID of the selected storage page
+     *
+     * @return string HTML code for storage page dropdownn
+     */
+    protected function getPidField(int $pid): array
+    {
+        $fieldName = 'pid';
+        $fieldId = 'task_' . $fieldName;
+
+        $pageRepository = GeneralUtility::makeInstance(PageTreeRepository::class);
+        $pages = $pageRepository->getTree(0);
+
+        $options = [];
+        foreach ($pages['_children'] as $page) {
+            if ($page['doktype'] == 254) {
+                $options[] = '<option value="' . $page['uid'] . '" ' . ($pid == $page['uid'] ? 'selected' : '') . ' >' . $page['title'] . '</option>';
+            }
+        }
+
+        $fieldHtml = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '">' . implode("\n", $options) . '</select>';
+        return [
+            'code' => $fieldHtml,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:additionalFields.pid',
+            'cshKey' => '_MOD_system_txschedulerM1',
+            'cshLabel' => $fieldId
+        ];
+    }
+
+    /**
+     * Return HTML for owner text field
+     *
+     * @access protected
+     *
+     * @param string $ownner registered owner
+     *
+     * @return string HTML for owner text field
+     */
+    protected function getOwnerField(string $owner): array
+    {
+        $fieldName = 'owner';
+        $fieldId = 'task_' . $fieldName;
+        $fieldHtml = '<input type="text" name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '" value="' . $owner . '" >';
+        return [
+            'code' => $fieldHtml,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:additionalFields.owner',
+            'cshKey' => '_MOD_system_txschedulerM1',
+            'cshLabel' => $fieldId
+        ];
+    }
+
+    /**
+     * Fetches all Solr cores on given page.
+     *
+     * @access protected
+     *        
+     * @param int $pid UID of storage page
+     *            
+     * @return array Array of valid Solr cores
+     */
+    private function getSolrCores(int $pid): array
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
+
+        $solrCores = [];
+        $result = $queryBuilder->select('uid', 'label')
+            ->from('tx_dlf_solrcores')
+            ->where(
+            $queryBuilder->expr()
+                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
+            ->execute();
+
+        while ($record = $result->fetchAssociative()) {
+            $solrCores[$record['label']] = $record['uid'];
+        }
+
+        return $solrCores;
+    }
+}
