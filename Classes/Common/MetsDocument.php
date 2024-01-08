@@ -358,13 +358,16 @@ final class MetsDocument extends AbstractDocument
         ) {
             // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true)), 1);
-            $details['thumbnailId'] = $this->getThumbnailForLogicalStructureInfo($details['id']);
+            $details['thumbnailId'] = $this->getThumbnail();
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
         } elseif ($details['id'] == $this->magicGetToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
-            $details['thumbnailId'] = $this->getThumbnailForLogicalStructureInfo();
+            $details['thumbnailId'] = $this->getThumbnail();
+        }
+        if (is_null($details['thumbnailId'])) {
+            unset($details['thumbnailId']);
         }
         // Get the files this structure element is pointing at.
         $details['files'] = [];
@@ -397,29 +400,25 @@ final class MetsDocument extends AbstractDocument
      * 
      * @param string $id empty if top level document, else passed the id of parent document
      * 
-     * @return string thumbnail
+     * @return ?string thumbnail or null if not found
      */
-    private function getThumbnailForLogicalStructureInfo(string $id = '') {
+    private function getThumbnail(string $id = '') {
         // Load plugin configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
 
-        $thumbnail = '';
+        $thumbnail = null;
 
         while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
             if (empty($id)) {
-                if (
-                    !empty($this->physicalStructure)
-                    && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])
-                ) {
-                    $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb];
-                    break;
-                }
+                $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb] ?? null;
             } else {
-                if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$id][0]]['files'][$fileGrpThumb])) {
-                    $thumbnail = $this->physicalStructureInfo[$this->smLinks['l2p'][$id][0]]['files'][$fileGrpThumb];
-                    break;
-                }
+                $parentId = $this->smLinks['l2p'][$id][0] ?? null;
+                $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$fileGrpThumb] ?? null;
+            }
+        
+            if (!empty($thumbnail)) {
+                break;
             }
         }
         return $thumbnail;
