@@ -1083,7 +1083,8 @@ final class MetsDocument extends AbstractDocument
                 // Set total number of pages/tracks.
                 $this->numPages = count($elements);
                 // Merge and re-index the array to get numeric indexes.
-                $this->physicalStructure = array_unshift($elements, $id);
+                array_unshift($elements, $id);
+                $this->physicalStructure = $elements;
             }
             $this->physicalStructureLoaded = true;
         }
