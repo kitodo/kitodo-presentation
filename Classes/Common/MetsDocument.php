@@ -357,7 +357,7 @@ final class MetsDocument extends AbstractDocument
             && array_key_exists($details['id'], $this->smLinks['l2p'])
         ) {
             // Link logical structure to the first corresponding physical page/track.
-            $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true)), 1);
+            $details['points'] = max((int)array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true), 1);
             $details['thumbnailId'] = $this->getThumbnail();
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
@@ -430,7 +430,7 @@ final class MetsDocument extends AbstractDocument
     public function getMetadata(string $id, int $cPid = 0): array
     {
         // Make sure $cPid is a non-negative integer.
-        $cPid = max(intval($cPid), 0);
+        $cPid = max((int)$cPid, 0);
         // If $cPid is not given, try to get it elsewhere.
         if (
             !$cPid
@@ -536,9 +536,9 @@ final class MetsDocument extends AbstractDocument
                     )
                 )
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int)$cPid),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                    $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', intval($cPid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', (int)$cPid),
                     $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
                 )
                 ->execute();
@@ -558,7 +558,7 @@ final class MetsDocument extends AbstractDocument
                 )
                 ->from('tx_dlf_metadata')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int)$cPid),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
                     $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0),
                     $queryBuilder->expr()->neq('tx_dlf_metadata.default_value', $queryBuilder->createNamedParameter(''))
@@ -1106,7 +1106,7 @@ final class MetsDocument extends AbstractDocument
                 ->select('tx_dlf_structures.thumbnail AS thumbnail')
                 ->from('tx_dlf_structures')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', intval($cPid)),
+                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', (int)$cPid),
                     $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
                     Helper::whereExpression('tx_dlf_structures')
                 )
