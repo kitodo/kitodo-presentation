@@ -310,8 +310,7 @@ final class MetsDocument extends AbstractDocument
         foreach ($structure->attributes() as $attribute => $value) {
             $attributes[$attribute] = (string) $value;
         }
-        // Load plugin configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+
         // Extract identity information.
         $details = [];
         $details['id'] = $attributes['ID'];
@@ -359,28 +358,13 @@ final class MetsDocument extends AbstractDocument
         ) {
             // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max(intval(array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true)), 1);
-            $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-                if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$fileGrpThumb])) {
-                    $details['thumbnailId'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['files'][$fileGrpThumb];
-                    break;
-                }
-            }
+            $details['thumbnailId'] = $this->getThumbnailForLogicalStructureInfo($details['id']);
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
         } elseif ($details['id'] == $this->magicGetToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
-            $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-                if (
-                    !empty($this->physicalStructure)
-                    && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])
-                ) {
-                    $details['thumbnailId'] = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb];
-                    break;
-                }
-            }
+            $details['thumbnailId'] = $this->getThumbnailForLogicalStructureInfo();
         }
         // Get the files this structure element is pointing at.
         $details['files'] = [];
@@ -406,6 +390,39 @@ final class MetsDocument extends AbstractDocument
             }
         }
         return $details;
+    }
+
+    /**
+     * Get thumbnail for logical structure info.
+     * 
+     * @param string $id empty if top level document, else passed the id of parent document
+     * 
+     * @return string thumbnail
+     */
+    private function getThumbnailForLogicalStructureInfo(string $id = '') {
+        // Load plugin configuration.
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+        $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+
+        $thumbnail = '';
+
+        while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
+            if (empty($id)) {
+                if (
+                    !empty($this->physicalStructure)
+                    && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])
+                ) {
+                    $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb];
+                    break;
+                }
+            } else {
+                if (!empty($this->physicalStructureInfo[$this->smLinks['l2p'][$id][0]]['files'][$fileGrpThumb])) {
+                    $thumbnail = $this->physicalStructureInfo[$this->smLinks['l2p'][$id][0]]['files'][$fileGrpThumb];
+                    break;
+                }
+            }
+        }
+        return $thumbnail;
     }
 
     /**
