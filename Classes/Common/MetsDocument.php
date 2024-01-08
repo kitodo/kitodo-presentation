@@ -397,12 +397,15 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * Get thumbnail for logical structure info.
-     * 
+     *
+     * @access private
+     *
      * @param string $id empty if top level document, else passed the id of parent document
-     * 
+     *
      * @return ?string thumbnail or null if not found
      */
-    private function getThumbnail(string $id = '') {
+    private function getThumbnail(string $id = '')
+    {
         // Load plugin configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
         $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
@@ -480,98 +483,18 @@ final class MetsDocument extends AbstractDocument
                 continue;
             }
 
-            // Is this metadata format supported?
-            if (!empty($this->formats[$this->mdSec[$dmdId]['type']])) {
-                if (!empty($this->formats[$this->mdSec[$dmdId]['type']]['class'])) {
-                    $class = $this->formats[$this->mdSec[$dmdId]['type']]['class'];
-                    // Get the metadata from class.
-                    if (
-                        class_exists($class)
-                        && ($obj = GeneralUtility::makeInstance($class)) instanceof MetadataInterface
-                    ) {
-                        $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata, GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey)['useExternalApisForMetadata']);
-                    } else {
-                        $this->logger->warning('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->mdSec[$dmdId]['type'] . '"');
-                    }
-                }
-            } else {
-                $this->logger->notice('Unsupported metadata format "' . $this->mdSec[$dmdId]['type'] . '" in ' . $mdSectionType . ' with @ID "' . $dmdId . '"');
-                // Continue searching for supported metadata with next @DMDID.
+            // Continue searching for supported metadata with next @DMDID if the current one is not supported
+            if(!$this->extractMetadataIfTypeSupported($dmdId, $mdSectionType, $metadata)) {
                 continue;
             }
-            // Get the additional metadata from database.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-            // Get hidden records, too.
-            $queryBuilder
-                ->getRestrictions()
-                ->removeByType(HiddenRestriction::class);
-            // Get all metadata with configured xpath and applicable format first.
-            $resultWithFormat = $queryBuilder
-                ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadataformat_joins.xpath AS xpath',
-                    'tx_dlf_metadataformat_joins.xpath_sorting AS xpath_sorting',
-                    'tx_dlf_metadata.is_sortable AS is_sortable',
-                    'tx_dlf_metadata.default_value AS default_value',
-                    'tx_dlf_metadata.format AS format'
-                )
-                ->from('tx_dlf_metadata')
-                ->innerJoin(
-                    'tx_dlf_metadata',
-                    'tx_dlf_metadataformat',
-                    'tx_dlf_metadataformat_joins',
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_metadataformat_joins.parent_id',
-                        'tx_dlf_metadata.uid'
-                    )
-                )
-                ->innerJoin(
-                    'tx_dlf_metadataformat_joins',
-                    'tx_dlf_formats',
-                    'tx_dlf_formats_joins',
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_formats_joins.uid',
-                        'tx_dlf_metadataformat_joins.encoded'
-                    )
-                )
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int)$cPid),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                    $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', (int)$cPid),
-                    $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
-                )
-                ->execute();
-            // Get all metadata without a format, but with a default value next.
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-            // Get hidden records, too.
-            $queryBuilder
-                ->getRestrictions()
-                ->removeByType(HiddenRestriction::class);
-            $resultWithoutFormat = $queryBuilder
-                ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.is_sortable AS is_sortable',
-                    'tx_dlf_metadata.default_value AS default_value',
-                    'tx_dlf_metadata.format AS format'
-                )
-                ->from('tx_dlf_metadata')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int)$cPid),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0),
-                    $queryBuilder->expr()->neq('tx_dlf_metadata.default_value', $queryBuilder->createNamedParameter(''))
-                )
-                ->execute();
-            // Merge both result sets.
-            $allResults = array_merge($resultWithFormat->fetchAllAssociative(), $resultWithoutFormat->fetchAllAssociative());
+
+            $additionalMetadata = $this->getAdditionalMetadataFromDB((int)$cPid, $dmdId);
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
             $this->registerNamespaces($domXPath);
             // OK, now make the XPath queries.
-            foreach ($allResults as $resArray) {
+            foreach ($additionalMetadata as $resArray) {
                 // Set metadata field's value(s).
                 if (
                     $resArray['format'] > 0
@@ -645,6 +568,119 @@ final class MetsDocument extends AbstractDocument
             $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
             return [];
         }
+    }
+
+    /**
+     * Extract metadata if metadata type is supported.
+     *
+     * @access private
+     *
+     * @param string $dmdId descriptive metadata id
+     * @param string $mdSectionType metadata section type
+     * @param array &$metadata
+     * 
+     * @return bool true if extraction successful, false otherwise
+     */
+    private function extractMetadataIfTypeSupported(string $dmdId, string $mdSectionType, array &$metadata)
+    {
+        // Is this metadata format supported?
+        if (!empty($this->formats[$this->mdSec[$dmdId]['type']])) {
+            if (!empty($this->formats[$this->mdSec[$dmdId]['type']]['class'])) {
+                $class = $this->formats[$this->mdSec[$dmdId]['type']]['class'];
+                // Get the metadata from class.
+                if (
+                    class_exists($class)
+                    && ($obj = GeneralUtility::makeInstance($class)) instanceof MetadataInterface
+                ) {
+                    $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata, GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey)['useExternalApisForMetadata']);
+                    return true;
+                } else {
+                    $this->logger->warning('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->mdSec[$dmdId]['type'] . '"');
+                }
+            }
+        } else {
+            $this->logger->notice('Unsupported metadata format "' . $this->mdSec[$dmdId]['type'] . '" in ' . $mdSectionType . ' with @ID "' . $dmdId . '"');
+        }
+        return false;
+    }
+
+    /**
+     * Get additional data from database.
+     *
+     * @access private
+     *
+     * @param int $cPid page id
+     * @param string $dmdId descriptive metadata id
+     * 
+     * @return array additional metadata data queried from database
+     */
+    private function getAdditionalMetadataFromDB(int $cPid, string $dmdId) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_metadata');
+        // Get hidden records, too.
+        $queryBuilder
+            ->getRestrictions()
+            ->removeByType(HiddenRestriction::class);
+        // Get all metadata with configured xpath and applicable format first.
+        $resultWithFormat = $queryBuilder
+            ->select(
+                'tx_dlf_metadata.index_name AS index_name',
+                'tx_dlf_metadataformat_joins.xpath AS xpath',
+                'tx_dlf_metadataformat_joins.xpath_sorting AS xpath_sorting',
+                'tx_dlf_metadata.is_sortable AS is_sortable',
+                'tx_dlf_metadata.default_value AS default_value',
+                'tx_dlf_metadata.format AS format'
+            )
+            ->from('tx_dlf_metadata')
+            ->innerJoin(
+                'tx_dlf_metadata',
+                'tx_dlf_metadataformat',
+                'tx_dlf_metadataformat_joins',
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_metadataformat_joins.parent_id',
+                    'tx_dlf_metadata.uid'
+                )
+            )
+            ->innerJoin(
+                'tx_dlf_metadataformat_joins',
+                'tx_dlf_formats',
+                'tx_dlf_formats_joins',
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_formats_joins.uid',
+                    'tx_dlf_metadataformat_joins.encoded'
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
+                $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
+            )
+            ->execute();
+        // Get all metadata without a format, but with a default value next.
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_metadata');
+            // Get hidden records, too.
+        $queryBuilder
+            ->getRestrictions()
+            ->removeByType(HiddenRestriction::class);
+        $resultWithoutFormat = $queryBuilder
+            ->select(
+                'tx_dlf_metadata.index_name AS index_name',
+                'tx_dlf_metadata.is_sortable AS is_sortable',
+                'tx_dlf_metadata.default_value AS default_value',
+                'tx_dlf_metadata.format AS format'
+            )
+            ->from('tx_dlf_metadata')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0),
+                $queryBuilder->expr()->neq('tx_dlf_metadata.default_value', $queryBuilder->createNamedParameter(''))
+            )
+            ->execute();
+        // Merge both result sets.
+        return array_merge($resultWithFormat->fetchAllAssociative(), $resultWithoutFormat->fetchAllAssociative());
     }
 
     /**
