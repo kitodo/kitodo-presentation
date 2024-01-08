@@ -357,7 +357,7 @@ final class MetsDocument extends AbstractDocument
             && array_key_exists($details['id'], $this->smLinks['l2p'])
         ) {
             // Link logical structure to the first corresponding physical page/track.
-            $details['points'] = max((int)array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true), 1);
+            $details['points'] = max((int) array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true), 1);
             $details['thumbnailId'] = $this->getThumbnail();
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
@@ -366,7 +366,7 @@ final class MetsDocument extends AbstractDocument
             $details['points'] = 1;
             $details['thumbnailId'] = $this->getThumbnail();
         }
-        if (is_null($details['thumbnailId'])) {
+        if ($details['thumbnailId'] === null) {
             unset($details['thumbnailId']);
         }
         // Get the files this structure element is pointing at.
@@ -419,7 +419,7 @@ final class MetsDocument extends AbstractDocument
                 $parentId = $this->smLinks['l2p'][$id][0] ?? null;
                 $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$fileGrpThumb] ?? null;
             }
-        
+
             if (!empty($thumbnail)) {
                 break;
             }
@@ -433,7 +433,7 @@ final class MetsDocument extends AbstractDocument
     public function getMetadata(string $id, int $cPid = 0): array
     {
         // Make sure $cPid is a non-negative integer.
-        $cPid = max((int)$cPid, 0);
+        $cPid = max((int) $cPid, 0);
         // If $cPid is not given, try to get it elsewhere.
         if (
             !$cPid
@@ -484,11 +484,11 @@ final class MetsDocument extends AbstractDocument
             }
 
             // Continue searching for supported metadata with next @DMDID if the current one is not supported
-            if(!$this->extractMetadataIfTypeSupported($dmdId, $mdSectionType, $metadata)) {
+            if (!$this->extractMetadataIfTypeSupported($dmdId, $mdSectionType, $metadata)) {
                 continue;
             }
 
-            $additionalMetadata = $this->getAdditionalMetadataFromDB((int)$cPid, $dmdId);
+            $additionalMetadata = $this->getAdditionalMetadataFromDatabase((int) $cPid, $dmdId);
             // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
             $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
             $domXPath = new \DOMXPath($domNode->ownerDocument);
@@ -578,7 +578,7 @@ final class MetsDocument extends AbstractDocument
      * @param string $dmdId descriptive metadata id
      * @param string $mdSectionType metadata section type
      * @param array &$metadata
-     * 
+     *
      * @return bool true if extraction successful, false otherwise
      */
     private function extractMetadataIfTypeSupported(string $dmdId, string $mdSectionType, array &$metadata)
@@ -588,12 +588,12 @@ final class MetsDocument extends AbstractDocument
             if (!empty($this->formats[$this->mdSec[$dmdId]['type']]['class'])) {
                 $class = $this->formats[$this->mdSec[$dmdId]['type']]['class'];
                 // Get the metadata from class.
-                if (
-                    class_exists($class)
-                    && ($obj = GeneralUtility::makeInstance($class)) instanceof MetadataInterface
-                ) {
-                    $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata, GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey)['useExternalApisForMetadata']);
-                    return true;
+                if (class_exists($class)) {
+                    $obj = GeneralUtility::makeInstance($class);
+                    if ($obj instanceof MetadataInterface) {
+                        $obj->extractMetadata($this->mdSec[$dmdId]['xml'], $metadata, GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey)['useExternalApisForMetadata']);
+                        return true;
+                    }
                 } else {
                     $this->logger->warning('Invalid class/method "' . $class . '->extractMetadata()" for metadata format "' . $this->mdSec[$dmdId]['type'] . '"');
                 }
@@ -611,10 +611,11 @@ final class MetsDocument extends AbstractDocument
      *
      * @param int $cPid page id
      * @param string $dmdId descriptive metadata id
-     * 
+     *
      * @return array additional metadata data queried from database
      */
-    private function getAdditionalMetadataFromDB(int $cPid, string $dmdId) {
+    private function getAdditionalMetadataFromDatabase(int $cPid, string $dmdId)
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_metadata');
         // Get hidden records, too.
@@ -1143,7 +1144,7 @@ final class MetsDocument extends AbstractDocument
                 ->select('tx_dlf_structures.thumbnail AS thumbnail')
                 ->from('tx_dlf_structures')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', (int)$cPid),
+                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', (int) $cPid),
                     $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
                     Helper::whereExpression('tx_dlf_structures')
                 )
