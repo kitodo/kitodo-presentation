@@ -1043,20 +1043,20 @@ final class MetsDocument extends AbstractDocument
                 $fileUse = $this->magicGetFileGrps();
                 // Get the physical sequence's metadata.
                 $physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
-                $physSeq[0] = (string) $physNode[0]['ID'];
-                $this->physicalStructureInfo[$physSeq[0]]['id'] = (string) $physNode[0]['ID'];
-                $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
-                $this->physicalStructureInfo[$physSeq[0]]['admId'] = (isset($physNode[0]['ADMID']) ? (string) $physNode[0]['ADMID'] : '');
-                $this->physicalStructureInfo[$physSeq[0]]['order'] = (isset($physNode[0]['ORDER']) ? (string) $physNode[0]['ORDER'] : '');
-                $this->physicalStructureInfo[$physSeq[0]]['label'] = (isset($physNode[0]['LABEL']) ? (string) $physNode[0]['LABEL'] : '');
-                $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
-                $this->physicalStructureInfo[$physSeq[0]]['type'] = (string) $physNode[0]['TYPE'];
-                $this->physicalStructureInfo[$physSeq[0]]['contentIds'] = (isset($physNode[0]['CONTENTIDS']) ? (string) $physNode[0]['CONTENTIDS'] : '');
+                $id = (string) $physNode[0]['ID'];
+                $this->physicalStructureInfo[$id]['id'] = (string) $physNode[0]['ID'];
+                $this->physicalStructureInfo[$id]['dmdId'] = (isset($physNode[0]['DMDID']) ? (string) $physNode[0]['DMDID'] : '');
+                $this->physicalStructureInfo[$id]['admId'] = (isset($physNode[0]['ADMID']) ? (string) $physNode[0]['ADMID'] : '');
+                $this->physicalStructureInfo[$id]['order'] = (isset($physNode[0]['ORDER']) ? (string) $physNode[0]['ORDER'] : '');
+                $this->physicalStructureInfo[$id]['label'] = (isset($physNode[0]['LABEL']) ? (string) $physNode[0]['LABEL'] : '');
+                $this->physicalStructureInfo[$id]['orderlabel'] = (isset($physNode[0]['ORDERLABEL']) ? (string) $physNode[0]['ORDERLABEL'] : '');
+                $this->physicalStructureInfo[$id]['type'] = (string) $physNode[0]['TYPE'];
+                $this->physicalStructureInfo[$id]['contentIds'] = (isset($physNode[0]['CONTENTIDS']) ? (string) $physNode[0]['CONTENTIDS'] : '');
                 // Get the file representations from fileSec node.
                 foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
                     // Check if file has valid @USE attribute.
                     if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                        $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+                        $this->physicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
                     }
                 }
                 // Build the physical elements' array from the physical structMap node.
@@ -1083,7 +1083,7 @@ final class MetsDocument extends AbstractDocument
                 // Set total number of pages/tracks.
                 $this->numPages = count($elements);
                 // Merge and re-index the array to get numeric indexes.
-                $this->physicalStructure = array_merge($physSeq, $elements);
+                $this->physicalStructure = array_unshift($elements, $id);
             }
             $this->physicalStructureLoaded = true;
         }
