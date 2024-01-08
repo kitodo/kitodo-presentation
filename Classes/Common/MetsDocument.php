@@ -709,7 +709,7 @@ final class MetsDocument extends AbstractDocument
             if ($mdSec) {
                 $dmdIds = (string) $mdSec->attributes()->DMDID;
                 $admIds = (string) $mdSec->attributes()->ADMID;
-            } else if (isset($fileInfo)) {
+            } elseif (isset($fileInfo)) {
                 $dmdIds = $fileInfo['dmdId'];
                 $admIds = $fileInfo['admId'];
             } else {
@@ -783,7 +783,7 @@ final class MetsDocument extends AbstractDocument
         } else {
             if (!empty($location)) {
                 $this->logger->error('No METS part found in document with location "' . $location . '".');
-            } else if (!empty($this->recordId)) {
+            } elseif (!empty($this->recordId)) {
                 $this->logger->error('No METS part found in document with recordId "' . $this->recordId . '".');
             } else {
                 $this->logger->error('No METS part found in current document.');
