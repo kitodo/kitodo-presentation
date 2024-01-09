@@ -172,7 +172,7 @@ class SearchController extends AbstractController
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-            // get all indexed metadata fileds
+            // get all indexed metadata fields
             $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
 
             $solrResults = null;
