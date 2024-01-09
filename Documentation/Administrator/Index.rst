@@ -211,7 +211,7 @@ f. Reindex all documents. This can be done by the kitodo:reindex CLI command wit
 Version 5.0 -> 5.1
 ==================
 
-Version 5.1 supports Solr 9 (9.4+) now, a revised configuration for Solr 8 (8.11.2) and dropped support for Solr 7 and earlier.
+Version 5.1 supports Solr 9 (9.4+) now, a revised configuration for Solr 8 (8.11.2) is included and support for Solr 7 and earlier is dropped.
 
 Steps to Upgrade to Solr 9
 ----------------
