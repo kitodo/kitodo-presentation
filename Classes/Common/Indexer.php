@@ -462,6 +462,7 @@ class Indexer
             $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
+            $solrDoc->setField('location', $document->getLocation());
 
             $solrDoc->setField('fulltext', $fullText);
             if (is_array($doc->metadataArray[$doc->toplevelId])) {

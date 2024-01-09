@@ -86,20 +86,20 @@ if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr'] = [];
 }
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['backend'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\SimpleFileBackend';
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\FileBackend';
 }
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'] = 87600; // 87600 seconds = 1 day
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'] = 86400; // 86400 seconds = 1 day
 }
 // Use Caching Framework for XML file caching
 if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc'])) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc'] = [];
 }
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['backend'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\SimpleFileBackend';
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\FileBackend';
 }
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['options']['defaultLifeTime'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['options']['defaultLifeTime'] = 87600; // 87600 seconds = 1 day
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['options']['defaultLifeTime'] = 86400; // 86400 seconds = 1 day
 }
 // Add new renderType for TCA fields.
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
@@ -121,7 +121,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     = \Kitodo\Dlf\Updates\FileLocationUpdater::class;
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Search',
     [
         \Kitodo\Dlf\Controller\SearchController::class => 'main, search'
@@ -133,7 +133,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Feeds',
     [
         \Kitodo\Dlf\Controller\FeedsController::class => 'main',
@@ -145,7 +145,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Statistics',
     [
         \Kitodo\Dlf\Controller\StatisticsController::class => 'main',
@@ -157,7 +157,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'TableOfContents',
     [
         \Kitodo\Dlf\Controller\TableOfContentsController::class => 'main',
@@ -169,7 +169,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'PageGrid',
     [
         \Kitodo\Dlf\Controller\PageGridController::class => 'main',
@@ -181,7 +181,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Navigation',
     [
         \Kitodo\Dlf\Controller\NavigationController::class => 'main, pageSelect',
@@ -193,7 +193,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'AudioPlayer',
     [
         \Kitodo\Dlf\Controller\AudioPlayerController::class => 'main',
@@ -205,7 +205,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Calendar',
     [
         \Kitodo\Dlf\Controller\CalendarController::class => 'main, years, calendar',
@@ -217,7 +217,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'PageView',
     [
         \Kitodo\Dlf\Controller\PageViewController::class => 'main',
@@ -229,7 +229,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Basket',
     [
         \Kitodo\Dlf\Controller\BasketController::class => 'main, add, basket',
@@ -241,7 +241,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Toolbox',
     [
         \Kitodo\Dlf\Controller\ToolboxController::class => 'main',
@@ -253,7 +253,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'OaiPmh',
     [
         \Kitodo\Dlf\Controller\OaiPmhController::class => 'main',
@@ -265,7 +265,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'ListView',
     [
         \Kitodo\Dlf\Controller\ListViewController::class => 'main',
@@ -277,7 +277,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Collection',
     [
         \Kitodo\Dlf\Controller\CollectionController::class => 'list, show, showSorted'
@@ -288,7 +288,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Metadata',
     [
         \Kitodo\Dlf\Controller\MetadataController::class => 'main',
@@ -299,7 +299,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'View3D',
     [
         \Kitodo\Dlf\Controller\View3DController::class => 'main',

@@ -22,6 +22,7 @@ use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
@@ -434,6 +435,19 @@ class NewTenantController extends AbstractController
         $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->countByPid($this->pid);
 
         $this->view->assign('recordInfos', $recordInfos);
+    }
+
+    /**
+     * Error function - there is nothing to do at the moment.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    // @phpstan-ignore-next-line
+    public function errorAction(): void
+    {
+        // TODO: Call parent::errorAction() when dropping support for TYPO3 v10.
     }
 
     /**

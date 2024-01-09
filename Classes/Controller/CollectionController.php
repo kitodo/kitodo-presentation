@@ -11,8 +11,10 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\SolrPaginator;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -99,52 +101,7 @@ class CollectionController extends AbstractController
             $this->forward('show', null, null, ['collection' => array_pop($collections)]);
         }
 
-        $processedCollections = [];
-
-        // Process results.
-        foreach ($collections as $collection) {
-            $solr_query = '';
-            if ($collection->getIndexSearch() != '') {
-                $solr_query .= '(' . $collection->getIndexSearch() . ')';
-            } else {
-                $solr_query .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
-            }
-
-            // virtual collection might yield documents, that are not toplevel true or partof anything
-            if ($collection->getIndexSearch()) {
-                $params['query'] = $solr_query;
-            } else {
-                $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
-            }
-            $partOfNothing = $solr->searchRaw($params);
-
-            $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
-            $partOfSomething = $solr->searchRaw($params);
-            // Titles are all documents that are "root" elements i.e. partof == 0
-            $collectionInfo['titles'] = [];
-            foreach ($partOfNothing as $doc) {
-                $collectionInfo['titles'][$doc->uid] = $doc->uid;
-            }
-            // Volumes are documents that are both
-            // a) "leaf" elements i.e. partof != 0
-            // b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
-            $collectionInfo['volumes'] = $collectionInfo['titles'];
-            foreach ($partOfSomething as $doc) {
-                $collectionInfo['volumes'][$doc->uid] = $doc->uid;
-                // If a document is referenced via partof, it’s not a volume anymore.
-                unset($collectionInfo['volumes'][$doc->partof]);
-            }
-
-            // Generate random but unique array key taking priority into account.
-            do {
-                //TODO: Offset 'priority' does not exist on array{titles: array<int|string, mixed>, volumes: array<int|string, mixed>}.
-                // @phpstan-ignore-next-line
-                $_key = ($collectionInfo['priority'] * 1000) + mt_rand(0, 1000);
-            } while (!empty($processedCollections[$_key]));
-
-            $processedCollections[$_key]['collection'] = $collection;
-            $processedCollections[$_key]['info'] = $collectionInfo;
-        }
+        $processedCollections = $this->processCollections($collections, $solr);
 
         // Randomize sorting?
         if (!empty($this->settings['randomize'])) {
@@ -198,7 +155,20 @@ class CollectionController extends AbstractController
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         // get all documents of given collection
-        $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+        $solrResults = null;
+        if (is_array($searchParams) && !empty($searchParams)) {
+            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+
+            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
+            if (empty($itemsPerPage)) {
+                $itemsPerPage = 25;
+            }
+            $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
+            $simplePagination = new SimplePagination($solrPaginator);
+
+            $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
+            $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
+        }
 
         $this->view->assign('viewData', $this->viewData);
         $this->view->assign('documents', $solrResults);
@@ -229,5 +199,72 @@ class CollectionController extends AbstractController
         // output is done by show action
         $this->forward('show', null, null, ['searchParameter' => $searchParams, 'collection' => $collection]);
 
+    }
+
+    /**
+     * Processes collections for displaying in the frontend.
+     *
+     * @access private
+     *
+     * @param array $collections to be processed
+     * @param Solr $solr for query
+     *
+     * @return array
+     */
+    private function processCollections(array $collections, Solr $solr): array
+    {
+        $processedCollections = [];
+
+        // Process results.
+        foreach ($collections as $collection) {
+            $solr_query = '';
+            if ($collection->getIndexSearch() != '') {
+                $solr_query .= '(' . $collection->getIndexSearch() . ')';
+            } else {
+                $solr_query .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
+            }
+
+            // virtual collection might yield documents, that are not toplevel true or partof anything
+            if ($collection->getIndexSearch()) {
+                $params['query'] = $solr_query;
+            } else {
+                $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
+            }
+            $partOfNothing = $solr->searchRaw($params);
+
+            $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
+            $partOfSomething = $solr->searchRaw($params);
+
+            $collectionInfo = [];
+            // Titles are all documents that are "root" elements i.e. partof == 0
+            $collectionInfo['titles'] = [];
+            foreach ($partOfNothing as $doc) {
+                $collectionInfo['titles'][$doc->uid] = $doc->uid;
+            }
+            // Volumes are documents that are both
+            // a) "leaf" elements i.e. partof != 0
+            // b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
+            $collectionInfo['volumes'] = $collectionInfo['titles'];
+            foreach ($partOfSomething as $doc) {
+                $collectionInfo['volumes'][$doc->uid] = $doc->uid;
+                // If a document is referenced via partof, it’s not a volume anymore.
+                unset($collectionInfo['volumes'][$doc->partof]);
+            }
+
+            // Generate random but unique array key taking amount of documents into account.
+            do {
+                $key = (count($collection['priority']) * 1000) + random_int(0, 1000);
+            } while (!empty($processedCollections[$key]));
+
+            $processedCollections[$key]['collection'] = $collection;
+            $processedCollections[$key]['info'] = $collectionInfo;
+        }
+
+        // Randomize sorting?
+        if (!empty($this->settings['randomize'])) {
+            ksort($processedCollections, SORT_NUMERIC);
+        }
+
+        return $processedCollections;
     }
 }

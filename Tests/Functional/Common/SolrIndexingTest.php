@@ -152,6 +152,16 @@ class SolrIndexingTest extends FunctionalTestCase
         self::assertGreaterThan($metadataSearch->getNumFound(), $fulltextSearch->getNumFound());
     }
 
+    /**
+     * @test
+     */
+    public function canGetIndexFieldName()
+    {
+        $this->assertEquals('title_usi', Indexer::getIndexFieldName('title', 20000));
+        $this->assertEquals('year_uuu', Indexer::getIndexFieldName('year', 20000));
+        $this->assertEquals('', Indexer::getIndexFieldName('title'));
+    }
+
     protected function createSolrCore(): object
     {
         $coreName = Solr::createCore();

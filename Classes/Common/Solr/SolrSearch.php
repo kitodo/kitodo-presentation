@@ -585,24 +585,33 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                         if ($this->searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $childrenOf[$doc['uid']] ?? [];
-                            $childrenRows = !empty($this->settings['childrenRows']) ? intval($this->settings['childrenRows']) : 100;
+                        
                             if (!empty($children)) {
-                                $metadataOf = $this->fetchToplevelMetadataFromSolr([
-                                    'query' => 'partof:' . $doc['uid'],
-                                    'start' => 0,
-                                    'rows' => $childrenRows,
-                                ]);
-                                foreach ($children as $docChild) {
-                                    // We need only a few fields from the children, but we need them as array.
-                                    $childDocument = [
-                                        'thumbnail' => $docChild['thumbnail'],
-                                        'title' => $docChild['title'],
-                                        'structure' => $docChild['structure'],
-                                        'metsOrderlabel' => $docChild['metsOrderlabel'],
-                                        'uid' => $docChild['uid'],
-                                        'metadata' => $metadataOf[$docChild['uid']],
-                                    ];
-                                    $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
+                                $batchSize = 100;
+                                $totalChildren = count($children);
+                        
+                                for ($start = 0; $start < $totalChildren; $start += $batchSize) {
+                                    $batch = array_slice($children, $start, $batchSize, true);
+                        
+                                    // Fetch metadata for the current batch
+                                    $metadataOf = $this->fetchToplevelMetadataFromSolr([
+                                        'query' => 'partof:' . $doc['uid'],
+                                        'start' => $start,
+                                        'rows' => min($batchSize, $totalChildren - $start),
+                                    ]);
+                        
+                                    foreach ($batch as $docChild) {
+                                        // We need only a few fields from the children, but we need them as an array.
+                                        $childDocument = [
+                                            'thumbnail' => $docChild['thumbnail'],
+                                            'title' => $docChild['title'],
+                                            'structure' => $docChild['structure'],
+                                            'metsOrderlabel' => $docChild['metsOrderlabel'],
+                                            'uid' => $docChild['uid'],
+                                            'metadata' => $metadataOf[$docChild['uid']],
+                                        ];
+                                        $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
+                                    }
                                 }
                             }
                         }
