@@ -157,7 +157,7 @@ class CollectionController extends AbstractController
         // get all documents of given collection
         $solrResults = null;
         if (is_array($searchParams) && !empty($searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+            $solrResults = $this->documentRepository->findSolrByCollection([$collection], $this->settings, $searchParams, $listedMetadata);
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
             if (empty($itemsPerPage)) {
@@ -252,14 +252,8 @@ class CollectionController extends AbstractController
             }
 
             // Generate random but unique array key taking amount of documents into account.
-            $key = 0;
             do {
-                if ($collection instanceof Collection) {
-                    $key = ($collection->getPriority() * 1000) + random_int(0, 1000);
-                }
-                if (is_array($collection)) {
-                    $key = ($collection['priority'] * 1000) + random_int(0, 1000);
-                }
+                $key = ($collection->getPriority() * 1000) + random_int(0, 1000);
             } while (!empty($processedCollections[$key]));
 
             $processedCollections[$key]['collection'] = $collection;
