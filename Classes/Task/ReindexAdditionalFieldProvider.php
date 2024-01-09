@@ -32,7 +32,7 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
 
         if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-            $taskInfo['dryRun'] = $task->getDryRun();
+            $taskInfo['dryRun'] = $task->isDryRun();
             $taskInfo['coll'] = $task->getColl();
             $taskInfo['pid'] = $task->getPid();
             $taskInfo['solr'] = $task->getSolr();
@@ -92,7 +92,7 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
     /**
      * Generates HTML options for collections
      *
-     * @param int $coll Selected collections
+     * @param array $coll Selected collections
      * @param int $pid UID of storage page
      * 
      * @return array HTML of selectbox options
@@ -126,7 +126,7 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
             ->from('tx_dlf_collections')
             ->where(
             $queryBuilder->expr()
-                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
+            ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
             ->execute();
 
         while ($record = $result->fetchAssociative()) {

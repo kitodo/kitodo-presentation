@@ -34,7 +34,7 @@ class IndexTask extends BaseTask
         $inputArray['-d'] = $this->doc;
         $inputArray['-p'] = $this->pid;
         $inputArray['-s'] = $this->solr;
-        if (! empty($this->owner)) {
+        if (!empty($this->owner)) {
             $inputArray['-o'] = $this->owner;
         }
 

@@ -34,13 +34,13 @@ class HarvestTask extends BaseTask
         $inputArray['-l'] = $this->lib;
         $inputArray['-p'] = $this->pid;
         $inputArray['-s'] = $this->solr;
-        if (! empty($this->from)) {
+        if (!empty($this->from)) {
             $inputArray['--from'] = $this->from;
         }
-        if (! empty($this->until)) {
+        if (!empty($this->until)) {
             $inputArray['--until'] = $this->until;
         }
-        if (! empty($this->set)) {
+        if (!empty($this->set)) {
             $inputArray['--set'] = $this->set;
         }
 
@@ -57,6 +57,6 @@ class HarvestTask extends BaseTask
         if (!Environment::isCli()) {
             $this->outputFlashMessages($outputInterface->fetch(), $return ? FlashMessage::ERROR : FlashMessage::OK);
         }
-        return ! $return;
+        return !$return;
     }
 }

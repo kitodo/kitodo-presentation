@@ -30,7 +30,7 @@ class IndexAdditionalFieldProvider extends BaseAdditionalFieldProvider
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
 
         if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-            $taskInfo['dryRun'] = $task->getDryRun();
+            $taskInfo['dryRun'] = $task->isDryRun();
             $taskInfo['doc'] = $task->getDoc();
             $taskInfo['pid'] = $task->getPid();
             $taskInfo['solr'] = $task->getSolr();

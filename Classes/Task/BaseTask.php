@@ -99,7 +99,7 @@ class BaseTask extends AbstractTask
      *
      * @return bool
      */
-    public function getDryRun(): bool
+    public function isDryRun(): bool
     {
         return $this->dryRun;
     }
@@ -312,8 +312,12 @@ class BaseTask extends AbstractTask
                 continue;
             }
 
-            Helper::addMessage($message, '', $severity == FlashMessage::ERROR ? FlashMessage::ERROR : FlashMessage::OK,
-                true, 'core.template.flashMessages');
+            Helper::addMessage(
+                $message,
+                '',
+                $severity == FlashMessage::ERROR ? FlashMessage::ERROR : FlashMessage::OK,
+                true,
+                'core.template.flashMessages');
         }
     }
 }

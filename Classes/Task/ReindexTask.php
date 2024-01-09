@@ -56,6 +56,6 @@ class ReindexTask extends BaseTask
         if (!Environment::isCli()) {
             $this->outputFlashMessages($outputInterface->fetch(), $return ? FlashMessage::ERROR : FlashMessage::OK);
         }
-        return ! $return;
+        return !$return;
     }
 }

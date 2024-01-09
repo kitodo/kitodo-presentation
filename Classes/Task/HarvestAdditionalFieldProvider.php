@@ -32,7 +32,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
 
         if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-            $taskInfo['dryRun'] = $task->getDryRun();
+            $taskInfo['dryRun'] = $task->isDryRun();
             $taskInfo['lib'] = $task->getLib();
             $taskInfo['pid'] = $task->getPid();
             $taskInfo['solr'] = $task->getSolr();
@@ -64,7 +64,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
         foreach ($allLibraries as $label => $uid) {
             $options[] = '<option value="' . $uid . '" ' . ($taskInfo['lib'] == $uid ? 'selected' : '') . ' >' . $label . '</option>';
         }
-        ;
+
         $fieldHtml = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '">' . implode("\n", $options) . '</select>';
         $additionalFields[$fieldId] = [
             'code' => $fieldHtml,

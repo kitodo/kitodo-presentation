@@ -32,7 +32,8 @@ use TYPO3\CMS\Core\Database\Connection;
 class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
-    {}
+    {
+    }
 
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
     {
@@ -41,16 +42,16 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_tasks.xlf');
 
         if (isset($submittedData['doc']) && empty($submittedData['doc'])) {
-            Helper::addMessage(
+                Helper::addMessage(
                 Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                Helper::getLanguageService()->getLL('additionalFields.error'), 
+                Helper::getLanguageService()->getLL('additionalFields.error'),
                 FlashMessage::ERROR,
                 true,
                 'core.template.flashMessages');
             $fieldsValid = false;
         }
 
-        if ((isset($submittedData['lib']) && intval($submittedData['lib']) <= 0)) {
+        if ((isset($submittedData['lib']) && (int) $submittedData['lib'] <= 0)) {
             if($submittedData['uid']) {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
@@ -70,7 +71,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             }
         }
 
-        if ((isset($submittedData['pid']) && intval($submittedData['pid']) <= 0) || !isset($submittedData['pid'])) {
+        if ((isset($submittedData['pid']) && (int) $submittedData['pid'] <= 0) || !isset($submittedData['pid'])) {
             Helper::addMessage(
                 Helper::getLanguageService()->getLL('additionalFields.pid') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
                 Helper::getLanguageService()->getLL('additionalFields.error'),
@@ -80,7 +81,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             $fieldsValid = false;
         }
 
-        if ((isset($submittedData['solr']) && intval($submittedData['solr']) <= 0) || !isset($submittedData['solr'])) {
+        if ((isset($submittedData['solr']) && (int) $submittedData['solr'] <= 0) || !isset($submittedData['solr'])) {
             if($submittedData['uid']) {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
@@ -130,7 +131,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             $task->setDoc(htmlspecialchars($submittedData['doc']));
         }
         if (isset($submittedData['lib'])) {
-            $task->setLib(intval($submittedData['lib']));
+            $task->setLib((int) $submittedData['lib']);
         }
         if (isset($submittedData['coll']) && is_array($submittedData['coll'])) {
             $task->setColl($submittedData['coll']);
@@ -138,10 +139,10 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             $task->setColl([]);
         }
         if (isset($submittedData['pid'])) {
-            $task->setPid(intval($submittedData['pid']));
+            $task->setPid((int) $submittedData['pid']);
         }
         if (isset($submittedData['solr'])) {
-            $task->setSolr(intval($submittedData['solr']));
+            $task->setSolr((int) $submittedData['solr']);
         }
         if (isset($submittedData['owner'])) {
             $task->setOwner(htmlspecialchars($submittedData['owner']));
@@ -165,7 +166,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @param bool $dryRun
      *
-     * @return string HTML for dry run checkbox
+     * @return array additional field dry run checkbox
      */
     protected function getDryRunField(bool $dryRun): array
     {
@@ -188,7 +189,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      * @param int $solr UID of the selected Solr core
      * @param int $pid UID of the selected storage page
      *
-     * @return string HTML for solr dropdown
+     * @return array additional field solr dropdown
      */
     protected function getSolrField(int $solr, int $pid): array
     {
@@ -217,7 +218,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @param int $pid UID of the selected storage page
      *
-     * @return string HTML code for storage page dropdownn
+     * @return array additional field storage page dropdown
      */
     protected function getPidField(int $pid): array
     {
@@ -248,9 +249,9 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @access protected
      *
-     * @param string $ownner registered owner
+     * @param string $owner registered owner
      *
-     * @return string HTML for owner text field
+     * @return array additional field owner text field
      */
     protected function getOwnerField(string $owner): array
     {
