@@ -678,8 +678,8 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             if ($this->indexedMetadata) {
                 foreach ($this->indexedMetadata as $metadata) {
                     if ($metadata->getIndexIndexed()) {
-                        $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . ($metadata->getIndexIndexed() ? 'i' : 'u');
-                        $queryFields .= $listMetadataRecord.'^'.$metadata->getIndexBoost().' ';
+                        $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
+                        $queryFields .= $listMetadataRecord . '^' . $metadata->getIndexBoost() . ' ';
                     }
                 }
             }
