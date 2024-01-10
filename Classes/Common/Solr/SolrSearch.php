@@ -39,8 +39,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access private
      * @var array|null
      */
-    // TODO: confusing naming, here is passed array of collections and it is used as array in prepare()
-    private $collection;
+    private $collections;
 
     /**
      * @access private
@@ -84,17 +83,17 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access public
      *
      * @param DocumentRepository $documentRepository
-     * @param array|null $collection
+     * @param array $collection can contain 0, 1 or many Collection objects
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
      *
      * @return void
      */
-    public function __construct(DocumentRepository $documentRepository, $collection, array $settings, array $searchParams, QueryResult $listedMetadata = null)
+    public function __construct(DocumentRepository $documentRepository, array $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null)
     {
         $this->documentRepository = $documentRepository;
-        $this->collection = $collection;
+        $this->collections = $collections;
         $this->settings = $settings;
         $this->searchParams = $searchParams;
         $this->listedMetadata = $listedMetadata;
@@ -433,16 +432,15 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         }
 
         // if collections are given, we prepare the collection query string
-        // TODO: this->collection should not be actually called collections?
-        if ($this->collection) {
+        if (!empty($this->collections)) {
             $collectionsQueryString = '';
             $virtualCollectionsQueryString = '';
-            foreach ($this->collection as $collectionEntry) {
+            foreach ($this->collections as $collection) {
                 // check for virtual collections query string
-                if ($collectionEntry->getIndexSearch()) {
-                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
+                if ($collection->getIndexSearch()) {
+                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR ('. $collection->getIndexSearch() . ')' ;
                 } else {
-                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
+                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collection->getIndexName() . '"' : ' OR "' . $collection->getIndexName() . '"';
                 }
             }
 
