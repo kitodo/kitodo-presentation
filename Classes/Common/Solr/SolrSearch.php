@@ -37,7 +37,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
-     * @var array|null
+     * @var array|QueryResultInterface
      */
     private $collections;
 
@@ -83,14 +83,14 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access public
      *
      * @param DocumentRepository $documentRepository
-     * @param array $collection can contain 0, 1 or many Collection objects
+     * @param array|QueryResultInterface $collections can contain 0, 1 or many Collection objects
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
      *
      * @return void
      */
-    public function __construct(DocumentRepository $documentRepository, array $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null)
+    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null)
     {
         $this->documentRepository = $documentRepository;
         $this->collections = $collections;
@@ -433,7 +433,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // if collections are given, we prepare the collection query string
         if (!empty($this->collections)) {
-            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery();
+            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery($query);
         }
 
         // Set some query parameters.
@@ -741,16 +741,18 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access private
      *
+     * @param string $query
+     *
      * @return string
      */
-    private function getCollectionFilterQuery() : string
+    private function getCollectionFilterQuery(string $query) : string
     {
         $collectionsQueryString = '';
         $virtualCollectionsQueryString = '';
         foreach ($this->collections as $collection) {
             // check for virtual collections query string
             if ($collection->getIndexSearch()) {
-                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR ('. $collection->getIndexSearch() . ')' ;
+                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR (' . $collection->getIndexSearch() . ')';
             } else {
                 $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collection->getIndexName() . '"' : ' OR "' . $collection->getIndexName() . '"';
             }

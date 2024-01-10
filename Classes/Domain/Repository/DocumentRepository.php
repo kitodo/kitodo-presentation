@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Document repository.
@@ -631,7 +632,7 @@ class DocumentRepository extends Repository
      */
     private function findSolr($collections, $settings, $searchParams, $listedMetadata = null): SolrSearch
     {
-    // set settings global inside this repository
+        // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
 
