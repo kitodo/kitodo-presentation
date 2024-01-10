@@ -433,33 +433,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // if collections are given, we prepare the collection query string
         if (!empty($this->collections)) {
-            $collectionsQueryString = '';
-            $virtualCollectionsQueryString = '';
-            foreach ($this->collections as $collection) {
-                // check for virtual collections query string
-                if ($collection->getIndexSearch()) {
-                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR ('. $collection->getIndexSearch() . ')' ;
-                } else {
-                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collection->getIndexName() . '"' : ' OR "' . $collection->getIndexName() . '"';
-                }
-            }
-
-            // distinguish between simple collection browsing and actual searching within the collection(s)
-            if (!empty($collectionsQueryString)) {
-                if (empty($query)) {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
-                } else {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
-                }
-            }
-
-            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
-            if (!empty($virtualCollectionsQueryString)) {
-                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
-            }
-
-            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
-            $params['filterquery'][]['query'] = implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery();
         }
 
         // Set some query parameters.
@@ -774,6 +748,44 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $resultSet = $entry;
         }
         return $resultSet;
+    }
+
+    /**
+     * Get collection filter query for search.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function getCollectionFilterQuery() : string
+    {
+        $collectionsQueryString = '';
+        $virtualCollectionsQueryString = '';
+        foreach ($this->collections as $collection) {
+            // check for virtual collections query string
+            if ($collection->getIndexSearch()) {
+                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR ('. $collection->getIndexSearch() . ')' ;
+            } else {
+                $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collection->getIndexName() . '"' : ' OR "' . $collection->getIndexName() . '"';
+            }
+        }
+
+        // distinguish between simple collection browsing and actual searching within the collection(s)
+        if (!empty($collectionsQueryString)) {
+            if (empty($query)) {
+                $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
+            } else {
+                $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
+            }
+        }
+
+        // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separately
+        if (!empty($virtualCollectionsQueryString)) {
+            $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
+        }
+
+        // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
+        return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
     }
 
     /**
