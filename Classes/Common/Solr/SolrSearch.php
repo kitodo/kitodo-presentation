@@ -439,21 +439,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // Set some query parameters.
         $params['query'] = !empty($query) ? $query : '*';
 
-        // order the results as given or by title as default
-        if (!empty($this->searchParams['orderBy'])) {
-            $querySort = [
-                $this->searchParams['orderBy'] => $this->searchParams['order'],
-            ];
-        } else {
-            $querySort = [
-                'score' => 'desc',
-                'year_sorting' => 'asc',
-                'title_sorting' => 'asc',
-                'volume' => 'asc'
-            ];
-        }
-
-        $params['sort'] = $querySort;
+        $params['sort'] = $this->getSort();
         $params['listMetadataRecords'] = [];
 
         // Restrict the fields to the required ones.
@@ -786,6 +772,29 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
         return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+    }
+
+    /**
+     * Get sort order of the results as given or by title as default.
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function getSort() : array
+    {
+        if (!empty($this->searchParams['orderBy'])) {
+            return [
+                $this->searchParams['orderBy'] => $this->searchParams['order'],
+            ];
+        }
+
+        return [
+            'score' => 'desc',
+            'year_sorting' => 'asc',
+            'title_sorting' => 'asc',
+            'volume' => 'asc'
+        ];
     }
 
     /**
