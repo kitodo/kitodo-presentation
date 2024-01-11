@@ -544,12 +544,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                     $documents[$doc['uid']] = $allDocuments[$doc['uid']];
                 }
                 if ($documents[$doc['uid']]) {
-                    // translate language code if applicable
-                    if ($doc['metadata']['language']) {
-                        foreach ($doc['metadata']['language'] as $indexName => $language) {
-                            $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
-                        }
-                    }
+                    $this->translateLanguageCode($doc);
                     if ($doc['toplevel'] === false) {
                         // this maybe a chapter, article, ..., year
                         if ($doc['type'] === 'year') {
@@ -660,12 +655,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $result = $this->searchSolr($params, true);
 
         foreach ($result['documents'] as $doc) {
-            // translate language code if applicable
-            if($doc['metadata']['language']) {
-                foreach($doc['metadata']['language'] as $indexName => $language) {
-                    $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
-                }
-            }
+            $this->translateLanguageCode($doc);
             $metadataArray[$doc['uid']] = $doc['metadata'];
         }
 
@@ -811,5 +801,23 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         }
 
         return $document;
+    }
+
+    /**
+     * Translate language code if applicable.
+     *
+     * @access private
+     *
+     * @param &$doc document array
+     *
+     * @return void
+     */
+    private function translateLanguageCode(&$doc): void
+    {
+        if ($doc['metadata']['language']) {
+            foreach($doc['metadata']['language'] as $indexName => $language) {
+                $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
+            }
+        }
     }
 }
