@@ -197,7 +197,7 @@ class Indexer
     public static function getIndexFieldName(string $indexName, int $pid = 0): string
     {
         // Sanitize input.
-        $pid = max(intval($pid), 0);
+        $pid = max((int) $pid, 0);
         if (!$pid) {
             Helper::log('Invalid PID ' . $pid . ' for metadata configuration', LOG_SEVERITY_ERROR);
             return '';
@@ -244,7 +244,7 @@ class Indexer
                 )
                 ->from('tx_dlf_metadata')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
                     Helper::whereExpression('tx_dlf_metadata')
                 )
                 ->execute();
