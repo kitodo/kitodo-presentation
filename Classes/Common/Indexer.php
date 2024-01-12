@@ -326,20 +326,7 @@ class Indexer
             $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
             // verify date formatting
             if(strtotime($metadata['date'][0])) {
-                // do not alter dates YYYY or YYYY-MM or YYYY-MM-DD
-                if (
-                    preg_match("/^[\d]{4}$/", $metadata['date'][0])
-                    || preg_match("/^[\d]{4}-[\d]{2}$/", $metadata['date'][0])
-                    || preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $metadata['date'][0])
-                ) {
-                    $solrDoc->setField('date', $metadata['date'][0]);
-                // change date YYYYMMDD to YYYY-MM-DD
-                } elseif (preg_match("/^[\d]{8}$/", $metadata['date'][0])){
-                    $solrDoc->setField('date', date("Y-m-d", strtotime($metadata['date'][0])));
-                // convert any datetime to proper ISO extended datetime format and timezone for SOLR
-                } elseif (preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*$/", $metadata['date'][0])) {
-                    $solrDoc->setField('date', date('Y-m-d\TH:i:s\Z', strtotime($metadata['date'][0])));
-                }
+                $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
             }
             $solrDoc->setField('record_id', $metadata['record_id'][0]);
             $solrDoc->setField('purl', $metadata['purl'][0]);
@@ -551,6 +538,37 @@ class Indexer
         $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->toplevelId]['collection']);
         $solrDoc->setField('fulltext', $fullText);
         return $solrDoc;
+    }
+
+    /**
+     * Get formatted date without alteration.
+     * Possible formats: YYYY or YYYY-MM or YYYY-MM-DD.
+     *
+     * @static
+     *
+     * @access private
+     *
+     * @param string $date
+     *
+     * @return string formatted date YYYY or YYYY-MM or YYYY-MM-DD or empty string
+     */
+    private static function getFormattedDate($date): string
+    {
+        if (
+            preg_match("/^[\d]{4}$/", $date)
+            || preg_match("/^[\d]{4}-[\d]{2}$/", $date)
+            || preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $date)
+        ) {
+            return $date;
+        // change date YYYYMMDD to YYYY-MM-DD
+        } elseif (preg_match("/^[\d]{8}$/", $date)) {
+            return date("Y-m-d", strtotime($date));
+        // convert any datetime to proper ISO extended datetime format and timezone for SOLR
+        } elseif (preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*$/", $date)) {
+            return date('Y-m-d\TH:i:s\Z', strtotime($date));
+        }
+        // date doesn't match any standard
+        return '';
     }
 
     /**
