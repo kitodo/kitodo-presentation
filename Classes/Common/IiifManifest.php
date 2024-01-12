@@ -267,13 +267,12 @@ final class IiifManifest extends AbstractDocument
             }
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $iiifId = $this->iiif->getId();
-            $physSeq[0] = $iiifId;
-            $this->physicalStructureInfo[$physSeq[0]]['id'] = $iiifId;
-            $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = $iiifId;
-            $this->physicalStructureInfo[$physSeq[0]]['label'] = $this->iiif->getLabelForDisplay();
-            $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = $this->iiif->getLabelForDisplay();
-            $this->physicalStructureInfo[$physSeq[0]]['type'] = 'physSequence';
-            $this->physicalStructureInfo[$physSeq[0]]['contentIds'] = null;
+            $this->physicalStructureInfo[$iiifId]['id'] = $iiifId;
+            $this->physicalStructureInfo[$iiifId]['dmdId'] = $iiifId;
+            $this->physicalStructureInfo[$iiifId]['label'] = $this->iiif->getLabelForDisplay();
+            $this->physicalStructureInfo[$iiifId]['orderlabel'] = $this->iiif->getLabelForDisplay();
+            $this->physicalStructureInfo[$iiifId]['type'] = 'physSequence';
+            $this->physicalStructureInfo[$iiifId]['contentIds'] = null;
             $fileUseDownload = $this->getUseGroups('fileGrpDownload');
             $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
             $fileUseThumbs = $this->getUseGroups('fileGrpThumbs');
@@ -281,7 +280,7 @@ final class IiifManifest extends AbstractDocument
             if (!empty($fileUseDownload)) {
                 $docPdfRendering = $this->iiif->getRenderingUrlsForFormat('application/pdf');
                 if (!empty($docPdfRendering)) {
-                    $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
+                    $this->physicalStructureInfo[$iiifId]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
                 }
             }
             if (!empty($fileUseFulltext)) {
@@ -291,7 +290,7 @@ final class IiifManifest extends AbstractDocument
                 }
                 if (!empty($iiifAlto)) {
                     $this->mimeTypes[$iiifAlto[0]] = 'application/alto+xml';
-                    $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseFulltext[0]] = $iiifAlto[0];
+                    $this->physicalStructureInfo[$iiifId]['files'][$fileUseFulltext[0]] = $iiifAlto[0];
                     $this->hasFulltext = true;
                     $this->hasFulltextSet = true;
                 }
@@ -305,9 +304,9 @@ final class IiifManifest extends AbstractDocument
                     // put thumbnails in thumbnail filegroup
                     if (
                         !empty($thumbnailUrl)
-                        && empty($this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseThumbs[0]])
+                        && empty($this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]])
                     ) {
-                        $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
+                        $this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
                     }
                     // populate structural metadata info
                     $elements[$canvasOrder] = $canvas->getId();
@@ -361,7 +360,8 @@ final class IiifManifest extends AbstractDocument
                 }
                 $this->numPages = $canvasOrder;
                 // Merge and re-index the array to get nice numeric indexes.
-                $this->physicalStructure = array_merge($physSeq, $elements);
+                array_unshift($elements, $iiifId);
+                $this->physicalStructure = $elements;
             }
             $this->physicalStructureLoaded = true;
         }
