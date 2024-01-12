@@ -85,7 +85,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         }
 
         if ((isset($submittedData['solr']) && (int) $submittedData['solr'] <= 0) || !isset($submittedData['solr'])) {
-            if($submittedData['uid']) {
+            if ($submittedData['uid']) {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
                     Helper::getLanguageService()->getLL('additionalFields.error'),
@@ -94,8 +94,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                     'core.template.flashMessages'
                 );
                 $fieldsValid = false;
-            }
-            else {
+            } else {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
                     Helper::getLanguageService()->getLL('additionalFields.warning'),
@@ -108,7 +107,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         if (((isset($submittedData['coll']) && isset($submittedData['all'])) || (!isset($submittedData['coll']) && !isset($submittedData['all'])))
             && !isset($submittedData['doc']) && !isset($submittedData['lib'])) {
-            if($submittedData['uid']) {
+            if ($submittedData['uid']) {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
                     Helper::getLanguageService()->getLL('additionalFields.error'),
@@ -117,8 +116,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                     'core.template.flashMessages'
                 );
                 $fieldsValid = false;
-            }
-            else {
+            } else {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
                     Helper::getLanguageService()->getLL('additionalFields.warning'),
@@ -277,9 +275,9 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      * Fetches all Solr cores on given page.
      *
      * @access protected
-     *        
+     *
      * @param int $pid UID of storage page
-     *            
+     *
      * @return array Array of valid Solr cores
      */
     private function getSolrCores(int $pid): array
@@ -290,8 +288,9 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         $result = $queryBuilder->select('uid', 'label')
             ->from('tx_dlf_solrcores')
             ->where(
-            $queryBuilder->expr()
-            ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
+                $queryBuilder->expr()
+                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
+            )
             ->execute();
 
         while ($record = $result->fetchAssociative()) {

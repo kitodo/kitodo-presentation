@@ -111,9 +111,9 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
      * Fetches all collections on given storage page.
      *
      * @access protected
-     *        
+     *
      * @param int $pid The UID of the storage page
-     *            
+     *
      * @return array Array of collections
      */
     private function getCollections(int $pid): array
@@ -125,7 +125,8 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
             ->from('tx_dlf_collections')
             ->where(
                 $queryBuilder->expr()
-                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
+                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
+            )
             ->execute();
 
         while ($record = $result->fetchAssociative()) {

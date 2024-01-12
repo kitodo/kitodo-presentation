@@ -93,7 +93,8 @@ class BaseTask extends AbstractTask
     protected string $set = '';
 
     public function execute()
-    {}
+    {
+    }
 
     /**
      *
@@ -297,10 +298,10 @@ class BaseTask extends AbstractTask
      * Generates and adds flash messages based on a string seperated by PHP_EOL.
      *
      * @access protected
-     *        
+     *
      * @param string $message Messages seperated by PHP_EOL
      * @param int $severity
-     *            
+     *
      * @return void
      */
     protected function outputFlashMessages(string $message, int $severity): void
