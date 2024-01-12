@@ -512,13 +512,9 @@ final class IiifManifest extends AbstractDocument
         $this->magicGetSmLinks();
         // Load physical structure.
         $this->magicGetPhysicalStructure();
-        $canvases = [];
-        if ($resource instanceof ManifestInterface) {
+
+        if ($resource instanceof ManifestInterface || $resource instanceof RangeInterface) {
             $startCanvas = $resource->getStartCanvasOrFirstCanvas();
-            $canvases = $resource->getDefaultCanvases();
-        } elseif ($resource instanceof RangeInterface) {
-            $startCanvas = $resource->getStartCanvasOrFirstCanvas();
-            $canvases = $resource->getAllCanvases();
         }
         if (isset($startCanvas)) {
             $details['pagination'] = $startCanvas->getLabel();
