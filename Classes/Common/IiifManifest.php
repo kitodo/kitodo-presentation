@@ -536,7 +536,7 @@ final class IiifManifest extends AbstractDocument
             if ($resource instanceof ManifestInterface && $resource->getRootRanges() != null) {
                 $rangesToAdd = [];
                 $rootRanges = [];
-                if (sizeof($this->iiif->getRootRanges()) == 1 && $this->iiif->getRootRanges()[0]->isTopRange()) {
+                if (count($this->iiif->getRootRanges()) == 1 && $this->iiif->getRootRanges()[0]->isTopRange()) {
                     $rangesToAdd = $this->iiif->getRootRanges()[0]->getMemberRangesAndRanges();
                 } else {
                     $rangesToAdd = $this->iiif->getRootRanges();
