@@ -289,7 +289,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             ->from('tx_dlf_solrcores')
             ->where(
                 $queryBuilder->expr()
-                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
+                    ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
             )
             ->execute();
 

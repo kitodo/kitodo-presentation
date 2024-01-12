@@ -125,7 +125,7 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
             ->from('tx_dlf_collections')
             ->where(
                 $queryBuilder->expr()
-                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
+                    ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
             )
             ->execute();
 
