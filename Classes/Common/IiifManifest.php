@@ -412,7 +412,7 @@ final class IiifManifest extends AbstractDocument
                 // @phpstan-ignore-next-line
                 return (!empty($resource->getImageAnnotations()) && $resource->getImageAnnotations()->getSingleService() != null) ? $resource->getImageAnnotations()[0]->getSingleService()->getId() : $id;
             } elseif ($resource instanceof ContentResourceInterface) {
-                return $resource->getSingleService() != null && $resource->getSingleService() instanceof Service ? $resource->getSingleService()->getId() : $id;
+                return $resource->getSingleService() instanceof Service ? $resource->getSingleService()->getId() : $id;
             } elseif ($resource instanceof AbstractImageService) {
                 return $resource->getId();
             } elseif ($resource instanceof AnnotationContainerInterface) {
@@ -585,7 +585,7 @@ final class IiifManifest extends AbstractDocument
         $iiifResource = $this->iiif->getContainedResourceById($id);
         $result = [];
         if ($iiifResource != null) {
-            if ($iiifResource->getLabel() != null && $iiifResource->getLabel() != "") {
+            if (!empty($iiifResource->getLabel())) {
                 $result['label'] = $iiifResource->getLabel();
             }
             if (!empty($iiifResource->getMetadata())) {
@@ -857,11 +857,9 @@ final class IiifManifest extends AbstractDocument
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
             $resource = IiifHelper::loadIiifResource($fileResource);
-            if ($resource != null) {
-                if ($resource instanceof ManifestInterface) {
-                    $this->iiif = $resource;
-                    return true;
-                }
+            if ($resource instanceof ManifestInterface) {
+                $this->iiif = $resource;
+                return true;
             }
         }
         $this->logger->error('Could not load IIIF manifest from "' . $location . '"');
@@ -971,7 +969,7 @@ final class IiifManifest extends AbstractDocument
         IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
         IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
         $resource = IiifHelper::loadIiifResource($this->asJson);
-        if ($resource != null && $resource instanceof ManifestInterface) {
+        if ($resource instanceof ManifestInterface) {
             $this->asJson = '';
             $this->iiif = $resource;
             $this->init('');
