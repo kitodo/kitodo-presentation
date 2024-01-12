@@ -101,7 +101,8 @@ class Indexer
             $success = true;
             Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Handle multi-volume documents.
-            if ($parentId = $document->getPartof()) {
+            $parentId = $document->getPartof();
+            if ($parentId) {
                 // get parent document
                 $parent = $documentRepository->findByUid($parentId);
                 if ($parent) {
