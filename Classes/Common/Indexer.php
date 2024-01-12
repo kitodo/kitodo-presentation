@@ -150,45 +150,31 @@ class Indexer
 
                 if (!(Environment::isCli())) {
                     if ($success) {
-                        Helper::addMessage(
+                        self::addMessage(
                             sprintf(Helper::getLanguageService()->getLL('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
-                            Helper::getLanguageService()->getLL('flash.done'),
-                            FlashMessage::OK,
-                            true,
-                            'core.template.flashMessages'
+                            'flash.done',
+                            FlashMessage::OK
                         );
                     } else {
-                        Helper::addMessage(
-                            sprintf(Helper::getLanguageService()->getLL('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()),
-                            Helper::getLanguageService()->getLL('flash.error'),
-                            FlashMessage::ERROR,
-                            true,
-                            'core.template.flashMessages'
-                        );
+                        self::addErrorMessage(
+                            sprintf(Helper::getLanguageService()->getLL('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()));
                     }
                 }
                 return $success;
             } catch (\Exception $e) {
                 if (!(Environment::isCli())) {
-                    Helper::addMessage(
-                        Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
-                        Helper::getLanguageService()->getLL('flash.error'),
-                        FlashMessage::ERROR,
-                        true,
-                        'core.template.flashMessages'
-                    );
+                    self::addErrorMessage(
+                        Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()));
                 }
                 Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
                 return false;
             }
         } else {
             if (!(Environment::isCli())) {
-                Helper::addMessage(
+                self::addMessage(
                     Helper::getLanguageService()->getLL('flash.solrNoConnection'),
-                    Helper::getLanguageService()->getLL('flash.warning'),
-                    FlashMessage::WARNING,
-                    true,
-                    'core.template.flashMessages'
+                    'flash.warning',
+                    FlashMessage::WARNING
                 );
             }
             Helper::log('Could not connect to Apache Solr server', LOG_SEVERITY_ERROR);
@@ -403,13 +389,8 @@ class Indexer
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
                 if (!(Environment::isCli())) {
-                    Helper::addMessage(
-                        Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()),
-                        Helper::getLanguageService()->getLL('flash.error'),
-                        FlashMessage::ERROR,
-                        true,
-                        'core.template.flashMessages'
-                    );
+                    self::addErrorMessage(
+                        Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()));
                 }
                 Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
                 return false;
@@ -504,13 +485,8 @@ class Indexer
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
                 if (!(Environment::isCli())) {
-                    Helper::addMessage(
-                        Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()),
-                        Helper::getLanguageService()->getLL('flash.error'),
-                        FlashMessage::ERROR,
-                        true,
-                        'core.template.flashMessages'
-                    );
+                    self::addErrorMessage(
+                        Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()));
                 }
                 Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
                 return false;
@@ -597,6 +573,50 @@ class Indexer
             }
         }
         return $authors;
+    }
+
+    /**
+     * Add error message only with message content.
+     *
+     * @static
+     *
+     * @access private
+     * 
+     * @param string $message
+     *
+     * @return void
+     */
+    private static function addErrorMessage(string $message): void
+    {
+        self::addMessage(
+            $message,
+            'flash.error',
+            FlashMessage::ERROR
+        );
+    }
+
+    /**
+     * Add message only with changeable parameters.
+     *
+     * @static
+     *
+     * @access private
+     * 
+     * @param string $message
+     * @param string $type
+     * @param int $status
+     *
+     * @return void
+     */
+    private static function addMessage(string $message, string $type, int $status): void
+    {
+        Helper::addMessage(
+            $message,
+            Helper::getLanguageService()->getLL($type),
+            $status,
+            true,
+            'core.template.flashMessages'
+        );
     }
 
     /**
