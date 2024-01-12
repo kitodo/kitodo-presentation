@@ -335,26 +335,7 @@ class Indexer
             if (is_object($coordinates)) {
                 $solrDoc->setField('geom', json_encode($coordinates->features[0]));
             }
-            $autocomplete = [];
-            foreach ($metadata as $index_name => $data) {
-                if (
-                    !empty($data)
-                    && substr($index_name, -8) !== '_sorting'
-                ) {
-                    $solrDoc->setField(self::getIndexFieldName($index_name, $document->getPid()), $data, self::$fields['fieldboost'][$index_name]);
-                    if (in_array($index_name, self::$fields['sortables'])) {
-                        // Add sortable fields to index.
-                        $solrDoc->setField($index_name . '_sorting', $metadata[$index_name . '_sorting'][0]);
-                    }
-                    if (in_array($index_name, self::$fields['facets'])) {
-                        // Add facets to index.
-                        $solrDoc->setField($index_name . '_faceting', $data);
-                    }
-                    if (in_array($index_name, self::$fields['autocomplete'])) {
-                        $autocomplete = array_merge($autocomplete, $data);
-                    }
-                }
-            }
+            $autocomplete = self::processMetadata($document, $metadata, $solrDoc);
             // Add autocomplete values to index.
             if (!empty($autocomplete)) {
                 $solrDoc->setField('autocomplete', $autocomplete);
@@ -427,30 +408,7 @@ class Indexer
 
             $solrDoc->setField('fulltext', $fullText);
             if (is_array($doc->metadataArray[$doc->toplevelId])) {
-                // Add faceting information to physical sub-elements if applicable.
-                foreach ($doc->metadataArray[$doc->toplevelId] as $index_name => $data) {
-                    if (
-                        !empty($data)
-                        && substr($index_name, -8) !== '_sorting'
-                    ) {
-
-                        if (in_array($index_name, self::$fields['facets'])) {
-                            // Remove appended "valueURI" from authors' names for indexing.
-                            if ($index_name == 'author') {
-                                $data = self::removeAppendsFromAuthor($data);
-                            }
-                            // Add facets to index.
-                            $solrDoc->setField($index_name . '_faceting', $data);
-                        }
-                    }
-                    // Add sorting information to physical sub-elements if applicable.
-                    if (
-                        !empty($data)
-                        && substr($index_name, -8) == '_sorting'
-                    ) {
-                        $solrDoc->setField($index_name , $doc->metadataArray[$doc->toplevelId][$index_name]);
-                    }
-                }
+                self::addFaceting($doc, $solrDoc);
             }
             // Add collection information to physical sub-elements if applicable.
             if (
@@ -496,6 +454,83 @@ class Indexer
             return true;
         }
         return false;
+    }
+
+    /**
+     * Process metadata: add facets, sortable fields and create autocomplete array.
+     * 
+     * @static
+     * 
+     * @access private
+     * 
+     * @param Document $document
+     * @param array $metadata
+     * @param DocumentInterface &$solrDoc
+     * 
+     * @return array empty array or autocomplete values
+     */
+    private static function processMetadata($document, $metadata, &$solrDoc): array
+    {
+        $autocomplete = [];
+        foreach ($metadata as $indexName => $data) {
+            if (
+                !empty($data)
+                && substr($indexName, -8) !== '_sorting'
+            ) {
+                $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data, self::$fields['fieldboost'][$indexName]);
+                if (in_array($indexName, self::$fields['sortables'])) {
+                    // Add sortable fields to index.
+                    $solrDoc->setField($indexName . '_sorting', $metadata[$indexName . '_sorting'][0]);
+                    }
+                if (in_array($indexName, self::$fields['facets'])) {
+                    // Add facets to index.
+                    $solrDoc->setField($indexName . '_faceting', $data);
+                }
+                if (in_array($indexName, self::$fields['autocomplete'])) {
+                    $autocomplete = array_merge($autocomplete, $data);
+                }
+            }
+        }
+        return $autocomplete;
+    }
+
+    /**
+     * Add faceting information to physical sub-elements if applicable.
+     * 
+     * @static
+     * 
+     * @access private
+     * 
+     * @param AbstractDocument $doc
+     * @param DocumentInterface &$solrDoc
+     * 
+     * @return void
+     */
+    private static function addFaceting($doc, &$solrDoc): void
+    {
+        foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
+            if (
+                !empty($data)
+                && substr($indexName, -8) !== '_sorting'
+            ) {
+
+                if (in_array($indexName, self::$fields['facets'])) {
+                    // Remove appended "valueURI" from authors' names for indexing.
+                    if ($indexName == 'author') {
+                        $data = self::removeAppendsFromAuthor($data);
+                    }
+                    // Add facets to index.
+                    $solrDoc->setField($indexName . '_faceting', $data);
+                }
+            }
+            // Add sorting information to physical sub-elements if applicable.
+            if (
+                !empty($data)
+                && substr($indexName, -8) == '_sorting'
+            ) {
+                $solrDoc->setField($indexName , $doc->metadataArray[$doc->toplevelId][$indexName]);
+            }
+        }
     }
 
     /**
