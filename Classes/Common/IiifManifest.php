@@ -800,19 +800,7 @@ final class IiifManifest extends AbstractDocument
                     // Get annotation containers
                     $annotationContainerIds = $this->physicalStructureInfo[$id]['annotationContainers'];
                     if (!empty($annotationContainerIds)) {
-                        $annotationTexts = [];
-                        foreach ($annotationContainerIds as $annotationListId) {
-                            $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
-                            /* @var $annotationContainer \Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface */
-                            foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
-                                if (
-                                    $annotation->getTargetResourceId() == $iiifResource->getId() &&
-                                    $annotation->getBody() != null && $annotation->getBody()->getChars() != null
-                                ) {
-                                    $annotationTexts[] = $annotation->getBody()->getChars();
-                                }
-                            }
-                        }
+                        $annotationTexts = $this->getAnnotationTexts($annotationContainerIds, $iiifResource->getId());
                         $rawText .= implode(' ', $annotationTexts);
                     }
                 }
@@ -952,6 +940,34 @@ final class IiifManifest extends AbstractDocument
             }
         }
         return $this->toplevelId;
+    }
+
+    /**
+     * Get annotation texts.
+     *
+     * @access private
+     *
+     * @param array $annotationContainerIds
+     * @param string $iiifId
+     *
+     * @return array
+     */
+    private function getAnnotationTexts($annotationContainerIds, $iiifId): array
+    {
+        $annotationTexts = [];
+        foreach ($annotationContainerIds as $annotationListId) {
+            $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
+            /* @var $annotationContainer \Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface */
+            foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
+                if (
+                    $annotation->getTargetResourceId() == $iiifId &&
+                    $annotation->getBody() != null && $annotation->getBody()->getChars() != null
+                ) {
+                    $annotationTexts[] = $annotation->getBody()->getChars();
+                }
+            }
+        }
+        return $annotationTexts;
     }
 
     /**
