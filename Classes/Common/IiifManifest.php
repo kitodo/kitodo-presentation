@@ -901,7 +901,8 @@ final class IiifManifest extends AbstractDocument
                 $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
                 if ($extConf['indexAnnotations'] == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
-                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
+                        $textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING);
+                        if ($textAnnotations != null) {
                             foreach ($textAnnotations as $annotation) {
                                 if (
                                     $annotation->getBody() != null &&
