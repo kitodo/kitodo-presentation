@@ -195,7 +195,7 @@ final class MetsDocument extends AbstractDocument
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
             $service = IiifHelper::loadIiifResource($file['location']);
-            if ($service !== null && $service instanceof AbstractImageService) {
+            if ($service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
         } elseif ($file['mimeType'] === 'application/vnd.netfpx') {
