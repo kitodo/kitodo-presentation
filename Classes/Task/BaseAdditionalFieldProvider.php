@@ -43,31 +43,33 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         if (isset($submittedData['doc']) && empty($submittedData['doc'])) {
                 Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                Helper::getLanguageService()->getLL('additionalFields.error'),
-                FlashMessage::ERROR,
-                true,
-                'core.template.flashMessages');
+                    Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                    Helper::getLanguageService()->getLL('additionalFields.error'),
+                    FlashMessage::ERROR,
+                    true,
+                    'core.template.flashMessages'
+                );
             $fieldsValid = false;
         }
 
         if ((isset($submittedData['lib']) && (int) $submittedData['lib'] <= 0)) {
-            if($submittedData['uid']) {
+            if ($submittedData['uid']) {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
                     Helper::getLanguageService()->getLL('additionalFields.error'),
                     FlashMessage::ERROR,
                     true,
-                    'core.template.flashMessages');
+                    'core.template.flashMessages'
+                );
                 $fieldsValid = false;
-            }
-            else {
+            } else {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
                     Helper::getLanguageService()->getLL('additionalFields.warning'),
                     FlashMessage::WARNING,
                     true,
-                    'core.template.flashMessages');
+                    'core.template.flashMessages'
+                );
             }
         }
 
@@ -77,7 +79,8 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 Helper::getLanguageService()->getLL('additionalFields.error'),
                 FlashMessage::ERROR,
                 true,
-                'core.template.flashMessages');
+                'core.template.flashMessages'
+            );
             $fieldsValid = false;
         }
 
@@ -88,7 +91,8 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                     Helper::getLanguageService()->getLL('additionalFields.error'),
                     FlashMessage::ERROR,
                     true,
-                    'core.template.flashMessages');
+                    'core.template.flashMessages'
+                );
                 $fieldsValid = false;
             }
             else {
@@ -97,7 +101,8 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                     Helper::getLanguageService()->getLL('additionalFields.warning'),
                     FlashMessage::WARNING,
                     true,
-                    'core.template.flashMessages');
+                    'core.template.flashMessages'
+                );
             }
         }
 
@@ -109,7 +114,8 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                     Helper::getLanguageService()->getLL('additionalFields.error'),
                     FlashMessage::ERROR,
                     true,
-                    'core.template.flashMessages');
+                    'core.template.flashMessages'
+                );
                 $fieldsValid = false;
             }
             else {
@@ -118,7 +124,8 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                     Helper::getLanguageService()->getLL('additionalFields.warning'),
                     FlashMessage::WARNING,
                     true,
-                    'core.template.flashMessages');
+                    'core.template.flashMessages'
+                );
             }
         }
         return $fieldsValid;
@@ -284,7 +291,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             ->from('tx_dlf_solrcores')
             ->where(
             $queryBuilder->expr()
-                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
+            ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
             ->execute();
 
         while ($record = $result->fetchAssociative()) {

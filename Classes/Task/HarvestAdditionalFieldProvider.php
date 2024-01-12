@@ -119,9 +119,9 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
      * Fetches all libraries from given page.
      *
      * @access private
-     *        
+     *
      * @param int $pid The UID of the storage page
-     *            
+     *
      * @return array Array of libraries
      */
     private function getLibraries(int $pid): array
@@ -132,7 +132,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
         $result = $queryBuilder->select('uid', 'label')
             ->from('tx_dlf_libraries')
             ->where(
-            $queryBuilder->expr()
+                $queryBuilder->expr()
                 ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
             ->execute();
 

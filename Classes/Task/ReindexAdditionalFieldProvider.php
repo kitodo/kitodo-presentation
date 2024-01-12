@@ -37,7 +37,7 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
             $taskInfo['pid'] = $task->getPid();
             $taskInfo['solr'] = $task->getSolr();
             $taskInfo['owner'] = $task->getOwner();
-            $taskInfo['all'] = $task->getAll();
+            $taskInfo['all'] = $task->isAll();
         } else {
             $taskInfo['dryRun'] = false;
             $taskInfo['coll'] = [];
@@ -94,7 +94,7 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
      *
      * @param array $coll Selected collections
      * @param int $pid UID of storage page
-     * 
+     *
      * @return array HTML of selectbox options
      */
     private function getCollOptions(array $coll, int $pid): array
@@ -118,15 +118,14 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
      */
     private function getCollections(int $pid): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(
-            'tx_dlf_collections');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_collections');
 
         $collections = [];
         $result = $queryBuilder->select('uid', 'label')
             ->from('tx_dlf_collections')
             ->where(
-            $queryBuilder->expr()
-            ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
+                $queryBuilder->expr()
+                ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT)))
             ->execute();
 
         while ($record = $result->fetchAssociative()) {

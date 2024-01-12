@@ -225,7 +225,7 @@ class BaseTask extends AbstractTask
      *
      * @return bool
      */
-    public function getAll(): bool
+    public function isAll(): bool
     {
         return $this->all;
     }
@@ -317,7 +317,8 @@ class BaseTask extends AbstractTask
                 '',
                 $severity == FlashMessage::ERROR ? FlashMessage::ERROR : FlashMessage::OK,
                 true,
-                'core.template.flashMessages');
+                'core.template.flashMessages'
+            );
         }
     }
 }

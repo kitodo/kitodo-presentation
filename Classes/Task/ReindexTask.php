@@ -36,7 +36,7 @@ class ReindexTask extends BaseTask
         }
         $inputArray['-p'] = $this->pid;
         $inputArray['-s'] = $this->solr;
-        if (! empty($this->owner)) {
+        if (!empty($this->owner)) {
             $inputArray['-o'] = $this->owner;
         }
         if ($this->all) {
