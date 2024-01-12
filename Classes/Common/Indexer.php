@@ -162,11 +162,7 @@ class Indexer
                 }
                 return $success;
             } catch (\Exception $e) {
-                if (!(Environment::isCli())) {
-                    self::addErrorMessage(
-                        Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()));
-                }
-                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
+                self::handleException($e->getMessage());
                 return false;
             }
         } else {
@@ -375,11 +371,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if (!(Environment::isCli())) {
-                    self::addErrorMessage(
-                        Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()));
-                }
-                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
+                self::handleException($e->getMessage());
                 return false;
             }
         }
@@ -471,11 +463,7 @@ class Indexer
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
             } catch (\Exception $e) {
-                if (!(Environment::isCli())) {
-                    self::addErrorMessage(
-                        Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($e->getMessage()));
-                }
-                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
+                self::handleException($e->getMessage());
                 return false;
             }
         }
@@ -594,12 +582,32 @@ class Indexer
     }
 
     /**
+     * Handle exception.
+     *
+     * @static
+     *
+     * @access private
+     *
+     * @param string $errorMessage
+     *
+     * @return void
+     */
+    private static function handleException(string $errorMessage): void
+    {
+        if (!(Environment::isCli())) {
+            self::addErrorMessage(
+                Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
+        }
+        Helper::log('Apache Solr threw exception: "' . $errorMessage . '"', LOG_SEVERITY_ERROR);
+    }
+
+    /**
      * Add error message only with message content.
      *
      * @static
      *
      * @access private
-     * 
+     *
      * @param string $message
      *
      * @return void
@@ -619,7 +627,7 @@ class Indexer
      * @static
      *
      * @access private
-     * 
+     *
      * @param string $message
      * @param string $type
      * @param int $status
