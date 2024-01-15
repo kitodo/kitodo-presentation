@@ -127,38 +127,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $doc = null;
 
             if (MathUtility::canBeInterpretedAsInteger($documentId)) {
-                // find document from repository by uid
-                $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
-                if ($this->document) {
-                    $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
-                } else {
-                    $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
-                }
-            } else if (GeneralUtility::isValidUrl($documentId)) {
-
-                $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
-
-                if ($doc !== null) {
-                    if ($doc->recordId) {
-                        // find document from repository by recordId
-                        $docFromRepository = $this->documentRepository->findOneByRecordId($doc->recordId);
-                        if ($docFromRepository !== null) {
-                            $this->document = $docFromRepository;
-                        } else {
-                            // create new dummy Document object
-                            $this->document = GeneralUtility::makeInstance(Document::class);
-                        }
-                    }
-
-                    // Make sure configuration PID is set when applicable
-                    if ($doc->cPid == 0) {
-                        $doc->cPid = max(intval($this->settings['storagePid']), 0);
-                    }
-
-                    $this->document->setLocation($documentId);
-                } else {
-                    $this->logger->error('Invalid location given "' . $documentId . '" for document loading');
-                }
+                $doc = $this->getDocumentByUid($documentId);
+            } elseif (GeneralUtility::isValidUrl($documentId)) {
+                $doc = $this->getDocumentByUrl($documentId);
             }
 
             if ($this->document !== null && $doc !== null) {
@@ -423,5 +394,66 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             'pages' => range($firstPage, $lastPage),
             'pagesG' => $pages
         ];
+    }
+
+    /**
+     * Get document from repository by uid.
+     *
+     * @access private
+     *
+     * @param int $documentId The document's UID
+     *
+     * @return AbstractDocument
+     */
+    private function getDocumentByUid(int $documentId)
+    {
+        $doc = null;
+        $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
+
+        if ($this->document) {
+            $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
+        } else {
+            $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
+        }
+
+        return $doc;
+    }
+
+    /**
+     * Get document by URL.
+     *
+     * @access private
+     *
+     * @param int $documentId The document's URL
+     *
+     * @return AbstractDocument
+     */
+    private function getDocumentByUrl(string $documentId)
+    {
+        $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
+
+        if ($doc !== null) {
+            if ($doc->recordId) {
+                // find document from repository by recordId
+                $docFromRepository = $this->documentRepository->findOneByRecordId($doc->recordId);
+                if ($docFromRepository !== null) {
+                    $this->document = $docFromRepository;
+                } else {
+                    // create new dummy Document object
+                    $this->document = GeneralUtility::makeInstance(Document::class);
+                }
+            }
+
+            // Make sure configuration PID is set when applicable
+            if ($doc->cPid == 0) {
+                $doc->cPid = max((int) $this->settings['storagePid'], 0);
+            }
+
+            $this->document->setLocation($documentId);
+        } else {
+            $this->logger->error('Invalid location given "' . $documentId . '" for document loading');
+        }
+
+        return $doc;
     }
 }
