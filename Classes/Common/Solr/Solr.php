@@ -416,7 +416,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string|null The core name of the current query endpoint or null if core admin endpoint
      */
-    protected function _getCore(): ?string
+    protected function magicGetCore(): ?string
     {
         return $this->core;
     }
@@ -428,7 +428,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int The max number of results
      */
-    protected function _getLimit(): int
+    protected function magicGetLimit(): int
     {
         return $this->limit;
     }
@@ -440,7 +440,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int Total number of hits for last search
      */
-    protected function _getNumberOfHits(): int
+    protected function magicGetNumberOfHits(): int
     {
         return $this->numberOfHits;
     }
@@ -452,7 +452,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return bool Is the search instantiated successfully?
      */
-    protected function _getReady(): bool
+    protected function magicGetReady(): bool
     {
         return $this->ready;
     }
@@ -464,7 +464,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return Client Apache Solr service object
      */
-    protected function _getService(): Client
+    protected function magicGetService(): Client
     {
         return $this->service;
     }
@@ -478,7 +478,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function _setCPid(int $value): void
+    protected function magicSetCPid(int $value): void
     {
         $this->cPid = max($value, 0);
     }
@@ -492,7 +492,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function _setLimit(int $value): void
+    protected function magicSetLimit(int $value): void
     {
         $this->limit = max($value, 0);
     }
@@ -506,7 +506,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function _setParams(array $value): void
+    protected function magicSetParams(array $value): void
     {
         $this->params = $value;
     }
@@ -522,7 +522,7 @@ class Solr implements LoggerAwareInterface
      */
     public function __get(string $var)
     {
-        $method = '_get' . ucfirst($var);
+        $method = 'magicGet' . ucfirst($var);
         if (
             !property_exists($this, $var)
             || !method_exists($this, $method)
@@ -560,7 +560,7 @@ class Solr implements LoggerAwareInterface
      */
     public function __set(string $var, $value): void
     {
-        $method = '_set' . ucfirst($var);
+        $method = 'magicSet' . ucfirst($var);
         if (
             !property_exists($this, $var)
             || !method_exists($this, $method)
