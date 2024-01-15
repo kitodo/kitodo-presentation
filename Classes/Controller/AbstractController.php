@@ -429,7 +429,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access private
      *
-     * @param int $documentId The document's URL
+     * @param string $documentId The document's URL
      *
      * @return AbstractDocument
      */
