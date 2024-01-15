@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @property-read int $numberOfHits this holds the number of hits for last search
  * @property-write array $params this holds the additional query parameters
  * @property-read bool $ready flag if the Solr service is instantiated successfully
- * @property-read \Solarium\Client $service this holds the Solr service object
+ * @property-read Client $service this holds the Solr service object
  */
 class Solr implements LoggerAwareInterface
 {
@@ -364,11 +364,7 @@ class Solr implements LoggerAwareInterface
             if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
-            // Add "/solr" API endpoint when using Solarium <5.x
-                // Todo: Remove when dropping support for Solarium 4.x
-            if (!\Solarium\Client::checkMinimal('5.0.0')) {
-                $config['path'] .= 'solr/';
-            }
+
             // Set connection timeout lower than PHP's max_execution_time.
             $maxExecutionTime = (int) ini_get('max_execution_time') ? : 30;
             $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $maxExecutionTime, 10);
