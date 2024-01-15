@@ -390,7 +390,8 @@ class Solr implements LoggerAwareInterface
         $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true));
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
         $resultSet = [];
-        if (($entry = $cache->get($cacheIdentifier)) === false) {
+        $entry = $cache->get($cacheIdentifier);
+        if ($entry === false) {
             $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
             $result = $this->service->select($selectQuery);
             foreach ($result as $doc) {
