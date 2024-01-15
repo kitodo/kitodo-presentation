@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  *
  * @property array $config this holds the Solr configuration
  * @property-read string|null $core this holds the core name for the current instance
- * @property-write int $cPid this holds the PID for the configuration
+ * @property-write int $configPid this holds the PID for the configuration
  * @property int $limit this holds the max results
  * @property-read int $numberOfHits this holds the number of hits for last search
  * @property-write array $params this holds the additional query parameters
@@ -61,7 +61,7 @@ class Solr implements LoggerAwareInterface
      * @access protected
      * @var int This holds the PID for the configuration
      */
-    protected int $cPid = 0;
+    protected int $configPid = 0;
 
     /**
      * @access public
@@ -467,7 +467,7 @@ class Solr implements LoggerAwareInterface
     }
 
     /**
-     * This sets $this->cPid via __set()
+     * This sets $this->configPid via __set()
      *
      * @access protected
      *
@@ -475,9 +475,9 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function magicSetCPid(int $value): void
+    protected function magicSetConfigPid(int $value): void
     {
-        $this->cPid = max($value, 0);
+        $this->configPid = max($value, 0);
     }
 
     /**
