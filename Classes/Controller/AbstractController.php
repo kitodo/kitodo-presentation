@@ -100,7 +100,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         $this->viewData = [
             'pageUid' => $GLOBALS['TSFE']->id,
-            'uniqueId'=> uniqid(),
+            'uniqueId' => uniqid(),
             'requestData' => $this->requestData
         ];
     }
