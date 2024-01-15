@@ -370,8 +370,8 @@ class Solr implements LoggerAwareInterface
                 $config['path'] .= 'solr/';
             }
             // Set connection timeout lower than PHP's max_execution_time.
-            $max_execution_time = (int) ini_get('max_execution_time') ? : 30;
-            $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
+            $maxExecutionTime = (int) ini_get('max_execution_time') ? : 30;
+            $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $maxExecutionTime, 10);
             $this->config = $config;
         }
     }
