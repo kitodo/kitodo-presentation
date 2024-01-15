@@ -206,7 +206,7 @@ class Solr implements LoggerAwareInterface
                 ->from('tx_dlf_metadata')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
                     $queryBuilder->expr()->orX(
                         $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
@@ -327,7 +327,7 @@ class Solr implements LoggerAwareInterface
      */
     public static function getNextCoreNumber(int $number = 0): int
     {
-        $number = max(intval($number), 0);
+        $number = max($number, 0);
         // Check if core already exists.
         $solr = self::getInstance('dlfCore' . $number);
         if (!$solr->ready) {
@@ -370,7 +370,7 @@ class Solr implements LoggerAwareInterface
                 $config['path'] .= 'solr/';
             }
             // Set connection timeout lower than PHP's max_execution_time.
-            $max_execution_time = intval(ini_get('max_execution_time')) ? : 30;
+            $max_execution_time = (int) ini_get('max_execution_time') ? : 30;
             $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
             $this->config = $config;
         }
@@ -480,7 +480,7 @@ class Solr implements LoggerAwareInterface
      */
     protected function _setCPid(int $value): void
     {
-        $this->cPid = max(intval($value), 0);
+        $this->cPid = max($value, 0);
     }
 
     /**
@@ -494,7 +494,7 @@ class Solr implements LoggerAwareInterface
      */
     protected function _setLimit(int $value): void
     {
-        $this->limit = max(intval($value), 0);
+        $this->limit = max($value, 0);
     }
 
     /**
