@@ -162,15 +162,18 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function configureProxyUrl(string &$url): void {
+    protected function configureProxyUrl(string &$url): void
+    {
         $this->uriBuilder->reset()
             ->setTargetPageUid($GLOBALS['TSFE']->id)
             ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
-            ->setArguments([
-                'eID' => 'tx_dlf_pageview_proxy',
-                'url' => $url,
-                'uHash' => GeneralUtility::hmac($url, 'PageViewProxy')
-                ])
+            ->setArguments(
+                [
+                    'eID' => 'tx_dlf_pageview_proxy',
+                    'url' => $url,
+                    'uHash' => GeneralUtility::hmac($url, 'PageViewProxy')
+                ]
+            )
             ->build();
     }
 
@@ -266,7 +269,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function setPage(): void {
+    protected function setPage(): void
+    {
         if (!empty($this->requestData['logicalPage'])) {
             $this->requestData['page'] = $this->document->getCurrentDocument()->getPhysicalPage($this->requestData['logicalPage']);
             // The logical page parameter should not appear again
@@ -283,7 +287,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
-    protected function setDefaultPage(): void {
+    protected function setDefaultPage(): void
+    {
         // Set default values if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
         if (
