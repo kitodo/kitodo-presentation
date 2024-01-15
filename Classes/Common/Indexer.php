@@ -156,8 +156,7 @@ class Indexer
                             FlashMessage::OK
                         );
                     } else {
-                        self::addErrorMessage(
-                            sprintf(Helper::getLanguageService()->getLL('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()));
+                        self::addErrorMessage(sprintf(Helper::getLanguageService()->getLL('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()));
                     }
                 }
                 return $success;
@@ -458,15 +457,15 @@ class Indexer
 
     /**
      * Process metadata: add facets, sortable fields and create autocomplete array.
-     * 
+     *
      * @static
-     * 
+     *
      * @access private
-     * 
+     *
      * @param Document $document
      * @param array $metadata
      * @param DocumentInterface &$solrDoc
-     * 
+     *
      * @return array empty array or autocomplete values
      */
     private static function processMetadata($document, $metadata, &$solrDoc): array
@@ -481,7 +480,7 @@ class Indexer
                 if (in_array($indexName, self::$fields['sortables'])) {
                     // Add sortable fields to index.
                     $solrDoc->setField($indexName . '_sorting', $metadata[$indexName . '_sorting'][0]);
-                    }
+                }
                 if (in_array($indexName, self::$fields['facets'])) {
                     // Add facets to index.
                     $solrDoc->setField($indexName . '_faceting', $data);
@@ -496,14 +495,14 @@ class Indexer
 
     /**
      * Add faceting information to physical sub-elements if applicable.
-     * 
+     *
      * @static
-     * 
+     *
      * @access private
-     * 
+     *
      * @param AbstractDocument $doc
      * @param DocumentInterface &$solrDoc
-     * 
+     *
      * @return void
      */
     private static function addFaceting($doc, &$solrDoc): void
@@ -528,7 +527,7 @@ class Indexer
                 !empty($data)
                 && substr($indexName, -8) == '_sorting'
             ) {
-                $solrDoc->setField($indexName , $doc->metadataArray[$doc->toplevelId][$indexName]);
+                $solrDoc->setField($indexName, $doc->metadataArray[$doc->toplevelId][$indexName]);
             }
         }
     }
@@ -630,8 +629,7 @@ class Indexer
     private static function handleException(string $errorMessage): void
     {
         if (!(Environment::isCli())) {
-            self::addErrorMessage(
-                Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
+            self::addErrorMessage(Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
         }
         Helper::log('Apache Solr threw exception: "' . $errorMessage . '"', LOG_SEVERITY_ERROR);
     }
