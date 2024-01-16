@@ -464,7 +464,7 @@ class OaiPmhController extends AbstractController
             return;
         }
         try {
-            $documentSet = $this->fetchDocumentUIDs();
+            $documentSet = $this->fetchDocumentSet();
         } catch (\Exception $exception) {
             $this->error = 'idDoesNotExist';
             return;
@@ -554,7 +554,7 @@ class OaiPmhController extends AbstractController
             return;
         }
         try {
-            $documentSet = $this->fetchDocumentUIDs();
+            $documentSet = $this->fetchDocumentSet();
         } catch (\Exception $exception) {
             $this->error = 'idDoesNotExist';
             return;
@@ -597,7 +597,7 @@ class OaiPmhController extends AbstractController
      *
      * @return array matching records or empty array if there were some errors
      */
-    protected function fetchDocumentUIDs(): array
+    protected function fetchDocumentSet(): array
     {
         $documentSet = [];
         $solrQuery = '';
