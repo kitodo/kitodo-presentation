@@ -682,15 +682,7 @@ class OaiPmhController extends AbstractController
             // Is valid format?
             $date = $this->getDate('from');
             if (is_array($date)) {
-                $timestamp = gmmktime(
-                    $date['tm_hour'],
-                    $date['tm_min'],
-                    $date['tm_sec'],
-                    $date['tm_mon'] + 1,
-                    $date['tm_mday'],
-                    $date['tm_year'] + 1900
-                );
-                $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
+                $from = $this->getDateFromTimestamp($date, '.000Z');
             } else {
                 $this->error = 'badArgument';
             }
@@ -715,15 +707,7 @@ class OaiPmhController extends AbstractController
             // Is valid format?
             $date = $this->getDate('until');
             if (is_array($date)) {
-                $timestamp = gmmktime(
-                    $date['tm_hour'],
-                    $date['tm_min'],
-                    $date['tm_sec'],
-                    $date['tm_mon'] + 1,
-                    $date['tm_mday'],
-                    $date['tm_year'] + 1900
-                );
-                $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
+                $until = $this->getDateFromTimestamp($date, '.999Z');
                 if ($from != "*" && $from > $until) {
                     $this->error = 'badArgument';
                 }
@@ -746,6 +730,29 @@ class OaiPmhController extends AbstractController
     private function getDate(string $dateType)
     {
         return strptime($this->parameters[$dateType], '%Y-%m-%dT%H:%M:%SZ') ?: strptime($this->parameters[$dateType], '%Y-%m-%d');
+    }
+
+    /**
+     * Get date from timestamp.
+     *
+     * @access private
+     *
+     * @param array $date
+     * @param string $end
+     *
+     * @return string
+     */
+    private function getDateFromTimestamp(array $date, string $end): string
+    {
+        $timestamp = gmmktime(
+            $date['tm_hour'],
+            $date['tm_min'],
+            $date['tm_sec'],
+            $date['tm_mon'] + 1,
+            $date['tm_mday'],
+            $date['tm_year'] + 1900
+        );
+        return date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . $end;
     }
 
     /**
