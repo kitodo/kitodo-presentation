@@ -184,7 +184,7 @@ class MetadataController extends AbstractController
             $this->view->assign('documentMetadataSections', $metadata);
             $this->view->assign('configMetadata', $metadataResult);
             $this->view->assign('separator', $this->settings['separator']);
-            $this->view->assign('metaCObjData', $this->buildMetaCObjData($metadata));
+            $this->view->assign('metaConfigObjectData', $this->buildMetaConfigObjectData($metadata));
         }
     }
 
@@ -266,21 +266,21 @@ class MetadataController extends AbstractController
      *
      * @return array The raw metadata array ready for output
      */
-    private function buildMetaCObjData(array $metadata): array
+    private function buildMetaConfigObjectData(array $metadata): array
     {
-        $metaCObjData = [];
+        $metaConfigObjectData = [];
 
         foreach ($metadata as $i => $section) {
-            $metaCObjData[$i] = [];
+            $metaConfigObjectData[$i] = [];
 
             foreach ($section as $name => $value) {
-                $metaCObjData[$i][$name] = is_array($value)
+                $metaConfigObjectData[$i][$name] = is_array($value)
                     ? implode($this->settings['separator'], $value)
                     : $value;
             }
         }
 
-        return $metaCObjData;
+        return $metaConfigObjectData;
     }
 
     /**
