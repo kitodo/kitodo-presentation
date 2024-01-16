@@ -171,7 +171,7 @@ class CalendarController extends AbstractController
 
                 if (empty($yearLabel)) {
                     // if neither order nor orderlabel is set, use the id...
-                    $yearLabel = (string)$id;
+                    $yearLabel = (string) $id;
                 }
 
                 $years[] = [
