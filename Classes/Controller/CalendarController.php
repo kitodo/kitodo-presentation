@@ -67,7 +67,7 @@ class CalendarController extends AbstractController
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
         }
