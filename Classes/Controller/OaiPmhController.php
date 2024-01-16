@@ -627,61 +627,12 @@ class OaiPmhController extends AbstractController
         }
         // toplevel="true" is always required
         $solrQuery .= ' AND toplevel:true';
-        $from = "*";
-        // Check "from" for valid value.
-        if (!empty($this->parameters['from'])) {
-            // Is valid format?
-            if (
-                is_array($date = strptime($this->parameters['from'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date = strptime($this->parameters['from'], '%Y-%m-%d'))
-            ) {
-                $timestamp = gmmktime(
-                    $date['tm_hour'],
-                    $date['tm_min'],
-                    $date['tm_sec'],
-                    $date['tm_mon'] + 1,
-                    $date['tm_mday'],
-                    $date['tm_year'] + 1900
-                );
-                $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
-            } else {
-                $this->error = 'badArgument';
-                return;
-            }
-        }
-        $until = "*";
-        // Check "until" for valid value.
-        if (!empty($this->parameters['until'])) {
-            // Is valid format?
-            if (
-                is_array($date = strptime($this->parameters['until'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date = strptime($this->parameters['until'], '%Y-%m-%d'))
-            ) {
-                $timestamp = gmmktime(
-                    $date['tm_hour'],
-                    $date['tm_min'],
-                    $date['tm_sec'],
-                    $date['tm_mon'] + 1,
-                    $date['tm_mday'],
-                    $date['tm_year'] + 1900
-                );
-                $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
-                if ($from != "*" && $from > $until) {
-                    $this->error = 'badArgument';
-                }
-            } else {
-                $this->error = 'badArgument';
-            }
-        }
-        // Check "from" and "until" for same granularity.
-        if (
-            !empty($this->parameters['from'])
-            && !empty($this->parameters['until'])
-        ) {
-            if (strlen($this->parameters['from']) != strlen($this->parameters['until'])) {
-                $this->error = 'badArgument';
-            }
-        }
+
+        $from = $this->getFrom();
+        $until = $this->getUntil($from);
+
+        $this->checkGranularity();
+
         $solrQuery .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
         $documentSet = [];
         $solr = Solr::getInstance($this->settings['solrcore']);
@@ -709,6 +660,96 @@ class OaiPmhController extends AbstractController
             $documentSet[] = $doc->uid;
         }
         return $documentSet;
+    }
+
+    /**
+     * Get 'from' query parameter.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function getFrom() : string
+    {
+        $from = "*";
+        // Check "from" for valid value.
+        if (!empty($this->parameters['from'])) {
+            // Is valid format?
+            if (
+                is_array($date = strptime($this->parameters['from'], '%Y-%m-%dT%H:%M:%SZ'))
+                || is_array($date = strptime($this->parameters['from'], '%Y-%m-%d'))
+            ) {
+                $timestamp = gmmktime(
+                    $date['tm_hour'],
+                    $date['tm_min'],
+                    $date['tm_sec'],
+                    $date['tm_mon'] + 1,
+                    $date['tm_mday'],
+                    $date['tm_year'] + 1900
+                );
+                $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
+            } else {
+                $this->error = 'badArgument';
+            }
+        }
+        return $from;
+    }
+
+    /**
+     * Get 'until' query parameter.
+     *
+     * @access private
+     *
+     * @param string $from start date
+     *
+     * @return string
+     */
+    private function getUntil(string $from) : string
+    {
+        $until = "*";
+        // Check "until" for valid value.
+        if (!empty($this->parameters['until'])) {
+            // Is valid format?
+            if (
+                is_array($date = strptime($this->parameters['until'], '%Y-%m-%dT%H:%M:%SZ'))
+                || is_array($date = strptime($this->parameters['until'], '%Y-%m-%d'))
+            ) {
+                $timestamp = gmmktime(
+                    $date['tm_hour'],
+                    $date['tm_min'],
+                    $date['tm_sec'],
+                    $date['tm_mon'] + 1,
+                    $date['tm_mday'],
+                    $date['tm_year'] + 1900
+                );
+                $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
+                if ($from != "*" && $from > $until) {
+                    $this->error = 'badArgument';
+                }
+            } else {
+                $this->error = 'badArgument';
+            }
+        }
+        return $until;
+    }
+
+    /**
+     * Check "from" and "until" for same granularity.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function checkGranularity() : void
+    {
+        if (
+            !empty($this->parameters['from'])
+            && !empty($this->parameters['until'])
+        ) {
+            if (strlen($this->parameters['from']) != strlen($this->parameters['until'])) {
+                $this->error = 'badArgument';
+            }
+        }
     }
 
     /**
