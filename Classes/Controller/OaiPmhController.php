@@ -173,25 +173,25 @@ class OaiPmhController extends AbstractController
      * Get unqualified Dublin Core data.
      * @see http://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
      *
-     * @access protected
+     * @access private
      *
      * @param array $record The full record array
      *
      * @return array The mapped metadata array
      */
-    protected function getDcData(array $record)
+    private function getDublinCoreData(array $record)
     {
         $metadata = [];
 
         $metadata[] = ['dc:identifier' => $record['record_id']];
 
-        $this->addDcData($metadata, 'dc:identifier', $record['purl']);
-        $this->addDcData($metadata, 'dc:identifier', $record['prod_id']);
-        $this->addDcData($metadata, 'dc:identifier', $record['urn']);
-        $this->addDcData($metadata, 'dc:title', $record['title']);
-        $this->addDcData($metadata, 'dc:creator', $record['author']);
-        $this->addDcData($metadata, 'dc:date', $record['year']);
-        $this->addDcData($metadata, 'dc:coverage', $record['place']);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['purl']);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['prod_id']);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['urn']);
+        $this->addDublinCoreData($metadata, 'dc:title', $record['title']);
+        $this->addDublinCoreData($metadata, 'dc:creator', $record['author']);
+        $this->addDublinCoreData($metadata, 'dc:date', $record['year']);
+        $this->addDublinCoreData($metadata, 'dc:coverage', $record['place']);
 
         $record[] = ['dc:format' => $record['application/mets+xml']];
         $record[] = ['dc:type' => $record['Text']];
@@ -202,25 +202,28 @@ class OaiPmhController extends AbstractController
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
             }
         }
-        $this->addDcData($metadata, 'dc:rights', $record['license']);
-        $this->addDcData($metadata, 'dc:rights', $record['terms']);
-        $this->addDcData($metadata, 'dc:rights', $record['restrictions']);
-        $this->addDcData($metadata, 'dc:rights', $record['out_of_print']);
-        $this->addDcData($metadata, 'dc:rights', $record['rights_info']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['license']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['terms']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['restrictions']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['out_of_print']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['rights_info']);
 
         return $metadata;
     }
 
     /**
+     * Add Dublin Core data.
+     *
      * @access private
      *
-     * @param array $metadata The mapped metadata array
+     * @param array $metadata The mapped metadata array passed as reference
      * @param string $key The key to which record value should be assigned
      * @param string $value The key from record array
      *
      * @return void
      */
-    private function addDcData(&$metadata, $key, $value) {
+    private function addDublinCoreData(&$metadata, $key, $value)
+    {
         if (!empty($value)) {
             $metadata[] = [$key => $value];
         }
@@ -363,7 +366,7 @@ class OaiPmhController extends AbstractController
         // Add metadata
         switch ($this->parameters['metadataPrefix']) {
             case 'oai_dc':
-                $document['metadata'] = $this->getDcData($document);
+                $document['metadata'] = $this->getDublinCoreData($document);
                 break;
             case 'epicur':
                 $document['metadata'] = $document;
@@ -730,7 +733,7 @@ class OaiPmhController extends AbstractController
                 }
                 switch ($metadataPrefix) {
                     case 'oai_dc':
-                        $resArray['metadata'] = $this->getDcData($resArray);
+                        $resArray['metadata'] = $this->getDublinCoreData($resArray);
                         break;
                     case 'epicur':
                         $resArray['metadata'] = $resArray;
