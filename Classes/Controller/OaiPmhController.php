@@ -674,8 +674,8 @@ class OaiPmhController extends AbstractController
             $this->logger->error('Apache Solr not available');
             return $documentSet;
         }
-        if (intval($this->settings['solr_limit']) > 0) {
-            $solr->limit = intval($this->settings['solr_limit']);
+        if ((int) $this->settings['solr_limit'] > 0) {
+            $solr->limit = (int) $this->settings['solr_limit'];
         }
         // We only care about the UID in the results and want them sorted
         $parameters = [
