@@ -560,7 +560,7 @@ class OaiPmhController extends AbstractController
             return;
         }
         $resultSet = [];
-        if (is_array($documentSet)) {
+        if (count($documentSet) > 0) {
             $resultSet['elements'] = $documentSet;
             $resultSet['metadata'] = [
                 'cursor' => 0,
@@ -595,10 +595,11 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return array|null Array of matching records
+     * @return array matching records or empty array if there were some errors
      */
-    protected function fetchDocumentUIDs()
+    protected function fetchDocumentUIDs() : array
     {
+        $documentSet = [];
         $solrQuery = '';
         // Check "set" for valid value.
         if (!empty($this->parameters['set'])) {
@@ -615,7 +616,7 @@ class OaiPmhController extends AbstractController
                 }
             } else {
                 $this->error = 'noSetHierarchy';
-                return null;
+                return $documentSet;
             }
         } else {
             // If no set is specified we have to query for all collections
@@ -633,8 +634,12 @@ class OaiPmhController extends AbstractController
 
         $this->checkGranularity();
 
+        if ($this->error === 'badArgument') {
+            return $documentSet;
+        }
+
         $solrQuery .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
-        $documentSet = [];
+
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
@@ -654,7 +659,7 @@ class OaiPmhController extends AbstractController
         $result = $solr->searchRaw($parameters);
         if (empty($result)) {
             $this->error = 'noRecordsMatch';
-            return;
+            return $documentSet;
         }
         foreach ($result as $doc) {
             $documentSet[] = $doc->uid;
