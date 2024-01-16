@@ -599,7 +599,7 @@ class OaiPmhController extends AbstractController
      */
     protected function fetchDocumentUIDs()
     {
-        $solr_query = '';
+        $solrQuery = '';
         // Check "set" for valid value.
         if (!empty($this->parameters['set'])) {
             // For SOLR we need the index_name of the collection,
@@ -609,9 +609,9 @@ class OaiPmhController extends AbstractController
 
             if ($resArray = $result->fetchAssociative()) {
                 if ($resArray['index_query'] != "") {
-                    $solr_query .= '(' . $resArray['index_query'] . ')';
+                    $solrQuery .= '(' . $resArray['index_query'] . ')';
                 } else {
-                    $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
+                    $solrQuery .= 'collection:' . '"' . $resArray['index_name'] . '"';
                 }
             } else {
                 $this->error = 'noSetHierarchy';
@@ -619,24 +619,30 @@ class OaiPmhController extends AbstractController
             }
         } else {
             // If no set is specified we have to query for all collections
-            $solr_query .= 'collection:* NOT collection:""';
+            $solrQuery .= 'collection:* NOT collection:""';
         }
         // Check for required fields.
         foreach ($this->formats[$this->parameters['metadataPrefix']]['requiredFields'] as $required) {
-            $solr_query .= ' NOT ' . $required . ':""';
+            $solrQuery .= ' NOT ' . $required . ':""';
         }
         // toplevel="true" is always required
-        $solr_query .= ' AND toplevel:true';
+        $solrQuery .= ' AND toplevel:true';
         $from = "*";
         // Check "from" for valid value.
         if (!empty($this->parameters['from'])) {
             // Is valid format?
             if (
-                is_array($date_array = strptime($this->parameters['from'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date_array = strptime($this->parameters['from'], '%Y-%m-%d'))
+                is_array($date = strptime($this->parameters['from'], '%Y-%m-%dT%H:%M:%SZ'))
+                || is_array($date = strptime($this->parameters['from'], '%Y-%m-%d'))
             ) {
-                $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'],
-                    $date_array['tm_mon'] + 1, $date_array['tm_mday'], $date_array['tm_year'] + 1900);
+                $timestamp = gmmktime(
+                    $date['tm_hour'],
+                    $date['tm_min'],
+                    $date['tm_sec'],
+                    $date['tm_mon'] + 1,
+                    $date['tm_mday'],
+                    $date['tm_year'] + 1900
+                );
                 $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
             } else {
                 $this->error = 'badArgument';
@@ -648,11 +654,17 @@ class OaiPmhController extends AbstractController
         if (!empty($this->parameters['until'])) {
             // Is valid format?
             if (
-                is_array($date_array = strptime($this->parameters['until'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date_array = strptime($this->parameters['until'], '%Y-%m-%d'))
+                is_array($date = strptime($this->parameters['until'], '%Y-%m-%dT%H:%M:%SZ'))
+                || is_array($date = strptime($this->parameters['until'], '%Y-%m-%d'))
             ) {
-                $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'],
-                    $date_array['tm_mon'] + 1, $date_array['tm_mday'], $date_array['tm_year'] + 1900);
+                $timestamp = gmmktime(
+                    $date['tm_hour'],
+                    $date['tm_min'],
+                    $date['tm_sec'],
+                    $date['tm_mon'] + 1,
+                    $date['tm_mday'],
+                    $date['tm_year'] + 1900
+                );
                 $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
                 if ($from != "*" && $from > $until) {
                     $this->error = 'badArgument';
@@ -670,7 +682,7 @@ class OaiPmhController extends AbstractController
                 $this->error = 'badArgument';
             }
         }
-        $solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
+        $solrQuery .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
         $documentSet = [];
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
@@ -687,7 +699,7 @@ class OaiPmhController extends AbstractController
                 "uid" => "asc"
             ]
         ];
-        $parameters['query'] = $solr_query;
+        $parameters['query'] = $solrQuery;
         $result = $solr->searchRaw($parameters);
         if (empty($result)) {
             $this->error = 'noRecordsMatch';
