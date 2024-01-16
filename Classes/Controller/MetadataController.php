@@ -159,9 +159,11 @@ class MetadataController extends AbstractController
             $this->view->assign('iiifData', $this->buildIiifData($metadata));
         } else {
             // findBySettings also sorts entries by the `sorting` field
-            $metadataResult = $this->metadataRepository->findBySettings([
-                'is_listed' => !$this->settings['showFull'],
-            ]);
+            $metadataResult = $this->metadataRepository->findBySettings(
+                [
+                    'is_listed' => !$this->settings['showFull'],
+                ]
+            );
 
             foreach ($metadata as $i => $section) {
 
@@ -171,8 +173,7 @@ class MetadataController extends AbstractController
                     $this->parseMetadata($i, $name, $value, $metadata);
 
                     if (is_array($metadata[$i][$name])) {
-                        $metadata[$i][$name] = array_values(array_filter($metadata[$i][$name], function($metadataValue)
-                        {
+                        $metadata[$i][$name] = array_values(array_filter($metadata[$i][$name], function ($metadataValue) {
                             return !empty($metadataValue);
                         }));
                     }
@@ -358,7 +359,7 @@ class MetadataController extends AbstractController
             $this->parseParentTitle($i, $value, $metadata);
         } elseif ($name == 'owner' && empty($value)) {
             // no owner is found by metadata records --> take the one associated to the document
-           $this->parseOwner($i, $metadata);
+            $this->parseOwner($i, $metadata);
         } elseif ($name == 'type' && !empty($value)) {
             // Translate document type.
             $this->parseType($i, $metadata);
@@ -384,7 +385,8 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseParentTitle(int $i, $value, array &$metadata) {
+    private function parseParentTitle(int $i, $value, array &$metadata) : void
+    {
         if (empty(implode('', $value)) && $this->settings['getTitle'] && $this->document->getPartof()) {
             $superiorTitle = AbstractDocument::getTitle($this->document->getPartof(), true);
             if (!empty($superiorTitle)) {
@@ -403,7 +405,8 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseOwner(int $i, array &$metadata) {
+    private function parseOwner(int $i, array &$metadata) : void
+    {
         $library = $this->document->getOwner();
         if ($library) {
             $metadata[$i]['owner'][0] = $library->getLabel();
@@ -420,7 +423,8 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseType(int $i, array &$metadata) {
+    private function parseType(int $i, array &$metadata) : void
+    {
         $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type'][0]);
         if ($structure) {
             $metadata[$i]['type'][0] = $structure->getLabel();
@@ -429,7 +433,7 @@ class MetadataController extends AbstractController
 
     /**
      * Parse collections - check if collections isn't hidden.
-     * 
+     *
      * @access private
      *
      * @param int $i The index of metadata array
@@ -438,7 +442,8 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseCollections(int $i, $value, array &$metadata) {
+    private function parseCollections(int $i, $value, array &$metadata) : void
+    {
         $j = 0;
         foreach ($value as $entry) {
             $collection = $this->collectionRepository->findOneByIndexName($entry);
