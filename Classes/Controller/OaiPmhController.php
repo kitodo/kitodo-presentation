@@ -597,7 +597,7 @@ class OaiPmhController extends AbstractController
      *
      * @return array matching records or empty array if there were some errors
      */
-    protected function fetchDocumentUIDs() : array
+    protected function fetchDocumentUIDs(): array
     {
         $documentSet = [];
         $solrQuery = '';
@@ -607,8 +607,8 @@ class OaiPmhController extends AbstractController
             // For DB Query we need the UID of the collection
 
             $result = $this->collectionRepository->getIndexNameForSolr($this->settings, $this->parameters['set']);
-
-            if ($resArray = $result->fetchAssociative()) {
+            $resArray = $result->fetchAssociative();
+            if ($resArray) {
                 if ($resArray['index_query'] != "") {
                     $solrQuery .= '(' . $resArray['index_query'] . ')';
                 } else {
@@ -674,16 +674,14 @@ class OaiPmhController extends AbstractController
      *
      * @return string
      */
-    private function getFrom() : string
+    private function getFrom(): string
     {
         $from = "*";
         // Check "from" for valid value.
         if (!empty($this->parameters['from'])) {
             // Is valid format?
-            if (
-                is_array($date = strptime($this->parameters['from'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date = strptime($this->parameters['from'], '%Y-%m-%d'))
-            ) {
+            $date = $this->getDate('from');
+            if (is_array($date)) {
                 $timestamp = gmmktime(
                     $date['tm_hour'],
                     $date['tm_min'],
@@ -709,16 +707,14 @@ class OaiPmhController extends AbstractController
      *
      * @return string
      */
-    private function getUntil(string $from) : string
+    private function getUntil(string $from): string
     {
         $until = "*";
         // Check "until" for valid value.
         if (!empty($this->parameters['until'])) {
             // Is valid format?
-            if (
-                is_array($date = strptime($this->parameters['until'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date = strptime($this->parameters['until'], '%Y-%m-%d'))
-            ) {
+            $date = $this->getDate('until');
+            if (is_array($date)) {
                 $timestamp = gmmktime(
                     $date['tm_hour'],
                     $date['tm_min'],
@@ -739,13 +735,27 @@ class OaiPmhController extends AbstractController
     }
 
     /**
+     * Get date from parameter string.
+     *
+     * @access private
+     *
+     * @param string $dateType
+     *
+     * @return array|false
+     */
+    private function getDate(string $dateType)
+    {
+        return strptime($this->parameters[$dateType], '%Y-%m-%dT%H:%M:%SZ') ?: strptime($this->parameters[$dateType], '%Y-%m-%d');
+    }
+
+    /**
      * Check "from" and "until" for same granularity.
      *
      * @access private
      *
      * @return void
      */
-    private function checkGranularity() : void
+    private function checkGranularity(): void
     {
         if (
             !empty($this->parameters['from'])
