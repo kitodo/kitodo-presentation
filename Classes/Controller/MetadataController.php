@@ -355,38 +355,96 @@ class MetadataController extends AbstractController
     {
         if ($name == 'title') {
             // Get title of parent document if needed.
-            if (empty(implode('', $value)) && $this->settings['getTitle'] && $this->document->getPartof()) {
-                $superiorTitle = AbstractDocument::getTitle($this->document->getPartof(), true);
-                if (!empty($superiorTitle)) {
-                    $metadata[$i][$name] = ['[' . $superiorTitle . ']'];
-                }
-            }
+            $this->parseParentTitle($i, $value, $metadata);
         } elseif ($name == 'owner' && empty($value)) {
             // no owner is found by metadata records --> take the one associated to the document
-            $library = $this->document->getOwner();
-            if ($library) {
-                $metadata[$i][$name][0] = $library->getLabel();
-            }
+           $this->parseOwner($i, $metadata);
         } elseif ($name == 'type' && !empty($value)) {
             // Translate document type.
-            $structure = $this->structureRepository->findOneByIndexName($metadata[$i][$name][0]);
-            if ($structure) {
-                $metadata[$i][$name][0] = $structure->getLabel();
-            }
+            $this->parseType($i, $metadata);
         } elseif ($name == 'collection' && !empty($value)) {
             // Check if collections isn't hidden.
-            $j = 0;
-            foreach ($value as $entry) {
-                $collection = $this->collectionRepository->findOneByIndexName($entry);
-                if ($collection) {
-                    $metadata[$i][$name][$j] = $collection->getLabel() ? : '';
-                    $j++;
-                }
-            }
+            $this->parseCollections($i, $value, $metadata);
         } elseif ($name == 'language' && !empty($value)) {
             // Translate ISO 639 language code.
             foreach ($metadata[$i][$name] as &$langValue) {
                 $langValue = Helper::getLanguageName($langValue);
+            }
+        }
+    }
+
+    /**
+     * Parse title of parent document if needed.
+     *
+     * @access private
+     *
+     * @param int $i The index of metadata array
+     * @param mixed $value The value of section in metadata array
+     * @param array $metadata The metadata array passed as reference
+     *
+     * @return void
+     */
+    private function parseParentTitle(int $i, $value, array &$metadata) {
+        if (empty(implode('', $value)) && $this->settings['getTitle'] && $this->document->getPartof()) {
+            $superiorTitle = AbstractDocument::getTitle($this->document->getPartof(), true);
+            if (!empty($superiorTitle)) {
+                $metadata[$i]['title'] = ['[' . $superiorTitle . ']'];
+            }
+        }
+    }
+
+    /**
+     * Parse owner if no owner is found by metadata records. Take the one associated to the document.
+     *
+     * @access private
+     *
+     * @param int $i The index of metadata array
+     * @param array $metadata The metadata array passed as reference
+     *
+     * @return void
+     */
+    private function parseOwner(int $i, array &$metadata) {
+        $library = $this->document->getOwner();
+        if ($library) {
+            $metadata[$i]['owner'][0] = $library->getLabel();
+        }
+    }
+
+    /**
+     * Parse type - translate document type.
+     *
+     * @access private
+     *
+     * @param int $i The index of metadata array
+     * @param array $metadata The metadata array passed as reference
+     *
+     * @return void
+     */
+    private function parseType(int $i, array &$metadata) {
+        $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type'][0]);
+        if ($structure) {
+            $metadata[$i]['type'][0] = $structure->getLabel();
+        }
+    }
+
+    /**
+     * Parse collections - check if collections isn't hidden.
+     * 
+     * @access private
+     *
+     * @param int $i The index of metadata array
+     * @param mixed $value The value of section in metadata array
+     * @param array $metadata The metadata array passed as reference
+     *
+     * @return void
+     */
+    private function parseCollections(int $i, $value, array &$metadata) {
+        $j = 0;
+        foreach ($value as $entry) {
+            $collection = $this->collectionRepository->findOneByIndexName($entry);
+            if ($collection) {
+                $metadata[$i]['collection'][$j] = $collection->getLabel() ? : '';
+                $j++;
             }
         }
     }
