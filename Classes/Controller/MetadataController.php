@@ -301,7 +301,7 @@ class MetadataController extends AbstractController
                 $details = $this->currentDocument->getLogicalStructure($section['_id']);
                 $buildUrl[$i]['title'] = [
                     'id' => $this->document->getUid(),
-                    'page' => (!empty($details['points']) ? intval($details['points']) : 1),
+                    'page' => (!empty($details['points']) ? (int) $details['points'] : 1),
                     'targetPid' => (!empty($this->settings['targetPid']) ? $this->settings['targetPid'] : 0),
                 ];
             }
