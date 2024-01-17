@@ -309,7 +309,7 @@ abstract class AbstractDocument
      * @abstract
      *
      * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
-     * 
+     *
      * @return array|null The set of file information
      */
     abstract public function getFileInfo($id): ?array;
@@ -581,7 +581,7 @@ abstract class AbstractDocument
         }
 
         // Sanitize input.
-        $pid = max(intval($settings['storagePid']), 0);
+        $pid = max((int) $settings['storagePid'], 0);
         if ($documentFormat == 'METS') {
             $instance = new MetsDocument($pid, $location, $xml, $settings);
         } elseif ($documentFormat == 'IIIF') {
@@ -744,7 +744,7 @@ abstract class AbstractDocument
     {
         $title = '';
         // Sanitize input.
-        $uid = max(intval($uid), 0);
+        $uid = max($uid, 0);
         if ($uid) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -770,7 +770,7 @@ abstract class AbstractDocument
                 if (
                     $recursive
                     && empty($title)
-                    && intval($partof)
+                    && (int) $partof
                     && $partof != $uid
                 ) {
                     $title = self::getTitle($partof, true);
@@ -1161,7 +1161,7 @@ abstract class AbstractDocument
      */
     protected function _setCPid(int $value): void
     {
-        $this->cPid = max(intval($value), 0);
+        $this->cPid = max($value, 0);
     }
 
     /**
