@@ -971,7 +971,8 @@ abstract class AbstractDocument
      *
      * @return array
      */
-    protected function initializeMetadata(string $format): array {
+    protected function initializeMetadata(string $format): array
+    {
         return [
             'title' => [],
             'title_sorting' => [],
@@ -1279,7 +1280,7 @@ abstract class AbstractDocument
      */
     private static function getDocumentCache(string $location)
     {
-        $cacheIdentifier = md5($location);
+        $cacheIdentifier = hash('md5', $location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
         $cacheHit = $cache->get($cacheIdentifier);
 
@@ -1300,11 +1301,10 @@ abstract class AbstractDocument
      */
     private static function setDocumentCache(string $location, AbstractDocument $currentDocument): void
     {
-        $cacheIdentifier = md5($location);
+        $cacheIdentifier = hash('md5', $location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
 
         // Save value in cache
         $cache->set($cacheIdentifier, $currentDocument);
     }
-
 }
