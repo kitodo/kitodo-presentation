@@ -590,7 +590,7 @@ abstract class AbstractDocument
             $instance = new IiifManifest($pid, $location, $iiif);
         }
 
-        if (!is_null($instance)) {
+        if ($instance != null) {
             self::setDocumentCache($location, $instance);
         }
 
