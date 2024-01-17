@@ -686,25 +686,45 @@ abstract class AbstractDocument
         if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
             $textMiniOcr = '';
             if (!empty($this->formats[$textFormat]['class'])) {
-                $class = $this->formats[$textFormat]['class'];
-                // Get the raw text from class.
-                if (
-                    class_exists($class)
-                    && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
-                ) {
-                    // Load XML from file.
-                    $ocrTextXml = Helper::getXmlFileAsString($fileContent);
-                    $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
-                    $this->rawTextArray[$id] = $textMiniOcr;
-                } else {
-                    $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
-                }
+                $textMiniOcr = $this->getRawTextFromClass($id, $fileContent, $textFormat);
             }
             $fullText = $textMiniOcr;
         } else {
             $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
         }
         return $fullText;
+    }
+
+    /**
+     * Get raw text from class for given format.
+     *
+     * @access private
+     *
+     * @param $id
+     * @param $fileContent
+     * @param $textFormat
+     *
+     * @return string
+     */
+    private function getRawTextFromClass($id, $fileContent, $textFormat): string
+    {
+        $textMiniOcr = '';
+        $class = $this->formats[$textFormat]['class'];
+        // Get the raw text from class.
+        if (class_exists($class)) {
+            $obj = GeneralUtility::makeInstance($class);
+            if ($obj instanceof FulltextInterface) {
+                // Load XML from file.
+                $ocrTextXml = Helper::getXmlFileAsString($fileContent);
+                $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
+                $this->rawTextArray[$id] = $textMiniOcr;
+            } else {
+                $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
+            }
+        } else {
+            $this->logger->warning('Class "' . $class . ' does not exists for "' . $textFormat . ' text format"');
+        }
+        return $textMiniOcr;
     }
 
     /**
@@ -762,7 +782,8 @@ abstract class AbstractDocument
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetchAssociative()) {
+            $resArray = $result->fetchAssociative();
+            if ($resArray) {
                 // Get title information.
                 $title = $resArray['title'];
                 $partof = $resArray['partof'];
