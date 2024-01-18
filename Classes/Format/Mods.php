@@ -323,9 +323,10 @@ class Mods implements MetadataInterface
     private function getYears(): void
     {
         // Get "year_sorting".
-        if (($years_sorting = $this->xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]'))) {
-            foreach ($years_sorting as $year_sorting) {
-                $this->metadata['year_sorting'][0] = (int) $year_sorting;
+        $yearsSorting = $this->xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]');
+        if ($yearsSorting) {
+            foreach ($yearsSorting as $yearSorting) {
+                $this->metadata['year_sorting'][0] = (int) $yearSorting;
             }
         }
         // Get "year" and "year_sorting" if not specified separately.
@@ -339,14 +340,14 @@ class Mods implements MetadataInterface
             foreach ($years as $year) {
                 $this->metadata['year'][] = (string) $year;
                 if (!$this->metadata['year_sorting'][0]) {
-                    $year_sorting = str_ireplace('x', '5', preg_replace('/[^\d.x]/i', '', (string) $year));
+                    $yearSorting = str_ireplace('x', '5', preg_replace('/[^\d.x]/i', '', (string) $year));
                     if (
-                        strpos($year_sorting, '.')
-                        || strlen($year_sorting) < 3
+                        strpos($yearSorting, '.')
+                        || strlen($yearSorting) < 3
                     ) {
-                        $year_sorting = (((int) trim($year_sorting, '.') - 1) * 100) + 50;
+                        $yearSorting = (((int) trim($yearSorting, '.') - 1) * 100) + 50;
                     }
-                    $this->metadata['year_sorting'][0] = intval($year_sorting);
+                    $this->metadata['year_sorting'][0] = (int) $yearSorting;
                 }
             }
         }
