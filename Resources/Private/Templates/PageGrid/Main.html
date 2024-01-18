@@ -19,20 +19,20 @@
                         <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': docUid, 'tx_dlf[page]': entry.page}">
                             <f:if condition="{entry.thumbnail}">
                                 <f:then>
-                                    <img src="{entry.thumbnail}" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" />
+                                    <img src="{entry.thumbnail}" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.page}" title="{f:translate(key: 'page')} {entry.page}" />
                                 </f:then>
                                 <f:else>
                                     <f:if condition="{settings.placeholder}">
                                         <f:then>
-                                            <f:image src="{settings.placeholder}" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" maxWidth="250" />
+                                            <f:image src="{settings.placeholder}" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.page}" title="{f:translate(key: 'page')} {entry.page}" maxWidth="250" />
                                         </f:then>
                                         <f:else>
-                                            <f:image src="EXT:dlf/Resources/Public/Images/PageGridPlaceholder.jpg" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.pagination}" title="{f:translate(key: 'page')} {entry.pagination}" maxWidth="250" />
+                                            <f:image src="EXT:dlf/Resources/Public/Images/PageGridPlaceholder.jpg" alt="{f:translate(key: 'thumbnail')} {f:translate(key: 'page')} {entry.page}" title="{f:translate(key: 'page')} {entry.page}" maxWidth="250" />
                                         </f:else>
                                     </f:if>
                                 </f:else>
                             </f:if>
-                            <div class="tx-dlf-pagegrid-pagination">{entry.pagination}</div>
+                            <div class="tx-dlf-pagegrid-pagination">{entry.page}</div>
                         </f:link.page>
                     </div>
                 </li>
