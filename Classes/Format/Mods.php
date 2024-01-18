@@ -21,7 +21,7 @@ use Kitodo\Dlf\Common\MetadataInterface;
  *
  * @package TYPO3
  * @subpackage dlf
- * 
+ *
  * @access public
  */
 class Mods implements MetadataInterface
@@ -325,7 +325,7 @@ class Mods implements MetadataInterface
         // Get "year_sorting".
         if (($years_sorting = $this->xml->xpath('./mods:originInfo[not(./mods:edition="[Electronic ed.]")]/mods:dateOther[@type="order" and @encoding="w3cdtf"]'))) {
             foreach ($years_sorting as $year_sorting) {
-                $this->metadata['year_sorting'][0] = intval($year_sorting);
+                $this->metadata['year_sorting'][0] = (int) $year_sorting;
             }
         }
         // Get "year" and "year_sorting" if not specified separately.
@@ -344,7 +344,7 @@ class Mods implements MetadataInterface
                         strpos($year_sorting, '.')
                         || strlen($year_sorting) < 3
                     ) {
-                        $year_sorting = ((intval(trim($year_sorting, '.')) - 1) * 100) + 50;
+                        $year_sorting = (((int) trim($year_sorting, '.') - 1) * 100) + 50;
                     }
                     $this->metadata['year_sorting'][0] = intval($year_sorting);
                 }
