@@ -68,6 +68,12 @@ class BaseCommand extends Command
 
     /**
      * @access protected
+     * @var PersistenceManager
+     */
+    protected PersistenceManager $persistenceManager;
+
+    /**
+     * @access protected
      * @var int
      */
     protected int $storagePid;
@@ -137,6 +143,7 @@ class BaseCommand extends Command
             return false;
         }
         $this->storagePid = MathUtility::forceIntegerInRange((int) $storagePid, 0);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
         return true;
     }
