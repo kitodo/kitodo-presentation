@@ -581,9 +581,16 @@ class Indexer
      */
     private static function deleteDocument(string $field, string $value): void
     {
-        $query = self::$solr->service->createUpdate();
-        $query->addDeleteQuery($field . ':' . $value);
-        self::$solr->service->update($query);
+        $update = self::$solr->service->createUpdate();
+        $query = "";
+        if ($field == 'uid' || $field == 'partof') {
+            $query = $field . ':' . $value;
+        } else {
+            $query = $field . ':"' . $value . '"';
+        }
+        $update->addDeleteQuery($query);
+        $update->addCommit();
+        self::$solr->service->update($update);
     }
 
     /**
