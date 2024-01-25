@@ -85,7 +85,7 @@ class DeleteCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -103,15 +103,15 @@ class DeleteCommand extends BaseCommand
                 }
                 if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return 1;
+                    return BaseCommand::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return 1;
+                    return BaseCommand::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -123,13 +123,13 @@ class DeleteCommand extends BaseCommand
             )
         ) {
             $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         $this->deleteFromDatabase($input, $io);
         $this->deleteFromSolr($input, $io, $solrCoreUid);
 
-        return 0;
+        return BaseCommand::SUCCESS;
     }
 
     /**
