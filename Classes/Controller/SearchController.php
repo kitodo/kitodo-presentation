@@ -154,7 +154,7 @@ class SearchController extends AbstractController
             );
         }
 
-        // If no search has been executed, no variables habe to be prepared. An empty form will be shown.
+        // If no search has been executed, no variables have to be prepared. An empty form will be shown.
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
             // get all sortable metadata records
             $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
@@ -162,11 +162,14 @@ class SearchController extends AbstractController
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
+            // get all indexed metadata fields
+            $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+
             $solrResults = null;
             $numResults = 0;
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
-                $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
+                $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata, $indexedMetadata);
                 $numResults = $solrResults->getNumFound();
 
                 $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];

@@ -54,8 +54,7 @@ class Indexer
         'sortables' => [],
         'indexed' => [],
         'stored' => [],
-        'tokenized' => [],
-        'fieldboost' => []
+        'tokenized' => []
     ];
 
     /**
@@ -287,11 +286,6 @@ class Indexer
                 if ($indexing['index_autocomplete']) {
                     self::$fields['autocomplete'][] = $indexing['index_name'];
                 }
-                if ($indexing['index_boost'] > 0.0) {
-                    self::$fields['fieldboost'][$indexing['index_name']] = floatval($indexing['index_boost']);
-                } else {
-                    self::$fields['fieldboost'][$indexing['index_name']] = false;
-                }
             }
             self::$fieldsLoaded = true;
         }
@@ -335,8 +329,8 @@ class Indexer
             }
             // There can be only one toplevel unit per UID, independently of backend configuration
             $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
-            $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
-            $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
+            $solrDoc->setField('title', $metadata['title'][0]);
+            $solrDoc->setField('volume', $metadata['volume'][0]);
             // verify date formatting
             if(strtotime($metadata['date'][0])) {
                 // do not alter dates YYYY or YYYY-MM or YYYY-MM-DD
@@ -371,7 +365,7 @@ class Indexer
                     !empty($data)
                     && substr($index_name, -8) !== '_sorting'
                 ) {
-                    $solrDoc->setField(self::getIndexFieldName($index_name, $document->getPid()), $data, self::$fields['fieldboost'][$index_name]);
+                    $solrDoc->setField(self::getIndexFieldName($index_name, $document->getPid()), $data);
                     if (in_array($index_name, self::$fields['sortables'])) {
                         // Add sortable fields to index.
                         $solrDoc->setField($index_name . '_sorting', $metadata[$index_name . '_sorting'][0]);
@@ -460,7 +454,7 @@ class Indexer
                 }
             }
             $solrDoc->setField('toplevel', false);
-            $solrDoc->setField('type', $physicalUnit['type'], self::$fields['fieldboost']['type']);
+            $solrDoc->setField('type', $physicalUnit['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
             $solrDoc->setField('location', $document->getLocation());
 
@@ -570,7 +564,7 @@ class Indexer
         $solrDoc->setField('partof', $document->getPartof());
         $solrDoc->setField('root', $document->getCurrentDocument()->rootId);
         $solrDoc->setField('sid', $unit['id']);
-        $solrDoc->setField('type', $unit['type'], self::$fields['fieldboost']['type']);
+        $solrDoc->setField('type', $unit['type']);
         $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->toplevelId]['collection']);
         $solrDoc->setField('fulltext', $fullText);
         return $solrDoc;

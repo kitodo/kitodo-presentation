@@ -576,16 +576,17 @@ class DocumentRepository extends Repository
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
+     * @param QueryResult $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
+    public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null, $indexedMetadata = null)
     {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
 
-        $search = new SolrSearch($this, $collection, $settings, $searchParams, $listedMetadata);
+        $search = new SolrSearch($this, $collection, $settings, $searchParams, $listedMetadata, $indexedMetadata);
         $search->prepare();
         return $search;
     }
