@@ -149,9 +149,13 @@ class DeleteCommand extends BaseCommand
         if ($document === null) {
             $io->info('INFO: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . '. It is probably already deleted from DB.');
         } else {
-            $this->documentRepository->remove($document);
             if ($io->isVerbose()) {
                 $io->section('Deleting ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
+            }
+            $this->documentRepository->remove($document);
+            $this->persistenceManager->persistAll();
+            if ($io->isVerbose()) {
+                $io->success('Deleted ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
             }
         }
     }
@@ -182,6 +186,9 @@ class DeleteCommand extends BaseCommand
         }
 
         if ($isDeleted) {
+            if ($io->isVerbose()) {
+                $io->success('Deleted ' . $input->getOption('doc') . ' on Solr core ' . $solrCoreUid . '.');
+            }
             $io->success('All done!');
         } else {
             $io->error('Document was not deleted - check log file for more details!');

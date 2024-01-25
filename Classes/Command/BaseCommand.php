@@ -68,6 +68,12 @@ class BaseCommand extends Command
 
     /**
      * @access protected
+     * @var PersistenceManager
+     */
+    protected PersistenceManager $persistenceManager;
+
+    /**
+     * @access protected
      * @var int
      */
     protected int $storagePid;
@@ -130,6 +136,7 @@ class BaseCommand extends Command
             return false;
         }
         $this->storagePid = MathUtility::forceIntegerInRange((int) $storagePid, 0);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
         return true;
     }
@@ -202,7 +209,6 @@ class BaseCommand extends Command
         if ($doc === null) {
             return false;
         }
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $doc->cPid = $this->storagePid;
 
         $metadata = $doc->getToplevelMetadata($this->storagePid);
@@ -227,7 +233,7 @@ class BaseCommand extends Command
         $document->setStructure($structure);
 
         if (is_array($metadata['collection'])) {
-            $this->addCollections($document, $metadata['collection'], $persistenceManager);
+            $this->addCollections($document, $metadata['collection']);
         }
 
         // set identifiers
@@ -268,7 +274,7 @@ class BaseCommand extends Command
             $this->documentRepository->update($document);
         }
 
-        $persistenceManager->persistAll();
+        $this->persistenceManager->persistAll();
 
         return true;
     }
@@ -328,7 +334,7 @@ class BaseCommand extends Command
      *
      * @return void
      */
-    private function addCollections(Document &$document, array $collections, PersistenceManager $persistenceManager): void
+    private function addCollections(Document &$document, array $collections): void
     {
         foreach ($collections as $collection) {
             $documentCollection = $this->collectionRepository->findOneByIndexName($collection);
@@ -343,7 +349,7 @@ class BaseCommand extends Command
                 // add to CollectionRepository
                 $this->collectionRepository->add($documentCollection);
                 // persist collection to prevent duplicates
-                $persistenceManager->persistAll();
+                $this->persistenceManager->persistAll();
             }
             // add to document
             $document->addCollection($documentCollection);
