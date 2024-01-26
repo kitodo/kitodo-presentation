@@ -21,6 +21,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class SolrSearchQueryTest extends FunctionalTestCase
 {
+    private $solrCoreRepository;
 
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Common/documents_1.csv',
