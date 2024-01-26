@@ -103,7 +103,7 @@ class ReindexCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            exit(1);
+            return 1;
         }
 
         if (
@@ -121,15 +121,15 @@ class ReindexCommand extends BaseCommand
                 }
                 if (empty($output_solrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    exit(1);
+                    return 1;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
-                    exit(1);
+                    return 1;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            exit(1);
+            return 1;
         }
 
         if (!empty($input->getOption('owner'))) {
@@ -152,13 +152,13 @@ class ReindexCommand extends BaseCommand
             // "coll" may be a single integer or a comma-separated list of integers.
             if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), true)))) {
                 $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
-                exit(1);
+                return 1;
             }
             // Get all documents of given collections.
             $documents = $this->documentRepository->findAllByCollectionsLimited(GeneralUtility::intExplode(',', $input->getOption('coll'), true), 0);
         } else {
             $io->error('ERROR: One of parameters --all|-a or --coll|-c must be given.');
-            exit(1);
+            return 1;
         }
 
         foreach ($documents as $id => $document) {

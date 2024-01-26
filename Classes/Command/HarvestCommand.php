@@ -112,7 +112,7 @@ class HarvestCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            exit(1);
+            return 1;
         }
 
         if (
@@ -133,15 +133,15 @@ class HarvestCommand extends BaseCommand
                 }
                 if (empty($output_solrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    exit(1);
+                    return 1;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
-                    exit(1);
+                    return 1;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            exit(1);
+            return 1;
         }
 
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('lib'))) {
@@ -152,11 +152,11 @@ class HarvestCommand extends BaseCommand
             $baseUrl = $this->owner->getOaiBase();
         } else {
             $io->error('ERROR: Required parameter --lib|-l is not a valid UID.');
-            exit(1);
+            return 1;
         }
         if (!GeneralUtility::isValidUrl($baseUrl)) {
             $io->error('ERROR: No valid OAI Base URL set for library with given UID ("' . $input->getOption('lib') . '").');
-            exit(1);
+            return 1;
         } else {
             try {
                 $oai = Endpoint::build($baseUrl);
@@ -198,7 +198,7 @@ class HarvestCommand extends BaseCommand
             }
             if (empty($set)) {
                 $io->error('ERROR: OAI interface does not provide a set with given setSpec ("' . $input->getOption('set') . '").');
-                exit(1);
+                return 1;
             }
         }
 
