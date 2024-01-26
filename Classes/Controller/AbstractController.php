@@ -350,16 +350,78 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         $firstPage = $pagination->getFirstPageNumber();
         $lastPage = $pagination->getLastPageNumber();
+        $currentPageNumber = $paginator->getCurrentPageNumber();
 
+        $pages = [];
+
+        $lastStartRecordNumberGrid = 0; // due to validity outside the loop
+        foreach (range($firstPage, $lastPage) as $i) {
+            // detect which pagination is active: ListView or GridView
+            if (get_class($pagination) == 'TYPO3\CMS\Core\Pagination\SimplePagination') {  // ListView
+                $lastStartRecordNumberGrid = $i; // save last $startRecordNumber for LastPage button
+
+                $pages[$i] = [
+                    'label' => $i,
+                    'startRecordNumber' => $i
+                ];
+            } else { // GridView
+                // to calculate the values for generation the links for the pagination pages
+                /** @var \Kitodo\Dlf\Pagination\PageGridPaginator $paginator */
+                $itemsPerPage = $paginator->getPublicItemsPerPage();
+
+                $startRecordNumber = $itemsPerPage * $i;
+                $startRecordNumber = $startRecordNumber + 1;
+                $startRecordNumber = $startRecordNumber - $itemsPerPage;
+
+                $lastStartRecordNumberGrid = $startRecordNumber; // save last $startRecordNumber for LastPage button
+
+                // array with label as screen/pagination page number
+                // and startRecordNumer for correct structure of the link
+                //<f:link.action action="{action}"
+                //      addQueryString="true"
+                //      argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"
+                //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
+                //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
+                $pages[$i] = [
+                    'label' => $i,
+                    'startRecordNumber' => $startRecordNumber
+                ];
+            }
+        }
+
+        $nextPageNumber = $pages[$currentPageNumber + 1]['startRecordNumber'];
+        $previousPageNumber = $pages[$currentPageNumber - 1]['startRecordNumber'];
+
+        // 'startRecordNumber' is not required in GridView, only the variant for each loop is required
+        // 'endRecordNumber' is not required in both views
+        // 'startRecordNumber' is not required in GridView, only the variant for each loop is required
+        // 'endRecordNumber' is not required in both views
+        //
+        // lastPageNumber       =>  last screen page
+        // lastPageNumber       =>  Document page to build the last screen page. This is the first document
+        //                          of the last block of 10 (or less) documents on the last screen page
+        // firstPageNumber      =>  always 1
+        // nextPageNumber       =>  Document page to build the next screen page
+        // nextPageNumberG      =>  Number of the screen page for the next screen page
+        // previousPageNumber   =>  Document page to build up the previous screen page
+        // previousPageNumberG  =>  Number of the screen page for the previous screen page
+        // currentPageNumber    =>  Number of the current screen page
+        // pagesG               =>  Array with two keys
+        //    label             =>  Number of the screen page
+        //    startRecordNumber =>  First document of this block of 10 documents on the same screen page
         return [
             'lastPageNumber' => $lastPage,
+            'lastPageNumberG' => $lastStartRecordNumberGrid,
             'firstPageNumber' => $firstPage,
-            'nextPageNumber' => ($pagination->getNextPageNumber()),
-            'previousPageNumber' => $pagination->getPreviousPageNumber(),
+            'nextPageNumber' => $nextPageNumber,
+            'nextPageNumberG' => $currentPageNumber + 1,
+            'previousPageNumber' => $previousPageNumber,
+            'previousPageNumberG' => $currentPageNumber - 1,
             'startRecordNumber' => $pagination->getStartRecordNumber(),
             'endRecordNumber' => $pagination->getEndRecordNumber(),
-            'currentPageNumber' => $paginator->getCurrentPageNumber(),
-            'pages' => range($firstPage, $lastPage)
+            'currentPageNumber' => $currentPageNumber,
+            'pages' => range($firstPage, $lastPage),
+            'pagesG' => $pages
         ];
     }
 }
