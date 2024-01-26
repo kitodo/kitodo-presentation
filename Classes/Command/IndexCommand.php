@@ -99,7 +99,7 @@ class IndexCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            exit(1);
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -117,15 +117,15 @@ class IndexCommand extends BaseCommand
                 }
                 if (empty($output_solrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    exit(1);
+                    return BaseCommand::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
-                    exit(1);
+                    return BaseCommand::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            exit(1);
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -137,7 +137,7 @@ class IndexCommand extends BaseCommand
             )
         ) {
             $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
-            exit(1);
+            return BaseCommand::FAILURE;
         }
 
         if (!empty($input->getOption('owner'))) {
@@ -173,7 +173,7 @@ class IndexCommand extends BaseCommand
 
         if ($doc === null) {
             $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
-            exit(1);
+            return BaseCommand::FAILURE;
         }
 
         $document->setSolrcore($solrCoreUid);
@@ -193,7 +193,7 @@ class IndexCommand extends BaseCommand
 
         $io->success('All done!');
 
-        return 0;
+        return BaseCommand::SUCCESS;
     }
 
     /**
