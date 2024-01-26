@@ -500,6 +500,9 @@
 			<trans-unit id="config.useExternalApisForMetadata">
 				<source>Use external APIs for getting metadata?: (default is "FALSE")</source>
 			</trans-unit>
+            <trans-unit id="config.requiredMetadataFields">
+                <source>Metadata fields required for indexing documents</source>
+            </trans-unit>
 			<trans-unit id="config.fileGrpImages">
 				<source>Page fileGrps: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
 			</trans-unit>
