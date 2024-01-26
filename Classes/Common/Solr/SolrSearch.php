@@ -6,7 +6,6 @@ use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
-use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Solarium\QueryType\Select\Result\Document;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -38,8 +37,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
-     * @var QueryResult|Collection|null
+     * @var array|null
      */
+    // TODO: confusing naming, here is passed array of collections and it is used as array in prepare()
     private $collection;
 
     /**
@@ -84,7 +84,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access public
      *
      * @param DocumentRepository $documentRepository
-     * @param QueryResult|Collection|null $collection
+     * @param array|null $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
@@ -433,6 +433,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         }
 
         // if collections are given, we prepare the collection query string
+        // TODO: this->collection should not be actually called collections?
         if ($this->collection) {
             $collectionsQueryString = '';
             $virtualCollectionsQueryString = '';
