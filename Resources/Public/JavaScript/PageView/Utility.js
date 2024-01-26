@@ -556,7 +556,7 @@ dlfUtils.isFulltextDescriptor = function (obj) {
  * @return {Object}
  */
 dlfUtils.parseDataDic = function (element) {
-    var dataDicString = $(element).attr('data-dic') || '',
+    var dataDicString = $('html').find(element).data('dic') || '',
         dataDicRecords = dataDicString.split(';'),
         dataDic = {};
 
