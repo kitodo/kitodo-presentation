@@ -168,19 +168,7 @@ class IndexCommand extends BaseCommand
         } else if (GeneralUtility::isValidUrl($input->getOption('doc'))) {
             $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
 
-            if ($doc->recordId) {
-                $document = $this->documentRepository->findOneByRecordId($doc->recordId);
-            }
-
-            if ($document === null) {
-                // create new Document object
-                $document = GeneralUtility::makeInstance(Document::class);
-            }
-
-            // now there must exist a document object
-            if ($document) {
-                $document->setLocation($input->getOption('doc'));
-            }
+            $document = $this->getDocumentFromUrl($doc, $input->getOption('doc'));
         }
 
         if ($doc === null) {
@@ -208,4 +196,36 @@ class IndexCommand extends BaseCommand
         return BaseCommand::SUCCESS;
     }
 
+    /**
+     * Get document from given URL. Find it in database, if not found create the new one.
+     *
+     * @access private
+     *
+     * @param AbstractDocument $doc
+     * @param string $url
+     *
+     * @return Document
+     */
+    private function getDocumentFromUrl($doc, string $url): Document
+    {
+        $document = null;
+
+        if ($doc->recordId) {
+            $document = $this->documentRepository->findOneByRecordId($doc->recordId);
+        } else {
+            $document = $this->documentRepository->findOneByLocation($url);
+        }
+
+        if ($document === null) {
+            // create new Document object
+            $document = GeneralUtility::makeInstance(Document::class);
+        }
+
+        // now there must exist a document object
+        if ($document) {
+            $document->setLocation($url);
+        }
+
+        return $document;
+    }
 }
