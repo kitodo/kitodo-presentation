@@ -1,102 +1,102 @@
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.enableInternalProxy
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.basic.enableInternalProxy
 enableInternalProxy = 0
-# cat=Basic; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.useragent
+# cat=Basic; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.basic.useragent
 useragent = Kitodo.Presentation
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.forceAbsoluteUrl
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.basic.forceAbsoluteUrl
 forceAbsoluteUrl = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.forceAbsoluteUrlHttps
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.basic.forceAbsoluteUrlHttps
 forceAbsoluteUrlHttps = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.caching
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.basic.caching
 caching = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.publishNewCollections
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.basic.publishNewCollections
 publishNewCollections = 1
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.unhideOnIndex
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.basic.unhideOnIndex
 unhideOnIndex = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.useExternalApisForMetadata
+# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.basic.useExternalApisForMetadata
 useExternalApisForMetadata = 0
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.fileGrpImages
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpImages
 fileGrpImages = DEFAULT,MAX
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.fileGrpThumbs
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpThumbs
 fileGrpThumbs = THUMBS
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.fileGrpDownload
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpDownload
 fileGrpDownload = DOWNLOAD
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.fileGrpFulltext
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpFulltext
 fileGrpFulltext = FULLTEXT
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.fileGrpAudio
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpAudio
 fileGrpAudio = AUDIO
-# cat=IIIF; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.indexAnnotations
+# cat=IIIF; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.indexAnnotations
 indexAnnotations = 0
-# cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiifThumbnailWidth
+# cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.iiifThumbnailWidth
 iiifThumbnailWidth = 150
-# cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiifThumbnailHeight
+# cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.iiifThumbnailHeight
 iiifThumbnailHeight = 150
-# cat=Solr; type=user[Kitodo\Dlf\Hooks\ConfigurationForm->checkSolrConnection]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrConnect
+# cat=Solr; type=user[Kitodo\Dlf\Hooks\ConfigurationForm->checkSolrConnection]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrConnect
 solrConnect = 0
-# cat=Solr; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrHttps
+# cat=Solr; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrHttps
 solrHttps = 0
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrHost
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrHost
 solrHost = localhost
-# cat=Solr; type=int[0-65535]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrPort
+# cat=Solr; type=int[0-65535]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrPort
 solrPort = 8983
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrPath
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrPath
 solrPath = /
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrUser
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrUser
 solrUser =
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrPass
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrPass
 solrPass =
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrTimeout
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrTimeout
 solrTimeout = 10
-# cat=Solr; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrAllowCoreDelete
+# cat=Solr; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrAllowCoreDelete
 solrAllowCoreDelete = 0
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldId
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldId
 solrFieldId = id
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldUid
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldUid
 solrFieldUid = uid
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldPid
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldPid
 solrFieldPid = pid
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldPage
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldPage
 solrFieldPage = page
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldPartof
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldPartof
 solrFieldPartof = partof
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldRoot
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldRoot
 solrFieldRoot = root
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldSid
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldSid
 solrFieldSid = sid
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldToplevel
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldToplevel
 solrFieldToplevel = toplevel
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldType
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldType
 solrFieldType = type
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldTitle
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldTitle
 solrFieldTitle = title
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldVolume
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldVolume
 solrFieldVolume = volume
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldDate
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldDate
 solrFieldDate = date
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldThumbnail
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldThumbnail
 solrFieldThumbnail = thumbnail
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldDefault
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldDefault
 solrFieldDefault = default
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldTimestamp
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldTimestamp
 solrFieldTimestamp = timestamp
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldAutocomplete
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldAutocomplete
 solrFieldAutocomplete = autocomplete
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldFulltext
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldFulltext
 solrFieldFulltext = fulltext
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldRecordId
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldRecordId
 solrFieldRecordId = record_id
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldPurl
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldPurl
 solrFieldPurl = purl
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldUrn
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldUrn
 solrFieldUrn = urn
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldLocation
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldLocation
 solrFieldLocation = location
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldCollection
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldCollection
 solrFieldCollection = collection
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldLicense
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldLicense
 solrFieldLicense = license
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldTerms
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldTerms
 solrFieldTerms = terms
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldRestrictions
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldRestrictions
 solrFieldRestrictions = restrictions
-# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solrFieldGeom
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.solrFieldGeom
 solrFieldGeom = geom
