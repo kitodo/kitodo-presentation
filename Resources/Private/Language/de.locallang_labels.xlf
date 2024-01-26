@@ -665,6 +665,10 @@
 				<target>Verwende externe APIs zum Abrufen von Metadaten?: (Standard ist "FALSE")</target>
 				<source>Use external APIs for getting metadata?: (default is "FALSE")</source>
 			</trans-unit>
+            <trans-unit id="config.requiredMetadataFields">
+                <target>Für die Indizierung von Dokumenten erforderliche Metadatenfelder</target>
+                <source>Metadata fields required for indexing documents</source>
+            </trans-unit>
 			<trans-unit id="config.fileGrpImages">
 				<target>Seiten fileGrps: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "DEFAULT,MAX")</target>
 				<source>Page fileGrps: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>

@@ -180,20 +180,29 @@ class IndexCommand extends BaseCommand
 
         if ($dryRun) {
             $io->section('DRY RUN: Would index ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+            $io->success('All done!');
+            return BaseCommand::SUCCESS;
         } else {
-            if ($io->isVerbose()) {
-                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
-            }
             $document->setCurrentDocument($doc);
-            // save to database
-            $this->saveToDatabase($document);
-            // add to index
-            Indexer::add($document, $this->documentRepository);
+
+            if ($io->isVerbose()) {
+                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
+            }
+            $isSaved = $this->saveToDatabase($document);
+
+            if ($isSaved) {
+                if ($io->isVerbose()) {
+                    $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on Solr core ' . $solrCoreUid . '.');
+                }
+                Indexer::add($document, $this->documentRepository);
+
+                $io->success('All done!');
+                return BaseCommand::SUCCESS;
+            }
+
+            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (document format or record identifier) in this document.');
+            return BaseCommand::FAILURE;
         }
-
-        $io->success('All done!');
-
-        return BaseCommand::SUCCESS;
     }
 
     /**
