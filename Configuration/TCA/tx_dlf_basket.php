@@ -12,12 +12,11 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_basket',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'fe_user_id' => 'fe_user_id',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -29,7 +28,7 @@ return [
     ],
     'columns' => [
         'label' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_basket.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -39,7 +38,7 @@ return [
             ],
         ],
         'session_id' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.sessionId',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_basket.sessionId',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -49,7 +48,7 @@ return [
             ],
         ],
         'doc_ids' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.docIds',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_basket.docIds',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -59,7 +58,7 @@ return [
             ],
         ],
         'fe_user_id' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.feUser',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_basket.feUser',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -73,7 +72,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_basket.tab1,label,session_id,doc_ids,fe_user_id'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_basket.tab1,label,session_id,doc_ids,fe_user_id'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

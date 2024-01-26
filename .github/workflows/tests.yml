@@ -2,16 +2,16 @@ name: Unit and Functional Testing
 
 on:
   push:
-    branches: [master]
+    branches: [ "master" ]
   pull_request:
-    branches: [master]
+    branches: [ "master" ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        typo3: [9.5, 10.4]
+        typo3: [ 10.4, 11.5 ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

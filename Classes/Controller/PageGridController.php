@@ -11,15 +11,16 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Pagination\PageGridPagination;
+use Kitodo\Dlf\Pagination\PageGridPaginator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Controller class for the plugin 'Page Grid'.
  *
- * @author Henrik Lochmann <dev@mentalmotive.com>
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class PageGridController extends AbstractController
@@ -27,9 +28,11 @@ class PageGridController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         $this->loadDocument();
         if (
@@ -37,12 +40,12 @@ class PageGridController extends AbstractController
             || empty($this->extConf['fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $entryArray = [];
 
-        $numPages = $this->document->getDoc()->numPages;
+        $numPages = $this->document->getCurrentDocument()->numPages;
         // Iterate through visible page set and display thumbnails.
         for ($i = 1; $i <= $numPages; $i++) {
             $foundEntry = $this->getEntry($i, $this->extConf['fileGrpThumbs']);
@@ -50,7 +53,23 @@ class PageGridController extends AbstractController
             $entryArray[] = $foundEntry;
         }
 
-        $this->view->assign('pageGridEntries', $entryArray);
+        // Get current page from request data because the parameter is shared between plugins
+        $currentPage = $this->requestData['page'];
+        if (empty($currentPage)) {
+            $currentPage = 1;
+        }
+
+        $itemsPerPage = $this->settings['paginate']['itemsPerPage'];
+        if (empty($itemsPerPage)) {
+            $itemsPerPage = 25;
+        }
+
+        $pageGridPaginator = new PageGridPaginator($entryArray, $currentPage, $itemsPerPage);
+        $pageGridPagination = new PageGridPagination($pageGridPaginator);
+
+        $pagination = $this->buildSimplePagination($pageGridPagination, $pageGridPaginator);
+        $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $pageGridPaginator ]);
+
         $this->view->assign('docUid', $this->requestData['id']);
     }
 
@@ -59,25 +78,25 @@ class PageGridController extends AbstractController
      *
      * @access protected
      *
-     * @param int $number: The page to render
-     * @param string $fileGrpThumbs: the file group(s) of thumbs
+     * @param int $number The page to render
+     * @param string $fileGrpThumbs the file group(s) of thumbs
      *
      * @return array The rendered entry ready for fluid
      */
-    protected function getEntry($number, $fileGrpThumbs)
+    protected function getEntry(int $number, string $fileGrpThumbs): array
     {
         // Set pagination.
-        $entry['pagination'] = htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['orderlabel']);
+        $entry['pagination'] = htmlspecialchars($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['orderlabel']);
         $entry['page'] = $number;
         $entry['thumbnail'] = '';
 
         // Get thumbnail or placeholder.
         $fileGrpsThumb = GeneralUtility::trimExplode(',', $fileGrpThumbs);
-        if (is_array($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['files'])) {
-            if (array_intersect($fileGrpsThumb, array_keys($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['files'])) !== []) {
+        if (is_array($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'])) {
+            if (array_intersect($fileGrpsThumb, array_keys($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'])) !== []) {
                 while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-                    if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['files'][$fileGrpThumb])) {
-                        $entry['thumbnail'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$number]]['files'][$fileGrpThumb]);
+                    if (!empty($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$fileGrpThumb])) {
+                        $entry['thumbnail'] = $this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$fileGrpThumb]);
                         break;
                     }
                 }

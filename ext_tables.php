@@ -13,12 +13,12 @@
 // Register backend module.
 if (\TYPO3_MODE === 'BE') {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'Kitodo.Dlf',
+        'Dlf',
         'tools', // Main area
         'newTenantModule', // Name of the module
         'bottom', // Position of the module
         [// Allowed controller action combinations
-            Backend\NewTenant::class => 'index,error,addFormat,addMetadata,addSolrCore,addStructure',
+            \Kitodo\Dlf\Controller\Backend\NewTenantController::class => 'index,error,addFormat,addMetadata,addSolrCore,addStructure',
         ],
         [// Additional configuration
             'access'    => 'admin',

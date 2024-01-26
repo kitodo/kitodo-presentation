@@ -15,11 +15,30 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
+/**
+ * Standard wrapper view helper
+ * 
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class StdWrapViewHelper extends AbstractViewHelper
 {
+    /**
+     * @access protected
+     * @var bool
+     */
     protected $escapeOutput = false;
 
-    public function initializeArguments()
+    /**
+     * Initializes arguments.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('wrap', 'string', 'The wrap information', true);
@@ -29,9 +48,11 @@ class StdWrapViewHelper extends AbstractViewHelper
     /**
      * Wraps the given value
      *
+     * @access public
+     *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         $wrap = $this->arguments['wrap'];
         $data = $this->arguments['data'] ?? [];

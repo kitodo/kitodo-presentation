@@ -12,28 +12,25 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
-use Kitodo\Dlf\Domain\Model\Library;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Connection;
 use Phpoaipmh\Endpoint;
 use Phpoaipmh\Exception\BaseOaipmhException;
 
 /**
  * CLI Command for harvesting OAI-PMH interfaces into database and Solr.
  *
- * @author Sebastian Meyer <sebastian.meyer@opencultureconsulting.com>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class HarvestCommand extends BaseCommand
@@ -41,9 +38,11 @@ class HarvestCommand extends BaseCommand
     /**
      * Configure the command by defining the name, options and arguments
      *
+     * @access public
+     *
      * @return void
      */
-    public function configure()
+    public function configure(): void
     {
         $this
             ->setDescription('Harvest OAI-PMH contents into database and Solr.')
@@ -93,14 +92,16 @@ class HarvestCommand extends BaseCommand
     }
 
     /**
-     * Executes the command to index the given document to db and solr.
+     * Executes the command to index the given document to DB and SOLR.
+     * 
+     * @access protected
      *
      * @param InputInterface $input The input parameters
      * @param OutputInterface $output The Symfony interface for outputs on console
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 
@@ -186,6 +187,7 @@ class HarvestCommand extends BaseCommand
         if (
             !is_array($input->getOption('set'))
             && !empty($input->getOption('set'))
+            && !empty($oai)
         ) {
             $setsAvailable = $oai->listSets();
             foreach ($setsAvailable as $setAvailable) {
@@ -200,9 +202,14 @@ class HarvestCommand extends BaseCommand
             }
         }
 
+        $identifiers = [];
         // Get OAI record identifiers to process.
         try {
-            $identifiers = $oai->listIdentifiers('mets', $from, $until, $set);
+            if (!empty($oai)) {
+                $identifiers = $oai->listIdentifiers('mets', $from, $until, $set);
+            } else {
+                $io->error('ERROR: OAI interface does not exist.');
+            }
         } catch (BaseoaipmhException $exception) {
             $this->handleOaiError($exception, $io);
         }
@@ -219,7 +226,7 @@ class HarvestCommand extends BaseCommand
             $docLocation = $baseLocation . http_build_query($params);
             // ...index the document...
             $document = null;
-            $doc = Doc::getInstance($docLocation, ['storagePid' => $this->storagePid], true);
+            $doc = AbstractDocument::getInstance($docLocation, ['storagePid' => $this->storagePid], true);
 
             if ($doc === null) {
                 $io->warning('WARNING: Document "' . $docLocation . '" could not be loaded. Skip to next document.');
@@ -244,11 +251,11 @@ class HarvestCommand extends BaseCommand
                 if ($io->isVerbose()) {
                     $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
-                $document->setDoc($doc);
+                $document->setCurrentDocument($doc);
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
-                Indexer::add($document);
+                Indexer::add($document, $this->documentRepository);
             }
         }
 
@@ -260,12 +267,14 @@ class HarvestCommand extends BaseCommand
     /**
      * Handles OAI errors
      *
+     * @access protected
+     *
      * @param BaseoaipmhException $exception Instance of exception thrown
      * @param SymfonyStyle $io
      *
      * @return void
      */
-    protected function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io)
+    protected function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io): void
     {
         $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $exception->getMessage());
     }

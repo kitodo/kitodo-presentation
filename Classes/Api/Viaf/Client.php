@@ -14,56 +14,55 @@ namespace Kitodo\Dlf\Api\Viaf;
 
 use Psr\Http\Message\RequestFactoryInterface;
 use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * VIAF API Client class
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  **/
 class Client
 {
     /**
-     * This holds the logger
-     *
-     * @var LogManager
      * @access protected
+     * @var Logger This holds the logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
-     * The ORCID API endpoint
-     *
-     * @var string
+     * @access private
+     * @var string The VIAF API endpoint
      **/
-    private $endpoint = 'viaf.xml';
+    private string $endpoint = 'viaf.xml';
 
     /**
-     * The VIAF URL for the profile
-     *
-     * @var string
+     * @access private
+     * @var string The VIAF URL for the profile
      **/
-    private $viafUrl = null;
+    private string $viafUrl;
 
     /**
-     * The request object
-     *
-     * @var RequestFactoryInterface
+     * @access private
+     * @var RequestFactoryInterface The request object
      **/
-    private $requestFactory = null;
+    private RequestFactoryInterface $requestFactory;
 
     /**
      * Constructs a new instance
      *
-     * @param string $viaf: the VIAF identifier of the profile
+     * @access public
+     *
+     * @param string $viaf the VIAF identifier of the profile
      * @param RequestFactory $requestFactory a request object to inject
+     *
      * @return void
      **/
-    public function __construct($viaf, RequestFactory $requestFactory)
+    public function __construct(string $viaf, RequestFactory $requestFactory)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->viafUrl = 'http://viaf.org/viaf/' . $viaf;
@@ -73,16 +72,20 @@ class Client
     /**
      * Sets API endpoint
      *
-     * @param string  $endpoint the shortname of the endpoint
+     * @access public
+     *
+     * @param string $endpoint the shortname of the endpoint
      *
      * @return void
      */
-    public function setEndpoint($endpoint) {
+    public function setEndpoint(string $endpoint): void {
         $this->endpoint = $endpoint;
     }
 
     /**
      * Get the profile data
+     *
+     * @access public
      *
      * @return object|bool
      **/
@@ -100,10 +103,12 @@ class Client
 
     /**
      * Creates the qualified API endpoint for retrieving the desired data
+     * 
+     * @access private
      *
      * @return string
      **/
-    protected function getApiEndpoint()
+    private function getApiEndpoint(): string
     {
         return $this->viafUrl . '/' . $this->endpoint;
     }

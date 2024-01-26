@@ -15,17 +15,18 @@ namespace Kitodo\Dlf\Hooks;
 use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Helper for FlexForm's custom "itemsProcFunc"
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ItemsProcFunc implements LoggerAwareInterface
@@ -33,6 +34,7 @@ class ItemsProcFunc implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
+     * @access protected
      * @var int
      */
     protected $storagePid;
@@ -42,11 +44,11 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param array &$params: An array with parameters
+     * @param array &$params An array with parameters
      *
      * @return void
      */
-    public function toolList(&$params)
+    public function toolList(array &$params): void
     {
         foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
             $params['items'][] = [Helper::getLanguageService()->sL($label), $class];
@@ -54,50 +56,49 @@ class ItemsProcFunc implements LoggerAwareInterface
     }
 
     /**
-     * Extract typoscript configuration from site root of the plugin
+     * Extract typoScript configuration from site root of the plugin
      *
      * @access public
      *
-     * @param $params
+     * @param array $params
      *
      * @return void
      */
-    public function getTyposcriptConfigFromPluginSiteRoot($params) {
+    public function getTyposcriptConfigFromPluginSiteRoot(array $params): void
+    {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $pid = $params['flexParentDatabaseRow']['pid'];
-        $rootline = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($pid);
-        $siterootRow = [];
-        foreach ($rootline as $_row) {
+        $rootLine = BackendUtility::BEgetRootLine($pid);
+        $siteRootRow = [];
+        foreach ($rootLine as $_row) {
             if ($_row['is_siteroot'] == '1') {
-                $siterootRow = $_row;
+                $siteRootRow = $_row;
                 break;
             }
         }
 
         try {
-            $ts = $objectManager->get(\TYPO3\CMS\Core\TypoScript\TemplateService::class, [$siterootRow['uid']]);
-            $ts->rootLine = $rootline;
-            $ts->runThroughTemplates($rootline, 0);
+            $ts = $objectManager->get(TemplateService::class, [$siteRootRow['uid']]);
+            $ts->rootLine = $rootLine;
+            $ts->runThroughTemplates($rootLine, 0);
             $ts->generateConfig();
+            $typoScriptConfig = $ts->setup;
+            $this->storagePid = $typoScriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
-
-        $typoscriptConfig = $ts->setup;
-        $this->storagePid = $typoscriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
-
     }
 
     /**
-     * Helper to get flexform's items array for plugin "Search"
+     * Helper to get flexForm's items array for plugin "Search"
      *
      * @access public
      *
-     * @param array &$params: An array with parameters
+     * @param array &$params An array with parameters
      *
      * @return void
      */
-    public function extendedSearchList(&$params)
+    public function extendedSearchList(array &$params): void
     {
         $this->generateList(
             $params,
@@ -109,11 +110,11 @@ class ItemsProcFunc implements LoggerAwareInterface
     }
 
     /**
-     * Helper to get flexform's items array for plugin "Search"
+     * Helper to get flexForm's items array for plugin "Search"
      *
      * @access public
      *
-     * @param array &$params: An array with parameters
+     * @param array &$params An array with parameters
      */
     public function getFacetsList(array &$params): void
     {
@@ -131,15 +132,15 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param array &$params: An array with parameters
-     * @param string $fields: Comma-separated list of fields to fetch
-     * @param string $table: Table name to fetch the items from
-     * @param string $sorting: Field to sort items by (optionally appended by 'ASC' or 'DESC')
-     * @param string $andWhere: Additional AND WHERE clause
+     * @param array &$params An array with parameters
+     * @param string $fields Comma-separated list of fields to fetch
+     * @param string $table Table name to fetch the items from
+     * @param string $sorting Field to sort items by (optionally appended by 'ASC' or 'DESC')
+     * @param string $andWhere Additional AND WHERE clause
      *
      * @return void
      */
-    protected function generateList(&$params, $fields, $table, $sorting, $andWhere = '')
+    protected function generateList(array &$params, string $fields, string $table, string $sorting, string $andWhere = ''): void
     {
         $this->getTyposcriptConfigFromPluginSiteRoot($params);
 
@@ -158,10 +159,8 @@ class ItemsProcFunc implements LoggerAwareInterface
             ->orderBy($sorting)
             ->execute();
 
-        while ($resArray = $result->fetch(\PDO::FETCH_NUM)) {
-            if ($resArray) {
-                $params['items'][] = $resArray;
-            }
+        while ($resArray = $result->fetchNumeric()) {
+            $params['items'][] = $resArray;
         }
     }
 }

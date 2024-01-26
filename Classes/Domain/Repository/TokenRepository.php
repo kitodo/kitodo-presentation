@@ -12,20 +12,28 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
-
-class TokenRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+/**
+ * Token repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class TokenRepository extends Repository
 {
     /**
      * Delete all expired token
+     *
+     * @access public
      *
      * @param int $expireTime
      *
      * @return void
      */
-    public function deleteExpiredTokens($expireTime)
+    public function deleteExpiredTokens(int $expireTime): void
     {
         $query = $this->createQuery();
 

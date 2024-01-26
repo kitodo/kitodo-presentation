@@ -13,7 +13,7 @@
       data-namespace-typo3-fluid="true">
 
 <ul>
-    <f:if condition="{annotationtool}">
+    <f:if condition="{renderAnnotationTool}">
         <f:then>
             <li>
                 <span class="tx-dlf-tools-annotations">
@@ -34,7 +34,7 @@
         </f:then>
     </f:if>
 
-    <f:if condition="{imagemanipulationtool}">
+    <f:if condition="{renderImageManipulationTool}">
         <f:then>
             <li>
                 <span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools"
@@ -45,7 +45,7 @@
         </f:then>
     </f:if>
 
-    <f:if condition="{imagedownloadtool} && {imageDownload}">
+    <f:if condition="{renderImageDownloadTool} && {imageDownload}">
         <f:then>
             <li>
                 <span class="tx-dlf-tools-imagedownload">
@@ -75,7 +75,7 @@
         </f:then>
     </f:if>
 
-    <f:if condition="{fulltexttool}">
+    <f:if condition="{renderFulltextTool}">
         <f:then>
             <li>
                 <span class="tx-dlf-tools-fulltext">
@@ -97,7 +97,7 @@
         </f:then>
     </f:if>
 
-    <f:if condition="{fulltextdownloadtool}">
+    <f:if condition="{renderFulltextDownloadTool}">
         <f:then>
             <li>
                 <span class="tx-dlf-tools-fulltextdownload">
@@ -119,7 +119,7 @@
         </f:then>
     </f:if>
 
-    <f:if condition="{pdfdownloadtool}">
+    <f:if condition="{renderPdfDownloadTool}">
         <f:then>
             <li>
                 <span class="tx-dlf-tools-pdf-page">
@@ -156,7 +156,7 @@
         </f:then>
     </f:if>
 
-    <f:if condition="{searchindocumenttool} && {searchInDocument}">
+    <f:if condition="{renderSearchInDocumentTool} && {searchInDocument}">
         <f:then>
             <li>
                 <f:if condition="{settings.searchUrl}">
@@ -164,7 +164,7 @@
                         <f:variable name="actionUrl" value="{settings.searchUrl}" />
                     </f:then>
                     <f:else>
-                        <f:variable name="actionUrl" value="{f:uri.page(pageUid='{viewData.requestData.pageUid}')}" />
+                        <f:variable name="actionUrl" value="{f:uri.page(pageUid='{viewData.pageUid}')}" />
                     </f:else>
                 </f:if>
                 <form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="{actionUrl}" method="get" enctype="multipart/form-data">
@@ -177,6 +177,7 @@
                         <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
                         <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.LABEL_START}" value="0" />
                         <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.LABEL_ID}" value="{searchInDocument.CURRENT_DOCUMENT}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-pid" name="{searchInDocument.LABEL_PID}" value="{viewData.pageUid}" />
                         <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.LABEL_PAGE_URL}" />
                         <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.LABEL_HIGHLIGHT_WORD}" />
                         <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.LABEL_ENCRYPTED}" value="{searchInDocument.SOLR_ENCRYPTED}" />

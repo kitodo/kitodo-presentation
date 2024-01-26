@@ -14,84 +14,68 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\IiifManifest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Database\Connection;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
 use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 
 /**
  * Controller class for the plugin 'Page View'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class PageViewController extends AbstractController
 {
     /**
-     * Holds the controls to add to the map
-     *
-     * @var array
      * @access protected
+     * @var array Holds the controls to add to the map
      */
-    protected $controls = [];
+    protected array $controls = [];
 
     /**
-     * Holds the current images' URLs and MIME types
-     *
-     * @var array
      * @access protected
+     * @var array Holds the current images' URLs and MIME types
      */
-    protected $images = [];
+    protected array $images = [];
 
     /**
-     * Holds the current fulltexts' URLs
-     *
-     * @var array
      * @access protected
+     * @var array Holds the current full texts' URLs
      */
-    protected $fulltexts = [];
+    protected array $fulltexts = [];
 
     /**
      * Holds the current AnnotationLists / AnnotationPages
      *
-     * @var array
      * @access protected
+     * @var array Holds the current AnnotationLists / AnnotationPages
      */
-    protected $annotationContainers = [];
+    protected array $annotationContainers = [];
 
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return '';
-        } else {
-            if (!empty($this->requestData['logicalPage'])) {
-                $this->requestData['page'] = $this->document->getDoc()->getPhysicalPage($this->requestData['logicalPage']);
-                // The logical page parameter should not appear again
-                unset($this->requestData['logicalPage']);
-            }
-            // Set default values if not set.
-            // $this->requestData['page'] may be integer or string (physical structure @ID)
-            if ((int) $this->requestData['page'] > 0 || empty($this->requestData['page'])) {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getDoc()->numPages, 1);
-            } else {
-                $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getDoc()->physicalStructure);
-            }
-            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+            return;
         }
+
+        $this->setPage();
+
         // Get image data.
         $this->images[0] = $this->getImage($this->requestData['page']);
         $this->fulltexts[0] = $this->getFulltext($this->requestData['page']);
         $this->annotationContainers[0] = $this->getAnnotationContainers($this->requestData['page']);
-        if ($this->requestData['double'] && $this->requestData['page'] < $this->document->getDoc()->numPages) {
+        if ($this->requestData['double'] && $this->requestData['page'] < $this->document->getCurrentDocument()->numPages) {
             $this->images[1] = $this->getImage($this->requestData['page'] + 1);
             $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
             $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
@@ -114,33 +98,25 @@ class PageViewController extends AbstractController
      *
      * @access protected
      *
-     * @param int $page: Page number
+     * @param int $page Page number
      *
      * @return array URL and MIME type of fulltext file
      */
-    protected function getFulltext($page)
+    protected function getFulltext(int $page): array
     {
         $fulltext = [];
         // Get fulltext link.
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext])) {
-                $fulltext['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpFulltext];
+            if (!empty($fileId)) {
+                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+                $fulltext['url'] = $file['location'];
                 if ($this->settings['useInternalProxy']) {
-                    // Configure @action URL for form.
-                    $uri = $this->uriBuilder->reset()
-                        ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments([
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $fulltext['url'],
-                            'uHash' => GeneralUtility::hmac($fulltext['url'], 'PageViewProxy')
-                            ])
-                        ->build();
-
-                    $fulltext['url'] = $uri;
+                    $this->configureProxyUrl($fulltext['url']);
                 }
-                $fulltext['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpFulltext]);
+                $fulltext['mimetype'] = $file['mimeType'];
                 break;
             } else {
                 $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $fileGrpFulltext . '"');
@@ -159,7 +135,7 @@ class PageViewController extends AbstractController
      *
      * @return void
      */
-    protected function addViewerJS()
+    protected function addViewerJS(): void
     {
         // Viewer configuration.
         $viewerConfiguration = '$(document).ready(function() {
@@ -183,15 +159,14 @@ class PageViewController extends AbstractController
      *
      * @access protected
      *
-     * @param int $page: Page number
-     * @return array An array containing the IRIs of the AnnotationLists / AnnotationPages as well as
-     *               some information about the canvas.
+     * @param int $page Page number
+     * @return array An array containing the IRIs of the AnnotationLists / AnnotationPages as well as some information about the canvas.
      */
-    protected function getAnnotationContainers($page)
+    protected function getAnnotationContainers(int $page): array
     {
-        if ($this->document->getDoc() instanceof IiifManifest) {
-            $canvasId = $this->document->getDoc()->physicalStructure[$page];
-            $iiif = $this->document->getDoc()->getIiif();
+        if ($this->document->getCurrentDocument() instanceof IiifManifest) {
+            $canvasId = $this->document->getCurrentDocument()->physicalStructure[$page];
+            $iiif = $this->document->getCurrentDocument()->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
                 /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
@@ -240,35 +215,28 @@ class PageViewController extends AbstractController
      *
      * @access protected
      *
-     * @param int $page: Page number
+     * @param int $page Page number
      *
      * @return array URL and MIME type of image file
      */
-    protected function getImage($page)
+    protected function getImage(int $page): array
     {
         $image = [];
         // Get @USE value of METS fileGrp.
         $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']);
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
             // Get image link.
-            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages])) {
-                $image['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
-                $image['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$page]]['files'][$fileGrpImages]);
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpImages];
+            if (!empty($fileId)) {
+                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+                $image['url'] = $file['location'];
+                $image['mimetype'] = $file['mimeType'];
 
                 // Only deliver static images via the internal PageViewProxy.
-                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetdadataURL` in `OLSources.js`.)
+                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
                 if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
-                    // Configure @action URL for form.
-                    $uri = $this->uriBuilder->reset()
-                        ->setTargetPageUid($GLOBALS['TSFE']->id)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments([
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $image['url'],
-                            'uHash' => GeneralUtility::hmac($image['url'], 'PageViewProxy')
-                            ])
-                        ->build();
-                    $image['url'] = $uri;
+                    $this->configureProxyUrl($image['url']);
                 }
                 break;
             } else {

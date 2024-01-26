@@ -12,52 +12,62 @@
 
 namespace Kitodo\Dlf\Domain\Model;
 
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 /**
  * Domain model of 'Structure'.
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Structure extends AbstractEntity
 {
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Structure
+     * @access protected
+     * @var Structure
      */
     protected $l18nParent;
 
     /**
+     * @access protected
      * @var int
      */
     protected $toplevel;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $indexName;
 
     /**
+     * @access protected
      * @var string
      */
     protected $oaiName;
 
     /**
+     * @access protected
      * @var int
      */
     protected $thumbnail;
 
     /**
+     * @access protected
      * @var int
      */
     protected $status;
 
     /**
-     * @return \Kitodo\Dlf\Domain\Model\Structure
+     * @return Structure
      */
     public function getL18nParent(): Structure
     {
@@ -65,7 +75,7 @@ class Structure extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @param int $l18nParent
+     * @param Structure $l18nParent
      */
     public function setL18nParent(Structure $l18nParent): void
     {

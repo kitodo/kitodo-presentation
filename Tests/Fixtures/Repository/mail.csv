@@ -1,0 +1,6 @@
+"tx_dlf_mail",,,,,,,
+,"uid","pid","deleted","sorting","mail","name","label"
+,101,30000,0,10,"Mail","Name","Mail-Label-1"
+,102,30000,0,10,"Mail","Name","Mail-Label-2"
+,103,20000,0,10,"Mail","Name","Mail-Label-3"
+,104,20000,0,10,"Mail","Name","Mail-Label-4"

@@ -12,8 +12,7 @@
 
 namespace Kitodo\Dlf\ExpressionLanguage;
 
-use Kitodo\Dlf\Common\Doc;
-use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
@@ -21,17 +20,19 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
+use TYPO3\CMS\Core\ExpressionLanguage\RequestWrapper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterface, LoggerAwareInterface
@@ -39,9 +40,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     use LoggerAwareTrait;
 
     /**
+     * @access public
+     *
      * @return ExpressionFunction[] An array of Function instances
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             $this->getDocumentTypeFunction(),
@@ -51,42 +54,63 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * This holds the current document
      *
-     * @var \Kitodo\Dlf\Domain\Model\Document
+     * @var Document|null
      * @access protected
      */
-    protected $document;
+    protected ?Document $document;
+
+    /**
+     * @var ConfigurationManager
+     */
+    protected $configurationManager;
+
+    public function injectConfigurationManager(ConfigurationManager $configurationManager): void
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
     /**
      * @var DocumentRepository
      */
     protected $documentRepository;
-
+    
+    /**
+     * @param DocumentRepository $documentRepository
+     */
+    public function injectDocumentRepository(DocumentRepository $documentRepository): void
+    {
+        $this->documentRepository = $documentRepository;
+    }
     /**
      * Initialize the extbase repositories
+     *
+     * @access protected
      *
      * @param int $storagePid The storage pid
      *
      * @return void
      */
-    protected function initializeRepositories($storagePid)
+    protected function initializeRepositories(int $storagePid): void
     {
-        Helper::polyfillExtbaseClassesForTYPO3v9();
-
-        // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        // TODO: change it as it is deprecated since 10.4 and will be removed in 12.x
+        // TODO: necessary to test calendar view after updating this code
         $configurationManager = $objectManager->get(ConfigurationManager::class);
-        $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $this->injectConfigurationManager($configurationManager);
+        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-        $configurationManager->setConfiguration($frameworkConfiguration);
+        $this->configurationManager->setConfiguration($frameworkConfiguration);
 
-        $this->documentRepository = $objectManager->get(DocumentRepository::class);
+        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
     }
 
     /**
      * Shortcut function to access field values
      *
-     * @return \Symfony\Component\ExpressionLanguage\ExpressionFunction
+     * @access protected
+     *
+     * @return ExpressionFunction
      */
     protected function getDocumentTypeFunction(): ExpressionFunction
     {
@@ -112,17 +136,17 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
-                if ($this->document === null) {
+                if ($this->document === null || $this->document->getCurrentDocument() === null) {
                     return $type;
                 }
                 // Set PID for metadata definitions.
-                $this->document->getDoc()->cPid = $cPid;
+                $this->document->getCurrentDocument()->cPid = $cPid;
 
-                $metadata = $this->document->getDoc()->getTitledata($cPid);
+                $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
                 if (!empty($metadata['type'][0])) {
                     // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
                     if (
-                        $this->document->getDoc() instanceof IiifManifest
+                        $this->document->getCurrentDocument() instanceof IiifManifest
                         && array_search($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']) !== false
                     ) {
                         return $type;
@@ -138,12 +162,12 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @access protected
      *
-     * @param array $requestData: The request data
-     * @param int $pid: Storage Pid
+     * @param array $requestData The request data
+     * @param int $pid Storage Pid
      *
      * @return void
      */
-    protected function loadDocument($requestData, int $pid)
+    protected function loadDocument(array $requestData, int $pid): void
     {
         // Try to get document format from database
         if (!empty($requestData['id'])) {
@@ -155,13 +179,13 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 // find document from repository by uid
                 $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id'], ['storagePid' => $pid]);
                 if ($this->document) {
-                    $doc = Doc::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                    $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
                 } else {
                     $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
                 }
             } else if (GeneralUtility::isValidUrl($requestData['id'])) {
 
-                $doc = Doc::getInstance($requestData['id'], ['storagePid' => $pid], true);
+                $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid], true);
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
@@ -180,7 +204,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             }
 
             if ($this->document !== null && $doc !== null) {
-                $this->document->setDoc($doc);
+                $this->document->setCurrentDocument($doc);
             }
 
         } elseif (!empty($requestData['recordId'])) {
@@ -188,15 +212,15 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
 
             if ($this->document !== null) {
-                $doc = Doc::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
-                if ($this->document !== null && $doc !== null) {
-                    $this->document->setDoc($doc);
+                $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                if ($doc !== null) {
+                    $this->document->setCurrentDocument($doc);
                 } else {
                     $this->logger->error('Failed to load document with record ID "' . $requestData['recordId'] . '"');
                 }
             }
         } else {
-            $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
+            $this->logger->error('Empty UID or invalid PID "' . $pid . '" for document loading');
         }
     }
 }

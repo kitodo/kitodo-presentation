@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Command;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -29,80 +29,99 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * Base class for CLI Command classes.
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class BaseCommand extends Command
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
     /**
+     * @access protected
      * @var LibraryRepository
      */
-    protected $libraryRepository;
+    protected LibraryRepository $libraryRepository;
 
     /**
+     * @access protected
      * @var StructureRepository
      */
-    protected $structureRepository;
+    protected StructureRepository $structureRepository;
 
     /**
+     * @access protected
      * @var int
      */
-    protected $storagePid;
+    protected int $storagePid;
 
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Library
-     */
-    protected $owner;
-
-    /**
-     * @var array
      * @access protected
+     * @var Library|null
      */
-    protected $extConf;
+    protected ?Library $owner;
+
+    /**
+     * @access protected
+     * @var array
+     */
+    protected array $extConf;
+
+    /**
+     * @var ConfigurationManager
+     */
+    protected ConfigurationManager $configurationManager;
+
+    public function __construct(CollectionRepository $collectionRepository,
+                                DocumentRepository   $documentRepository,
+                                LibraryRepository    $libraryRepository,
+                                StructureRepository  $structureRepository,
+                                ConfigurationManager $configurationManager)
+    {
+        parent::__construct();
+
+        $this->collectionRepository = $collectionRepository;
+        $this->documentRepository = $documentRepository;
+        $this->libraryRepository = $libraryRepository;
+        $this->structureRepository = $structureRepository;
+        $this->configurationManager = $configurationManager;
+    }
 
     /**
      * Initialize the extbase repository based on the given storagePid.
      *
-     * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependency Injection.
+     * TYPO3 10+: Find a better solution e.g. based on Symfony Dependency Injection.
+     *
+     * @access protected
      *
      * @param int $storagePid The storage pid
      *
      * @return bool
      */
-    protected function initializeRepositories($storagePid)
+    protected function initializeRepositories(int $storagePid): bool
     {
         if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-            $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+            $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
 
             $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-            $configurationManager->setConfiguration($frameworkConfiguration);
-
-            // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-            $this->collectionRepository = $objectManager->get(CollectionRepository::class);
-            $this->documentRepository = $objectManager->get(DocumentRepository::class);
-            $this->libraryRepository = $objectManager->get(LibraryRepository::class);
-            $this->structureRepository = $objectManager->get(StructureRepository::class);
+            $this->configurationManager->setConfiguration($frameworkConfiguration);
 
             // Get extension configuration.
             $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
@@ -116,6 +135,8 @@ class BaseCommand extends Command
 
     /**
      * Return matching uid of Solr core depending on the input value.
+     *
+     * @access protected
      *
      * @param array $solrCores array of the valid Solr cores
      * @param string|bool|null $inputSolrId possible uid or name of Solr core
@@ -134,6 +155,8 @@ class BaseCommand extends Command
 
     /**
      * Fetches all Solr cores on given page.
+     *
+     * @access protected
      *
      * @param int $pageId The UID of the Solr core or 0 to disable indexing
      *
@@ -156,7 +179,7 @@ class BaseCommand extends Command
             )
             ->execute();
 
-        while ($record = $result->fetch()) {
+        while ($record = $result->fetchAssociative()) {
             $solrCores[$record['index_name']] = $record['uid'];
         }
 
@@ -166,21 +189,22 @@ class BaseCommand extends Command
     /**
      * Update or insert document to database
      *
-     * @param int|string $doc The document uid from DB OR the location of a mets document.
+     * @access protected
      *
-     * @return bool true on success
+     * @param Document $document The document instance
+     *
+     * @return bool true on success, false otherwise
      */
-    protected function saveToDatabase(Document $document)
+    protected function saveToDatabase(Document $document): bool
     {
-        $success = false;
-
-        $doc = $document->getDoc();
+        $doc = $document->getCurrentDocument();
         if ($doc === null) {
-            return $success;
+            return false;
         }
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $doc->cPid = $this->storagePid;
 
-        $metadata = $doc->getTitledata($this->storagePid);
+        $metadata = $doc->getToplevelMetadata($this->storagePid);
 
         // set title data
         $document->setTitle($metadata['title'][0] ? : '');
@@ -198,7 +222,7 @@ class BaseCommand extends Command
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
         $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
-        $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0], 'tx_dlf_structures');
+        $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
         $document->setStructure($structure);
 
         if (is_array($metadata['collection'])) {
@@ -214,6 +238,8 @@ class BaseCommand extends Command
                     $documentCollection->setDescription('');
                     // add to CollectionRepository
                     $this->collectionRepository->add($documentCollection);
+                    // persist collection to prevent duplicates
+                    $persistenceManager->persistAll();
                 }
                 // add to document
                 $document->addCollection($documentCollection);
@@ -258,9 +284,9 @@ class BaseCommand extends Command
             }
         }
 
-        // to be still (re-) implemented
-        // 'volume' => $metadata['volume'][0],
-        // 'volume_sorting' => $metadata['volume_sorting'][0],
+        // set volume data
+        $document->setVolume($metadata['volume'][0] ? : '');
+        $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
 
         // Get UID of parent document.
         if ($document->getDocumentFormat() === 'METS') {
@@ -275,12 +301,9 @@ class BaseCommand extends Command
             $this->documentRepository->update($document);
         }
 
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
 
-        $success = true;
-
-        return $success;
+        return true;
     }
 
     /**
@@ -288,43 +311,38 @@ class BaseCommand extends Command
      * Currently only applies to METS documents.
      *
      * @access protected
+     * 
+     * @param Document $document for which parent UID should be taken
      *
      * @return int The parent document's id.
      */
-    protected function getParentDocumentUidForSaving(Document $document)
+    protected function getParentDocumentUidForSaving(Document $document): int
     {
-        $doc = $document->getDoc();
+        $doc = $document->getCurrentDocument();
 
-        if ($doc !== null) {
-            // Same as MetsDocument::parentHref (TODO: Use it)
-            // Get the closest ancestor of the current document which has a MPTR child.
-            $parentMptr = $doc->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $doc->toplevelId . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
-            if (!empty($parentMptr)) {
-                $parentLocation = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+        if ($doc !== null && !empty($doc->parentHref)) {
+            // find document object by record_id of parent
+            $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid]);
 
-                // find document object by record_id of parent
-                $parentDoc = Doc::getInstance($parentLocation, ['storagePid' => $this->storagePid]);
+            if ($parent->recordId) {
+                $parentDocument = $this->documentRepository->findOneByRecordId($parent->recordId);
 
-                if ($parentDoc->recordId) {
-                    $parentDocument = $this->documentRepository->findOneByRecordId($parentDoc->recordId);
+                if ($parentDocument === null) {
+                    // create new Document object
+                    $parentDocument = GeneralUtility::makeInstance(Document::class);
+                }
 
-                    if ($parentDocument === null) {
-                        // create new Document object
-                        $parentDocument = GeneralUtility::makeInstance(Document::class);
-                    }
+                $parentDocument->setOwner($this->owner);
+                $parentDocument->setCurrentDocument($parent);
+                $parentDocument->setLocation($doc->parentHref);
+                $parentDocument->setSolrcore($document->getSolrcore());
 
-                    $parentDocument->setOwner($this->owner);
-                    $parentDocument->setDoc($parentDoc);
-                    $parentDocument->setLocation($parentLocation);
-                    $parentDocument->setSolrcore($document->getSolrcore());
+                $success = $this->saveToDatabase($parentDocument);
 
-                    $success = $this->saveToDatabase($parentDocument);
-
-                    if ($success === true) {
-                        // add to index
-                        Indexer::add($parentDocument);
-                        return $parentDocument->getUid();
-                    }
+                if ($success === true) {
+                    // add to index
+                    Indexer::add($parentDocument, $this->documentRepository);
+                    return $parentDocument->getUid();
                 }
             }
         }

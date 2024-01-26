@@ -250,6 +250,9 @@ The collection plugin shows one collection, all collections or selected collecti
        Data type
    :Default:
        Default
+   :Description:
+       Description
+          
 
  - :Property:
        collections
@@ -693,12 +696,28 @@ Search
        Data type
    :Default:
        Default
+   :Description:
+       Description
 
  - :Property:
        fulltext
    :Data Type:
        :ref:`t3tsref:data-type-boolean`
    :Default:
+
+ - :Property:
+       fulltextPreselect
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
+       datesearch
+   :Data Type:
+       :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
 
  - :Property:
        solrcore
@@ -832,6 +851,8 @@ Table Of Contents
        Data type
    :Default:
        Default
+   :Description:
+       Description
 
  - :Property:
        excludeOther_
@@ -858,6 +879,24 @@ Table Of Contents
    :Data Type:
        :ref:`t3tsref:data-type-page-id`
    :Default:
+
+ - :Property:
+       titleReplacement
+   :Data Type:
+       :ref:`t3tsref:data-type-list`
+   :Default:
+   :Description:
+       List containing types for which title should be replaced
+       when the label is empty. The defined fields are used for
+       replacement. Example data:
+            0 {
+                type = issue
+                fields = type,year
+            }
+            1 {
+                type = volume
+                fields = type,volume
+            }
 
 Toolbox
 -------

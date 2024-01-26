@@ -9,8 +9,8 @@
            - note
 
    paths-ignore:
-     - Resources/Public/JavaScript/OpenLayers
-     - Resources/Public/JavaScript/Toastify
      - Resources/Public/JavaScript/jPlayer
      - Resources/Public/JavaScript/jQuery
      - Resources/Public/JavaScript/jQueryUI
+     - Resources/Public/JavaScript/OpenLayers
+     - Resources/Public/JavaScript/Toastify

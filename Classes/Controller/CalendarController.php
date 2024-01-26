@@ -12,49 +12,53 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Generator;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Controller class for the plugin 'Calendar'.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class CalendarController extends AbstractController
 {
     /**
+     * @access protected
      * @var StructureRepository
      */
-    protected $structureRepository;
+    protected StructureRepository $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
-    public function injectStructureRepository(StructureRepository $structureRepository)
+    public function injectStructureRepository(StructureRepository $structureRepository): void
     {
         $this->structureRepository = $structureRepository;
     }
 
     /**
-     * This holds all issues for the list view.
-     *
-     * @var array
      * @access protected
+     * @var array This holds all issues for the list view.
      */
-    protected $allIssues = [];
+    protected array $allIssues = [];
 
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         // Set initial document (anchor or year file) if configured.
         if (empty($this->requestData['id']) && !empty($this->settings['initialDocument'])) {
@@ -65,10 +69,10 @@ class CalendarController extends AbstractController
         $this->loadDocument();
         if ($this->document === null) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
-        $metadata = $this->document->getDoc()->getTitledata();
+        $metadata = $this->document->getCurrentDocument()->getToplevelMetadata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
@@ -79,10 +83,8 @@ class CalendarController extends AbstractController
             case 'newspaper':
             case 'ephemera':
                 $this->forward('years', null, null, $this->requestData);
-                break;
             case 'year':
                 $this->forward('calendar', null, null, $this->requestData);
-                break;
             case 'issue':
             default:
                 break;
@@ -95,111 +97,25 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
-     *
      * @return void
      */
-    public function calendarAction()
+    public function calendarAction(): void
     {
         // access arguments passed by the mainAction()
-        $mainrequestData = $this->request->getArguments();
+        $mainRequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $this->requestData = array_merge($this->requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainRequestData);
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
+        $calendarData = $this->buildCalendar();
 
-        $issues = [];
-
-        // Process results.
-        if ($documents->count() === 0) {
-            $toc = $this->document->getDoc()->tableOfContents;
-
-            foreach ($toc[0]['children'] as $year) {
-                foreach ($year['children'] as $month) {
-                    foreach ($month['children'] as $day) {
-                        foreach ($day['children'] as $issue) {
-                            $title = $issue['label'] ?: $issue['orderlabel'];
-                            if (strtotime($title) !== false) {
-                                $title = strftime('%x', strtotime($title));
-                            }
-
-                            $issues[] = [
-                                'uid' => $issue['points'],
-                                'title' => $title,
-                                'year' => $day['orderlabel'],
-                            ];
-                        }
-                    }
-                }
-            }
-        } else {
-            /** @var Document $document */
-            foreach ($documents as $document) {
-                // Set title for display in calendar view.
-                if (!empty($document->getTitle())) {
-                    $title = $document->getTitle();
-                } else {
-                    $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
-                    if (strtotime($title) !== false) {
-                        $title = strftime('%x', strtotime($title));
-                    }
-                }
-                $issues[] = [
-                    'uid' => $document->getUid(),
-                    'title' => $title,
-                    'year' => $document->getYear()
-                ];
-            }
-        }
-
-        //  We need an array of issues with year => month => day number as key.
-        $calendarIssuesByYear = [];
-        foreach ($issues as $issue) {
-            $dateTimestamp = strtotime($issue['year']);
-            if ($dateTimestamp !== false) {
-                $_year = date('Y', $dateTimestamp);
-                $_month = date('n', $dateTimestamp);
-                $_day = date('j', $dateTimestamp);
-                $calendarIssuesByYear[$_year][$_month][$_day][] = $issue;
-            } else {
-                $this->logger->warning('Document with UID ' . $issue['uid'] . 'has no valid date of publication');
-            }
-        }
-        // Sort by years.
-        ksort($calendarIssuesByYear);
-        // Build calendar for year (default) or season.
-        $calendarData = [];
-        $iteration = 1;
-        foreach ($calendarIssuesByYear as $year => $calendarIssuesByMonth) {
-            // Sort by months.
-            ksort($calendarIssuesByMonth);
-            // Default: First month is January, last month is December.
-            $firstMonth = 1;
-            $lastMonth = 12;
-            // Show calendar from first issue up to end of season if applicable.
-            if (
-                empty($this->settings['showEmptyMonths'])
-                && count($calendarIssuesByYear) > 1
-            ) {
-                if ($iteration == 1) {
-                    $firstMonth = (int) key($calendarIssuesByMonth);
-                } elseif ($iteration == count($calendarIssuesByYear)) {
-                    end($calendarIssuesByMonth);
-                    $lastMonth = (int) key($calendarIssuesByMonth);
-                }
-            }
-            $this->getCalendarYear($calendarData, $calendarIssuesByMonth, $year, $firstMonth, $lastMonth);
-            $iteration++;
-        }
         // Prepare list as alternative view.
         $issueData = [];
         foreach ($this->allIssues as $dayTimestamp => $issues) {
@@ -212,14 +128,14 @@ class CalendarController extends AbstractController
         $this->view->assign('issueData', $issueData);
 
         // Link to current year.
-        $linkTitleData = $this->document->getDoc()->getTitledata();
+        $linkTitleData = $this->document->getCurrentDocument()->getToplevelMetadata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
         $this->view->assign('calendarData', $calendarData);
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
-        $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getDoc()->tableOfContents[0]['points']);
-        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getPartof()) ?: $this->document->getDoc()->tableOfContents[0]['label']);
+        $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getCurrentDocument()->tableOfContents[0]['points']);
+        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getPartof()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
     }
 
     /**
@@ -229,19 +145,19 @@ class CalendarController extends AbstractController
      *
      * @return void
      */
-    public function yearsAction()
+    public function yearsAction(): void
     {
         // access arguments passed by the mainAction()
-        $mainrequestData = $this->request->getArguments();
+        $mainRequestData = $this->request->getArguments();
 
         // merge both arguments together --> passing id by GET parameter tx_dlf[id] should win
-        $this->requestData = array_merge($this->requestData, $mainrequestData);
+        $this->requestData = array_merge($this->requestData, $mainRequestData);
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         // Get all children of anchor. This should be the year anchor documents
@@ -250,7 +166,7 @@ class CalendarController extends AbstractController
         $years = [];
         // Process results.
         if (count($documents) === 0) {
-            foreach ($this->document->getDoc()->tableOfContents[0]['children'] as $id => $year) {
+            foreach ($this->document->getCurrentDocument()->tableOfContents[0]['children'] as $id => $year) {
                 $yearLabel = empty($year['label']) ? $year['orderlabel'] : $year['label'];
 
                 if (empty($yearLabel)) {
@@ -286,15 +202,15 @@ class CalendarController extends AbstractController
                 $yearFilled = [];
                 $min = $yearArray[0]['title'];
                 // round the starting decade down to zero for equal rows
-                $min = substr_replace($min, "0", -1);
-                $max = $yearArray[count($yearArray) - 1]['title'];
+                $min = (int) substr_replace($min, "0", -1);
+                $max = (int) $yearArray[count($yearArray) - 1]['title'];
                 // if we have an actual documentId it should be used, otherwise leave empty
                 for ($i = 0; $i < $max - $min + 1; $i++) {
                     $key = array_search($min + $i, array_column($yearArray, 'title'));
                     if (is_int($key)) {
                         $yearFilled[] = $yearArray[$key];
                     } else {
-                        $yearFilled[] = ['title' => $min+$i, 'documentId' => ''];
+                        $yearFilled[] = ['title' => $min + $i, 'documentId' => ''];
                     }
                 }
                 $yearArray = $yearFilled;
@@ -304,7 +220,7 @@ class CalendarController extends AbstractController
         }
 
         $this->view->assign('documentId', $this->document->getUid());
-        $this->view->assign('allYearDocTitle', $this->document->getDoc()->getTitle($this->document->getUid()));
+        $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle((int) $this->document->getUid()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
     }
 
     /**
@@ -318,9 +234,9 @@ class CalendarController extends AbstractController
      * @param int $firstMonth 1 for January, 2 for February, ... 12 for December
      * @param int $lastMonth 1 for January, 2 for February, ... 12 for December
      *
-     * @return string Content for template subpart
+     * @return void
      */
-    protected function getCalendarYear(&$calendarData, $calendarIssuesByMonth, $year, $firstMonth = 1, $lastMonth = 12)
+    protected function getCalendarYear(array &$calendarData, array $calendarIssuesByMonth, int $year, int $firstMonth = 1, int $lastMonth = 12): void
     {
         for ($i = $firstMonth; $i <= $lastMonth; $i++) {
             $key = $year . '-' . $i;
@@ -433,6 +349,153 @@ class CalendarController extends AbstractController
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Build calendar for year (default) or season.
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function buildCalendar(): array
+    {
+        $issuesByYear = $this->getIssuesByYear();
+
+        $calendarData = [];
+        $iteration = 1;
+        foreach ($issuesByYear as $year => $issuesByMonth) {
+            // Sort by months.
+            ksort($issuesByMonth);
+            // Default: First month is January, last month is December.
+            $firstMonth = 1;
+            $lastMonth = 12;
+            // Show calendar from first issue up to end of season if applicable.
+            if (
+                empty($this->settings['showEmptyMonths'])
+                && count($issuesByYear) > 1
+            ) {
+                if ($iteration == 1) {
+                    $firstMonth = (int) key($issuesByMonth);
+                } elseif ($iteration == count($issuesByYear)) {
+                    end($issuesByMonth);
+                    $lastMonth = (int) key($issuesByMonth);
+                }
+            }
+            $this->getCalendarYear($calendarData, $issuesByMonth, $year, $firstMonth, $lastMonth);
+            $iteration++;
+        }
+
+        return $calendarData;
+    }
+
+    /**
+     * Get issues by year
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function getIssuesByYear(): array
+    {
+        //  We need an array of issues with year => month => day number as key.
+        $issuesByYear = [];
+
+        foreach ($this->getIssues() as $issue) {
+            $dateTimestamp = strtotime($issue['year']);
+            if ($dateTimestamp !== false) {
+                $_year = date('Y', $dateTimestamp);
+                $_month = date('n', $dateTimestamp);
+                $_day = date('j', $dateTimestamp);
+                $issuesByYear[$_year][$_month][$_day][] = $issue;
+            } else {
+                $this->logger->warning('Document with UID ' . $issue['uid'] . 'has no valid date of publication');
+            }
+        }
+        // Sort by years.
+        ksort($issuesByYear);
+
+        return $issuesByYear;
+    }
+
+    /**
+     * Gets issues from table of contents or documents.
+     *
+     * @access private
+     *
+     * @return Generator
+     */
+    private function getIssues(): Generator
+    {
+        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
+
+        // Process results.
+        if ($documents->count() === 0) {
+            return $this->getIssuesFromTableOfContents();
+        }
+
+        return $this->getIssuesFromDocuments($documents);
+    }
+
+    /**
+     * Gets issues from table of contents.
+     *
+     * @access private
+     *
+     * @return Generator
+     */
+    private function getIssuesFromTableOfContents(): Generator
+    {
+        $toc = $this->document->getCurrentDocument()->tableOfContents;
+
+        foreach ($toc[0]['children'] as $year) {
+            foreach ($year['children'] as $month) {
+                foreach ($month['children'] as $day) {
+                    foreach ($day['children'] as $issue) {
+                        $title = $issue['label'] ?: $issue['orderlabel'];
+                        if (strtotime($title) !== false) {
+                            $title = strftime('%x', strtotime($title));
+                        }
+
+                        yield [
+                            'uid' => $issue['points'],
+                            'title' => $title,
+                            'year' => $day['orderlabel'],
+                        ];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Gets issues from documents.
+     *
+     * @access private
+     *
+     * @param array|QueryResultInterface $documents to create issues
+     *
+     * @return Generator
+     */
+    private function getIssuesFromDocuments($documents): Generator
+    {
+        /** @var Document $document */
+        foreach ($documents as $document) {
+            // Set title for display in calendar view.
+            if (!empty($document->getTitle())) {
+                $title = $document->getTitle();
+            } else {
+                $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
+                if (strtotime($title) !== false) {
+                    $title = strftime('%x', strtotime($title));
+                }
+            }
+            yield [
+                'uid' => $document->getUid(),
+                'title' => $title,
+                'year' => $document->getYear()
+            ];
         }
     }
 }

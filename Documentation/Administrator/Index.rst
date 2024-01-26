@@ -172,7 +172,7 @@ This is not possible anymore, but instead they must be included via the overarch
    // After
    lib.imagemanipulation < tt_content.list.20.dlf_toolbox {
      settings {
-       tools = imagemanipulationtool
+       tool = imagemanipulationtool
      }
    }
 

@@ -60,15 +60,15 @@
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageLast</numIndex>
                                         <numIndex index="1">pageLast</numIndex>
                                     </numIndex>
-                                    <numIndex index="7">
+                                    <numIndex index="8">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.listview</numIndex>
                                         <numIndex index="1">listview</numIndex>
                                     </numIndex>
-                                    <numIndex index="8">
+                                    <numIndex index="9">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.zoom</numIndex>
                                         <numIndex index="1">zoom</numIndex>
                                     </numIndex>
-                                    <numIndex index="9">
+                                    <numIndex index="10">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.rotation</numIndex>
                                         <numIndex index="1">rotation</numIndex>
                                     </numIndex>

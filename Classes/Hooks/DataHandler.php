@@ -12,12 +12,11 @@
 
 namespace Kitodo\Dlf\Hooks;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use Kitodo\Dlf\Domain\Model\Document;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -29,9 +28,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class DataHandler implements LoggerAwareInterface
@@ -39,11 +38,19 @@ class DataHandler implements LoggerAwareInterface
     use LoggerAwareTrait;
 
     /**
-     * @var DocumentRepository
+     * @access protected
+     * @var DocumentRepository|null
      */
-    protected $documentRepository;
+    protected ?DocumentRepository $documentRepository;
 
-    protected function getDocumentRepository()
+    /**
+     * Gets document repository
+     *
+     * @access protected
+     *
+     * @return DocumentRepository
+     */
+    protected function getDocumentRepository(): DocumentRepository
     {
         if ($this->documentRepository === null) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -58,14 +65,14 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $status: 'new' or 'update'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
-     * @param array &$fieldArray: Array of field values
+     * @param string $status 'new' or 'update'
+     * @param string $table The destination table
+     * @param int|string $id The uid of the record
+     * @param array &$fieldArray Array of field values
      *
      * @return void
      */
-    public function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray)
+    public function processDatamap_postProcessFieldArray(string $status, string $table, $id, array &$fieldArray): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
     {
         if ($status == 'new') {
             switch ($table) {
@@ -144,13 +151,13 @@ class DataHandler implements LoggerAwareInterface
                             ->select($table . '.is_listed AS is_listed')
                             ->from($table)
                             ->where(
-                                $queryBuilder->expr()->eq($table . '.uid', intval($id)),
+                                $queryBuilder->expr()->eq($table . '.uid', (int) $id),
                                 Helper::whereExpression($table)
                             )
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             // Reset storing to current.
                             $fieldArray['index_stored'] = $resArray['is_listed'];
                         }
@@ -169,13 +176,13 @@ class DataHandler implements LoggerAwareInterface
                             ->select($table . '.index_autocomplete AS index_autocomplete')
                             ->from($table)
                             ->where(
-                                $queryBuilder->expr()->eq($table . '.uid', intval($id)),
+                                $queryBuilder->expr()->eq($table . '.uid', (int) $id),
                                 Helper::whereExpression($table)
                             )
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             // Reset indexing to current.
                             $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
                         }
@@ -190,14 +197,14 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $status: 'new' or 'update'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
-     * @param array &$fieldArray: Array of field values
+     * @param string $status 'new' or 'update'
+     * @param string $table The destination table
+     * @param int|string $id The uid of the record
+     * @param array &$fieldArray Array of field values
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $id, &$fieldArray)
+    public function processDatamap_afterDatabaseOperations(string $status, string $table, $id, array &$fieldArray): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
     {
         if ($status == 'update') {
             switch ($table) {
@@ -231,37 +238,37 @@ class DataHandler implements LoggerAwareInterface
                             ->where(
                                 $queryBuilder->expr()->eq(
                                     'tx_dlf_documents_join.uid',
-                                    intval($id)
+                                    (int) $id
                                 )
                             )
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetch()) {
+                        if ($resArray = $result->fetchAssociative()) {
                             if ($resArray['hidden']) {
                                 // Establish Solr connection.
                                 $solr = Solr::getInstance($resArray['core']);
                                 if ($solr->ready) {
                                     // Delete Solr document.
                                     $updateQuery = $solr->service->createUpdate();
-                                    $updateQuery->addDeleteQuery('uid:' . $id);
+                                    $updateQuery->addDeleteQuery('uid:' . (int) $id);
                                     $updateQuery->addCommit();
                                     $solr->service->update($updateQuery);
                                 }
                             } else {
                                 // Reindex document.
-                                $document = $this->getDocumentRepository()->findByUid($id);
-                                $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                                $document = $this->getDocumentRepository()->findByUid((int) $id);
+                                $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                                 if ($document !== null && $doc !== null) {
-                                    $document->setDoc($doc);
-                                    Indexer::add($document);
+                                    $document->setCurrentDocument($doc);
+                                    Indexer::add($document, $this->getDocumentRepository());
                                 } else {
-                                    $this->logger->error('Failed to re-index document with UID ' . $id);
+                                    $this->logger->error('Failed to re-index document with UID ' . (string) $id);
                                 }
                             }
                         }
                     }
-                break;
+                    break;
             }
         }
     }
@@ -271,13 +278,13 @@ class DataHandler implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $command: 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
-     * @param string $table: The destination table
-     * @param int $id: The uid of the record
+     * @param string $command 'move', 'copy', 'localize', 'inlineLocalizeSynchronize', 'delete' or 'undelete'
+     * @param string $table The destination table
+     * @param int|string $id The uid of the record
      *
      * @return void
      */
-    public function processCmdmap_postProcess($command, $table, $id)
+    public function processCmdmap_postProcess(string $command, string $table, $id): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
     {
         if (
             in_array($command, ['move', 'delete', 'undelete'])
@@ -308,13 +315,13 @@ class DataHandler implements LoggerAwareInterface
                 ->where(
                     $queryBuilder->expr()->eq(
                         'tx_dlf_documents_join.uid',
-                        intval($id)
+                        (int) $id
                     )
                 )
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetch()) {
+            if ($resArray = $result->fetchAssociative()) {
                 switch ($command) {
                     case 'move':
                     case 'delete':
@@ -323,7 +330,7 @@ class DataHandler implements LoggerAwareInterface
                         if ($solr->ready) {
                             // Delete Solr document.
                             $updateQuery = $solr->service->createUpdate();
-                            $updateQuery->addDeleteQuery('uid:' . $id);
+                            $updateQuery->addDeleteQuery('uid:' . (int) $id);
                             $updateQuery->addCommit();
                             $solr->service->update($updateQuery);
                             if ($command == 'delete') {
@@ -332,13 +339,13 @@ class DataHandler implements LoggerAwareInterface
                         }
                     case 'undelete':
                         // Reindex document.
-                        $document = $this->getDocumentRepository()->findByUid($id);
-                        $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+                        $document = $this->getDocumentRepository()->findByUid((int) $id);
+                        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
                         if ($document !== null && $doc !== null) {
-                            $document->setDoc($doc);
-                            Indexer::add($document);
+                            $document->setCurrentDocument($doc);
+                            Indexer::add($document, $this->getDocumentRepository());
                         } else {
-                            $this->logger->error('Failed to re-index document with UID ' . $id);
+                            $this->logger->error('Failed to re-index document with UID ' . (string) $id);
                         }
                         break;
                 }
@@ -364,11 +371,11 @@ class DataHandler implements LoggerAwareInterface
                         'tx_dlf_solrcores.index_name AS core'
                     )
                     ->from('tx_dlf_solrcores')
-                    ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', intval($id)))
+                    ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', (int) $id))
                     ->setMaxResults(1)
                     ->execute();
 
-                if ($resArray = $result->fetch()) {
+                if ($resArray = $result->fetchAssociative()) {
                     // Establish Solr connection.
                     $solr = Solr::getInstance();
                     if ($solr->ready) {

@@ -11,7 +11,7 @@
 
 namespace Kitodo\Dlf\Controller\Backend;
 
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Model\Metadata;
@@ -22,110 +22,126 @@ use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
-
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
-use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * Controller class for the backend module 'New Tenant'.
  *
- * @author Christopher Timm <timm@effective-webwork.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class NewTenantController extends AbstractController
 {
     /**
+     * @access protected
      * @var int
      */
-    protected $pid;
+    protected int $pid;
 
     /**
+     * @access protected
      * @var array
      */
-    protected $pageInfo;
+    protected array $pageInfo;
 
     /**
-     * All configured site languages
-     *
-     * @var array
+     * @access protected
+     * @var array All configured site languages
      */
-    protected $siteLanguages;
+    protected array $siteLanguages;
 
     /**
-     * LanguageFactory to get language key/values by our own.
-     *
-     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory
+     * @access protected
+     * @var LocalizationFactory Language factory to get language key/values by our own.
      */
-    protected $languageFactory;
+    protected LocalizationFactory $languageFactory;
 
     /**
-     * Backend Template Container
-     *
-     * @var string
+     * @access protected
+     * @var string Backend Template Container
      */
-    protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
+    protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
+     * @access protected
      * @var FormatRepository
      */
-    protected $formatRepository;
+    protected FormatRepository $formatRepository;
 
     /**
+     * @access public
+     *
      * @param FormatRepository $formatRepository
+     *
+     * @return void
      */
-    public function injectFormatRepository(FormatRepository $formatRepository)
+    public function injectFormatRepository(FormatRepository $formatRepository): void
     {
         $this->formatRepository = $formatRepository;
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
     {
         $this->metadataRepository = $metadataRepository;
     }
 
     /**
+     * @access protected
      * @var StructureRepository
      */
-    protected $structureRepository;
+    protected StructureRepository $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
-    public function injectStructureRepository(StructureRepository $structureRepository)
+    public function injectStructureRepository(StructureRepository $structureRepository): void
     {
         $this->structureRepository = $structureRepository;
     }
 
     /**
+     * @access protected
      * @var SolrCoreRepository
      */
-    protected $solrCoreRepository;
+    protected SolrCoreRepository $solrCoreRepository;
 
     /**
+     * @access public
+     *
      * @param SolrCoreRepository $solrCoreRepository
+     *
+     * @return void
      */
-    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository)
+    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository): void
     {
         $this->solrCoreRepository = $solrCoreRepository;
     }
@@ -133,8 +149,11 @@ class NewTenantController extends AbstractController
     /**
      * Initialization for all actions
      *
+     * @access protected
+     *
+     * @return void
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         $this->pid = (int) GeneralUtility::_GP('id');
 
@@ -155,8 +174,12 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding formats records
+     *
+     * @access public
+     *
+     * @return void
      */
-    public function addFormatAction()
+    public function addFormatAction(): void
     {
         // Include formats definition file.
         $formatsDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
@@ -193,8 +216,12 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding metadata records
+     *
+     * @access public
+     *
+     * @return void
      */
-    public function addMetadataAction()
+    public function addMetadataAction(): void
     {
         // Include metadata definition file.
         $metadataDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/MetadataDefaults.php');
@@ -268,8 +295,12 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding Solr core records
+     *
+     * @access public
+     *
+     * @return void
      */
-    public function addSolrCoreAction()
+    public function addSolrCoreAction(): void
     {
         $doPersist = false;
 
@@ -300,8 +331,12 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding structure records
+     *
+     * @access public
+     *
+     * @return void
      */
-    public function addStructureAction()
+    public function addStructureAction(): void
     {
         // Include structure definition file.
         $structureDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/StructureDefaults.php');
@@ -350,11 +385,14 @@ class NewTenantController extends AbstractController
 
     /**
      * Set up the doc header properly here
+     * 
+     * @access protected
      *
      * @param ViewInterface $view
+     *
      * @return void
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView(ViewInterface $view): void
     {
         /** @var BackendTemplateView $view */
         parent::initializeView($view);
@@ -372,8 +410,9 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
+     * @return void
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $recordInfos = [];
 
@@ -403,21 +442,26 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
+     * @return void
      */
-    public function errorAction()
+    // @phpstan-ignore-next-line
+    public function errorAction(): void
     {
+        // TODO: Call parent::errorAction() when dropping support for TYPO3 v10.
     }
 
     /**
      * Get language label for given key and language.
+     * 
+     * @access protected
      *
      * @param string $index
      * @param string $lang
      * @param array $langArray
      *
-     * @access public
+     * @return string
      */
-    protected function getLLL($index, $lang, $langArray)
+    protected function getLLL(string $index, string $lang, array $langArray): string
     {
         if (isset($langArray[$lang][$index][0]['target'])) {
             return $langArray[$lang][$index][0]['target'];

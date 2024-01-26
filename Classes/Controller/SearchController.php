@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -13,65 +14,77 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\Solr;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Kitodo\Dlf\Common\SolrPaginator;
+use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Solarium\Component\Result\FacetSet;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Controller class for the plugin 'Search'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
- * @author Frank Ulrich Weber <fuw@zeutschel.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class SearchController extends AbstractController
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
     {
         $this->collectionRepository = $collectionRepository;
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
     {
         $this->metadataRepository = $metadataRepository;
     }
 
     /**
-     * @var array $this->searchParams: The current search parameter
      * @access protected
+     * @var array The current search parameter
      */
-    protected $searchParams;
+    protected ?array $searchParams;
 
     /**
      * Search Action
      *
+     * @access public
+     *
      * @return void
      */
-    public function searchAction()
+    public function searchAction(): void
     {
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
@@ -85,9 +98,11 @@ class SearchController extends AbstractController
      *
      * This shows the search form and optional the facets and extended search form.
      *
+     * @access public
+     *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         $listViewSearch = false;
         // Quit without doing anything if required variables are not set.
@@ -102,36 +117,39 @@ class SearchController extends AbstractController
         $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
 
         if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
-            $this->searchParams = array_merge($this->searchParams ? : [], $listRequestData['searchParameter']);
+            $this->searchParams = array_merge($this->searchParams ?: [], $listRequestData['searchParameter']);
             $listViewSearch = true;
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
         }
 
         // sanitize date search input
-        if(empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+        if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
             $this->searchParams['dateFrom'] = '*';
         }
-        if(empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+        if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
             $this->searchParams['dateTo'] = 'NOW';
         }
-        if($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+        if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
             $tmpDate = $this->searchParams['dateFrom'];
             $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
             $this->searchParams['dateTo'] = $tmpDate;
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
-        $widgetPage = $this->getParametersSafely('@widget_0');
-        if (empty($widgetPage)) {
-            $widgetPage = ['currentPage' => 1];
+        $currentPage = $this->getParametersSafely('page');
+        if (empty($currentPage)) {
+            $currentPage = 1;
         }
 
         // If a targetPid is given, the results will be shown by ListView on the target page.
         if (!empty($this->settings['targetPid']) && !empty($this->searchParams) && !$listViewSearch) {
-            $this->redirect('main', 'ListView', null,
+            $this->redirect(
+                'main',
+                'ListView',
+                null,
                 [
                     'searchParameter' => $this->searchParams,
-                    'widgetPage' => $widgetPage
+                    'page' => $currentPage
                 ], $this->settings['targetPid']
             );
         }
@@ -144,24 +162,33 @@ class SearchController extends AbstractController
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-            $solrResults = [];
+            $solrResults = null;
             $numResults = 0;
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
                 $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
                 $numResults = $solrResults->getNumFound();
+
+                $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
+                if (empty($itemsPerPage)) {
+                    $itemsPerPage = 25;
+                }
+                $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
+                $simplePagination = new SimplePagination($solrPaginator);
+
+                $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
+                $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
             }
 
-            $this->view->assign('documents', $solrResults);
+            $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
             $this->view->assign('numResults', $numResults);
-            $this->view->assign('widgetPage', $widgetPage);
+            $this->view->assign('page', $currentPage);
             $this->view->assign('lastSearch', $this->searchParams);
             $this->view->assign('listedMetadata', $listedMetadata);
             $this->view->assign('sortableMetadata', $sortableMetadata);
 
             // Add the facets menu
             $this->addFacetsMenu();
-
         }
 
         // Get additional fields for extended search.
@@ -185,14 +212,12 @@ class SearchController extends AbstractController
      * Adds the facets menu to the search form
      *
      * @access protected
-     *
-     * @return string HTML output of facets menu
      */
-    protected function addFacetsMenu()
+    protected function addFacetsMenu(): void
     {
         // Quit without doing anything if no facets are configured.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
-            return '';
+            return;
         }
 
         // Get facets from plugin configuration.
@@ -209,14 +234,12 @@ class SearchController extends AbstractController
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
+     * @param array $facets
      *
      * @return array HMENU array
      */
-    public function makeFacetsMenuArray($facets)
+    public function makeFacetsMenuArray(array $facets): array
     {
-        $menuArray = [];
         // Set default value for facet search.
         $search = [
             'query' => '*:*',
@@ -225,14 +248,10 @@ class SearchController extends AbstractController
                     'facetset' => [
                         'facet' => []
                     ]
-                ]
+                ],
+                'filterquery' => []
             ]
         ];
-
-        // Set needed parameters for facet search.
-        if (empty($search['params']['filterquery'])) {
-            $search['params']['filterquery'] = [];
-        }
 
         $fields = Solr::getFields();
 
@@ -245,7 +264,7 @@ class SearchController extends AbstractController
             // If the query already is a fulltext query e.g using the facets
             $searchParams['query'] = empty($matches[1]) ? $searchParams['query'] : $matches[1];
             // Search in fulltext field if applicable. Query must not be empty!
-            if (!empty($this->searchParams['query'])) {
+            if (!empty($searchParams['query'])) {
                 $search['query'] = $fields['fulltext'] . ':(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
             }
         } else {
@@ -255,44 +274,9 @@ class SearchController extends AbstractController
             }
         }
 
-        // if collections are given, we prepare the collection query string
-        // extract collections from collection parameter
-        $collection = null;
-        if ($this->searchParams['collection']) {
-            foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collection[] = $this->collectionRepository->findByUid($collectionEntry);
-            }
-            
-        }
-        if ($collection) {
-            $collectionsQueryString = '';
-            $virtualCollectionsQueryString = '';
-            foreach ($collection as $collectionEntry) {
-                // check for virtual collections query string
-                if($collectionEntry->getIndexSearch()) {
-                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
-                }
-                else {
-                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
-                }
-            }
-            
-            // distinguish between simple collection browsing and actual searching within the collection(s)
-            if(!empty($collectionsQueryString)) {
-                if(empty($searchParams['query'])) {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
-                } else {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
-                }
-            }
-
-            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
-            if(!empty($virtualCollectionsQueryString)) {
-                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
-            }
-
-            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
-            $search['params']['filterquery'][]['query'] = implode(" OR ", array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        $collectionsQuery = $this->addCollectionsQuery($search['query']);
+        if (!empty($collectionsQuery)) {
+            $search['params']['filterquery'][]['query'] = $collectionsQuery;
         }
 
         // add filter query for date search
@@ -355,6 +339,13 @@ class SearchController extends AbstractController
         $search['params']['query'] = $search['query'];
         // Perform search.
         $selectQuery = $solr->service->createSelect($search['params']);
+        // check for solr response
+        $solrRequest = $solr->service->createRequest($selectQuery);
+        $response = $solr->service->executeRequest($solrRequest);
+        // return empty facet on solr error
+        if ($response->getStatusCode() == 400) {
+            return [];
+        }
         $results = $solr->service->select($selectQuery);
         $facet = $results->getFacetSet();
 
@@ -372,7 +363,118 @@ class SearchController extends AbstractController
             }
         }
 
-        // Process results.
+        return $this->processResults($facet, $facetCollectionArray, $search);
+    }
+
+    /**
+     * Add the collection query string, if the collections are given.
+     *
+     * @access private
+     *
+     * @param string $query The current query
+     *
+     * @return string The collection query string
+     */
+    private function addCollectionsQuery(string $query): string
+    {
+        // if collections are given, we prepare the collections query string
+        // extract collections from collection parameter
+        $collections = null;
+        if ($this->searchParams['collection']) {
+            foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
+                $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
+            }
+        }
+        if ($collections) {
+            $collectionsQueryString = '';
+            $virtualCollectionsQueryString = '';
+            foreach ($collections as $collectionEntry) {
+                // check for virtual collections query string
+                if ($collectionEntry->getIndexSearch()) {
+                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR (' . $collectionEntry->getIndexSearch() . ')';
+                } else {
+                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
+                }
+            }
+
+            // distinguish between simple collection browsing and actual searching within the collection(s)
+            if (!empty($collectionsQueryString)) {
+                if (empty($query)) {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
+                } else {
+                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
+                }
+            }
+
+            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separately
+            if (!empty($virtualCollectionsQueryString)) {
+                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
+            }
+
+            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
+            return implode(" OR ", array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        }
+        return "";
+    }
+
+    /**
+     * Creates an array for a HMENU entry of a facet value.
+     *
+     * @access private
+     *
+     * @param string $field The facet's index_name
+     * @param string $value The facet's value
+     * @param int $count Number of hits for this facet
+     * @param array $search The parameters of the current search query
+     * @param string &$state The state of the parent item
+     *
+     * @return array The array for the facet's menu entry
+     */
+    private function getFacetsMenuEntry(string $field, string $value, int $count, array $search, string &$state): array
+    {
+        $entryArray = [];
+        $entryArray['title'] = $this->translateValue($field, $value);
+        $entryArray['count'] = $count;
+        $entryArray['doNotLinkIt'] = 0;
+        // Check if facet is already selected.
+        $queryColumn = array_column($search['params']['filterquery'], 'query');
+        $index = array_search($field . ':("' . Solr::escapeQuery($value) . '")', $queryColumn);
+        if ($index !== false) {
+            // Facet is selected, thus remove it from filter.
+            unset($queryColumn[$index]);
+            $queryColumn = array_values($queryColumn);
+            $entryArray['ITEM_STATE'] = 'CUR';
+            $state = 'ACTIFSUB';
+            // Reset facets
+            if ($this->settings['resetFacets']) {
+                $entryArray['resetFacet'] = true;
+                $entryArray['queryColumn'] = $queryColumn;
+            }
+        } else {
+            // Facet is not selected, thus add it to filter.
+            $queryColumn[] = $field . ':("' . Solr::escapeQuery($value) . '")';
+            $entryArray['ITEM_STATE'] = 'NO';
+        }
+        $entryArray['queryColumn'] = $queryColumn;
+
+        return $entryArray;
+    }
+
+    /**
+     * Process results.
+     *
+     * @access private
+     *
+     * @param FacetSet|null $facet
+     * @param array $facetCollectionArray
+     * @param array $search
+     *
+     * @return array menu array
+     */
+    private function processResults($facet, array $facetCollectionArray, array $search): array
+    {
+        $menuArray = [];
+
         if ($facet) {
             foreach ($facet as $field => $values) {
                 $entryArray = [];
@@ -409,78 +511,50 @@ class SearchController extends AbstractController
     }
 
     /**
-     * Creates an array for a HMENU entry of a facet value.
+     * Translates value depending on the index name.
      *
-     * @access protected
+     * @access private
      *
-     * @param string $field: The facet's index_name
-     * @param string $value: The facet's value
-     * @param int $count: Number of hits for this facet
-     * @param array $search: The parameters of the current search query
-     * @param string &$state: The state of the parent item
+     * @param string $field The facet's index_name
+     * @param string $value The facet's value
      *
-     * @return array The array for the facet's menu entry
+     * @return string
      */
-    protected function getFacetsMenuEntry($field, $value, $count, $search, &$state)
+    private function translateValue(string $field, string $value): string
     {
-        $entryArray = [];
-        // Translate value.
-        if ($field == 'owner_faceting') {
-            // Translate name of holding library.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
-        } elseif ($field == 'type_faceting') {
-            // Translate document type.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
-        } elseif ($field == 'collection_faceting') {
-            // Translate name of collection.
-            $entryArray['title'] = htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
-        } elseif ($field == 'language_faceting') {
-            // Translate ISO 639 language code.
-            $entryArray['title'] = htmlspecialchars(Helper::getLanguageName($value));
-        } else {
-            $entryArray['title'] = htmlspecialchars($value);
+        switch ($field) {
+            case 'owner_faceting':
+                // Translate name of holding library.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
+            case 'type_faceting':
+                // Translate document type.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
+            case 'collection_faceting':
+                // Translate name of collection.
+                return htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
+            case 'language_faceting':
+                // Translate ISO 639 language code.
+                return htmlspecialchars(Helper::getLanguageName($value));
+            default:
+                return htmlspecialchars($value);
         }
-        $entryArray['count'] = $count;
-        $entryArray['doNotLinkIt'] = 0;
-        // Check if facet is already selected.
-        $queryColumn = array_column($search['params']['filterquery'], 'query');
-        $index = array_search($field . ':("' . Solr::escapeQuery($value) . '")', $queryColumn);
-        if ($index !== false) {
-            // Facet is selected, thus remove it from filter.
-            unset($queryColumn[$index]);
-            $queryColumn = array_values($queryColumn);
-            $entryArray['ITEM_STATE'] = 'CUR';
-            $state = 'ACTIFSUB';
-            // Reset facets
-            if ($this->settings['resetFacets']) {
-                $entryArray['resetFacet'] = true;
-                $entryArray['queryColumn'] = $queryColumn;
-            }
-        } else {
-            // Facet is not selected, thus add it to filter.
-            $queryColumn[] = $field . ':("' . Solr::escapeQuery($value) . '")';
-            $entryArray['ITEM_STATE'] = 'NO';
-        }
-        $entryArray['queryColumn'] = $queryColumn;
-
-        return $entryArray;
     }
 
     /**
      * Returns the extended search form and adds the JS files necessary for extended search.
      *
-     * @access protected
+     * @access private
      *
-     * @return string The extended search form or an empty string
+     * @return void
      */
-    protected function addExtendedSearch()
+    private function addExtendedSearch(): void
     {
         // Quit without doing anything if no fields for extended search are selected.
         if (
             empty($this->settings['extendedSlotCount'])
             || empty($this->settings['extendedFields'])
         ) {
-            return '';
+            return;
         }
 
         // Get field selector options.

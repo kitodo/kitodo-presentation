@@ -3,13 +3,14 @@
 namespace Kitodo\Dlf\Tests\Functional;
 
 use GuzzleHttp\Client as HttpClient;
-use Kitodo\Dlf\Common\Solr;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
@@ -60,8 +61,15 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      */
     protected $disableJsonWrappedResponse = false;
 
-    /** @var ObjectManager */
+    /**
+     * @var ObjectManager
+     */
     protected $objectManager;
+
+    /**
+     * @var PersistenceManager
+     */
+    protected $persistenceManager;
 
     /**
      * @var string
@@ -91,6 +99,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         parent::setUp();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
         $this->baseUrl = 'http://web:8000/public/typo3temp/var/tests/functional-' . $this->identifier . '/';
         $this->httpClient = new HttpClient([
@@ -104,6 +113,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     protected function getDlfConfiguration()
     {
         return [
+            'useExternalApisForMetadata' => 0,
             'fileGrpImages' => 'DEFAULT,MAX',
             'fileGrpThumbs' => 'THUMBS',
             'fileGrpDownload' => 'DOWNLOAD',
@@ -187,7 +197,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             $GLOBALS['LANG'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)->create($locale);
         } else {
             $typo3MajorVersion = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version())['version_main'];
-            $this->assertEquals(9, $typo3MajorVersion);
+            self::assertEquals(9, $typo3MajorVersion);
 
             $lang = new LanguageService();
             $lang->init($locale);
@@ -200,6 +210,6 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      */
     protected function assertArrayMatches(array $sub, array $super, string $message = '')
     {
-        $this->assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
+        self::assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
     }
 }

@@ -16,9 +16,9 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 /**
  * Controller class for the plugin 'Statistics'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class StatisticsController extends AbstractController
@@ -26,9 +26,11 @@ class StatisticsController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         $foundNumbers = $this->documentRepository->getStatisticsForSelectedCollection($this->settings);
 

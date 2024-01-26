@@ -12,20 +12,30 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-class MetadataRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+/**
+ * Metadata repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class MetadataRepository extends Repository
 {
     /**
      * Finds all collection for the given settings
      *
+     * @access public
+     *
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface
      */
-    public function findBySettings($settings = [])
+    public function findBySettings(array $settings = []): QueryResultInterface
     {
         $query = $this->createQuery();
 

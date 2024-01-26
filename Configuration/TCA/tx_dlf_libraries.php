@@ -12,13 +12,12 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
         'languageField' => 'sys_language_uid',
-        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -66,7 +65,7 @@ return [
         ],
         'label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -78,7 +77,7 @@ return [
         'index_name' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.index_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.index_name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -94,7 +93,7 @@ return [
         ],
         'website' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.website',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.website',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -105,7 +104,7 @@ return [
         ],
         'contact' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.contact',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.contact',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -117,7 +116,7 @@ return [
         'image' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.image',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.image',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('image', [
                 'appearance' => [
                     'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
@@ -126,7 +125,7 @@ return [
         ],
         'oai_label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.oai_label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.oai_label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -136,7 +135,7 @@ return [
         ],
         'oai_base' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.oai_base',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.oai_base',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -147,7 +146,7 @@ return [
         ],
         'opac_label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.opac_label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.opac_label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -157,7 +156,7 @@ return [
         ],
         'opac_base' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.opac_base',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.opac_base',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -168,7 +167,7 @@ return [
         ],
         'union_label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.union_label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.union_label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -178,7 +177,7 @@ return [
         ],
         'union_base' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.union_base',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.union_base',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -189,7 +188,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab1,label,--palette--;;1,website,contact,image,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_libraries.tab3,oai_label,--palette--;;2,opac_label,--palette--;;3,union_label,--palette--;;4'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.tab1,label,--palette--;;1,website,contact,image,--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.tab3,oai_label,--palette--;;2,opac_label,--palette--;;3,union_label,--palette--;;4'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'index_name'],

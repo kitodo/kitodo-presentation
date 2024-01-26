@@ -12,24 +12,22 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * CLI Command for re-indexing collections into database and Solr.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ReindexCommand extends BaseCommand
@@ -37,9 +35,11 @@ class ReindexCommand extends BaseCommand
     /**
      * Configure the command by defining the name, options and arguments
      *
+     * @access public
+     *
      * @return void
      */
-    public function configure()
+    public function configure(): void
     {
         $this
             ->setDescription('Reindex a collection into database and Solr.')
@@ -83,14 +83,16 @@ class ReindexCommand extends BaseCommand
     }
 
     /**
-     * Executes the command to index the given document to db and solr.
+     * Executes the command to index the given document to DB and SOLR.
+     *
+     * @access protected
      *
      * @param InputInterface $input The input parameters
      * @param OutputInterface $output The Symfony interface for outputs on console
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 
@@ -160,7 +162,7 @@ class ReindexCommand extends BaseCommand
         }
 
         foreach ($documents as $id => $document) {
-            $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
+            $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
 
             if ($doc === null) {
                 $io->warning('WARNING: Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
@@ -173,14 +175,14 @@ class ReindexCommand extends BaseCommand
                 if ($io->isVerbose()) {
                     $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . ($id + 1) . '/' . count($documents) . ' with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
-                $document->setDoc($doc);
+                $document->setCurrentDocument($doc);
                 // save to database
                 $this->saveToDatabase($document);
                 // add to index
-                Indexer::add($document);
+                Indexer::add($document, $this->documentRepository);
             }
             // Clear document registry to prevent memory exhaustion.
-            Doc::clearRegistry();
+            AbstractDocument::clearRegistry();
         }
 
         $io->success('All done!');

@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Domain\Model;
 
 use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -20,92 +21,106 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class Metadata extends AbstractEntity
 {
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Metadata
+     * @access protected
+     * @var Metadata
      */
     protected $l18nParent;
 
     /**
-     * Order (relative position) of this entry in metadata plugin and backend list.
-     *
-     * @var int
+     * @access protected
+     * @var int Order (relative position) of this entry in metadata plugin and backend list.
      */
     protected $sorting;
 
     /**
+     * @access protected
      * @var string
      */
     protected $label;
 
     /**
+     * @access protected
      * @var string
      */
     protected $indexName;
 
     /**
-     * The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
+     * @access protected
+     * @var ObjectStorage<MetadataFormat> The formats that encode this metadata (local IRRE field to ``tx_dlf_metadataformat``).
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat>
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")
      */
     protected $format;
 
     /**
+     * @access protected
      * @var string
      */
     protected $defaultValue;
 
     /**
+     * @access protected
      * @var string
      */
     protected $wrap;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexTokenized;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexStored;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexIndexed;
 
     /**
+     * @access protected
      * @var float
      */
     protected $indexBoost;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isSortable;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isFacet;
 
     /**
+     * @access protected
      * @var int
      */
     protected $isListed;
 
     /**
+     * @access protected
      * @var int
      */
     protected $indexAutocomplete;
 
     /**
+     * @access protected
      * @var int
      */
     protected $status;
@@ -125,7 +140,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \Kitodo\Dlf\Domain\Model\Metadata
+     * @return Metadata
      */
     public function getL18nParent(): Metadata
     {
@@ -133,7 +148,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @param int $l18nParent
+     * @param Metadata $l18nParent
      */
     public function setL18nParent(Metadata $l18nParent): void
     {
@@ -189,7 +204,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> $format
+     * @return ObjectStorage<MetadataFormat> $format
      */
     public function getFormat()
     {
@@ -197,7 +212,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataFormat> $format
+     * @param ObjectStorage<MetadataFormat> $format
      */
     public function setFormat(ObjectStorage $format): void
     {
@@ -207,7 +222,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Adds a Format
      *
-     * @param \Kitodo\Dlf\Domain\Model\MetadataFormat $format
+     * @param MetadataFormat $format
      *
      * @return void
      */
@@ -219,7 +234,7 @@ class Metadata extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Removes a Format
      *
-     * @param \Kitodo\Dlf\Domain\Model\MetadataFormat $formatToRemove
+     * @param MetadataFormat $formatToRemove
      *
      * @return void
      */

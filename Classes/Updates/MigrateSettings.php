@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Updates;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
@@ -21,6 +20,10 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Class MigrateSettings
+ * 
+ * @package TYPO3
+ * @subpackage dlf
+ *
  * @internal
  */
 class MigrateSettings implements UpgradeWizardInterface
@@ -29,6 +32,8 @@ class MigrateSettings implements UpgradeWizardInterface
     /**
      * Return the identifier for this wizard
      * This should be the same string as used in the ext_localconf class registration
+     *
+     * @access public
      *
      * @return string
      */
@@ -40,6 +45,8 @@ class MigrateSettings implements UpgradeWizardInterface
     /**
      * Return the speaking name of this wizard
      *
+     * @access public
+     *
      * @return string
      */
     public function getTitle(): string
@@ -49,6 +56,8 @@ class MigrateSettings implements UpgradeWizardInterface
 
     /**
      * Return the description for this wizard
+     *
+     * @access public
      *
      * @return string
      */
@@ -63,6 +72,8 @@ class MigrateSettings implements UpgradeWizardInterface
      * Execute the update
      *
      * Called when a wizard reports that an update is necessary
+     *
+     * @access public
      *
      * @return bool
      */
@@ -83,7 +94,7 @@ class MigrateSettings implements UpgradeWizardInterface
             ->execute();
 
         // Update the found record sets
-        while ($record = $statement->fetch()) {
+        while ($record = $statement->fetchAssociative()) {
             $queryBuilder = $connection->createQueryBuilder();
             $updateResult = $queryBuilder->update('tt_content')
                 ->where(
@@ -109,6 +120,8 @@ class MigrateSettings implements UpgradeWizardInterface
      *
      * Looks for fe plugins in tt_content table to be migrated
      *
+     * @access public
+     *
      * @return bool
      */
     public function updateNecessary(): bool
@@ -129,7 +142,7 @@ class MigrateSettings implements UpgradeWizardInterface
             ->execute();
 
         // Update the found record sets
-        while ($record = $statement->fetch()) {
+        while ($record = $statement->fetchAssociative()) {
             $oldSettingsFound = $this->checkForOldSettings($record['pi_flexform']);
             if ($oldSettingsFound === true) {
                 // We found at least one field to be updated --> break here
@@ -146,6 +159,8 @@ class MigrateSettings implements UpgradeWizardInterface
      * This way a wizard can define dependencies like "database up-to-date" or
      * "reference index updated"
      *
+     * @access public
+     *
      * @return string[]
      */
     public function getPrerequisites(): array
@@ -157,7 +172,10 @@ class MigrateSettings implements UpgradeWizardInterface
 
 
     /**
+     * @access protected
+     *
      * @param string $oldValue
+     *
      * @return string
      */
     protected function migrateFlexFormSettings(string $oldValue): string
@@ -179,7 +197,10 @@ class MigrateSettings implements UpgradeWizardInterface
     }
 
     /**
+     * @access protected
+     *
      * @param string $flexFormXml
+     *
      * @return bool
      */
     protected function checkForOldSettings(string $flexFormXml): bool
