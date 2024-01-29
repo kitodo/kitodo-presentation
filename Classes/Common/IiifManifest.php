@@ -141,8 +141,8 @@ final class IiifManifest extends AbstractDocument
                 ->from('tx_dlf_metadataformat')
                 ->from('tx_dlf_formats')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
-                    $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($pid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
+                    $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', (int) $pid),
                     $queryBuilder->expr()->orX(
                         $queryBuilder->expr()->andX(
                             $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
@@ -267,13 +267,12 @@ final class IiifManifest extends AbstractDocument
             }
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $iiifId = $this->iiif->getId();
-            $physSeq[0] = $iiifId;
-            $this->physicalStructureInfo[$physSeq[0]]['id'] = $iiifId;
-            $this->physicalStructureInfo[$physSeq[0]]['dmdId'] = $iiifId;
-            $this->physicalStructureInfo[$physSeq[0]]['label'] = $this->iiif->getLabelForDisplay();
-            $this->physicalStructureInfo[$physSeq[0]]['orderlabel'] = $this->iiif->getLabelForDisplay();
-            $this->physicalStructureInfo[$physSeq[0]]['type'] = 'physSequence';
-            $this->physicalStructureInfo[$physSeq[0]]['contentIds'] = null;
+            $this->physicalStructureInfo[$iiifId]['id'] = $iiifId;
+            $this->physicalStructureInfo[$iiifId]['dmdId'] = $iiifId;
+            $this->physicalStructureInfo[$iiifId]['label'] = $this->iiif->getLabelForDisplay();
+            $this->physicalStructureInfo[$iiifId]['orderlabel'] = $this->iiif->getLabelForDisplay();
+            $this->physicalStructureInfo[$iiifId]['type'] = 'physSequence';
+            $this->physicalStructureInfo[$iiifId]['contentIds'] = null;
             $fileUseDownload = $this->getUseGroups('fileGrpDownload');
             $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
             $fileUseThumbs = $this->getUseGroups('fileGrpThumbs');
@@ -281,7 +280,7 @@ final class IiifManifest extends AbstractDocument
             if (!empty($fileUseDownload)) {
                 $docPdfRendering = $this->iiif->getRenderingUrlsForFormat('application/pdf');
                 if (!empty($docPdfRendering)) {
-                    $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
+                    $this->physicalStructureInfo[$iiifId]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
                 }
             }
             if (!empty($fileUseFulltext)) {
@@ -291,7 +290,7 @@ final class IiifManifest extends AbstractDocument
                 }
                 if (!empty($iiifAlto)) {
                     $this->mimeTypes[$iiifAlto[0]] = 'application/alto+xml';
-                    $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseFulltext[0]] = $iiifAlto[0];
+                    $this->physicalStructureInfo[$iiifId]['files'][$fileUseFulltext[0]] = $iiifAlto[0];
                     $this->hasFulltext = true;
                     $this->hasFulltextSet = true;
                 }
@@ -305,9 +304,9 @@ final class IiifManifest extends AbstractDocument
                     // put thumbnails in thumbnail filegroup
                     if (
                         !empty($thumbnailUrl)
-                        && empty($this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseThumbs[0]])
+                        && empty($this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]])
                     ) {
-                        $this->physicalStructureInfo[$physSeq[0]]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
+                        $this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
                     }
                     // populate structural metadata info
                     $elements[$canvasOrder] = $canvas->getId();
@@ -361,7 +360,8 @@ final class IiifManifest extends AbstractDocument
                 }
                 $this->numPages = $canvasOrder;
                 // Merge and re-index the array to get nice numeric indexes.
-                $this->physicalStructure = array_merge($physSeq, $elements);
+                array_unshift($elements, $iiifId);
+                $this->physicalStructure = $elements;
             }
             $this->physicalStructureLoaded = true;
         }
@@ -412,7 +412,7 @@ final class IiifManifest extends AbstractDocument
                 // @phpstan-ignore-next-line
                 return (!empty($resource->getImageAnnotations()) && $resource->getImageAnnotations()->getSingleService() != null) ? $resource->getImageAnnotations()[0]->getSingleService()->getId() : $id;
             } elseif ($resource instanceof ContentResourceInterface) {
-                return $resource->getSingleService() != null && $resource->getSingleService() instanceof Service ? $resource->getSingleService()->getId() : $id;
+                return $resource->getSingleService() instanceof Service ? $resource->getSingleService()->getId() : $id;
             } elseif ($resource instanceof AbstractImageService) {
                 return $resource->getId();
             } elseif ($resource instanceof AnnotationContainerInterface) {
@@ -512,13 +512,9 @@ final class IiifManifest extends AbstractDocument
         $this->magicGetSmLinks();
         // Load physical structure.
         $this->magicGetPhysicalStructure();
-        $canvases = [];
-        if ($resource instanceof ManifestInterface) {
+
+        if ($resource instanceof ManifestInterface || $resource instanceof RangeInterface) {
             $startCanvas = $resource->getStartCanvasOrFirstCanvas();
-            $canvases = $resource->getDefaultCanvases();
-        } elseif ($resource instanceof RangeInterface) {
-            $startCanvas = $resource->getStartCanvasOrFirstCanvas();
-            $canvases = $resource->getAllCanvases();
         }
         if (isset($startCanvas)) {
             $details['pagination'] = $startCanvas->getLabel();
@@ -540,7 +536,7 @@ final class IiifManifest extends AbstractDocument
             if ($resource instanceof ManifestInterface && $resource->getRootRanges() != null) {
                 $rangesToAdd = [];
                 $rootRanges = [];
-                if (sizeof($this->iiif->getRootRanges()) == 1 && $this->iiif->getRootRanges()[0]->isTopRange()) {
+                if (count($this->iiif->getRootRanges()) == 1 && $this->iiif->getRootRanges()[0]->isTopRange()) {
                     $rangesToAdd = $this->iiif->getRootRanges()[0]->getMemberRangesAndRanges();
                 } else {
                     $rangesToAdd = $this->iiif->getRootRanges();
@@ -589,7 +585,7 @@ final class IiifManifest extends AbstractDocument
         $iiifResource = $this->iiif->getContainedResourceById($id);
         $result = [];
         if ($iiifResource != null) {
-            if ($iiifResource->getLabel() != null && $iiifResource->getLabel() != "") {
+            if (!empty($iiifResource->getLabel())) {
                 $result['label'] = $iiifResource->getLabel();
             }
             if (!empty($iiifResource->getMetadata())) {
@@ -650,8 +646,8 @@ final class IiifManifest extends AbstractDocument
             ->from('tx_dlf_metadataformat')
             ->from('tx_dlf_formats')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', intval($cPid)),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', (int) $cPid),
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
@@ -804,19 +800,7 @@ final class IiifManifest extends AbstractDocument
                     // Get annotation containers
                     $annotationContainerIds = $this->physicalStructureInfo[$id]['annotationContainers'];
                     if (!empty($annotationContainerIds)) {
-                        $annotationTexts = [];
-                        foreach ($annotationContainerIds as $annotationListId) {
-                            $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
-                            /* @var $annotationContainer \Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface */
-                            foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
-                                if (
-                                    $annotation->getTargetResourceId() == $iiifResource->getId() &&
-                                    $annotation->getBody() != null && $annotation->getBody()->getChars() != null
-                                ) {
-                                    $annotationTexts[] = $annotation->getBody()->getChars();
-                                }
-                            }
-                        }
+                        $annotationTexts = $this->getAnnotationTexts($annotationContainerIds, $iiifResource->getId());
                         $rawText .= implode(' ', $annotationTexts);
                     }
                 }
@@ -861,11 +845,9 @@ final class IiifManifest extends AbstractDocument
             IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
             IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
             $resource = IiifHelper::loadIiifResource($fileResource);
-            if ($resource != null) {
-                if ($resource instanceof ManifestInterface) {
-                    $this->iiif = $resource;
-                    return true;
-                }
+            if ($resource instanceof ManifestInterface) {
+                $this->iiif = $resource;
+                return true;
             }
         }
         $this->logger->error('Could not load IIIF manifest from "' . $location . '"');
@@ -919,7 +901,8 @@ final class IiifManifest extends AbstractDocument
                 $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
                 if ($extConf['indexAnnotations'] == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
-                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
+                        $textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING);
+                        if ($textAnnotations != null) {
                             foreach ($textAnnotations as $annotation) {
                                 if (
                                     $annotation->getBody() != null &&
@@ -961,6 +944,34 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
+     * Get annotation texts.
+     *
+     * @access private
+     *
+     * @param array $annotationContainerIds
+     * @param string $iiifId
+     *
+     * @return array
+     */
+    private function getAnnotationTexts($annotationContainerIds, $iiifId): array
+    {
+        $annotationTexts = [];
+        foreach ($annotationContainerIds as $annotationListId) {
+            $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
+            /* @var $annotationContainer \Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface */
+            foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
+                if (
+                    $annotation->getTargetResourceId() == $iiifId &&
+                    $annotation->getBody() != null && $annotation->getBody()->getChars() != null
+                ) {
+                    $annotationTexts[] = $annotation->getBody()->getChars();
+                }
+            }
+        }
+        return $annotationTexts;
+    }
+
+    /**
      * This magic method is executed after the object is deserialized
      * @see __sleep()
      *
@@ -975,7 +986,7 @@ final class IiifManifest extends AbstractDocument
         IiifHelper::setMaxThumbnailHeight($conf['iiifThumbnailHeight']);
         IiifHelper::setMaxThumbnailWidth($conf['iiifThumbnailWidth']);
         $resource = IiifHelper::loadIiifResource($this->asJson);
-        if ($resource != null && $resource instanceof ManifestInterface) {
+        if ($resource instanceof ManifestInterface) {
             $this->asJson = '';
             $this->iiif = $resource;
             $this->init('');
