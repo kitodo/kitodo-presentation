@@ -18,12 +18,6 @@
             </li>
         </f:else>
     </f:if>
-    <f:comment>is no longer needed, is provided in pagination.pagesR</f:comment>
-    <f:comment>
-        <f:if condition="{pagination.hasLessPages}">
-            <li>…</li>
-        </f:if>
-    </f:comment>
     <f:comment>add pages between first and last page, with dots if there are more than 5 pages (before or after) the respective page</f:comment>
     <f:for each="{pagination.pagesR}" as="page">
         <f:switch expression="{page.label}">
@@ -56,12 +50,6 @@
             </f:defaultCase>
         </f:switch>
     </f:for>
-    <f:comment>is no longer needed, is provided in pagination.pagesR</f:comment>
-    <f:comment>
-        <f:if condition="{pagination.hasMorePages}">
-            <li>…</li>
-        </f:if>
-    </f:comment>
     <f:if condition="{pagination.nextPageNumberG} && {pagination.nextPageNumberG} <= {pagination.lastPageNumber}">
         <f:then>
             <li class="next">
