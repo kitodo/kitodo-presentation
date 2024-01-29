@@ -89,7 +89,8 @@ class BaseCommand extends Command
      */
     protected ConfigurationManager $configurationManager;
 
-    public function __construct(CollectionRepository $collectionRepository,
+    public function __construct(
+        CollectionRepository $collectionRepository,
         DocumentRepository $documentRepository,
         LibraryRepository $libraryRepository,
         StructureRepository $structureRepository,
