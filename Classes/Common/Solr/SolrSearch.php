@@ -37,10 +37,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
-     * @var array|null
+     * @var array|QueryResultInterface
      */
-    // TODO: confusing naming, here is passed array of collections and it is used as array in prepare()
-    private $collection;
+    private $collections;
 
     /**
      * @access private
@@ -84,17 +83,17 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access public
      *
      * @param DocumentRepository $documentRepository
-     * @param array|null $collection
+     * @param array|QueryResultInterface $collections can contain 0, 1 or many Collection objects
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
      *
      * @return void
      */
-    public function __construct(DocumentRepository $documentRepository, $collection, array $settings, array $searchParams, QueryResult $listedMetadata = null)
+    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null)
     {
         $this->documentRepository = $documentRepository;
-        $this->collection = $collection;
+        $this->collections = $collections;
         $this->settings = $settings;
         $this->searchParams = $searchParams;
         $this->listedMetadata = $listedMetadata;
@@ -433,55 +432,14 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         }
 
         // if collections are given, we prepare the collection query string
-        // TODO: this->collection should not be actually called collections?
-        if ($this->collection) {
-            $collectionsQueryString = '';
-            $virtualCollectionsQueryString = '';
-            foreach ($this->collection as $collectionEntry) {
-                // check for virtual collections query string
-                if ($collectionEntry->getIndexSearch()) {
-                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
-                } else {
-                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
-                }
-            }
-
-            // distinguish between simple collection browsing and actual searching within the collection(s)
-            if (!empty($collectionsQueryString)) {
-                if (empty($query)) {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
-                } else {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
-                }
-            }
-
-            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
-            if (!empty($virtualCollectionsQueryString)) {
-                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
-            }
-
-            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
-            $params['filterquery'][]['query'] = implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        if (!empty($this->collections)) {
+            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery($query);
         }
 
         // Set some query parameters.
         $params['query'] = !empty($query) ? $query : '*';
 
-        // order the results as given or by title as default
-        if (!empty($this->searchParams['orderBy'])) {
-            $querySort = [
-                $this->searchParams['orderBy'] => $this->searchParams['order'],
-            ];
-        } else {
-            $querySort = [
-                'score' => 'desc',
-                'year_sorting' => 'asc',
-                'title_sorting' => 'asc',
-                'volume' => 'asc'
-            ];
-        }
-
-        $params['sort'] = $querySort;
+        $params['sort'] = $this->getSort();
         $params['listMetadataRecords'] = [];
 
         // Restrict the fields to the required ones.
@@ -766,6 +724,69 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $resultSet = $entry;
         }
         return $resultSet;
+    }
+
+    /**
+     * Get collection filter query for search.
+     *
+     * @access private
+     *
+     * @param string $query
+     *
+     * @return string
+     */
+    private function getCollectionFilterQuery(string $query) : string
+    {
+        $collectionsQueryString = '';
+        $virtualCollectionsQueryString = '';
+        foreach ($this->collections as $collection) {
+            // check for virtual collections query string
+            if ($collection->getIndexSearch()) {
+                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR (' . $collection->getIndexSearch() . ')';
+            } else {
+                $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collection->getIndexName() . '"' : ' OR "' . $collection->getIndexName() . '"';
+            }
+        }
+
+        // distinguish between simple collection browsing and actual searching within the collection(s)
+        if (!empty($collectionsQueryString)) {
+            if (empty($query)) {
+                $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
+            } else {
+                $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
+            }
+        }
+
+        // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separately
+        if (!empty($virtualCollectionsQueryString)) {
+            $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
+        }
+
+        // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
+        return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+    }
+
+    /**
+     * Get sort order of the results as given or by title as default.
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function getSort() : array
+    {
+        if (!empty($this->searchParams['orderBy'])) {
+            return [
+                $this->searchParams['orderBy'] => $this->searchParams['order'],
+            ];
+        }
+
+        return [
+            'score' => 'desc',
+            'year_sorting' => 'asc',
+            'title_sorting' => 'asc',
+            'volume' => 'asc'
+        ];
     }
 
     /**
