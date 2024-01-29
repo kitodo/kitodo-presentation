@@ -14,16 +14,16 @@ Kitodo was formerly known as Goobi. Older releases can be found on [Launchpad](h
 
 Kitodo.Presentation requires [TYPO3](https://get.typo3.org) with [PHP](https://secure.php.net). It uses [MySQL](https://www.mysql.com) or [MariaDB](https://mariadb.com) as database and [Apache Solr](https://lucene.apache.org/solr) via [Solarium](http://www.solarium-project.org/) as search engine backend.
 
-Currently **TYPO3 9.5 LTS** and **TYPO3 10.4 LTS** is supported with the following system requirements:
+Currently **TYPO3 10.4 ELTS** and **TYPO3 11.5 LTS** is supported with the following system requirements:
 
-| Component   | Constraints for 9 LTS | Constraints for 10 LTS |
-| ----------- | --------------------- | ---------------------- |
-| TYPO3       | 9.5.x                 | 10.4.x                 |
-| PHP         | 7.3.x - 7.4.x         | 7.3.x - 7.4.x          |
-| MySQL       | 5.7.x                 | 5.7.x                  |
-| MariaDB     | 10.2.x - 10.3.x       | 10.3.x - 10.5.x        |
-| Apache Solr | 8.x - 9.x             | 8.x - 9.x              |
-| OCR Highlighting Plugin | 0.8.x     | 0.8.x                  |
+| Component               | Constraints for 10 LTS | Constraints for 11 LTS |
+| ----------------------- | ---------------------- | ---------------------- |
+| TYPO3                   | 10.4.42                | 11.5.33+               |
+| PHP                     | 7.4.33                 | 7.4.33 - 8.3.x         |
+| MySQL                   | 5.7.x - 8.0.x          | 5.7.9 - 8.0.x          |
+| MariaDB                 | 10.2.7 - 10.11.x       | 10.2.7 - 10.11.x       |
+| Apache Solr             | 8.x                    | 8.x                    |
+| OCR Highlighting Plugin | 0.8.x-solr78           | 0.8.x-solr78           |
 
 Application level dependencies are handled by [Composer](https://getcomposer.org) (see [composer.json](./composer.json)).
 
@@ -33,7 +33,7 @@ Application level dependencies are handled by [Composer](https://getcomposer.org
 
 ## Information | Communication | Support
 
-For general information and news, please visit our [website](https://www.kitodo.org) and follow us on [Twitter](https://twitter.com/kitodo_org).
+For general information and news, please visit our [website](https://www.kitodo.org).
 
 As a system that has to meet the diverse requirements of a wide variety of institutions and the materials they want to digitise, Kitodo is a
 rather complex software solution, the installation and configuration of which can be challenging, especially for users with limited IT
@@ -58,14 +58,6 @@ association cannot provide further assistance in selecting service providers.
 
 ## Getting started
 
-### Kitodo.Presentation
-
 * [Extension Documentation](https://docs.typo3.org/p/kitodo/presentation/master/en-us/)
 * [DDEV Development Environment](https://github.com/kitodo/ddev-kitodo-presentation)
-* [Demo server](https://presentation-demo.kitodo.org/)
-
-### Kitodo.Production
-
-* [Installation Guides](https://github.com/kitodo/kitodo-production/wiki/Installationsanleitung)
-* [User documentation](https://github.com/kitodo/kitodo-production/wiki/)
-* [Developer documentation](https://kitodo-production.readthedocs.io/en/latest/)
+* [Demo Server](https://presentation-demo.kitodo.org/)
