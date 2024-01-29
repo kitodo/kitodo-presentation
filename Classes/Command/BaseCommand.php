@@ -94,8 +94,8 @@ class BaseCommand extends Command
         DocumentRepository $documentRepository,
         LibraryRepository $libraryRepository,
         StructureRepository $structureRepository,
-        ConfigurationManager $configurationManager)
-    {
+        ConfigurationManager $configurationManager
+    ) {
         parent::__construct();
 
         $this->collectionRepository = $collectionRepository;
