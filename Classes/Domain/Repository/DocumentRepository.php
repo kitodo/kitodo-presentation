@@ -572,13 +572,15 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param QueryResult|Collection|null $collection
+     * @param array|null $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
      *
      * @return SolrSearch
      */
+    // TODO: function name says ByCollection, but inside the SolrSearch->prepare() is expected
+    // TODO: that collection is an array of collections
     public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
     {
         // set settings global inside this repository

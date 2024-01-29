@@ -73,6 +73,8 @@ class NavigationController extends AbstractController
         } else {
             $this->requestData['page'] = 0;
             $this->requestData['double'] = 0;
+            // reassign requestData to viewData after assigning default values
+            $this->viewData['requestData'] = $this->requestData;
         }
 
         // Steps for X pages backward / forward. Double page view uses double steps.
