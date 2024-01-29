@@ -388,7 +388,7 @@ class Indexer
         $doc->cPid = $document->getPid();
         if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);

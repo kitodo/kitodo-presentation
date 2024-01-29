@@ -58,7 +58,7 @@ class PageViewProxy
     public function __construct()
     {
         $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
     }
 
     /**
@@ -148,7 +148,7 @@ class PageViewProxy
         try {
             $targetResponse = $this->requestFactory->request($url, 'HEAD', [
                 'headers' => [
-                    'User-Agent' => $this->extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
                 ]
             ]);
         } catch (\Exception $e) {
@@ -193,7 +193,7 @@ class PageViewProxy
         try {
             $targetResponse = $this->requestFactory->request($url, 'GET', [
                 'headers' => [
-                    'User-Agent' => $this->extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
                 ],
 
                 // For performance, don't download content up-front. Rather, we'll

@@ -158,7 +158,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpFulltext'])
+            || empty($this->extConf['files']['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -181,7 +181,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpFulltext'])
+            || empty($this->extConf['files']['fileGrpFulltext'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -291,7 +291,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpDownload'])
+            || empty($this->extConf['files']['fileGrpDownload'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -318,7 +318,7 @@ class ToolboxController extends AbstractController
         $secondPageLink = '';
         $pageLinkArray = [];
         $pageNumber = $this->requestData['page'];
-        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
+        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpDownload']);
         // Get image link.
         while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
             $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$fileGrpDownload];
@@ -340,7 +340,7 @@ class ToolboxController extends AbstractController
             empty($firstPageLink)
             && empty($secondPageLink)
         ) {
-            $this->logger->warning('File not found in fileGrps "' . $this->extConf['fileGrpDownload'] . '"');
+            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['fileGrpDownload'] . '"');
         }
 
         if (!empty($firstPageLink)) {
@@ -362,7 +362,7 @@ class ToolboxController extends AbstractController
     private function getWorkLink(): string
     {
         $workLink = '';
-        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
+        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpDownload']);
         // Get work link.
         while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
             $fileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[0]]['files'][$fileGrpDownload];
@@ -378,7 +378,7 @@ class ToolboxController extends AbstractController
             }
         }
         if (empty($workLink)) {
-            $this->logger->warning('File not found in fileGrps "' . $this->extConf['fileGrpDownload'] . '"');
+            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['fileGrpDownload'] . '"');
         }
         return $workLink;
     }
@@ -394,7 +394,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpFulltext'])
+            || empty($this->extConf['files']['fileGrpFulltext'])
             || empty($this->settings['solrcore'])
         ) {
             // Quit without doing anything if required variables are not set.
@@ -489,7 +489,7 @@ class ToolboxController extends AbstractController
      */
     private function isFullTextEmpty(): bool
     {
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             $fullTextFile = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['files'][$fileGrpFulltext];
             if (!empty($fullTextFile)) {
