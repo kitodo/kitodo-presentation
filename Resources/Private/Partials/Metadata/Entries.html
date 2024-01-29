@@ -14,7 +14,7 @@
       data-namespace-typo3-fluid="true">
 
 {configObject.wrap -> kitodo:metadataWrapVariable(name: 'metadataWrap')}
-<f:variable name="metaSectionCObj" value="{metaCObjData.{sectionIterator.index}}" />
+<f:variable name="metaSectionConfigObject" value="{metaConfigObjectData.{sectionIterator.index}}" />
 
 <f:variable name="wrappedValues"><f:spaceless>
     <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
@@ -27,15 +27,15 @@
                 <f:render partial="Metadata/ExternalLinkEntry" arguments="{_all}"/>
             </f:else>
             <f:else>
-                <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionCObj}">{value}</kitodo:stdWrap>
+                <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionConfigObject}">{value}</kitodo:stdWrap>
             </f:else>
         </f:if>
     </f:for>
 </f:spaceless></f:variable>
 
 <f:if condition="{wrappedValues}">
-    <kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaSectionCObj}">
-        <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaSectionCObj}">{configObject.label}</kitodo:stdWrap>
+    <kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaSectionConfigObject}">
+        <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaSectionConfigObject}">{configObject.label}</kitodo:stdWrap>
         {wrappedValues -> f:format.raw()}
     </kitodo:stdWrap>
 </f:if>

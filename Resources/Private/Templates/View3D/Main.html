@@ -13,11 +13,13 @@
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-    <p id="DFG_3DViewer" 3d="{3d}" model="{model}" xml="{xml}" settings="{settings}" proxy="{proxy}" class="tx-dlf-view-3d"></p>
-    
-    <f:section name="FooterAssets">
-      <script src="/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/main.js" type="module"></script>
-      <script src="/typo3conf/ext/dlf/Resources/Public/JavaScript/Toastify/toastify.js" type="text/javascript"></script>
-      <script src="/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/spinner/main.js" type="text/javascript"></script>
-    </f:section>
+      <f:if condition="{3d}">
+        <p id="DFG_3DViewer" 3d="{3d}" model="{model}" xml="{xml}" settings="{settings}" proxy="{proxy}" class="tx-dlf-view-3d"></p>
+            
+        <f:section name="FooterAssets">
+            <script src="/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/main.js" type="module"></script>
+            <script src="/typo3conf/ext/dlf/Resources/Public/JavaScript/Toastify/toastify.js" type="text/javascript"></script>
+            <script src="/typo3conf/ext/dlf/Resources/Public/JavaScript/3DViewer/spinner/main.js" type="text/javascript"></script>
+        </f:section>
+    </f:if>
 </html>

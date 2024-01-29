@@ -173,25 +173,25 @@ class OaiPmhController extends AbstractController
      * Get unqualified Dublin Core data.
      * @see http://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
      *
-     * @access protected
+     * @access private
      *
      * @param array $record The full record array
      *
      * @return array The mapped metadata array
      */
-    protected function getDcData(array $record)
+    private function getDublinCoreData(array $record)
     {
         $metadata = [];
 
         $metadata[] = ['dc:identifier' => $record['record_id']];
 
-        $this->addDcData($metadata, 'dc:identifier', $record['purl']);
-        $this->addDcData($metadata, 'dc:identifier', $record['prod_id']);
-        $this->addDcData($metadata, 'dc:identifier', $record['urn']);
-        $this->addDcData($metadata, 'dc:title', $record['title']);
-        $this->addDcData($metadata, 'dc:creator', $record['author']);
-        $this->addDcData($metadata, 'dc:date', $record['year']);
-        $this->addDcData($metadata, 'dc:coverage', $record['place']);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['purl']);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['prod_id']);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['urn']);
+        $this->addDublinCoreData($metadata, 'dc:title', $record['title']);
+        $this->addDublinCoreData($metadata, 'dc:creator', $record['author']);
+        $this->addDublinCoreData($metadata, 'dc:date', $record['year']);
+        $this->addDublinCoreData($metadata, 'dc:coverage', $record['place']);
 
         $record[] = ['dc:format' => $record['application/mets+xml']];
         $record[] = ['dc:type' => $record['Text']];
@@ -202,25 +202,28 @@ class OaiPmhController extends AbstractController
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
             }
         }
-        $this->addDcData($metadata, 'dc:rights', $record['license']);
-        $this->addDcData($metadata, 'dc:rights', $record['terms']);
-        $this->addDcData($metadata, 'dc:rights', $record['restrictions']);
-        $this->addDcData($metadata, 'dc:rights', $record['out_of_print']);
-        $this->addDcData($metadata, 'dc:rights', $record['rights_info']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['license']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['terms']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['restrictions']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['out_of_print']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['rights_info']);
 
         return $metadata;
     }
 
     /**
+     * Add Dublin Core data.
+     *
      * @access private
      *
-     * @param array $metadata The mapped metadata array
+     * @param array $metadata The mapped metadata array passed as reference
      * @param string $key The key to which record value should be assigned
      * @param string $value The key from record array
      *
      * @return void
      */
-    private function addDcData(&$metadata, $key, $value) {
+    private function addDublinCoreData(&$metadata, $key, $value)
+    {
         if (!empty($value)) {
             $metadata[] = [$key => $value];
         }
@@ -363,7 +366,7 @@ class OaiPmhController extends AbstractController
         // Add metadata
         switch ($this->parameters['metadataPrefix']) {
             case 'oai_dc':
-                $document['metadata'] = $this->getDcData($document);
+                $document['metadata'] = $this->getDublinCoreData($document);
                 break;
             case 'epicur':
                 $document['metadata'] = $document;
@@ -461,7 +464,7 @@ class OaiPmhController extends AbstractController
             return;
         }
         try {
-            $documentSet = $this->fetchDocumentUIDs();
+            $documentSet = $this->fetchDocumentSet();
         } catch (\Exception $exception) {
             $this->error = 'idDoesNotExist';
             return;
@@ -551,13 +554,13 @@ class OaiPmhController extends AbstractController
             return;
         }
         try {
-            $documentSet = $this->fetchDocumentUIDs();
+            $documentSet = $this->fetchDocumentSet();
         } catch (\Exception $exception) {
             $this->error = 'idDoesNotExist';
             return;
         }
         $resultSet = [];
-        if (is_array($documentSet)) {
+        if (count($documentSet) > 0) {
             $resultSet['elements'] = $documentSet;
             $resultSet['metadata'] = [
                 'cursor' => 0,
@@ -592,90 +595,58 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return array|null Array of matching records
+     * @return array matching records or empty array if there were some errors
      */
-    protected function fetchDocumentUIDs()
+    protected function fetchDocumentSet(): array
     {
-        $solr_query = '';
+        $documentSet = [];
+        $solrQuery = '';
         // Check "set" for valid value.
         if (!empty($this->parameters['set'])) {
             // For SOLR we need the index_name of the collection,
             // For DB Query we need the UID of the collection
 
             $result = $this->collectionRepository->getIndexNameForSolr($this->settings, $this->parameters['set']);
-
-            if ($resArray = $result->fetchAssociative()) {
+            $resArray = $result->fetchAssociative();
+            if ($resArray) {
                 if ($resArray['index_query'] != "") {
-                    $solr_query .= '(' . $resArray['index_query'] . ')';
+                    $solrQuery .= '(' . $resArray['index_query'] . ')';
                 } else {
-                    $solr_query .= 'collection:' . '"' . $resArray['index_name'] . '"';
+                    $solrQuery .= 'collection:' . '"' . $resArray['index_name'] . '"';
                 }
             } else {
                 $this->error = 'noSetHierarchy';
-                return null;
+                return $documentSet;
             }
         } else {
             // If no set is specified we have to query for all collections
-            $solr_query .= 'collection:* NOT collection:""';
+            $solrQuery .= 'collection:* NOT collection:""';
         }
         // Check for required fields.
         foreach ($this->formats[$this->parameters['metadataPrefix']]['requiredFields'] as $required) {
-            $solr_query .= ' NOT ' . $required . ':""';
+            $solrQuery .= ' NOT ' . $required . ':""';
         }
         // toplevel="true" is always required
-        $solr_query .= ' AND toplevel:true';
-        $from = "*";
-        // Check "from" for valid value.
-        if (!empty($this->parameters['from'])) {
-            // Is valid format?
-            if (
-                is_array($date_array = strptime($this->parameters['from'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date_array = strptime($this->parameters['from'], '%Y-%m-%d'))
-            ) {
-                $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'],
-                    $date_array['tm_mon'] + 1, $date_array['tm_mday'], $date_array['tm_year'] + 1900);
-                $from = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.000Z';
-            } else {
-                $this->error = 'badArgument';
-                return;
-            }
+        $solrQuery .= ' AND toplevel:true';
+
+        $from = $this->getFrom();
+        $until = $this->getUntil($from);
+
+        $this->checkGranularity();
+
+        if ($this->error === 'badArgument') {
+            return $documentSet;
         }
-        $until = "*";
-        // Check "until" for valid value.
-        if (!empty($this->parameters['until'])) {
-            // Is valid format?
-            if (
-                is_array($date_array = strptime($this->parameters['until'], '%Y-%m-%dT%H:%M:%SZ'))
-                || is_array($date_array = strptime($this->parameters['until'], '%Y-%m-%d'))
-            ) {
-                $timestamp = gmmktime($date_array['tm_hour'], $date_array['tm_min'], $date_array['tm_sec'],
-                    $date_array['tm_mon'] + 1, $date_array['tm_mday'], $date_array['tm_year'] + 1900);
-                $until = date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . '.999Z';
-                if ($from != "*" && $from > $until) {
-                    $this->error = 'badArgument';
-                }
-            } else {
-                $this->error = 'badArgument';
-            }
-        }
-        // Check "from" and "until" for same granularity.
-        if (
-            !empty($this->parameters['from'])
-            && !empty($this->parameters['until'])
-        ) {
-            if (strlen($this->parameters['from']) != strlen($this->parameters['until'])) {
-                $this->error = 'badArgument';
-            }
-        }
-        $solr_query .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
-        $documentSet = [];
+
+        $solrQuery .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
+
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return $documentSet;
         }
-        if (intval($this->settings['solr_limit']) > 0) {
-            $solr->limit = intval($this->settings['solr_limit']);
+        if ((int) $this->settings['solr_limit'] > 0) {
+            $solr->limit = (int) $this->settings['solr_limit'];
         }
         // We only care about the UID in the results and want them sorted
         $parameters = [
@@ -684,16 +655,123 @@ class OaiPmhController extends AbstractController
                 "uid" => "asc"
             ]
         ];
-        $parameters['query'] = $solr_query;
+        $parameters['query'] = $solrQuery;
         $result = $solr->searchRaw($parameters);
         if (empty($result)) {
             $this->error = 'noRecordsMatch';
-            return;
+            return $documentSet;
         }
         foreach ($result as $doc) {
             $documentSet[] = $doc->uid;
         }
         return $documentSet;
+    }
+
+    /**
+     * Get 'from' query parameter.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function getFrom(): string
+    {
+        $from = "*";
+        // Check "from" for valid value.
+        if (!empty($this->parameters['from'])) {
+            // Is valid format?
+            $date = $this->getDate('from');
+            if (is_array($date)) {
+                $from = $this->getDateFromTimestamp($date, '.000Z');
+            } else {
+                $this->error = 'badArgument';
+            }
+        }
+        return $from;
+    }
+
+    /**
+     * Get 'until' query parameter.
+     *
+     * @access private
+     *
+     * @param string $from start date
+     *
+     * @return string
+     */
+    private function getUntil(string $from): string
+    {
+        $until = "*";
+        // Check "until" for valid value.
+        if (!empty($this->parameters['until'])) {
+            // Is valid format?
+            $date = $this->getDate('until');
+            if (is_array($date)) {
+                $until = $this->getDateFromTimestamp($date, '.999Z');
+                if ($from != "*" && $from > $until) {
+                    $this->error = 'badArgument';
+                }
+            } else {
+                $this->error = 'badArgument';
+            }
+        }
+        return $until;
+    }
+
+    /**
+     * Get date from parameter string.
+     *
+     * @access private
+     *
+     * @param string $dateType
+     *
+     * @return array|false
+     */
+    private function getDate(string $dateType)
+    {
+        return strptime($this->parameters[$dateType], '%Y-%m-%dT%H:%M:%SZ') ?: strptime($this->parameters[$dateType], '%Y-%m-%d');
+    }
+
+    /**
+     * Get date from timestamp.
+     *
+     * @access private
+     *
+     * @param array $date
+     * @param string $end
+     *
+     * @return string
+     */
+    private function getDateFromTimestamp(array $date, string $end): string
+    {
+        $timestamp = gmmktime(
+            $date['tm_hour'],
+            $date['tm_min'],
+            $date['tm_sec'],
+            $date['tm_mon'] + 1,
+            $date['tm_mday'],
+            $date['tm_year'] + 1900
+        );
+        return date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . $end;
+    }
+
+    /**
+     * Check "from" and "until" for same granularity.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function checkGranularity(): void
+    {
+        if (
+            !empty($this->parameters['from'])
+            && !empty($this->parameters['until'])
+        ) {
+            if (strlen($this->parameters['from']) != strlen($this->parameters['until'])) {
+                $this->error = 'badArgument';
+            }
+        }
     }
 
     /**
@@ -730,7 +808,7 @@ class OaiPmhController extends AbstractController
                 }
                 switch ($metadataPrefix) {
                     case 'oai_dc':
-                        $resArray['metadata'] = $this->getDcData($resArray);
+                        $resArray['metadata'] = $this->getDublinCoreData($resArray);
                         break;
                     case 'epicur':
                         $resArray['metadata'] = $resArray;

@@ -205,8 +205,7 @@ class Helper
         $data = substr($binary, openssl_cipher_iv_length(self::$cipherAlgorithm));
         $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
         // Decrypt data.
-        $decrypted = openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
-        return $decrypted;
+        return openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
     }
 
     /**
@@ -294,8 +293,7 @@ class Helper
             return false;
         }
         // Hash string.
-        $hashed = openssl_digest($string, self::$hashAlgorithm);
-        return $hashed;
+        return openssl_digest($string, self::$hashAlgorithm);
     }
 
     /**
@@ -371,8 +369,7 @@ class Helper
         // Remove multiple dashes or whitespaces.
         $string = preg_replace('/[\s-]+/', ' ', $string);
         // Convert whitespaces and underscore to dash.
-        $string = preg_replace('/[\s_]/', '-', $string);
-        return $string;
+        return preg_replace('/[\s_]/', '-', $string);
     }
 
     /**
@@ -530,9 +527,7 @@ class Helper
         $allStructures = $kitodoStructures->fetchAllAssociative();
 
         // make lookup-table indexName -> uid
-        $allStructures = array_column($allStructures, 'indexName', 'uid');
-
-        return $allStructures;
+        return array_column($allStructures, 'indexName', 'uid');
     }
 
     /**
@@ -685,9 +680,8 @@ class Helper
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
-        $content = GeneralUtility::makeInstance(KitodoFlashMessageRenderer::class)
+        return GeneralUtility::makeInstance(KitodoFlashMessageRenderer::class)
             ->render($flashMessages);
-        return $content;
     }
 
     /**
@@ -925,9 +919,7 @@ class Helper
             self::log('Could not fetch data from URL "' . $url . '". Error: ' . $e->getMessage() . '.', LOG_SEVERITY_WARNING);
             return false;
         }
-        $content  = $response->getBody()->getContents();
-
-        return $content;
+        return $response->getBody()->getContents();
     }
 
     /**

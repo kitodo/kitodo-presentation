@@ -47,8 +47,8 @@ class StdWrapViewHelperTest extends FunctionalTestCase
 
         $view->setTemplateSource(
             '<html xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers">
-              <kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaCObjData.0}">
-                <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaCObjData.0}">Label</kitodo:stdWrap>
+              <kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaConfigObjectData.0}">
+                <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaConfigObjectData.0}">Label</kitodo:stdWrap>
                     <h2>Title</h2><p>Text</p>
                 </kitodo:stdWrap>
             </html>'
