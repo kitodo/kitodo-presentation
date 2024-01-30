@@ -330,7 +330,6 @@ class BaseCommand extends Command
      * 
      * @param Document &$document
      * @param array $collections
-     * @param PersistenceManager $persistenceManager
      *
      * @return void
      */
