@@ -12,9 +12,7 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use Kitodo\Dlf\ViewHelpers\StdWrapViewHelper;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 
 /**
  * @covers StdWrapViewHelper
