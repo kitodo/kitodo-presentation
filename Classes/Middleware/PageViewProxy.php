@@ -78,7 +78,7 @@ class PageViewProxy implements MiddlewareInterface
         $response = $handler->handle($request);
         // Get input parameters and decrypt core name.
         $parameters = $request->getQueryParams();
-        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/page-view-proxy')) {
+        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'page-view-proxy')) {
             return $response;
         }
 

@@ -169,7 +169,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
             ->setArguments(
                 [
-                    'middleware' => 'dlf/page-view-proxy',
+                    'middleware' => 'page-view-proxy',
                     'url' => $url,
                     'uHash' => GeneralUtility::hmac($url, 'PageViewProxy')
                 ]

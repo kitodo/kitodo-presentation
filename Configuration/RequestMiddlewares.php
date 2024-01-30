@@ -12,7 +12,7 @@
 
 return [
     'backend' => [
-        'dlf/page-view-proxy' => [
+        'page-view-proxy' => [
             'target' => \Kitodo\Dlf\Middleware\PageViewProxy::class,
         ],
     ],
