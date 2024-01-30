@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
-use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

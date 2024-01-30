@@ -13,9 +13,7 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use Kitodo\Dlf\ViewHelpers\MetadataWrapVariableViewHelper;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 
 /**
  * @covers MetadataWrapVariableViewHelper
