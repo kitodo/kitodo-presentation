@@ -114,6 +114,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     {
         return [
             'useExternalApisForMetadata' => 0,
+            'requiredMetadataFields' => 'document_format',
             'fileGrpImages' => 'DEFAULT,MAX',
             'fileGrpThumbs' => 'THUMBS',
             'fileGrpDownload' => 'DOWNLOAD',
