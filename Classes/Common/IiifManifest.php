@@ -273,28 +273,13 @@ final class IiifManifest extends AbstractDocument
             $this->physicalStructureInfo[$iiifId]['orderlabel'] = $this->iiif->getLabelForDisplay();
             $this->physicalStructureInfo[$iiifId]['type'] = 'physSequence';
             $this->physicalStructureInfo[$iiifId]['contentIds'] = null;
-            $fileUseDownload = $this->getUseGroups('fileGrpDownload');
-            $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
+
+            $this->setFileUseDownload($iiifId, $this->iiif);
+            $this->setFileUseFulltext($iiifId, $this->iiif);
+
             $fileUseThumbs = $this->getUseGroups('fileGrpThumbs');
             $fileUses = $this->getUseGroups('fileGrpImages');
-            if (!empty($fileUseDownload)) {
-                $docPdfRendering = $this->iiif->getRenderingUrlsForFormat('application/pdf');
-                if (!empty($docPdfRendering)) {
-                    $this->physicalStructureInfo[$iiifId]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
-                }
-            }
-            if (!empty($fileUseFulltext)) {
-                $iiifAlto = $this->iiif->getSeeAlsoUrlsForFormat('application/alto+xml');
-                if (empty($iiifAlto)) {
-                    $iiifAlto = $this->iiif->getSeeAlsoUrlsForProfile('http://www.loc.gov/standards/alto/', true);
-                }
-                if (!empty($iiifAlto)) {
-                    $this->mimeTypes[$iiifAlto[0]] = 'application/alto+xml';
-                    $this->physicalStructureInfo[$iiifId]['files'][$fileUseFulltext[0]] = $iiifAlto[0];
-                    $this->hasFulltext = true;
-                    $this->hasFulltextSet = true;
-                }
-            }
+
             if (!empty($this->iiif->getDefaultCanvases())) {
                 // canvases have not order property, but the context defines canveses as @list with a specific order, so we can provide an alternative
                 $canvasOrder = 0;
@@ -328,18 +313,9 @@ final class IiifManifest extends AbstractDocument
                             }
                         }
                     }
-                    if (!empty($fileUseFulltext)) {
-                        $alto = $canvas->getSeeAlsoUrlsForFormat('application/alto+xml');
-                        if (empty($alto)) {
-                            $alto = $canvas->getSeeAlsoUrlsForProfile('http://www.loc.gov/standards/alto/', true);
-                        }
-                        if (!empty($alto)) {
-                            $this->mimeTypes[$alto[0]] = 'application/alto+xml';
-                            $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseFulltext[0]] = $alto[0];
-                            $this->hasFulltext = true;
-                            $this->hasFulltextSet = true;
-                        }
-                    }
+
+                    $this->setFileUseFulltext($elements[$canvasOrder], $canvas);
+
                     if (!empty($fileUses)) {
                         $image = $canvas->getImageAnnotations()[0];
                         foreach ($fileUses as $fileUse) {
@@ -351,12 +327,8 @@ final class IiifManifest extends AbstractDocument
                     if (!empty($thumbnailUrl)) {
                         $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseThumbs] = $thumbnailUrl;
                     }
-                    if (!empty($fileUseDownload)) {
-                        $pdfRenderingUrls = $canvas->getRenderingUrlsForFormat('application/pdf');
-                        if (!empty($pdfRenderingUrls)) {
-                            $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseDownload[0]] = $pdfRenderingUrls[0];
-                        }
-                    }
+
+                    $this->setFileUseDownload($elements[$canvasOrder], $canvas);
                 }
                 $this->numPages = $canvasOrder;
                 // Merge and re-index the array to get nice numeric indexes.
@@ -969,6 +941,56 @@ final class IiifManifest extends AbstractDocument
             }
         }
         return $annotationTexts;
+    }
+
+    /**
+     * Set files used for download (PDF).
+     *
+     * @access private
+     *
+     * @param string $iiifId
+     * @param IiifResourceInterface $iiif
+     *
+     * @return void
+     */
+    private function setFileUseDownload(string $iiifId, $iiif): void
+    {
+        $fileUseDownload = $this->getUseGroups('fileGrpDownload');
+
+        if (!empty($fileUseDownload)) {
+            $docPdfRendering = $iiif->getRenderingUrlsForFormat('application/pdf');
+            if (!empty($docPdfRendering)) {
+                $this->physicalStructureInfo[$iiifId]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
+            }
+        }
+    }
+
+    /**
+     * Set files used for full text (ALTO).
+     *
+     * @access private
+     *
+     * @param string $iiifId
+     * @param IiifResourceInterface $iiif
+     *
+     * @return void
+     */
+    private function setFileUseFulltext(string $iiifId, $iiif): void
+    {
+        $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
+
+        if (!empty($fileUseFulltext)) {
+            $alto = $iiif->getSeeAlsoUrlsForFormat('application/alto+xml');
+            if (empty($alto)) {
+                $alto = $iiif->getSeeAlsoUrlsForProfile('http://www.loc.gov/standards/alto/', true);
+            }
+            if (!empty($alto)) {
+                $this->mimeTypes[$alto[0]] = 'application/alto+xml';
+                $this->physicalStructureInfo[$iiifId]['files'][$fileUseFulltext[0]] = $alto[0];
+                $this->hasFulltext = true;
+                $this->hasFulltextSet = true;
+            }
+        }
     }
 
     /**
