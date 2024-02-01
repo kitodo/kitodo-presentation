@@ -614,7 +614,7 @@ class Helper
         }
         $checksum = 0;
         for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += ($i + 1) * (int)substr($digits, $i, 1);
+            $checksum += ($i + 1) * (int) substr($digits, $i, 1);
         }
         $checksum = substr((string) floor($checksum / (int) substr($digits, -1, 1)), -1, 1);
         return $base . $id . $checksum;
@@ -719,7 +719,7 @@ class Helper
         // Load labels into static variable for future use.
         static $labels = [];
         // Sanitize input.
-        $pid = max((int)$pid, 0);
+        $pid = max((int) $pid, 0);
         if (!$pid) {
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $indexName;
