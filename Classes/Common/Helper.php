@@ -114,11 +114,7 @@ class Helper
     public static function checkIdentifier(string $id, string $type): bool
     {
         $digits = substr($id, 0, 8);
-        $checksum = 0;
-        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += (9 - $i) * (int) substr($digits, $i, 1);
-        }
-        $checksum = (11 - ($checksum % 11)) % 11;
+        $checksum = self::getChecksum($digits);
         switch (strtoupper($type)) {
             case 'PPN':
             case 'IDN':
@@ -167,6 +163,26 @@ class Helper
                 break;
         }
         return true;
+    }
+
+    /**
+     * Get checksum for given digits.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param string $digits
+     *
+     * @return int
+     */
+    private static function getChecksum(string $digits): int
+    {
+        $checksum = 0;
+        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
+            $checksum += (9 - $i) * (int) substr($digits, $i, 1);
+        }
+        return (11 - ($checksum % 11)) % 11;
     }
 
     /**
