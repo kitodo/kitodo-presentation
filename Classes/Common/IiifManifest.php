@@ -634,7 +634,8 @@ final class IiifManifest extends AbstractDocument
         $iiifResource = $this->iiif->getContainedResourceById($id);
         while ($resArray = $result->fetchAssociative()) {
             // Set metadata field's value(s).
-            if ($resArray['format'] > 0 && !empty($resArray['xpath']) && ($values = $iiifResource->jsonPath($resArray['xpath'])) != null) {
+            if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
+                $values = $iiifResource->jsonPath($resArray['xpath']);
                 if (is_string($values)) {
                     $metadata[$resArray['index_name']] = [trim((string) $values)];
                 } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
