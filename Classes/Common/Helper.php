@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Context\Context;
@@ -652,11 +653,10 @@ class Helper
             return false;
         }
 
-        $parsed = parse_url($url);
-        $scheme = $parsed['scheme'] ?? '';
-        $schemeNormalized = strtolower($scheme);
+        $uri = new Uri($url);
+        $scheme = $uri->getScheme() ?? '';
 
-        return $schemeNormalized === 'http' || $schemeNormalized === 'https';
+        return $scheme === 'http' || $scheme === 'https';
     }
 
     /**
