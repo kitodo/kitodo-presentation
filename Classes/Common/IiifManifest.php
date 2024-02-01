@@ -282,6 +282,7 @@ final class IiifManifest extends AbstractDocument
 
             if (!empty($this->iiif->getDefaultCanvases())) {
                 // canvases have not order property, but the context defines canveses as @list with a specific order, so we can provide an alternative
+                $elements = [];
                 $canvasOrder = 0;
                 foreach ($this->iiif->getDefaultCanvases() as $canvas) {
                     $canvasOrder++;
