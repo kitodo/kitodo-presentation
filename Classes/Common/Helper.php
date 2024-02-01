@@ -653,10 +653,13 @@ class Helper
             return false;
         }
 
-        $uri = new Uri($url);
-        $scheme = $uri->getScheme() ?? '';
-
-        return $scheme === 'http' || $scheme === 'https';
+        try {
+            $uri = new Uri($url);
+            return !empty($uri->getScheme());
+        } catch (\InvalidArgumentException $e) {
+            self::log($e->getMessage(), LOG_SEVERITY_ERROR);
+            return false;
+        }
     }
 
     /**
