@@ -734,9 +734,12 @@ final class MetsDocument extends AbstractDocument
             }
         }
 
-        return array_filter($allMdIds, function ($element) {
-            return !empty($element);
-        });
+        return array_filter(
+            $allMdIds,
+            function ($element) {
+                return !empty($element);
+            }
+        );
     }
 
     /**
