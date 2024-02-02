@@ -926,15 +926,15 @@ final class MetsDocument extends AbstractDocument
 
         $this->registerNamespaces($element);
 
-        $type = $element->xpath('./mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE');
-        $otherType = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE');
+        $mdType = $element->xpath('./mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE');
+        $otherMdType = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE');
 
-        if (!empty($type) && !empty($this->formats[(string) $type[0]])) {
-            $typeValue = (string) $type[0];
-            $xml = $element->xpath('./mets:mdWrap[@MDTYPE="' . $typeValue . '"]/mets:xmlData/' . strtolower($typeValue) . ':' . $this->formats[$typeValue]['rootElement']);
-        } elseif (!empty($otherType) && !empty($this->formats[(string) $otherType[0]])) {
-            $typeValue = (string) $otherType[0];
-            $xml = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $typeValue . '"]/mets:xmlData/' . strtolower($typeValue) . ':' . $this->formats[$typeValue]['rootElement']);
+        if (!empty($mdType) && !empty($this->formats[(string) $mdType[0]])) {
+            $type = (string) $mdType[0];
+            $xml = $element->xpath('./mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
+        } elseif (!empty($otherMdType) && !empty($this->formats[(string) $otherMdType[0]])) {
+            $type = (string) $otherMdType[0];
+            $xml = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
         }
 
         if (empty($xml)) {
