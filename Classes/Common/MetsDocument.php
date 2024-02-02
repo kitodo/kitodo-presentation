@@ -926,6 +926,7 @@ final class MetsDocument extends AbstractDocument
 
         $this->registerNamespaces($element);
 
+        $type = '';
         $mdType = $element->xpath('./mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE');
         $otherMdType = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE');
 
