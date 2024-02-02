@@ -651,16 +651,10 @@ final class IiifManifest extends AbstractDocument
             }
             // Set sorting value if applicable.
             if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
-                if (
-                    $resArray['format'] > 0 && !empty($resArray['xpath_sorting'])
-                    && ($values = $iiifResource->jsonPath($resArray['xpath_sorting']) != null)
-                ) {
-                    // TODO: Call to function is_string() with true will always evaluate to false.
-                    // @phpstan-ignore-next-line
+                if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
+                    $values = $iiifResource->jsonPath($resArray['xpath_sorting']);
                     if (is_string($values)) {
                         $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
-                        // TODO: Instanceof between true and Flow\JSONPath\JSONPath will always evaluate to false.
-                        // @phpstan-ignore-next-line
                     } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
                         $metadata[$resArray['index_name']] = [];
                         foreach ($values->data() as $value) {
