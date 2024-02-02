@@ -528,8 +528,8 @@ final class MetsDocument extends AbstractDocument
                     if (
                         $resArray['format'] > 0
                         && !empty($resArray['xpath_sorting'])
-                        && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))
                     ) {
+                        $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
                         if (
                             $values instanceof \DOMNodeList
                             && $values->length > 0
@@ -922,16 +922,16 @@ final class MetsDocument extends AbstractDocument
         }
 
         $this->registerNamespaces($element);
-        if ($type = $element->xpath('./mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
-            if (!empty($this->formats[(string) $type[0]])) {
-                $type = (string) $type[0];
-                $xml = $element->xpath('./mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
-            }
-        } elseif ($type = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
-            if (!empty($this->formats[(string) $type[0]])) {
-                $type = (string) $type[0];
-                $xml = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
-            }
+
+        $type = $element->xpath('./mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE');
+        $otherType = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE');
+
+        if (!empty($type) && !empty($this->formats[(string) $type[0]])) {
+            $typeValue = (string) $type[0];
+            $xml = $element->xpath('./mets:mdWrap[@MDTYPE="' . $typeValue . '"]/mets:xmlData/' . strtolower($typeValue) . ':' . $this->formats[$typeValue]['rootElement']);
+        } elseif (!empty($otherType) && !empty($this->formats[(string) $otherType[0]])) {
+            $typeValue = (string) $otherType[0];
+            $xml = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $typeValue . '"]/mets:xmlData/' . strtolower($typeValue) . ':' . $this->formats[$typeValue]['rootElement']);
         }
 
         if (empty($xml)) {
