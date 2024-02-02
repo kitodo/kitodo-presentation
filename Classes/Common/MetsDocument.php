@@ -1064,6 +1064,7 @@ final class MetsDocument extends AbstractDocument
                     }
                 }
                 // Build the physical elements' array from the physical structMap node.
+                $elements = [];
                 foreach ($elementNodes as $elementNode) {
                     $elements[(int) $elementNode['ORDER']] = (string) $elementNode['ID'];
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = (string) $elementNode['ID'];
