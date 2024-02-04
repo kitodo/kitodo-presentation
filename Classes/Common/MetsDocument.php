@@ -528,8 +528,8 @@ final class MetsDocument extends AbstractDocument
                     if (
                         $resArray['format'] > 0
                         && !empty($resArray['xpath_sorting'])
-                        && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))
                     ) {
+                        $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
                         if (
                             $values instanceof \DOMNodeList
                             && $values->length > 0
@@ -734,9 +734,12 @@ final class MetsDocument extends AbstractDocument
             }
         }
 
-        return array_filter($allMdIds, function ($element) {
-            return !empty($element);
-        });
+        return array_filter(
+            $allMdIds,
+            function ($element) {
+                return !empty($element);
+            }
+        );
     }
 
     /**
@@ -922,16 +925,17 @@ final class MetsDocument extends AbstractDocument
         }
 
         $this->registerNamespaces($element);
-        if ($type = $element->xpath('./mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE')) {
-            if (!empty($this->formats[(string) $type[0]])) {
-                $type = (string) $type[0];
-                $xml = $element->xpath('./mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
-            }
-        } elseif ($type = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE')) {
-            if (!empty($this->formats[(string) $type[0]])) {
-                $type = (string) $type[0];
-                $xml = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
-            }
+
+        $type = '';
+        $mdType = $element->xpath('./mets:mdWrap[not(@MDTYPE="OTHER")]/@MDTYPE');
+        $otherMdType = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"]/@OTHERMDTYPE');
+
+        if (!empty($mdType) && !empty($this->formats[(string) $mdType[0]])) {
+            $type = (string) $mdType[0];
+            $xml = $element->xpath('./mets:mdWrap[@MDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
+        } elseif (!empty($otherMdType) && !empty($this->formats[(string) $otherMdType[0]])) {
+            $type = (string) $otherMdType[0];
+            $xml = $element->xpath('./mets:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="' . $type . '"]/mets:xmlData/' . strtolower($type) . ':' . $this->formats[$type]['rootElement']);
         }
 
         if (empty($xml)) {
@@ -1061,6 +1065,7 @@ final class MetsDocument extends AbstractDocument
                     }
                 }
                 // Build the physical elements' array from the physical structMap node.
+                $elements = [];
                 foreach ($elementNodes as $elementNode) {
                     $elements[(int) $elementNode['ORDER']] = (string) $elementNode['ID'];
                     $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['id'] = (string) $elementNode['ID'];
