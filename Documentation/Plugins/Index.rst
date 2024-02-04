@@ -33,7 +33,7 @@ marker templates for plugins are not supported anymore.
 Now, all HTML markup is done in Fluid. To use different templates, you have
 to overload the templates by the common TYPO3 way.
 
-The following TypoScript defines addition paths inside a "example" extenion::
+The following TypoScript defines additional paths inside an "example" extension::
 
    plugin.tx_dlf {
       view {
