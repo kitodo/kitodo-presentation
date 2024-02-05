@@ -269,6 +269,7 @@ class BaseCommand extends Command
         }
 
         $persistenceManager->persistAll();
+        $persistenceManager->clearState();
 
         return true;
     }
@@ -321,7 +322,7 @@ class BaseCommand extends Command
      * Add collections.
      *
      * @access private
-     * 
+     *
      * @param Document &$document
      * @param array $collections
      * @param PersistenceManager $persistenceManager
