@@ -15,11 +15,9 @@ namespace Kitodo\Dlf\Tests\Functional;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -204,16 +202,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected function initLanguageService(string $locale)
     {
-        if (class_exists(LanguageServiceFactory::class)) {
-            $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create($locale);
-        } else {
-            $typo3MajorVersion = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version())['version_main'];
-            self::assertEquals(9, $typo3MajorVersion);
-
-            $lang = new LanguageService();
-            $lang->init($locale);
-            $GLOBALS['LANG'] = $lang;
-        }
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create($locale);
     }
 
     /**
