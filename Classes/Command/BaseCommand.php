@@ -269,7 +269,6 @@ class BaseCommand extends Command
         }
 
         $persistenceManager->persistAll();
-        $persistenceManager->clearState();
 
         return true;
     }
