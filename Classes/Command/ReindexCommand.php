@@ -21,6 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * CLI Command for re-indexing collections into database and Solr.
@@ -100,6 +101,7 @@ class ReindexCommand extends BaseCommand
         $io->title($this->getDescription());
 
         $this->initializeRepositories($input->getOption('pid'));
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
@@ -181,8 +183,9 @@ class ReindexCommand extends BaseCommand
                 // add to index
                 Indexer::add($document, $this->documentRepository);
             }
-            // Clear document cache to prevent memory exhaustion.
+            // Clear document and persistence cache to prevent memory exhaustion.
             AbstractDocument::clearDocumentCache();
+            $persistenceManager->clearState();
         }
 
         $io->success('All done!');
