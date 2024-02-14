@@ -121,7 +121,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the annotation tool
+     * Renders the annotation tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -148,7 +149,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the fulltext download tool
+     * Renders the fulltext download tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -171,7 +173,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the fulltext tool
+     * Renders the fulltext tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -198,7 +201,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the image download tool
+     * Renders the image download tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -265,7 +269,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the image manipulation tool
+     * Renders the image manipulation tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -281,7 +286,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the PDF download tool
+     * Renders the PDF download tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -384,7 +390,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the searchInDocument tool
+     * Renders the searchInDocument tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
