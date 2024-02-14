@@ -58,7 +58,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
- * @property array $registry this holds the singleton object of the document
  * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
  * @property-read array $smLinks this holds the smLinks between logical and physical structMap
  * @property bool $smLinksLoaded flag with information if the smLinks are loaded
@@ -74,7 +73,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $hasFulltextSet flag if document has already been analyzed for presence of the fulltext for the Solr index
  * @property array $originalMetadataArray this holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
  * @property array $mimeTypes this holds the mime types of linked resources in the manifest (extracted during parsing) for later us
- * 
+ *
  */
 final class IiifManifest extends AbstractDocument
 {
@@ -701,7 +700,7 @@ final class IiifManifest extends AbstractDocument
      * @access private
      *
      * @param RangeInterface $range Current range whose canvases shall be linked
-     * 
+     *
      * @return void
      */
     private function smLinkRangeCanvasesRecursively(RangeInterface $range): void
@@ -727,7 +726,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @param CanvasInterface $canvas
      * @param IiifResourceInterface $resource
-     * 
+     *
      * @return void
      */
     private function smLinkCanvasToResource(CanvasInterface $canvas, IiifResourceInterface $resource): void

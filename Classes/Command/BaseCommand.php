@@ -321,7 +321,7 @@ class BaseCommand extends Command
      * Add collections.
      *
      * @access private
-     * 
+     *
      * @param Document &$document
      * @param array $collections
      * @param PersistenceManager $persistenceManager
