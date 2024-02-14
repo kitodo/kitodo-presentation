@@ -40,7 +40,7 @@
     "solarium/solarium": "^5.2.0"
   },
   "require-dev": {
-    "spatie/phpunit-watcher": "^1.23.6",
+    "spatie/phpunit-watcher": "^1.23.0",
     "typo3/cms-backend": "^9.5.31|^10.4.37",
     "typo3/cms-fluid": "^9.5.31|^10.4.37",
     "typo3/cms-fluid-styled-content": "^9.5.31|^10.4.37",
