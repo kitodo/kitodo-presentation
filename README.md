@@ -16,14 +16,14 @@ Kitodo.Presentation requires [TYPO3](https://get.typo3.org) with [PHP](https://s
 
 Currently **TYPO3 9.5 LTS** and **TYPO3 10.4 LTS** is supported with the following system requirements:
 
-| Component   | Constraints for 9 LTS | Constraints for 10 LTS |
-| ----------- | --------------------- | ---------------------- |
-| TYPO3       | 9.5.x                 | 10.4.x                 |
-| PHP         | 7.3.x - 7.4.x         | 7.3.x - 7.4.x          |
-| MySQL       | 5.7.x                 | 5.7.x                  |
-| MariaDB     | 10.2.x - 10.3.x       | 10.3.x - 10.5.x        |
-| Apache Solr | 8.x - 9.x             | 8.x - 9.x              |
-| OCR Highlighting Plugin | 0.8.x     | 0.8.x                  |
+| Component               | Constraints for 9 LTS | Constraints for 10 LTS |
+| ----------------------- | --------------------- | ---------------------- |
+| TYPO3                   | 9.5.46                | 10.4.43                |
+| PHP                     | 7.4.33                | 7.4.33                 |
+| MySQL                   | 5.7.x                 | 5.7.x                  |
+| MariaDB                 | 10.2.x - 10.3.x       | 10.3.x - 10.5.x        |
+| Apache Solr             | 8.x                   | 8.x                    |
+| OCR Highlighting Plugin | 0.8.x-solr78          | 0.8.x-solr78           |
 
 Application level dependencies are handled by [Composer](https://getcomposer.org) (see [composer.json](./composer.json)).
 
