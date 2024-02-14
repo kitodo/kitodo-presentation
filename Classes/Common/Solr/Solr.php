@@ -579,19 +579,22 @@ class Solr implements LoggerAwareInterface
      */
     protected function __construct(?string $core)
     {
+        // Solarium requires different code for version 5 and 6.
+        $isSolarium5 = \Solarium\Client::VERSION[0] == '5';
         // Get Solr connection parameters from configuration.
         $this->loadSolrConnectionInfo();
         // Configure connection adapter.
         $adapter = GeneralUtility::makeInstance(Http::class);
-            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
-            // the timeout must be set with the adapter instead of the
-            // endpoint (see below).
-            // $adapter->setTimeout($this->config['timeout']);
+        $adapter->setTimeout($this->config['timeout']);
         // Configure event dispatcher.
-            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
+        if ($isSolarium5) {
+            $eventDispatcher = null;
+        } else {
+            // When updating to TYPO3 >=10.x and Solarium >=6.x
             // we have to provide an PSR-14 Event Dispatcher instead of
             // "null".
-            // $eventDispatcher = GeneralUtility::makeInstance(\TYPO3\CMS\Core\EventDispatcher\EventDispatcher::class);
+            $eventDispatcher = GeneralUtility::makeInstance(\TYPO3\CMS\Core\EventDispatcher\EventDispatcher::class);
+        }
         // Configure endpoint.
         $config = [
             'endpoint' => [
@@ -602,18 +605,20 @@ class Solr implements LoggerAwareInterface
                     'path' => '/' . $this->config['path'],
                     'core' => $core,
                     'username' => $this->config['username'],
-                    'password' => $this->config['password'],
-                    'timeout' => $this->config['timeout'] // Remove when upgrading to Solarium 6.x
+                    'password' => $this->config['password']
                 ]
             ]
         ];
         // Instantiate Solarium\Client class.
-        $this->service = GeneralUtility::makeInstance(Client::class, $config);
-        $this->service->setAdapter($adapter);
-            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
+        if ($isSolarium5) {
+            $this->service = GeneralUtility::makeInstance(Client::class, $config);
+        } else {
+            // When updating to TYPO3 >=10.x and Solarium >=6.x
             // $adapter and $eventDispatcher are mandatory arguments
             // of the \Solarium\Client constructor.
-            // $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $adapter, $eventDispatcher, $config);
+            $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $adapter, $eventDispatcher, $config);
+        }
+        $this->service->setAdapter($adapter);
         // Check if connection is established.
         $query = $this->service->createCoreAdmin();
         $action = $query->createStatus();
