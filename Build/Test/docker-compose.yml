@@ -25,21 +25,21 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - "8000:8000"
+      - "${SERVER_PORT}:${SERVER_PORT}"
     # NOTE: For testing PageViewProxy, we need another web server web:8001 that
-    #       can be requested from TYPO3 running on web:8000.
+    #       can be requested from TYPO3 running on web:${SERVER_PORT}.
     #       Setting PHP_CLI_SERVER_WORKERS wouldn't seem to work consistently.
     command: >
       /bin/sh -c "
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
           XDEBUG_MODE=\"off\" \
-          php -S web:8000 -t ${DLF_ROOT} ${DLF_ROOT}/Tests/routeFunctionalInstance.php &
+          php -S web:${SERVER_PORT} -t ${DLF_ROOT} ${DLF_ROOT}/Tests/routeFunctionalInstance.php &
           php -S web:8001 -t ${DLF_ROOT}
         else
           XDEBUG_MODE=\"debug,develop\" \
           XDEBUG_TRIGGER=\"foo\" \
           XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=host.docker.internal\" \
-          php -S web:8000 -t ${DLF_ROOT} ${DLF_ROOT}/Tests/routeFunctionalInstance.php &
+          php -S web:${SERVER_PORT} -t ${DLF_ROOT} ${DLF_ROOT}/Tests/routeFunctionalInstance.php &
           php -S web:8001 -t ${DLF_ROOT}
         fi
       "
