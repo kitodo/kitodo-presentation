@@ -14,7 +14,7 @@ jobs:
         typo3: [ 10.4, 11.5 ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.typo3 }}
@@ -26,6 +26,6 @@ jobs:
         run: Build/Test/runTests.sh -s functional
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
