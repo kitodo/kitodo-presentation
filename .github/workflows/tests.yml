@@ -2,19 +2,19 @@ name: Unit and Functional Testing
 
 on:
   push:
-    branches: [master]
+    branches: [ "4.x" ]
   pull_request:
-    branches: [master]
+    branches: [ "4.x" ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        typo3: [9.5, 10.4]
+        typo3: [ 9.5, 10.4 ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.typo3 }}
