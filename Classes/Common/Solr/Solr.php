@@ -580,7 +580,7 @@ class Solr implements LoggerAwareInterface
     protected function __construct(?string $core)
     {
         // Solarium requires different code for version 5 and 6.
-        $isSolarium5 = \Solarium\Client::VERSION[0] == '5';
+        $isSolarium5 = \Solarium\Client::checkExact('5');
         // Get Solr connection parameters from configuration.
         $this->loadSolrConnectionInfo();
         // Configure connection adapter.
