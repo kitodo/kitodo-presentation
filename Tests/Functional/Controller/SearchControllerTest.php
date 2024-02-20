@@ -49,9 +49,6 @@ class SearchControllerTest extends AbstractControllerTest
         $arguments = [
             'searchParameter' => [
                 'dateFrom' => '1800'
-            ],
-            '@widget_0' => [
-                'currentPage' => 3
             ]
         ];
         $settings = [
@@ -60,7 +57,6 @@ class SearchControllerTest extends AbstractControllerTest
             'extendedSlotCount' => 1
         ];
         $templateHtml = '<html>
-            widgetPage.currentPage:{widgetPage.currentPage}
             lastSearch:<f:for each="{lastSearch}" as="searchEntry" key="key">{key}:{searchEntry},</f:for>
             currentDocument:{currentDocument.uid}
             searchFields:<f:for each="{searchFields}" as="field">{field},</f:for>
@@ -73,7 +69,6 @@ class SearchControllerTest extends AbstractControllerTest
         $controller->processRequest($request, $response);
         $actual = $response->getContent();
         $expected = '<html>
-            widgetPage.currentPage:3
             lastSearch:dateFrom:1800,dateTo:NOW,
             currentDocument:1001
             searchFields:field1,field2,field3,
@@ -96,10 +91,7 @@ class SearchControllerTest extends AbstractControllerTest
             'searchParameter' => [
                 'title' => '10 Keyboard pieces'
             ],
-            'query' => '*',
-            '@widget_0' => [
-                'currentPage' => 3
-            ]
+            'query' => '*'
         ];
         $settings = [
             'solrcore' => 4,
@@ -108,7 +100,6 @@ class SearchControllerTest extends AbstractControllerTest
             'facetCollections' => '1'
         ];
         $templateHtml = '<html>
-            widgetPage.currentPage:{widgetPage.currentPage}
             lastSearch:<f:for each="{lastSearch}" as="searchEntry" key="key">{key}:{searchEntry},</f:for>
             currentDocument:{currentDocument.uid}
             facetsMenu:<f:for each="{facetsMenu}" as="menuEntry">
@@ -123,7 +114,6 @@ class SearchControllerTest extends AbstractControllerTest
         $controller->processRequest($request, $response);
         $actual = $response->getContent();
         $expected = '<html>
-            widgetPage.currentPage:3
             lastSearch:title:10 Keyboard pieces,
             currentDocument:1001
             facetsMenu:
