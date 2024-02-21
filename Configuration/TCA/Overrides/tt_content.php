@@ -40,7 +40,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_listview
 // Plugin "mediaplayer".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_mediaplayer'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_mediaplayer'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_mediaplayer', 'FILE:EXT:' . 'dlf/Configuration/Flexforms/MediaPlayer.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_mediaplayer', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/MediaPlayer.xml');
 // Plugin "metadata".
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_metadata'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_metadata'] = 'pi_flexform';
