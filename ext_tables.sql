@@ -130,6 +130,8 @@ CREATE TABLE tx_dlf_metadataformat (
     deleted smallint(6) DEFAULT '0' NOT NULL,
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
+    l18n_diffsource mediumblob NOT NULL,
+    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     parent_id int(11) DEFAULT '0' NOT NULL,
     encoded int(11) DEFAULT '0' NOT NULL,
     xpath varchar(1024) DEFAULT '' NOT NULL,
