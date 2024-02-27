@@ -18,11 +18,8 @@
             </li>
         </f:else>
     </f:if>
-    <f:if condition="{pagination.hasLessPages}">
-        <li>…</li>
-    </f:if>
-    <f:comment>add pages between first and last page</f:comment>
-    <f:for each="{pagination.pagesG}" as="page">
+    <f:comment>add pages between first and last page, with dots if there are more than 5 pages (before or after) the respective page</f:comment>
+    <f:for each="{pagination.pagesR}" as="page">
         <f:switch expression="{page.label}">
             <f:comment>If page 1 is not to be output twice, please remove the comment</f:comment>
             <f:comment>
@@ -37,15 +34,22 @@
                 </f:case>
             </f:comment>
             <f:defaultCase>
-                <li class="{f:if(condition: '{page.label} == {paginator.currentPageNumber}', then:'current')}">
-                    <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': page.startRecordNumber}" arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
-                </li>
+                <f:switch expression="{page.nIndex}">
+                    <f:comment>add the dots</f:comment>
+                    <f:case value="...">
+                        <li class="dots">
+                            <span class="dots">...</span>
+                        </li>
+                    </f:case>
+                    <f:defaultCase>
+                        <li class="{f:if(condition: '{page.label} == {paginator.currentPageNumber}', then:'current')}">
+                            <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': page.startRecordNumber}" arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
+                        </li>
+                    </f:defaultCase>
+                </f:switch>
             </f:defaultCase>
         </f:switch>
     </f:for>
-    <f:if condition="{pagination.hasMorePages}">
-        <li>…</li>
-    </f:if>
     <f:if condition="{pagination.nextPageNumberG} && {pagination.nextPageNumberG} <= {pagination.lastPageNumber}">
         <f:then>
             <li class="next">
