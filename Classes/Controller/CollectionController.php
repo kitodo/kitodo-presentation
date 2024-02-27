@@ -157,7 +157,7 @@ class CollectionController extends AbstractController
         // get all documents of given collection
         $solrResults = null;
         if (is_array($searchParams) && !empty($searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection([$collection], $this->settings, $searchParams, $listedMetadata);
+            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
             if (empty($itemsPerPage)) {

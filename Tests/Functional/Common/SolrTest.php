@@ -96,7 +96,7 @@ class SolrTest extends FunctionalTestCase
 
     protected function setUpSolr($uid, $storagePid, $solrFixtures)
     {
-        $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
+        $solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
 
         // Setup Solr only once for all tests in this suite
         static $solr = null;
@@ -109,9 +109,9 @@ class SolrTest extends FunctionalTestCase
             }
         }
 
-        $coreModel = $this->solrCoreRepository->findByUid($uid);
+        $coreModel = $solrCoreRepository->findByUid($uid);
         $coreModel->setIndexName($solr->core);
-        $this->solrCoreRepository->update($coreModel);
+        $solrCoreRepository->update($coreModel);
         $this->persistenceManager->persistAll();
         return $solr;
     }

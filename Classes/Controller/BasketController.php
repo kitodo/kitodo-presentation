@@ -438,7 +438,7 @@ class BasketController extends AbstractController
             // set endpage for toc and subentry based on logid
             if (($piVars['addToBasket'] == 'subentry') or ($piVars['addToBasket'] == 'toc')) {
                 $smLinks = $this->document->getCurrentDocument()->smLinks;
-                $pageCounter = sizeof($smLinks['l2p'][$piVars['logId']]);
+                $pageCounter = count($smLinks['l2p'][$piVars['logId']]);
                 $documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
             }
             // add whole document
