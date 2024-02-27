@@ -17,7 +17,9 @@ return [
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
-        'languageField' => 'sys_language_uid', // There are no translations of metadataformat records. But to avoid error messages of the datahandler on translating metadata records, we have to add these fields here.
+        'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l18n_parent',
+        'transOrigDiffSourceField' => 'l18n_diffsource',
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfmetadata.png',
         'rootLevel' => 0,
@@ -55,6 +57,11 @@ return [
                     ['', 0],
                 ],
                 'default' => 0,
+            ],
+        ],
+        'l18n_diffsource' => [
+            'config' => [
+                'type' => 'passthrough',
             ],
         ],
         'parent_id' => [
