@@ -17,9 +17,9 @@ use Kitodo\Dlf\Controller\ToolboxController;
 class ToolboxControllerTest extends AbstractControllerTest
 {
     static array $databaseFixtures = [
-        __DIR__ . '/../../Fixtures/Controller/documents_local.xml',
-        __DIR__ . '/../../Fixtures/Controller/pages.xml',
-        __DIR__ . '/../../Fixtures/Controller/solrcores.xml'
+        __DIR__ . '/../../Fixtures/Controller/documents_local.csv',
+        __DIR__ . '/../../Fixtures/Controller/pages.csv',
+        __DIR__ . '/../../Fixtures/Controller/solrcores.csv'
     ];
 
     public function setUp(): void
