@@ -19,10 +19,10 @@ class CalendarControllerTest extends AbstractControllerTest
 {
 
     static array $databaseFixtures = [
-        __DIR__ . '/../../Fixtures/Controller/pages.xml',
-        __DIR__ . '/../../Fixtures/Controller/documents_calendar.xml',
-        __DIR__ . '/../../Fixtures/Controller/solrcores.xml',
-        __DIR__ . '/../../Fixtures/Controller/metadata.xml'
+        __DIR__ . '/../../Fixtures/Controller/pages.csv',
+        __DIR__ . '/../../Fixtures/Controller/documents_calendar.csv',
+        __DIR__ . '/../../Fixtures/Controller/solrcores.csv',
+        __DIR__ . '/../../Fixtures/Controller/metadata.csv'
     ];
 
     public function setUp(): void

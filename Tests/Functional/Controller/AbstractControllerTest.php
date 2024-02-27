@@ -30,7 +30,7 @@ abstract class AbstractControllerTest extends FunctionalTestCase
     protected function setUpData($databaseFixtures): void
     {
         foreach ($databaseFixtures as $filePath) {
-            $this->importDataSet($filePath);
+            $this->importCSVDataSet($filePath);
         }
         $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->initializeRepository(DocumentRepository::class, 0);

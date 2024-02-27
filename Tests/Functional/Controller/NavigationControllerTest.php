@@ -21,9 +21,9 @@ class NavigationControllerTest extends AbstractControllerTest
 {
 
     static array $databaseFixtures = [
-        __DIR__ . '/../../Fixtures/Controller/documents.xml',
-        __DIR__ . '/../../Fixtures/Controller/pages.xml',
-        __DIR__ . '/../../Fixtures/Controller/solrcores.xml'
+        __DIR__ . '/../../Fixtures/Controller/documents.csv',
+        __DIR__ . '/../../Fixtures/Controller/pages.csv',
+        __DIR__ . '/../../Fixtures/Controller/solrcores.csv'
     ];
 
     public function setUp(): void

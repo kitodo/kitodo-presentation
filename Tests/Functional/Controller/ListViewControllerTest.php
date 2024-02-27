@@ -17,8 +17,8 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 class ListViewControllerTest extends AbstractControllerTest
 {
     static array $databaseFixtures = [
-        __DIR__ . '/../../Fixtures/Controller/pages.xml',
-        __DIR__ . '/../../Fixtures/Controller/solrcores.xml'
+        __DIR__ . '/../../Fixtures/Controller/pages.csv',
+        __DIR__ . '/../../Fixtures/Controller/solrcores.csv'
     ];
 
     static array $solrFixtures = [
