@@ -16,7 +16,6 @@ use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class SolrTest extends FunctionalTestCase
 {
@@ -90,7 +89,6 @@ class SolrTest extends FunctionalTestCase
         foreach ($databaseFixtures as $filePath) {
             $this->importCSVDataSet($filePath);
         }
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->initializeRepository(DocumentRepository::class, 0);
     }
 
