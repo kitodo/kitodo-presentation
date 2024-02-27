@@ -1,7 +1,7 @@
 version: '3'
 services:
   t3docs:
-    image: t3docs/render-documentation:latest
+    image: ghcr.io/t3docs/render-documentation:latest
     volumes:
       - ../../:/PROJECT:ro
       - ../../Documentation-GENERATED-temp:/RESULT
