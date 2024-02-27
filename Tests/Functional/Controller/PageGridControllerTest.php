@@ -36,9 +36,9 @@ class PageGridControllerTest extends AbstractControllerTest
         $_POST['tx_dlf'] = ['id' => 2001];
         $settings = [];
         $templateHtml = '<html>
-            pageGridEntries:<f:count subject="{pageGridEntries}"/>
-            pageGridEntries[0]:{pageGridEntries.0.pagination}, {pageGridEntries.0.thumbnail}
-            pageGridEntries[1]:{pageGridEntries.1.pagination}, {pageGridEntries.1.thumbnail}
+            pageGridEntries:<f:count subject="{paginator.paginatedItems}"/>
+            pageGridEntries[0]:{paginator.paginatedItems.0.pagination}, {paginator.paginatedItems.0.thumbnail}
+            pageGridEntries[1]:{paginator.paginatedItems.1.pagination}, {paginator.paginatedItems.1.thumbnail}
             docUid:{docUid}
         </html>';
         $controller = $this->setUpController(PageGridController::class, $settings, $templateHtml);
