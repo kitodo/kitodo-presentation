@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Document repository.
@@ -572,22 +573,70 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array|null $collection
+     * @param Collection $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
      *
      * @return SolrSearch
      */
-    // TODO: function name says ByCollection, but inside the SolrSearch->prepare() is expected
-    // TODO: that collection is an array of collections
-    public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
+    public function findSolrByCollection(Collection $collection, $settings, $searchParams, $listedMetadata = null)
+    {
+        return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata);
+    }
+
+    /**
+     * Find all documents with given collections from Solr
+     *
+     * @access public
+     *
+     * @param array|QueryResultInterface $collections
+     * @param array $settings
+     * @param array $searchParams
+     * @param QueryResult $listedMetadata
+     *
+     * @return SolrSearch
+     */
+    public function findSolrByCollections($collections, $settings, $searchParams, $listedMetadata = null): SolrSearch
+    {
+        return $this->findSolr($collections, $settings, $searchParams, $listedMetadata);
+    }
+
+    /**
+     * Find all documents without given collection from Solr
+     *
+     * @access public
+     *
+     * @param array $settings
+     * @param array $searchParams
+     * @param QueryResult $listedMetadata
+     *
+     * @return SolrSearch
+     */
+    public function findSolrWithoutCollection($settings, $searchParams, $listedMetadata = null): SolrSearch
+    {
+        return $this->findSolr([], $settings, $searchParams, $listedMetadata);
+    }
+
+    /**
+     * Find all documents with from Solr
+     *
+     * @access private
+     *
+     * @param array|QueryResultInterface $collections
+     * @param array $settings
+     * @param array $searchParams
+     * @param QueryResult $listedMetadata
+     *
+     * @return SolrSearch
+     */
+    private function findSolr($collections, $settings, $searchParams, $listedMetadata = null): SolrSearch
     {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
 
-        $search = new SolrSearch($this, $collection, $settings, $searchParams, $listedMetadata);
+        $search = new SolrSearch($this, $collections, $settings, $searchParams, $listedMetadata);
         $search->prepare();
         return $search;
     }

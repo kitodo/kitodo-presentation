@@ -1030,7 +1030,8 @@ abstract class AbstractDocument
     }
 
     /**
-     * This builds an array of the document's metadata
+     * This magic method is called each time an invisible property is referenced from the object
+     * It builds an array of the document's metadata
      *
      * @access protected
      *

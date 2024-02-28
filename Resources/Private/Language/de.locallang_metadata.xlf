@@ -1,106 +1,134 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2022-02-11T15:29:32Z">
-		<header>
-			<generator>LFEditor</generator>
-		</header>
-		<body>
-			<trans-unit id="metadata.author" approved="yes">
-				<source><![CDATA[Author]]></source>
-				<target><![CDATA[Autor]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.collection" approved="yes">
-				<source><![CDATA[Collection(s)]]></source>
-				<target><![CDATA[Sammlung(en)]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.coordinates" approved="yes">
-				<source><![CDATA[Coordinates]]></source>
-				<target><![CDATA[Geoinformationen]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.date" approved="yes">
-				<source><![CDATA[Date]]></source>
-				<target><![CDATA[Datum]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.description" approved="yes">
-				<source><![CDATA[Description]]></source>
-				<target><![CDATA[Beschreibung]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.language" approved="yes">
-				<source><![CDATA[Language]]></source>
-				<target><![CDATA[Sprache]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.license" approved="yes">
-				<source><![CDATA[License]]></source>
-				<target><![CDATA[Lizenz]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.opac_id" approved="yes">
-				<source><![CDATA[OPAC Identifier]]></source>
-				<target><![CDATA[OPAC-Identifier]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.out_of_print" approved="yes">
-				<source><![CDATA[Out Of Print Works]]></source>
-				<target><![CDATA[Vergriffene Werke]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.owner" approved="yes">
-				<source><![CDATA[Owner]]></source>
-				<target><![CDATA[Besitzer]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.place" approved="yes">
-				<source><![CDATA[Place of Publication]]></source>
-				<target><![CDATA[Erscheinungsort]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.prod_id" approved="yes">
-				<source><![CDATA[Kitodo Process Number]]></source>
-				<target><![CDATA[Kitodo-Vorgangsnummer]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.purl" approved="yes">
-				<source><![CDATA[PURL]]></source>
-				<target><![CDATA[PURL]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.record_id" approved="yes">
-				<source><![CDATA[OAI Identifier]]></source>
-				<target><![CDATA[OAI-Identifier]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.restrictions" approved="yes">
-				<source><![CDATA[Restrictions on Access]]></source>
-				<target><![CDATA[Zugriffsinformationen]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.rights_info" approved="yes">
-				<source><![CDATA[Rights Information]]></source>
-				<target><![CDATA[Rechteinformation]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.shelfmark" approved="yes">
-				<source><![CDATA[Shelfmark]]></source>
-				<target><![CDATA[Signatur]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.terms" approved="yes">
-				<source><![CDATA[Terms of Use]]></source>
-				<target><![CDATA[Nutzungsbedingungen]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.title" approved="yes">
-				<source><![CDATA[Title]]></source>
-				<target><![CDATA[Titel]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.type" approved="yes">
-				<source><![CDATA[Type]]></source>
-				<target><![CDATA[Strukturtyp]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.union_id" approved="yes">
-				<source><![CDATA[Union Catalog ID]]></source>
-				<target><![CDATA[Verbund-Identifier]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.urn" approved="yes">
-				<source><![CDATA[URN]]></source>
-				<target><![CDATA[URN]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.volume" approved="yes">
-				<source><![CDATA[Volume]]></source>
-				<target><![CDATA[Band]]></target>
-			</trans-unit>
-			<trans-unit id="metadata.year" approved="yes">
-				<source><![CDATA[Year of Publication]]></source>
-				<target><![CDATA[Erscheinungsjahr]]></target>
-			</trans-unit>
-		</body>
-	</file>
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2022-02-11T15:29:32Z">
+        <header>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="metadata.author" approved="yes">
+                <source><![CDATA[Author]]></source>
+                <target><![CDATA[Autor]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.collection" approved="yes">
+                <source><![CDATA[Collection(s)]]></source>
+                <target><![CDATA[Sammlung(en)]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.coordinates" approved="yes">
+                <source><![CDATA[Coordinates]]></source>
+                <target><![CDATA[Geoinformationen]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.date" approved="yes">
+                <source><![CDATA[Date]]></source>
+                <target><![CDATA[Datum]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.description" approved="yes">
+                <source><![CDATA[Description]]></source>
+                <target><![CDATA[Beschreibung]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.geonames" approved="yes">
+                <source><![CDATA[Geonames]]></source>
+                <target><![CDATA[Geonamen]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.identifier" approved="yes">
+                <source><![CDATA[Identifier]]></source>
+                <target><![CDATA[Identifikator]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.language" approved="yes">
+                <source><![CDATA[Language]]></source>
+                <target><![CDATA[Sprache]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.license" approved="yes">
+                <source><![CDATA[License]]></source>
+                <target><![CDATA[Lizenz]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.object_alternative_names" approved="yes">
+                <source><![CDATA[Object Alternative Names]]></source>
+                <target><![CDATA[Alternative Objektnamen]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.object_location" approved="yes">
+                <source><![CDATA[Object Location]]></source>
+                <target><![CDATA[Objektstandort]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.object_name" approved="yes">
+                <source><![CDATA[Object Name]]></source>
+                <target><![CDATA[Objektname]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.opac_id" approved="yes">
+                <source><![CDATA[OPAC Identifier]]></source>
+                <target><![CDATA[OPAC-Identifier]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.out_of_print" approved="yes">
+                <source><![CDATA[Out Of Print Works]]></source>
+                <target><![CDATA[Vergriffene Werke]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.owner" approved="yes">
+                <source><![CDATA[Owner]]></source>
+                <target><![CDATA[Besitzer]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.place" approved="yes">
+                <source><![CDATA[Place of Publication]]></source>
+                <target><![CDATA[Erscheinungsort]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.prod_id" approved="yes">
+                <source><![CDATA[Kitodo Process Number]]></source>
+                <target><![CDATA[Kitodo-Vorgangsnummer]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.purl" approved="yes">
+                <source><![CDATA[PURL]]></source>
+                <target><![CDATA[PURL]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.record_id" approved="yes">
+                <source><![CDATA[OAI Identifier]]></source>
+                <target><![CDATA[OAI-Identifier]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.restrictions" approved="yes">
+                <source><![CDATA[Restrictions on Access]]></source>
+                <target><![CDATA[Zugriffsinformationen]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.rights_info" approved="yes">
+                <source><![CDATA[Rights Information]]></source>
+                <target><![CDATA[Rechteinformation]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.shelfmark" approved="yes">
+                <source><![CDATA[Shelfmark]]></source>
+                <target><![CDATA[Signatur]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.terms" approved="yes">
+                <source><![CDATA[Terms of Use]]></source>
+                <target><![CDATA[Nutzungsbedingungen]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.title" approved="yes">
+                <source><![CDATA[Title]]></source>
+                <target><![CDATA[Titel]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.type" approved="yes">
+                <source><![CDATA[Type]]></source>
+                <target><![CDATA[Strukturtyp]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.union_id" approved="yes">
+                <source><![CDATA[Union Catalog ID]]></source>
+                <target><![CDATA[Verbund-Identifier]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.urn" approved="yes">
+                <source><![CDATA[URN]]></source>
+                <target><![CDATA[URN]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.wikidata" approved="yes">
+                <source><![CDATA[Wikidata]]></source>
+                <target><![CDATA[Wikidata]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.wikipedia" approved="yes">
+                <source><![CDATA[Wikipedia]]></source>
+                <target><![CDATA[Wikipedia]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.volume" approved="yes">
+                <source><![CDATA[Volume]]></source>
+                <target><![CDATA[Band]]></target>
+            </trans-unit>
+            <trans-unit id="metadata.year" approved="yes">
+                <source><![CDATA[Year of Publication]]></source>
+                <target><![CDATA[Erscheinungsjahr]]></target>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>
