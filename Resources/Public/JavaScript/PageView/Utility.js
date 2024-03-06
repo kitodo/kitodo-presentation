@@ -655,8 +655,8 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
 dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, coordinates) {
     var features = [];
     featureCollection.forEach(function (ft) {
-        if (ft.get('fulltext') !== undefined) {
-            if (ft.getId() === coordinates) {
+        if (ft.values_.fulltext !== undefined) {
+            if (ft.values_.fulltext === coordinates) {
                 features.push(ft);
             }
         }
