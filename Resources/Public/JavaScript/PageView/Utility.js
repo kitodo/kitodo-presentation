@@ -656,7 +656,7 @@ dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, co
     var features = [];
     featureCollection.forEach(function (ft) {
         if (ft.values_.fulltext !== undefined) {
-            if (ft.values_.fulltext === coordinates) {
+            if (ft.values_.fulltext.includes(coordinates)) {
                 features.push(ft);
             }
         }
