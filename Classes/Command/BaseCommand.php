@@ -22,6 +22,7 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
+use Kitodo\Dlf\Validation\DocumentValidator;
 use Symfony\Component\Console\Command\Command;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -206,71 +207,76 @@ class BaseCommand extends Command
         $doc->cPid = $this->storagePid;
 
         $metadata = $doc->getToplevelMetadata($this->storagePid);
+        $validator = new DocumentValidator($metadata, explode(',', $this->extConf['requiredMetadataFields']));
 
-        // set title data
-        $document->setTitle($metadata['title'][0] ? : '');
-        $document->setTitleSorting($metadata['title_sorting'][0]);
-        $document->setPlace(implode('; ', $metadata['place']));
-        $document->setYear(implode('; ', $metadata['year']));
+        if ($validator->hasAllMandatoryMetadataFields()) {
+            // set title data
+            $document->setTitle($metadata['title'][0] ? : '');
+            $document->setTitleSorting($metadata['title_sorting'][0]);
+            $document->setPlace(implode('; ', $metadata['place']));
+            $document->setYear(implode('; ', $metadata['year']));
 
-        // Remove appended "valueURI" from authors' names for storing in database.
-        foreach ($metadata['author'] as $i => $author) {
-            $splitName = explode(chr(31), $author);
-            $metadata['author'][$i] = $splitName[0];
+            // Remove appended "valueURI" from authors' names for storing in database.
+            foreach ($metadata['author'] as $i => $author) {
+                $splitName = explode(chr(31), $author);
+                $metadata['author'][$i] = $splitName[0];
+            }
+            $document->setAuthor(implode('; ', $metadata['author']));
+            $document->setThumbnail($doc->thumbnail ? : '');
+            $document->setMetsLabel($metadata['mets_label'][0] ? : '');
+            $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
+
+            $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
+            $document->setStructure($structure);
+
+            if (is_array($metadata['collection'])) {
+                $this->addCollections($document, $metadata['collection'], $persistenceManager);
+            }
+
+            // set identifiers
+            $document->setProdId($metadata['prod_id'][0] ? : '');
+            $document->setOpacId($metadata['opac_id'][0] ? : '');
+            $document->setUnionId($metadata['union_id'][0] ? : '');
+
+            $document->setRecordId($metadata['record_id'][0]);
+            $document->setUrn($metadata['urn'][0] ? : '');
+            $document->setPurl($metadata['purl'][0] ? : '');
+            $document->setDocumentFormat($metadata['document_format'][0] ? : '');
+
+            // set access
+            $document->setLicense($metadata['license'][0] ? : '');
+            $document->setTerms($metadata['terms'][0] ? : '');
+            $document->setRestrictions($metadata['restrictions'][0] ? : '');
+            $document->setOutOfPrint($metadata['out_of_print'][0] ? : '');
+            $document->setRightsInfo($metadata['rights_info'][0] ? : '');
+            $document->setStatus(0);
+
+            $this->setOwner($metadata['owner'][0]);
+            $document->setOwner($this->owner);
+
+            // set volume data
+            $document->setVolume($metadata['volume'][0] ? : '');
+            $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
+
+            // Get UID of parent document.
+            if ($document->getDocumentFormat() === 'METS') {
+                $document->setPartof($this->getParentDocumentUidForSaving($document));
+            }
+
+            if ($document->getUid() === null) {
+                // new document
+                $this->documentRepository->add($document);
+            } else {
+                // update of existing document
+                $this->documentRepository->update($document);
+            }
+
+            $persistenceManager->persistAll();
+
+            return true;
         }
-        $document->setAuthor(implode('; ', $metadata['author']));
-        $document->setThumbnail($doc->thumbnail ? : '');
-        $document->setMetsLabel($metadata['mets_label'][0] ? : '');
-        $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
-        $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
-        $document->setStructure($structure);
-
-        if (is_array($metadata['collection'])) {
-            $this->addCollections($document, $metadata['collection'], $persistenceManager);
-        }
-
-        // set identifiers
-        $document->setProdId($metadata['prod_id'][0] ? : '');
-        $document->setOpacId($metadata['opac_id'][0] ? : '');
-        $document->setUnionId($metadata['union_id'][0] ? : '');
-
-        $document->setRecordId($metadata['record_id'][0] ? : ''); // (?) $doc->recordId
-        $document->setUrn($metadata['urn'][0] ? : '');
-        $document->setPurl($metadata['purl'][0] ? : '');
-        $document->setDocumentFormat($metadata['document_format'][0] ? : '');
-
-        // set access
-        $document->setLicense($metadata['license'][0] ? : '');
-        $document->setTerms($metadata['terms'][0] ? : '');
-        $document->setRestrictions($metadata['restrictions'][0] ? : '');
-        $document->setOutOfPrint($metadata['out_of_print'][0] ? : '');
-        $document->setRightsInfo($metadata['rights_info'][0] ? : '');
-        $document->setStatus(0);
-
-        $this->setOwner($metadata['owner'][0]);
-        $document->setOwner($this->owner);
-
-        // set volume data
-        $document->setVolume($metadata['volume'][0] ? : '');
-        $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
-
-        // Get UID of parent document.
-        if ($document->getDocumentFormat() === 'METS') {
-            $document->setPartof($this->getParentDocumentUidForSaving($document));
-        }
-
-        if ($document->getUid() === null) {
-            // new document
-            $this->documentRepository->add($document);
-        } else {
-            // update of existing document
-            $this->documentRepository->update($document);
-        }
-
-        $persistenceManager->persistAll();
-
-        return true;
+        return false;
     }
 
     /**
