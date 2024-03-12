@@ -21,7 +21,7 @@ class PageViewProxyDisabledTest extends FunctionalTestCase
 
     protected function queryProxy(array $query, string $method = 'GET')
     {
-        $query['eID'] = 'tx_dlf_pageview_proxy';
+        $query['middleware'] = 'page-view-proxy';
 
         return $this->httpClient->request($method, '', [
             'query' => $query,
