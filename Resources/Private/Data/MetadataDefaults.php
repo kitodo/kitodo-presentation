@@ -31,6 +31,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 1,
         'index_autocomplete' => 0,
+        'sorting' => 1,
     ],
     'title' => [
         'format' => [
@@ -60,6 +61,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 1,
         'index_autocomplete' => 1,
+        'sorting' => 2,
     ],
     'volume' => [
         'format' => [
@@ -79,6 +81,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 1,
         'index_autocomplete' => 0,
+        'sorting' => 3,
     ],
     'date' => [
         'format' => [
@@ -98,6 +101,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 1,
         'index_autocomplete' => 0,
+        'sorting' => 4,
     ],
     'author' => [
         'format' => [
@@ -122,6 +126,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 1,
         'index_autocomplete' => 1,
+        'sorting' => 5,
     ],
     'place' => [
         'format' => [
@@ -146,6 +151,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 1,
         'index_autocomplete' => 0,
+        'sorting' => 6,
     ],
     'year' => [
         'format' => [
@@ -170,6 +176,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 1,
         'index_autocomplete' => 0,
+        'sorting' => 7,
     ],
     'language' => [
         'format' => [
@@ -189,6 +196,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 8,
     ],
     'collection' => [
         'format' => [
@@ -218,6 +226,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 9,
     ],
     'owner' => [
         'format' => [
@@ -247,6 +256,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 10,
     ],
     'purl' => [
         'format' => [
@@ -271,6 +281,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 11,
     ],
     'urn' => [
         'format' => [
@@ -300,6 +311,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 12,
     ],
     'opac_id' => [
         'format' => [
@@ -324,6 +336,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 13,
     ],
     'union_id' => [
         'format' => [
@@ -348,6 +361,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 14,
     ],
     'record_id' => [
         'format' => [
@@ -377,6 +391,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 15,
     ],
     'prod_id' => [
         'format' => [
@@ -406,6 +421,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 16,
     ],
     'coordinates' => [
         'format' => [
@@ -425,6 +441,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 17,
     ],
     'license' => [
         'format' => [
@@ -444,6 +461,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 18,
     ],
     'terms' => [
         'format' => [
@@ -463,6 +481,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 19,
     ],
     'restrictions' => [
         'format' => [
@@ -482,6 +501,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 20,
     ],
     'out_of_print' => [
         'format' => [
@@ -501,6 +521,7 @@ return [
         'is_facet' => 1,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 21,
     ],
     'rights_info' => [
         'format' => [
@@ -520,6 +541,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 22,
     ],
     'description' => [
         'format' => [
@@ -539,6 +561,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 23,
     ],
     'identifier' => [
         'format' => [
@@ -558,6 +581,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 24,
     ],
     'object_name' => [
         'format' => [
@@ -577,6 +601,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 25,
     ],
     'object_alternative_names' => [
         'format' => [
@@ -596,6 +621,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 26,
     ],
     'object_location' => [
         'format' => [
@@ -615,6 +641,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 27,
     ],
     'geonames' => [
         'format' => [
@@ -634,6 +661,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 28,
     ],
     'wikidata' => [
         'format' => [
@@ -653,6 +681,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 29,
     ],
     'wikipedia' => [
         'format' => [
@@ -672,6 +701,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 30,
     ],
     'identifier' => [
         'format' => [
@@ -691,6 +721,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 31,
     ],
     'object_name' => [
         'format' => [
@@ -710,6 +741,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 32,
     ],
     'object_alternative_names' => [
         'format' => [
@@ -729,6 +761,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 33,
     ],
     'object_location' => [
         'format' => [
@@ -748,6 +781,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 34,
     ],
     'geonames' => [
         'format' => [
@@ -767,6 +801,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 35,
     ],
     'wikidata' => [
         'format' => [
@@ -786,6 +821,7 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 36,
     ],
     'wikipedia' => [
         'format' => [
@@ -805,5 +841,6 @@ return [
         'is_facet' => 0,
         'is_listed' => 0,
         'index_autocomplete' => 0,
+        'sorting' => 37,
     ]
 ];
