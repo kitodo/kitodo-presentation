@@ -24,6 +24,7 @@ setUpDockerComposeDotEnv() {
         echo "TEST_FILE=${TEST_FILE}"
         echo "PHP_XDEBUG_ON=${PHP_XDEBUG_ON}"
         echo "PHP_XDEBUG_PORT=${PHP_XDEBUG_PORT}"
+        echo "SERVER_PORT=${SERVER_PORT}"
         echo "DOCKER_PHP_IMAGE=${DOCKER_PHP_IMAGE}"
         echo "EXTRA_TEST_OPTIONS=${EXTRA_TEST_OPTIONS}"
         echo "SCRIPT_VERBOSE=${SCRIPT_VERBOSE}"
@@ -188,6 +189,7 @@ DBMS="mariadb"
 PHP_VERSION="7.4"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
+SERVER_PORT=8000
 EXTRA_TEST_OPTIONS=""
 SCRIPT_VERBOSE=0
 PHPUNIT_WATCH=0
@@ -229,7 +231,7 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
