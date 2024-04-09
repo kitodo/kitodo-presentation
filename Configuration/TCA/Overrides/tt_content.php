@@ -184,7 +184,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_embedded
     'Dlf',
     'MediaPlayer',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.title',
-    'EXT:dlf/Resources/Public/Icons/tx-dlf-mediaplayer.svg'
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-audioplayer.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
