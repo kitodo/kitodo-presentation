@@ -209,7 +209,7 @@ class BaseCommand extends Command
 
         // set title data
         $document->setTitle($metadata['title'][0] ? : '');
-        $document->setTitleSorting($metadata['title_sorting'][0]);
+        $document->setTitleSorting($metadata['title_sorting'][0] ? : '');
         $document->setPlace(implode('; ', $metadata['place']));
         $document->setYear(implode('; ', $metadata['year']));
 
