@@ -218,7 +218,7 @@ class BaseCommand extends Command
             $splitName = explode(chr(31), $author);
             $metadata['author'][$i] = $splitName[0];
         }
-        $document->setAuthor(implode('; ', $metadata['author']));
+        $document->setAuthor($this->getAuthors($metadata['author']));
         $document->setThumbnail($doc->thumbnail ? : '');
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
         $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
@@ -348,6 +348,40 @@ class BaseCommand extends Command
             // add to document
             $document->addCollection($documentCollection);
         }
+    }
+
+    /**
+     * Get authors considering that database field can't accept
+     * more than 255 characters.
+     *
+     * @access private
+     * 
+     * @param array $metadataAuthor
+     *
+     * @return string
+     */
+    private function getAuthors(array $metadataAuthor): string
+    {
+        $authors = '';
+        $delimiter = '; ';
+        $ellipsis = 'et al.';
+
+        $count = count($metadataAuthor);
+
+        for ($i = 0; $i < $count; $i++) {
+            // Build the next part to add
+            $nextPart = ($i === 0 ? '' : $delimiter) . $metadataAuthor[$i];
+            // Check if adding this part and ellipsis in future would exceed the character limit
+            if (strlen($authors . $nextPart . $delimiter . $ellipsis) > 255) {
+                // Add ellipsis and stop adding more authors
+                $authors .= $delimiter . $ellipsis;
+                break;
+            }
+            // Add the part to the main string
+            $authors .= $nextPart;
+        }
+
+        return $authors;
     }
 
     /**
