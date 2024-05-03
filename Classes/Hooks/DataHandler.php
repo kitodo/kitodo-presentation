@@ -39,9 +39,9 @@ class DataHandler implements LoggerAwareInterface
 
     /**
      * @access protected
-     * @var DocumentRepository|null
+     * @var DocumentRepository
      */
-    protected ?DocumentRepository $documentRepository;
+    protected DocumentRepository $documentRepository;
 
     /**
      * Gets document repository
@@ -52,7 +52,7 @@ class DataHandler implements LoggerAwareInterface
      */
     protected function getDocumentRepository(): DocumentRepository
     {
-        if ($this->documentRepository === null) {
+        if (!isset($this->documentRepository)) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $this->documentRepository = $objectManager->get(DocumentRepository::class);
         }
