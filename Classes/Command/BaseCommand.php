@@ -364,7 +364,7 @@ class BaseCommand extends Command
     {
         $authors = '';
         $delimiter = '; ';
-        $ellipsis = 'et. al.';
+        $ellipsis = 'et al.';
 
         $count = count($metadataAuthor);
 
