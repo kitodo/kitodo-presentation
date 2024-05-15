@@ -213,13 +213,6 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @static
-     * @var array (AbstractDocument) This holds the singleton object of the document
-     */
-    protected static array $registry = [];
-
-    /**
-     * @access protected
      * @var int This holds the UID of the root document or zero if not multi-volumed
      */
     protected int $rootId = 0;
@@ -595,21 +588,6 @@ abstract class AbstractDocument
         }
 
         return $instance;
-    }
-
-    /**
-     * This clears the static registry to prevent memory exhaustion
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @return void
-     */
-    public static function clearRegistry(): void
-    {
-        // Reset registry array.
-        self::$registry = [];
     }
 
     /**
