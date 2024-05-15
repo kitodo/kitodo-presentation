@@ -305,49 +305,44 @@ final class MetsDocument extends AbstractDocument
      */
     protected function getLogicalStructureInfo(\SimpleXMLElement $structure, bool $recursive = false): array
     {
-        $attributes = [];
-        // Get attributes.
-        foreach ($structure->attributes() as $attribute => $value) {
-            $attributes[$attribute] = (string) $value;
-        }
+        $attributes = $structure->attributes();
 
         // Extract identity information.
-        $details = [];
-        $details['id'] = $attributes['ID'];
-        $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
-        $details['admId'] = (isset($attributes['ADMID']) ? $attributes['ADMID'] : '');
-        $details['order'] = (isset($attributes['ORDER']) ? $attributes['ORDER'] : '');
-        $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
-        $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
-        $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
-        $details['volume'] = '';
+        $details = [
+            'id' => (string) $attributes['ID'],
+            'dmdId' => isset($attributes['DMDID']) ? (string) $attributes['DMDID'] : '',
+            'admId' => isset($attributes['ADMID']) ? (string) $attributes['ADMID'] : '',
+            'order' => isset($attributes['ORDER']) ? (string) $attributes['ORDER'] : '',
+            'label' => isset($attributes['LABEL']) ? (string) $attributes['LABEL'] : '',
+            'orderlabel' => isset($attributes['ORDERLABEL']) ? (string) $attributes['ORDERLABEL'] : '',
+            'contentIds' => isset($attributes['CONTENTIDS']) ? (string) $attributes['CONTENTIDS'] : '',
+            'volume' => '',
+            'year' => '',
+            'pagination' => '',
+            'type' => isset($attributes['TYPE']) ? (string) $attributes['TYPE'] : '',
+            'description' => '',
+            'thumbnailId' => null,
+            'files' => [],
+        ];
+
         // Set volume and year information only if no label is set and this is the toplevel structure element.
-        if (
-            empty($details['label'])
-            && empty($details['orderlabel'])
-        ) {
+        if (empty($details['label']) && empty($details['orderlabel'])) {
             $metadata = $this->getMetadata($details['id']);
-            if (!empty($metadata['volume'][0])) {
-                $details['volume'] = $metadata['volume'][0];
-            }
-            if (!empty($metadata['year'][0])) {
-                $details['year'] = $metadata['year'][0];
-            }
+            $details['volume'] = $metadata['volume'][0] ?? '';
+            $details['year'] = $metadata['year'][0] ?? '';
         }
-        $details['pagination'] = '';
-        $details['type'] = $attributes['TYPE'];
+
         // add description for 3D objects
         if ($details['type'] == 'object') {
             $metadata = $this->getMetadata($details['id']);
             $details['description'] = $metadata['description'][0] ?? '';
         }
-        $details['thumbnailId'] = '';
+
         // Load smLinks.
         $this->magicGetSmLinks();
         // Load physical structure.
         $this->magicGetPhysicalStructure();
         // Get the physical page or external file this structure element is pointing at.
-        $details['points'] = '';
         // Is there a mptr node?
         if (count($structure->children('http://www.loc.gov/METS/')->mptr)) {
             // Yes. Get the file reference.
@@ -370,7 +365,6 @@ final class MetsDocument extends AbstractDocument
             unset($details['thumbnailId']);
         }
         // Get the files this structure element is pointing at.
-        $details['files'] = [];
         $fileUse = $this->magicGetFileGrps();
         // Get the file representations from fileSec node.
         foreach ($structure->children('http://www.loc.gov/METS/')->fptr as $fptr) {
