@@ -591,6 +591,21 @@ abstract class AbstractDocument
     }
 
     /**
+     * Clear document cache.
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @return void
+     */
+    public static function clearDocumentCache(): void
+    {
+        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
+        $cache->flush();
+    }
+
+    /**
      * This returns the first corresponding physical page number of a given logical page label
      *
      * @access public
