@@ -15,7 +15,7 @@ namespace Kitodo\Dlf\Format;
 /**
  * Fulltext ALTO format class for the 'dlf' extension
  *
- * ** This currently supports only ALTO 2.x **
+ * ** This currently supports ALTO 2.x / 3.x / 4.x **
  *
  * @package TYPO3
  * @subpackage dlf
