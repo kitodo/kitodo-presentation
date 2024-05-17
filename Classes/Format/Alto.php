@@ -36,16 +36,14 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
     public function getRawText(\SimpleXMLElement $xml): string
     {
         $rawText = '';
-        
+ 
         // register ALTO namespace depending on document
         $namespace = $xml->getDocNamespaces();
         if (in_array('http://www.loc.gov/standards/alto/ns-v2#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
-        }
-        if (in_array('http://www.loc.gov/standards/alto/ns-v3#', $namespace, true)) {
+        } elseif (in_array('http://www.loc.gov/standards/alto/ns-v3#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v3#');
-        }
-        if (in_array('http://www.loc.gov/standards/alto/ns-v4#', $namespace, true)) {
+        } elseif (in_array('http://www.loc.gov/standards/alto/ns-v4#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v4#');
         }
 
@@ -84,11 +82,9 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
         $namespace = $xml->getDocNamespaces();
         if (in_array('http://www.loc.gov/standards/alto/ns-v2#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
-        }
-        if (in_array('http://www.loc.gov/standards/alto/ns-v3#', $namespace, true)) {
+        } elseif (in_array('http://www.loc.gov/standards/alto/ns-v3#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v3#');
-        }
-        if (in_array('http://www.loc.gov/standards/alto/ns-v4#', $namespace, true)) {
+        } elseif (in_array('http://www.loc.gov/standards/alto/ns-v4#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v4#');
         }
 
