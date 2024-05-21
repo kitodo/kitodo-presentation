@@ -1196,13 +1196,13 @@ final class MetsDocument extends AbstractDocument
                 $firstNode = $physNode[0];
                 $id = (string) $firstNode['ID'];
                 $this->physicalStructureInfo[$id]['id'] = $id;
-                $this->physicalStructureInfo[$id]['dmdId'] = (isset($firstNode['DMDID']) ? (string) $firstNode['DMDID'] : '');
-                $this->physicalStructureInfo[$id]['admId'] = (isset($firstNode['ADMID']) ? (string) $firstNode['ADMID'] : '');
-                $this->physicalStructureInfo[$id]['order'] = (isset($firstNode['ORDER']) ? (string) $firstNode['ORDER'] : '');
-                $this->physicalStructureInfo[$id]['label'] = (isset($firstNode['LABEL']) ? (string) $firstNode['LABEL'] : '');
-                $this->physicalStructureInfo[$id]['orderlabel'] = (isset($firstNode['ORDERLABEL']) ? (string) $firstNode['ORDERLABEL'] : '');
+                $this->physicalStructureInfo[$id]['dmdId'] = isset($firstNode['DMDID']) ? (string) $firstNode['DMDID'] : '';
+                $this->physicalStructureInfo[$id]['admId'] = isset($firstNode['ADMID']) ? (string) $firstNode['ADMID'] : '';
+                $this->physicalStructureInfo[$id]['order'] = isset($firstNode['ORDER']) ? (string) $firstNode['ORDER'] : '';
+                $this->physicalStructureInfo[$id]['label'] = isset($firstNode['LABEL']) ? (string) $firstNode['LABEL'] : '';
+                $this->physicalStructureInfo[$id]['orderlabel'] = isset($firstNode['ORDERLABEL']) ? (string) $firstNode['ORDERLABEL'] : '';
                 $this->physicalStructureInfo[$id]['type'] = (string) $firstNode['TYPE'];
-                $this->physicalStructureInfo[$id]['contentIds'] = (isset($firstNode['CONTENTIDS']) ? (string) $firstNode['CONTENTIDS'] : '');
+                $this->physicalStructureInfo[$id]['contentIds'] = isset($firstNode['CONTENTIDS']) ? (string) $firstNode['CONTENTIDS'] : '';
                 // Get the file representations from fileSec node.
                 foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
                     // Check if file has valid @USE attribute.
@@ -1217,13 +1217,13 @@ final class MetsDocument extends AbstractDocument
                     $order = (int) $elementNode['ORDER'];
                     $elements[$order] = $id;
                     $this->physicalStructureInfo[$elements[$order]]['id'] = $id;
-                    $this->physicalStructureInfo[$elements[$order]]['dmdId'] = (isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '');
-                    $this->physicalStructureInfo[$elements[$order]]['admId'] = (isset($elementNode['ADMID']) ? (string) $elementNode['ADMID'] : '');
-                    $this->physicalStructureInfo[$elements[$order]]['order'] = (isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '');
-                    $this->physicalStructureInfo[$elements[$order]]['label'] = (isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '');
-                    $this->physicalStructureInfo[$elements[$order]]['orderlabel'] = (isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '');
+                    $this->physicalStructureInfo[$elements[$order]]['dmdId'] = isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '';
+                    $this->physicalStructureInfo[$elements[$order]]['admId'] = isset($elementNode['ADMID']) ? (string) $elementNode['ADMID'] : '';
+                    $this->physicalStructureInfo[$elements[$order]]['order'] = isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '';
+                    $this->physicalStructureInfo[$elements[$order]]['label'] = isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '';
+                    $this->physicalStructureInfo[$elements[$order]]['orderlabel'] = isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '';
                     $this->physicalStructureInfo[$elements[$order]]['type'] = (string) $elementNode['TYPE'];
-                    $this->physicalStructureInfo[$elements[$order]]['contentIds'] = (isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '');
+                    $this->physicalStructureInfo[$elements[$order]]['contentIds'] = isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '';
                     // Get the file representations from fileSec node.
                     foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
                         // Check if file has valid @USE attribute.
