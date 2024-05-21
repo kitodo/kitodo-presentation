@@ -148,11 +148,11 @@ collections or even to reindex all documents on the given page.::
 
     # reindex all documents on page 123 with solr core 'dlfCore1' in given range
     # short notation
-    ./vendor/bin/typo3 kitodo:reindex -il 1000 -is 0 -p 123 -s dlfCore1
-    ./vendor/bin/typo3 kitodo:reindex -il 1000 -is 1000 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -l 1000 -b 1000 -p 123 -s dlfCore1
     # long notation
-    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-start=0 --pid 123 ---solr dlfCore1
-    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-start=1000 --pid 123 --solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
 
 .. t3-field-list-table::
@@ -219,7 +219,7 @@ collections or even to reindex all documents on the given page.::
        123
 
     - :Option:
-       ``-il|--index-limit``
+       ``-l|--index-limit``
    :Required:
        no
    :Description:
@@ -232,11 +232,11 @@ collections or even to reindex all documents on the given page.::
        1000
 
     - :Option:
-       ``-is|--index-start``
+       ``-b|--index-begin``
    :Required:
        no
    :Description:
-       With this option, all documents starting from given value for the given page
+       With this option, all documents beginning from given value for the given page
        will be reindex.
 
        Used when it is expected that memory problems can appear due to the high

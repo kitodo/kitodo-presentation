@@ -82,13 +82,13 @@ class ReindexCommand extends BaseCommand
             )
             ->addOption(
                 'index-limit',
-                'il',
+                'l',
                 InputOption::VALUE_OPTIONAL,
                 'Reindex the given amount of documents on the given page.'
             )
             ->addOption(
-                'index-start',
-                'is',
+                'index-begin',
+                'b',
                 InputOption::VALUE_OPTIONAL,
                 'Reindex documents on the given page starting from the given value.'
             );
@@ -165,10 +165,10 @@ class ReindexCommand extends BaseCommand
             $documents = $this->documentRepository->findAll()
                 ->getQuery()
                 ->setLimit((int) $input->getOption('index-limit'))
-                ->setOffset((int) $input->getOption('index-start'))
+                ->setOffset((int) $input->getOption('index-begin'))
                 ->execute();
 
-            $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-start') . ' will be indexed.');
+            $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
         } elseif (
             !empty($input->getOption('coll'))
             && !is_array($input->getOption('coll'))
