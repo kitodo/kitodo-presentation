@@ -213,13 +213,6 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @static
-     * @var array (AbstractDocument) This holds the singleton object of the document
-     */
-    protected static array $registry = [];
-
-    /**
-     * @access protected
      * @var int This holds the UID of the root document or zero if not multi-volumed
      */
     protected int $rootId = 0;
@@ -598,7 +591,7 @@ abstract class AbstractDocument
     }
 
     /**
-     * This clears the static registry to prevent memory exhaustion
+     * Clear document cache.
      *
      * @access public
      *
@@ -606,10 +599,10 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    public static function clearRegistry(): void
+    public static function clearDocumentCache(): void
     {
-        // Reset registry array.
-        self::$registry = [];
+        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
+        $cache->flush();
     }
 
     /**

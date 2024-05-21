@@ -181,8 +181,8 @@ class ReindexCommand extends BaseCommand
                 // add to index
                 Indexer::add($document, $this->documentRepository);
             }
-            // Clear document registry to prevent memory exhaustion.
-            AbstractDocument::clearRegistry();
+            // Clear document cache to prevent memory exhaustion.
+            AbstractDocument::clearDocumentCache();
             // Clear state of persistence manager to prevent memory exhaustion.
             $this->persistenceManager->clearState();
         }
