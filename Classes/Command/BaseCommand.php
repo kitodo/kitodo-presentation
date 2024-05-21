@@ -68,12 +68,6 @@ class BaseCommand extends Command
 
     /**
      * @access protected
-     * @var PersistenceManager
-     */
-    protected PersistenceManager $persistenceManager;
-
-    /**
-     * @access protected
      * @var int
      */
     protected int $storagePid;
@@ -91,11 +85,13 @@ class BaseCommand extends Command
     protected array $extConf;
 
     /**
+     * @access protected
      * @var ConfigurationManager
      */
     protected ConfigurationManager $configurationManager;
 
     /**
+     * @access protected
      * @var PersistenceManager
      */
     protected PersistenceManager $persistenceManager;
