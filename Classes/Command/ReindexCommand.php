@@ -79,6 +79,18 @@ class ReindexCommand extends BaseCommand
                 'a',
                 InputOption::VALUE_NONE,
                 'Reindex all documents on the given page.'
+            )
+            ->addOption(
+                'index-limit',
+                'il',
+                InputOption::VALUE_OPTIONAL,
+                'Reindex the given amount of documents on the given page.'
+            )
+            ->addOption(
+                'index-start',
+                'is',
+                InputOption::VALUE_OPTIONAL,
+                'Reindex documents on the given page starting from the given value.'
             );
     }
 
@@ -145,6 +157,18 @@ class ReindexCommand extends BaseCommand
         if (!empty($input->getOption('all'))) {
             // Get all documents.
             $documents = $this->documentRepository->findAll();
+        } elseif (
+            !empty($input->getOption('index-limit'))
+            && $input->getOption('index-start') >= 0
+        ) {
+            // Get all documents for given limit and start.
+            $documents = $this->documentRepository->findAll()
+                ->getQuery()
+                ->setLimit((int) $input->getOption('index-limit'))
+                ->setOffset((int) $input->getOption('index-start'))
+                ->execute();
+
+            $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-start') . ' will be indexed.');
         } elseif (
             !empty($input->getOption('coll'))
             && !is_array($input->getOption('coll'))
