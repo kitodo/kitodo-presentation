@@ -207,9 +207,10 @@ class ReindexCommand extends BaseCommand
             }
             // Clear document cache to prevent memory exhaustion.
             AbstractDocument::clearDocumentCache();
-            // Clear state of persistence manager to prevent memory exhaustion.
-            $this->persistenceManager->clearState();
         }
+
+        // Clear state of persistence manager to prevent memory exhaustion.
+        $this->persistenceManager->clearState();
 
         $io->success('All done!');
 
