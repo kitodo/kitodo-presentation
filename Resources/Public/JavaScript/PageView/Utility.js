@@ -556,7 +556,7 @@ dlfUtils.isFulltextDescriptor = function (obj) {
  * @return {Object}
  */
 dlfUtils.parseDataDic = function (element) {
-    var dataDicString = $(element).attr('data-dic') || '',
+    var dataDicString = $('html').find(element).data('dic') || '',
         dataDicRecords = dataDicString.split(';'),
         dataDic = {};
 
@@ -655,8 +655,8 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
 dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, coordinates) {
     var features = [];
     featureCollection.forEach(function (ft) {
-        if (ft.get('fulltext') !== undefined) {
-            if (ft.getId() === coordinates) {
+        if (ft.values_.fulltext !== undefined) {
+            if (ft.values_.fulltext.includes(coordinates)) {
                 features.push(ft);
             }
         }

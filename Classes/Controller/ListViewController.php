@@ -80,10 +80,10 @@ class ListViewController extends AbstractController
         $this->searchParams = $this->getParametersSafely('searchParameter');
 
         // extract collection(s) from collection parameter
-        $collection = null;
+        $collections = [];
         if ($this->searchParams['collection']) {
             foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collection[] = $this->collectionRepository->findByUid((int) $collectionEntry);
+                $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
         }
 
@@ -102,8 +102,7 @@ class ListViewController extends AbstractController
         $solrResults = null;
         $numResults = 0;
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
-            // @phpstan-ignore-next-line
-            $solrResults = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
+            $solrResults = $this->documentRepository->findSolrByCollections($collections, $this->settings, $this->searchParams, $listedMetadata);
             $numResults = $solrResults->getNumFound();
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];

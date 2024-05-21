@@ -309,7 +309,7 @@ abstract class AbstractDocument
      * @abstract
      *
      * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
-     * 
+     *
      * @return array|null The set of file information
      */
     abstract public function getFileInfo($id): ?array;
@@ -581,7 +581,7 @@ abstract class AbstractDocument
         }
 
         // Sanitize input.
-        $pid = max(intval($settings['storagePid']), 0);
+        $pid = max((int) $settings['storagePid'], 0);
         if ($documentFormat == 'METS') {
             $instance = new MetsDocument($pid, $location, $xml, $settings);
         } elseif ($documentFormat == 'IIIF') {
@@ -590,7 +590,7 @@ abstract class AbstractDocument
             $instance = new IiifManifest($pid, $location, $iiif);
         }
 
-        if (!is_null($instance)) {
+        if ($instance !== null) {
             self::setDocumentCache($location, $instance);
         }
 
@@ -686,25 +686,45 @@ abstract class AbstractDocument
         if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
             $textMiniOcr = '';
             if (!empty($this->formats[$textFormat]['class'])) {
-                $class = $this->formats[$textFormat]['class'];
-                // Get the raw text from class.
-                if (
-                    class_exists($class)
-                    && ($obj = GeneralUtility::makeInstance($class)) instanceof FulltextInterface
-                ) {
-                    // Load XML from file.
-                    $ocrTextXml = Helper::getXmlFileAsString($fileContent);
-                    $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
-                    $this->rawTextArray[$id] = $textMiniOcr;
-                } else {
-                    $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
-                }
+                $textMiniOcr = $this->getRawTextFromClass($id, $fileContent, $textFormat);
             }
             $fullText = $textMiniOcr;
         } else {
             $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
         }
         return $fullText;
+    }
+
+    /**
+     * Get raw text from class for given format.
+     *
+     * @access private
+     *
+     * @param $id
+     * @param $fileContent
+     * @param $textFormat
+     *
+     * @return string
+     */
+    private function getRawTextFromClass($id, $fileContent, $textFormat): string
+    {
+        $textMiniOcr = '';
+        $class = $this->formats[$textFormat]['class'];
+        // Get the raw text from class.
+        if (class_exists($class)) {
+            $obj = GeneralUtility::makeInstance($class);
+            if ($obj instanceof FulltextInterface) {
+                // Load XML from file.
+                $ocrTextXml = Helper::getXmlFileAsString($fileContent);
+                $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
+                $this->rawTextArray[$id] = $textMiniOcr;
+            } else {
+                $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
+            }
+        } else {
+            $this->logger->warning('Class "' . $class . ' does not exists for "' . $textFormat . ' text format"');
+        }
+        return $textMiniOcr;
     }
 
     /**
@@ -744,7 +764,7 @@ abstract class AbstractDocument
     {
         $title = '';
         // Sanitize input.
-        $uid = max(intval($uid), 0);
+        $uid = max($uid, 0);
         if ($uid) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -762,7 +782,8 @@ abstract class AbstractDocument
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetchAssociative()) {
+            $resArray = $result->fetchAssociative();
+            if ($resArray) {
                 // Get title information.
                 $title = $resArray['title'];
                 $partof = $resArray['partof'];
@@ -770,7 +791,7 @@ abstract class AbstractDocument
                 if (
                     $recursive
                     && empty($title)
-                    && intval($partof)
+                    && (int) $partof
                     && $partof != $uid
                 ) {
                     $title = self::getTitle($partof, true);
@@ -950,7 +971,8 @@ abstract class AbstractDocument
      *
      * @return array
      */
-    protected function initializeMetadata(string $format): array {
+    protected function initializeMetadata(string $format): array
+    {
         return [
             'title' => [],
             'title_sorting' => [],
@@ -1008,7 +1030,8 @@ abstract class AbstractDocument
     }
 
     /**
-     * This builds an array of the document's metadata
+     * This magic method is called each time an invisible property is referenced from the object
+     * It builds an array of the document's metadata
      *
      * @access protected
      *
@@ -1161,7 +1184,7 @@ abstract class AbstractDocument
      */
     protected function _setCPid(int $value): void
     {
-        $this->cPid = max(intval($value), 0);
+        $this->cPid = max($value, 0);
     }
 
     /**
@@ -1258,7 +1281,7 @@ abstract class AbstractDocument
      */
     private static function getDocumentCache(string $location)
     {
-        $cacheIdentifier = md5($location);
+        $cacheIdentifier = hash('md5', $location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
         $cacheHit = $cache->get($cacheIdentifier);
 
@@ -1279,11 +1302,10 @@ abstract class AbstractDocument
      */
     private static function setDocumentCache(string $location, AbstractDocument $currentDocument): void
     {
-        $cacheIdentifier = md5($location);
+        $cacheIdentifier = hash('md5', $location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
 
         // Save value in cache
         $cache->set($cacheIdentifier, $currentDocument);
     }
-
 }

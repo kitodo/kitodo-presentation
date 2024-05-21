@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\AbstractDocument;
@@ -78,7 +88,7 @@ class SolrIndexingTest extends FunctionalTestCase
             'storagePid' => $document->getPid(),
         ];
 
-        $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
+        $solrSearch = $this->documentRepository->findSolrWithoutCollection($solrSettings, ['query' => '*']);
         $solrSearch->getQuery()->execute();
         self::assertEquals(1, count($solrSearch));
         self::assertEquals(15, $solrSearch->getNumFound());
@@ -134,9 +144,9 @@ class SolrIndexingTest extends FunctionalTestCase
         ];
 
         // No query: Only list toplevel result(s) in collection(s)
-        $musikSearch = $this->documentRepository->findSolrByCollection($musik, $settings, []);
-        $dresdnerHefteSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, []);
-        $multiCollectionSearch = $this->documentRepository->findSolrByCollection($collections, $settings, []);
+        $musikSearch = $this->documentRepository->findSolrByCollections($musik, $settings, []);
+        $dresdnerHefteSearch = $this->documentRepository->findSolrByCollections($dresdnerHefte, $settings, []);
+        $multiCollectionSearch = $this->documentRepository->findSolrByCollections($collections, $settings, []);
         self::assertGreaterThanOrEqual(1, $musikSearch->getNumFound());
         self::assertGreaterThanOrEqual(1, $dresdnerHefteSearch->getNumFound());
         self::assertEquals('533223312LOG_0000', $dresdnerHefteSearch->getSolrResults()['documents'][0]['id']);
@@ -147,8 +157,8 @@ class SolrIndexingTest extends FunctionalTestCase
         );
 
         // With query: List all results
-        $metadataSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden']);
-        $fulltextSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden', 'fulltext' => '1']);
+        $metadataSearch = $this->documentRepository->findSolrByCollection($collections[1], $settings, ['query' => 'Dresden']);
+        $fulltextSearch = $this->documentRepository->findSolrByCollection($collections[1], $settings, ['query' => 'Dresden', 'fulltext' => '1']);
         self::assertGreaterThan($metadataSearch->getNumFound(), $fulltextSearch->getNumFound());
     }
 

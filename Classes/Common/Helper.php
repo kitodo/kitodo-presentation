@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Context\Context;
@@ -57,7 +58,7 @@ class Helper
      * @access protected
      * @static
      * @var string This holds the hash algorithm
-     * 
+     *
      * @see openssl_get_md_methods() for options
      */
     protected static string $hashAlgorithm = 'sha256';
@@ -88,7 +89,8 @@ class Helper
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
-        $flashMessage = GeneralUtility::makeInstance(FlashMessage::class,
+        $flashMessage = GeneralUtility::makeInstance(
+            FlashMessage::class,
             $message,
             $title,
             $severity,
@@ -113,11 +115,7 @@ class Helper
     public static function checkIdentifier(string $id, string $type): bool
     {
         $digits = substr($id, 0, 8);
-        $checksum = 0;
-        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += (9 - $i) * intval(substr($digits, $i, 1));
-        }
-        $checksum = (11 - ($checksum % 11)) % 11;
+        $checksum = self::getChecksum($digits);
         switch (strtoupper($type)) {
             case 'PPN':
             case 'IDN':
@@ -169,6 +167,26 @@ class Helper
     }
 
     /**
+     * Get checksum for given digits.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param string $digits
+     *
+     * @return int
+     */
+    private static function getChecksum(string $digits): int
+    {
+        $checksum = 0;
+        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
+            $checksum += (9 - $i) * (int) substr($digits, $i, 1);
+        }
+        return (11 - ($checksum % 11)) % 11;
+    }
+
+    /**
      * Decrypt encrypted value with given control hash
      *
      * @access public
@@ -205,8 +223,7 @@ class Helper
         $data = substr($binary, openssl_cipher_iv_length(self::$cipherAlgorithm));
         $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
         // Decrypt data.
-        $decrypted = openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
-        return $decrypted;
+        return openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
     }
 
     /**
@@ -294,8 +311,7 @@ class Helper
             return false;
         }
         // Hash string.
-        $hashed = openssl_digest($string, self::$hashAlgorithm);
-        return $hashed;
+        return openssl_digest($string, self::$hashAlgorithm);
     }
 
     /**
@@ -371,8 +387,7 @@ class Helper
         // Remove multiple dashes or whitespaces.
         $string = preg_replace('/[\s-]+/', ' ', $string);
         // Convert whitespaces and underscore to dash.
-        $string = preg_replace('/[\s_]/', '-', $string);
-        return $string;
+        return preg_replace('/[\s_]/', '-', $string);
     }
 
     /**
@@ -413,7 +428,7 @@ class Helper
     public static function getIndexNameFromUid(int $uid, string $table, int $pid = -1): string
     {
         // Sanitize input.
-        $uid = max(intval($uid), 0);
+        $uid = max($uid, 0);
         if (
             !$uid
             // NOTE: Only use tables that don't have too many entries!
@@ -513,7 +528,7 @@ class Helper
         $where = '';
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
-            $pid = max(intval($pid), 0);
+            $pid = max($pid, 0);
             $where = $queryBuilder->expr()->eq('tx_dlf_structures.pid', $pid);
         }
 
@@ -530,9 +545,7 @@ class Helper
         $allStructures = $kitodoStructures->fetchAllAssociative();
 
         // make lookup-table indexName -> uid
-        $allStructures = array_column($allStructures, 'indexName', 'uid');
-
-        return $allStructures;
+        return array_column($allStructures, 'indexName', 'uid');
     }
 
     /**
@@ -601,7 +614,7 @@ class Helper
         }
         $checksum = 0;
         for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += ($i + 1) * intval(substr($digits, $i, 1));
+            $checksum += ($i + 1) * (int) substr($digits, $i, 1);
         }
         $checksum = substr((string) floor($checksum / (int) substr($digits, -1, 1)), -1, 1);
         return $base . $id . $checksum;
@@ -640,11 +653,13 @@ class Helper
             return false;
         }
 
-        $parsed = parse_url($url);
-        $scheme = $parsed['scheme'] ?? '';
-        $schemeNormalized = strtolower($scheme);
-
-        return $schemeNormalized === 'http' || $schemeNormalized === 'https';
+        try {
+            $uri = new Uri($url);
+            return !empty($uri->getScheme());
+        } catch (\InvalidArgumentException $e) {
+            self::log($e->getMessage(), LOG_SEVERITY_ERROR);
+            return false;
+        }
     }
 
     /**
@@ -685,9 +700,8 @@ class Helper
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
-        $content = GeneralUtility::makeInstance(KitodoFlashMessageRenderer::class)
+        return GeneralUtility::makeInstance(KitodoFlashMessageRenderer::class)
             ->render($flashMessages);
-        return $content;
     }
 
     /**
@@ -708,7 +722,7 @@ class Helper
         // Load labels into static variable for future use.
         static $labels = [];
         // Sanitize input.
-        $pid = max(intval($pid), 0);
+        $pid = max((int) $pid, 0);
         if (!$pid) {
             self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
             return $indexName;
@@ -755,7 +769,7 @@ class Helper
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
                     $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId)),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
@@ -778,7 +792,7 @@ class Helper
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId))
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId)
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
@@ -925,9 +939,7 @@ class Helper
             self::log('Could not fetch data from URL "' . $url . '". Error: ' . $e->getMessage() . '.', LOG_SEVERITY_WARNING);
             return false;
         }
-        $content  = $response->getBody()->getContents();
-
-        return $content;
+        return $response->getBody()->getContents();
     }
 
     /**

@@ -89,12 +89,13 @@ class BaseCommand extends Command
      */
     protected ConfigurationManager $configurationManager;
 
-    public function __construct(CollectionRepository $collectionRepository,
-                                DocumentRepository   $documentRepository,
-                                LibraryRepository    $libraryRepository,
-                                StructureRepository  $structureRepository,
-                                ConfigurationManager $configurationManager)
-    {
+    public function __construct(
+        CollectionRepository $collectionRepository,
+        DocumentRepository $documentRepository,
+        LibraryRepository $libraryRepository,
+        StructureRepository $structureRepository,
+        ConfigurationManager $configurationManager
+    ) {
         parent::__construct();
 
         $this->collectionRepository = $collectionRepository;
@@ -208,7 +209,7 @@ class BaseCommand extends Command
 
         // set title data
         $document->setTitle($metadata['title'][0] ? : '');
-        $document->setTitleSorting($metadata['title_sorting'][0]);
+        $document->setTitleSorting($metadata['title_sorting'][0] ? : '');
         $document->setPlace(implode('; ', $metadata['place']));
         $document->setYear(implode('; ', $metadata['year']));
 
@@ -217,7 +218,7 @@ class BaseCommand extends Command
             $splitName = explode(chr(31), $author);
             $metadata['author'][$i] = $splitName[0];
         }
-        $document->setAuthor(implode('; ', $metadata['author']));
+        $document->setAuthor($this->getAuthors($metadata['author']));
         $document->setThumbnail($doc->thumbnail ? : '');
         $document->setMetsLabel($metadata['mets_label'][0] ? : '');
         $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
@@ -226,24 +227,7 @@ class BaseCommand extends Command
         $document->setStructure($structure);
 
         if (is_array($metadata['collection'])) {
-            foreach ($metadata['collection'] as $collection) {
-                $documentCollection = $this->collectionRepository->findOneByIndexName($collection);
-                if (!$documentCollection) {
-                    // create new Collection object
-                    $documentCollection = GeneralUtility::makeInstance(Collection::class);
-                    $documentCollection->setIndexName($collection);
-                    $documentCollection->setLabel($collection);
-                    $documentCollection->setOaiName((!empty($this->extConf['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
-                    $documentCollection->setIndexSearch('');
-                    $documentCollection->setDescription('');
-                    // add to CollectionRepository
-                    $this->collectionRepository->add($documentCollection);
-                    // persist collection to prevent duplicates
-                    $persistenceManager->persistAll();
-                }
-                // add to document
-                $document->addCollection($documentCollection);
-            }
+            $this->addCollections($document, $metadata['collection'], $persistenceManager);
         }
 
         // set identifiers
@@ -264,25 +248,8 @@ class BaseCommand extends Command
         $document->setRightsInfo($metadata['rights_info'][0] ? : '');
         $document->setStatus(0);
 
-        if ($this->owner) {
-            // library / owner is set by parameter --> take it.
-            $document->setOwner($this->owner);
-        } else {
-            // owner is not set set but found by metadata --> take it or take default library
-            $owner = $metadata['owner'][0] ? : 'default';
-            $this->owner = $this->libraryRepository->findOneByIndexName($owner);
-            if ($this->owner) {
-                $document->setOwner($this->owner);
-            } else {
-                // create library
-                $this->owner = GeneralUtility::makeInstance(Library::class);
-
-                $this->owner->setLabel($owner);
-                $this->owner->setIndexName($owner);
-                $this->libraryRepository->add($this->owner);
-                $document->setOwner($this->owner);
-            }
-        }
+        $this->setOwner($metadata['owner'][0]);
+        $document->setOwner($this->owner);
 
         // set volume data
         $document->setVolume($metadata['volume'][0] ? : '');
@@ -311,7 +278,7 @@ class BaseCommand extends Command
      * Currently only applies to METS documents.
      *
      * @access protected
-     * 
+     *
      * @param Document $document for which parent UID should be taken
      *
      * @return int The parent document's id.
@@ -350,4 +317,95 @@ class BaseCommand extends Command
         return 0;
     }
 
+    /**
+     * Add collections.
+     *
+     * @access private
+     * 
+     * @param Document &$document
+     * @param array $collections
+     * @param PersistenceManager $persistenceManager
+     *
+     * @return void
+     */
+    private function addCollections(Document &$document, array $collections, PersistenceManager $persistenceManager): void
+    {
+        foreach ($collections as $collection) {
+            $documentCollection = $this->collectionRepository->findOneByIndexName($collection);
+            if (!$documentCollection) {
+                // create new Collection object
+                $documentCollection = GeneralUtility::makeInstance(Collection::class);
+                $documentCollection->setIndexName($collection);
+                $documentCollection->setLabel($collection);
+                $documentCollection->setOaiName((!empty($this->extConf['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
+                $documentCollection->setIndexSearch('');
+                $documentCollection->setDescription('');
+                // add to CollectionRepository
+                $this->collectionRepository->add($documentCollection);
+                // persist collection to prevent duplicates
+                $persistenceManager->persistAll();
+            }
+            // add to document
+            $document->addCollection($documentCollection);
+        }
+    }
+
+    /**
+     * Get authors considering that database field can't accept
+     * more than 255 characters.
+     *
+     * @access private
+     * 
+     * @param array $metadataAuthor
+     *
+     * @return string
+     */
+    private function getAuthors(array $metadataAuthor): string
+    {
+        $authors = '';
+        $delimiter = '; ';
+        $ellipsis = 'et al.';
+
+        $count = count($metadataAuthor);
+
+        for ($i = 0; $i < $count; $i++) {
+            // Build the next part to add
+            $nextPart = ($i === 0 ? '' : $delimiter) . $metadataAuthor[$i];
+            // Check if adding this part and ellipsis in future would exceed the character limit
+            if (strlen($authors . $nextPart . $delimiter . $ellipsis) > 255) {
+                // Add ellipsis and stop adding more authors
+                $authors .= $delimiter . $ellipsis;
+                break;
+            }
+            // Add the part to the main string
+            $authors .= $nextPart;
+        }
+
+        return $authors;
+    }
+
+    /**
+     * If owner is not set set but found by metadata, take it or take default library, if nothing found in database then create new owner.
+     *
+     * @access private
+     *
+     * @param ?string $owner
+     *
+     * @return void
+     */
+    private function setOwner($owner): void
+    {
+        if (empty($this->owner)) {
+            // owner is not set set but found by metadata --> take it or take default library
+            $owner = $owner ? : 'default';
+            $this->owner = $this->libraryRepository->findOneByIndexName($owner);
+            if (empty($this->owner)) {
+                // create library
+                $this->owner = GeneralUtility::makeInstance(Library::class);
+                $this->owner->setLabel($owner);
+                $this->owner->setIndexName($owner);
+                $this->libraryRepository->add($this->owner);
+            }
+        }
+    }
 }
