@@ -1273,7 +1273,7 @@ final class MetsDocument extends AbstractDocument
             || $forceReload
         ) {
             // Retain current PID.
-            $cPid = ($this->cPid ? $this->cPid : $this->pid);
+            $cPid = $this->cPid ?: $this->pid;
             if (!$cPid) {
                 $this->logger->error('Invalid PID ' . $cPid . ' for structure definitions');
                 $this->thumbnailLoaded = true;
@@ -1297,7 +1297,7 @@ final class MetsDocument extends AbstractDocument
                 ->select('tx_dlf_structures.thumbnail AS thumbnail')
                 ->from('tx_dlf_structures')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', (int) $cPid),
+                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', $cPid),
                     $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
                     Helper::whereExpression('tx_dlf_structures')
                 )
