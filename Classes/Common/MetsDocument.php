@@ -304,49 +304,44 @@ final class MetsDocument extends AbstractDocument
      */
     protected function getLogicalStructureInfo(\SimpleXMLElement $structure, bool $recursive = false): array
     {
-        $attributes = [];
-        // Get attributes.
-        foreach ($structure->attributes() as $attribute => $value) {
-            $attributes[$attribute] = (string) $value;
-        }
+        $attributes = $structure->attributes();
 
         // Extract identity information.
-        $details = [];
-        $details['id'] = $attributes['ID'];
-        $details['dmdId'] = (isset($attributes['DMDID']) ? $attributes['DMDID'] : '');
-        $details['admId'] = (isset($attributes['ADMID']) ? $attributes['ADMID'] : '');
-        $details['order'] = (isset($attributes['ORDER']) ? $attributes['ORDER'] : '');
-        $details['label'] = (isset($attributes['LABEL']) ? $attributes['LABEL'] : '');
-        $details['orderlabel'] = (isset($attributes['ORDERLABEL']) ? $attributes['ORDERLABEL'] : '');
-        $details['contentIds'] = (isset($attributes['CONTENTIDS']) ? $attributes['CONTENTIDS'] : '');
-        $details['volume'] = '';
+        $details = [
+            'id' => (string) $attributes['ID'],
+            'dmdId' => isset($attributes['DMDID']) ? (string) $attributes['DMDID'] : '',
+            'admId' => isset($attributes['ADMID']) ? (string) $attributes['ADMID'] : '',
+            'order' => isset($attributes['ORDER']) ? (string) $attributes['ORDER'] : '',
+            'label' => isset($attributes['LABEL']) ? (string) $attributes['LABEL'] : '',
+            'orderlabel' => isset($attributes['ORDERLABEL']) ? (string) $attributes['ORDERLABEL'] : '',
+            'contentIds' => isset($attributes['CONTENTIDS']) ? (string) $attributes['CONTENTIDS'] : '',
+            'volume' => '',
+            'year' => '',
+            'pagination' => '',
+            'type' => isset($attributes['TYPE']) ? (string) $attributes['TYPE'] : '',
+            'description' => '',
+            'thumbnailId' => null,
+            'files' => [],
+        ];
+
         // Set volume and year information only if no label is set and this is the toplevel structure element.
-        if (
-            empty($details['label'])
-            && empty($details['orderlabel'])
-        ) {
+        if (empty($details['label']) && empty($details['orderlabel'])) {
             $metadata = $this->getMetadata($details['id']);
-            if (!empty($metadata['volume'][0])) {
-                $details['volume'] = $metadata['volume'][0];
-            }
-            if (!empty($metadata['year'][0])) {
-                $details['year'] = $metadata['year'][0];
-            }
+            $details['volume'] = $metadata['volume'][0] ?? '';
+            $details['year'] = $metadata['year'][0] ?? '';
         }
-        $details['pagination'] = '';
-        $details['type'] = $attributes['TYPE'];
+
         // add description for 3D objects
         if ($details['type'] == 'object') {
             $metadata = $this->getMetadata($details['id']);
             $details['description'] = $metadata['description'][0] ?? '';
         }
-        $details['thumbnailId'] = '';
+
         // Load smLinks.
         $this->magicGetSmLinks();
         // Load physical structure.
         $this->magicGetPhysicalStructure();
         // Get the physical page or external file this structure element is pointing at.
-        $details['points'] = '';
         // Is there a mptr node?
         if (count($structure->children('http://www.loc.gov/METS/')->mptr)) {
             // Yes. Get the file reference.
@@ -369,7 +364,6 @@ final class MetsDocument extends AbstractDocument
             unset($details['thumbnailId']);
         }
         // Get the files this structure element is pointing at.
-        $details['files'] = [];
         $fileUse = $this->magicGetFileGrps();
         // Get the file representations from fileSec node.
         foreach ($structure->children('http://www.loc.gov/METS/')->fptr as $fptr) {
@@ -431,29 +425,78 @@ final class MetsDocument extends AbstractDocument
      */
     public function getMetadata(string $id, int $cPid = 0): array
     {
-        // Make sure $cPid is a non-negative integer.
-        $cPid = max((int) $cPid, 0);
-        // If $cPid is not given, try to get it elsewhere.
-        if (
-            !$cPid
-            && ($this->cPid || $this->pid)
-        ) {
-            // Retain current PID.
-            $cPid = ($this->cPid ? $this->cPid : $this->pid);
-        } elseif (!$cPid) {
-            $this->logger->warning('Invalid PID ' . $cPid . ' for metadata definitions');
+        $cPid = $this->ensureValidPid($cPid);
+
+        if ($cPid == 0) {
+            $this->logger->warning('Invalid PID for metadata definitions');
             return [];
         }
-        // Get metadata from parsed metadata array if available.
-        if (
-            !empty($this->metadataArray[$id])
-            && $this->metadataArray[0] == $cPid
-        ) {
-            return $this->metadataArray[$id];
+
+        $metadata = $this->getMetadataFromArray($id, $cPid);
+
+        if (empty($metadata)) {
+            return [];
         }
 
-        $metadata = $this->initializeMetadata('METS');
+        $metadata = $this->processMetadataSections($id, $cPid, $metadata);
 
+        if (!empty($metadata)) {
+            $metadata = $this->setDefaultTitleAndDate($metadata);
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Ensure that pId is valid.
+     *
+     * @access private
+     *
+     * @param integer $cPid
+     *
+     * @return integer
+     */
+    private function ensureValidPid(int $cPid): int
+    {
+        $cPid = max($cPid, 0);
+        if ($cPid == 0 && ($this->cPid || $this->pid)) {
+            // Retain current PID.
+            $cPid = $this->cPid ?: $this->pid;
+        }
+        return $cPid;
+    }
+
+    /**
+     * Get metadata from array.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param integer $cPid
+     *
+     * @return array
+     */
+    private function getMetadataFromArray(string $id, int $cPid): array
+    {
+        if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
+            return $this->metadataArray[$id];
+        }
+        return $this->initializeMetadata('METS');
+    }
+
+    /**
+     * Process metadata sections.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param integer $cPid
+     * @param array $metadata
+     *
+     * @return array
+     */
+    private function processMetadataSections(string $id, int $cPid, array $metadata): array
+    {
         $mdIds = $this->getMetadataIds($id);
         if (empty($mdIds)) {
             // There is no metadata section for this structure node.
@@ -464,100 +507,21 @@ final class MetsDocument extends AbstractDocument
         // Load available metadata formats and metadata sections.
         $this->loadFormats();
         $this->magicGetMdSec();
-        // Get the structure's type.
-        if (!empty($this->logicalUnits[$id])) {
-            $metadata['type'] = [$this->logicalUnits[$id]['type']];
-        } else {
-            $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@TYPE');
-            if (!empty($struct)) {
-                $metadata['type'] = [(string) $struct[0]];
-            }
-        }
+
+        $metadata['type'] = $this->getLogicalUnitType($id);
+
         foreach ($mdIds as $dmdId) {
             $mdSectionType = $this->mdSec[$dmdId]['section'];
 
-            // To preserve behavior of previous Kitodo versions, extract metadata only from first supported dmdSec
-            // However, we want to extract, for example, all techMD sections (VIDEOMD, AUDIOMD)
             if ($mdSectionType === 'dmdSec' && isset($hasMetadataSection['dmdSec'])) {
                 continue;
             }
 
-            // Continue searching for supported metadata with next @DMDID if the current one is not supported
-            if (!$this->extractMetadataIfTypeSupported($dmdId, $mdSectionType, $metadata)) {
+            if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $hasMetadataSection)) {
                 continue;
             }
 
-            $additionalMetadata = $this->getAdditionalMetadataFromDatabase((int) $cPid, $dmdId);
-            // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
-            $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
-            $domXPath = new \DOMXPath($domNode->ownerDocument);
-            $this->registerNamespaces($domXPath);
-            // OK, now make the XPath queries.
-            foreach ($additionalMetadata as $resArray) {
-                // Set metadata field's value(s).
-                if (
-                    $resArray['format'] > 0
-                    && !empty($resArray['xpath'])
-                    && ($values = $domXPath->evaluate($resArray['xpath'], $domNode))
-                ) {
-                    if (
-                        $values instanceof \DOMNodeList
-                        && $values->length > 0
-                    ) {
-                        $metadata[$resArray['index_name']] = [];
-                        foreach ($values as $value) {
-                            $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
-                        }
-                    } elseif (!($values instanceof \DOMNodeList)) {
-                        $metadata[$resArray['index_name']] = [trim((string) $values)];
-                    }
-                }
-                // Set default value if applicable.
-                if (
-                    empty($metadata[$resArray['index_name']][0])
-                    && strlen($resArray['default_value']) > 0
-                ) {
-                    $metadata[$resArray['index_name']] = [$resArray['default_value']];
-                }
-                // Set sorting value if applicable.
-                if (
-                    !empty($metadata[$resArray['index_name']])
-                    && $resArray['is_sortable']
-                ) {
-                    if (
-                        $resArray['format'] > 0
-                        && !empty($resArray['xpath_sorting'])
-                    ) {
-                        $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
-                        if (
-                            $values instanceof \DOMNodeList
-                            && $values->length > 0
-                        ) {
-                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
-                        } elseif (!($values instanceof \DOMNodeList)) {
-                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values);
-                        }
-                    }
-                    if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
-                        $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
-                    }
-                }
-            }
-
             $hasMetadataSection[$mdSectionType] = true;
-        }
-        // Set title to empty string if not present.
-        if (empty($metadata['title'][0])) {
-            $metadata['title'][0] = '';
-            $metadata['title_sorting'][0] = '';
-        }
-        // Set title_sorting to title as default.
-        if (empty($metadata['title_sorting'][0])) {
-            $metadata['title_sorting'][0] = $metadata['title'][0];
-        }
-        // Set date to empty string if not present.
-        if (empty($metadata['date'][0])) {
-            $metadata['date'][0] = '';
         }
 
         // Files are not expected to reference a dmdSec
@@ -567,6 +531,188 @@ final class MetsDocument extends AbstractDocument
             $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
             return [];
         }
+    }
+
+    /**
+     * Get logical unit type.
+     *
+     * @access private
+     *
+     * @param string $id
+     *
+     * @return array
+     */
+    private function getLogicalUnitType(string $id): array
+    {
+        if (!empty($this->logicalUnits[$id])) {
+            return [$this->logicalUnits[$id]['type']];
+        } else {
+            $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@TYPE');
+            if (!empty($struct)) {
+                return [(string) $struct[0]];
+            }
+        }
+        return [];
+    }
+
+    /**
+     * Extract and process metadata.
+     *
+     * @access private
+     *
+     * @param string $dmdId
+     * @param string $mdSectionType
+     * @param array $metadata
+     * @param integer $cPid
+     * @param array $hasMetadataSection
+     *
+     * @return boolean
+     */
+    private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, int $cPid, array $hasMetadataSection): bool
+    {
+        if ($mdSectionType === 'dmdSec' && isset($hasMetadataSection['dmdSec'])) {
+            return true;
+        }
+
+        $metadataExtracted = $this->extractMetadataIfTypeSupported($dmdId, $mdSectionType, $metadata);
+
+        if (!$metadataExtracted) {
+            return false;
+        }
+
+        $additionalMetadata = $this->getAdditionalMetadataFromDatabase($cPid, $dmdId);
+        // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
+        $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
+        $domXPath = new \DOMXPath($domNode->ownerDocument);
+        $this->registerNamespaces($domXPath);
+
+        $this->processAdditionalMetadata($additionalMetadata, $domXPath, $domNode, $metadata);
+
+        return true;
+    }
+
+    /**
+     * Process additional metadata.
+     *
+     * @access private
+     *
+     * @param array $additionalMetadata
+     * @param \DOMXPath $domXPath
+     * @param \DOMElement $domNode
+     * @param array $metadata
+     *
+     * @return void
+     */
+    private function processAdditionalMetadata(array $additionalMetadata, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    {
+        foreach ($additionalMetadata as $resArray) {
+            $this->setMetadataFieldValues($resArray, $domXPath, $domNode, $metadata);
+            $this->setDefaultMetadataValue($resArray, $metadata);
+            $this->setSortableMetadataValue($resArray, $domXPath, $domNode, $metadata);
+        }
+    }
+
+    /**
+     * Set metadata field values.
+     *
+     * @access private
+     *
+     * @param array $resArray
+     * @param \DOMXPath $domXPath
+     * @param \DOMElement $domNode
+     * @param array $metadata
+     *
+     * @return void
+     */
+    private function setMetadataFieldValues(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    {
+        if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
+            $values = $domXPath->evaluate($resArray['xpath'], $domNode);
+            if ($values instanceof \DOMNodeList && $values->length > 0) {
+                $metadata[$resArray['index_name']] = [];
+                foreach ($values as $value) {
+                    $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
+                }
+            } elseif (!($values instanceof \DOMNodeList)) {
+                $metadata[$resArray['index_name']] = [trim((string) $values)];
+            }
+        }
+    }
+
+    /**
+     * Set default metadata value.
+     *
+     * @access private
+     *
+     * @param array $resArray
+     * @param array $metadata
+     *
+     * @return void
+     */
+    private function setDefaultMetadataValue(array $resArray, array &$metadata): void
+    {
+        if (empty($metadata[$resArray['index_name']][0]) && strlen($resArray['default_value']) > 0) {
+            $metadata[$resArray['index_name']] = [$resArray['default_value']];
+        }
+    }
+
+    /**
+     * Set sortable metadata value.
+     *
+     * @access private
+     *
+     * @param array $resArray
+     * @param \DOMXPath $domXPath
+     * @param \DOMElement $domNode
+     * @param array $metadata
+     *
+     * @return void
+     */
+    private function setSortableMetadataValue(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    {
+        if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
+            if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
+                $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
+                if ($values instanceof \DOMNodeList && $values->length > 0) {
+                    $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
+                } elseif (!($values instanceof \DOMNodeList)) {
+                    $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values);
+                }
+            }
+            if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
+                $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
+            }
+        }
+    }
+
+    /**
+     * Set default title and date if those metadata is not set.
+     *
+     * @access private
+     *
+     * @param array $metadata
+     *
+     * @return array
+     */
+    private function setDefaultTitleAndDate(array $metadata): array
+    {
+        // Set title to empty string if not present.
+        if (empty($metadata['title'][0])) {
+            $metadata['title'][0] = '';
+            $metadata['title_sorting'][0] = '';
+        }
+
+        // Set title_sorting to title as default.
+        if (empty($metadata['title_sorting'][0])) {
+            $metadata['title_sorting'][0] = $metadata['title'][0];
+        }
+
+        // Set date to empty string if not present.
+        if (empty($metadata['date'][0])) {
+            $metadata['date'][0] = '';
+        }
+
+        return $metadata;
     }
 
     /**

@@ -15,7 +15,7 @@ namespace Kitodo\Dlf\Format;
 /**
  * Fulltext ALTO format class for the 'dlf' extension
  *
- * ** This currently supports only ALTO 2.x **
+ * ** This currently supports ALTO 2.x / 3.x / 4.x **
  *
  * @package TYPO3
  * @subpackage dlf
@@ -36,7 +36,10 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
     public function getRawText(\SimpleXMLElement $xml): string
     {
         $rawText = '';
-        $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
+
+        // register ALTO namespace depending on document
+        $this->registerAltoNamespace($xml);
+
         // Get all (presumed) words of the text.
         $strings = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String');
         $words = [];
@@ -68,7 +71,8 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
      */
     public function getTextAsMiniOcr(\SimpleXMLElement $xml): string
     {
-        $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
+        // register ALTO namespace depending on document
+        $this->registerAltoNamespace($xml);
 
         // get all text blocks
         $blocks = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock');
@@ -134,5 +138,25 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
     private function getCoordinates(\SimpleXMLElement $attributes): string
     {
         return (string) $attributes['HPOS'] . ' ' . (string) $attributes['VPOS'] . ' ' . (string) $attributes['WIDTH'] . ' ' . (string) $attributes['HEIGHT'];
+    }
+
+    /**
+     * This registers the necessary ALTO namespace for the current ALTO-XML
+     *
+     * @access private
+     *
+     * @param \SimpleXMLElement &$xml: The XML to register the namespace for
+     */
+    private function registerAltoNamespace(\SimpleXMLElement &$xml)
+    {
+        $namespace = $xml->getDocNamespaces();
+
+        if (in_array('http://www.loc.gov/standards/alto/ns-v2#', $namespace, true)) {
+            $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
+        } elseif (in_array('http://www.loc.gov/standards/alto/ns-v3#', $namespace, true)) {
+            $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v3#');
+        } elseif (in_array('http://www.loc.gov/standards/alto/ns-v4#', $namespace, true)) {
+            $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v4#');
+        }
     }
 }
