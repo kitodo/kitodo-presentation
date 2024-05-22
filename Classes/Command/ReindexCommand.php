@@ -159,7 +159,7 @@ class ReindexCommand extends BaseCommand
             $documents = $this->documentRepository->findAll();
         } elseif (
             !empty($input->getOption('index-limit'))
-            && $input->getOption('index-start') >= 0
+            && $input->getOption('index-begin') >= 0
         ) {
             // Get all documents for given limit and start.
             $documents = $this->documentRepository->findAll()
