@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 
 /**
@@ -682,6 +683,56 @@ class Helper
     {
         ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
         return $original;
+    }
+
+    /**
+     * Process a data and/or command map with TYPO3 core engine as admin.
+     *
+     * @access public
+     *
+     * @param array $data Data map
+     * @param array $cmd Command map
+     * @param bool $reverseOrder Should the data map be reversed?
+     * @param bool $cmdFirst Should the command map be processed first?
+     *
+     * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
+     */
+    public static function processDBasAdmin(array $data = [], array $cmd = [], $reverseOrder = false, $cmdFirst = false)
+    {
+        if (
+            \TYPO3_MODE === 'BE'
+            && $GLOBALS['BE_USER']->isAdmin()
+        ) {
+            // Instantiate TYPO3 core engine.
+            $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+            // We do not use workspaces and have to bypass restrictions in DataHandler.
+            $dataHandler->bypassWorkspaceRestrictions = true;
+            // Load data and command arrays.
+            $dataHandler->start($data, $cmd);
+            // Process command map first if default order is reversed.
+            if (
+                !empty($cmd)
+                && $cmdFirst
+            ) {
+                $dataHandler->process_cmdmap();
+            }
+            // Process data map.
+            if (!empty($data)) {
+                $dataHandler->reverseOrder = $reverseOrder;
+                $dataHandler->process_datamap();
+            }
+            // Process command map if processing order is not reversed.
+            if (
+                !empty($cmd)
+                && !$cmdFirst
+            ) {
+                $dataHandler->process_cmdmap();
+            }
+            return $dataHandler->substNEWwithIDs;
+        } else {
+            self::log('Current backend user has no admin privileges', LOG_SEVERITY_ERROR);
+            return [];
+        }
     }
 
     /**
