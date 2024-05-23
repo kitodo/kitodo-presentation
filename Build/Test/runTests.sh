@@ -219,19 +219,19 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
             ;;
         i)
             MARIADB_VERSION=${OPTARG}
-            if ! [[ ${MARIADB_VERSION} =~ ^(10.1|10.2|10.3|10.4|10.5)$ ]]; then
+            if ! [[ ${MARIADB_VERSION} =~ ^(10.2|10.3|10.4|10.5|10.6|10.11)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
         j)
             MYSQL_VERSION=${OPTARG}
-            if ! [[ ${MYSQL_VERSION} =~ ^(5.5|5.6|5.7|8.0)$ ]]; then
+            if ! [[ ${MYSQL_VERSION} =~ ^(5.7|8.0)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2|8.3)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
