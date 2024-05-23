@@ -222,7 +222,7 @@ class BaseCommand extends Command
 
         // Remove appended "valueURI" from authors' names for storing in database.
         foreach ($metadata['author'] as $i => $author) {
-            $splitName = explode(chr(31), $author);
+            $splitName = explode(pack('C', 31), $author);
             $metadata['author'][$i] = $splitName[0];
         }
         $document->setAuthor($this->getAuthors($metadata['author']));
