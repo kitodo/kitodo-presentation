@@ -18,8 +18,8 @@ Currently **TYPO3 10.4 ELTS** and **TYPO3 11.5 LTS** is supported with the follo
 
 | Component               | Constraints for 10 LTS | Constraints for 11 LTS |
 | ----------------------- | ---------------------- | ---------------------- |
-| TYPO3                   | 10.4.43+               | 11.5.35+               |
-| PHP                     | 7.4.33                 | 7.4.33                 |
+| TYPO3                   | 10.4.45+ (ELTS)        | 11.5.37+               |
+| PHP                     | 7.4.x                  | 7.4.x - 8.3.x          |
 | MySQL                   | 5.7.x - 8.0.x          | 5.7.9 - 8.0.x          |
 | MariaDB                 | 10.2.7 - 10.11.x       | 10.2.7 - 10.11.x       |
 | Apache Solr             | 8.x                    | 8.x                    |
