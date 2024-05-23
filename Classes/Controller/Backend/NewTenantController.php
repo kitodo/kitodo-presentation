@@ -248,6 +248,7 @@ class NewTenantController extends AbstractController
                 $newRecord->setIsFacet((int) $values['is_facet']);
                 $newRecord->setIsListed((int) $values['is_listed']);
                 $newRecord->setIndexAutocomplete((int) $values['index_autocomplete']);
+                $newRecord->setSorting((int) $values['sorting']);
 
                 if (is_array($values['format'])) {
                     foreach ($values['format'] as $format) {
