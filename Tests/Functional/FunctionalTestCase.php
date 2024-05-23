@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional;
 
+use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Symfony\Component\Yaml\Yaml;
@@ -121,6 +122,9 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected function getDlfConfiguration()
     {
+        $dotenv = Dotenv::createImmutable('/home/runner/work/kitodo-presentation/kitodo-presentation/Build/Test/', 'test.env');
+        $dotenv->load();
+
         return [
             'useExternalApisForMetadata' => 0,
             'fileGrpImages' => 'DEFAULT,MAX',

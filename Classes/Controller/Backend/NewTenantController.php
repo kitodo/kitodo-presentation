@@ -273,7 +273,7 @@ class NewTenantController extends AbstractController
                     $translatedRecord->setL18nParent($newRecord);
                     $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
                     $translatedRecord->setLabel($this->getLLL('metadata.' . $indexName, $siteLanguage->getTypo3Language(), $metadataLabels));
-                    $translatedRecord->setIndexName($indexName);
+                    $translatedRecord->setIndexName($indexName . "_" . $siteLanguage->getLanguageId());
                     $translatedRecord->setWrap($newRecord->getWrap());
 
                     $this->metadataRepository->add($translatedRecord);

@@ -129,13 +129,30 @@ With the command `kitodo:reindex` it is possible to reindex one or more
 collections or even to reindex all documents on the given page.::
 
     # reindex collection with uid 1 on page 123 with solr core 'dlfCore1'
+    # short notation
     ./vendor/bin/typo3 kitodo:reindex -c 1 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --pid 123 --solr dlfCore1
 
     # reindex collection with uid 1 and 4 on page 123 with solr core 'dlfCore1'
+    # short notation
     ./vendor/bin/typo3 kitodo:reindex -c 1,4 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --pid 123 --solr dlfCore1
 
-    # reindex all documents on page 123 with solr core 'dlfCore1'
+    # reindex all documents on page 123 with solr core 'dlfCore1' (caution can result in memory problems for big amount of documents)
+    # short notation
     ./vendor/bin/typo3 kitodo:reindex -a -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --all --pid 123 --solr dlfCore1
+
+    # reindex all documents on page 123 with solr core 'dlfCore1' in given range
+    # short notation
+    ./vendor/bin/typo3 kitodo:reindex -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -l 1000 -b 1000 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
 
 .. t3-field-list-table::
@@ -200,6 +217,32 @@ collections or even to reindex all documents on the given page.::
        to try to read the ownership from the metadata field "owner".
    :Example:
        123
+
+    - :Option:
+       ``-l|--index-limit``
+   :Required:
+       no
+   :Description:
+       With this option, all documents in given limit for the given page will
+       be reindex.
+
+       Used when it is expected that memory problems can appear due to the high
+       amount of documents.
+   :Example:
+       1000
+
+    - :Option:
+       ``-b|--index-begin``
+   :Required:
+       no
+   :Description:
+       With this option, all documents beginning from given value for the given page
+       will be reindex.
+
+       Used when it is expected that memory problems can appear due to the high
+       amount of documents.
+   :Example:
+       0
 
  - :Option:
        ``--dry-run``

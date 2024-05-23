@@ -177,7 +177,7 @@ class Mods implements MetadataInterface
         }
         // Append "valueURI" to name using Unicode unit separator.
         if (isset($authors[$i]['valueURI'])) {
-            $this->metadata['author'][$i] .= chr(31) . (string) $authors[$i]['valueURI'];
+            $this->metadata['author'][$i] .= pack('C', 31) . (string) $authors[$i]['valueURI'];
         }
     }
 
@@ -265,7 +265,7 @@ class Mods implements MetadataInterface
         $this->getHolderFromXmlDisplayForm($holders, $i);
         // Append "valueURI" to name using Unicode unit separator.
         if (isset($holders[$i]['valueURI'])) {
-            $this->metadata['holder'][$i] .= chr(31) . (string) $holders[$i]['valueURI'];
+            $this->metadata['holder'][$i] .= pack('C', 31) . (string) $holders[$i]['valueURI'];
         }
     }
 
