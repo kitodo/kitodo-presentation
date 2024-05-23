@@ -79,6 +79,18 @@ class ReindexCommand extends BaseCommand
                 'a',
                 InputOption::VALUE_NONE,
                 'Reindex all documents on the given page.'
+            )
+            ->addOption(
+                'index-limit',
+                'l',
+                InputOption::VALUE_OPTIONAL,
+                'Reindex the given amount of documents on the given page.'
+            )
+            ->addOption(
+                'index-begin',
+                'b',
+                InputOption::VALUE_OPTIONAL,
+                'Reindex documents on the given page starting from the given value.'
             );
     }
 
@@ -146,6 +158,18 @@ class ReindexCommand extends BaseCommand
             // Get all documents.
             $documents = $this->documentRepository->findAll();
         } elseif (
+            !empty($input->getOption('index-limit'))
+            && $input->getOption('index-begin') >= 0
+        ) {
+            // Get all documents for given limit and start.
+            $documents = $this->documentRepository->findAll()
+                ->getQuery()
+                ->setLimit((int) $input->getOption('index-limit'))
+                ->setOffset((int) $input->getOption('index-begin'))
+                ->execute();
+
+            $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
+        } elseif (
             !empty($input->getOption('coll'))
             && !is_array($input->getOption('coll'))
         ) {
@@ -181,9 +205,12 @@ class ReindexCommand extends BaseCommand
                 // add to index
                 Indexer::add($document, $this->documentRepository);
             }
-            // Clear document registry to prevent memory exhaustion.
-            AbstractDocument::clearRegistry();
+            // Clear document cache to prevent memory exhaustion.
+            AbstractDocument::clearDocumentCache();
         }
+
+        // Clear state of persistence manager to prevent memory exhaustion.
+        $this->persistenceManager->clearState();
 
         $io->success('All done!');
 
