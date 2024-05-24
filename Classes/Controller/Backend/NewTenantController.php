@@ -366,7 +366,7 @@ class NewTenantController extends AbstractController
                     $translatedRecord->setL18nParent($newRecord);
                     $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
                     $translatedRecord->setLabel($this->getLLL('structure.' . $indexName, $siteLanguage->getTypo3Language(), $structLabels));
-                    $translatedRecord->setIndexName($indexName);
+                    $translatedRecord->setIndexName($indexName . "_" . $siteLanguage->getLanguageId());
 
                     $this->structureRepository->add($translatedRecord);
                 }
