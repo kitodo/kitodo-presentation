@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Common;
 
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\Uri;
@@ -700,10 +699,11 @@ class Helper
      */
     public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], $reverseOrder = false, $cmdFirst = false)
     {
-        $backendUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
+        $context = GeneralUtility::makeInstance(Context::class);
+
         if (
             \TYPO3_MODE === 'BE'
-            && $backendUser->isAdmin()
+            && $context->getPropertyFromAspect('backend.user', 'isAdmin')
         ) {
             // Instantiate TYPO3 core engine.
             $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
