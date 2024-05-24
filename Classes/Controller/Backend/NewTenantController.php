@@ -233,6 +233,8 @@ class NewTenantController extends AbstractController
             $availableFormats[$insertedFormat->getRoot()] = $insertedFormat->getUid();
         }
 
+        $defaultWrap = BackendUtility::getTcaFieldConfiguration('tx_dlf_metadata', 'wrap')['default'];
+
         $data = [];
         foreach ($metadataDefaults as $indexName => $values) {
             $formatIds = [];
@@ -251,7 +253,7 @@ class NewTenantController extends AbstractController
                 'index_name' => $indexName,
                 'format' => implode(',', $formatIds),
                 'default_value' => $values['default_value'],
-                'wrap' => (!empty($values['wrap']) ? $values['wrap'] : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']),
+                'wrap' => !empty($values['wrap']) ? $values['wrap'] : $defaultWrap,
                 'index_tokenized' => $values['index_tokenized'],
                 'index_stored' => $values['index_stored'],
                 'index_indexed' => $values['index_indexed'],
@@ -263,7 +265,7 @@ class NewTenantController extends AbstractController
             ];
         }
 
-        $metadataIds = Helper::processDBasAdmin($data, [], true);
+        $metadataIds = Helper::processDatabaseAsAdmin($data, [], true);
 
         $insertedMetadata = [];
         foreach ($metadataIds as $id => $uid) {
@@ -290,7 +292,7 @@ class NewTenantController extends AbstractController
                 ];
             }
 
-            Helper::processDBasAdmin($translateData);
+            Helper::processDatabaseAsAdmin($translateData);
         }
 
         $this->forward('index');
@@ -358,7 +360,7 @@ class NewTenantController extends AbstractController
                 'thumbnail' => 0,
             ];
         }
-        $structureIds = Helper::processDBasAdmin($data, [], true);
+        $structureIds = Helper::processDatabaseAsAdmin($data, [], true);
 
         $insertedStructures = [];
         foreach ($structureIds as $id => $uid) {
@@ -381,7 +383,7 @@ class NewTenantController extends AbstractController
                 ];
             }
 
-            Helper::processDBasAdmin($translateData);
+            Helper::processDatabaseAsAdmin($translateData);
         }
 
         $this->forward('index');
