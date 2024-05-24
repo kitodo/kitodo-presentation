@@ -17,10 +17,10 @@ use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class SolrSearchQueryTest extends FunctionalTestCase
 {
+    private $solrCoreRepository;
 
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Common/documents_1.csv',
@@ -49,7 +49,7 @@ class SolrSearchQueryTest extends FunctionalTestCase
         $settings = ['solrcore' => 4, 'storagePid' => 0];
 
         $params = ['query' => '10 Keyboard pieces'];
-        $search = new SolrSearch($documentRepository, null, $settings, $params);
+        $search = new SolrSearch($documentRepository, [], $settings, $params);
         $search->prepare();
         $solrSearchQuery = $search->getQuery();
         $result = $solrSearchQuery->execute();
@@ -65,7 +65,6 @@ class SolrSearchQueryTest extends FunctionalTestCase
         foreach ($databaseFixtures as $filePath) {
             $this->importCSVDataSet($filePath);
         }
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->initializeRepository(DocumentRepository::class, 0);
     }
 

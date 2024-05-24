@@ -99,7 +99,7 @@ class IndexCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -117,15 +117,15 @@ class IndexCommand extends BaseCommand
                 }
                 if (empty($output_solrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return 1;
+                    return BaseCommand::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
-                    return 1;
+                    return BaseCommand::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -137,7 +137,7 @@ class IndexCommand extends BaseCommand
             )
         ) {
             $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         if (!empty($input->getOption('owner'))) {
@@ -168,24 +168,12 @@ class IndexCommand extends BaseCommand
         } else if (GeneralUtility::isValidUrl($input->getOption('doc'))) {
             $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
 
-            if ($doc->recordId) {
-                $document = $this->documentRepository->findOneByRecordId($doc->recordId);
-            }
-
-            if ($document === null) {
-                // create new Document object
-                $document = GeneralUtility::makeInstance(Document::class);
-            }
-
-            // now there must exist a document object
-            if ($document) {
-                $document->setLocation($input->getOption('doc'));
-            }
+            $document = $this->getDocumentFromUrl($doc, $input->getOption('doc'));
         }
 
         if ($doc === null) {
             $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         $document->setSolrcore($solrCoreUid);
@@ -205,7 +193,39 @@ class IndexCommand extends BaseCommand
 
         $io->success('All done!');
 
-        return 0;
+        return BaseCommand::SUCCESS;
     }
 
+    /**
+     * Get document from given URL. Find it in database, if not found create the new one.
+     *
+     * @access private
+     *
+     * @param AbstractDocument $doc
+     * @param string $url
+     *
+     * @return Document
+     */
+    private function getDocumentFromUrl($doc, string $url): Document
+    {
+        $document = null;
+
+        if ($doc->recordId) {
+            $document = $this->documentRepository->findOneByRecordId($doc->recordId);
+        } else {
+            $document = $this->documentRepository->findOneByLocation($url);
+        }
+
+        if ($document === null) {
+            // create new Document object
+            $document = GeneralUtility::makeInstance(Document::class);
+        }
+
+        // now there must exist a document object
+        if ($document) {
+            $document->setLocation($url);
+        }
+
+        return $document;
+    }
 }

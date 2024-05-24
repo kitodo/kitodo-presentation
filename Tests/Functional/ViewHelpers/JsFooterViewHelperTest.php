@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,7 +13,6 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use Kitodo\Dlf\ViewHelpers\JsFooterViewHelper;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;

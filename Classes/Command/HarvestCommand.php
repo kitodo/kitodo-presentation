@@ -112,7 +112,7 @@ class HarvestCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -133,15 +133,15 @@ class HarvestCommand extends BaseCommand
                 }
                 if (empty($output_solrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return 1;
+                    return BaseCommand::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
-                    return 1;
+                    return BaseCommand::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
 
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('lib'))) {
@@ -152,11 +152,11 @@ class HarvestCommand extends BaseCommand
             $baseUrl = $this->owner->getOaiBase();
         } else {
             $io->error('ERROR: Required parameter --lib|-l is not a valid UID.');
-            return 1;
+            return BaseCommand::FAILURE;
         }
         if (!GeneralUtility::isValidUrl($baseUrl)) {
             $io->error('ERROR: No valid OAI Base URL set for library with given UID ("' . $input->getOption('lib') . '").');
-            return 1;
+            return BaseCommand::FAILURE;
         } else {
             try {
                 $oai = Endpoint::build($baseUrl);
@@ -198,7 +198,7 @@ class HarvestCommand extends BaseCommand
             }
             if (empty($set)) {
                 $io->error('ERROR: OAI interface does not provide a set with given setSpec ("' . $input->getOption('set') . '").');
-                return 1;
+                return BaseCommand::FAILURE;
             }
         }
 
@@ -261,7 +261,7 @@ class HarvestCommand extends BaseCommand
 
         $io->success('All done!');
 
-        return 0;
+        return BaseCommand::SUCCESS;
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -151,7 +152,7 @@ class MetsDocumentTest extends FunctionalTestCase
 
         /*
          * The method `getDownloadLocation` should return a string, but returns null in some cases.
-         * Therefor, a TypeError must be expected here.
+         * Therefore, a TypeError must be expected here.
          */
         $this->expectException('TypeError');
         $doc->getDownloadLocation('ID_DOES_NOT_EXIST');

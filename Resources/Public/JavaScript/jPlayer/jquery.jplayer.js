@@ -699,7 +699,7 @@
 			playbackRate: 1, // Warning - Now both an option and a status property
 			ended: 0
 
-/*		Persistant status properties created dynamically at _init():
+/*		Persistent status properties created dynamically at _init():
 			width
 			height
 			cssClass
@@ -865,7 +865,7 @@
 
 			this.options.volume = this._limitValue(this.options.volume, 0, 1); // Limit volume value's bounds.
 
-			// Create the formats array, with prority based on the order of the supplied formats string
+			// Create the formats array, with priority based on the order of the supplied formats string
 			$.each(this.options.supplied.toLowerCase().split(","), function(index1, value1) {
 				var format = value1.replace(/^\s+|\s+$/g, ""); //trim
 				if(self.format[format]) { // Check format is valid.
@@ -882,7 +882,7 @@
 				}
 			});
 
-			// Create the solutions array, with prority based on the order of the solution string
+			// Create the solutions array, with priority based on the order of the solution string
 			$.each(this.options.solution.toLowerCase().split(","), function(index1, value1) {
 				var solution = value1.replace(/^\s+|\s+$/g, ""); //trim
 				if(self.solution[solution]) { // Check solution is valid.
@@ -1212,7 +1212,7 @@
 			// MJP: The background change remains. Would need to store the original to restore it correctly.
 			// MJP: The jPlayer element's size change remains.
 
-			// Clear the media to reset the GUI and stop any downloads. Streams on some browsers had persited. (Chrome)
+			// Clear the media to reset the GUI and stop any downloads. Streams on some browsers had persisted. (Chrome)
 			this.clearMedia();
 			// Remove the size/sizeFull cssClass from the cssSelectorAncestor
 			this._removeUiClass();
@@ -1573,7 +1573,7 @@
 			var ct = 0, cpa = 0, sp = 0, cpr = 0;
 
 			// Fixes the duration bug in iOS, where the durationchange event occurs when media.duration is not always correct.
-			// Fixes the initial duration bug in BB OS7, where the media.duration is infinity and displays as NaN:NaN due to Date() using inifity.
+			// Fixes the initial duration bug in BB OS7, where the media.duration is infinity and displays as NaN:NaN due to Date() using infinity.
 			if(isFinite(media.duration)) {
 				this.status.duration = media.duration;
 			}
@@ -2645,18 +2645,18 @@
 					if(!this.options.fullWindow && this.options[key].cssClass !== value.cssClass) {
 						this._removeUiClass();
 					}
-					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, incase not all properties changed.
+					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, in case not all properties changed.
 					this._refreshSize();
 					break;
 				case "sizeFull" :
 					if(this.options.fullWindow && this.options[key].cssClass !== value.cssClass) {
 						this._removeUiClass();
 					}
-					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, incase not all properties changed.
+					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, in case not all properties changed.
 					this._refreshSize();
 					break;
 				case "autohide" :
-					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, incase not all properties changed.
+					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, in case not all properties changed.
 					this._updateAutohide();
 					break;
 				case "loop" :
@@ -2670,20 +2670,20 @@
 					this.options[key] = value;
 					break;
 				case "nativeVideoControls" :
-					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, incase not all properties changed.
+					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, in case not all properties changed.
 					this.status.nativeVideoControls = this._uaBlocklist(this.options.nativeVideoControls);
 					this._restrictNativeVideoControls();
 					this._updateNativeVideoControls();
 					break;
 				case "noFullWindow" :
-					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, incase not all properties changed.
+					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, in case not all properties changed.
 					this.status.nativeVideoControls = this._uaBlocklist(this.options.nativeVideoControls); // Need to check again as noFullWindow can depend on this flag and the restrict() can override it.
 					this.status.noFullWindow = this._uaBlocklist(this.options.noFullWindow);
 					this._restrictNativeVideoControls();
 					this._updateButtons();
 					break;
 				case "noVolume" :
-					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, incase not all properties changed.
+					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, in case not all properties changed.
 					this.status.noVolume = this._uaBlocklist(this.options.noVolume);
 					this._updateVolume();
 					this._updateMute();
@@ -2699,7 +2699,7 @@
 					}
 					break;
 				case "timeFormat" :
-					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, incase not all properties changed.
+					this.options[key] = $.extend({}, this.options[key], value); // store a merged copy of it, in case not all properties changed.
 					break;
 				case "keyEnabled" :
 					this.options[key] = value;
@@ -2708,7 +2708,7 @@
 					}
 					break;
 				case "keyBindings" :
-					this.options[key] = $.extend(true, {}, this.options[key], value); // store a merged DEEP copy of it, incase not all properties changed.
+					this.options[key] = $.extend(true, {}, this.options[key], value); // store a merged DEEP copy of it, in case not all properties changed.
 					break;
 				case "audioFullScreen" :
 					this.options[key] = value;

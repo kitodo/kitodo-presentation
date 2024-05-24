@@ -248,6 +248,7 @@ class NewTenantController extends AbstractController
                 $newRecord->setIsFacet((int) $values['is_facet']);
                 $newRecord->setIsListed((int) $values['is_listed']);
                 $newRecord->setIndexAutocomplete((int) $values['index_autocomplete']);
+                $newRecord->setSorting((int) $values['sorting']);
 
                 if (is_array($values['format'])) {
                     foreach ($values['format'] as $format) {
@@ -272,7 +273,7 @@ class NewTenantController extends AbstractController
                     $translatedRecord->setL18nParent($newRecord);
                     $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
                     $translatedRecord->setLabel($this->getLLL('metadata.' . $indexName, $siteLanguage->getTypo3Language(), $metadataLabels));
-                    $translatedRecord->setIndexName($indexName);
+                    $translatedRecord->setIndexName($indexName . "_" . $siteLanguage->getLanguageId());
                     $translatedRecord->setWrap($newRecord->getWrap());
 
                     $this->metadataRepository->add($translatedRecord);
@@ -365,7 +366,7 @@ class NewTenantController extends AbstractController
                     $translatedRecord->setL18nParent($newRecord);
                     $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
                     $translatedRecord->setLabel($this->getLLL('structure.' . $indexName, $siteLanguage->getTypo3Language(), $structLabels));
-                    $translatedRecord->setIndexName($indexName);
+                    $translatedRecord->setIndexName($indexName . "_" . $siteLanguage->getLanguageId());
 
                     $this->structureRepository->add($translatedRecord);
                 }

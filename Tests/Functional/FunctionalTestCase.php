@@ -1,14 +1,24 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Functional;
 
+use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -112,6 +122,9 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected function getDlfConfiguration()
     {
+        $dotenv = Dotenv::createImmutable('/home/runner/work/kitodo-presentation/kitodo-presentation/Build/Test/', 'test.env');
+        $dotenv->load();
+
         return [
             'useExternalApisForMetadata' => 0,
             'fileGrpImages' => 'DEFAULT,MAX',
@@ -193,16 +206,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected function initLanguageService(string $locale)
     {
-        if (class_exists(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)) {
-            $GLOBALS['LANG'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)->create($locale);
-        } else {
-            $typo3MajorVersion = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version())['version_main'];
-            self::assertEquals(9, $typo3MajorVersion);
-
-            $lang = new LanguageService();
-            $lang->init($locale);
-            $GLOBALS['LANG'] = $lang;
-        }
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create($locale);
     }
 
     /**
