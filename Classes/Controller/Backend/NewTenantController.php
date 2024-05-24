@@ -233,6 +233,7 @@ class NewTenantController extends AbstractController
             $availableFormats[$insertedFormat->getRoot()] = $insertedFormat->getUid();
         }
 
+        $data = [];
         foreach ($metadataDefaults as $indexName => $values) {
             $formatIds = [];
 
@@ -346,6 +347,7 @@ class NewTenantController extends AbstractController
         // load language file in own array
         $structureLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getTypo3Language());
 
+        $data = [];
         foreach ($structureDefaults as $indexName => $values) {
             $data['tx_dlf_structures'][uniqid('NEW')] = [
                 'pid' => $this->pid,
