@@ -92,7 +92,12 @@
 	  	"cp ./Build/Documentation/index.html ./Documentation-GENERATED-temp"
   	],
 	"docs:start": "docker run -d --name dlf_docs --rm -v ./Documentation-GENERATED-temp:/serve -p 9000:8000 jdkelley/simple-http-server:latest",
-	"docs:stop": "docker stop dlf_docs"
+	"docs:stop": "docker stop dlf_docs",
+	"docs:rebuild": [
+	  "@composer docs:stop",
+	  "@composer docs:build",
+	  "@composer docs:start"
+	]
   },
   "config": {
     "allow-plugins": {
