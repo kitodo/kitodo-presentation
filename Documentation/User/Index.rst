@@ -272,15 +272,6 @@ collections or even to reindex all documents on the given page.::
        amount of processed/all documents.
    :Example:
 
- - :Option:
-       ``-v|--verbose``
-   :Required:
-       no
-   :Description:
-       Show each processed documents uid and location with timestamp and
-       amount of processed/all documents.
-   :Example:
-
 Harvest OAI-PMH interface
 -------------------------
 
