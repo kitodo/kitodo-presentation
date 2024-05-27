@@ -218,7 +218,7 @@ collections or even to reindex all documents on the given page.::
    :Example:
        123
 
-    - :Option:
+ - :Option:
        ``-l|--index-limit``
    :Required:
        no
@@ -231,7 +231,7 @@ collections or even to reindex all documents on the given page.::
    :Example:
        1000
 
-    - :Option:
+ - :Option:
        ``-b|--index-begin``
    :Required:
        no
@@ -261,6 +261,15 @@ collections or even to reindex all documents on the given page.::
        Do not output any message. Useful when using a wrapper script. The
        script may check the return value of the CLI job. This is always 0 on
        success and 1 on failure.
+   :Example:
+
+ - :Option:
+       ``-v|--verbose``
+   :Required:
+       no
+   :Description:
+       Show each processed documents uid and location with timestamp and
+       amount of processed/all documents.
    :Example:
 
  - :Option:

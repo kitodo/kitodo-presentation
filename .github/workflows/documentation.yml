@@ -10,7 +10,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Test if the documentation will render without warnings
+            - name: Test if the documentation will render without warning
               run: |
                   mkdir -p Documentation-GENERATED-temp \
                   && docker run --rm --pull always -v $(pwd):/project \
