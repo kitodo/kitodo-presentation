@@ -86,7 +86,7 @@
     "test:func": "Build/Test/runTests.sh -s functional",
     "test:func:watch": "@test:func -w",
 	"docs:db": "./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst",
-	"docs:build": "docker run --user=$(id -u):$(id -g) --rm -v ./:/project -it ghcr.io/typo3-documentation/render-guides:latest --config ./Documentation && cp ./Build/Documentation/index.html ./Documentation-GENERATED-temp",
+	"docs:build": "rm -Rf ./Documentation-GENERATED-temp && docker run --user=$(id -u):$(id -g) --rm -v ./:/project -it ghcr.io/typo3-documentation/render-guides:latest --config ./Documentation && cp ./Build/Documentation/index.html ./Documentation-GENERATED-temp",
 	"docs:start": "docker run -d --name dlf_docs --rm -v ./Documentation-GENERATED-temp:/serve -p 9000:8000 jdkelley/simple-http-server:latest",
 	"docs:stop": "docker stop dlf_docs"
   },
