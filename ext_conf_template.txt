@@ -1,18 +1,18 @@
 # cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.enableInternalProxy
 general.enableInternalProxy = 0
-# cat=Basic; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.userAgent
+# cat=General; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.userAgent
 general.userAgent = Kitodo.Presentation
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.forceAbsoluteUrl
+# cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.forceAbsoluteUrl
 general.forceAbsoluteUrl = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.forceAbsoluteUrlHttps
+# cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.forceAbsoluteUrlHttps
 general.forceAbsoluteUrlHttps = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.caching
+# cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.caching
 general.caching = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.publishNewCollections
+# cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.publishNewCollections
 general.publishNewCollections = 1
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.unhideOnIndex
+# cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.unhideOnIndex
 general.unhideOnIndex = 0
-# cat=Basic; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.useExternalApisForMetadata
+# cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.useExternalApisForMetadata
 general.useExternalApisForMetadata = 0
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpImages
 files.fileGrpImages = DEFAULT,MAX
