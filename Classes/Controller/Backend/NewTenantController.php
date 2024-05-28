@@ -271,7 +271,7 @@ class NewTenantController extends AbstractController
         foreach ($metadataIds as $id => $uid) {
             $metadata = $this->metadataRepository->findByUid($uid);
             // id array contains also ids of formats
-            if ($metadata != NULL) {
+            if ($metadata != null) {
                 $insertedMetadata[$uid] = $metadata->getIndexName();
             }
         }
