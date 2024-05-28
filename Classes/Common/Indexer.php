@@ -669,7 +669,7 @@ class Indexer
     {
         if (is_array($authors)) {
             foreach ($authors as $i => $author) {
-                $splitName = explode(chr(31), $author);
+                $splitName = explode(pack('C', 31), $author);
                 $authors[$i] = $splitName[0];
             }
         }
