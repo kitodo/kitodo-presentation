@@ -218,7 +218,7 @@ collections or even to reindex all documents on the given page.::
    :Example:
        123
 
-    - :Option:
+ - :Option:
        ``-l|--index-limit``
    :Required:
        no
@@ -231,7 +231,7 @@ collections or even to reindex all documents on the given page.::
    :Example:
        1000
 
-    - :Option:
+ - :Option:
        ``-b|--index-begin``
    :Required:
        no
