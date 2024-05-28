@@ -17,32 +17,38 @@ Data format records, which are stored on the root page (PID = 0), tell Kitodo ho
 A record contains the following fields:
 
 .. t3-field-list-table::
-   :header-rows:  1
+ :header-rows: 1
 
-   - :---: Make description column three times the width of field column.
-     :field,1:       Field
-     :description,3: Description
+ - :field,1:
+      Field
+   :description,3:
+      Description
+ - :field:
+      Format Name
+   :description:
+      Name of the type that is used to reference it.
 
-   - :field:         Format Name
-     :description:   Name of the type that is used to reference it.
+      For metadata embedded via ``<mdWrap>``, this corresponds to its ``MDTYPE`` or ``OTHERMDTYPE`` attribute.
 
-                     -  For metadata embedded via ``<mdWrap>``, this corresponds to its ``MDTYPE`` or ``OTHERMDTYPE`` attribute.
+      For XML fulltext files, this corresponds to the capitalized root tag of the file.
+ - :field:
+      Root Element
+   :description:
+      The XML root element used by this format. In METS, this is used to locate the sub-root within an ``<mdWrap>``.
+ - :field:
+      Namespace URI
+   :description:
+      The XML namespace URI used by this format. It is registered within the parser and may be used to declare namespace prefixes.
 
-                     -  For XML fulltext files, this corresponds to the capitalized root tag of the file.
+ - :field:
+      Class Name
+   :description:
+      (Optional) Fully qualified name of the PHP class that handles the format. Some formats are pre-defined in the ``Kitodo\Dlf\Format`` namespace.
 
-   - :field:         Root Element
-     :description:   The XML root element used by this format. In METS, this is used to locate the sub-root within an ``<mdWrap>``.
+      For metadata, this is used to programmatically extract values by implementing ``MetadataInterface``.
+      This may be useful, for example, when the value is needed universally, is difficult to extract via XPath, or requires post-processing.
 
-   - :field:         Namespace URI
-     :description:   The XML namespace URI used by this format. It is registered within the parser and may be used to declare namespace prefixes.
-
-   - :field:         Class Name
-     :description:   (Optional) Fully qualified name of the PHP class that handles the format. Some formats are pre-defined in the ``Kitodo\Dlf\Format`` namespace.
-
-                     For metadata, this is used to programmatically extract values by implementing ``MetadataInterface``.
-                     This may be useful, for example, when the value is needed universally, is difficult to extract via XPath, or requires post-processing.
-
-                     For fulltext, this is used to parse the fulltext file by implementing the ``FulltextInterface``.
+      For fulltext, this is used to parse the fulltext file by implementing the ``FulltextInterface``.
 
 
 TypoScript Wrap
