@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e39d6c9934d0472a12598fd4b9ae805",
+    "content-hash": "bd3bfc47ff15cf3a39b881512541048a",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1340,29 +1340,29 @@
         },
         {
             "name": "lolli42/finediff",
-            "version": "1.0.3",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lolli42/FineDiff.git",
-                "reference": "8d535de757062fed8412833f5eede7064595ca5b"
+                "reference": "784ade1515ba9f56d943a6a551c96073f9858b85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lolli42/FineDiff/zipball/8d535de757062fed8412833f5eede7064595ca5b",
-                "reference": "8d535de757062fed8412833f5eede7064595ca5b",
+                "url": "https://api.github.com/repos/lolli42/FineDiff/zipball/784ade1515ba9f56d943a6a551c96073f9858b85",
+                "reference": "784ade1515ba9f56d943a6a551c96073f9858b85",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.0",
-                "symfony/polyfill-mbstring": "^1.23"
+                "ext-mbstring": "*",
+                "php": ">=8.2"
             },
             "replace": {
                 "cogpowered/finediff": "*"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.4",
-                "phpstan/phpstan": "^1.9.14",
-                "phpunit/phpunit": "^8.5.33 || ^9.6.11 || ^10.3.2"
+                "friendsofphp/php-cs-fixer": "^3.49.0",
+                "phpstan/phpstan": "^1.10.57",
+                "phpunit/phpunit": "^10.5.10 || ^11.0.2"
             },
             "type": "library",
             "autoload": {
@@ -1399,9 +1399,9 @@
             ],
             "support": {
                 "issues": "https://github.com/lolli42/FineDiff/issues",
-                "source": "https://github.com/lolli42/FineDiff/tree/1.0.3"
+                "source": "https://github.com/lolli42/FineDiff/tree/1.1.0"
             },
-            "time": "2024-02-06T13:56:20+00:00"
+            "time": "2024-02-06T15:34:02+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -4926,26 +4926,25 @@
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v6.4.7",
+            "version": "v7.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "825f9b00c37bbe1c1691cc1aff9b5451fc9b4405"
+                "reference": "cdecc0022e40e90340ba1a59a3d5ccf069777078"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/825f9b00c37bbe1c1691cc1aff9b5451fc9b4405",
-                "reference": "825f9b00c37bbe1c1691cc1aff9b5451fc9b4405",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/cdecc0022e40e90340ba1a59a3d5ccf069777078",
+                "reference": "cdecc0022e40e90340ba1a59a3d5ccf069777078",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1",
-                "symfony/deprecation-contracts": "^2.5|^3"
+                "php": ">=8.2"
             },
             "require-dev": {
                 "symfony/property-access": "^6.4|^7.0",
                 "symfony/serializer": "^6.4|^7.0",
-                "symfony/var-dumper": "^5.4|^6.0|^7.0"
+                "symfony/var-dumper": "^6.4|^7.0"
             },
             "type": "library",
             "autoload": {
@@ -4983,7 +4982,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v6.4.7"
+                "source": "https://github.com/symfony/var-exporter/tree/v7.0.7"
             },
             "funding": [
                 {
@@ -4999,7 +4998,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-18T09:22:46+00:00"
+            "time": "2024-04-18T09:29:19+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -6563,16 +6562,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.2",
+            "version": "1.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "0d5d4294a70deb7547db655c47685d680e39cfec"
+                "reference": "e524358f930e41a2b4cca1320e3b04fc26b39e0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/0d5d4294a70deb7547db655c47685d680e39cfec",
-                "reference": "0d5d4294a70deb7547db655c47685d680e39cfec",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e524358f930e41a2b4cca1320e3b04fc26b39e0b",
+                "reference": "e524358f930e41a2b4cca1320e3b04fc26b39e0b",
                 "shasum": ""
             },
             "require": {
@@ -6617,7 +6616,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-24T13:23:04+00:00"
+            "time": "2024-05-15T08:00:59+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -8893,5 +8892,5 @@
         "ext-simplexml": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.6.0"
 }
