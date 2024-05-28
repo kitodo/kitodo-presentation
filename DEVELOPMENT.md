@@ -135,9 +135,9 @@ composer docs:build
 Take a look at the documentation by opening the file `Index.html` in the folder
 `Documentation-GENERATED-temp` in your browser.
 
-### Provide via Http Server (optional)
+### Provide via HTTP Server (optional)
 
-Starts the http server and mounts the mandatory directory `Documentation-GENERATED-temp`.
+Starts the HTTP server and mounts the mandatory directory `Documentation-GENERATED-temp`.
 
 ```bash
 composer docs:start
@@ -146,7 +146,7 @@ composer docs:start
 Take a look at the documentation by opening <http://localhost:8000>
 in your browser.
 
-The server runs in detached mode, so you will need to stop the http server manually.
+The server runs in detached mode, so you will need to stop it manually.
 
 ```bash
 composer docs:stop
