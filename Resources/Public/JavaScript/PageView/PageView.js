@@ -17,21 +17,14 @@
 
 /**
  * @typedef {{
- *  url: string;
- *  mimetype: string;
- * }} ResourceLocator
- *
- * @typedef {ResourceLocator} ImageDesc
- *
- * @typedef {ResourceLocator} FulltextDesc
- *
- * @typedef {{
- *  div: string;
- *  progressElementId?: string;
- *  images?: ImageDesc[] | [];
- *  fulltexts?: FulltextDesc[] | [];
- *  controls?: ('OverviewMap' | 'ZoomPanel')[];
+ * div: string;
+ * progressElementId?: string;
+ * images?: dlf.ImageDesc[] | [];
+ * fulltexts?: dlf.FulltextDesc[] | [];
+ * controls?: ('OverviewMap' | 'ZoomPanel')[];
  * }} DlfViewerConfig
+ *
+ * @typedef {any} DlfDocument
  */
 
 /**
@@ -96,7 +89,7 @@ var dlfViewer = function(settings){
      * @type {JQueryStatic.Deferred[]}
      * @private
      */
-    this.fulltextsLoaded_ = [];
+    this.fulltextsLoaded = {};
 
     /**
      * IIIF annotation lists URLs for the current canvas
@@ -190,6 +183,24 @@ var dlfViewer = function(settings){
      */
     this.useInternalProxy = dlfUtils.exists(settings.useInternalProxy) ? settings.useInternalProxy : false;
 
+    /**
+     * Cache of promises / jQuery Deferred returned by `initLayer()`.
+     * This has two benefits:
+     * - Switching to a page that has already been visited is basically instantaneous.
+     * When relying on browser cache, there still is a flicker.
+     * - It may allow to prefetch pages that are likely to be visited next (TODO(client-side): do that).
+     *
+     * @type {Record<string, JQueryStatic.Deferred>}
+     * @private
+     */
+    this.layersCache = {};
+
+    /**
+     * @type {dlfController | null}
+     * @private
+     */
+    this.docController = null;
+
     this.init(dlfUtils.exists(settings.controls) ? settings.controls : []);
 };
 
@@ -276,54 +287,63 @@ dlfViewer.prototype.countPages = function () {
 };
 
 /**
+ * Update Fulltext in UI
+ *
+ * @param {JQueryStatic.Deferred | undefined} currentFulltext
+ */
+dlfViewer.prototype.updateFulltext = function(currentFulltext) {
+    if (!this.fulltextControl) {
+        this.fulltextControl = new dlfViewerFullTextControl(this.map);
+    }
+    if (!this.fulltextDownloadControl) {
+        this.fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map);
+    }
+    if (currentFulltext !== undefined && this.images.length === 1) {
+        $("#tx-dlf-tools-fulltext").show();
+
+        currentFulltext
+            .then((fulltextData) => {
+                this.fulltextControl.loadFulltextData(fulltextData);
+                this.fulltextDownloadControl.setFulltextData(fulltextData);
+            })
+            .catch(() => {
+                this.fulltextControl.deactivate();
+            });
+    } else {
+        $("#tx-dlf-tools-fulltext").hide();
+        this.fulltextControl.deactivate();
+    }
+};
+
+/**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
  * fulltext and the image manipulation control
  *
  * @param {Array.<string>} controlNames
  */
 dlfViewer.prototype.addCustomControls = function() {
-    var fulltextControl = undefined,
-        fulltextDownloadControl = undefined,
-        annotationControl = undefined,
-        imageManipulationControl = undefined,
-        images = this.images;
+    var annotationControl = undefined;
+    var imageManipulationControl = undefined;
 
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
-    if (this.fulltextsLoaded_[0] !== undefined && this.images.length === 1) {
-        fulltextControl = new dlfViewerFullTextControl(this.map);
-        fulltextDownloadControl = new dlfViewerFullTextDownloadControl(this.map);
+    const currentFulltext = this.fulltextsLoaded[`${this.getVisiblePages()[0].pageNo}-0`];
 
-        this.fulltextsLoaded_[0]
-            .then(function (fulltextData) {
-                fulltextControl.loadFulltextData(fulltextData);
-                fulltextDownloadControl.setFulltextData(fulltextData);
-            })
-            .catch(function () {
-                fulltextControl.deactivate();
-            });
-    } else {
-        $('#tx-dlf-tools-fulltext').remove();
-    }
+    this.updateFulltext(currentFulltext);
 
-    if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
-        && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
+    if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
         // Adds annotation behavior only if there are annotations available and view is single page
         annotationControl = new DlfAnnotationControl(this.map, this.images[0], this.annotationContainers[0]);
-        if (fulltextControl !== undefined) {
-            $(fulltextControl).on("activate-fulltext", $.proxy(annotationControl.deactivate, annotationControl));
-            $(annotationControl).on("activate-annotations", $.proxy(fulltextControl.deactivate, fulltextControl));
+        if (this.fulltextControl !== undefined) {
+            $(this.fulltextControl).on("activate-fulltext", $.proxy(annotationControl.deactivate, annotationControl));
+            $(annotationControl).on("activate-annotations", $.proxy(this.fulltextControl.deactivate, this.fulltextControl));
         }
-    }
-    else {
-        $('#tx-dlf-tools-annotations').remove();
+    } else {
+        $("#tx-dlf-tools-annotations").remove();
     }
 
-    //
     // Add image manipulation tool if container is added.
-    //
-    if ($('#tx-dlf-tools-imagetools').length > 0) {
-
+    if ($("#tx-dlf-tools-imagetools").length > 0) {
         // should be called if cors is enabled
         imageManipulationControl = new dlfViewerImageManipulationControl({
             controlTarget: $('.tx-dlf-tools-imagetools')[0],
@@ -331,9 +351,9 @@ dlfViewer.prototype.addCustomControls = function() {
         });
 
         // bind behavior of both together
-        if (fulltextControl !== undefined) {
-            $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
-            $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
+        if (this.fulltextControl !== undefined) {
+            $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(this.fulltextControl.deactivate, this.fulltextControl));
+            $(this.fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
         }
         if (annotationControl !== undefined) {
             $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(annotationControl.deactivate, annotationControl));
@@ -348,6 +368,8 @@ dlfViewer.prototype.addCustomControls = function() {
 
 /**
  * Add highlight field
+ *
+ * Used for SRU search highlighting in DFG Viewer.
  *
  * @param {Array.<number>} highlightField
  * @param {number} imageIndex
@@ -494,7 +516,8 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         var self = this;
         var values = decodeURIComponent(this.highlightWords).split(';');
 
-        $.when.apply($, this.fulltextsLoaded_)
+		const currentFulltext = this.fulltextsLoaded[this.getVisiblePages()[0].pageNo];
+        $.when.apply($, currentFulltext)
             .done(function (fulltextData, fulltextDataImageTwo) {
                 var stringFeatures = [];
 
@@ -531,7 +554,7 @@ dlfViewer.prototype.init = function(controlNames) {
         .done($.proxy(function(layers){
 
             // Initiate loading fulltexts
-            this.initLoadFulltexts();
+            this.initLoadFulltexts(this.getVisiblePages());
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
@@ -617,48 +640,133 @@ dlfViewer.prototype.init = function(controlNames) {
         this.initCropping();
 };
 
-/**
- * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
- *
- * @param {ImageDesc[]} imageSourceObjs
- * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
- * @private
- */
-dlfViewer.prototype.initLayer = function(imageSourceObjs) {
-
-    // use deferred for async behavior
-    var deferredResponse = new $.Deferred(),
-      /**
-       * @param {Array.<{src: *, width: *, height: *}>} imageSourceData
-       * @param {Array.<ol.layer.Layer>} layers
-       */
-      resolveCallback = $.proxy(function(imageSourceData, layers) {
-            this.images = imageSourceData;
-            deferredResponse.resolve(layers);
-        }, this);
-
-    dlfUtils.fetchImageData(imageSourceObjs, this.loadingIndicator)
-      .done(function(imageSourceData) {
-          resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
-      });
-
-    return deferredResponse;
+dlfViewer.prototype.getVisiblePages = function () {
+    if (this.docController === null) {
+        /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+        console.error("No document controller found");
+        return;
+    } else {
+        return this.docController.getVisiblePages();
+    }
 };
 
 /**
- * Start loading fulltexts and store them to `fulltextsLoaded_` (as jQuery deferred objects).
  *
+ * @param {dlfController | null} docController
+ */
+dlfViewer.prototype.setDocController = function (docController) {
+    if (docController === this.docController) {
+        return;
+    }
+
+    this.docController = docController;
+
+    if (docController === null) {
+        return;
+    }
+
+    this.docController.eventTarget.addEventListener('tx-dlf-stateChanged', () => {
+        this.loadPages(this.getVisiblePages());
+    });
+};
+
+/**
+ *
+ * @param {any} visiblePages
+ * @private
+ * @returns
+ */
+dlfViewer.prototype.loadPages = function (visiblePages) {
+    if (this.docController === null) {
+        return;
+    }
+
+    const pages = [];
+    const files = [];
+    for (const page of visiblePages) {
+        const file = this.docController.findFileByKind(page.pageNo, 'images');
+        if (file === undefined) {
+            /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+            console.warn(`No image file found on page ${page.pageNo}`);
+            continue;
+        }
+        pages.push(page);
+        files.push(file);
+    }
+
+    this.initLayer(files)
+        .done(layers => {
+            this.map.setLayers(layers);
+            this.initLoadFulltexts(pages);
+
+            let i = 0;
+            for (const page of pages) {
+                this.updateFulltext(this.fulltextsLoaded[`${page.pageNo}-${i}`]);
+                i++;
+            }
+        });
+};
+
+/**
+ * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
+ *
+ * @param {dlf.ImageDesc[]} imageSourceObjs
+ * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
  * @private
  */
-dlfViewer.prototype.initLoadFulltexts = function () {
-    var cnt = Math.min(this.fulltexts.length, this.images.length);
+dlfViewer.prototype.initLayer = function (imageSourceObjs) {
+    const layersCacheKey = imageSourceObjs.map(image => image.url)
+        .join('\u001c'); // 0x1c = 28 = ASCII file separator
+
+    let deferredResponse = this.layersCache[layersCacheKey];
+    if (deferredResponse === undefined) {
+        // use deferred for async behavior
+        deferredResponse = this.layersCache[layersCacheKey]
+            = new $.Deferred();
+
+        dlfUtils.fetchImageData(imageSourceObjs, this.loadingIndicator)
+            .done((imageSourceData) => {
+                deferredResponse.resolve({
+                    layers: dlfUtils.createOlLayers(imageSourceData),
+                    images: imageSourceData,
+                });
+            });
+    }
+
+    const initDeferred = new $.Deferred();
+    deferredResponse.done(({ layers, images }) => {
+        this.images = images;
+        initDeferred.resolve(layers);
+    });
+
+    return initDeferred;
+};
+
+/**
+ * Start loading fulltexts and store them to `fulltextsLoaded` (as jQuery deferred objects).
+ *
+ * @param {dlf.PageObject[]} visiblePages
+ * @private
+ */
+dlfViewer.prototype.initLoadFulltexts = function (visiblePages) {
+    if (this.docController === null) {
+        return;
+    }
+
+    var cnt = Math.min(visiblePages.length, this.images.length);
     var xOffset = 0;
     for (var i = 0; i < cnt; i++) {
-        var fulltext = this.fulltexts[i];
-        var image = this.images[i];
+        const image = this.images[i];
+        const key = `${visiblePages[i].pageNo}-${i}`;
 
-        if (dlfUtils.isFulltextDescriptor(fulltext)) {
-            this.fulltextsLoaded_[i] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
+        const fulltext = this.docController.findFileByKind(visiblePages[i].pageNo, 'fulltext');
+        if (fulltext !== undefined) {
+            if (!(key in this.fulltextsLoaded) && dlfUtils.isFulltextDescriptor(fulltext)) {
+                this.fulltextsLoaded[key] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
+            }
+        } else {
+            /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+            console.warn("No fulltext file found");
         }
 
         xOffset += image.width;
