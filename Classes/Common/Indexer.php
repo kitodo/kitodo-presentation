@@ -17,6 +17,7 @@ use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use Solarium\Core\Query\DocumentInterface;
 use Solarium\QueryType\Update\Query\Query;
+use Symfony\Component\Console\Input\InputInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -121,9 +122,7 @@ class Indexer
                 // Add document to list of processed documents.
                 self::$processedDocs[] = $document->getUid();
                 // Delete old Solr documents.
-                $updateQuery = self::$solr->service->createUpdate();
-                $updateQuery->addDeleteQuery('uid:' . $document->getUid());
-                self::$solr->service->update($updateQuery);
+                self::deleteDocument('uid', (string) $document->getUid());
 
                 // Index every logical unit as separate Solr document.
                 foreach ($document->getCurrentDocument()->tableOfContents as $logicalUnit) {
@@ -175,6 +174,42 @@ class Indexer
             Helper::log('Could not connect to Apache Solr server', LOG_SEVERITY_ERROR);
             return false;
         }
+    }
+
+    /**
+     * Delete document from Solr index
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param InputInterface $input The input parameters
+     *
+     * @return bool true on success or false on failure
+     */
+    public static function delete(InputInterface $input, string $field, int $solrCoreUid): bool
+    {
+        if (self::solrConnect($solrCoreUid, $input->getOption('pid'))) {
+            try {
+                self::deleteDocument($field, $input->getOption('doc'));
+                return true;
+            } catch (\Exception $e) {
+                if (!(Environment::isCli())) {
+                    Helper::addMessage(
+                        Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
+                        Helper::getLanguageService()->getLL('flash.error'),
+                        FlashMessage::ERROR,
+                        true,
+                        'core.template.flashMessages'
+                    );
+                }
+                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
+                return false;
+            }
+        }
+
+        Helper::log('Document not deleted from SOLR - problem with the connection to the SOLR core ' . $solrCoreUid, LOG_SEVERITY_ERROR);
+        return false;
     }
 
     /**
@@ -530,6 +565,32 @@ class Indexer
                 $solrDoc->setField($indexName, $doc->metadataArray[$doc->toplevelId][$indexName]);
             }
         }
+    }
+
+    /**
+     * Delete document from SOLR by given field and value.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param string $field by which document should be removed
+     * @param string $value of the field by which document should be removed
+     *
+     * @return void
+     */
+    private static function deleteDocument(string $field, string $value): void
+    {
+        $update = self::$solr->service->createUpdate();
+        $query = "";
+        if ($field == 'uid' || $field == 'partof') {
+            $query = $field . ':' . $value;
+        } else {
+            $query = $field . ':"' . $value . '"';
+        }
+        $update->addDeleteQuery($query);
+        $update->addCommit();
+        self::$solr->service->update($update);
     }
 
     /**
