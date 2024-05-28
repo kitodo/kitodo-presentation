@@ -284,7 +284,6 @@ The collection plugin shows one collection, all collections or selected collecti
        targetPid
    :Data Type:
        `t3tsref:data-type-page-id`
-   :
    :Default:
 
  - :Property:
