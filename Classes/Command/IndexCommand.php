@@ -95,7 +95,7 @@ class IndexCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $this->initializeRepositories($input->getOption('pid'));
+        $this->initializeRepositories((int) $input->getOption('pid'));
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
