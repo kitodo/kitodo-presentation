@@ -217,7 +217,7 @@ class BaseCommand extends Command
         $doc->cPid = $this->storagePid;
 
         $metadata = $doc->getToplevelMetadata($this->storagePid);
-        $validator = new DocumentValidator($metadata, explode(',', $this->extConf['requiredMetadataFields']));
+        $validator = new DocumentValidator($metadata, explode(',', $this->extConf['general']['requiredMetadataFields']));
 
         if ($validator->hasAllMandatoryMetadataFields()) {
             // set title data
