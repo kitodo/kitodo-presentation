@@ -1,10 +1,10 @@
-name: Build Documentation
+name: Documentation
 
 on: [ push, pull_request ]
 
 jobs:
     tests:
-        name: Documentation
+        name: Build Test
         runs-on: ubuntu-latest
         steps:
             - name: Checkout

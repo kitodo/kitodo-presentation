@@ -84,7 +84,7 @@ class PageViewController extends AbstractController
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
 
-        $this->view->assign('forceAbsoluteUrl', $this->settings['forceAbsoluteUrl']);
+        $this->view->assign('forceAbsoluteUrl', $this->settings['general']['forceAbsoluteUrl']);
 
         $this->addViewerJS();
 
@@ -106,7 +106,7 @@ class PageViewController extends AbstractController
     {
         $fulltext = [];
         // Get fulltext link.
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
+        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
             $fileId = $physicalStructureInfo['files'][$fileGrpFulltext];
@@ -123,7 +123,7 @@ class PageViewController extends AbstractController
             }
         }
         if (empty($fulltext)) {
-            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->extConf['fileGrpFulltext'] . '"');
+            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->extConf['files']['fileGrpFulltext'] . '"');
         }
         return $fulltext;
     }
@@ -223,7 +223,7 @@ class PageViewController extends AbstractController
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['fileGrpImages']);
+        $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpImages']);
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
             // Get image link.
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
@@ -244,7 +244,7 @@ class PageViewController extends AbstractController
             }
         }
         if (empty($image)) {
-            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->extConf['fileGrpImages'] . '"');
+            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->extConf['files']['fileGrpImages'] . '"');
         }
         return $image;
     }

@@ -976,14 +976,14 @@ class Helper
         }
 
         // Get extension configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
 
         /** @var RequestFactory $requestFactory */
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $configuration = [
             'timeout' => 30,
             'headers' => [
-                'User-Agent' => $extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
             ],
         ];
         try {

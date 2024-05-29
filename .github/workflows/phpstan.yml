@@ -8,6 +8,7 @@ on:
 
 jobs:
   phpstan:
+    name: Static Code Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
