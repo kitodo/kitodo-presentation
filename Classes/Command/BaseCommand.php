@@ -346,7 +346,7 @@ class BaseCommand extends Command
                 $documentCollection = GeneralUtility::makeInstance(Collection::class);
                 $documentCollection->setIndexName($collection);
                 $documentCollection->setLabel($collection);
-                $documentCollection->setOaiName((!empty($this->extConf['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
+                $documentCollection->setOaiName((!empty($this->extConf['general']['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
                 $documentCollection->setIndexSearch('');
                 $documentCollection->setDescription('');
                 // add to CollectionRepository
