@@ -1,16 +1,16 @@
-   name: "CodeQL Configuration"
+name: CodeQL Configuration
 
-   queries:
-     - uses: security-and-quality
+queries:
+  - uses: security-and-quality
 
-   query-filters:
-     - exclude:
-         problem.severity:
-           - note
+query-filters:
+  - exclude:
+      problem.severity:
+        - note
 
-   paths-ignore:
-     - Resources/Public/JavaScript/jPlayer
-     - Resources/Public/JavaScript/jQuery
-     - Resources/Public/JavaScript/jQueryUI
-     - Resources/Public/JavaScript/OpenLayers
-     - Resources/Public/JavaScript/Toastify
+paths-ignore:
+  - Resources/Public/JavaScript/jPlayer
+  - Resources/Public/JavaScript/jQuery
+  - Resources/Public/JavaScript/jQueryUI
+  - Resources/Public/JavaScript/OpenLayers
+  - Resources/Public/JavaScript/Toastify
