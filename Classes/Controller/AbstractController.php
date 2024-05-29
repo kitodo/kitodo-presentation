@@ -166,7 +166,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         $this->uriBuilder->reset()
             ->setTargetPageUid($GLOBALS['TSFE']->id)
-            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
+            ->setCreateAbsoluteUri(!empty($this->settings['general']['forceAbsoluteUrl']))
             ->setArguments(
                 [
                     'eID' => 'tx_dlf_pageview_proxy',

@@ -126,39 +126,46 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $dotenv->load();
 
         return [
-            'useExternalApisForMetadata' => 0,
-            'fileGrpImages' => 'DEFAULT,MAX',
-            'fileGrpThumbs' => 'THUMBS',
-            'fileGrpDownload' => 'DOWNLOAD',
-            'fileGrpFulltext' => 'FULLTEXT',
-            'fileGrpAudio' => 'AUDIO',
-            'solrFieldAutocomplete' => 'autocomplete',
-            'solrFieldCollection' => 'collection',
-            'solrFieldDefault' => 'default',
-            'solrFieldFulltext' => 'fulltext',
-            'solrFieldGeom' => 'geom',
-            'solrFieldId' => 'id',
-            'solrFieldLicense' => 'license',
-            'solrFieldLocation' => 'location',
-            'solrFieldPage' => 'page',
-            'solrFieldPartof' => 'partof',
-            'solrFieldPid' => 'pid',
-            'solrFieldPurl' => 'purl',
-            'solrFieldRecordId' => 'record_id',
-            'solrFieldRestrictions' => 'restrictions',
-            'solrFieldRoot' => 'root',
-            'solrFieldSid' => 'sid',
-            'solrFieldTerms' => 'terms',
-            'solrFieldThumbnail' => 'thumbnail',
-            'solrFieldTimestamp' => 'timestamp',
-            'solrFieldTitle' => 'title',
-            'solrFieldToplevel' => 'toplevel',
-            'solrFieldType' => 'type',
-            'solrFieldUid' => 'uid',
-            'solrFieldUrn' => 'urn',
-            'solrFieldVolume' => 'volume',
-
-            'solrHost' => getenv('dlfTestingSolrHost'),
+            'general' => [
+                'useExternalApisForMetadata' => 0
+            ],
+            'files' => [
+                'fileGrpImages' => 'DEFAULT,MAX',
+                'fileGrpThumbs' => 'THUMBS',
+                'fileGrpDownload' => 'DOWNLOAD',
+                'fileGrpFulltext' => 'FULLTEXT',
+                'fileGrpAudio' => 'AUDIO'
+            ],
+            'solr' => [
+                'host' => getenv('dlfTestingSolrHost'),
+                'fields' => [
+                    'autocomplete' => 'autocomplete',
+                    'collection' => 'collection',
+                    'default' => 'default',
+                    'fulltext' => 'fulltext',
+                    'geom' => 'geom',
+                    'id' => 'id',
+                    'license' => 'license',
+                    'location' => 'location',
+                    'page' => 'page',
+                    'partof' => 'partof',
+                    'pid' => 'pid',
+                    'purl' => 'purl',
+                    'recordId' => 'record_id',
+                    'restrictions' => 'restrictions',
+                    'root' => 'root',
+                    'sid' => 'sid',
+                    'terms' => 'terms',
+                    'thumbnail' => 'thumbnail',
+                    'timestamp' => 'timestamp',
+                    'title' => 'title',
+                    'toplevel' => 'toplevel',
+                    'type' => 'type',
+                    'uid' => 'uid',
+                    'urn' => 'urn',
+                    'volume' => 'volume'
+                ]
+            ]
         ];
     }
 
