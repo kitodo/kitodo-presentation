@@ -259,7 +259,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         }
 
         // tx_dlf[double] may only be 0 or 1.
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'] ?? 0, 0, 1);
     }
 
     /**
