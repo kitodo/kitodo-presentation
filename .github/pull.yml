@@ -18,3 +18,6 @@ rules:
   - base: 4.x
     upstream: kitodo:4.x
     mergeMethod: hardreset
+  - base: 5.x
+    upstream: kitodo:5.x
+    mergeMethod: hardreset
