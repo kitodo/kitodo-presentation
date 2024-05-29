@@ -194,13 +194,19 @@ class IndexCommand extends BaseCommand
                 if ($io->isVerbose()) {
                     $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on Solr core ' . $solrCoreUid . '.');
                 }
-                Indexer::add($document, $this->documentRepository);
+                $isSaved = Indexer::add($document, $this->documentRepository);
+            } else {
+                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] . ') in this document.');
+                return BaseCommand::FAILURE;
+            }
 
+            if ($isSaved) {
                 $io->success('All done!');
                 return BaseCommand::SUCCESS;
             }
 
-            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (document format or record identifier) in this document.');
+            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] . ') in this document.');
+            $io->info('INFO: Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
             return BaseCommand::FAILURE;
         }
     }
