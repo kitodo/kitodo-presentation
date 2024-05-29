@@ -85,7 +85,7 @@ class AudioplayerController extends AbstractController
         $this->setDefaultPage();
 
         // Check if there are any audio files available.
-        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['fileGrpAudio']);
+        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]];
             $fileId = $physicalStructureInfo['files'][$fileGrpAudio];

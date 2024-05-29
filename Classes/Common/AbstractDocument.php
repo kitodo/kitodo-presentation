@@ -562,8 +562,8 @@ abstract class AbstractDocument
                     $contentAsJsonArray = json_decode($content, true);
                     if ($contentAsJsonArray !== null) {
                         IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-                        IiifHelper::setMaxThumbnailHeight($extConf['iiifThumbnailHeight']);
-                        IiifHelper::setMaxThumbnailWidth($extConf['iiifThumbnailWidth']);
+                        IiifHelper::setMaxThumbnailHeight($extConf['iiif']['thumbnailHeight']);
+                        IiifHelper::setMaxThumbnailWidth($extConf['iiif']['thumbnailWidth']);
                         $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
                         if ($iiif instanceof IiifResourceInterface) {
                             $documentFormat = 'IIIF';
@@ -653,7 +653,7 @@ abstract class AbstractDocument
         // ... physical structure ...
         $this->magicGetPhysicalStructure();
         // ... and extension configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
         $textFormat = "";
         if (!empty($this->physicalStructureInfo[$id])) {
