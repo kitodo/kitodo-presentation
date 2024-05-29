@@ -2,16 +2,6 @@
 -- Table structure for table 'tx_dlf_documents'
 --
 CREATE TABLE tx_dlf_documents (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    hidden smallint(6) DEFAULT '0' NOT NULL,
-    starttime int(11) DEFAULT '0' NOT NULL,
-    endtime int(11) DEFAULT '0' NOT NULL,
-    fe_group varchar(100) DEFAULT '' NOT NULL,
     prod_id varchar(255) DEFAULT '' NOT NULL,
     location varchar(255) DEFAULT '' NOT NULL,
     record_id varchar(255) DEFAULT '' NOT NULL,
@@ -42,7 +32,6 @@ CREATE TABLE tx_dlf_documents (
     status smallint(6) unsigned DEFAULT '0' NOT NULL,
     document_format varchar(100) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY location (location),
     KEY record_id (record_id),
@@ -53,25 +42,12 @@ CREATE TABLE tx_dlf_documents (
 -- Table structure for table 'tx_dlf_structures'
 --
 CREATE TABLE tx_dlf_structures (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    sys_language_uid int(11) DEFAULT '0' NOT NULL,
-    l18n_parent int(11) DEFAULT '0' NOT NULL,
-    l18n_diffsource mediumblob NOT NULL,
-    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
-    hidden smallint(6) DEFAULT '0' NOT NULL,
     toplevel smallint(6) DEFAULT '0' NOT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
     index_name varchar(255) DEFAULT '' NOT NULL,
     oai_name varchar(255) DEFAULT '' NOT NULL,
     thumbnail int(11) DEFAULT '0' NOT NULL,
     status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY language (l18n_parent,sys_language_uid),
     KEY index_name (index_name)
@@ -81,19 +57,7 @@ CREATE TABLE tx_dlf_structures (
 -- Table structure for table 'tx_dlf_metadata'
 --
 CREATE TABLE tx_dlf_metadata (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    sys_language_uid int(11) DEFAULT '0' NOT NULL,
-    l18n_parent int(11) DEFAULT '0' NOT NULL,
-    l18n_diffsource mediumblob NOT NULL,
-    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
-    hidden smallint(6) DEFAULT '0' NOT NULL,
     sorting int(11) DEFAULT '0' NOT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
     index_name varchar(255) DEFAULT '' NOT NULL,
     format int(11) DEFAULT '0' NOT NULL,
     default_value varchar(255) DEFAULT '' NOT NULL,
@@ -108,7 +72,6 @@ CREATE TABLE tx_dlf_metadata (
     index_autocomplete smallint(6) DEFAULT '0' NOT NULL,
     status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY language (l18n_parent,sys_language_uid),
     KEY index_name (index_name),
@@ -122,20 +85,11 @@ CREATE TABLE tx_dlf_metadata (
 -- Table structure for table 'tx_dlf_metadataformat'
 --
 CREATE TABLE tx_dlf_metadataformat (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     parent_id int(11) DEFAULT '0' NOT NULL,
-    encoded int(11) DEFAULT '0' NOT NULL,
     xpath varchar(1024) DEFAULT '' NOT NULL,
     xpath_sorting varchar(1024) DEFAULT '' NOT NULL,
     mandatory smallint(6) DEFAULT '0' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY parent_id (parent_id)
 );
@@ -144,18 +98,10 @@ CREATE TABLE tx_dlf_metadataformat (
 -- Table structure for table 'tx_dlf_formats'
 --
 CREATE TABLE tx_dlf_formats (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    type varchar(255) DEFAULT '' NOT NULL,
     root varchar(255) DEFAULT '' NOT NULL,
     namespace varchar(255) DEFAULT '' NOT NULL,
     class varchar(255) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid)
 );
 
@@ -163,16 +109,8 @@ CREATE TABLE tx_dlf_formats (
 -- Table structure for table 'tx_dlf_solrcores'
 --
 CREATE TABLE tx_dlf_solrcores (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
     index_name varchar(255) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY index_name (index_name)
 );
@@ -181,21 +119,6 @@ CREATE TABLE tx_dlf_solrcores (
 -- Table structure for table 'tx_dlf_collections'
 --
 CREATE TABLE tx_dlf_collections (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    cruser_id int(11) DEFAULT '0' NOT NULL,
-    fe_cruser_id int(11) DEFAULT '0' NOT NULL,
-    fe_admin_lock smallint(6) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    sys_language_uid int(11) DEFAULT '0' NOT NULL,
-    l18n_parent int(11) DEFAULT '0' NOT NULL,
-    l18n_diffsource mediumblob NOT NULL,
-    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
-    hidden smallint(6) DEFAULT '0' NOT NULL,
-    fe_group varchar(100) DEFAULT '' NOT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
     index_name varchar(255) DEFAULT '' NOT NULL,
     index_search text NOT NULL,
     oai_name varchar(255) DEFAULT '' NOT NULL,
@@ -206,7 +129,6 @@ CREATE TABLE tx_dlf_collections (
     owner int(11) DEFAULT '0' NOT NULL,
     status smallint(6) unsigned DEFAULT '0' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY language (l18n_parent,sys_language_uid),
     KEY index_name (index_name),
@@ -218,17 +140,6 @@ CREATE TABLE tx_dlf_collections (
 -- Table structure for table 'tx_dlf_libraries'
 --
 CREATE TABLE tx_dlf_libraries (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    cruser_id int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    sys_language_uid int(11) DEFAULT '0' NOT NULL,
-    l18n_parent int(11) DEFAULT '0' NOT NULL,
-    l18n_diffsource mediumblob NOT NULL,
-    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
     index_name varchar(255) DEFAULT '' NOT NULL,
     website varchar(255) DEFAULT '' NOT NULL,
     contact varchar(255) DEFAULT '' NOT NULL,
@@ -240,7 +151,6 @@ CREATE TABLE tx_dlf_libraries (
     union_label varchar(255) DEFAULT '' NOT NULL,
     union_base varchar(255) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY language (l18n_parent,sys_language_uid),
     KEY index_name (index_name)
@@ -250,14 +160,9 @@ CREATE TABLE tx_dlf_libraries (
 -- Table structure for table 'tx_dlf_tokens'
 --
 CREATE TABLE tx_dlf_tokens (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL COMMENT 'Timestamp of the token used to determine if it has expired.',
-    token varchar(255) DEFAULT '' NOT NULL,
     options mediumtext NOT NULL,
     ident varchar(30) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY token (token)
 );
@@ -282,20 +187,9 @@ CREATE TABLE tx_dlf_relations (
 -- Table structure for table 'tx_dlf_basket'
 --
 CREATE TABLE tx_dlf_basket (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    tstamp int(11) DEFAULT '0' NOT NULL,
-    fe_user_id int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    sys_language_uid int(11) DEFAULT '0' NOT NULL,
-    l18n_parent int(11) DEFAULT '0' NOT NULL,
-    l18n_diffsource mediumblob NOT NULL,
-    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
     session_id varchar(32) DEFAULT '' NOT NULL,
     doc_ids varchar(255) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid),
     KEY language (l18n_parent,sys_language_uid)
 );
@@ -304,13 +198,8 @@ CREATE TABLE tx_dlf_basket (
 -- Table structure for table 'tx_dlf_printer'
 --
 CREATE TABLE tx_dlf_printer (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
     print varchar(255) DEFAULT '' NOT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid)
 );
 
@@ -318,15 +207,10 @@ CREATE TABLE tx_dlf_printer (
 -- Table structure for table 'tx_dlf_mail'
 --
 CREATE TABLE tx_dlf_mail (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
     sorting int(11) DEFAULT '0' NOT NULL,
     mail varchar(255) DEFAULT '' NOT NULL,
     name varchar(255) DEFAULT '' NOT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid)
 );
 
@@ -334,16 +218,9 @@ CREATE TABLE tx_dlf_mail (
 -- Table structure for table 'tx_dlf_actionlog'
 --
 CREATE TABLE tx_dlf_actionlog (
-    uid int(11) NOT NULL auto_increment,
-    pid int(11) DEFAULT '0' NOT NULL,
-    crdate int(11) DEFAULT '0' NOT NULL,
-    deleted smallint(6) DEFAULT '0' NOT NULL,
-    user_id int(11) DEFAULT '0' NOT NULL,
     file_name varchar(255) DEFAULT '' NOT NULL,
     count_pages int(11) DEFAULT '0' NOT NULL,
     name varchar(100) DEFAULT '' NOT NULL,
-    label varchar(255) DEFAULT '' NOT NULL,
 
-    PRIMARY KEY (uid),
     KEY parent (pid)
 );
