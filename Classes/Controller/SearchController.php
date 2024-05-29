@@ -116,7 +116,7 @@ class SearchController extends AbstractController
         // if search was triggered by the ListView plugin, get the parameters from GET variables
         $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
         // Quit without doing anything if no search parameters.
-        if(empty($this->searchParams) && empty($listRequestData)) {
+        if (empty($this->searchParams) && empty($listRequestData)) {
             $this->logger->warning('Missing search parameters');
             return;
         }
