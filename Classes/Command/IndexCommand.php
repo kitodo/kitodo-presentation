@@ -196,7 +196,7 @@ class IndexCommand extends BaseCommand
                 }
                 $isSaved = Indexer::add($document, $this->documentRepository);
             } else {
-                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] .') in this document.');
+                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] . ') in this document.');
                 return BaseCommand::FAILURE;
             }
 
