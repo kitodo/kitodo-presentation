@@ -124,25 +124,16 @@ class BaseCommand extends Command
      *
      * @param int $storagePid The storage pid
      *
-     * @return bool
+     * @return void
      */
-    protected function initializeRepositories(int $storagePid): bool
+    protected function initializeRepositories(int $storagePid): void
     {
-        if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-
-            $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-            $this->configurationManager->setConfiguration($frameworkConfiguration);
-
-            // Get extension configuration.
-            $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-        } else {
-            return false;
-        }
-        $this->storagePid = MathUtility::forceIntegerInRange((int) $storagePid, 0);
+        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
+        $this->configurationManager->setConfiguration($frameworkConfiguration);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $this->storagePid = MathUtility::forceIntegerInRange($storagePid, 0);
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-
-        return true;
     }
 
     /**
