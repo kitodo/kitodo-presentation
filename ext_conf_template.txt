@@ -14,6 +14,8 @@ general.publishNewCollections = 1
 general.unhideOnIndex = 0
 # cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.useExternalApisForMetadata
 general.useExternalApisForMetadata = 0
+# cat=General; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.requiredMetadataFields
+general.requiredMetadataFields = document_format,record_id
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpImages
 files.fileGrpImages = DEFAULT,MAX
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpThumbs
@@ -25,7 +27,7 @@ files.fileGrpFulltext = FULLTEXT
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpAudio
 files.fileGrpAudio = AUDIO
 # cat=IIIF; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.indexAnnotations
-indexAnnotations = 0
+iiif.indexAnnotations = 0
 # cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.thumbnailWidth
 iiif.thumbnailWidth = 150
 # cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.thumbnailHeight
