@@ -366,7 +366,7 @@ final class IiifManifest extends AbstractDocument
             $this->fileInfos[$id]['mimeType'] = $this->getFileMimeType($id);
         }
 
-        return $this->fileInfos[$id];
+        return $this->fileInfos[$id] ?? null;
     }
 
     /**
