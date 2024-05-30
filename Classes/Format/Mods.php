@@ -325,7 +325,7 @@ class Mods implements MetadataInterface
         if (!empty($places)) {
             foreach ($places as $place) {
                 $this->metadata['place'][] = $place;
-                if (!$this->metadata['place_sorting'][0]) {
+                if (empty($this->metadata['place_sorting'][0])) {
                     $this->metadata['place_sorting'][0] = preg_replace('/[[:punct:]]/', '', $place);
                 }
             }
@@ -363,7 +363,7 @@ class Mods implements MetadataInterface
                 $issued = $year->getIssuedDates();
                 if (!empty($issued)) {
                     $this->metadata['year'][] = $issued[0]->getValue();
-                    if (!$this->metadata['year_sorting'][0]) {
+                    if (empty(['year_sorting'][0])) {
                         $yearSorting = str_ireplace('x', '5', preg_replace('/[^\d.x]/i', '', $issued[0]->getValue()));
                         if (
                             strpos($yearSorting, '.')
