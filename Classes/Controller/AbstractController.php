@@ -82,6 +82,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected array $viewData;
 
     /**
+     * @access protected
+     * @var int
+     */
+    protected int $pageUid;
+
+    /**
      * Initialize the plugin controller
      *
      * @access protected
@@ -91,6 +97,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function initialize(): void
     {
         $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
+        $this->pageUid = (int) GeneralUtility::_GET('id');
 
         // Sanitize user input to prevent XSS attacks.
         $this->sanitizeRequestData();
@@ -99,7 +106,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         $this->viewData = [
-            'pageUid' => $GLOBALS['TSFE']->id,
+            'pageUid' => $this->pageUid,
             'uniqueId' => uniqid(),
             'requestData' => $this->requestData
         ];
@@ -165,7 +172,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function configureProxyUrl(string &$url): void
     {
         $this->uriBuilder->reset()
-            ->setTargetPageUid($GLOBALS['TSFE']->id)
+            ->setTargetPageUid($this->pageUid)
             ->setCreateAbsoluteUri(!empty($this->settings['general']['forceAbsoluteUrl']))
             ->setArguments(
                 [
