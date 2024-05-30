@@ -221,7 +221,7 @@ final class MetsDocument extends AbstractDocument
             $this->fileInfos[$id]['mimeType'] = $this->getFileMimeType($id);
         }
 
-        return $this->fileInfos[$id];
+        return $this->fileInfos[$id] ?? null;
     }
 
     /**
