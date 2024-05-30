@@ -499,10 +499,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $childrenOf = $this->documentRepository->findChildrenOfEach($documentSet);
 
             foreach ($result['documents'] as $doc) {
-                if (empty($documents[$doc['uid']]) && $allDocuments[$doc['uid']]) {
+                if (empty($documents[$doc['uid']]) && isset($allDocuments[$doc['uid']])) {
                     $documents[$doc['uid']] = $allDocuments[$doc['uid']];
                 }
-                if ($documents[$doc['uid']]) {
+                if (isset($documents[$doc['uid']])) {
                     $this->translateLanguageCode($doc);
                     if ($doc['toplevel'] === false) {
                         // this maybe a chapter, article, ..., year
