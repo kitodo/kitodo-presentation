@@ -88,10 +88,7 @@ class ListViewController extends AbstractController
         }
 
         // Get current page from request data because the parameter is shared between plugins
-        $currentPage = $this->requestData['page'];
-        if (empty($currentPage)) {
-            $currentPage = 1;
-        }
+        $currentPage = $this->requestData['page'] ?? 1;
 
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
