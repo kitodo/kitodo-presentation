@@ -329,6 +329,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param PaginatorInterface $paginator
      * @return array
      */
+    //TODO: clean this function
     protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator): array
     {
         $firstPage = $pagination->getFirstPageNumber();
@@ -406,8 +407,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             array_push($pagesSect, ['label' => '...', 'startRecordNumber' => '...']);
         };
 
-        $nextPageNumber = $pages[$currentPageNumber + 1]['startRecordNumber'];
-        $previousPageNumber = $pages[$currentPageNumber - 1]['startRecordNumber'];
+        // Safely get the next and previous page numbers
+        $nextPageNumber = isset($pages[$currentPageNumber + 1]) ? $pages[$currentPageNumber + 1]['startRecordNumber'] : null;
+        $previousPageNumber = isset($pages[$currentPageNumber - 1]) ? $pages[$currentPageNumber - 1]['startRecordNumber'] : null;
 
         // 'startRecordNumber' is not required in GridView, only the variant for each loop is required
         // 'endRecordNumber' is not required in both views
