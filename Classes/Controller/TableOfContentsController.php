@@ -139,7 +139,7 @@ class TableOfContentsController extends AbstractController
             $entryArray['page'] = $entry['points'];
 
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
+            if (isset($this->settings['basketButton'])) {
                 $entryArray['basketButton'] = [
                     'logId' => $entry['id'],
                     'startpage' => $entry['points']
@@ -152,7 +152,7 @@ class TableOfContentsController extends AbstractController
             $entryArray['id'] = $entry['points'];
             $entryArray['page'] = 1;
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
+            if (isset($this->settings['basketButton'])) {
                 $entryArray['basketButton'] = [
                     'logId' => $entry['id'],
                     'startpage' => $entry['points']
@@ -162,7 +162,7 @@ class TableOfContentsController extends AbstractController
             $entryArray['id'] = $entry['targetUid'];
             $entryArray['page'] = 1;
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
+            if (isset($this->settings['basketButton'])) {
                 $entryArray['basketButton'] = [
                     'logId' => $entry['id'],
                     'startpage' => $entry['targetUid']
