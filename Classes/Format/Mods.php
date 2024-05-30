@@ -273,7 +273,7 @@ class Mods implements MetadataInterface
      * Get holder from XML display form.
      *
      * @access private
-     * 
+     *
      * @param array $holders
      * @param int $i
      *
@@ -306,7 +306,7 @@ class Mods implements MetadataInterface
         if (!empty($places)) {
             foreach ($places as $place) {
                 $this->metadata['place'][] = (string) $place;
-                if (!$this->metadata['place_sorting'][0]) {
+                if (empty($this->metadata['place_sorting'][0])) {
                     $this->metadata['place_sorting'][0] = preg_replace('/[[:punct:]]/', '', (string) $place);
                 }
             }
@@ -339,7 +339,7 @@ class Mods implements MetadataInterface
         if (!empty($years)) {
             foreach ($years as $year) {
                 $this->metadata['year'][] = (string) $year;
-                if (!$this->metadata['year_sorting'][0]) {
+                if (empty($this->metadata['year_sorting'][0])) {
                     $yearSorting = str_ireplace('x', '5', preg_replace('/[^\d.x]/i', '', (string) $year));
                     if (
                         strpos($yearSorting, '.')
