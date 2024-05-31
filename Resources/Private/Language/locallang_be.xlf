@@ -239,9 +239,6 @@
 			<trans-unit id="plugins.pageview.flexform.features.zoompanel">
 				<source><![CDATA[Zoom Panel]]></source>
 			</trans-unit>
-            <trans-unit id="plugins.pageview.flexform.forceAbsoluteUrl">
-                <source><![CDATA[Force all links to pages and resources to be absolute?: Only needed for some multi-domain environments; requires a fully qualified Entry Point in Site Configuration (default is "FALSE")]]></source>
-            </trans-unit>
 			<trans-unit id="plugins.pageview.flexform.magnifier">
 				<source><![CDATA[Activate magnifier]]></source>
 			</trans-unit>

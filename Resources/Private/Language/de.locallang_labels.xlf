@@ -641,6 +641,10 @@
 				<target>DLF User-Agent: (Standard ist "Kitodo.Presentation")</target>
 				<source>DLF User-Agent: (default is "Kitodo.Presentation")</source>
 			</trans-unit>
+			<trans-unit id="config.general.forceAbsoluteUrl">
+				<target>Verwende nur absolute Links für Seiten und Ressourcen?: Wird nur in speziellen Multi-Domain-Umgebungen benötigt; erfordert einen voll qualifizierten Einstiegspunkt in der Seitenkonfiguration (Standard ist "FALSE")</target>
+				<source>Force all links to pages and resources to be absolute?: Only needed for some multi-domain environments; requires a fully qualified Entry Point in Site Configuration (default is "FALSE")</source>
+			</trans-unit>
 			<trans-unit id="config.general.forceAbsoluteUrlHttps">
 				<target>Verwende HTTPS for absolute Links?: erfordert einen Einstiegspunkt mit "https://..." in der Seitenkonfiguration (Standard ist "FALSE")</target>
 				<source>Use HTTPS for absolute links?: requires a valid Entry Point with "https://..." in Site Configuration (default is "FALSE")</source>
