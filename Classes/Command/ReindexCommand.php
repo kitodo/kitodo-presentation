@@ -165,7 +165,6 @@ class ReindexCommand extends BaseCommand
                     ->setLimit((int) $input->getOption('index-limit'))
                     ->setOffset((int) $input->getOption('index-begin'))
                     ->execute();
-    
                 $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
             } else {
                 // Get all documents.
