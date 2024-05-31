@@ -190,16 +190,17 @@ class DocumentRepository extends Repository
     }
 
     /**
-     * Finds all documents for the given collections
+     * Finds all documents for the given collections and conditions
      *
      * @access public
      *
      * @param array $collections
      * @param int $limit
+     * @param int $offset
      *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findAllByCollectionsLimited($collections, $limit = 50)
+    public function findAllByCollectionsLimited($collections, int $limit = 50, int $offset = 0)
     {
         $query = $this->createQuery();
 
@@ -221,6 +222,7 @@ class DocumentRepository extends Repository
 
         if ($limit > 0) {
             $query->setLimit((int) $limit);
+            $query->setOffset($offset);
         }
 
         return $query->execute();

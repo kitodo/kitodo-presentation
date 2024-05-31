@@ -155,31 +155,43 @@ class ReindexCommand extends BaseCommand
         }
 
         if (!empty($input->getOption('all'))) {
-            // Get all documents.
-            $documents = $this->documentRepository->findAll();
-        } elseif (
-            !empty($input->getOption('index-limit'))
-            && $input->getOption('index-begin') >= 0
-        ) {
-            // Get all documents for given limit and start.
-            $documents = $this->documentRepository->findAll()
-                ->getQuery()
-                ->setLimit((int) $input->getOption('index-limit'))
-                ->setOffset((int) $input->getOption('index-begin'))
-                ->execute();
-
-            $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
+            if (
+                !empty($input->getOption('index-limit'))
+                && $input->getOption('index-begin') >= 0
+            ) {
+                // Get all documents for given limit and start.
+                $documents = $this->documentRepository->findAll()
+                    ->getQuery()
+                    ->setLimit((int) $input->getOption('index-limit'))
+                    ->setOffset((int) $input->getOption('index-begin'))
+                    ->execute();
+                $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
+            } else {
+                // Get all documents.
+                $documents = $this->documentRepository->findAll();
+            }
         } elseif (
             !empty($input->getOption('coll'))
             && !is_array($input->getOption('coll'))
         ) {
+            $collections = GeneralUtility::intExplode(',', $input->getOption('coll'), true);
             // "coll" may be a single integer or a comma-separated list of integers.
-            if (empty(array_filter(GeneralUtility::intExplode(',', $input->getOption('coll'), true)))) {
+            if (empty(array_filter($collections))) {
                 $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
                 return BaseCommand::FAILURE;
             }
-            // Get all documents of given collections.
-            $documents = $this->documentRepository->findAllByCollectionsLimited(GeneralUtility::intExplode(',', $input->getOption('coll'), true), 0);
+
+            if (
+                !empty($input->getOption('index-limit'))
+                && $input->getOption('index-begin') >= 0
+            ) {
+                $documents = $this->documentRepository->findAllByCollectionsLimited($collections, (int) $input->getOption('index-limit'), (int) $input->getOption('index-begin'));
+
+                $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
+            } else {
+                // Get all documents of given collections.
+                $documents = $this->documentRepository->findAllByCollectionsLimited($collections, 0);
+            }
         } else {
             $io->error('ERROR: One of parameters --all|-a or --coll|-c must be given.');
             return BaseCommand::FAILURE;
