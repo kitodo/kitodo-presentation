@@ -373,6 +373,10 @@
 				<source><![CDATA[Zoom Panel]]></source>
 				<target><![CDATA[Zoom-Knöpfe]]></target>
 			</trans-unit>
+            <trans-unit id="plugins.pageview.flexform.forceAbsoluteUrl" approved="yes">
+                <target><![CDATA[Verwende nur absolute Links für Seiten und Ressourcen?: Wird nur in speziellen Multi-Domain-Umgebungen benötigt; erfordert einen voll qualifizierten Einstiegspunkt in der Seitenkonfiguration (Standard ist "FALSE")]]></target>
+                <source><![CDATA[Force all links to pages and resources to be absolute?: Only needed for some multi-domain environments; requires a fully qualified Entry Point in Site Configuration (default is "FALSE")]]></source>
+            </trans-unit>
 			<trans-unit id="plugins.pageview.flexform.magnifier" approved="yes">
 				<source><![CDATA[Activate magnifier]]></source>
 				<target><![CDATA[Lupenfunktion aktivieren]]></target>
