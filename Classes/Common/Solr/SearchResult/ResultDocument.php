@@ -102,9 +102,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @param Document $record: found document record
-     * @param array $highlighting: Array of found highlight elements
-     * @param array $fields: Array of fields used for search
+     * @param Document $record found document record
+     * @param array $highlighting array of found highlight elements
+     * @param array $fields array of fields used for search
      *
      * @return void
      */
@@ -118,8 +118,10 @@ class ResultDocument
         $this->toplevel = $record[$fields['toplevel']];
         $this->type = $record[$fields['type']];
 
-        $highlightingForRecord = $highlighting[$record[$fields['id']]][$fields['fulltext']];
-        $this->snippetsForRecord = is_array($highlightingForRecord['snippets']) ? $highlightingForRecord['snippets'] : [];
+        if (!empty($highlighting[$this->id])) {
+            $highlightingForRecord = $highlighting[$this->id][$fields['fulltext']];
+            $this->snippetsForRecord = is_array($highlightingForRecord['snippets']) ? $highlightingForRecord['snippets'] : [];
+        }
 
         $this->parseSnippets();
         $this->parsePages();

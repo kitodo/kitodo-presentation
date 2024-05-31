@@ -1,32 +1,31 @@
 parameters:
-    ignoreErrors:
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::countByPid\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIsListed\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIsSortable\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByFeUserId\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByIndexName\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByLocation\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByPid\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByRecordId\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByRoot\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneBySessionId\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByType\(\)\.#'
-            - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByUid\(\)\.#'
-            - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
-            - '#Call to an undefined method Solarium\\Core\\Query\\DocumentInterface::setField\(\)\.#'
-            - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getHeight\(\)\.#'
-            - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getWidth\(\)\.#'
-            - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getPossibleTextAnnotationContainers\(\)\.#'
-            - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getTextAnnotations\(\)\.#'
-            - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
-            - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
-            - '#Constant LOG_SEVERITY_ERROR not found\.#'
-            - '#Constant LOG_SEVERITY_NOTICE not found\.#'
-            - '#Constant LOG_SEVERITY_WARNING not found\.#'
-            - '#Constant TYPO3_MODE not found\.#'
-    level: 5
-    paths:
-        - ../Classes/
-    excludePaths:
-        - ../Classes/Controller/OaiPmhController.php
-    treatPhpDocTypesAsCertain: false
+  ignoreErrors:
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::countByPid\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIsListed\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIsSortable\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByFeUserId\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByIndexName\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByLocation\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByPid\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByRecordId\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneBySessionId\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByType\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByUid\(\)\.#'
+    - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
+    - '#Call to an undefined method Solarium\\Core\\Query\\DocumentInterface::setField\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getHeight\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getWidth\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getPossibleTextAnnotationContainers\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getTextAnnotations\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
+    - '#Constant LOG_SEVERITY_ERROR not found\.#'
+    - '#Constant LOG_SEVERITY_NOTICE not found\.#'
+    - '#Constant LOG_SEVERITY_WARNING not found\.#'
+    - '#Constant TYPO3_MODE not found\.#'
+  level: 5
+  paths:
+    - ../Classes/
+  excludePaths:
+    - ../Classes/Controller/OaiPmhController.php
+  treatPhpDocTypesAsCertain: false

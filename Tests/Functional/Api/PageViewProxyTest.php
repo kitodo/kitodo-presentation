@@ -22,7 +22,9 @@ class PageViewProxyTest extends FunctionalTestCase
     protected function getDlfConfiguration()
     {
         return array_merge(parent::getDlfConfiguration(), [
-            'enableInternalProxy' => true,
+            'general' => [
+                'enableInternalProxy' => true
+            ]
         ]);
     }
 

@@ -356,8 +356,8 @@ class DataHandler implements LoggerAwareInterface
             && $table == 'tx_dlf_solrcores'
         ) {
             // Is core deletion allowed in extension configuration?
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-            if (!empty($extConf['solrAllowCoreDelete'])) {
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'solr');
+            if (!empty($extConf['allowCoreDelete'])) {
                 // Delete core from Apache Solr as well.
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable('tx_dlf_solrcores');

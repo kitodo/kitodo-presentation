@@ -5,11 +5,11 @@
 ,249506784,20000,,,1,0,0,0,,0,,"Reference","dvlinks_reference",1,,,0,1,1,1,1,0,1,1,0
 ,793462399,20000,,,1,0,0,0,,0,,"Test Value","test_value",1,,,0,1,1,1,1,0,1,1,0
 "tx_dlf_metadataformat",,,,,,,,,,,,,,
-,"uid","pid","tstamp","crdate","cruser_id","deleted","sys_language_uid","l18n_parent","l18n_diffsource","parent_id","encoded","xpath","xpath_sorting","mandatory"
-,525104468,20000,,,1,0,0,0,,613174853,689522348,"./videomd:videoInfo/videomd:frame/videomd:frameRate",,0
-,403181441,20000,,,1,0,0,0,,321913049,142585035,"./dv:owner",,0
-,257842913,20000,,,1,0,0,0,,249506784,933594800,"./dv:reference",,0
-,569124173,20000,,,1,0,0,0,,793462399,5202,"./dv:test",,0
+,"uid","pid","tstamp","crdate","cruser_id","deleted","parent_id","encoded","xpath","xpath_sorting","mandatory"
+,525104468,20000,,,1,0,613174853,689522348,"./videomd:videoInfo/videomd:frame/videomd:frameRate",,0
+,403181441,20000,,,1,0,321913049,142585035,"./dv:owner",,0
+,257842913,20000,,,1,0,249506784,933594800,"./dv:reference",,0
+,569124173,20000,,,1,0,793462399,5202,"./dv:test",,0
 "tx_dlf_formats",,,,,,,,,,
 ,"uid","pid","tstamp","crdate","cruser_id","deleted","type","root","namespace","class"
 ,689522348,0,,,1,0,"VIDEOMD","VIDEOMD","http://www.loc.gov/videoMD/","Kitodo\Dlf\Format\Mods"

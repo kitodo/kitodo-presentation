@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 
 /**
@@ -248,12 +249,19 @@ class Helper
 
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(true);
-        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+
+        if (\PHP_VERSION_ID < 80000) {
+            // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
+            $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+        }
+
         // Try to load XML from file.
         $xml = simplexml_load_string($content);
-        // reset entity loader setting
-        libxml_disable_entity_loader($previousValueOfEntityLoader);
+
+        if (\PHP_VERSION_ID < 80000) {
+            // reset entity loader setting
+            libxml_disable_entity_loader($previousValueOfEntityLoader);
+        }
         // Reset libxml's error logging.
         libxml_use_internal_errors($libxmlErrors);
         return $xml;
@@ -685,6 +693,58 @@ class Helper
     }
 
     /**
+     * Process a data and/or command map with TYPO3 core engine as admin.
+     *
+     * @access public
+     *
+     * @param array $data Data map
+     * @param array $cmd Command map
+     * @param bool $reverseOrder Should the data map be reversed?
+     * @param bool $cmdFirst Should the command map be processed first?
+     *
+     * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
+     */
+    public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], $reverseOrder = false, $cmdFirst = false)
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+
+        if (
+            \TYPO3_MODE === 'BE'
+            && $context->getPropertyFromAspect('backend.user', 'isAdmin')
+        ) {
+            // Instantiate TYPO3 core engine.
+            $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+            // We do not use workspaces and have to bypass restrictions in DataHandler.
+            $dataHandler->bypassWorkspaceRestrictions = true;
+            // Load data and command arrays.
+            $dataHandler->start($data, $cmd);
+            // Process command map first if default order is reversed.
+            if (
+                !empty($cmd)
+                && $cmdFirst
+            ) {
+                $dataHandler->process_cmdmap();
+            }
+            // Process data map.
+            if (!empty($data)) {
+                $dataHandler->reverseOrder = $reverseOrder;
+                $dataHandler->process_datamap();
+            }
+            // Process command map if processing order is not reversed.
+            if (
+                !empty($cmd)
+                && !$cmdFirst
+            ) {
+                $dataHandler->process_cmdmap();
+            }
+            return $dataHandler->substNEWwithIDs;
+        } else {
+            self::log('Current backend user has no admin privileges', LOG_SEVERITY_ERROR);
+            return [];
+        }
+    }
+
+    /**
      * Fetches and renders all available flash messages from the queue.
      *
      * @access public
@@ -923,14 +983,14 @@ class Helper
         }
 
         // Get extension configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
 
         /** @var RequestFactory $requestFactory */
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $configuration = [
             'timeout' => 30,
             'headers' => [
-                'User-Agent' => $extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
             ],
         ];
         try {

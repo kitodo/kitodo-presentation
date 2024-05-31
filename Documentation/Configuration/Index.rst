@@ -77,7 +77,7 @@ This is not the desired behaviour. You should disable
 requested page instead. The caching will be disabled in this case. This was
 the default behaviour before TYPO3 6.x.
 
-.. figure:: ../Images/Configuration/New\ TYPO3\ site\ \[TYPO3\ CMS\ 9.5.26\ .png
+.. figure:: ../Images/Configuration/New_TYPO3_site.png
    :width: 820px
    :alt: TYPO3 Configuration of pageNotFoundOnCHashError in Install Tool
 

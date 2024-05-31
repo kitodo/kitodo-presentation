@@ -15,8 +15,10 @@ namespace Kitodo\Dlf\Common;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Validation\DocumentValidator;
 use Solarium\Core\Query\DocumentInterface;
 use Solarium\QueryType\Update\Query\Query;
+use Symfony\Component\Console\Input\InputInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -121,9 +123,7 @@ class Indexer
                 // Add document to list of processed documents.
                 self::$processedDocs[] = $document->getUid();
                 // Delete old Solr documents.
-                $updateQuery = self::$solr->service->createUpdate();
-                $updateQuery->addDeleteQuery('uid:' . $document->getUid());
-                self::$solr->service->update($updateQuery);
+                self::deleteDocument('uid', (string) $document->getUid());
 
                 // Index every logical unit as separate Solr document.
                 foreach ($document->getCurrentDocument()->tableOfContents as $logicalUnit) {
@@ -175,6 +175,42 @@ class Indexer
             Helper::log('Could not connect to Apache Solr server', LOG_SEVERITY_ERROR);
             return false;
         }
+    }
+
+    /**
+     * Delete document from Solr index
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param InputInterface $input The input parameters
+     *
+     * @return bool true on success or false on failure
+     */
+    public static function delete(InputInterface $input, string $field, int $solrCoreUid): bool
+    {
+        if (self::solrConnect($solrCoreUid, $input->getOption('pid'))) {
+            try {
+                self::deleteDocument($field, $input->getOption('doc'));
+                return true;
+            } catch (\Exception $e) {
+                if (!(Environment::isCli())) {
+                    Helper::addMessage(
+                        Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
+                        Helper::getLanguageService()->getLL('flash.error'),
+                        FlashMessage::ERROR,
+                        true,
+                        'core.template.flashMessages'
+                    );
+                }
+                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
+                return false;
+            }
+        }
+
+        Helper::log('Document not deleted from SOLR - problem with the connection to the SOLR core ' . $solrCoreUid, LOG_SEVERITY_ERROR);
+        return false;
     }
 
     /**
@@ -299,59 +335,67 @@ class Indexer
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']];
         if (!empty($metadata)) {
-            $metadata['author'] = self::removeAppendsFromAuthor($metadata['author']);
-            // set Owner if available
-            if ($document->getOwner()) {
-                $metadata['owner'][0] = $document->getOwner()->getIndexName();
-            }
-            // Create new Solr document.
-            $updateQuery = self::$solr->service->createUpdate();
-            $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
-            if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
-                $solrDoc->setField('page', $logicalUnit['points']);
-            }
-            if ($logicalUnit['id'] == $doc->toplevelId) {
-                $solrDoc->setField('thumbnail', $doc->thumbnail);
-            } elseif (!empty($logicalUnit['thumbnailId'])) {
-                $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
-            }
-            // There can be only one toplevel unit per UID, independently of backend configuration
-            $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
-            $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
-            $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
-            // verify date formatting
-            if(strtotime($metadata['date'][0])) {
-                $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
-            }
-            $solrDoc->setField('record_id', $metadata['record_id'][0]);
-            $solrDoc->setField('purl', $metadata['purl'][0]);
-            $solrDoc->setField('location', $document->getLocation());
-            $solrDoc->setField('urn', $metadata['urn']);
-            $solrDoc->setField('license', $metadata['license']);
-            $solrDoc->setField('terms', $metadata['terms']);
-            $solrDoc->setField('restrictions', $metadata['restrictions']);
-            $coordinates = json_decode($metadata['coordinates'][0]);
-            if (is_object($coordinates)) {
-                $solrDoc->setField('geom', json_encode($coordinates->features[0]));
-            }
-            $autocomplete = self::processMetadata($document, $metadata, $solrDoc);
-            // Add autocomplete values to index.
-            if (!empty($autocomplete)) {
-                $solrDoc->setField('autocomplete', $autocomplete);
-            }
-            // Add collection information to logical sub-elements if applicable.
-            if (
-                in_array('collection', self::$fields['facets'])
-                && empty($metadata['collection'])
-                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
-            ) {
-                $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
-            }
-            try {
-                $updateQuery->addDocument($solrDoc);
-                self::$solr->service->update($updateQuery);
-            } catch (\Exception $e) {
-                self::handleException($e->getMessage());
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'general');
+            $validator = new DocumentValidator($metadata, explode(',', $extConf['requiredMetadataFields']));
+
+            if ($validator->hasAllMandatoryMetadataFields()) {
+                $metadata['author'] = self::removeAppendsFromAuthor($metadata['author']);
+                // set Owner if available
+                if ($document->getOwner()) {
+                    $metadata['owner'][0] = $document->getOwner()->getIndexName();
+                }
+                // Create new Solr document.
+                $updateQuery = self::$solr->service->createUpdate();
+                $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
+                if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
+                    $solrDoc->setField('page', $logicalUnit['points']);
+                }
+                if ($logicalUnit['id'] == $doc->toplevelId) {
+                    $solrDoc->setField('thumbnail', $doc->thumbnail);
+                } elseif (!empty($logicalUnit['thumbnailId'])) {
+                    $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
+                }
+                // There can be only one toplevel unit per UID, independently of backend configuration
+                $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
+                $solrDoc->setField('title', $metadata['title'][0], self::$fields['fieldboost']['title']);
+                $solrDoc->setField('volume', $metadata['volume'][0], self::$fields['fieldboost']['volume']);
+                // verify date formatting
+                if(strtotime($metadata['date'][0])) {
+                    $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
+                }
+                $solrDoc->setField('record_id', $metadata['record_id'][0]);
+                $solrDoc->setField('purl', $metadata['purl'][0]);
+                $solrDoc->setField('location', $document->getLocation());
+                $solrDoc->setField('urn', $metadata['urn']);
+                $solrDoc->setField('license', $metadata['license']);
+                $solrDoc->setField('terms', $metadata['terms']);
+                $solrDoc->setField('restrictions', $metadata['restrictions']);
+                $coordinates = json_decode($metadata['coordinates'][0]);
+                if (is_object($coordinates)) {
+                    $solrDoc->setField('geom', json_encode($coordinates->features[0]));
+                }
+                $autocomplete = self::processMetadata($document, $metadata, $solrDoc);
+                // Add autocomplete values to index.
+                if (!empty($autocomplete)) {
+                    $solrDoc->setField('autocomplete', $autocomplete);
+                }
+                // Add collection information to logical sub-elements if applicable.
+                if (
+                    in_array('collection', self::$fields['facets'])
+                    && empty($metadata['collection'])
+                    && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
+                ) {
+                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
+                }
+                try {
+                    $updateQuery->addDocument($solrDoc);
+                    self::$solr->service->update($updateQuery);
+                } catch (\Exception $e) {
+                    self::handleException($e->getMessage());
+                    return false;
+                }
+            } else {
+                Helper::log('Tip: If "record_id" field is missing then there is possibility that METS file still contains it but with the wrong source type attribute in "recordIdentifier" element', LOG_SEVERITY_NOTICE);
                 return false;
             }
         }
@@ -388,7 +432,7 @@ class Indexer
         $doc->cPid = $document->getPid();
         if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);
@@ -530,6 +574,32 @@ class Indexer
                 $solrDoc->setField($indexName, $doc->metadataArray[$doc->toplevelId][$indexName]);
             }
         }
+    }
+
+    /**
+     * Delete document from SOLR by given field and value.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param string $field by which document should be removed
+     * @param string $value of the field by which document should be removed
+     *
+     * @return void
+     */
+    private static function deleteDocument(string $field, string $value): void
+    {
+        $update = self::$solr->service->createUpdate();
+        $query = "";
+        if ($field == 'uid' || $field == 'partof') {
+            $query = $field . ':' . $value;
+        } else {
+            $query = $field . ':"' . $value . '"';
+        }
+        $update->addDeleteQuery($query);
+        $update->addCommit();
+        self::$solr->service->update($update);
     }
 
     /**

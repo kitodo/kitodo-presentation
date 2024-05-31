@@ -499,10 +499,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $childrenOf = $this->documentRepository->findChildrenOfEach($documentSet);
 
             foreach ($result['documents'] as $doc) {
-                if (empty($documents[$doc['uid']]) && $allDocuments[$doc['uid']]) {
+                if (empty($documents[$doc['uid']]) && isset($allDocuments[$doc['uid']])) {
                     $documents[$doc['uid']] = $allDocuments[$doc['uid']];
                 }
-                if ($documents[$doc['uid']]) {
+                if (isset($documents[$doc['uid']])) {
                     $this->translateLanguageCode($doc);
                     if ($doc['toplevel'] === false) {
                         // this maybe a chapter, article, ..., year
@@ -669,14 +669,15 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $grouping->setLimit(100); // Results in group (TODO: check)
             $grouping->setNumberOfGroups(true);
 
-            if ($parameters['fulltext'] === true) {
+            $fulltextExists = $parameters['fulltext'] ?? false;
+            if ($fulltextExists === true) {
                 // get highlighting component and apply settings
                 $selectQuery->getHighlighting();
             }
 
             $solrRequest = $solr->service->createRequest($selectQuery);
 
-            if ($parameters['fulltext'] === true) {
+            if ($fulltextExists === true) {
                 // If it is a fulltext search, enable highlighting.
                 // field for which highlighting is going to be performed,
                 // is required if you want to have OCR highlighting
@@ -703,7 +704,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $resultSet['numberOfToplevels'] = $uidGroup->getNumberOfGroups();
             $resultSet['numFound'] = $uidGroup->getMatches();
             $highlighting = [];
-            if ($parameters['fulltext'] === true) {
+            if ($fulltextExists === true) {
                 $data = $result->getData();
                 $highlighting = $data['ocrHighlighting'];
             }
