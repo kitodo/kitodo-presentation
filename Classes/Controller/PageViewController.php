@@ -109,9 +109,9 @@ class PageViewController extends AbstractController
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
-            $fileId = $physicalStructureInfo['files'][$fileGrpFulltext];
-            if (!empty($fileId)) {
-                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+            $files = $physicalStructureInfo['files'];
+            if (!empty($files[$fileGrpFulltext])) {
+                $file = $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpFulltext]);
                 $fulltext['url'] = $file['location'];
                 if ($this->settings['useInternalProxy']) {
                     $this->configureProxyUrl($fulltext['url']);
@@ -227,9 +227,9 @@ class PageViewController extends AbstractController
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
             // Get image link.
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
-            $fileId = $physicalStructureInfo['files'][$fileGrpImages];
-            if (!empty($fileId)) {
-                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+            $files = $physicalStructureInfo['files'];
+            if (!empty($files[$fileGrpImages])) {
+                $file = $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpImages]);
                 $image['url'] = $file['location'];
                 $image['mimetype'] = $file['mimeType'];
 
