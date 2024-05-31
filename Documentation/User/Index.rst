@@ -134,11 +134,27 @@ collections or even to reindex all documents on the given page.::
     # long notation
     ./vendor/bin/typo3 kitodo:reindex --coll 1 --pid 123 --solr dlfCore1
 
+    # reindex collection with uid 1 on page 123 with solr core 'dlfCore1' in given range
+    # short notation
+    ./vendor/bin/typo3 kitodo:reindex -c 1 -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -c 1 -l 1000 -b 1000 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
+
     # reindex collection with uid 1 and 4 on page 123 with solr core 'dlfCore1'
     # short notation
     ./vendor/bin/typo3 kitodo:reindex -c 1,4 -p 123 -s dlfCore1
     # long notation
     ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --pid 123 --solr dlfCore1
+
+    # reindex collection with uid 1 and 4 on page 123 with solr core 'dlfCore1' in given range
+    # short notation
+    ./vendor/bin/typo3 kitodo:reindex -c 1,4 -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -c 1,4 -l 1000 -b 1000 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
     # reindex all documents on page 123 with solr core 'dlfCore1' (caution can result in memory problems for big amount of documents)
     # short notation
@@ -148,11 +164,11 @@ collections or even to reindex all documents on the given page.::
 
     # reindex all documents on page 123 with solr core 'dlfCore1' in given range
     # short notation
-    ./vendor/bin/typo3 kitodo:reindex -l 1000 -b 0 -p 123 -s dlfCore1
-    ./vendor/bin/typo3 kitodo:reindex -l 1000 -b 1000 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -a -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -a -l 1000 -b 1000 -p 123 -s dlfCore1
     # long notation
-    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
-    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
 
 .. t3-field-list-table::
