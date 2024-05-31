@@ -28,6 +28,15 @@ class View3DController extends AbstractController
      */
     public function mainAction(): void
     {
+
+        if( $this->requestData['viewer'] && $this->requestData['model'] ){
+            $this->view->assign('3d', $this->requestData['model']);
+            $this->view->assign('model', $this->requestData['model']);
+            $this->view->assign('viewer', $this->requestData['viewer']);
+            $this->view->assign('proxy', $this->settings['useInternalProxy']);
+            return;
+        }
+
         // Load current document.
         $this->loadDocument();
         if (
