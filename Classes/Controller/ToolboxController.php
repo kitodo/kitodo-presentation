@@ -498,11 +498,11 @@ class ToolboxController extends AbstractController
     {
         $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpFulltext']);
         while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            $fullTextFile = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['files'][$fileGrpFulltext];
-            if (!empty($fullTextFile)) {
-                break;
+            $files = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['files'];
+            if (!empty($files[$fileGrpFulltext])) {
+                return false;
             }
         }
-        return empty($fullTextFile);
+        return true;
     }
 }

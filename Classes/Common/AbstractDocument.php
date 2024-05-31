@@ -574,7 +574,7 @@ abstract class AbstractDocument
         }
 
         // Sanitize input.
-        $pid = max((int) $settings['storagePid'], 0);
+        $pid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
         if ($documentFormat == 'METS') {
             $instance = new MetsDocument($pid, $location, $xml, $settings);
         } elseif ($documentFormat == 'IIIF') {
