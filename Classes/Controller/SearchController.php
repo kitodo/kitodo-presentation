@@ -386,7 +386,7 @@ class SearchController extends AbstractController
         // if collections are given, we prepare the collections query string
         // extract collections from collection parameter
         $collections = null;
-        if ($this->searchParams['collection']) {
+        if (array_key_exists('collection', $this->searchParams)) {
             foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
                 $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
