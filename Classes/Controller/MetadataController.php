@@ -133,8 +133,8 @@ class MetadataController extends AbstractController
             $data['_id'] = $topLevelId;
             array_unshift($metadata, $data);
         }
-        // @phpstan-ignore-next-line
-        if (!$metadata) {
+
+        if (empty(array_filter($metadata))) {
             $this->logger->warning('No metadata found for document with UID ' . $this->document->getUid());
             return;
         }
