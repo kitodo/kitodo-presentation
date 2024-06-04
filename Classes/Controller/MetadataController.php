@@ -114,6 +114,7 @@ class MetadataController extends AbstractController
             $this->setDefault('displayIiifDescription', 1);
             $this->setDefault('displayIiifRights', 1);
             $this->setDefault('displayIiifLinks', 1);
+            $this->setPage();
         }
 
         $this->currentDocument = $this->document->getCurrentDocument();
