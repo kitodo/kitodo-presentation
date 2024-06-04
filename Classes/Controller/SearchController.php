@@ -128,16 +128,20 @@ class SearchController extends AbstractController
         }
 
         // sanitize date search input
-        if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
-            $this->searchParams['dateFrom'] = '*';
-        }
-        if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
-            $this->searchParams['dateTo'] = 'NOW';
-        }
-        if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
-            $tmpDate = $this->searchParams['dateFrom'];
-            $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
-            $this->searchParams['dateTo'] = $tmpDate;
+        if (!empty($this->searchParams['dateFrom']) || !empty($this->searchParams['dateTo'])) {
+            if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+                $this->searchParams['dateFrom'] = '*';
+            }
+
+            if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+                $this->searchParams['dateTo'] = 'NOW';
+            }
+
+            if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+                $tmpDate = $this->searchParams['dateFrom'];
+                $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
+                $this->searchParams['dateTo'] = $tmpDate;
+            }
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
