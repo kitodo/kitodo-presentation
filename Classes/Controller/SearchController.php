@@ -128,16 +128,20 @@ class SearchController extends AbstractController
         }
 
         // sanitize date search input
-        if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
-            $this->searchParams['dateFrom'] = '*';
-        }
-        if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
-            $this->searchParams['dateTo'] = 'NOW';
-        }
-        if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
-            $tmpDate = $this->searchParams['dateFrom'];
-            $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
-            $this->searchParams['dateTo'] = $tmpDate;
+        if (!empty($this->searchParams['dateFrom']) || !empty($this->searchParams['dateTo'])) {
+            if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+                $this->searchParams['dateFrom'] = '*';
+            }
+
+            if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+                $this->searchParams['dateTo'] = 'NOW';
+            }
+
+            if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+                $tmpDate = $this->searchParams['dateFrom'];
+                $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
+                $this->searchParams['dateTo'] = $tmpDate;
+            }
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
@@ -386,7 +390,7 @@ class SearchController extends AbstractController
         // if collections are given, we prepare the collections query string
         // extract collections from collection parameter
         $collections = null;
-        if ($this->searchParams['collection']) {
+        if (array_key_exists('collection', $this->searchParams)) {
             foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
                 $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
