@@ -108,15 +108,19 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         $viewerConfigPath = $defaultStorage->getName() . "/" . self::VIEWER_FOLDER . "/" . $parameters['viewer'] . "/";
         $config = $yamlFileLoader->load($viewerConfigPath . self::VIEWER_CONFIG_YML)["viewer"];
 
+        $htmlFile = "index.html";
+        if(isset($config["base"]) && !empty($config["base"]) ) {
+            $htmlFile = $config["base"];
+        }
+
         $viewerUrl = $viewerConfigPath;
         if (isset($config["url"]) && !empty($config["url"])) {
             $viewerUrl = rtrim($config["url"]);
         }
 
-        $html = $viewer->getFile($config["base"])->getContents();
-        array_map(function ($value) use (&$html, $viewerUrl) {
-            $html = str_replace($value, $viewerUrl . $value, $html);
-        }, $config["prependUrl"]);
+        $html = $viewer->getFile($htmlFile)->getContents();
+        $html = str_replace("{{viewerPath}}", $viewerUrl, $html);
+        $html = str_replace("{{modelUrl}}", $parameters['model'], $html);
 
         $response->getBody()->write($html);
         return $response;
