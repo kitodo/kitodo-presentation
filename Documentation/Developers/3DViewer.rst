@@ -28,10 +28,13 @@ dlf-3d-viewer.yml
    - :field:                    Field
      :description:              Description
 
-   - :field:                    base (required)
-     :description:              Specify the name of the HTML file in which the viewer will be displayed, e.g. ``main.html`` or ``index.html``
+   - :field:                    supportedModelFormats (required)
+     :description:              Specify single or multiple supported model formats of viewer.
 
-   - :field:                    prependUrl (optional)
+   - :field:                    base
+     :description:              Specify the name of the HTML file in which the viewer will be displayed. (Default is ``index.html``)
+
+   - :field:                    prependUrl
      :description:              Specify single value or multiple values to prepend with the URL for the viewer resources.
 
                                 prependUrl:
@@ -39,7 +42,7 @@ dlf-3d-viewer.yml
                                       - js/main.js
                                       - js/init.js
 
-   - :field:                    url (optional)
+   - :field:                    url
      :description:              Specifiy url to external viewer resources. The default is the path to folder viewer under the ``dlf_3d_viewers``.
 
 Simple Example

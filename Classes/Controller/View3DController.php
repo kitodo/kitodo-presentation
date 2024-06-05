@@ -49,7 +49,7 @@ class View3DController extends AbstractController
             $model = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['DEFAULT']));
             $this->view->assign('3d', $model);
 
-            $modelConverted = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['CONVERTED']));
+            //$modelConverted = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['CONVERTED']));
             $xml = $this->requestData['id'];
 
             $settingsParts = explode("/", $model);
@@ -57,9 +57,9 @@ class View3DController extends AbstractController
             $path = substr($model, 0,  strrpos($model, $fileName));
             $modelSettings = $path . "metadata/" . $fileName . "_viewer";
 
-            if (!empty($modelConverted)) {
-                $model = $modelConverted;
-            }
+            //if (!empty($modelConverted)) {
+            //    $model = $modelConverted;
+            //}
 
             if ($this->settings['useInternalProxy']) {
                 $this->configureProxyUrl($model);
@@ -70,6 +70,7 @@ class View3DController extends AbstractController
             $this->view->assign('model', $model);
             $this->view->assign('xml', $xml);
             $this->view->assign('settings', $modelSettings);
+            $this->view->assign('viewer', $this->requestData['viewer']);
             $this->view->assign('proxy', $this->settings['useInternalProxy']);
         }
     }
