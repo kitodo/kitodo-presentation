@@ -11,6 +11,9 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use TYPO3\CMS\Core\Core\ApplicationContext;
+
 /**
  * Plugin 'View3D' for the 'dlf' extension
  *
@@ -21,6 +24,7 @@ namespace Kitodo\Dlf\Controller;
  */
 class View3DController extends AbstractController
 {
+
     /**
      * @access public
      *
@@ -29,7 +33,7 @@ class View3DController extends AbstractController
     public function mainAction(): void
     {
 
-        if( $this->requestData['viewer'] && $this->requestData['model'] ){
+        if ($this->requestData['viewer'] && $this->requestData['model']) {
             $this->view->assign('3d', $this->requestData['model']);
             $this->view->assign('model', $this->requestData['model']);
             $this->view->assign('viewer', $this->requestData['viewer']);
@@ -74,4 +78,5 @@ class View3DController extends AbstractController
             $this->view->assign('proxy', $this->settings['useInternalProxy']);
         }
     }
+
 }

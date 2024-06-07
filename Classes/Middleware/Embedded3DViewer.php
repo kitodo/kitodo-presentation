@@ -71,6 +71,7 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
+
         // parameters are sent by POST --> use getParsedBody() instead of getQueryParams()
         $parameters = $request->getQueryParams();
         // Return if not this middleware
@@ -87,19 +88,19 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         $defaultStorage = $storageRepository->getDefaultStorage();
 
         if (!$defaultStorage->hasFolder(self::VIEWER_FOLDER)) {
-            $this->logger->debug("Folder not found");
+            $this->logger->warning('Required folder "' . self::VIEWER_FOLDER . '" was not found in the default storage "' . $defaultStorage->getName() . '"');
             return $response;
         }
 
         $viewerModules = $defaultStorage->getFolder(self::VIEWER_FOLDER);
         if (!$viewerModules->hasFolder($parameters['viewer'])) {
-            $this->logger->debug("Folder not found");
+            $this->logger->warning('Viewer folder "' . $parameters['viewer'] . '" was not found under the folder "' . self::VIEWER_FOLDER . '"');
             return $response;
         }
 
         $viewer = $viewerModules->getSubfolder($parameters['viewer']);
         if (!$viewer->hasFile(self::VIEWER_CONFIG_YML)) {
-            $this->logger->debug("File not found");
+            $this->logger->warning('Viewer folder "' . $parameters['viewer'] . '" does not contain a file named "' . self::VIEWER_CONFIG_YML . '"');
             return $response;
         }
 
@@ -107,6 +108,22 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         $yamlFileLoader = GeneralUtility::makeInstance(YamlFileLoader::class);
         $viewerConfigPath = $defaultStorage->getName() . "/" . self::VIEWER_FOLDER . "/" . $parameters['viewer'] . "/";
         $config = $yamlFileLoader->load($viewerConfigPath . self::VIEWER_CONFIG_YML)["viewer"];
+
+        if (!isset($config["supportedModelFormats"]) || empty($config["supportedModelFormats"])) {
+            $this->logger->warning('Required key "supportedModelFormats" does not exist in the file "' . self::VIEWER_CONFIG_YML . '" of viewer "' . $parameters['viewer'] . '" or has no value');
+            return $response;
+        }
+
+        $modelInfo = pathinfo($parameters['model']);
+        if (!isset($modelInfo["extension"]) || empty($modelInfo["extension"])) {
+            $this->logger->warning('Model path "' . $parameters['model'] . '" has no extension format');
+            return $response;
+        }
+
+        if (array_search(strtolower($modelInfo["extension"]), array_map('strtolower', $config["supportedModelFormats"]))) {
+            $this->logger->warning('Viewer "' . $parameters['viewer'] . '" does not support the model format "' . $modelInfo["extension"] . '"');
+            return $response;
+        }
 
         $htmlFile = "index.html";
         if(isset($config["base"]) && !empty($config["base"]) ) {
@@ -121,6 +138,8 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         $html = $viewer->getFile($htmlFile)->getContents();
         $html = str_replace("{{viewerPath}}", $viewerUrl, $html);
         $html = str_replace("{{modelUrl}}", $parameters['model'], $html);
+        $html = str_replace("{{modelDirname}}", $modelInfo["dirname"], $html);
+        $html = str_replace("{{modelBasename}}", $modelInfo["basename"], $html);
 
         $response->getBody()->write($html);
         return $response;
