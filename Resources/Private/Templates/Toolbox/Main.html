@@ -173,14 +173,14 @@
                             <f:translate key="search.query"/>
                         </label>
                         <!-- Never change the @id of this input field! Otherwise search won't work! -->
-                        <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{LABEL_QUERY_URL}" />
+                        <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{searchInDocument.labelQueryUrl}" />
                         <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
-                        <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.LABEL_START}" value="0" />
-                        <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.LABEL_ID}" value="{searchInDocument.CURRENT_DOCUMENT}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-pid" name="{searchInDocument.LABEL_PID}" value="{viewData.pageUid}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.LABEL_PAGE_URL}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.LABEL_HIGHLIGHT_WORD}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.LABEL_ENCRYPTED}" value="{searchInDocument.SOLR_ENCRYPTED}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.labelStart}" value="0" />
+                        <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.labelId}" value="{searchInDocument.documentId}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-pid" name="{searchInDocument.labelPid}" value="{searchInDocument.documentPageId}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.labelPageUrl}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.labelHighlightWord}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.labelEncrypted}" value="{searchInDocument.solrEncrypted}" />
                     </div>
                 </form>
                 <div id="tx-dlf-search-in-document-loading" style="display: none;"><f:translate key="tools.searchindocument.loading"/>...</div>

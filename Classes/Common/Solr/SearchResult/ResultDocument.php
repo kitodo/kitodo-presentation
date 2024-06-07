@@ -115,7 +115,7 @@ class ResultDocument
         $this->page = $record[$fields['page']];
         $this->thumbnail = $record[$fields['thumbnail']];
         $this->title = $record[$fields['title']];
-        $this->toplevel = $record[$fields['toplevel']];
+        $this->toplevel = $record[$fields['toplevel']] ?? false;
         $this->type = $record[$fields['type']];
 
         if (!empty($highlighting[$this->id])) {
