@@ -34,6 +34,8 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Http\Response;
@@ -88,20 +90,17 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         $defaultStorage = $storageRepository->getDefaultStorage();
 
         if (!$defaultStorage->hasFolder(self::VIEWER_FOLDER)) {
-            $this->logger->warning('Required folder "' . self::VIEWER_FOLDER . '" was not found in the default storage "' . $defaultStorage->getName() . '"');
-            return $response;
+            return $this->errorResponse('Required folder "' . self::VIEWER_FOLDER . '" was not found in the default storage "' . $defaultStorage->getName() . '"', $request);
         }
 
         $viewerModules = $defaultStorage->getFolder(self::VIEWER_FOLDER);
         if (!$viewerModules->hasFolder($parameters['viewer'])) {
-            $this->logger->warning('Viewer folder "' . $parameters['viewer'] . '" was not found under the folder "' . self::VIEWER_FOLDER . '"');
-            return $response;
+            return $this->errorResponse('Viewer folder "' . $parameters['viewer'] . '" was not found under the folder "' . self::VIEWER_FOLDER . '"', $request);
         }
 
         $viewer = $viewerModules->getSubfolder($parameters['viewer']);
         if (!$viewer->hasFile(self::VIEWER_CONFIG_YML)) {
-            $this->logger->warning('Viewer folder "' . $parameters['viewer'] . '" does not contain a file named "' . self::VIEWER_CONFIG_YML . '"');
-            return $response;
+            return $this->errorResponse('Viewer folder "' . $parameters['viewer'] . '" does not contain a file named "' . self::VIEWER_CONFIG_YML . '"', $request);
         }
 
         /** @var YamlFileLoader $yamlFileLoader */
@@ -110,19 +109,16 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         $config = $yamlFileLoader->load($viewerConfigPath . self::VIEWER_CONFIG_YML)["viewer"];
 
         if (!isset($config["supportedModelFormats"]) || empty($config["supportedModelFormats"])) {
-            $this->logger->warning('Required key "supportedModelFormats" does not exist in the file "' . self::VIEWER_CONFIG_YML . '" of viewer "' . $parameters['viewer'] . '" or has no value');
-            return $response;
+            return $this->errorResponse('Required key "supportedModelFormats" does not exist in the file "' . self::VIEWER_CONFIG_YML . '" of viewer "' . $parameters['viewer'] . '" or has no value', $request);
         }
 
         $modelInfo = pathinfo($parameters['model']);
         if (!isset($modelInfo["extension"]) || empty($modelInfo["extension"])) {
-            $this->logger->warning('Model path "' . $parameters['model'] . '" has no extension format');
-            return $response;
+            return $this->warningResponse('Model path "' . $parameters['model'] . '" has no extension format', $request);
         }
 
-        if (array_search(strtolower($modelInfo["extension"]), array_map('strtolower', $config["supportedModelFormats"]))) {
-            $this->logger->warning('Viewer "' . $parameters['viewer'] . '" does not support the model format "' . $modelInfo["extension"] . '"');
-            return $response;
+        if (array_search(strtolower($modelInfo["extension"]), array_map('strtolower', $config["supportedModelFormats"])) === false) {
+            return $this->warningResponse('Viewer "' . $parameters['viewer'] . '" does not support the model format "' . $modelInfo["extension"] . '"', $request);
         }
 
         $htmlFile = "index.html";
@@ -143,6 +139,34 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
 
         $response->getBody()->write($html);
         return $response;
+    }
+
+    /**
+     * @param string $message
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws \TYPO3\CMS\Core\Error\Http\InternalServerErrorException
+     */
+    public function errorResponse(string $message, ServerRequestInterface $request): ResponseInterface
+    {
+        /** @var ErrorController $errorController */
+        $errorController = GeneralUtility::makeInstance(ErrorController::class);
+        $this->logger->error($message);
+        return $errorController->internalErrorAction($request, $message);
+    }
+
+    /**
+     * @param string $message
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws \TYPO3\CMS\Core\Error\Http\PageNotFoundException
+     */
+    public function warningResponse(string $message, ServerRequestInterface $request): ResponseInterface
+    {
+        /** @var ErrorController $errorController */
+        $errorController = GeneralUtility::makeInstance(ErrorController::class);
+        $this->logger->warning($message);
+        return $errorController->pageNotFoundAction($request, $message);
     }
 
 }
