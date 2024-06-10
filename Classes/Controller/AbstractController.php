@@ -298,10 +298,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         // Set default values if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
-        if (
-            (int) $this->requestData['page'] > 0
-            || empty($this->requestData['page'])
-        ) {
+        if (empty($this->requestData['page'])) {
+            $this->requestData['page'] = 1;
+        } elseif ((int) $this->requestData['page'] > 0) {
             $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
         } else {
             $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getCurrentDocument()->physicalStructure);

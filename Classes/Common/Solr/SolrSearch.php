@@ -365,8 +365,8 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // Set search query.
         if (
-            (!empty($this->searchParams['fulltext']))
-            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($this->searchParams['query']), $matches)
+            !empty($this->searchParams['fulltext'])
+            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($this->searchParams['query'] ?? ''), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
             $this->searchParams['query'] = empty($matches[1]) ? $this->searchParams['query'] : $matches[1];
