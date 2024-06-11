@@ -23,14 +23,14 @@ dlf-3d-viewer.yml
 .. t3-field-list-table::
    :header-rows: 1
 
-   - :field:                    Field
+   - :field:                    Key
      :description:              Description
 
    - :field:                    base
      :description:              Specify the name of the HTML file in which the viewer will be displayed. (Default is ``index.html``)
 
    - :field:                    supportedModelFormats (required)
-     :description:              Specify single or multiple supported model formats of viewer.
+     :description:              Specify single or multiple supported model formats of the viewer.
 
 Example
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -52,7 +52,7 @@ Placeholders can be used within the file which is define under the ``base`` key 
 .. t3-field-list-table::
    :header-rows: 1
 
-   - :field:                    Field
+   - :field:                    Name
      :description:              Description
 
    - :field:                    viewerPath
