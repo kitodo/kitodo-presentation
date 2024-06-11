@@ -134,8 +134,8 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         $html = $viewer->getFile($htmlFile)->getContents();
         $html = str_replace("{{viewerPath}}", $viewerUrl, $html);
         $html = str_replace("{{modelUrl}}", $parameters['model'], $html);
-        $html = str_replace("{{modelDirname}}", $modelInfo["dirname"], $html);
-        $html = str_replace("{{modelBasename}}", $modelInfo["basename"], $html);
+        $html = str_replace("{{modelEndpoint}}", $modelInfo["dirname"], $html);
+        $html = str_replace("{{modelResource}}", $modelInfo["basename"], $html);
 
         $response->getBody()->write($html);
         return $response;

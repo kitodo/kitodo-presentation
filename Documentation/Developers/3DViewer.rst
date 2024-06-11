@@ -2,8 +2,6 @@
 3D Viewer
 ========
 
-
-
 Setup
 =======
 
@@ -28,24 +26,13 @@ dlf-3d-viewer.yml
    - :field:                    Field
      :description:              Description
 
-   - :field:                    supportedModelFormats (required)
-     :description:              Specify single or multiple supported model formats of viewer.
-
    - :field:                    base
      :description:              Specify the name of the HTML file in which the viewer will be displayed. (Default is ``index.html``)
 
-   - :field:                    prependUrl
-     :description:              Specify single value or multiple values to prepend with the URL for the viewer resources.
+   - :field:                    supportedModelFormats (required)
+     :description:              Specify single or multiple supported model formats of viewer.
 
-                                prependUrl:
-                                      - stylesheet/styles.css
-                                      - js/main.js
-                                      - js/init.js
-
-   - :field:                    url
-     :description:              Specifiy url to external viewer resources. The default is the path to folder viewer under the ``dlf_3d_viewers``.
-
-Simple Example
+Example
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: yaml
@@ -53,19 +40,30 @@ Simple Example
 
    viewer:
     base: main.html
-    prependUrl:
-        - stylesheet/styles.css
-        - js/main.js
-        - js/init.js
+    supportedModelFormats:
+      - glf
+      - ply
 
-Example with external URL
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Placeholders
+-------
 
-.. code-block:: yaml
-   :caption: defaultStorage/dlf_3d_viewers/3dviewer/dlf-3d-viewer.yml
+Placeholders can be used within the file which is define under the ``base`` key of ``dlf-3d-viewer.yml``. The notation for placeholders is ``{{placeholderName}}``. The following placeholders are available:
 
-   viewer:
-    url: https://raw.githubusercontent.com/example/3dviewer/master/
-    base: index.html
-    prependUrl:
-        - js/init.js
+.. t3-field-list-table::
+   :header-rows: 1
+
+   - :field:                    Field
+     :description:              Description
+
+   - :field:                    viewerPath
+     :description:              Path to the viewer directory located inside the ``dlf_3d_viewers`` folder
+
+   - :field:                    modelUrl
+     :description:              The fileserver where your resource is hosted. For example "https://example.com/my-model.glb".
+
+   - :field:                    modelEndpoint
+     :description:              Part of the ``modelUrl`` where your resource is hosted. For example, if your resource ist hosted at "https://example.com/my-model.glb", the value would be "https://example.com/static/models/".
+
+   - :field:                    modelResource
+     :description:              Resource part of the ``modelUrl`` with the filename to be loaded from the endpoint. For example, if your resource ist hosted at "https://example.com/my-model.glb", the value would be "my-model.glb".
+
