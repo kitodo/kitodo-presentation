@@ -61,7 +61,7 @@ Placeholders can be used within the file which is define under the ``base`` key 
    - :field:                    modelUrl
      :description:              The fileserver where your resource is hosted. For example "https://example.com/my-model.glb".
 
-   - :field:                    modelEndpoint
+   - :field:                    modelPath
      :description:              Part of the ``modelUrl`` where your resource is hosted. For example, if your resource ist hosted at "https://example.com/my-model.glb", the value would be "https://example.com/static/models/".
 
    - :field:                    modelResource

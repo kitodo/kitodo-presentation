@@ -33,6 +33,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
@@ -59,6 +60,7 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
 
     const VIEWER_FOLDER = "dlf_3d_viewers";
     const VIEWER_CONFIG_YML = "dlf-3d-viewer.yml";
+    const EXT_KEY = "dlf";
 
     /**
      * The main method of the middleware.
@@ -81,6 +83,14 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
             return $response;
         }
 
+        $modelInfo = pathinfo($parameters['model']);
+        $modelFormat = $modelInfo["extension"];
+        if (!isset($modelFormat) || empty($modelFormat)) {
+            return $this->warningResponse('Model path "' . $parameters['model'] . '" has no extension format', $request);
+        }
+
+        $viewer = $this->getViewerByModelFormat($modelFormat);
+
         // create response object
         /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);
@@ -94,31 +104,26 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         }
 
         $viewerModules = $defaultStorage->getFolder(self::VIEWER_FOLDER);
-        if (!$viewerModules->hasFolder($parameters['viewer'])) {
-            return $this->errorResponse('Viewer folder "' . $parameters['viewer'] . '" was not found under the folder "' . self::VIEWER_FOLDER . '"', $request);
+        if (!$viewerModules->hasFolder($viewer)) {
+            return $this->errorResponse('Viewer folder "' . $viewer . '" was not found under the folder "' . self::VIEWER_FOLDER . '"', $request);
         }
 
-        $viewer = $viewerModules->getSubfolder($parameters['viewer']);
-        if (!$viewer->hasFile(self::VIEWER_CONFIG_YML)) {
-            return $this->errorResponse('Viewer folder "' . $parameters['viewer'] . '" does not contain a file named "' . self::VIEWER_CONFIG_YML . '"', $request);
+        $viewerFolder = $viewerModules->getSubfolder($viewer);
+        if (!$viewerFolder->hasFile(self::VIEWER_CONFIG_YML)) {
+            return $this->errorResponse('Viewer folder "' . $viewer . '" does not contain a file named "' . self::VIEWER_CONFIG_YML . '"', $request);
         }
 
         /** @var YamlFileLoader $yamlFileLoader */
         $yamlFileLoader = GeneralUtility::makeInstance(YamlFileLoader::class);
-        $viewerConfigPath = $defaultStorage->getName() . "/" . self::VIEWER_FOLDER . "/" . $parameters['viewer'] . "/";
+        $viewerConfigPath = $defaultStorage->getName() . "/" . self::VIEWER_FOLDER . "/" . $viewer . "/";
         $config = $yamlFileLoader->load($viewerConfigPath . self::VIEWER_CONFIG_YML)["viewer"];
 
         if (!isset($config["supportedModelFormats"]) || empty($config["supportedModelFormats"])) {
-            return $this->errorResponse('Required key "supportedModelFormats" does not exist in the file "' . self::VIEWER_CONFIG_YML . '" of viewer "' . $parameters['viewer'] . '" or has no value', $request);
+            return $this->errorResponse('Required key "supportedModelFormats" does not exist in the file "' . self::VIEWER_CONFIG_YML . '" of viewer "' . $viewer . '" or has no value', $request);
         }
 
-        $modelInfo = pathinfo($parameters['model']);
-        if (!isset($modelInfo["extension"]) || empty($modelInfo["extension"])) {
-            return $this->warningResponse('Model path "' . $parameters['model'] . '" has no extension format', $request);
-        }
-
-        if (array_search(strtolower($modelInfo["extension"]), array_map('strtolower', $config["supportedModelFormats"])) === false) {
-            return $this->warningResponse('Viewer "' . $parameters['viewer'] . '" does not support the model format "' . $modelInfo["extension"] . '"', $request);
+        if (array_search(strtolower($modelFormat), array_map('strtolower', $config["supportedModelFormats"])) === false) {
+            return $this->warningResponse('Viewer "' . $viewer . '" does not support the model format "' . $modelFormat . '"', $request);
         }
 
         $htmlFile = "index.html";
@@ -131,10 +136,10 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
             $viewerUrl = rtrim($config["url"]);
         }
 
-        $html = $viewer->getFile($htmlFile)->getContents();
+        $html = $viewerFolder->getFile($htmlFile)->getContents();
         $html = str_replace("{{viewerPath}}", $viewerUrl, $html);
         $html = str_replace("{{modelUrl}}", $parameters['model'], $html);
-        $html = str_replace("{{modelEndpoint}}", $modelInfo["dirname"], $html);
+        $html = str_replace("{{modelPath}}", $modelInfo["dirname"], $html);
         $html = str_replace("{{modelResource}}", $modelInfo["basename"], $html);
 
         $response->getBody()->write($html);
@@ -167,6 +172,28 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
         $errorController = GeneralUtility::makeInstance(ErrorController::class);
         $this->logger->warning($message);
         return $errorController->pageNotFoundAction($request, $message);
+    }
+
+    /**
+     * @param $viewerModelFormatMapping
+     * @return string
+     */
+    private function getViewerByModelFormat($modelFormat): string
+    {
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXT_KEY, '3dviewer');
+        $viewerModelFormatMappings = explode(";", $extConf['viewerModelFormatMapping']);
+        foreach ($viewerModelFormatMappings as $viewerModelFormatMapping) {
+            $explodedViewerModelMapping = explode(":", $viewerModelFormatMapping);
+            if(sizeof($explodedViewerModelMapping) == 2) {
+                $viewer = trim($explodedViewerModelMapping[0]);
+                $viewerModelFormats = array_map('trim', explode(",", $explodedViewerModelMapping[1]));
+                if (in_array($modelFormat, $viewerModelFormats)) {
+                    return $viewer;
+                }
+            }
+        }
+
+        return $extConf['defaultViewer'] ?? "";
     }
 
 }
