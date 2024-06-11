@@ -70,7 +70,6 @@ class View3DController extends AbstractController
                 $this->configureProxyUrl($modelSettings);
             }
 
-            $this->view->assign('viewer', $this->requestData['viewer']);
             $this->view->assign('model', $model);
             $this->view->assign('xml', $xml);
             $this->view->assign('settings', $modelSettings);

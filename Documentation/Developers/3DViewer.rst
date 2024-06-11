@@ -12,13 +12,17 @@ Setup
 .. IMPORTANT::
    When creating folders through the Filelist module in TYPO3, follow the usual process. However, when creating folders in the system, ensure that the name is URL-compliant.
 
+-  Add a subfolder with name of your 3D viewer e.g. ``3dviewer``
+
 Viewer
 =======
 
-To configure the 3D Viewer for Kitodo.Presentation, a ``dlf-3d-viewer.yml`` file must be present in the viewer directory.
+Viewers can be added and customized depending on the use case. A reference implementation of various 3D viewers for integration into Kitodo.Presentation can be found on GitHub in Repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
 
 dlf-3d-viewer.yml
 -------
+
+To configure the 3D Viewer for Kitodo.Presentation, a ``dlf-3d-viewer.yml`` file must be present in the viewer directory.
 
 .. t3-field-list-table::
    :header-rows: 1
