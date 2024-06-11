@@ -12,18 +12,30 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Doctrine\DBAL\ForwardCompatibility\Result;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+/**
+ * Collection repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class CollectionRepository extends Repository
 {
     /**
-     * Set the default ordering. This is applied to findAll(), too.
-     *
-     * @var array
+     * @access protected
+     * @var array Set the default ordering. This is applied to findAll(), too.
      */
+    // TODO: PHPDoc type array of property CollectionRepository::$defaultOrderings is not covariant with 'ASC'|'DESC'> of overridden property TYPO3\CMS\Extbase\Persistence\Repository::$defaultOrderings.
+    // @phpstan-ignore-next-line
     protected $defaultOrderings = [
         'label' => QueryInterface::ORDER_ASCENDING,
     ];
@@ -31,11 +43,13 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds all collections
      *
-     * @param string $uids separated by comma
+     * @access public
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @param array $uids
+     *
+     * @return QueryResultInterface
      */
-    public function findAllByUids($uids)
+    public function findAllByUids(array $uids): QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -49,7 +63,16 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getCollectionForMetadata($pages)
+    /**
+     * Finds all collections
+     *
+     * @access public
+     *
+     * @param string $pages
+     *
+     * @return QueryResultInterface
+     */
+    public function getCollectionForMetadata(string $pages): QueryResultInterface
     {
         // Get list of collections to show.
         $query = $this->createQuery();
@@ -62,11 +85,13 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds all collection for the given settings
      *
+     * @access public
+     *
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface
      */
-    public function findCollectionsBySettings($settings = [])
+    public function findCollectionsBySettings(array $settings = []): QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -104,7 +129,17 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         return $query->execute();
     }
 
-    public function getIndexNameForSolr($settings, $set)
+    /**
+     * Gets index name for SOLR
+     *
+     * @access public
+     *
+     * @param array $settings
+     * @param mixed $set
+     *
+     * @return Result
+     */
+    public function getIndexNameForSolr(array $settings, $set): Result
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');
@@ -129,10 +164,9 @@ class CollectionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $where,
                 Helper::whereExpression('tx_dlf_collections')
             )
-            ->setMaxResults(1)
-            ->execute();
+            ->setMaxResults(1);
 
-        return $result;
+        return $result->execute();
     }
 
 }

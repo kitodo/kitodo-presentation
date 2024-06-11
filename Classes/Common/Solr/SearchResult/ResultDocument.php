@@ -12,125 +12,103 @@
 
 namespace Kitodo\Dlf\Common\Solr\SearchResult;
 
+use Solarium\QueryType\Select\Result\Document;
+
 /**
  * ResultDocument class for the 'dlf' extension. It keeps the result of the search in the SOLR index.
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class ResultDocument
 {
 
     /**
-     * The identifier
-     *
-     * @var string
      * @access private
+     * @var string The identifier
      */
-    private $id;
+    private ?string $id;
 
     /**
-     * The unified identifier
-     *
-     * @var string|null
      * @access private
+     * @var string|null The unified identifier
      */
-    private $uid;
+    private ?string $uid;
 
     /**
-     * The page on which result was found
-     *
-     * @var int
      * @access private
+     * @var int|null The page on which result was found
      */
-    private $page;
+    private ?int $page;
 
     /**
-     * All snippets imploded to one string
-     *
-     * @var string
      * @access private
+     * @var string|null All snippets imploded to one string
      */
-    private $snippets;
+    private ?string $snippets;
 
     /**
-     * The thumbnail URL
-     *
-     * @var string
      * @access private
+     * @var string|null The thumbnail URL
      */
-    private $thumbnail;
+    private ?string $thumbnail;
 
     /**
-     * The title of the document / structure element (e.g. chapter)
-     *
-     * @var string
      * @access private
+     * @var string|null The title of the document / structure element (e.g. chapter)
      */
-    private $title;
+    private ?string $title;
 
     /**
-     * It's a toplevel element?
-     *
-     * @var boolean
      * @access private
+     * @var bool It's a toplevel element?
      */
-    private $toplevel = false;
+    private bool $toplevel = false;
 
     /**
-     * The structure type
-     *
-     * @var string
      * @access private
+     * @var string|null The structure type
      */
-    private $type;
+    private ?string $type;
 
     /**
-     * All pages in which search phrase was found
-     *
-     * @var array(Page)
      * @access private
+     * @var Page[] All pages in which search phrase was found
      */
-    private $pages = [];
+    private array $pages = [];
 
     /**
-     * All regions in which search phrase was found
-     *
-     * @var array(Region)
      * @access private
+     * @var Region[] All regions in which search phrase was found
      */
-    private $regions = [];
+    private array $regions = [];
 
     /**
-     * All highlights of search phrase
-     *
-     * @var array(Highlight)
      * @access private
+     * @var Highlight[] All highlights of search phrase
      */
-    private $highlights = [];
+    private array $highlights = [];
 
     /**
-     * The snippets for given record
-     *
-     * @var array
      * @access private
+     * @var array The snippets for given record
      */
-    private $snippetsForRecord = [];
+    private array $snippetsForRecord = [];
 
     /**
      * The constructor for result.
      *
      * @access public
      *
-     * @param array $record: Array of found document record
-     * @param array $highlighting: Array of found highlight elements
-     * @param array $fields: Array of fields used for search
+     * @param Document $record found document record
+     * @param array $highlighting array of found highlight elements
+     * @param array $fields array of fields used for search
      *
      * @return void
      */
-    public function __construct($record, $highlighting, $fields)
+    public function __construct(Document $record, array $highlighting, array $fields)
     {
         $this->id = $record[$fields['id']];
         $this->uid = $record[$fields['uid']];
@@ -140,8 +118,10 @@ class ResultDocument
         $this->toplevel = $record[$fields['toplevel']];
         $this->type = $record[$fields['type']];
 
-        $highlightingForRecord = $highlighting[$record[$fields['id']]][$fields['fulltext']];
-        $this->snippetsForRecord = is_array($highlightingForRecord['snippets']) ? $highlightingForRecord['snippets'] : [];
+        if (!empty($highlighting[$this->id])) {
+            $highlightingForRecord = $highlighting[$this->id][$fields['fulltext']];
+            $this->snippetsForRecord = is_array($highlightingForRecord['snippets']) ? $highlightingForRecord['snippets'] : [];
+        }
 
         $this->parseSnippets();
         $this->parsePages();
@@ -156,7 +136,7 @@ class ResultDocument
      *
      * @return string The result's record identifier
      */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -168,7 +148,7 @@ class ResultDocument
      *
      * @return string|null The result's record unified identifier
      */
-    public function getUid()
+    public function getUid(): ?string
     {
         return $this->uid;
     }
@@ -178,9 +158,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @return int The result's record page
+     * @return int|null The result's record page
      */
-    public function getPage()
+    public function getPage(): ?int
     {
         return $this->page;
     }
@@ -190,9 +170,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string All result's record snippets imploded to one string
+     * @return string|null All result's record snippets imploded to one string
      */
-    public function getSnippets()
+    public function getSnippets(): ?string
     {
         return $this->snippets;
     }
@@ -202,9 +182,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string
+     * @return string|null
      */
-    public function getThumbnail()
+    public function getThumbnail(): ?string
     {
         return $this->thumbnail;
     }
@@ -214,9 +194,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string
+     * @return string|null
      */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -226,9 +206,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @return boolean
+     * @return bool
      */
-    public function getToplevel()
+    public function getToplevel(): bool
     {
         return $this->toplevel;
     }
@@ -238,9 +218,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string
+     * @return string|null
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -252,7 +232,7 @@ class ResultDocument
      *
      * @return array(Page) All result's pages which contain search phrase
      */
-    public function getPages()
+    public function getPages(): array
     {
         return $this->pages;
     }
@@ -264,7 +244,7 @@ class ResultDocument
      *
      * @return array(Region) All result's regions which contain search phrase
      */
-    public function getRegions()
+    public function getRegions(): array
     {
         return $this->regions;
     }
@@ -276,7 +256,7 @@ class ResultDocument
      *
      * @return array(Highlight) All result's highlights of search phrase
      */
-    public function getHighlights()
+    public function getHighlights(): array
     {
         return $this->highlights;
     }
@@ -288,7 +268,7 @@ class ResultDocument
      *
      * @return array(string) All result's highlights of search phrase
      */
-    public function getHighlightsIds()
+    public function getHighlightsIds(): array
     {
         $highlightsIds = [];
         foreach ($this->highlights as $highlight) {
@@ -305,7 +285,7 @@ class ResultDocument
      *
      * @return void
      */
-    private function parseSnippets()
+    private function parseSnippets(): void
     {
         $snippetArray = $this->getArrayByIndex('text');
 
@@ -320,7 +300,7 @@ class ResultDocument
      *
      * @return void
      */
-    private function parsePages()
+    private function parsePages(): void
     {
         $pageArray = $this->getArrayByIndex('pages');
 
@@ -341,7 +321,7 @@ class ResultDocument
      *
      * @return void
      */
-    private function parseRegions()
+    private function parseRegions(): void
     {
         $regionArray = $this->getArrayByIndex('regions');
 
@@ -362,7 +342,7 @@ class ResultDocument
      *
      * @return void
      */
-    private function parseHighlights()
+    private function parseHighlights(): void
     {
         $highlightArray = $this->getArrayByIndex('highlights');
 
@@ -384,7 +364,7 @@ class ResultDocument
      *
      * @return array
      */
-    private function getArrayByIndex($index)
+    private function getArrayByIndex(string $index): array
     {
         $objectArray = [];
         foreach ($this->snippetsForRecord as $snippet) {

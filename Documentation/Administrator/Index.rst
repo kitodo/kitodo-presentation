@@ -35,7 +35,7 @@ Please run the following commands in your webroot where the TYPO3 :file:`compose
 
    .. code-block:: shell
 
-      composer require kitodo/presentation:^4
+      composer require kitodo/presentation:^5
 
 #. Install and Activate the Extension
 
@@ -172,7 +172,7 @@ This is not possible anymore, but instead they must be included via the overarch
    // After
    lib.imagemanipulation < tt_content.list.20.dlf_toolbox {
      settings {
-       tools = imagemanipulationtool
+       tool = imagemanipulationtool
      }
    }
 

@@ -1,15 +1,26 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Functional;
 
+use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
@@ -60,8 +71,15 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      */
     protected $disableJsonWrappedResponse = false;
 
-    /** @var ObjectManager */
+    /**
+     * @var ObjectManager
+     */
     protected $objectManager;
+
+    /**
+     * @var PersistenceManager
+     */
+    protected $persistenceManager;
 
     /**
      * @var string
@@ -91,6 +109,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         parent::setUp();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
         $this->baseUrl = 'http://web:8000/public/typo3temp/var/tests/functional-' . $this->identifier . '/';
         $this->httpClient = new HttpClient([
@@ -103,39 +122,51 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected function getDlfConfiguration()
     {
-        return [
-            'fileGrpImages' => 'DEFAULT,MAX',
-            'fileGrpThumbs' => 'THUMBS',
-            'fileGrpDownload' => 'DOWNLOAD',
-            'fileGrpFulltext' => 'FULLTEXT',
-            'fileGrpAudio' => 'AUDIO',
-            'solrFieldAutocomplete' => 'autocomplete',
-            'solrFieldCollection' => 'collection',
-            'solrFieldDefault' => 'default',
-            'solrFieldFulltext' => 'fulltext',
-            'solrFieldGeom' => 'geom',
-            'solrFieldId' => 'id',
-            'solrFieldLicense' => 'license',
-            'solrFieldLocation' => 'location',
-            'solrFieldPage' => 'page',
-            'solrFieldPartof' => 'partof',
-            'solrFieldPid' => 'pid',
-            'solrFieldPurl' => 'purl',
-            'solrFieldRecordId' => 'record_id',
-            'solrFieldRestrictions' => 'restrictions',
-            'solrFieldRoot' => 'root',
-            'solrFieldSid' => 'sid',
-            'solrFieldTerms' => 'terms',
-            'solrFieldThumbnail' => 'thumbnail',
-            'solrFieldTimestamp' => 'timestamp',
-            'solrFieldTitle' => 'title',
-            'solrFieldToplevel' => 'toplevel',
-            'solrFieldType' => 'type',
-            'solrFieldUid' => 'uid',
-            'solrFieldUrn' => 'urn',
-            'solrFieldVolume' => 'volume',
+        $dotenv = Dotenv::createImmutable('/home/runner/work/kitodo-presentation/kitodo-presentation/Build/Test/', 'test.env');
+        $dotenv->load();
 
-            'solrHost' => getenv('dlfTestingSolrHost'),
+        return [
+            'general' => [
+                'useExternalApisForMetadata' => 0,
+                'requiredMetadataFields' => 'document_format'
+            ],
+            'files' => [
+                'fileGrpImages' => 'DEFAULT,MAX',
+                'fileGrpThumbs' => 'THUMBS',
+                'fileGrpDownload' => 'DOWNLOAD',
+                'fileGrpFulltext' => 'FULLTEXT',
+                'fileGrpAudio' => 'AUDIO'
+            ],
+            'solr' => [
+                'host' => getenv('dlfTestingSolrHost'),
+                'fields' => [
+                    'autocomplete' => 'autocomplete',
+                    'collection' => 'collection',
+                    'default' => 'default',
+                    'fulltext' => 'fulltext',
+                    'geom' => 'geom',
+                    'id' => 'id',
+                    'license' => 'license',
+                    'location' => 'location',
+                    'page' => 'page',
+                    'partof' => 'partof',
+                    'pid' => 'pid',
+                    'purl' => 'purl',
+                    'recordId' => 'record_id',
+                    'restrictions' => 'restrictions',
+                    'root' => 'root',
+                    'sid' => 'sid',
+                    'terms' => 'terms',
+                    'thumbnail' => 'thumbnail',
+                    'timestamp' => 'timestamp',
+                    'title' => 'title',
+                    'toplevel' => 'toplevel',
+                    'type' => 'type',
+                    'uid' => 'uid',
+                    'urn' => 'urn',
+                    'volume' => 'volume'
+                ]
+            ]
         ];
     }
 
@@ -183,16 +214,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected function initLanguageService(string $locale)
     {
-        if (class_exists(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)) {
-            $GLOBALS['LANG'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)->create($locale);
-        } else {
-            $typo3MajorVersion = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version())['version_main'];
-            $this->assertEquals(9, $typo3MajorVersion);
-
-            $lang = new LanguageService();
-            $lang->init($locale);
-            $GLOBALS['LANG'] = $lang;
-        }
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create($locale);
     }
 
     /**
@@ -200,6 +222,6 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      */
     protected function assertArrayMatches(array $sub, array $super, string $message = '')
     {
-        $this->assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
+        self::assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
     }
 }

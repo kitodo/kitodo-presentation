@@ -20,7 +20,7 @@ All sources of Kitodo.Presentation and other Kitodo software are hosted at
 If you find a bug, please report it to the Kitodo.Presentation
 `issue tracker on GitHub <https://github.com/kitodo/kitodo-presentation/issues>`_.
 
-Pull-requests are greatly appreciated! ;-)
+Pull Requests are greatly appreciated! ;-)
 
 Mailing Lists
 -------------
@@ -31,10 +31,10 @@ lists of Kitodo:
 
 * Community mailing list helps on any questions about installation and usage of
   the software. Its address is kitodo-community@kitodo.org. The list archive
-  can be found at https://maillist.slub-dresden.de/pipermail/kitodo-community/
+  can be found at https://maillist.slub-dresden.de/mailman3/postorius/lists/kitodo-community.kitodo.org/
 * Developer mailing list discusses implementation details. Its address is
   kitodo-developer@kitodo.org. The list archive can be found at
-  https://maillist.slub-dresden.de/pipermail/kitodo-developer/
+  https://maillist.slub-dresden.de/mailman3/postorius/lists/kitodo-developer.kitodo.org/
 
 Please write to the lists in English or German.
 

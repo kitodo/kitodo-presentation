@@ -12,27 +12,30 @@
 
 namespace Kitodo\Dlf\Format;
 
+use Kitodo\Dlf\Common\MetadataInterface;
+
 /**
  * Metadata TEI-Header format class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class TeiHeader implements \Kitodo\Dlf\Common\MetadataInterface
+class TeiHeader implements MetadataInterface
 {
     /**
      * This extracts the essential TEIHDR metadata from XML
      *
      * @access public
      *
-     * @param \SimpleXMLElement $xml: The XML to extract the metadata from
-     * @param array &$metadata: The metadata array to fill
+     * @param \SimpleXMLElement $xml The XML to extract the metadata from
+     * @param array &$metadata The metadata array to fill
+     * @param bool $useExternalApis true if external APIs should be called, false otherwise
      *
      * @return void
      */
-    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata)
+    public function extractMetadata(\SimpleXMLElement $xml, array &$metadata, bool $useExternalApis = false): void
     {
         $xml->registerXPathNamespace('teihdr', 'http://www.tei-c.org/ns/1.0');
     }

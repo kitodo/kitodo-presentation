@@ -25,27 +25,30 @@
     "docs": "https://docs.typo3.org/p/kitodo/presentation/main/en-us/"
   },
   "require": {
-    "php": "^7.4",
+    "php": "7.4 - 8.3",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "^9.5.31|^10.4.36",
-    "typo3/cms-extbase": "^9.5.31|^10.4.36",
-    "typo3/cms-tstemplate": "^9.5.31|^10.4.36",
+    "typo3/cms-core": "^10.4.37|^11.5.37",
+    "typo3/cms-extbase": "^10.4.37|^11.5.37",
+    "typo3/cms-tstemplate": "^10.4.37|^11.5.37",
     "caseyamcl/phpoaipmh": "^3.3.1",
+    "slub/php-mods-reader": "^0.3.0",
     "ubl/php-iiif-prezi-reader": "0.3.0",
-    "solarium/solarium": "^5.2.0"
+    "solarium/solarium": "5.2 - 6.3"
   },
   "require-dev": {
-    "spatie/phpunit-watcher": "^1.23.0",
-    "typo3/cms-backend": "^9.5.31|^10.4.36",
-    "typo3/cms-fluid": "^9.5.31|^10.4.36",
-    "typo3/cms-fluid-styled-content": "^9.5.31|^10.4.36",
-    "typo3/cms-frontend": "^9.5.31|^10.4.36",
-    "typo3/testing-framework": "^4.15.5|^6.16.7"
+    "phpstan/phpstan": "^1.11.1",
+    "spatie/phpunit-watcher": "^1.23.6",
+    "typo3/cms-backend": "^10.4.37|^11.5.37",
+    "typo3/cms-fluid": "^10.4.37|^11.5.37",
+    "typo3/cms-fluid-styled-content": "^10.4.37|^11.5.37",
+    "typo3/cms-frontend": "^10.4.37|^11.5.37",
+    "typo3/testing-framework": "^6.16.9",
+    "vlucas/phpdotenv": "^5.6.0"
   },
   "replace": {
     "typo3-ter/dlf": "self.version"
@@ -84,9 +87,18 @@
     "test:func": "Build/Test/runTests.sh -s functional",
     "test:func:watch": "@test:func -w",
 	"docs:db": "./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst",
-	"docs:setup": "./Build/Documentation/sphinx.sh install",
-	"docs:serve": "./Build/Documentation/sphinx.sh serve",
-	"docs:t3": "docker-compose -f ./Build/Documentation/docker-compose.t3docs.yml run --rm t3docs"
+  	"docs:build": [
+	  	"rm -Rf ./Documentation-GENERATED-temp",
+	  	"docker run --user=$(id -u):$(id -g) --rm -v ./:/project -it ghcr.io/typo3-documentation/render-guides:latest --config ./Documentation",
+	  	"cp ./Build/Documentation/index.html ./Documentation-GENERATED-temp"
+  	],
+	"docs:start": "docker run -d --name dlf_docs --rm -v ./Documentation-GENERATED-temp:/serve -p 9000:8000 jdkelley/simple-http-server:latest",
+	"docs:stop": "docker stop dlf_docs",
+	"docs:rebuild": [
+	  "@composer docs:stop",
+	  "@composer docs:build",
+	  "@composer docs:start"
+	]
   },
   "config": {
     "allow-plugins": {

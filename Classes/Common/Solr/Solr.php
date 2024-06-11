@@ -15,130 +15,115 @@ namespace Kitodo\Dlf\Common\Solr;
 use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Solarium\Client;
+use Solarium\Core\Client\Adapter\Http;
+use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Solr class for the 'dlf' extension
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
- * @property-read string|null $core This holds the core name for the current instance
- * @property-write int $cPid This holds the PID for the configuration
- * @property int $limit This holds the max results
- * @property-read int $numberOfHits This holds the number of hits for last search
- * @property-write array $params This holds the additional query parameters
- * @property-read bool $ready Is the Solr service instantiated successfully?
- * @property-read \Solarium\Client $service This holds the Solr service object
+ *
+ * @property array $config this holds the Solr configuration
+ * @property-read string|null $core this holds the core name for the current instance
+ * @property-write int $configPid this holds the PID for the configuration
+ * @property int $limit this holds the max results
+ * @property-read int $numberOfHits this holds the number of hits for last search
+ * @property-write array $params this holds the additional query parameters
+ * @property-read bool $ready flag if the Solr service is instantiated successfully
+ * @property-read Client $service this holds the Solr service object
  */
 class Solr implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
-     * This holds the Solr configuration
-     *
-     * @var array
      * @access protected
+     * @var array This holds the Solr configuration
      */
-    protected $config = [];
+    protected array $config = [];
 
     /**
-     * This holds the core name
-     *
-     * @var string|null
      * @access protected
+     * @var string|null This holds the core name
      */
-    protected $core = null;
+    protected ?string $core = null;
 
     /**
-     * This holds the PID for the configuration
-     *
-     * @var int
      * @access protected
+     * @var int This holds the PID for the configuration
      */
-    protected $cPid = 0;
+    protected int $configPid = 0;
 
     /**
-     * The extension key
-     *
-     * @var string
      * @access public
+     * @static
+     * @var string The extension key
      */
-    public static $extKey = 'dlf';
+    public static string $extKey = 'dlf';
 
     /**
-     * The fields for SOLR index
-     *
-     * @var array
      * @access public
+     * @static
+     * @var array The fields for SOLR index
      */
-    public static $fields = [];
+    public static array $fields = [];
 
     /**
-     * This holds the max results
-     *
-     * @var int
      * @access protected
+     * @var int This holds the max results
      */
-    protected $limit = 50000;
+    protected int $limit = 50000;
 
     /**
-     * This holds the number of hits for last search
-     *
-     * @var int
      * @access protected
+     * @var int This holds the number of hits for last search
      */
-    protected $numberOfHits = 0;
+    protected int $numberOfHits = 0;
 
     /**
-     * This holds the additional query parameters
-     *
-     * @var array
      * @access protected
+     * @var array This holds the additional query parameters
      */
-    protected $params = [];
+    protected array $params = [];
 
     /**
-     * Is the search instantiated successfully?
-     *
-     * @var bool
      * @access protected
+     * @var bool Is the search instantiated successfully?
      */
-    protected $ready = false;
+    protected bool $ready = false;
 
     /**
-     * This holds the singleton search objects with their core as array key
-     *
-     * @var array (\Kitodo\Dlf\Common\Solr\Solr)
      * @access protected
+     * @var array(Solr) This holds the singleton search objects with their core as array key
      */
-    protected static $registry = [];
+    protected static array $registry = [];
 
     /**
-     * This holds the Solr service object
-     *
-     * @var \Solarium\Client
      * @access protected
+     * @var Client This holds the Solr service object
      */
-    protected $service;
+    protected Client $service;
 
     /**
      * Add a new core to Apache Solr
      *
      * @access public
      *
-     * @param string $core: The name of the new core. If empty, the next available core name is used.
+     * @param string $core The name of the new core. If empty, the next available core name is used.
      *
      * @return string The name of the new core
      */
-    public static function createCore($core = '')
+    public static function createCore($core = ''): string
     {
         // Get next available core name if none given.
         if (empty($core)) {
@@ -182,11 +167,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $query: The query string
+     * @param string $query The query string
      *
      * @return string The escaped query string
      */
-    public static function escapeQuery($query)
+    public static function escapeQuery(string $query): string
     {
         // Escape query by disallowing range and field operators
         // Permit operators: wildcard, boolean, fuzzy, proximity, boost, grouping
@@ -199,12 +184,12 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $query: The query string
-     * @param int $pid: The PID for the field configuration
+     * @param string $query The query string
+     * @param int $pid The PID for the field configuration
      *
      * @return string The escaped query string
      */
-    public static function escapeQueryKeepField($query, $pid)
+    public static function escapeQueryKeepField(string $query, int $pid): string
     {
         // Is there a field query?
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
@@ -222,7 +207,7 @@ class Solr implements LoggerAwareInterface
                 ->from('tx_dlf_metadata')
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($pid)),
+                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
                     $queryBuilder->expr()->orX(
                         $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
                         $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
@@ -255,37 +240,37 @@ class Solr implements LoggerAwareInterface
      *
      * @return array fields
      */
-    public static function getFields()
+    public static function getFields(): array
     {
         if (empty(self::$fields)) {
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-
-            self::$fields['id'] = $conf['solrFieldId'];
-            self::$fields['uid'] = $conf['solrFieldUid'];
-            self::$fields['pid'] = $conf['solrFieldPid'];
-            self::$fields['page'] = $conf['solrFieldPage'];
-            self::$fields['partof'] = $conf['solrFieldPartof'];
-            self::$fields['root'] = $conf['solrFieldRoot'];
-            self::$fields['sid'] = $conf['solrFieldSid'];
-            self::$fields['toplevel'] = $conf['solrFieldToplevel'];
-            self::$fields['type'] = $conf['solrFieldType'];
-            self::$fields['title'] = $conf['solrFieldTitle'];
-            self::$fields['volume'] = $conf['solrFieldVolume'];
-            self::$fields['date'] = $conf['solrFieldDate'];
-            self::$fields['thumbnail'] = $conf['solrFieldThumbnail'];
-            self::$fields['default'] = $conf['solrFieldDefault'];
-            self::$fields['timestamp'] = $conf['solrFieldTimestamp'];
-            self::$fields['autocomplete'] = $conf['solrFieldAutocomplete'];
-            self::$fields['fulltext'] = $conf['solrFieldFulltext'];
-            self::$fields['record_id'] = $conf['solrFieldRecordId'];
-            self::$fields['purl'] = $conf['solrFieldPurl'];
-            self::$fields['urn'] = $conf['solrFieldUrn'];
-            self::$fields['location'] = $conf['solrFieldLocation'];
-            self::$fields['collection'] = $conf['solrFieldCollection'];
-            self::$fields['license'] = $conf['solrFieldLicense'];
-            self::$fields['terms'] = $conf['solrFieldTerms'];
-            self::$fields['restrictions'] = $conf['solrFieldRestrictions'];
-            self::$fields['geom'] = $conf['solrFieldGeom'];
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'solr');
+            $solrFields = $conf['fields'];
+            self::$fields['id'] = $solrFields['id'];
+            self::$fields['uid'] = $solrFields['uid'];
+            self::$fields['pid'] = $solrFields['pid'];
+            self::$fields['page'] = $solrFields['page'];
+            self::$fields['partof'] = $solrFields['partof'];
+            self::$fields['root'] = $solrFields['root'];
+            self::$fields['sid'] = $solrFields['sid'];
+            self::$fields['toplevel'] = $solrFields['toplevel'];
+            self::$fields['type'] = $solrFields['type'];
+            self::$fields['title'] = $solrFields['title'];
+            self::$fields['volume'] = $solrFields['volume'];
+            self::$fields['date'] = $solrFields['date'];
+            self::$fields['thumbnail'] = $solrFields['thumbnail'];
+            self::$fields['default'] = $solrFields['default'];
+            self::$fields['timestamp'] = $solrFields['timestamp'];
+            self::$fields['autocomplete'] = $solrFields['autocomplete'];
+            self::$fields['fulltext'] = $solrFields['fulltext'];
+            self::$fields['record_id'] = $solrFields['recordId'];
+            self::$fields['purl'] = $solrFields['purl'];
+            self::$fields['urn'] = $solrFields['urn'];
+            self::$fields['location'] = $solrFields['location'];
+            self::$fields['collection'] = $solrFields['collection'];
+            self::$fields['license'] = $solrFields['license'];
+            self::$fields['terms'] = $solrFields['terms'];
+            self::$fields['restrictions'] = $solrFields['restrictions'];
+            self::$fields['geom'] = $solrFields['geom'];
         }
 
         return self::$fields;
@@ -296,11 +281,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param mixed $core: Name or UID of the core to load or null to get core admin endpoint
+     * @param mixed $core Name or UID of the core to load or null to get core admin endpoint
      *
-     * @return \Kitodo\Dlf\Common\Solr\Solr Instance of this class
+     * @return Solr Instance of this class
      */
-    public static function getInstance($core = null)
+    public static function getInstance($core = null): Solr
     {
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
@@ -316,7 +301,7 @@ class Solr implements LoggerAwareInterface
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
             if (
-                is_object(self::$registry[$core])
+                array_key_exists($core, self::$registry)
                 && self::$registry[$core] instanceof self
             ) {
                 // Return singleton instance if available.
@@ -337,13 +322,13 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param int $number: Number to start with
+     * @param int $number Number to start with
      *
      * @return int First unused core number found
      */
-    public static function getNextCoreNumber($number = 0)
+    public static function getNextCoreNumber(int $number = 0): int
     {
-        $number = max(intval($number), 0);
+        $number = max($number, 0);
         // Check if core already exists.
         $solr = self::getInstance('dlfCore' . $number);
         if (!$solr->ready) {
@@ -360,34 +345,30 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function loadSolrConnectionInfo()
+    protected function loadSolrConnectionInfo(): void
     {
         if (empty($this->config)) {
             $config = [];
             // Extract extension configuration.
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'solr');
             // Derive Solr scheme
-            $config['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
+            $config['scheme'] = empty($conf['https']) ? 'http' : 'https';
             // Derive Solr host name.
-            $config['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
+            $config['host'] = ($conf['host'] ? $conf['host'] : '127.0.0.1');
             // Set username and password.
-            $config['username'] = $conf['solrUser'];
-            $config['password'] = $conf['solrPass'];
+            $config['username'] = $conf['user'];
+            $config['password'] = $conf['pass'];
             // Set port if not set.
-            $config['port'] = MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
+            $config['port'] = MathUtility::forceIntegerInRange($conf['port'], 1, 65535, 8983);
             // Trim path of slashes and (re-)add trailing slash if path not empty.
-            $config['path'] = trim($conf['solrPath'], '/');
+            $config['path'] = trim($conf['path'], '/');
             if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
-            // Add "/solr" API endpoint when using Solarium <5.x
-                // Todo: Remove when dropping support for Solarium 4.x
-            if (!\Solarium\Client::checkMinimal('5.0.0')) {
-                $config['path'] .= 'solr/';
-            }
+
             // Set connection timeout lower than PHP's max_execution_time.
-            $max_execution_time = intval(ini_get('max_execution_time')) ? : 30;
-            $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $max_execution_time, 10);
+            $maxExecutionTime = (int) ini_get('max_execution_time') ? : 30;
+            $config['timeout'] = MathUtility::forceIntegerInRange($conf['timeout'], 1, $maxExecutionTime, 10);
             $this->config = $config;
         }
     }
@@ -397,11 +378,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param array $parameters: Additional search parameters
+     * @param array $parameters Additional search parameters
      *
      * @return array The Apache Solr Documents that were fetched
      */
-    public function search_raw($parameters = [])
+    public function searchRaw(array $parameters = []): array
     {
         // Set additional query parameters.
         $parameters['start'] = 0;
@@ -410,7 +391,8 @@ class Solr implements LoggerAwareInterface
         $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true));
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
         $resultSet = [];
-        if (($entry = $cache->get($cacheIdentifier)) === false) {
+        $entry = $cache->get($cacheIdentifier);
+        if ($entry === false) {
             $selectQuery = $this->service->createSelect(array_merge($this->params, $parameters));
             $result = $this->service->select($selectQuery);
             foreach ($result as $doc) {
@@ -432,7 +414,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string|null The core name of the current query endpoint or null if core admin endpoint
      */
-    protected function _getCore()
+    protected function magicGetCore(): ?string
     {
         return $this->core;
     }
@@ -444,7 +426,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int The max number of results
      */
-    protected function _getLimit()
+    protected function magicGetLimit(): int
     {
         return $this->limit;
     }
@@ -456,7 +438,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return int Total number of hits for last search
      */
-    protected function _getNumberOfHits()
+    protected function magicGetNumberOfHits(): int
     {
         return $this->numberOfHits;
     }
@@ -468,7 +450,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return bool Is the search instantiated successfully?
      */
-    protected function _getReady()
+    protected function magicGetReady(): bool
     {
         return $this->ready;
     }
@@ -478,25 +460,25 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @return \Solarium\Client Apache Solr service object
+     * @return Client Apache Solr service object
      */
-    protected function _getService()
+    protected function magicGetService(): Client
     {
         return $this->service;
     }
 
     /**
-     * This sets $this->cPid via __set()
+     * This sets $this->configPid via __set()
      *
      * @access protected
      *
-     * @param int $value: The new PID for the metadata definitions
+     * @param int $value The new PID for the metadata definitions
      *
      * @return void
      */
-    protected function _setCPid($value)
+    protected function magicSetConfigPid(int $value): void
     {
-        $this->cPid = max(intval($value), 0);
+        $this->configPid = max($value, 0);
     }
 
     /**
@@ -504,13 +486,13 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param int $value: The max number of results
+     * @param int $value The max number of results
      *
      * @return void
      */
-    protected function _setLimit($value)
+    protected function magicSetLimit(int $value): void
     {
-        $this->limit = max(intval($value), 0);
+        $this->limit = max($value, 0);
     }
 
     /**
@@ -518,11 +500,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param array $value: The query parameters
+     * @param array $value The query parameters
      *
      * @return void
      */
-    protected function _setParams(array $value)
+    protected function magicSetParams(array $value): void
     {
         $this->params = $value;
     }
@@ -532,19 +514,19 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to get
+     * @param string $var Name of variable to get
      *
      * @return mixed Value of $this->$var
      */
-    public function __get($var)
+    public function __get(string $var)
     {
-        $method = '_get' . ucfirst($var);
+        $method = 'magicGet' . ucfirst($var);
         if (
             !property_exists($this, $var)
             || !method_exists($this, $method)
         ) {
             $this->logger->warning('There is no getter function for property "' . $var . '"');
-            return;
+            return null;
         } else {
             return $this->$method();
         }
@@ -555,11 +537,11 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to check
+     * @param string $var Name of variable to check
      *
      * @return bool true if variable is set and not empty, false otherwise
      */
-    public function __isset($var)
+    public function __isset(string $var): bool
     {
         return !empty($this->__get($var));
     }
@@ -569,14 +551,14 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param string $var: Name of variable to set
-     * @param mixed $value: New value of variable
+     * @param string $var Name of variable to set
+     * @param mixed $value New value of variable
      *
      * @return void
      */
-    public function __set($var, $value)
+    public function __set(string $var, $value): void
     {
-        $method = '_set' . ucfirst($var);
+        $method = 'magicSet' . ucfirst($var);
         if (
             !property_exists($this, $var)
             || !method_exists($this, $method)
@@ -592,25 +574,28 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param string|null $core: The name of the core to use or null for core admin endpoint
+     * @param string|null $core The name of the core to use or null for core admin endpoint
      *
      * @return void
      */
-    protected function __construct($core)
+    protected function __construct(?string $core)
     {
+        // Solarium requires different code for version 5 and 6.
+        $isSolarium5 = Client::checkExact('5');
         // Get Solr connection parameters from configuration.
         $this->loadSolrConnectionInfo();
         // Configure connection adapter.
-        $adapter = GeneralUtility::makeInstance(\Solarium\Core\Client\Adapter\Http::class);
-            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
-            // the timeout must be set with the adapter instead of the
-            // endpoint (see below).
-            // $adapter->setTimeout($this->config['timeout']);
+        $adapter = GeneralUtility::makeInstance(Http::class);
+        $adapter->setTimeout($this->config['timeout']);
         // Configure event dispatcher.
-            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
+        if ($isSolarium5) {
+            $eventDispatcher = null;
+        } else {
+            // When updating to TYPO3 >=10.x and Solarium >=6.x
             // we have to provide an PSR-14 Event Dispatcher instead of
             // "null".
-            // $eventDispatcher = GeneralUtility::makeInstance(\TYPO3\CMS\Core\EventDispatcher\EventDispatcher::class);
+            $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
+        }
         // Configure endpoint.
         $config = [
             'endpoint' => [
@@ -621,18 +606,20 @@ class Solr implements LoggerAwareInterface
                     'path' => '/' . $this->config['path'],
                     'core' => $core,
                     'username' => $this->config['username'],
-                    'password' => $this->config['password'],
-                    'timeout' => $this->config['timeout'] // Remove when upgrading to Solarium 6.x
+                    'password' => $this->config['password']
                 ]
             ]
         ];
         // Instantiate Solarium\Client class.
-        $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $config);
-        $this->service->setAdapter($adapter);
-            // Todo: When updating to TYPO3 >=10.x and Solarium >=6.x
+        if ($isSolarium5) {
+            $this->service = GeneralUtility::makeInstance(Client::class, $config);
+        } else {
+            // When updating to TYPO3 >=10.x and Solarium >=6.x
             // $adapter and $eventDispatcher are mandatory arguments
             // of the \Solarium\Client constructor.
-            // $this->service = GeneralUtility::makeInstance(\Solarium\Client::class, $adapter, $eventDispatcher, $config);
+            $this->service = GeneralUtility::makeInstance(Client::class, $adapter, $eventDispatcher, $config);
+        }
+        $this->service->setAdapter($adapter);
         // Check if connection is established.
         $query = $this->service->createCoreAdmin();
         $action = $query->createStatus();
@@ -647,7 +634,7 @@ class Solr implements LoggerAwareInterface
                 if ($core !== null) {
                     $result = $response->getStatusResult();
                     if (
-                        $result instanceof \Solarium\QueryType\Server\CoreAdmin\Result\StatusResult
+                        $result instanceof StatusResult
                         && $result->getUptime() > 0
                     ) {
                         // Set core name.

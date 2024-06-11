@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alto xsi:schemaLocation="http://www.loc.gov/standards/alto/ns-v2# http://www.loc.gov/standards/alto/alto-v2.0.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+        <OCRProcessing ID="IdOcr">
+            <ocrProcessingStep>
+                <processingDateTime>2020-05-14</processingDateTime>
+                <processingSoftware>
+                    <softwareCreator>ABBYY</softwareCreator>
+                    <softwareName>ABBYY FineReader Engine</softwareName>
+                    <softwareVersion>12</softwareVersion>
+                </processingSoftware>
+            </ocrProcessingStep>
+        </OCRProcessing>
+    </Description>
+    <Styles> </Styles>
+    <Layout>
+        <Page ID="Page1" PHYSICAL_IMG_NR="1" HEIGHT="2546" WIDTH="1801">
+            <PrintSpace HEIGHT="2546" WIDTH="1801" VPOS="0" HPOS="0">
+                <Illustration ID="Page1_Block1" HEIGHT="2546" WIDTH="1801" VPOS="0" HPOS="0"/>
+                <TextBlock ID="Page1_Block2" HEIGHT="241" WIDTH="1064" VPOS="2068" HPOS="470" language="de">
+                    <Shape>
+                        <Polygon POINTS="1506,2068 1533,2068 1533,2283 1534,2283 1534,2306 1509,2306 1509,2307 1104,2307 1104,2308 700,2308 700,2309 471,2309 471,2286 470,2286 470,2071 697,2071 697,2070 1101,2070 1101,2069 1506,2069 1506,2068"/>
+                    </Shape>
+                </TextBlock>
+                <TextBlock ID="Page1_Block3" HEIGHT="290" WIDTH="775" VPOS="307" HPOS="466" language="de">
+                    <Shape>
+                        <Polygon POINTS="1101,307 1241,307 1241,595 1104,595 1104,596 700,596 700,597 466,597 466,309 697,309 697,308 1101,308 1101,307"/>
+                    </Shape>
+                </TextBlock>
+                <GraphicalElement ID="Page1_Block4" HEIGHT="14" WIDTH="1674" VPOS="266" HPOS="55"/>
+                <GraphicalElement ID="Page1_Block5" HEIGHT="15" WIDTH="1674" VPOS="442" HPOS="55"/>
+                <GraphicalElement ID="Page1_Block6" HEIGHT="30" WIDTH="629" VPOS="680" HPOS="477"/>
+                <GraphicalElement ID="Page1_Block7" HEIGHT="8" WIDTH="170" VPOS="1963" HPOS="635"/>
+                <GraphicalElement ID="Page1_Block8" HEIGHT="141" WIDTH="11" VPOS="1019" HPOS="1197"/>
+                <GraphicalElement ID="Page1_Block9" HEIGHT="168" WIDTH="12" VPOS="948" HPOS="1411"/>
+                <Illustration ID="Page1_Block10" HEIGHT="175" WIDTH="88" VPOS="1469" HPOS="544">
+                    <Shape>
+                        <Polygon POINTS="544,1469 631,1469 631,1474 632,1474 632,1644 545,1644 545,1477 544,1477 544,1469"/>
+                    </Shape>
+                </Illustration>
+                <Illustration ID="Page1_Block11" HEIGHT="207" WIDTH="61" VPOS="1657" HPOS="790"/>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

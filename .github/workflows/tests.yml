@@ -2,19 +2,20 @@ name: Unit and Functional Testing
 
 on:
   push:
-    branches: [master]
+    branches: [ "master" ]
   pull_request:
-    branches: [master]
+    branches: [ "master" ]
 
 jobs:
   test:
+    name: TYPO3
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        typo3: [9.5, 10.4]
+        typo3: [ 10.4, 11.5 ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.typo3 }}
@@ -24,3 +25,8 @@ jobs:
 
       - name: Run functional tests
         run: Build/Test/runTests.sh -s functional
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

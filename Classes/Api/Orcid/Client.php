@@ -21,63 +21,64 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * ORCID API Client class
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  **/
 class Client
 {
     /**
-     * constants for API endpoint
+     * @var string constant for API hostname
      **/
-    const HOSTNAME  = 'orcid.org';
-    const VERSION   = '3.0';
+    const HOSTNAME = 'orcid.org';
 
     /**
-     * This holds the logger
-     *
-     * @var Logger
+     * @var string constant for API version
+     **/
+    const VERSION = '3.0';
+
+    /**
      * @access protected
+     * @var Logger This holds the logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
-     * The ORCID API endpoint
-     *
-     * @var string
+     * @access private
+     * @var string The ORCID API endpoint
      **/
-    private $endpoint = 'record';
+    private string $endpoint = 'record';
 
     /**
-     * The ORCID API access level
-     *
-     * @var string
+     * @access private
+     * @var string The ORCID API access level
      **/
-    private $level = 'pub';
+    private string $level = 'pub';
 
     /**
-     * The ORCID ID to search for
-     *
-     * @var string
+     * @access private
+     * @var string The ORCID ID to search for
      **/
-    private $orcid = null;
+    private string $orcid;
 
     /**
-     * The request object
-     *
-     * @var RequestFactoryInterface
+     * @access private
+     * @var RequestFactoryInterface The request object
      **/
-    private $requestFactory = null;
+    private RequestFactoryInterface $requestFactory;
 
     /**
      * Constructs a new instance
      *
-     * @param string $orcid: the ORCID to search for
+     * @access public
+     *
+     * @param string $orcid the ORCID to search for
      * @param RequestFactory $requestFactory a request object to inject
+     *
      * @return void
      **/
-    public function __construct($orcid, RequestFactory $requestFactory)
+    public function __construct(string $orcid, RequestFactory $requestFactory)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->orcid = $orcid;
@@ -87,16 +88,20 @@ class Client
     /**
      * Sets API endpoint
      *
-     * @param string  $endpoint the shortname of the endpoint
+     * @access public
+     *
+     * @param string $endpoint the shortname of the endpoint
      *
      * @return void
      */
-    public function setEndpoint($endpoint) {
+    public function setEndpoint(string $endpoint): void {
         $this->endpoint = $endpoint;
     }
 
     /**
      * Get the profile data
+     *
+     * @access public
      *
      * @return object|bool
      **/
@@ -115,9 +120,11 @@ class Client
     /**
      * Creates the qualified API endpoint for retrieving the desired data
      *
+     * @access private
+     *
      * @return string
      **/
-    private function getApiEndpoint()
+    private function getApiEndpoint(): string
     {
         $url  = 'https://' . $this->level . '.' . self::HOSTNAME;
         $url .= '/v' . self::VERSION . '/';

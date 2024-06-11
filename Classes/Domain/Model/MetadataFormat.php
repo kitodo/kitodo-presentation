@@ -14,9 +14,10 @@ namespace Kitodo\Dlf\Domain\Model;
 
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * This specifies a way how a metadatum (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
+ * This specifies a way how a metadata (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
  *
  * For instance, the title of a document may be obtained from either the MODS
  * title field, or from the TEIHDR caption. This is modeled as two ``tx_dlf_metadaformat``
@@ -26,39 +27,37 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
-class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+class MetadataFormat extends AbstractEntity
 {
     /**
-     * UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
-     *
-     * @var int
+     * @access protected
+     * @var int UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
      */
     protected $parentId;
 
     /**
-     * UID of the ``tx_dlf_format`` in which this metadata entry is encoded.
-     *
-     * @var int
+     * @access protected
+     * @var int UID of the ``tx_dlf_format`` in which this metadata entry is encoded.
      */
     protected $encoded;
 
     /**
-     * XPath/JSONPath expression to extract the metadatum (relative to the data format root).
-     *
-     * @var string
+     * @access protected
+     * @var string XPath/JSONPath expression to extract the metadata (relative to the data format root).
      */
     protected $xpath;
 
     /**
-     * XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadatum.
-     *
-     * @var string
+     * @access protected
+     * @var string XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadata.
      */
     protected $xpathSorting;
 
     /**
+<<<<<<< HEAD
      * Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataSubentry>
@@ -71,6 +70,10 @@ class MetadataFormat extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
      *
      * @var int
+=======
+     * @access protected
+     * @var int Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
+>>>>>>> master
      */
     protected $mandatory;
 

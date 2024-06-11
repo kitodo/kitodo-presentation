@@ -437,7 +437,9 @@ dlfUtils.fetchIIPData = function (imageSourceObj) {
         url: dlfViewerSource.IIP.getMetdadataURL(imageSourceObj.url) //'http://localhost:8000/fcgi-bin/iipsrv.fcgi?FIF=F4713/HD7.tif&obj=IIP,1.0&obj=Max-size&obj=Tile-size&obj=Resolution-number',
     }).done(cb);
     function cb(response, type) {
-        if (type !== 'success') throw new Error('Problems while fetching ImageProperties.xml');
+        if (type !== 'success') {
+            throw new Error('Problems while fetching ImageProperties.xml');
+        }
 
         var imageDataObj = $.extend({
             src: imageSourceObj.url,
@@ -505,21 +507,14 @@ dlfUtils.getCookie = function (name) {
 
 /**
  * Returns url parameters
- * @returns {Object|undefined}
+ * @returns {string|null}
  */
-dlfUtils.getUrlParams = function () {
+dlfUtils.getUrlParam = function (param) {
     if (Object.prototype.hasOwnProperty.call(location, 'search')) {
-        var search = decodeURIComponent(location.search).slice(1).split('&'),
-            params = {};
-
-        search.forEach(function (item) {
-            var s = item.split('=');
-            params[s[0]] = s[1];
-        });
-
-        return params;
+        const urlParams = new URLSearchParams(location.search);
+        return urlParams.get(param);
     }
-    return undefined;
+    return null;
 };
 
 /**
@@ -561,7 +556,7 @@ dlfUtils.isFulltextDescriptor = function (obj) {
  * @return {Object}
  */
 dlfUtils.parseDataDic = function (element) {
-    var dataDicString = $(element).attr('data-dic') || '',
+    var dataDicString = $('html').find(element).data('dic') || '',
         dataDicRecords = dataDicString.split(';'),
         dataDic = {};
 
@@ -604,11 +599,11 @@ dlfUtils.setCookie = function (name, value, samesite) {
  * @param {Object} imageObj
  * @param {number} width
  * @param {number} height
- * @param {number=} opt_offset
+ * @param {number=} optOffset
  * @deprecated
  * @return {Array.<ol.Feature>}
  */
-dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_offset) {
+dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffset) {
 
     // update size / scale settings of imageObj
     var image = void 0;
@@ -621,27 +616,31 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
         };
     }
 
-    if (image === undefined) return [];
+    if (image === undefined) {
+        return [];
+    }
 
     var scale = image.scale,
-        offset = opt_offset !== undefined ? opt_offset : 0;
+        offset = optOffset !== undefined ? optOffset : 0;
 
     // do rescaling and set a id
     for (var i in features) {
 
-        var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
-            newCoordinates = [];
+        if (features.hasOwnProperty(i)) {
+            var oldCoordinates = features[i].getGeometry().getCoordinates()[0],
+                newCoordinates = [];
 
-        for (var j = 0; j < oldCoordinates.length; j++) {
-            newCoordinates.push(
-              [offset + scale * oldCoordinates[j][0], 0 - scale * oldCoordinates[j][1]]);
+            for (var j = 0; j < oldCoordinates.length; j++) {
+                newCoordinates.push(
+                  [offset + scale * oldCoordinates[j][0], 0 - scale * oldCoordinates[j][1]]);
+            }
+
+            features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
+
+            // set index
+            dlfUtils.RUNNING_INDEX += 1;
+            features[i].setId('' + dlfUtils.RUNNING_INDEX);
         }
-
-        features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
-
-        // set index
-        dlfUtils.RUNNING_INDEX += 1;
-        features[i].setId('' + dlfUtils.RUNNING_INDEX);
     }
 
     return features;
@@ -656,8 +655,8 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, opt_off
 dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, coordinates) {
     var features = [];
     featureCollection.forEach(function (ft) {
-        if (ft.get('fulltext') !== undefined) {
-            if (ft.getId() === coordinates) {
+        if (ft.values_.fulltext !== undefined) {
+            if (ft.values_.fulltext.includes(coordinates)) {
                 features.push(ft);
             }
         }
