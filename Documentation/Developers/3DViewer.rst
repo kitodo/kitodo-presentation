@@ -7,17 +7,18 @@ Setup
 
 -  Add folder with name ``dlf_3d_viewers`` in your default storage
 
--  Add a subfolder with name of your 3D viewer e.g. ``3dviewer``
+-  Add a subfolder with name of your custom 3D viewer (see :ref:`Custom Viewer`) e.g. ``3dviewer`` or use one viewer folder of our reference implementation in GitHub Repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
 
 .. IMPORTANT::
    When creating folders through the Filelist module in TYPO3, follow the usual process. However, when creating folders in the system, ensure that the name is URL-compliant.
 
--  Add a subfolder with name of your 3D viewer e.g. ``3dviewer``
+.. _Custom Viewer:
 
-Viewer
+Custom Viewer
 =======
 
-Viewers can be added and customized depending on the use case. A reference implementation of various 3D viewers for integration into Kitodo.Presentation can be found on GitHub in Repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
+Viewers can be added and customized depending on the use case. A viewer is a folder with the name of the viewer that contains a ``dlf-3d-viewer.yml`` file and at least one HTML file.
+A reference implementation of various 3D viewers for integration into Kitodo.Presentation can be found on GitHub in Repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
 
 dlf-3d-viewer.yml
 -------
@@ -60,7 +61,7 @@ Placeholders can be used within the file which is define under the ``base`` key 
      :description:              Description
 
    - :field:                    viewerPath
-     :description:              Path to the viewer directory located inside the ``dlf_3d_viewers`` folder
+     :description:              Path to the viewer directory located inside the ``dlf_3d_viewers`` folder. For example "fileadmin/dlf_3d_viewers/3dviewer/".
 
    - :field:                    modelUrl
      :description:              The fileserver where your resource is hosted. For example "https://example.com/my-model.glb".
