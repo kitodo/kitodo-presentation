@@ -33,8 +33,8 @@ class View3DController extends AbstractController
     {
 
         if (!empty($this->requestData['model'])) {
-            $this->view->assign('is3DViewer', $this->is3DViewer($this->requestData['model']));
-            $embedded3DViewerUrl = $this->buildEmbedded3DViewerUrl($this->requestData['model']);
+            $this->view->assign('is3DViewer', $this->is3dViewer($this->requestData['model']));
+            $embedded3DViewerUrl = $this->buildEmbedded3dViewerUrl($this->requestData['model']);
             if (!empty($this->requestData['viewer'])) {
                 $embedded3DViewerUrl .= '&viewer=' . $this->requestData['viewer'];
             }
@@ -49,8 +49,8 @@ class View3DController extends AbstractController
                 || $this->document->getCurrentDocument()->metadataArray['LOG_0001']['type'][0] != 'object')
         ) {
             $model = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['DEFAULT']));
-            $this->view->assign('is3DViewer', $this->is3DViewer($model));
-            $this->view->assign('embedded3DViewerUrl', $this->buildEmbedded3DViewerUrl($model));
+            $this->view->assign('is3DViewer', $this->is3dViewer($model));
+            $this->view->assign('embedded3DViewerUrl', $this->buildEmbedded3dViewerUrl($model));
         }
     }
 
@@ -59,7 +59,7 @@ class View3DController extends AbstractController
      *
      * @return bool True if the 3D viewer can be rendered
      */
-    private function is3DViewer($model): bool
+    private function is3dViewer($model): bool
     {
         return !empty($model);
     }
@@ -70,7 +70,7 @@ class View3DController extends AbstractController
      * @param string $model The model url
      * @return string The embedded 3D viewer url
      */
-    public function buildEmbedded3DViewerUrl(string $model): string
+    public function buildEmbedded3dViewerUrl(string $model): string
     {
         return self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX . '&model=' . $model;
     }

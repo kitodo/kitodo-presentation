@@ -179,7 +179,7 @@ class Embedded3DViewer implements MiddlewareInterface
         $viewerModelFormatMappings = explode(";", $extConf['viewerModelFormatMapping']);
         foreach ($viewerModelFormatMappings as $viewerModelFormatMapping) {
             $explodedViewerModelMapping = explode(":", $viewerModelFormatMapping);
-            if(sizeof($explodedViewerModelMapping) == 2) {
+            if (count($explodedViewerModelMapping) == 2) {
                 $viewer = trim($explodedViewerModelMapping[0]);
                 $viewerModelFormats = array_map('trim', explode(",", $explodedViewerModelMapping[1]));
                 if (in_array($modelFormat, $viewerModelFormats)) {
@@ -190,5 +190,4 @@ class Embedded3DViewer implements MiddlewareInterface
 
         return $extConf['defaultViewer'] ?? "";
     }
-
 }
