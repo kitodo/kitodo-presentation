@@ -33,6 +33,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
+        return [];
     }
 
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)

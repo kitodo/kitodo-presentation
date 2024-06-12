@@ -94,6 +94,7 @@ class BaseTask extends AbstractTask
 
     public function execute()
     {
+        return true;
     }
 
     /**
