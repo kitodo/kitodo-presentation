@@ -2,59 +2,36 @@
 
 namespace Kitodo\Dlf\Middleware;
 
-/*
- *  Copyright notice
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
- *  (c) 2014 Alexander Bigga <typo3@slub-dresden.de>
- *  (c) 2023 Beatrycze Volk <typo3@slub-dresden.de>
- *  All rights reserved
+ * This file is part of the Kitodo and TYPO3 projects.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  */
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
-use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
-use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
-use TYPO3\CMS\Core\Http\ImmediateResponseException;
-use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\RateLimiter\RequestRateLimitedException;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
-use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 /**
- * Plugin 'DFG-Viewer: SRU Client Middleware for the 'dfgviewer' extension.
+ * Middleware for embedding custom 3D Viewer implementation of the 'dlf' extension.
  *
  * @package TYPO3
- * @subpackage tx_dfgviewer
+ * @subpackage dlf
  * @access public
  */
-class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
+class Embedded3DViewer implements MiddlewareInterface
 {
     use LoggerAwareTrait;
 
@@ -75,7 +52,6 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
-
         // parameters are sent by POST --> use getParsedBody() instead of getQueryParams()
         $parameters = $request->getQueryParams();
         // Return if not this middleware
@@ -83,13 +59,22 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
             return $response;
         }
 
+        if (empty($parameters['model'])) {
+            return $this->warningResponse('Model url is missing.', $request);
+        }
+
         $modelInfo = pathinfo($parameters['model']);
         $modelFormat = $modelInfo["extension"];
-        if (!isset($modelFormat) || empty($modelFormat)) {
+        if (empty($modelFormat)) {
             return $this->warningResponse('Model path "' . $parameters['model'] . '" has no extension format', $request);
         }
 
-        $viewer = $this->getViewerByModelFormat($modelFormat);
+        if (empty($parameters['viewer'])) {
+            // determine viewer from extension configuration
+            $viewer = $this->getViewerByExtensionConfiguration($modelFormat);
+        } else {
+            $viewer = $parameters['viewer'];
+        }
 
         // create response object
         /** @var Response $response */
@@ -147,6 +132,10 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
     }
 
     /**
+     * Build the error response.
+     *
+     * Logs the given message as error and return internal error response.
+     *
      * @param string $message
      * @param ServerRequestInterface $request
      * @return ResponseInterface
@@ -161,6 +150,10 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
     }
 
     /**
+     * Build the warning response.
+     *
+     * Logs the given message as warning and return page not found response.
+     *
      * @param string $message
      * @param ServerRequestInterface $request
      * @return ResponseInterface
@@ -175,10 +168,12 @@ class Embedded3DViewer implements MiddlewareInterface, LoggerAwareInterface
     }
 
     /**
-     * @param $viewerModelFormatMapping
-     * @return string
+     * Determines the viewer based on the extension configuration and the given model format.
+     *
+     * @param $modelFormat string The model format
+     * @return string The 3D viewer
      */
-    private function getViewerByModelFormat($modelFormat): string
+    private function getViewerByExtensionConfiguration($modelFormat): string
     {
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXT_KEY, '3dviewer');
         $viewerModelFormatMappings = explode(";", $extConf['viewerModelFormatMapping']);

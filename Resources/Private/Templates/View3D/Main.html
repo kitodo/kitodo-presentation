@@ -13,8 +13,8 @@
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-      <f:if condition="{model}">
-        <iframe class="dlf-3d-viewer" src="/?middleware=dlf/embedded3DViewer&viewer={viewer}&model={model}" ></iframe>
+    <f:if condition="{is3DViewer}">
+        <iframe class="dlf-3d-viewer" src="{embedded3DViewerUrl}" ></iframe>
     </f:if>
 
 </html>
