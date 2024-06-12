@@ -2,15 +2,41 @@
 3D Viewer
 ========
 
+On this page, you will find all the information to use the 3D Viewer in Kitodo.Presentation. You can utilize your own implementations or one of the reference implementations from the GitHub repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
+
+.. contents::
+    :local:
+    :depth: 2
+
 Setup
 =======
 
 -  Add folder with name ``dlf_3d_viewers`` in your default storage
 
--  Add a subfolder with name of your custom 3D viewer (see :ref:`Custom Viewer`) e.g. ``3dviewer`` or use one viewer folder of our reference implementation in GitHub Repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
+-  Add a subfolder with name of your custom 3D viewer (see :ref:`Custom Viewer`) e.g. ``3dviewer`` or use one or more viewer folders of our reference implementation in GitHub Repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
 
 .. IMPORTANT::
    When creating folders through the Filelist module in TYPO3, follow the usual process. However, when creating folders in the system, ensure that the name is URL-compliant.
+
+Configuration
+=======
+
+By default, the viewers from the folder ``dlf_3d_viewers`` are all active and can be accessed and tested via URL.
+
+For this, only the parameter ``tx_dlf[viewer]`` with the name of the viewer and the encoded URL to the model via the parameter ``tx_dlf[model]`` need to be passed to the URL that the plugin ``plugin.tx_dlf_view3d`` renders.
+
+.. note::
+   For example in the DFG Viewer, this is the page whose ID is set via the constant ``config.kitodoPageView``.
+
+Automatic selection of the viewer
+-------
+
+Under the configuration of the ``dlf`` extension, you will find a tab to configure 3D viewers for automatic selection.
+
+With the configuration field "Viewer model format mapping," you can define a list of considered viewers from the ``dlf_3d_viewers`` folder along with their associated model formats.
+If there are multiple viewers that support the same model format, you can decide here which one is responsible for the specific format.
+
+Additionally, a default viewer can be set, which serves as a fallback for all model formats that have not been mapped.
 
 .. _Custom Viewer:
 
@@ -23,7 +49,7 @@ A reference implementation of various 3D viewers for integration into Kitodo.Pre
 dlf-3d-viewer.yml
 -------
 
-To configure the 3D Viewer for Kitodo.Presentation, a ``dlf-3d-viewer.yml`` file must be present in the viewer directory.
+To configure the 3D viewer for Kitodo.Presentation, a ``dlf-3d-viewer.yml`` file must be present in the viewer directory.
 
 .. t3-field-list-table::
    :header-rows: 1
