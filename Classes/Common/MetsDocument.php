@@ -502,8 +502,8 @@ final class MetsDocument extends AbstractDocument
             // There is no metadata section for this structure node.
             return [];
         }
-        // Associative array used as set of available section types (dmdSec, techMD, ...)
-        $hasMetadataSection = [];
+        // Array used as set of available section types (dmdSec, techMD, ...)
+        $metadataSections = [];
         // Load available metadata formats and metadata sections.
         $this->loadFormats();
         $this->magicGetMdSec();
@@ -513,19 +513,19 @@ final class MetsDocument extends AbstractDocument
         foreach ($mdIds as $dmdId) {
             $mdSectionType = $this->mdSec[$dmdId]['section'];
 
-            if ($mdSectionType === 'dmdSec' && isset($hasMetadataSection['dmdSec'])) {
+            if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
                 continue;
             }
 
-            if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $hasMetadataSection)) {
+            if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
                 continue;
             }
 
-            $hasMetadataSection[$mdSectionType] = true;
+            $metadataSections[] = $mdSectionType;
         }
 
         // Files are not expected to reference a dmdSec
-        if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
+        if (isset($this->fileInfos[$id]) || in_array('dmdSec', $metadataSections)) {
             return $metadata;
         } else {
             $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
@@ -564,13 +564,13 @@ final class MetsDocument extends AbstractDocument
      * @param string $mdSectionType
      * @param array $metadata
      * @param integer $cPid
-     * @param array $hasMetadataSection
+     * @param array $metadataSections
      *
      * @return boolean
      */
-    private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, int $cPid, array $hasMetadataSection): bool
+    private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, int $cPid, array $metadataSections): bool
     {
-        if ($mdSectionType === 'dmdSec' && isset($hasMetadataSection['dmdSec'])) {
+        if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
             return true;
         }
 
@@ -589,6 +589,22 @@ final class MetsDocument extends AbstractDocument
         $this->processAdditionalMetadata($additionalMetadata, $domXPath, $domNode, $metadata);
 
         return true;
+    }
+
+    /**
+     * Check if searched metadata section is stored in the array.
+     *
+     * @access private
+     *
+     * @param array $metadataSections
+     * @param string $currentMetadataSection
+     * @param string $searchedMetadataSection
+     *
+     * @return boolean
+     */
+    private function hasMetadataSection(array $metadataSections, string $currentMetadataSection, string $searchedMetadataSection): bool
+    {
+        return $currentMetadataSection === $searchedMetadataSection && in_array($searchedMetadataSection, $metadataSections);
     }
 
     /**
