@@ -52,17 +52,12 @@ class View3DController extends AbstractController
         } else {
             $model = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['DEFAULT']));
 
-            //$modelConverted = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['CONVERTED']));
             $xml = $this->requestData['id'];
 
             $settingsParts = explode("/", $model);
             $fileName = end($settingsParts);
             $path = substr($model, 0,  strrpos($model, $fileName));
             $modelSettings = $path . "metadata/" . $fileName . "_viewer";
-
-           // if (!empty($modelConverted)) {
-             //   $model = $modelConverted;
-            //}
 
             if ($this->settings['useInternalProxy']) {
                 $this->configureProxyUrl($model);
