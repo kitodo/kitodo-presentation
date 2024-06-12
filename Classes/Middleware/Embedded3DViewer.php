@@ -112,7 +112,7 @@ class Embedded3DViewer implements MiddlewareInterface
         }
 
         $htmlFile = "index.html";
-        if(isset($config["base"]) && !empty($config["base"]) ) {
+        if (isset($config["base"]) && !empty($config["base"]) ) {
             $htmlFile = $config["base"];
         }
 
@@ -122,10 +122,7 @@ class Embedded3DViewer implements MiddlewareInterface
         }
 
         $html = $viewerFolder->getFile($htmlFile)->getContents();
-        $html = str_replace("{{viewerPath}}", $viewerUrl, $html);
-        $html = str_replace("{{modelUrl}}", $parameters['model'], $html);
-        $html = str_replace("{{modelPath}}", $modelInfo["dirname"], $html);
-        $html = str_replace("{{modelResource}}", $modelInfo["basename"], $html);
+        $html = $this->replacePlaceholders($viewerUrl, $html, $parameters['model'], $modelInfo);
 
         $response->getBody()->write($html);
         return $response;
@@ -189,5 +186,21 @@ class Embedded3DViewer implements MiddlewareInterface
         }
 
         return $extConf['defaultViewer'] ?? "";
+    }
+
+    /**
+     * @param string $viewerUrl
+     * @param string $html
+     * @param $model
+     * @param array|string $modelInfo
+     * @return array|string|string[]
+     */
+    public function replacePlaceholders(string $viewerUrl, string $html, $model, array|string $modelInfo): string|array
+    {
+        $html = str_replace("{{viewerPath}}", $viewerUrl, $html);
+        $html = str_replace("{{modelUrl}}", $model, $html);
+        $html = str_replace("{{modelPath}}", $modelInfo["dirname"], $html);
+        $html = str_replace("{{modelResource}}", $modelInfo["basename"], $html);
+        return $html;
     }
 }
