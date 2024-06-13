@@ -53,25 +53,26 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             $fieldsValid = false;
         }
 
+        $messageTitle = '';
+        $messageSeverity = FlashMessage::WARNING;
+        if ($submittedData['uid']) {
+            $messageTitle = Helper::getLanguageService()->getLL('additionalFields.error');
+            $messageSeverity = FlashMessage::ERROR;
+        }
+        else {
+            $messageTitle = Helper::getLanguageService()->getLL('additionalFields.warning');
+            $messageSeverity = FlashMessage::WARNING;
+        }
+
         if ((isset($submittedData['lib']) && (int) $submittedData['lib'] <= 0)) {
-            if ($submittedData['uid']) {
-                Helper::addMessage(
-                    Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                    Helper::getLanguageService()->getLL('additionalFields.error'),
-                    FlashMessage::ERROR,
-                    true,
-                    'core.template.flashMessages'
-                );
-                $fieldsValid = false;
-            } else {
-                Helper::addMessage(
-                    Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                    Helper::getLanguageService()->getLL('additionalFields.warning'),
-                    FlashMessage::WARNING,
-                    true,
-                    'core.template.flashMessages'
-                );
-            }
+            Helper::addMessage(
+                Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                $messageTitle,
+                $messageSeverity,
+                true,
+                'core.template.flashMessages'
+            );
+            $fieldsValid = false;
         }
 
         if ((isset($submittedData['pid']) && (int) $submittedData['pid'] <= 0) || !isset($submittedData['pid'])) {
@@ -86,46 +87,26 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         }
 
         if ((isset($submittedData['solr']) && (int) $submittedData['solr'] <= 0) || !isset($submittedData['solr'])) {
-            if ($submittedData['uid']) {
-                Helper::addMessage(
-                    Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                    Helper::getLanguageService()->getLL('additionalFields.error'),
-                    FlashMessage::ERROR,
-                    true,
-                    'core.template.flashMessages'
-                );
-                $fieldsValid = false;
-            } else {
-                Helper::addMessage(
-                    Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                    Helper::getLanguageService()->getLL('additionalFields.warning'),
-                    FlashMessage::WARNING,
-                    true,
-                    'core.template.flashMessages'
-                );
-            }
+            Helper::addMessage(
+                Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                $messageTitle,
+                $messageSeverity,
+                true,
+                'core.template.flashMessages'
+            );
+            $fieldsValid = false;
         }
 
         if (((isset($submittedData['coll']) && isset($submittedData['all'])) || (!isset($submittedData['coll']) && !isset($submittedData['all'])))
             && !isset($submittedData['doc']) && !isset($submittedData['lib'])) {
-            if ($submittedData['uid']) {
-                Helper::addMessage(
-                    Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
-                    Helper::getLanguageService()->getLL('additionalFields.error'),
-                    FlashMessage::ERROR,
-                    true,
-                    'core.template.flashMessages'
-                );
-                $fieldsValid = false;
-            } else {
-                Helper::addMessage(
-                    Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
-                    Helper::getLanguageService()->getLL('additionalFields.warning'),
-                    FlashMessage::WARNING,
-                    true,
-                    'core.template.flashMessages'
-                );
-            }
+            Helper::addMessage(
+                Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
+                $messageTitle,
+                $messageSeverity,
+                true,
+                'core.template.flashMessages'
+            );
+            $fieldsValid = false;
         }
         return $fieldsValid;
     }
