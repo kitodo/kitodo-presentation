@@ -66,7 +66,7 @@
                 <source><![CDATA[Done!]]></source>
             </trans-unit>
             <trans-unit id="additionalFields.valid" approved="yes">
-                <source><![CDATA[has to has to be selected!]]></source>
+                <source><![CDATA[has to be selected!]]></source>
             </trans-unit>
             <trans-unit id="additionalFields.collOrAll" approved="yes">
                 <source><![CDATA[At least one collection or "All" has to be selected!]]></source>

@@ -86,7 +86,7 @@
                 <target><![CDATA[Erledigt!]]></target>
             </trans-unit>
             <trans-unit id="additionalFields.valid" approved="yes">
-                <source><![CDATA[has to has to be selected!]]></source>
+                <source><![CDATA[has to be selected!]]></source>
                 <target><![CDATA[muss ausgwählt werden!]]></target>
             </trans-unit>
             <trans-unit id="additionalFields.collOrAll" approved="yes">
