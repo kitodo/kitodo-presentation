@@ -654,10 +654,15 @@ final class MetsDocument extends AbstractDocument
      */
     private function processAdditionalMetadata(array $additionalMetadata, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
     {
+        $subentries = [];
+        if (isset($additionalMetadata['subentries'])) {
+            $subentries = $additionalMetadata['subentries'];
+            unset($additionalMetadata['subentries']);
+        }
         foreach ($additionalMetadata as $resArray) {
-            $this->setMetadataFieldValues($resArray, $domXPath, $domNode, $metadata);
+            $this->setMetadataFieldValues($resArray, $domXPath, $domNode, $metadata, $subentries);
             $this->setDefaultMetadataValue($resArray, $metadata);
-            $this->setSortableMetadataValue($resArray, $domXPath, $domNode, $metadata);
+            $this->setSortableMetadataValue($resArray, $domXPath, $domNode, $metadata, $subentries);
         }
     }
 
@@ -673,14 +678,18 @@ final class MetsDocument extends AbstractDocument
      *
      * @return void
      */
-    private function setMetadataFieldValues(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    private function setMetadataFieldValues(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata, array $subentryResults): void
     {
         if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
             $values = $domXPath->evaluate($resArray['xpath'], $domNode);
             if ($values instanceof \DOMNodeList && $values->length > 0) {
                 $metadata[$resArray['index_name']] = [];
                 foreach ($values as $value) {
-                    $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
+                    if ($subentries = $this->getSubentries($subentryResults, $resArray['index_name'], $value)) {
+                        $metadata[$resArray['index_name']][] = $subentries;
+                    } else {
+                        $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
+                    }
                 }
             } elseif (!($values instanceof \DOMNodeList)) {
                 $metadata[$resArray['index_name']] = [trim((string) $values)];
@@ -717,19 +726,27 @@ final class MetsDocument extends AbstractDocument
      *
      * @return void
      */
-    private function setSortableMetadataValue(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    private function setSortableMetadataValue(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata, array $subentryResults): void
     {
-        if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
+        $indexName = $resArray['index_name'];
+        $currentMetadata = $metadata[$indexName][0];
+
+        if (!empty($metadata[$indexName]) && $resArray['is_sortable']) {
             if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
                 $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
                 if ($values instanceof \DOMNodeList && $values->length > 0) {
-                    $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
+                    $metadata[$indexName . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
                 } elseif (!($values instanceof \DOMNodeList)) {
-                    $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values);
+                    $metadata[$indexName . '_sorting'][0] = trim((string) $values);
                 }
             }
-            if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
-                $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
+            if (empty($metadata[$indexName . '_sorting'][0])) {
+                if (is_array($currentMetadata)) {
+                    $sortingValue = implode(',', array_column($currentMetadata, 0));
+                    $metadata[$indexName . '_sorting'][0] = $sortingValue;
+                } else {
+                    $metadata[$indexName . '_sorting'][0] = $currentMetadata;
+                }
             }
         }
     }
