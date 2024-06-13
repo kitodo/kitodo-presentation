@@ -57,7 +57,6 @@ class MetadataFormat extends AbstractEntity
     protected $xpathSorting;
 
     /**
-<<<<<<< HEAD
      * Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataSubentry>
@@ -70,10 +69,7 @@ class MetadataFormat extends AbstractEntity
      * Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
      *
      * @var int
-=======
      * @access protected
-     * @var int Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
->>>>>>> master
      */
     protected $mandatory;
 
