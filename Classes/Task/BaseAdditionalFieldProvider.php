@@ -42,22 +42,34 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_tasks.xlf');
 
+        $messageTitle = Helper::getLanguageService()->getLL('additionalFields.error');
+        $messageSeverity = FlashMessage::ERROR;
+
         if (isset($submittedData['doc']) && empty($submittedData['doc'])) {
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                    Helper::getLanguageService()->getLL('additionalFields.error'),
-                    FlashMessage::ERROR,
+                    $messageTitle,
+                    $messageSeverity,
                     true,
                     'core.template.flashMessages'
                 );
             $fieldsValid = false;
         }
 
-        $messageTitle = Helper::getLanguageService()->getLL('additionalFields.warning');
-        $messageSeverity = FlashMessage::WARNING;
-        if ($submittedData['uid']) {
-            $messageTitle = Helper::getLanguageService()->getLL('additionalFields.error');
-            $messageSeverity = FlashMessage::ERROR;
+        if ((isset($submittedData['pid']) && (int) $submittedData['pid'] <= 0) || !isset($submittedData['pid'])) {
+            Helper::addMessage(
+                Helper::getLanguageService()->getLL('additionalFields.pid') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                $messageTitle,
+                $messageSeverity,
+                true,
+                'core.template.flashMessages'
+                );
+            $fieldsValid = false;
+        }
+
+        if (!$submittedData['uid']) {
+            $messageTitle = Helper::getLanguageService()->getLL('additionalFields.warning');
+            $messageSeverity = FlashMessage::WARNING;
         }
 
         if ((isset($submittedData['lib']) && (int) $submittedData['lib'] <= 0)) {
