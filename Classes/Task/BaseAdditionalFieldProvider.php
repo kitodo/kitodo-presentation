@@ -46,13 +46,13 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         $messageSeverity = FlashMessage::ERROR;
 
         if (isset($submittedData['doc']) && empty($submittedData['doc'])) {
-                Helper::addMessage(
-                    Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                    $messageTitle,
-                    $messageSeverity,
-                    true,
-                    'core.template.flashMessages'
-                );
+            Helper::addMessage(
+                Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                $messageTitle,
+                $messageSeverity,
+                true,
+                'core.template.flashMessages'
+            );
             $fieldsValid = false;
         }
 
@@ -63,7 +63,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 $messageSeverity,
                 true,
                 'core.template.flashMessages'
-                );
+            );
             $fieldsValid = false;
         }
 
@@ -77,17 +77,6 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
-                true,
-                'core.template.flashMessages'
-            );
-            $fieldsValid = false;
-        }
-
-        if ((isset($submittedData['pid']) && (int) $submittedData['pid'] <= 0) || !isset($submittedData['pid'])) {
-            Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.pid') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
-                Helper::getLanguageService()->getLL('additionalFields.error'),
-                FlashMessage::ERROR,
                 true,
                 'core.template.flashMessages'
             );
