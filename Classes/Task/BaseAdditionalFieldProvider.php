@@ -53,15 +53,11 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             $fieldsValid = false;
         }
 
-        $messageTitle = '';
+        $messageTitle = Helper::getLanguageService()->getLL('additionalFields.warning');
         $messageSeverity = FlashMessage::WARNING;
         if ($submittedData['uid']) {
             $messageTitle = Helper::getLanguageService()->getLL('additionalFields.error');
             $messageSeverity = FlashMessage::ERROR;
-        }
-        else {
-            $messageTitle = Helper::getLanguageService()->getLL('additionalFields.warning');
-            $messageSeverity = FlashMessage::WARNING;
         }
 
         if ((isset($submittedData['lib']) && (int) $submittedData['lib'] <= 0)) {
