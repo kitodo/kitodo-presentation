@@ -535,8 +535,8 @@ final class MetsDocument extends AbstractDocument
     /**
      * @param array $allSubentries
      * @param string $parentIndex
-     * @param \DOMNode parentNode
-     * @return array
+     * @param \DOMNode $parentNode
+     * @return array|false
      */
     private function getSubentries($allSubentries, string $parentIndex, \DOMNode $parentNode)
     {
@@ -558,13 +558,13 @@ final class MetsDocument extends AbstractDocument
                             $theseSubentries[$subentry['index_name']][] = trim($values);
                         } else {
                             foreach ($values as $value) {
-                                if (!empty(trim((string)$value->nodeValue))) {
-                                    $theseSubentries[$subentry['index_name']][] = trim((string)$value->nodeValue);
+                                if (!empty(trim((string) $value->nodeValue))) {
+                                    $theseSubentries[$subentry['index_name']][] = trim((string) $value->nodeValue);
                                 }
                             }
                         }
                     } elseif (!($values instanceof \DOMNodeList)) {
-                        $theseSubentries[$subentry['index_name']] = [trim((string)$values->nodeValue)];
+                        $theseSubentries[$subentry['index_name']] = [trim((string) $values->nodeValue)];
                     }
                 }
                 // Set default value if applicable.
@@ -675,6 +675,7 @@ final class MetsDocument extends AbstractDocument
      * @param \DOMXPath $domXPath
      * @param \DOMElement $domNode
      * @param array $metadata
+     * @param array $subentryResults
      *
      * @return void
      */
@@ -685,7 +686,8 @@ final class MetsDocument extends AbstractDocument
             if ($values instanceof \DOMNodeList && $values->length > 0) {
                 $metadata[$resArray['index_name']] = [];
                 foreach ($values as $value) {
-                    if ($subentries = $this->getSubentries($subentryResults, $resArray['index_name'], $value)) {
+                    $subentries = $this->getSubentries($subentryResults, $resArray['index_name'], $value);
+                    if ($subentries) {
                         $metadata[$resArray['index_name']][] = $subentries;
                     } else {
                         $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
@@ -723,6 +725,7 @@ final class MetsDocument extends AbstractDocument
      * @param \DOMXPath $domXPath
      * @param \DOMElement $domNode
      * @param array $metadata
+     * @param array $subentryResults
      *
      * @return void
      */
@@ -942,66 +945,6 @@ final class MetsDocument extends AbstractDocument
         $subentriesResult = $subentries->fetchAll();
 
         return array_merge($allResults, ['subentries' => $subentriesResult]);
-//        // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
-//        $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
-//        $domXPath = new \DOMXPath($domNode->ownerDocument);
-//        $this->registerNamespaces($domXPath);
-//        // OK, now make the XPath queries.
-//        foreach ($allResults as $resArray) {
-//            // Set metadata field's value(s).
-//            if (
-//                $resArray['format'] > 0
-//                && !empty($resArray['xpath'])
-//                && ($values = $domXPath->evaluate($resArray['xpath'], $domNode))
-//            ) {
-//                if (
-//                    $values instanceof \DOMNodeList
-//                    && $values->length > 0
-//                ) {
-//                    $metadata[$resArray['index_name']] = [];
-//                    foreach ($values as $value) {
-//                        if ($subentries = $this->getSubentries($subentriesResult, $resArray['index_name'], $value)) {
-//                            $metadata[$resArray['index_name']][] = $subentries;
-//                        } else {
-//                            $metadata[$resArray['index_name']][] = trim((string)$value->nodeValue);
-//                        }
-//                    }
-//                } elseif (!($values instanceof \DOMNodeList)) {
-//                    $metadata[$resArray['index_name']] = [trim((string)$values)];
-//                }
-//            }
-//            // Set default value if applicable.
-//            if (
-//                empty($metadata[$resArray['index_name']][0])
-//                && strlen($resArray['default_value']) > 0
-//            ) {
-//                $metadata[$resArray['index_name']] = [$resArray['default_value']];
-//            }
-//            // Set sorting value if applicable.
-//            if (
-//                !empty($metadata[$resArray['index_name']])
-//                && $resArray['is_sortable']
-//            ) {
-//                if (
-//                    $resArray['format'] > 0
-//                    && !empty($resArray['xpath_sorting']) // TODO: will fail, for subentries
-//                    && ($values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode))
-//                ) {
-//                    if (
-//                        $values instanceof \DOMNodeList
-//                        && $values->length > 0
-//                    ) {
-//                        $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string)$values->item(0)->nodeValue);
-//                    } elseif (!($values instanceof \DOMNodeList)) {
-//                        $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string)$values);
-//                    }
-//                }
-//                if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
-//                    $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
-//                }
-//            }
-//        }
-        //return array_merge($resultWithFormat->fetchAllAssociative(), $resultWithoutFormat->fetchAllAssociative());
     }
 
     /**

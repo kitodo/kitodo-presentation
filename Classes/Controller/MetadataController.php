@@ -174,8 +174,7 @@ class MetadataController extends AbstractController
                     $metadata[$i][$name] = is_array($value)
                         ? implode($this->settings['separator'], $value)
                         : $value;
-
-                    // TODO: This might not be necessary for subentries or needs to be typecasted correctly.
+                    
                     if ($metadata[$i][$name] === 'Array') {
                         $metadata[$i][$name] = [];
                         foreach ($value as $subKey => $subValue) {
