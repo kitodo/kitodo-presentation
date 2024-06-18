@@ -662,7 +662,7 @@ final class MetsDocument extends AbstractDocument
         foreach ($additionalMetadata as $resArray) {
             $this->setMetadataFieldValues($resArray, $domXPath, $domNode, $metadata, $subentries);
             $this->setDefaultMetadataValue($resArray, $metadata);
-            $this->setSortableMetadataValue($resArray, $domXPath, $domNode, $metadata, $subentries);
+            $this->setSortableMetadataValue($resArray, $domXPath, $domNode, $metadata);
         }
     }
 
@@ -725,11 +725,10 @@ final class MetsDocument extends AbstractDocument
      * @param \DOMXPath $domXPath
      * @param \DOMElement $domNode
      * @param array $metadata
-     * @param array $subentryResults
      *
      * @return void
      */
-    private function setSortableMetadataValue(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata, array $subentryResults): void
+    private function setSortableMetadataValue(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
     {
         $indexName = $resArray['index_name'];
         $currentMetadata = $metadata[$indexName][0];

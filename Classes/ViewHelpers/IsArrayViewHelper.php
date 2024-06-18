@@ -33,8 +33,7 @@ class IsArrayViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    )
-    {
+    ) {
         $subject = $arguments['subject'];
         if ($subject === null) {
             $subject = $renderChildrenClosure();
