@@ -492,7 +492,8 @@ class NewTenantController extends AbstractController
     {
         $filePath = Environment::getPublicPath() . '/typo3conf/ext/dlf/Resources/Private/Data/' . $recordType . 'Defaults.json';
 
-        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);        $fileObject = $resourceFactory->getFileObjectFromCombinedIdentifier($filePath);
+        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+        $fileObject = $resourceFactory->getFileObjectFromCombinedIdentifier($filePath);
 
         if ($fileObject !== null) {
             $fileContents = $fileObject->getContents();
