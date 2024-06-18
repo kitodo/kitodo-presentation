@@ -837,7 +837,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     private function translateLanguageCode(&$doc): void
     {
-        if ($doc['metadata']['language']) {
+        if (array_key_exists('language', $doc['metadata'])) {
             foreach($doc['metadata']['language'] as $indexName => $language) {
                 $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
             }
