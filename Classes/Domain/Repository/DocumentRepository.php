@@ -583,9 +583,9 @@ class DocumentRepository extends Repository
      *
      * @return SolrSearch
      */
-    public function findSolrByCollection(Collection $collection, $settings, $searchParams, $listedMetadata = null)
+    public function findSolrByCollection(Collection $collection, $settings, $searchParams, $listedMetadata = null, $indexedMetadata = null)
     {
-        return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata);
+        return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
     /**
@@ -597,12 +597,13 @@ class DocumentRepository extends Repository
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
+     * @param QueryResult $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrByCollections($collections, $settings, $searchParams, $listedMetadata = null): SolrSearch
+    public function findSolrByCollections($collections, $settings, $searchParams, $listedMetadata = null, $indexedMetadata = null): SolrSearch
     {
-        return $this->findSolr($collections, $settings, $searchParams, $listedMetadata);
+        return $this->findSolr($collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
     /**
@@ -613,12 +614,13 @@ class DocumentRepository extends Repository
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
+     * @param QueryResult $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrWithoutCollection($settings, $searchParams, $listedMetadata = null): SolrSearch
+    public function findSolrWithoutCollection($settings, $searchParams, $listedMetadata = null, $indexedMetadata = null): SolrSearch
     {
-        return $this->findSolr([], $settings, $searchParams, $listedMetadata);
+        return $this->findSolr([], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
     /**

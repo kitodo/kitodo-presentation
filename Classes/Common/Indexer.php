@@ -331,7 +331,7 @@ class Indexer
         if (!empty($metadata)) {
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'general');
             $validator = new DocumentValidator($metadata, explode(',', $extConf['requiredMetadataFields']));
-            
+
             if ($validator->hasAllMandatoryMetadataFields()) {
                 $metadata['author'] = self::removeAppendsFromAuthor($metadata['author']);
                 // set Owner if available
@@ -378,16 +378,16 @@ class Indexer
                     in_array('collection', self::$fields['facets'])
                     && empty($metadata['collection'])
                     && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
-                    ) {
-                        $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
-                    }
-                    try {
-                        $updateQuery->addDocument($solrDoc);
-                        self::$solr->service->update($updateQuery);
-                    } catch (\Exception $e) {
-                        self::handleException($e->getMessage());
-                        return false;
-                    }
+                ) {
+                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
+                }
+                try {
+                    $updateQuery->addDocument($solrDoc);
+                    self::$solr->service->update($updateQuery);
+                } catch (\Exception $e) {
+                    self::handleException($e->getMessage());
+                    return false;
+                }
             } else {
                 Helper::log('Tip: If "record_id" field is missing then there is possibility that METS file still contains it but with the wrong source type attribute in "recordIdentifier" element', LOG_SEVERITY_NOTICE);
                 return false;
