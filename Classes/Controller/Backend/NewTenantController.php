@@ -144,7 +144,6 @@ class NewTenantController extends AbstractController
         $this->solrCoreRepository = $solrCoreRepository;
     }
 
-
     /**
      * Initialization for all actions
      *
