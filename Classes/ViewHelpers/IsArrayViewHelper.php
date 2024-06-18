@@ -11,6 +11,7 @@
  */
 
 namespace Kitodo\Dlf\ViewHelpers;
+
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -32,9 +33,10 @@ class IsArrayViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    )
+    {
         $subject = $arguments['subject'];
-        if (null === $subject) {
+        if ($subject === null) {
             $subject = $renderChildrenClosure();
         }
 

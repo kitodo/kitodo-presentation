@@ -932,13 +932,10 @@ final class MetsDocument extends AbstractDocument
                 )
             )
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', intval($cPid)),
-                // $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                // $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', intval($cPid)),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $cPid),
                 $queryBuilder->expr()->gt('tx_dlf_metadataformat_joins.subentries', 0),
                 $queryBuilder->expr()->eq('tx_dlf_subentries_joins.l18n_parent', 0),
-                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', intval($cPid))
-            // $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->dmdSec[$dmdId]['type']))
+                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', (int) $cPid)
             )
             ->orderBy('tx_dlf_subentries_joins.sorting')
             ->execute();

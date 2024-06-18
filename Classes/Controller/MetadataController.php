@@ -174,7 +174,7 @@ class MetadataController extends AbstractController
                     $metadata[$i][$name] = is_array($value)
                         ? implode($this->settings['separator'], $value)
                         : $value;
-                    
+
                     if ($metadata[$i][$name] === 'Array') {
                         $metadata[$i][$name] = [];
                         foreach ($value as $subKey => $subValue) {
@@ -384,7 +384,7 @@ class MetadataController extends AbstractController
                 $langValue = Helper::getLanguageName($langValue);
             }
         } elseif (!empty($value)) {
-          $metadata[$i][$name][0] = $metadata[$i][$name][0];
+            $metadata[$i][$name][0] = $metadata[$i][$name][0];
         }
     }
 
