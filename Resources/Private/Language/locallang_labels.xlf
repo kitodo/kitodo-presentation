@@ -632,6 +632,12 @@
 			<trans-unit id="config.solr.fields.geom">
 				<source>Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</source>
 			</trans-unit>
+			<trans-unit id="config.3dviewer.viewerModelFormatMapping">
+				<source>Viewer model format mapping : Add a semicolon-separated list of supported viewers of "dlf_3d_viewers" folder. A colon must follow each viewer name, followed by a comma-separated list of model formats. (Example: "dlf-model-viewer:glb;dlf-threejs:ply,obj;...")</source>
+			</trans-unit>
+			<trans-unit id="config.3dviewer.defaultViewer">
+				<source>Default viewer : Define the default viewer to use as a fallback</source>
+			</trans-unit>
 		</body>
   </file>
 </xliff>

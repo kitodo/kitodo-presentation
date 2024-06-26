@@ -21,6 +21,9 @@ namespace Kitodo\Dlf\Controller;
  */
 class View3DController extends AbstractController
 {
+
+    const MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX = '/?middleware=dlf/embedded3DViewer';
+
     /**
      * @access public
      *
@@ -28,40 +31,49 @@ class View3DController extends AbstractController
      */
     public function mainAction(): void
     {
+
+        if (!empty($this->requestData['model'])) {
+            $this->view->assign('is3DViewer', $this->is3dViewer($this->requestData['model']));
+            $embedded3DViewerUrl = $this->buildEmbedded3dViewerUrl($this->requestData['model']);
+            if (!empty($this->requestData['viewer'])) {
+                $embedded3DViewerUrl .= '&viewer=' . $this->requestData['viewer'];
+            }
+            $this->view->assign('embedded3DViewerUrl', $embedded3DViewerUrl);
+            return;
+        }
+
         // Load current document.
         $this->loadDocument();
         if (
-            $this->isDocMissingOrEmpty()
-            || $this->document->getCurrentDocument()->metadataArray['LOG_0001']['type'][0] != 'object'
+            !($this->isDocMissingOrEmpty()
+                || $this->document->getCurrentDocument()->metadataArray['LOG_0001']['type'][0] != 'object')
         ) {
-            // Quit without doing anything if required variables are not set.
-            return;
-        } else {
             $model = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['DEFAULT']));
-            $this->view->assign('3d', $model);
-
-            $modelConverted = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['CONVERTED']));
-            $xml = $this->requestData['id'];
-
-            $settingsParts = explode("/", $model);
-            $fileName = end($settingsParts);
-            $path = substr($model, 0,  strrpos($model, $fileName));
-            $modelSettings = $path . "metadata/" . $fileName . "_viewer";
-
-            if (!empty($modelConverted)) {
-                $model = $modelConverted;
-            }
-
-            if ($this->settings['useInternalProxy']) {
-                $this->configureProxyUrl($model);
-                $this->configureProxyUrl($xml);
-                $this->configureProxyUrl($modelSettings);
-            }
-
-            $this->view->assign('model', $model);
-            $this->view->assign('xml', $xml);
-            $this->view->assign('settings', $modelSettings);
-            $this->view->assign('proxy', $this->settings['useInternalProxy']);
+            $this->view->assign('is3DViewer', $this->is3dViewer($model));
+            $this->view->assign('embedded3DViewerUrl', $this->buildEmbedded3dViewerUrl($model));
         }
     }
+
+    /**
+     * Checks if the 3D viewer can be rendered.
+     *
+     * @return bool True if the 3D viewer can be rendered
+     */
+    private function is3dViewer($model): bool
+    {
+        return !empty($model);
+    }
+
+    /**
+     * Builds the embedded 3D viewer url.
+     *
+     * @param string $model The model url
+     * @return string The embedded 3D viewer url
+     */
+    public function buildEmbedded3dViewerUrl(string $model): string
+    {
+        return self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX . '&model=' . $model;
+    }
+
+
 }
