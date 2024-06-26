@@ -268,20 +268,18 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $data DocumentData
+     * @param bool|null|object $data DocumentData
      *
      * @return array One basket entry
      */
-    protected function getEntry(array $data): array
+    protected function getEntry($data): array
     {
-        // TODO: Call to function is_object() with array will always evaluate to false.
-        // @phpstan-ignore-next-line
         if (is_object($data)) {
             $data = get_object_vars($data);
         }
         $id = $data['id'];
-        $startpage = $data['startpage'];
-        $endpage = $data['endpage'];
+        $startPage = $data['startpage'];
+        $endPage = $data['endpage'];
         $startX = $data['startX'];
         $startY = $data['startY'];
         $endX = $data['endX'];
@@ -290,9 +288,7 @@ class BasketController extends AbstractController
 
         $docData = $this->getDocumentData((int) $id, $data);
 
-        $entryArray['BASKETDATA'] = $docData;
-
-        $entryKey = $id . '_' . $startpage;
+        $entryKey = $id . '_' . $startPage;
         if (!empty($startX)) {
             $entryKey .= '_' . $startX;
         }
@@ -300,10 +296,16 @@ class BasketController extends AbstractController
             $entryKey .= '_' . $endX;
         }
 
-        $entryArray['id'] = $id;
-        $entryArray['CONTROLS'] = [
-            'startpage' => $startpage,
-            'endpage' => $endpage,
+        $entry = [
+            'BASKETDATA' => $docData,
+            'id' => $id,
+            'NUMBER' => $docData['record_id'],
+            'key' => $entryKey
+        ];
+
+        $entry['CONTROLS'] = [
+            'startpage' => $startPage,
+            'endpage' => $endPage,
             'startX' => $startX,
             'startY' => $startY,
             'endX' => $endX,
@@ -311,11 +313,8 @@ class BasketController extends AbstractController
             'rotation' => $rotation,
         ];
 
-        $entryArray['NUMBER'] = $docData['record_id'];
-        $entryArray['key'] = $entryKey;
-
         // return one entry
-        return $entryArray;
+        return $entry;
     }
 
     /**
