@@ -1203,46 +1203,82 @@ final class MetsDocument extends AbstractDocument
                 $this->physicalStructureInfo[$id]['orderlabel'] = isset($firstNode['ORDERLABEL']) ? (string) $firstNode['ORDERLABEL'] : '';
                 $this->physicalStructureInfo[$id]['type'] = (string) $firstNode['TYPE'];
                 $this->physicalStructureInfo[$id]['contentIds'] = isset($firstNode['CONTENTIDS']) ? (string) $firstNode['CONTENTIDS'] : '';
-                // Get the file representations from fileSec node.
-                foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                    // Check if file has valid @USE attribute.
-                    if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                        $this->physicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-                    }
-                }
-                // Build the physical elements' array from the physical structMap node.
-                $elements = [];
-                foreach ($elementNodes as $elementNode) {
-                    $id = (string) $elementNode['ID'];
-                    $order = (int) $elementNode['ORDER'];
-                    $elements[$order] = $id;
-                    $this->physicalStructureInfo[$elements[$order]]['id'] = $id;
-                    $this->physicalStructureInfo[$elements[$order]]['dmdId'] = isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['admId'] = isset($elementNode['ADMID']) ? (string) $elementNode['ADMID'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['order'] = isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['label'] = isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['orderlabel'] = isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['type'] = (string) $elementNode['TYPE'];
-                    $this->physicalStructureInfo[$elements[$order]]['contentIds'] = isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '';
-                    // Get the file representations from fileSec node.
-                    foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                        // Check if file has valid @USE attribute.
-                        if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                            $this->physicalStructureInfo[$elements[$order]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-                        }
-                    }
-                }
-                // Sort array by keys (= @ORDER).
-                ksort($elements);
-                // Set total number of pages/tracks.
-                $this->numPages = count($elements);
-                // Merge and re-index the array to get numeric indexes.
-                array_unshift($elements, $id);
-                $this->physicalStructure = $elements;
+                
+                $this->getFileRepresentation($id, $firstNode);
+
+                $this->physicalStructure = $this->getPhysicalElements($elementNodes);
             }
             $this->physicalStructureLoaded = true;
         }
         return $this->physicalStructure;
+    }
+
+    /**
+     * Get the file representations from fileSec node.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param \SimpleXMLElement $physicalNode
+     *
+     * @return void
+     */
+    private function getFileRepresentation(string $id, \SimpleXMLElement $physicalNode): void
+    {
+        // Get file groups.
+        $fileUse = $this->magicGetFileGrps();
+
+        foreach ($physicalNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+            $fileId = (string) $fptr->attributes()->FILEID;
+            // Check if file has valid @USE attribute.
+            if (!empty($fileUse[$fileId ])) {
+                $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
+            }
+        }
+    }
+
+    /**
+     * Build the physical elements' array from the physical structMap node.
+     *
+     * @access private
+     *
+     * @param array $elementNodes
+     *
+     * @return array
+     */
+    private function getPhysicalElements(array $elementNodes): array
+    {
+        $elements = [];
+
+        foreach ($elementNodes as $elementNode) {
+            $id = (string) $elementNode['ID'];
+            $order = (int) $elementNode['ORDER'];
+            $elements[$order] = $id;
+            $this->physicalStructureInfo[$elements[$order]]['id'] = $id;
+            $this->physicalStructureInfo[$elements[$order]]['dmdId'] = isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['admId'] = isset($elementNode['ADMID']) ? (string) $elementNode['ADMID'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['order'] = isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['label'] = isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['orderlabel'] = isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['type'] = (string) $elementNode['TYPE'];
+            $this->physicalStructureInfo[$elements[$order]]['contentIds'] = isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '';
+            // Get the file representations from fileSec node.
+            foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                // Check if file has valid @USE attribute.
+                if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
+                    $this->physicalStructureInfo[$elements[$order]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
+                }
+            }
+        }
+
+        // Sort array by keys (= @ORDER).
+        ksort($elements);
+        // Set total number of pages/tracks.
+        $this->numPages = count($elements);
+        // Merge and re-index the array to get numeric indexes.
+        array_unshift($elements, $id);
+
+        return $elements;
     }
 
     /**
