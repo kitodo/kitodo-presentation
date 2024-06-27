@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -50,7 +51,9 @@ class ItemsProcFunc implements LoggerAwareInterface
      */
     public function toolList(array &$params): void
     {
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $options = $configurationManager->getLocalConfigurationValueByPath('SC_OPTIONS');
+        foreach ($options['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
             $params['items'][] = [Helper::getLanguageService()->sL($label), $class];
         }
     }
