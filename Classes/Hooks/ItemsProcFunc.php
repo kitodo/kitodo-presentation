@@ -70,9 +70,9 @@ class ItemsProcFunc implements LoggerAwareInterface
         $pid = $params['flexParentDatabaseRow']['pid'];
         $rootLine = BackendUtility::BEgetRootLine($pid);
         $siteRootRow = [];
-        foreach ($rootLine as $_row) {
-            if ($_row['is_siteroot'] == '1') {
-                $siteRootRow = $_row;
+        foreach ($rootLine as $row) {
+            if ($row['is_siteroot'] == '1') {
+                $siteRootRow = $row;
                 break;
             }
         }
@@ -152,7 +152,7 @@ class ItemsProcFunc implements LoggerAwareInterface
             ->select(...explode(',', $fields))
             ->from($table)
             ->where(
-                $queryBuilder->expr()->eq($table . '.pid', intval($this->storagePid)),
+                $queryBuilder->expr()->eq($table . '.pid', $this->storagePid),
                 $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
                 $andWhere
             )
