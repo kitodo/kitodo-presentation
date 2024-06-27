@@ -157,7 +157,8 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetchAssociative()) {
+                        $resArray = $result->fetchAssociative();
+                        if (is_array($resArray)) {
                             // Reset storing to current.
                             $fieldArray['index_stored'] = $resArray['is_listed'];
                         }
@@ -244,27 +245,12 @@ class DataHandler implements LoggerAwareInterface
                             ->setMaxResults(1)
                             ->execute();
 
-                        if ($resArray = $result->fetchAssociative()) {
+                        $resArray = $result->fetchAssociative();
+                        if (is_array($resArray)) {
                             if ($resArray['hidden']) {
-                                // Establish Solr connection.
-                                $solr = Solr::getInstance($resArray['core']);
-                                if ($solr->ready) {
-                                    // Delete Solr document.
-                                    $updateQuery = $solr->service->createUpdate();
-                                    $updateQuery->addDeleteQuery('uid:' . (int) $id);
-                                    $updateQuery->addCommit();
-                                    $solr->service->update($updateQuery);
-                                }
+                                $this->deleteDocument($resArray['core'], $id);
                             } else {
-                                // Reindex document.
-                                $document = $this->getDocumentRepository()->findByUid((int) $id);
-                                $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
-                                if ($document !== null && $doc !== null) {
-                                    $document->setCurrentDocument($doc);
-                                    Indexer::add($document, $this->getDocumentRepository());
-                                } else {
-                                    $this->logger->error('Failed to re-index document with UID ' . (string) $id);
-                                }
+                                $this->reindexDocument($id);
                             }
                         }
                     }
@@ -321,32 +307,17 @@ class DataHandler implements LoggerAwareInterface
                 ->setMaxResults(1)
                 ->execute();
 
-            if ($resArray = $result->fetchAssociative()) {
+            $resArray = $result->fetchAssociative();
+            if (is_array($resArray)) {
                 switch ($command) {
                     case 'move':
                     case 'delete':
-                        // Establish Solr connection.
-                        $solr = Solr::getInstance($resArray['core']);
-                        if ($solr->ready) {
-                            // Delete Solr document.
-                            $updateQuery = $solr->service->createUpdate();
-                            $updateQuery->addDeleteQuery('uid:' . (int) $id);
-                            $updateQuery->addCommit();
-                            $solr->service->update($updateQuery);
-                            if ($command == 'delete') {
-                                break;
-                            }
+                        $this->deleteDocument($resArray['core'], $id);
+                        if ($command == 'delete') {
+                            break;
                         }
                     case 'undelete':
-                        // Reindex document.
-                        $document = $this->getDocumentRepository()->findByUid((int) $id);
-                        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
-                        if ($document !== null && $doc !== null) {
-                            $document->setCurrentDocument($doc);
-                            Indexer::add($document, $this->getDocumentRepository());
-                        } else {
-                            $this->logger->error('Failed to re-index document with UID ' . (string) $id);
-                        }
+                        $this->reindexDocument($id);
                         break;
                 }
             }
@@ -355,48 +326,106 @@ class DataHandler implements LoggerAwareInterface
             $command === 'delete'
             && $table == 'tx_dlf_solrcores'
         ) {
-            // Is core deletion allowed in extension configuration?
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'solr');
-            if (!empty($extConf['allowCoreDelete'])) {
-                // Delete core from Apache Solr as well.
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_solrcores');
-                // Record in "tx_dlf_solrcores" is already deleted at this point.
-                $queryBuilder
-                    ->getRestrictions()
-                    ->removeByType(DeletedRestriction::class);
+            $this->deleteSolrCore($id);
+        }
+    }
 
-                $result = $queryBuilder
-                    ->select(
-                        'tx_dlf_solrcores.index_name AS core'
-                    )
-                    ->from('tx_dlf_solrcores')
-                    ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', (int) $id))
-                    ->setMaxResults(1)
-                    ->execute();
+    /**
+     * Delete document from index.
+     *
+     * @access private
+     *
+     * @param mixed $core
+     * @param int|string $id
+     *
+     * @return void
+     */
+    private function deleteDocument($core, $id): void
+    {
+        // Establish Solr connection.
+        $solr = Solr::getInstance($core);
+        if ($solr->ready) {
+            // Delete Solr document.
+            $updateQuery = $solr->service->createUpdate();
+            $updateQuery->addDeleteQuery('uid:' . (int) $id);
+            $updateQuery->addCommit();
+            $solr->service->update($updateQuery);
+        }
+    }
 
-                if ($resArray = $result->fetchAssociative()) {
-                    // Establish Solr connection.
-                    $solr = Solr::getInstance();
-                    if ($solr->ready) {
-                        // Delete Solr core.
-                        $query = $solr->service->createCoreAdmin();
-                        $action = $query->createUnload();
-                        $action->setCore($resArray['core']);
-                        $action->setDeleteDataDir(true);
-                        $action->setDeleteIndex(true);
-                        $action->setDeleteInstanceDir(true);
-                        $query->setAction($action);
-                        try {
-                            $response = $solr->service->coreAdmin($query);
-                            if ($response->getWasSuccessful()) {
-                                return;
-                            }
-                        } catch (\Exception $e) {
-                            // Nothing to do here.
+    /**
+     * Reindex document.
+     *
+     * @access private
+     *
+     * @param int|string $id
+     *
+     * @return void
+     */
+    private function reindexDocument($id):void
+    {
+        $document = $this->getDocumentRepository()->findByUid((int) $id);
+        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+        if ($document !== null && $doc !== null) {
+            $document->setCurrentDocument($doc);
+            Indexer::add($document, $this->getDocumentRepository());
+        } else {
+            $this->logger->error('Failed to re-index document with UID ' . (string) $id);
+        }
+    }
+
+    /**
+     * Delete SOLR core if deletion is allowed.
+     *
+     * @access private
+     *
+     * @param int|string $id
+     *
+     * @return void
+     */
+    private function deleteSolrCore($id): void
+    {
+        // Is core deletion allowed in extension configuration?
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'solr');
+        if (!empty($extConf['allowCoreDelete'])) {
+            // Delete core from Apache Solr as well.
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_solrcores');
+            // Record in "tx_dlf_solrcores" is already deleted at this point.
+            $queryBuilder
+                ->getRestrictions()
+                ->removeByType(DeletedRestriction::class);
+
+            $result = $queryBuilder
+                ->select(
+                    'tx_dlf_solrcores.index_name AS core'
+                )
+                ->from('tx_dlf_solrcores')
+                ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', (int) $id))
+                ->setMaxResults(1)
+                ->execute();
+
+            $resArray = $result->fetchAssociative();
+            if (is_array($resArray)) {
+                // Establish Solr connection.
+                $solr = Solr::getInstance();
+                if ($solr->ready) {
+                    // Delete Solr core.
+                    $query = $solr->service->createCoreAdmin();
+                    $action = $query->createUnload();
+                    $action->setCore($resArray['core']);
+                    $action->setDeleteDataDir(true);
+                    $action->setDeleteIndex(true);
+                    $action->setDeleteInstanceDir(true);
+                    $query->setAction($action);
+                    try {
+                        $response = $solr->service->coreAdmin($query);
+                        if ($response->getWasSuccessful() == false) {
+                            $this->logger->warning('Core ' . $resArray['core'] . ' could not be deleted from Apache Solr');
                         }
+                    } catch (\Exception $e) {
+                        $this->logger->warning($e->getMessage());
                     }
-                    $this->logger->warning('Core ' . $resArray['core'] . ' could not be deleted from Apache Solr');
                 }
             }
         }
