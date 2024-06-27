@@ -12,6 +12,9 @@
 
 namespace Kitodo\Dlf\Common;
 
+use \DOMElement;
+use \DOMXPath;
+use \SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
@@ -53,14 +56,14 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
  * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
- * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
+ * @property SimpleXMLElement $xml this holds the whole XML file as SimpleXMLElement object
  * @property-read array $mdSec associative array of METS metadata sections indexed by their IDs.
  * @property bool $mdSecLoaded flag with information if the array of METS metadata sections is loaded
  * @property-read array $dmdSec subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
  * @property-read array $fileGrps this holds the file ID -> USE concordance
  * @property bool $fileGrpsLoaded flag with information if file groups array is loaded
  * @property-read array $fileInfos additional information about files (e.g., ADMID), indexed by ID.
- * @property-read \SimpleXMLElement $mets this holds the XML file's METS part as \SimpleXMLElement object
+ * @property-read SimpleXMLElement $mets this holds the XML file's METS part as SimpleXMLElement object
  * @property-read string $parentHref URL of the parent document (determined via mptr element), or empty string if none is available
  */
 final class MetsDocument extends AbstractDocument
@@ -126,9 +129,9 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * @access protected
-     * @var \SimpleXMLElement This holds the XML file's METS part as \SimpleXMLElement object
+     * @var SimpleXMLElement This holds the XML file's METS part as SimpleXMLElement object
      */
-    protected \SimpleXMLElement $mets;
+    protected SimpleXMLElement $mets;
 
     /**
      * @access protected
@@ -297,12 +300,12 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @param \SimpleXMLElement $structure The logical structure node
+     * @param SimpleXMLElement $structure The logical structure node
      * @param bool $recursive Whether to include the child elements
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
-    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, bool $recursive = false): array
+    protected function getLogicalStructureInfo(SimpleXMLElement $structure, bool $recursive = false): array
     {
         $attributes = $structure->attributes();
 
@@ -583,7 +586,7 @@ final class MetsDocument extends AbstractDocument
         $additionalMetadata = $this->getAdditionalMetadataFromDatabase($cPid, $dmdId);
         // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
         $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
-        $domXPath = new \DOMXPath($domNode->ownerDocument);
+        $domXPath = new DOMXPath($domNode->ownerDocument);
         $this->registerNamespaces($domXPath);
 
         $this->processAdditionalMetadata($additionalMetadata, $domXPath, $domNode, $metadata);
@@ -597,13 +600,13 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param array $additionalMetadata
-     * @param \DOMXPath $domXPath
-     * @param \DOMElement $domNode
+     * @param DOMXPath $domXPath
+     * @param DOMElement $domNode
      * @param array $metadata
      *
      * @return void
      */
-    private function processAdditionalMetadata(array $additionalMetadata, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    private function processAdditionalMetadata(array $additionalMetadata, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
         foreach ($additionalMetadata as $resArray) {
             $this->setMetadataFieldValues($resArray, $domXPath, $domNode, $metadata);
@@ -618,13 +621,13 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param array $resArray
-     * @param \DOMXPath $domXPath
-     * @param \DOMElement $domNode
+     * @param DOMXPath $domXPath
+     * @param DOMElement $domNode
      * @param array $metadata
      *
      * @return void
      */
-    private function setMetadataFieldValues(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    private function setMetadataFieldValues(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
         if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
             $values = $domXPath->evaluate($resArray['xpath'], $domNode);
@@ -662,13 +665,13 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param array $resArray
-     * @param \DOMXPath $domXPath
-     * @param \DOMElement $domNode
+     * @param  $domXPath
+     * @param DOMElement $domNode
      * @param array $metadata
      *
      * @return void
      */
-    private function setSortableMetadataValue(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    private function setSortableMetadataValue(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
         if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
             if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
@@ -975,7 +978,7 @@ final class MetsDocument extends AbstractDocument
     protected function setPreloadedDocument($preloadedDocument): bool
     {
 
-        if ($preloadedDocument instanceof \SimpleXMLElement) {
+        if ($preloadedDocument instanceof SimpleXMLElement) {
             $this->xml = $preloadedDocument;
             return true;
         }
@@ -985,7 +988,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getDocument()
      */
-    protected function getDocument(): \SimpleXMLElement
+    protected function getDocument(): SimpleXMLElement
     {
         return $this->mets;
     }
@@ -1058,11 +1061,11 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @param \SimpleXMLElement $element
+     * @param SimpleXMLElement $element
      *
      * @return array|null The processed metadata section
      */
-    protected function processMdSec(\SimpleXMLElement $element): ?array
+    protected function processMdSec(SimpleXMLElement $element): ?array
     {
         $mdId = (string) $element->attributes()->ID;
         if (empty($mdId)) {
@@ -1172,9 +1175,9 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @return \SimpleXMLElement The XML's METS part as \SimpleXMLElement object
+     * @return SimpleXMLElement The XML's METS part as SimpleXMLElement object
      */
-    protected function magicGetMets(): \SimpleXMLElement
+    protected function magicGetMets(): SimpleXMLElement
     {
         return $this->mets;
     }
@@ -1219,11 +1222,11 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param string $id
-     * @param \SimpleXMLElement $physicalNode
+     * @param SimpleXMLElement $physicalNode
      *
      * @return void
      */
-    private function getFileRepresentation(string $id, \SimpleXMLElement $physicalNode): void
+    private function getFileRepresentation(string $id, SimpleXMLElement $physicalNode): void
     {
         // Get file groups.
         $fileUse = $this->magicGetFileGrps();
@@ -1436,7 +1439,7 @@ final class MetsDocument extends AbstractDocument
      */
     public function __sleep(): array
     {
-        // \SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
+        // SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
         $this->asXML = $this->xml->asXML();
         return ['pid', 'recordId', 'parentId', 'asXML'];
     }
