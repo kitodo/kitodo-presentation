@@ -76,9 +76,32 @@ return [
                 'default' => 0,
             ],
         ],
+        'subentries' => [
+            'exclude' => 1,
+            'l10n_mode' => 'exclude',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.subentries',
+            'config' => [
+                'type' => 'inline',
+                'foreign_table' => 'tx_dlf_metadatasubentries',
+                'foreign_field' => 'parent_id',
+                'appearance' => [
+                    'expandSingle' => 1,
+                    'levelLinksPosition' => 'bottom',
+                    'enabledControls' => [
+                        'info' => 1,
+                        'new' => 1,
+                        'dragdrop' => 0,
+                        'sort' => 1,
+                        'hide' => 0,
+                        'delete' => 1,
+                        'localize' => 0,
+                    ],
+                ],
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadataformat.tab1,encoded,xpath,xpath_sorting,mandatory'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadataformat.tab1,encoded,xpath,xpath_sorting,mandatory,subentries'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],
