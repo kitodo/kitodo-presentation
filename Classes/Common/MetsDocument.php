@@ -547,7 +547,7 @@ final class MetsDocument extends AbstractDocument
             if ($subentry['parent_index_name'] == $parentIndex) {
                 $values = $domXPath->evaluate($subentry['xpath'], $parentNode);
                 if (!empty($subentry['xpath']) && ($values)) {
-                    array_merge($theseSubentries, $this->getSubentryValue($values, $subentry));
+                    $theseSubentries = array_merge($theseSubentries, $this->getSubentryValue($values, $subentry));
                 }
                 // Set default value if applicable.
                 if (
