@@ -57,13 +57,13 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access private
      * @var QueryResult|null
      */
-    private QueryResult $listedMetadata;
+    private ?QueryResult $listedMetadata;
 
     /**
      * @access private
      * @var QueryResult|null
      */
-    private QueryResult $indexedMetadata;
+    private ?QueryResult $indexedMetadata;
 
     /**
      * @access private
