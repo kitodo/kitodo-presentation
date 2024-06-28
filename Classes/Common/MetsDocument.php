@@ -545,27 +545,9 @@ final class MetsDocument extends AbstractDocument
         $theseSubentries = [];
         foreach ($allSubentries as $subentry) {
             if ($subentry['parent_index_name'] == $parentIndex) {
-                if (
-                    !empty($subentry['xpath'])
-                    && ($values = $domXPath->evaluate($subentry['xpath'], $parentNode))
-                ) {
-                    if (
-                        ($values instanceof \DOMNodeList
-                            && $values->length > 0) || is_string($values)
-                    ) {
-                        if (is_string($values)) {
-                            // if concat is used evaluate returns a string
-                            $theseSubentries[$subentry['index_name']][] = trim($values);
-                        } else {
-                            foreach ($values as $value) {
-                                if (!empty(trim((string) $value->nodeValue))) {
-                                    $theseSubentries[$subentry['index_name']][] = trim((string) $value->nodeValue);
-                                }
-                            }
-                        }
-                    } elseif (!($values instanceof \DOMNodeList)) {
-                        $theseSubentries[$subentry['index_name']] = [trim((string) $values->nodeValue)];
-                    }
+                $values = $domXPath->evaluate($subentry['xpath'], $parentNode);
+                if (!empty($subentry['xpath']) && ($values)) {
+                    array_merge($theseSubentries, $this->getSubentryValue($values, $subentry));
                 }
                 // Set default value if applicable.
                 if (
@@ -578,6 +560,34 @@ final class MetsDocument extends AbstractDocument
         }
         if (empty($theseSubentries)) {
             return false;
+        }
+        return $theseSubentries;
+    }
+
+    /**
+     * @param $values
+     * @param $subentry
+     * @return array
+     */
+    private function getSubentryValue($values, $subentry)
+    {
+        $theseSubentries = [];
+        if (
+            ($values instanceof \DOMNodeList
+                && $values->length > 0) || is_string($values)
+        ) {
+            if (is_string($values)) {
+                // if concat is used evaluate returns a string
+                $theseSubentries[$subentry['index_name']][] = trim($values);
+            } else {
+                foreach ($values as $value) {
+                    if (!empty(trim((string) $value->nodeValue))) {
+                        $theseSubentries[$subentry['index_name']][] = trim((string) $value->nodeValue);
+                    }
+                }
+            }
+        } elseif (!($values instanceof \DOMNodeList)) {
+            $theseSubentries[$subentry['index_name']] = [trim((string) $values->nodeValue)];
         }
         return $theseSubentries;
     }
