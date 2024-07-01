@@ -160,7 +160,7 @@ class IndexCommand extends BaseCommand
 
             if ($document === null) {
                 $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
-                exit(1);
+                return 1;
             } else {
                 $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
             }
