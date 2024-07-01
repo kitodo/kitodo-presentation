@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Command;
 
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -22,6 +22,7 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
+use Kitodo\Dlf\Validation\DocumentValidator;
 use Symfony\Component\Console\Command\Command;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -29,93 +30,116 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * Base class for CLI Command classes.
  *
- * @author Beatrycze Volk <beatrycze.volk@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class BaseCommand extends Command
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
+     * @access protected
      * @var DocumentRepository
      */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
     /**
+     * @access protected
      * @var LibraryRepository
      */
-    protected $libraryRepository;
+    protected LibraryRepository $libraryRepository;
 
     /**
+     * @access protected
      * @var StructureRepository
      */
-    protected $structureRepository;
+    protected StructureRepository $structureRepository;
 
     /**
+     * @access protected
      * @var int
      */
-    protected $storagePid;
+    protected int $storagePid;
 
     /**
-     * @var \Kitodo\Dlf\Domain\Model\Library
-     */
-    protected $owner;
-
-    /**
-     * @var array
      * @access protected
+     * @var Library|null
      */
-    protected $extConf;
+    protected ?Library $owner;
+
+    /**
+     * @access protected
+     * @var array
+     */
+    protected array $extConf;
+
+    /**
+     * @access protected
+     * @var ConfigurationManager
+     */
+    protected ConfigurationManager $configurationManager;
+
+    /**
+     * @access protected
+     * @var PersistenceManager
+     */
+    protected PersistenceManager $persistenceManager;
+
+    public function __construct(
+        CollectionRepository $collectionRepository,
+        DocumentRepository $documentRepository,
+        LibraryRepository $libraryRepository,
+        StructureRepository $structureRepository,
+        ConfigurationManager $configurationManager,
+        PersistenceManager $persistenceManager
+    ) {
+        parent::__construct();
+
+        $this->collectionRepository = $collectionRepository;
+        $this->documentRepository = $documentRepository;
+        $this->libraryRepository = $libraryRepository;
+        $this->structureRepository = $structureRepository;
+        $this->configurationManager = $configurationManager;
+        $this->persistenceManager = $persistenceManager;
+    }
 
     /**
      * Initialize the extbase repository based on the given storagePid.
      *
-     * TYPO3 10+: Find a better solution e.g. based on Symfonie Dependency Injection.
+     * TYPO3 10+: Find a better solution e.g. based on Symfony Dependency Injection.
+     *
+     * @access protected
      *
      * @param int $storagePid The storage pid
      *
-     * @return bool
+     * @return void
      */
-    protected function initializeRepositories($storagePid)
+    protected function initializeRepositories(int $storagePid): void
     {
-        if (MathUtility::canBeInterpretedAsInteger($storagePid)) {
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-            $frameworkConfiguration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-
-            $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-            $configurationManager->setConfiguration($frameworkConfiguration);
-
-            // TODO: When we drop support for TYPO3v9, we needn't/shouldn't use ObjectManager anymore
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-            $this->collectionRepository = $objectManager->get(CollectionRepository::class);
-            $this->documentRepository = $objectManager->get(DocumentRepository::class);
-            $this->libraryRepository = $objectManager->get(LibraryRepository::class);
-            $this->structureRepository = $objectManager->get(StructureRepository::class);
-
-            // Get extension configuration.
-            $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-        } else {
-            return false;
-        }
-        $this->storagePid = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-
-        return true;
+        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
+        $this->configurationManager->setConfiguration($frameworkConfiguration);
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $this->storagePid = MathUtility::forceIntegerInRange($storagePid, 0);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
     }
 
     /**
      * Return matching uid of Solr core depending on the input value.
+     *
+     * @access protected
      *
      * @param array $solrCores array of the valid Solr cores
      * @param string|bool|null $inputSolrId possible uid or name of Solr core
@@ -134,6 +158,8 @@ class BaseCommand extends Command
 
     /**
      * Fetches all Solr cores on given page.
+     *
+     * @access protected
      *
      * @param int $pageId The UID of the Solr core or 0 to disable indexing
      *
@@ -166,119 +192,86 @@ class BaseCommand extends Command
     /**
      * Update or insert document to database
      *
-     * @param int|string $doc The document uid from DB OR the location of a mets document.
+     * @access protected
      *
-     * @return bool true on success
+     * @param Document $document The document instance
+     *
+     * @return bool true on success, false otherwise
      */
-    protected function saveToDatabase(Document $document)
+    protected function saveToDatabase(Document $document): bool
     {
-        $doc = $document->getDoc();
+        $doc = $document->getCurrentDocument();
         if ($doc === null) {
             return false;
         }
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+
         $doc->cPid = $this->storagePid;
 
-        $metadata = $doc->getTitledata($this->storagePid);
+        $metadata = $doc->getToplevelMetadata($this->storagePid);
+        $validator = new DocumentValidator($metadata, explode(',', $this->extConf['general']['requiredMetadataFields']));
 
-        // set title data
-        $document->setTitle($metadata['title'][0] ? : '');
-        $document->setTitleSorting($metadata['title_sorting'][0]);
-        $document->setPlace(implode('; ', $metadata['place']));
-        $document->setYear(implode('; ', $metadata['year']));
+        if ($validator->hasAllMandatoryMetadataFields()) {
+            // set title data
+            $document->setTitle($metadata['title'][0] ? : '');
+            $document->setTitleSorting($metadata['title_sorting'][0] ? : '');
+            $document->setPlace(implode('; ', $metadata['place']));
+            $document->setYear(implode('; ', $metadata['year']));
+            $document->setAuthor($this->getAuthors($metadata['author']));
+            $document->setThumbnail($doc->thumbnail ? : '');
+            $document->setMetsLabel($metadata['mets_label'][0] ? : '');
+            $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
 
-        // Remove appended "valueURI" from authors' names for storing in database.
-        foreach ($metadata['author'] as $i => $author) {
-            $splitName = explode(chr(31), $author);
-            $metadata['author'][$i] = $splitName[0];
-        }
-        $document->setAuthor(implode('; ', $metadata['author']));
-        $document->setThumbnail($doc->thumbnail ? : '');
-        $document->setMetsLabel($metadata['mets_label'][0] ? : '');
-        $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
+            $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
+            $document->setStructure($structure);
 
-        $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0], 'tx_dlf_structures');
-        $document->setStructure($structure);
-
-        if (is_array($metadata['collection'])) {
-            foreach ($metadata['collection'] as $collection) {
-                $documentCollection = $this->collectionRepository->findOneByIndexName($collection);
-                if (!$documentCollection) {
-                    // create new Collection object
-                    $documentCollection = GeneralUtility::makeInstance(Collection::class);
-                    $documentCollection->setIndexName($collection);
-                    $documentCollection->setLabel($collection);
-                    $documentCollection->setOaiName((!empty($this->extConf['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
-                    $documentCollection->setIndexSearch('');
-                    $documentCollection->setDescription('');
-                    // add to CollectionRepository
-                    $this->collectionRepository->add($documentCollection);
-                    // persist collection to prevent duplicates
-                    $persistenceManager->persistAll();
-                }
-                // add to document
-                $document->addCollection($documentCollection);
+            if (is_array($metadata['collection'])) {
+                $this->addCollections($document, $metadata['collection']);
             }
-        }
 
-        // set identifiers
-        $document->setProdId($metadata['prod_id'][0] ? : '');
-        $document->setOpacId($metadata['opac_id'][0] ? : '');
-        $document->setUnionId($metadata['union_id'][0] ? : '');
+            // set identifiers
+            $document->setProdId($metadata['prod_id'][0] ? : '');
+            $document->setOpacId($metadata['opac_id'][0] ? : '');
+            $document->setUnionId($metadata['union_id'][0] ? : '');
 
-        $document->setRecordId($metadata['record_id'][0] ? : ''); // (?) $doc->recordId
-        $document->setUrn($metadata['urn'][0] ? : '');
-        $document->setPurl($metadata['purl'][0] ? : '');
-        $document->setDocumentFormat($metadata['document_format'][0] ? : '');
+            $document->setRecordId($metadata['record_id'][0]);
+            $document->setUrn($metadata['urn'][0] ? : '');
+            $document->setPurl($metadata['purl'][0] ? : '');
+            $document->setDocumentFormat($metadata['document_format'][0] ? : '');
 
-        // set access
-        $document->setLicense($metadata['license'][0] ? : '');
-        $document->setTerms($metadata['terms'][0] ? : '');
-        $document->setRestrictions($metadata['restrictions'][0] ? : '');
-        $document->setOutOfPrint($metadata['out_of_print'][0] ? : '');
-        $document->setRightsInfo($metadata['rights_info'][0] ? : '');
-        $document->setStatus(0);
+            // set access
+            $document->setLicense($metadata['license'][0] ? : '');
+            $document->setTerms($metadata['terms'][0] ? : '');
+            $document->setRestrictions($metadata['restrictions'][0] ? : '');
+            $document->setOutOfPrint($metadata['out_of_print'][0] ? : '');
+            $document->setRightsInfo($metadata['rights_info'][0] ? : '');
+            $document->setStatus(0);
 
-        if ($this->owner) {
-            // library / owner is set by parameter --> take it.
+            $this->setOwner($metadata['owner'][0]);
             $document->setOwner($this->owner);
-        } else {
-            // owner is not set set but found by metadata --> take it or take default library
-            $owner = $metadata['owner'][0] ? : 'default';
-            $this->owner = $this->libraryRepository->findOneByIndexName($owner);
-            if ($this->owner) {
-                $document->setOwner($this->owner);
-            } else {
-                // create library
-                $this->owner = GeneralUtility::makeInstance(Library::class);
 
-                $this->owner->setLabel($owner);
-                $this->owner->setIndexName($owner);
-                $this->libraryRepository->add($this->owner);
-                $document->setOwner($this->owner);
+            // set volume data
+            $document->setVolume($metadata['volume'][0] ? : '');
+            $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
+
+            // Get UID of parent document.
+            if ($document->getDocumentFormat() === 'METS') {
+                $document->setPartof($this->getParentDocumentUidForSaving($document));
             }
+
+            if ($document->getUid() === null) {
+                // new document
+                $this->documentRepository->add($document);
+            } else {
+                // update of existing document
+                $this->documentRepository->update($document);
+            }
+
+            $this->persistenceManager->persistAll();
+
+            return true;
         }
 
-        // set volume data
-        $document->setVolume($metadata['volume'][0] ? : '');
-        $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
-
-        // Get UID of parent document.
-        if ($document->getDocumentFormat() === 'METS') {
-            $document->setPartof($this->getParentDocumentUidForSaving($document));
-        }
-
-        if ($document->getUid() === null) {
-            // new document
-            $this->documentRepository->add($document);
-        } else {
-            // update of existing document
-            $this->documentRepository->update($document);
-        }
-
-        $persistenceManager->persistAll();
-
-        return true;
+        return false;
     }
 
     /**
@@ -287,18 +280,20 @@ class BaseCommand extends Command
      *
      * @access protected
      *
+     * @param Document $document for which parent UID should be taken
+     *
      * @return int The parent document's id.
      */
-    protected function getParentDocumentUidForSaving(Document $document)
+    protected function getParentDocumentUidForSaving(Document $document): int
     {
-        $doc = $document->getDoc();
+        $doc = $document->getCurrentDocument();
 
         if ($doc !== null && !empty($doc->parentHref)) {
             // find document object by record_id of parent
-            $parentDoc = Doc::getInstance($doc->parentHref, ['storagePid' => $this->storagePid]);
+            $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid]);
 
-            if ($parentDoc->recordId) {
-                $parentDocument = $this->documentRepository->findOneByRecordId($parentDoc->recordId);
+            if ($parent->recordId) {
+                $parentDocument = $this->documentRepository->findOneByRecordId($parent->recordId);
 
                 if ($parentDocument === null) {
                     // create new Document object
@@ -306,7 +301,7 @@ class BaseCommand extends Command
                 }
 
                 $parentDocument->setOwner($this->owner);
-                $parentDocument->setDoc($parentDoc);
+                $parentDocument->setCurrentDocument($parent);
                 $parentDocument->setLocation($doc->parentHref);
                 $parentDocument->setSolrcore($document->getSolrcore());
 
@@ -314,7 +309,7 @@ class BaseCommand extends Command
 
                 if ($success === true) {
                     // add to index
-                    Indexer::add($parentDocument);
+                    Indexer::add($parentDocument, $this->documentRepository);
                     return $parentDocument->getUid();
                 }
             }
@@ -323,4 +318,100 @@ class BaseCommand extends Command
         return 0;
     }
 
+    /**
+     * Add collections.
+     *
+     * @access private
+     * 
+     * @param Document &$document
+     * @param array $collections
+     *
+     * @return void
+     */
+    private function addCollections(Document &$document, array $collections): void
+    {
+        foreach ($collections as $collection) {
+            $documentCollection = $this->collectionRepository->findOneByIndexName($collection);
+            if (!$documentCollection) {
+                // create new Collection object
+                $documentCollection = GeneralUtility::makeInstance(Collection::class);
+                $documentCollection->setIndexName($collection);
+                $documentCollection->setLabel($collection);
+                $documentCollection->setOaiName((!empty($this->extConf['general']['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
+                $documentCollection->setIndexSearch('');
+                $documentCollection->setDescription('');
+                // add to CollectionRepository
+                $this->collectionRepository->add($documentCollection);
+                // persist collection to prevent duplicates
+                $this->persistenceManager->persistAll();
+            }
+            // add to document
+            $document->addCollection($documentCollection);
+        }
+    }
+
+    /**
+     * Get authors considering that database field can't accept
+     * more than 255 characters.
+     *
+     * @access private
+     * 
+     * @param array $metadataAuthor
+     *
+     * @return string
+     */
+    private function getAuthors(array $metadataAuthor): string
+    {
+        // Remove appended "valueURI" from authors' names for storing in database.
+        foreach ($metadataAuthor as $i => $author) {
+            $splitName = explode(pack('C', 31), $author);
+            $metadataAuthor[$i] = $splitName[0];
+        }
+
+        $authors = '';
+        $delimiter = '; ';
+        $ellipsis = 'et al.';
+
+        $count = count($metadataAuthor);
+
+        for ($i = 0; $i < $count; $i++) {
+            // Build the next part to add
+            $nextPart = ($i === 0 ? '' : $delimiter) . $metadataAuthor[$i];
+            // Check if adding this part and ellipsis in future would exceed the character limit
+            if (strlen($authors . $nextPart . $delimiter . $ellipsis) > 255) {
+                // Add ellipsis and stop adding more authors
+                $authors .= $delimiter . $ellipsis;
+                break;
+            }
+            // Add the part to the main string
+            $authors .= $nextPart;
+        }
+
+        return $authors;
+    }
+
+    /**
+     * If owner is not set set but found by metadata, take it or take default library, if nothing found in database then create new owner.
+     *
+     * @access private
+     *
+     * @param ?string $owner
+     *
+     * @return void
+     */
+    private function setOwner($owner): void
+    {
+        if (empty($this->owner)) {
+            // owner is not set set but found by metadata --> take it or take default library
+            $owner = $owner ? : 'default';
+            $this->owner = $this->libraryRepository->findOneByIndexName($owner);
+            if (empty($this->owner)) {
+                // create library
+                $this->owner = GeneralUtility::makeInstance(Library::class);
+                $this->owner->setLabel($owner);
+                $this->owner->setIndexName($owner);
+                $this->libraryRepository->add($this->owner);
+            }
+        }
+    }
 }

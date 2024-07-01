@@ -1,10 +1,19 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Core\Localization\LanguageService;
 
 class HelperTest extends FunctionalTestCase
 {
@@ -12,8 +21,8 @@ class HelperTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/libraries.xml');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/metadata.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/libraries.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/metadata.csv');
     }
 
     /**
@@ -24,41 +33,41 @@ class HelperTest extends FunctionalTestCase
         // Repeat to make sure caching isn't broken
         for ($n = 0; $n < 2; $n++) {
             // Good UID, no PID
-            $this->assertEquals(
+            self::assertEquals(
                 'default',
                 Helper::getIndexNameFromUid(10001, 'tx_dlf_libraries')
             );
-            $this->assertEquals(
+            self::assertEquals(
                 'title',
                 Helper::getIndexNameFromUid(5001, 'tx_dlf_metadata')
             );
-            $this->assertEquals(
+            self::assertEquals(
                 'collection',
                 Helper::getIndexNameFromUid(5002, 'tx_dlf_metadata')
             );
 
             // Good UID, good PID
-            $this->assertEquals(
+            self::assertEquals(
                 'default',
                 Helper::getIndexNameFromUid(10001, 'tx_dlf_libraries', 20000)
             );
-            $this->assertEquals(
+            self::assertEquals(
                 'title',
                 Helper::getIndexNameFromUid(5001, 'tx_dlf_metadata', 20000)
             );
-            $this->assertEquals(
+            self::assertEquals(
                 'collection',
                 Helper::getIndexNameFromUid(5002, 'tx_dlf_metadata', 20000)
             );
 
             // Good UID, bad PID
-            $this->assertEquals(
+            self::assertEquals(
                 '',
                 Helper::getIndexNameFromUid(10001, 'tx_dlf_libraries', 123456)
             );
 
             // Bad UID, no PID
-            $this->assertEquals(
+            self::assertEquals(
                 '',
                 Helper::getIndexNameFromUid(123456, 'tx_dlf_libraries')
             );
@@ -74,10 +83,10 @@ class HelperTest extends FunctionalTestCase
         // NOTE: This only tests in BE mode
 
         $this->initLanguageService('default');
-        $this->assertEquals('German', Helper::getLanguageName('de')); // ISO 639-1
-        $this->assertEquals('German', Helper::getLanguageName('ger')); // ISO 639-2
-        $this->assertEquals('abcde', Helper::getLanguageName('abcde')); // doesn't match ISO code regex
-        $this->assertEquals('abc', Helper::getLanguageName('abc')); // matches ISO code regex, but not an ISO code
+        self::assertEquals('German', Helper::getLanguageName('de')); // ISO 639-1
+        self::assertEquals('German', Helper::getLanguageName('ger')); // ISO 639-2
+        self::assertEquals('abcde', Helper::getLanguageName('abcde')); // doesn't match ISO code regex
+        self::assertEquals('abc', Helper::getLanguageName('abc')); // matches ISO code regex, but not an ISO code
     }
 
     /**
@@ -89,9 +98,9 @@ class HelperTest extends FunctionalTestCase
         // NOTE: This only tests in BE mode
 
         $this->initLanguageService('de');
-        $this->assertEquals('Deutsch', Helper::getLanguageName('de')); // ISO 639-1
-        $this->assertEquals('Deutsch', Helper::getLanguageName('ger')); // ISO 639-2
-        $this->assertEquals('abcde', Helper::getLanguageName('abcde')); // doesn't match ISO code regex
-        $this->assertEquals('abc', Helper::getLanguageName('abc')); // matches ISO code regex, but not an ISO code
+        self::assertEquals('Deutsch', Helper::getLanguageName('de')); // ISO 639-1
+        self::assertEquals('Deutsch', Helper::getLanguageName('ger')); // ISO 639-2
+        self::assertEquals('abcde', Helper::getLanguageName('abcde')); // doesn't match ISO code regex
+        self::assertEquals('abc', Helper::getLanguageName('abc')); // matches ISO code regex, but not an ISO code
     }
 }

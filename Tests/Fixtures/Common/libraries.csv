@@ -1,0 +1,3 @@
+"tx_dlf_libraries",,,,,,,,,,
+,"uid","pid","tstamp","crdate","cruser_id","deleted","sys_language_uid","l18n_parent","l18n_diffsource","label","index_name","website","contact","image","oai_label","oai_base","opac_label","opac_base","union_label","union_base"
+,10001,20000,1631193108,1631193108,2,0,0,0,a:12:{s:5:&quot;label&quot;;N;s:10:&quot;index_name&quot;;N;s:7:&quot;website&quot;;N;s:7:&quot;contact&quot;;N;s:5:&quot;image&quot;;N;s:9:&quot;oai_label&quot;;N;s:8:&quot;oai_base&quot;;N;s:10:&quot;opac_label&quot;;N;s:9:&quot;opac_base&quot;;N;s:11:&quot;union_label&quot;;N;s:10:&quot;union_base&quot;;N;s:16:&quot;sys_language_uid&quot;;N;},"Default Library","default",,"default-library@example.com",,"Default Library - OAI Repository",,,,,

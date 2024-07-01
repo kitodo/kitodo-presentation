@@ -12,7 +12,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections',
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -101,7 +101,7 @@ return [
         ],
         'label' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -113,7 +113,7 @@ return [
         'index_name' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.index_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.index_name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -130,7 +130,7 @@ return [
         'index_search' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.index_search',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.index_search',
             'config' => [
                 'type' => 'text',
                 'size' => 30,
@@ -142,7 +142,7 @@ return [
         'oai_name' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.oai_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.oai_name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -154,7 +154,7 @@ return [
         'description' => [
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank', // deprecated in 8.7 but kept for upgrade wizard
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.description',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.description',
             'config' => [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true
@@ -170,7 +170,7 @@ return [
         'thumbnail' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.thumbnail',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.thumbnail',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
                 'image',
                 [
@@ -189,7 +189,7 @@ return [
         'priority' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.priority',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.priority',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -210,7 +210,7 @@ return [
         'documents' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.documents',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.documents',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingleBox',
@@ -231,12 +231,12 @@ return [
         'owner' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.owner',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.owner',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.owner.none', 0],
+                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.owner.none', 0],
                 ],
                 'foreign_table' => 'tx_dlf_libraries',
                 'foreign_table_where' => 'AND tx_dlf_libraries.sys_language_uid IN (-1,0) ORDER BY tx_dlf_libraries.label',
@@ -249,12 +249,12 @@ return [
         'fe_cruser_id' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.fe_cruser_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.fe_cruser_id.none', 0],
+                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id.none', 0],
                 ],
                 'foreign_table' => 'fe_users',
                 'foreign_table_where' => 'ORDER BY fe_users.username',
@@ -267,7 +267,7 @@ return [
         'fe_admin_lock' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.fe_admin_lock',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_admin_lock',
             'config' => [
                 'type' => 'check',
                 'default' => 0,
@@ -276,12 +276,12 @@ return [
         'status' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.status',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.status',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.status.default', 0],
+                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.status.default', 0],
                 ],
                 'size' => 1,
                 'minitems' => 1,
@@ -291,7 +291,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab1,label,--palette--;;1,description,--palette--;;2,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.tab3,hidden,fe_group,status,owner,fe_cruser_id,--palette--;;3'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.tab1,label,--palette--;;1,description,--palette--;;2,--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.tab2,sys_language_uid,l18n_parent,l18n_diffsource,--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.tab3,hidden,fe_group,status,owner,fe_cruser_id,--palette--;;3'],
     ],
     'palettes' => [
         '1' => ['showitem' => 'index_name, --linebreak--, index_search, --linebreak--, oai_name'],

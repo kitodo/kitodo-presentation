@@ -11,7 +11,10 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\SolrPaginator;
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Model\Collection;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -20,35 +23,45 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 /**
  * Controller class for the plugin 'Collection'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class CollectionController extends AbstractController
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
     {
         $this->collectionRepository = $collectionRepository;
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
     {
         $this->metadataRepository = $metadataRepository;
     }
@@ -56,9 +69,11 @@ class CollectionController extends AbstractController
     /**
      * Show a list of collections
      *
+     * @access public
+     *
      * @return void
      */
-    public function listAction()
+    public function listAction(): void
     {
         $solr = Solr::getInstance($this->settings['solrcore']);
 
@@ -86,6 +101,118 @@ class CollectionController extends AbstractController
             $this->forward('show', null, null, ['collection' => array_pop($collections)]);
         }
 
+        $processedCollections = $this->processCollections($collections, $solr);
+
+        // Randomize sorting?
+        if (!empty($this->settings['randomize'])) {
+            ksort($processedCollections, SORT_NUMERIC);
+        }
+
+        $this->view->assign('collections', $processedCollections);
+    }
+
+    /**
+     * Show a single collection with description and all its documents.
+     *
+     * @access protected
+     *
+     * @param Collection $collection The collection object
+     *
+     * @return void
+     */
+    public function showAction(Collection $collection): void
+    {
+        $searchParams = $this->getParametersSafely('searchParameter');
+
+        // Instantiate the Solr. Without Solr present, we can't do anything.
+        $solr = Solr::getInstance($this->settings['solrcore']);
+        if (!$solr->ready) {
+            $this->logger->error('Apache Solr not available');
+            return;
+        }
+
+        // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
+        $currentPage = $this->getParametersSafely('page');
+        if (empty($currentPage)) {
+            $currentPage = 1;
+        }
+
+        $searchParams['collection'] = $collection;
+        // If a targetPid is given, the results will be shown by ListView on the target page.
+        if (!empty($this->settings['targetPid'])) {
+            $this->redirect('main', 'ListView', null,
+                [
+                    'searchParameter' => $searchParams,
+                    'page' => $currentPage
+                ], $this->settings['targetPid']
+            );
+        }
+
+        // get all metadata records to be shown in results
+        $listedMetadata = $this->metadataRepository->findByIsListed(true);
+
+        // get all sortable metadata records
+        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+
+        // get all documents of given collection
+        $solrResults = null;
+        if (is_array($searchParams) && !empty($searchParams)) {
+            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+
+            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
+            if (empty($itemsPerPage)) {
+                $itemsPerPage = 25;
+            }
+            $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
+            $simplePagination = new SimplePagination($solrPaginator);
+
+            $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
+            $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
+        }
+
+        $this->view->assign('viewData', $this->viewData);
+        $this->view->assign('documents', $solrResults);
+        $this->view->assign('collection', $collection);
+        $this->view->assign('page', $currentPage);
+        $this->view->assign('lastSearch', $searchParams);
+        $this->view->assign('sortableMetadata', $sortableMetadata);
+        $this->view->assign('listedMetadata', $listedMetadata);
+    }
+
+    /**
+     * This is an uncached helper action to make sorting possible on collection single views.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function showSortedAction(): void
+    {
+        // if search was triggered, get search parameters from POST variables
+        $searchParams = $this->getParametersSafely('searchParameter');
+
+        $collection = null;
+        if ($searchParams['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($searchParams['collection']['__identity'])) {
+            $collection = $this->collectionRepository->findByUid($searchParams['collection']['__identity']);
+        }
+
+        // output is done by show action
+        $this->forward('show', null, null, ['searchParameter' => $searchParams, 'collection' => $collection]);
+
+    }
+
+    /**
+     * Processes collections for displaying in the frontend.
+     *
+     * @access private
+     *
+     * @param QueryResultInterface|array|object $collections to be processed
+     * @param Solr $solr for query
+     *
+     * @return array
+     */
+    private function processCollections($collections, Solr $solr): array
+    {
         $processedCollections = [];
 
         // Process results.
@@ -103,10 +230,12 @@ class CollectionController extends AbstractController
             } else {
                 $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
             }
-            $partOfNothing = $solr->search_raw($params);
+            $partOfNothing = $solr->searchRaw($params);
 
             $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
-            $partOfSomething = $solr->search_raw($params);
+            $partOfSomething = $solr->searchRaw($params);
+
+            $collectionInfo = [];
             // Titles are all documents that are "root" elements i.e. partof == 0
             $collectionInfo['titles'] = [];
             foreach ($partOfNothing as $doc) {
@@ -122,13 +251,13 @@ class CollectionController extends AbstractController
                 unset($collectionInfo['volumes'][$doc->partof]);
             }
 
-            // Generate random but unique array key taking priority into account.
+            // Generate random but unique array key taking amount of documents into account.
             do {
-                $_key = ($collectionInfo['priority'] * 1000) + mt_rand(0, 1000);
-            } while (!empty($processedCollections[$_key]));
+                $key = ($collection->getPriority() * 1000) + random_int(0, 1000);
+            } while (!empty($processedCollections[$key]));
 
-            $processedCollections[$_key]['collection'] = $collection;
-            $processedCollections[$_key]['info'] = $collectionInfo;
+            $processedCollections[$key]['collection'] = $collection;
+            $processedCollections[$key]['info'] = $collectionInfo;
         }
 
         // Randomize sorting?
@@ -136,83 +265,6 @@ class CollectionController extends AbstractController
             ksort($processedCollections, SORT_NUMERIC);
         }
 
-        $this->view->assign('collections', $processedCollections);
-    }
-
-    /**
-     * Show a single collection with description and all its documents.
-     *
-     * @access protected
-     *
-     * @param \Kitodo\Dlf\Domain\Model\Collection $collection: The collection object
-     *
-     * @return void
-     */
-    public function showAction(\Kitodo\Dlf\Domain\Model\Collection $collection)
-    {
-        $searchParams = $this->getParametersSafely('searchParameter');
-
-        // Instaniate the Solr. Without Solr present, we can't do anything.
-        $solr = Solr::getInstance($this->settings['solrcore']);
-        if (!$solr->ready) {
-            $this->logger->error('Apache Solr not available');
-            return;
-        }
-
-        // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
-        $widgetPage = $this->getParametersSafely('@widget_0');
-        if (empty($widgetPage)) {
-            $widgetPage = ['currentPage' => 1];
-        }
-
-        $searchParams['collection'] = $collection;
-        // If a targetPid is given, the results will be shown by ListView on the target page.
-        if (!empty($this->settings['targetPid'])) {
-            $this->redirect('main', 'ListView', null,
-                [
-                    'searchParameter' => $searchParams,
-                    'widgetPage' => $widgetPage
-                ], $this->settings['targetPid']
-            );
-        }
-
-        // get all metadata records to be shown in results
-        $listedMetadata = $this->metadataRepository->findByIsListed(true);
-
-        // get all sortable metadata records
-        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
-
-        // get all documents of given collection
-        $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
-
-        $this->view->assign('viewData', $this->viewData);
-        $this->view->assign('documents', $solrResults);
-        $this->view->assign('collection', $collection);
-        $this->view->assign('widgetPage', $widgetPage);
-        $this->view->assign('lastSearch', $searchParams);
-        $this->view->assign('sortableMetadata', $sortableMetadata);
-        $this->view->assign('listedMetadata', $listedMetadata);
-    }
-
-    /**
-     * This is an uncached helper action to make sorting possible on collection single views.
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    public function showSortedAction()
-    {
-        // if search was triggered, get search parameters from POST variables
-        $searchParams = $this->getParametersSafely('searchParameter');
-
-        $collection = null;
-        if ($searchParams['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($searchParams['collection']['__identity'])) {
-            $collection = $this->collectionRepository->findByUid($searchParams['collection']['__identity']);
-        }
-
-        // output is done by show action
-        $this->forward('show', null, null, ['searchParameter' => $searchParams, 'collection' => $collection]);
-
+        return $processedCollections;
     }
 }

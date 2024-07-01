@@ -49,6 +49,11 @@
                 <mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/1703800435/thumbnail.jpg"/>
             </mets:file>
         </mets:fileGrp>
+        <mets:fileGrp USE="DOWNLOAD">
+            <mets:file ID="FILE_0000_DOWNLOAD" MIMETYPE="application/vnd.netfpx">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/download"/>
+            </mets:file>
+        </mets:fileGrp>
     </mets:fileSec>
     <mets:structMap TYPE="LOGICAL">
         <mets:div ADMID="AMD" DMDID="DMDLOG_0000 DMDLOG_0000b" ID="LOG_0000" LABEL="With (two) DMD and AMD"></mets:div>

@@ -20,11 +20,11 @@
     <f:if condition="{recordInfos.formats.numCurrent} >= {recordInfos.formats.numDefault}">
         <f:then>
             <f:variable name="formatsAvailable" value="1" />
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.formatOkay\')}', message: '{f:translate(key: \'newTenant.formatOkayMsg\')}', alert: 'success'}" />
+            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \"newTenant.formatOkay\")}', message: '{f:translate(key: \"newTenant.formatOkayMsg\")}', alert: 'success'}" />
         </f:then>
         <f:else>
             <f:variable name="formatsAvailable" value="0" />
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.formatNotOkay\')}', message: '{f:translate(key: \'newTenant.formatNotOkayMsg\')}', alert: 'danger'}" />
+            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \"newTenant.formatNotOkay\")}', message: '{f:translate(key: \"newTenant.formatNotOkayMsg\")}', alert: 'danger'}" />
             <f:form action="addFormat" name="format">
                 <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createFormat')}" class="btn btn-primary"/>
             </f:form>

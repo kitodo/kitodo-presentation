@@ -14,64 +14,77 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Common\SolrPaginator;
 use Kitodo\Dlf\Common\Solr\Solr;
-use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Solarium\Component\Result\FacetSet;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Controller class for the plugin 'Search'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
- * @author Henrik Lochmann <dev@mentalmotive.com>
- * @author Frank Ulrich Weber <fuw@zeutschel.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class SearchController extends AbstractController
 {
     /**
+     * @access protected
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /**
+     * @access public
+     *
      * @param CollectionRepository $collectionRepository
+     *
+     * @return void
      */
-    public function injectCollectionRepository(CollectionRepository $collectionRepository)
+    public function injectCollectionRepository(CollectionRepository $collectionRepository): void
     {
         $this->collectionRepository = $collectionRepository;
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
     {
         $this->metadataRepository = $metadataRepository;
     }
 
     /**
-     * @var array $this->searchParams: The current search parameter
      * @access protected
+     * @var array The current search parameter
      */
-    protected $searchParams;
+    protected ?array $searchParams;
 
     /**
      * Search Action
      *
+     * @access public
+     *
      * @return void
      */
-    public function searchAction()
+    public function searchAction(): void
     {
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
@@ -85,9 +98,11 @@ class SearchController extends AbstractController
      *
      * This shows the search form and optional the facets and extended search form.
      *
+     * @access public
+     *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         $listViewSearch = false;
         // Quit without doing anything if required variables are not set.
@@ -100,6 +115,11 @@ class SearchController extends AbstractController
         $this->searchParams = $this->getParametersSafely('searchParameter');
         // if search was triggered by the ListView plugin, get the parameters from GET variables
         $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
+        // Quit without doing anything if no search parameters.
+        if (empty($this->searchParams) && empty($listRequestData)) {
+            $this->logger->warning('Missing search parameters');
+            return;
+        }
 
         if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
             $this->searchParams = array_merge($this->searchParams ?: [], $listRequestData['searchParameter']);
@@ -108,22 +128,26 @@ class SearchController extends AbstractController
         }
 
         // sanitize date search input
-        if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
-            $this->searchParams['dateFrom'] = '*';
-        }
-        if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
-            $this->searchParams['dateTo'] = 'NOW';
-        }
-        if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
-            $tmpDate = $this->searchParams['dateFrom'];
-            $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
-            $this->searchParams['dateTo'] = $tmpDate;
+        if (!empty($this->searchParams['dateFrom']) || !empty($this->searchParams['dateTo'])) {
+            if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+                $this->searchParams['dateFrom'] = '*';
+            }
+
+            if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+                $this->searchParams['dateTo'] = 'NOW';
+            }
+
+            if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+                $tmpDate = $this->searchParams['dateFrom'];
+                $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
+                $this->searchParams['dateTo'] = $tmpDate;
+            }
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
-        $widgetPage = $this->getParametersSafely('@widget_0');
-        if (empty($widgetPage)) {
-            $widgetPage = ['currentPage' => 1];
+        $currentPage = $this->getParametersSafely('page');
+        if (empty($currentPage)) {
+            $currentPage = 1;
         }
 
         // If a targetPid is given, the results will be shown by ListView on the target page.
@@ -134,13 +158,13 @@ class SearchController extends AbstractController
                 null,
                 [
                     'searchParameter' => $this->searchParams,
-                    'widgetPage' => $widgetPage
-                ],
-                $this->settings['targetPid']
+                    'page' => $currentPage
+                ], $this->settings['targetPid']
             );
         }
 
-        // If no search has been executed, no variables habe to be prepared. An empty form will be shown.
+        // If no search has been executed, no variables have to be prepared.
+        // An empty form will be shown.
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
             // get all sortable metadata records
             $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
@@ -152,13 +176,23 @@ class SearchController extends AbstractController
             $numResults = 0;
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
-                $solrResults = $this->documentRepository->findSolrByCollection(null, $this->settings, $this->searchParams, $listedMetadata);
+                $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->searchParams, $listedMetadata);
                 $numResults = $solrResults->getNumFound();
+
+                $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
+                if (empty($itemsPerPage)) {
+                    $itemsPerPage = 25;
+                }
+                $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
+                $simplePagination = new SimplePagination($solrPaginator);
+
+                $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
+                $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
             }
 
             $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
             $this->view->assign('numResults', $numResults);
-            $this->view->assign('widgetPage', $widgetPage);
+            $this->view->assign('page', $currentPage);
             $this->view->assign('lastSearch', $this->searchParams);
             $this->view->assign('listedMetadata', $listedMetadata);
             $this->view->assign('sortableMetadata', $sortableMetadata);
@@ -188,14 +222,12 @@ class SearchController extends AbstractController
      * Adds the facets menu to the search form
      *
      * @access protected
-     *
-     * @return string HTML output of facets menu
      */
-    protected function addFacetsMenu()
+    protected function addFacetsMenu(): void
     {
         // Quit without doing anything if no facets are configured.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
-            return '';
+            return;
         }
 
         // Get facets from plugin configuration.
@@ -212,12 +244,11 @@ class SearchController extends AbstractController
      *
      * @access public
      *
-     * @param string $content: The PlugIn content
-     * @param array $conf: The PlugIn configuration
+     * @param array $facets
      *
      * @return array HMENU array
      */
-    public function makeFacetsMenuArray($facets)
+    public function makeFacetsMenuArray(array $facets): array
     {
         // Set default value for facet search.
         $search = [
@@ -227,14 +258,10 @@ class SearchController extends AbstractController
                     'facetset' => [
                         'facet' => []
                     ]
-                ]
+                ],
+                'filterquery' => []
             ]
         ];
-
-        // Set needed parameters for facet search.
-        if (empty($search['params']['filterquery'])) {
-            $search['params']['filterquery'] = [];
-        }
 
         $fields = Solr::getFields();
 
@@ -247,7 +274,7 @@ class SearchController extends AbstractController
             // If the query already is a fulltext query e.g using the facets
             $searchParams['query'] = empty($matches[1]) ? $searchParams['query'] : $matches[1];
             // Search in fulltext field if applicable. Query must not be empty!
-            if (!empty($this->searchParams['query'])) {
+            if (!empty($searchParams['query'])) {
                 $search['query'] = $fields['fulltext'] . ':(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
             }
         } else {
@@ -257,7 +284,7 @@ class SearchController extends AbstractController
             }
         }
 
-        $collectionsQuery = $this->addCollectionsQuery($searchParams['query']);
+        $collectionsQuery = $this->addCollectionsQuery($search['query']);
         if (!empty($collectionsQuery)) {
             $search['params']['filterquery'][]['query'] = $collectionsQuery;
         }
@@ -353,18 +380,19 @@ class SearchController extends AbstractController
      * Add the collection query string, if the collections are given.
      *
      * @access private
-     * 
+     *
      * @param string $query The current query
      *
      * @return string The collection query string
      */
-    private function addCollectionsQuery($query) {
+    private function addCollectionsQuery(string $query): string
+    {
         // if collections are given, we prepare the collections query string
         // extract collections from collection parameter
         $collections = null;
-        if ($this->searchParams['collection']) {
+        if (array_key_exists('collection', $this->searchParams)) {
             foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collections[] = $this->collectionRepository->findByUid($collectionEntry);
+                $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
         }
         if ($collections) {
@@ -404,15 +432,15 @@ class SearchController extends AbstractController
      *
      * @access private
      *
-     * @param string $field: The facet's index_name
-     * @param string $value: The facet's value
-     * @param int $count: Number of hits for this facet
-     * @param array $search: The parameters of the current search query
-     * @param string &$state: The state of the parent item
+     * @param string $field The facet's index_name
+     * @param string $value The facet's value
+     * @param int $count Number of hits for this facet
+     * @param array $search The parameters of the current search query
+     * @param string &$state The state of the parent item
      *
      * @return array The array for the facet's menu entry
      */
-    private function getFacetsMenuEntry($field, $value, $count, $search, &$state)
+    private function getFacetsMenuEntry(string $field, string $value, int $count, array $search, string &$state): array
     {
         $entryArray = [];
         $entryArray['title'] = $this->translateValue($field, $value);
@@ -447,13 +475,14 @@ class SearchController extends AbstractController
      *
      * @access private
      *
-     * @param array $facet
+     * @param FacetSet|null $facet
      * @param array $facetCollectionArray
      * @param array $search
      *
      * @return array menu array
      */
-    private function processResults($facet, $facetCollectionArray, $search) {
+    private function processResults($facet, array $facetCollectionArray, array $search): array
+    {
         $menuArray = [];
 
         if ($facet) {
@@ -494,12 +523,14 @@ class SearchController extends AbstractController
     /**
      * Translates value depending on the index name.
      *
-     * @param string $field: The facet's index_name
-     * @param string $value: The facet's value
+     * @access private
+     *
+     * @param string $field The facet's index_name
+     * @param string $value The facet's value
      *
      * @return string
      */
-    private function translateValue($field, $value)
+    private function translateValue(string $field, string $value): string
     {
         switch ($field) {
             case 'owner_faceting':
@@ -524,16 +555,16 @@ class SearchController extends AbstractController
      *
      * @access private
      *
-     * @return string The extended search form or an empty string
+     * @return void
      */
-    private function addExtendedSearch()
+    private function addExtendedSearch(): void
     {
         // Quit without doing anything if no fields for extended search are selected.
         if (
             empty($this->settings['extendedSlotCount'])
             || empty($this->settings['extendedFields'])
         ) {
-            return '';
+            return;
         }
 
         // Get field selector options.

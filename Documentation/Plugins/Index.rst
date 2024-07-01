@@ -33,7 +33,7 @@ marker templates for plugins are not supported anymore.
 Now, all HTML markup is done in Fluid. To use different templates, you have
 to overload the templates by the common TYPO3 way.
 
-The following TypoScript defines addition paths inside a "example" extenion::
+The following TypoScript defines additional paths inside an "example" extension::
 
    plugin.tx_dlf {
       view {
@@ -157,7 +157,7 @@ Basket
  - :Property:
        targetBasket
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 
@@ -252,21 +252,13 @@ The collection plugin shows one collection, all collections or selected collecti
        Default
    :Description:
        Description
-          
+
 
  - :Property:
        collections
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
-
- - :Property:
-       childrenRows
-   :Data Type:
-       :ref:`t3tsref:data-type-integer`
-   :Default:
-   :Description:
-       It defines for how many children documents metadata should be fetched
 
  - :Property:
        show_userdefined
@@ -291,13 +283,13 @@ The collection plugin shows one collection, all collections or selected collecti
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
        targetFeed
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 
@@ -329,7 +321,7 @@ The TypoScript part is necessary to switch the page rendering to a different pag
  - :Property:
        collections
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
@@ -362,7 +354,7 @@ The TypoScript part is necessary to switch the page rendering to a different pag
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
@@ -403,7 +395,7 @@ List View
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
@@ -423,7 +415,7 @@ List View
  - :Property:
        targetBasket
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 
@@ -459,7 +451,7 @@ Metadata
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
@@ -524,7 +516,7 @@ Navigation
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 
@@ -610,7 +602,7 @@ Page Grid
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 Page View
@@ -638,7 +630,7 @@ Page View
  - :Property:
        features
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
        1
 
@@ -687,7 +679,7 @@ Page View
  - :Property:
        targetBasket
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 Search
@@ -728,14 +720,6 @@ Search
        0
 
  - :Property:
-       childrenRows
-   :Data Type:
-       :ref:`t3tsref:data-type-integer`
-   :Default:
-   :Description:
-       It defines for how many children documents metadata should be fetched
-
- - :Property:
        solrcore
    :Data Type:
        :ref:`t3tsref:data-type-integer`
@@ -771,13 +755,13 @@ Search
  - :Property:
        collections
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
        facets
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
@@ -816,13 +800,13 @@ Search
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
        targetPidPageView
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 Statistics
@@ -843,7 +827,7 @@ Statistics
  - :Property:
        collections
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
@@ -887,19 +871,19 @@ Table Of Contents
  - :Property:
        targetBasket
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
        titleReplacement
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
    :Description:
        List containing types for which title should be replaced
@@ -935,7 +919,7 @@ Toolbox
  - :Property:
        tools
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
    :Values:
        * tx_dlf_annotationtool
@@ -955,7 +939,7 @@ Toolbox
  - :Property:
        fileGrpsImageDownload
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
        MIN,DEFAULT,MAX
 

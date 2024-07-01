@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets xmlns:mets="http://www.loc.gov/METS/"
+           xmlns:xlink="http://www.w3.org/1999/xlink"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.loc.gov/standards/mets/mets.xsd">
+    <mets:fileSec>
+        <mets:fileGrp USE="FULLTEXT">
+            <mets:file ID="FULLTEXT_0001" MIMETYPE="application/pdf">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/fulltext_0001.xml"/>
+            </mets:file>
+            <mets:file ID="FULLTEXT_0002" MIMETYPE="application/pdf">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/fulltext_002.xml"/>
+            </mets:file>
+            <mets:file ID="FULLTEXT_0003" MIMETYPE="application/pdf">
+                <mets:FLocat LOCTYPE="URL" xlink:href="http://web:8001/Tests/Fixtures/MetsDocument/fulltext_0003.xml"/>
+            </mets:file>
+            <mets:file ID="FULLTEXT_0004" MIMETYPE="application/pdf">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/fulltext_0003.xml"/>
+            </mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="DEFAULT">
+            <mets:file ID="FILE_0001" MIMETYPE="image/png">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/image/0001.png"/>
+            </mets:file>
+            <mets:file ID="FILE_0002" MIMETYPE="image/png">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/image/0002.png"/>
+            </mets:file>
+            <mets:file ID="FILE_0003" MIMETYPE="image/png">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/image/0003.png"/>
+            </mets:file>
+            <mets:file ID="FILE_0004" MIMETYPE="image/png">
+                <mets:FLocat LOCTYPE="URL" xlink:href="https://example.com/image/0004.png"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ID="LOG_0000" LABEL="Example Book" TYPE="manuscript">
+            <mets:div ID="LOG_0001" LABEL="First Chapter" TYPE="chapter"/>
+            <mets:div ID="LOG_0002" LABEL="Second Chapter" TYPE="chapter"/>
+            <mets:div ID="LOG_0003" LABEL="Third Chapter" TYPE="chapter"/>
+        </mets:div>
+    </mets:structMap>
+    <mets:structMap TYPE="PHYSICAL">
+        <mets:div ID="PHYS_0000" TYPE="physSequence">
+            <mets:div ID="PHYS_0001" ORDER="1" TYPE="page">
+                <mets:fptr FILEID="FILE_0001"/>
+                <mets:fptr FILEID="FULLTEXT_0001"/>
+            </mets:div>
+            <mets:div ID="PHYS_0002" ORDER="2" TYPE="page">
+                <mets:fptr FILEID="FILE_0002"/>
+                <mets:fptr FILEID="FULLTEXT_0002"/>
+            </mets:div>
+            <mets:div ID="PHYS_0003" ORDER="3" TYPE="page">
+                <mets:fptr FILEID="FILE_0003"/>
+                <mets:fptr FILEID="FULLTEXT_0003"/>
+            </mets:div>
+            <mets:div ID="PHYS_0004" ORDER="4" TYPE="page">
+                <mets:fptr FILEID="FILE_0004"/>
+                <mets:fptr FILEID="FULLTEXT_0004"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structLink>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0003"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0004"/>
+        <mets:smLink xlink:from="LOG_0001" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0002" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0003" xlink:to="PHYS_0003"/>
+        <mets:smLink xlink:from="LOG_0004" xlink:to="PHYS_0004"/>
+    </mets:structLink>
+</mets:mets>

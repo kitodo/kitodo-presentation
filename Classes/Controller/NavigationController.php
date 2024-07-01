@@ -11,27 +11,32 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Domain\Model\PageSelectForm;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Controller class for the plugin 'Navigation'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class NavigationController extends AbstractController
 {
     /**
-     * Method to get the page select values and use them with chash
-     * @param \Kitodo\Dlf\Domain\Model\PageSelectForm|NULL $pageSelectForm
+     * Method to get the page select values and use them with cHash
+     *
+     * @access public
+     *
+     * @param PageSelectForm|NULL $pageSelectForm
+     *
      * @return void
      */
-    public function pageSelectAction(\Kitodo\Dlf\Domain\Model\PageSelectForm $pageSelectForm = NULL) {
+    public function pageSelectAction(PageSelectForm $pageSelectForm = NULL): void
+    {
         if ($pageSelectForm) {
-            $uriBuilder = $this->getControllerContext()->getUriBuilder();
-            $uri = $uriBuilder->reset()
+            $uri = $this->uriBuilder->reset()
                 ->setArguments(
                     [
                         'tx_dlf' => [
@@ -49,45 +54,45 @@ class NavigationController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
+        }
+
+        // Set default values if not set.
+        if ($this->document->getCurrentDocument()->numPages > 0) {
+            $this->setPage();
         } else {
-            // Set default values if not set.
-            if ($this->document->getDoc()->numPages > 0) {
-                $this->setPage();
-                $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
-            } else {
-                $this->requestData['page'] = 0;
-                $this->requestData['double'] = 0;
-            }
+            $this->requestData['page'] = 0;
+            $this->requestData['double'] = 0;
+            // reassign requestData to viewData after assigning default values
+            $this->viewData['requestData'] = $this->requestData;
         }
 
         // Steps for X pages backward / forward. Double page view uses double steps.
         $pageSteps = $this->settings['pageStep'] * ($this->requestData['double'] + 1);
 
         $this->view->assign('pageSteps', $pageSteps);
-        $this->view->assign('numPages', $this->document->getDoc()->numPages);
+        $this->view->assign('numPages', $this->document->getCurrentDocument()->numPages);
         $this->view->assign('viewData', $this->viewData);
 
-        if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'search')) {
-            $lastSearchArguments = [];
-            $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
+        $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
+        if ($searchSessionParameters) {
             $widgetPage = $GLOBALS['TSFE']->fe_user->getKey('ses', 'widgetPage');
+            $lastSearchArguments = [
+                'tx_dlf_listview' => [
+                    'searchParameter' => $searchSessionParameters
+                ]
+            ];
 
-            if ($searchSessionParameters) {
-                $lastSearchArguments = [
-                    'tx_dlf_listview' => [
-                        'searchParameter' => $searchSessionParameters
-                    ]
-                ];
-            }
             if ($widgetPage) {
                 $lastSearchArguments['tx_dlf_listview']['@widget_0'] = $widgetPage;
             }
@@ -97,8 +102,9 @@ class NavigationController extends AbstractController
         }
 
         $pageOptions = [];
-        for ($i = 1; $i <= $this->document->getDoc()->numPages; $i++) {
-            $pageOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$i]]['orderlabel']) : '');
+        for ($i = 1; $i <= $this->document->getCurrentDocument()->numPages; $i++) {
+            $orderLabel = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$i]]['orderlabel'];
+            $pageOptions[$i] = '[' . $i . ']' . ($orderLabel ? ' - ' . htmlspecialchars($orderLabel) : '');
         }
 
         $this->view->assign('pageOptions', $pageOptions);

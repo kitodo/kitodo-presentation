@@ -123,111 +123,6 @@ function getCurrentQueryParams(baseUrl) {
 }
 
 /**
- * Get all URL query parameters for snippet links.
- * All means that it includes together params which were already supplied in the page url and params which are returned as search results.
- *
- * @param {string} baseUrl
- * @param {array} queryParams
- *
- * @returns {array} array with params in form 'param' => 'value'
- */
-function getAllQueryParams(baseUrl, queryParams) {
-    var params = getCurrentQueryParams(baseUrl);
-
-    var queryParam;
-    for(var i = 0; i < params.length; i++) {
-        queryParam = params[i].split('=');
-        if(queryParams.indexOf(decodeURIComponent(queryParam[0])) === -1) {
-            queryParams.push(decodeURIComponent(queryParam[0]));
-            queryParams[decodeURIComponent(queryParam[0])] = queryParam[1];
-        }
-    }
-    return queryParams;
-}
-
-/**
- * Check if the URL is configured as SLUG
- * (id is included in main URL, not in parameter).
- * // TODO: make it more flexible
- *
- * @param {array} element
- *
- * @returns {string}
- */
- function isUrlConfiguredAsSlug(element) {
-    var baseUrl = getBaseUrl(element['uid']).split('?')[0];
-    return baseUrl.indexOf(element['uid']) > -1;
-}
-
-/**
- * Get needed URL query parameters.
- * It returns array of params as objects 'param' => 'value'. It contains exactly 3 params which are taken out of search result.
- *
- * @param {array} element
- *
- * @returns {array} array with params in form 'param' => 'value'
- */
-function getNeededQueryParams(element) {
-    var id = $("input[id='tx-dlf-search-in-document-id']").attr('name');
-    var highlightWord = $("input[id='tx-dlf-search-in-document-highlight-word']").attr('name');
-    var page = $("input[id='tx-dlf-search-in-document-page']").attr('name');
-
-    var queryParams = [];
-
-    if(id && !isUrlConfiguredAsSlug(element)) {
-        queryParams.push(id);
-        queryParams[id] = element['uid'];
-    }
-
-    if(highlightWord) {
-        queryParams.push(highlightWord);
-        queryParams[highlightWord] = encodeURIComponent($("input[id='tx-dlf-search-in-document-query']").val());
-    }
-
-    if(page && !isUrlConfiguredAsSlug(element)) {
-        queryParams.push(page);
-        queryParams[page] = element['page'];
-    }
-
-    return queryParams;
-}
-
-/**
- * Get snippet link.
- *
- * @param {array} element
- *
- * @returns {string}
- */
-function getLink(element) {
-    var baseUrl = getBaseUrl(element['uid']);
-
-    var queryParams = getNeededQueryParams(element);
-
-    if (baseUrl.indexOf('?') > 0) {
-        queryParams = getAllQueryParams(baseUrl, queryParams);
-        baseUrl = baseUrl.split('?')[0];
-    }
-
-    // replace last element of URL with page
-    if (isUrlConfiguredAsSlug(element)) {
-        var url = baseUrl.split('/');
-        url.pop();
-        url.push(element['page']);
-        baseUrl = url.join('/');
-    }
-
-    var link = baseUrl + '?';
-
-    // add query params to result link
-    for(var i = 0; i < queryParams.length; i++) {
-        link += queryParams[i] + '=' + queryParams[queryParams[i]] + '&';
-    }
-    link = link.slice(0, -1);
-    return link;
-}
-
-/**
  * Get navigation buttons.
  *
  * @param {int} start
@@ -238,12 +133,12 @@ function getLink(element) {
 function getNavigationButtons(start, numFound) {
     var buttons = "";
 
-    if (start > 0) {
-        buttons += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" value="' + $('#tx-dlf-search-in-document-label-previous').text() + '" />';
+    if(start > 0) {
+        buttons += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" />';
     }
 
-    if (numFound > (start + 20)) {
-        buttons += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" value="' + $('#tx-dlf-search-in-document-label-next').text() + '" />';
+    if(numFound > (start + 20)) {
+        buttons += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" />';
     }
     return buttons;
 }
@@ -335,9 +230,10 @@ $(document).ready(function() {
         $.post(
             "/",
             {
-                eID: "tx_dlf_search_in_document",
+                middleware: "dlf/search-in-document",
                 q: $( "input[id='tx-dlf-search-in-document-query']" ).val(),
                 uid: $( "input[id='tx-dlf-search-in-document-id']" ).val(),
+                pid: $( "input[id='tx-dlf-search-in-document-pid']" ).val(),
                 start: $( "input[id='tx-dlf-search-in-document-start']" ).val(),
                 encrypted: $( "input[id='tx-dlf-search-in-document-encrypted']" ).val(),
             },
@@ -355,7 +251,7 @@ $(document).ready(function() {
                                 + $('#tx-dlf-search-in-document-label-page').text() + ' ' + element['page']
                                 + '</span><br />'
                                 + '<span class="textsnippet">'
-                                + '<a href=\"' + getLink(element) + '\">' + element['snippet'] + '</a>'
+                                + '<a href=\"' + element['url'] + '\">' + element['snippet'] + '</a>'
                                 + '</span>';
                         }
                     });
@@ -369,11 +265,14 @@ $(document).ready(function() {
 
                     addImageHighlight(data);
                 } else {
-                    resultList += '<li class="noresult">' + $('#tx-dlf-search-in-document-label-noresult').text() + '</li>';
+                    resultList += '<li class="noresult"></li>';
                 }
                 resultList += '</ul>';
                 resultList += getNavigationButtons(start, data['numFound']);
                 $('#tx-dlf-search-in-document-results').html(resultList);
+                $('.noresult').text($('#tx-dlf-search-in-document-label-noresult').text());
+                $('.button-previous').attr('value', $('#tx-dlf-search-in-document-label-previous').text());
+                $('.button-next').attr('value', $('#tx-dlf-search-in-document-label-next').text());
             },
             "json"
         )

@@ -11,117 +11,134 @@
 
 namespace Kitodo\Dlf\Controller\Backend;
 
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Model\Format;
-use Kitodo\Dlf\Domain\Model\Metadata;
-use Kitodo\Dlf\Domain\Model\MetadataFormat;
 use Kitodo\Dlf\Domain\Model\SolrCore;
-use Kitodo\Dlf\Domain\Model\Structure;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
-use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
+use TYPO3\CMS\Core\Site\Entity\NullSite;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Site\Entity\NullSite;
-use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * Controller class for the backend module 'New Tenant'.
  *
- * @author Christopher Timm <timm@effective-webwork.de>
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class NewTenantController extends AbstractController
 {
     /**
+     * @access protected
      * @var int
      */
-    protected $pid;
+    protected int $pid;
 
     /**
+     * @access protected
      * @var array
      */
-    protected $pageInfo;
+    protected array $pageInfo;
 
     /**
-     * All configured site languages
-     *
-     * @var array
+     * @access protected
+     * @var array All configured site languages
      */
-    protected $siteLanguages;
+    protected array $siteLanguages;
 
     /**
-     * LanguageFactory to get language key/values by our own.
-     *
-     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory
+     * @access protected
+     * @var LocalizationFactory Language factory to get language key/values by our own.
      */
-    protected $languageFactory;
+    protected LocalizationFactory $languageFactory;
 
     /**
-     * Backend Template Container
-     *
-     * @var string
+     * @access protected
+     * @var string Backend Template Container
      */
-    protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
+    protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
+     * @access protected
      * @var FormatRepository
      */
-    protected $formatRepository;
+    protected FormatRepository $formatRepository;
 
     /**
+     * @access public
+     *
      * @param FormatRepository $formatRepository
+     *
+     * @return void
      */
-    public function injectFormatRepository(FormatRepository $formatRepository)
+    public function injectFormatRepository(FormatRepository $formatRepository): void
     {
         $this->formatRepository = $formatRepository;
     }
 
     /**
+     * @access protected
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
+     * @access public
+     *
      * @param MetadataRepository $metadataRepository
+     *
+     * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
+    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
     {
         $this->metadataRepository = $metadataRepository;
     }
 
     /**
+     * @access protected
      * @var StructureRepository
      */
-    protected $structureRepository;
+    protected StructureRepository $structureRepository;
 
     /**
+     * @access public
+     *
      * @param StructureRepository $structureRepository
+     *
+     * @return void
      */
-    public function injectStructureRepository(StructureRepository $structureRepository)
+    public function injectStructureRepository(StructureRepository $structureRepository): void
     {
         $this->structureRepository = $structureRepository;
     }
 
     /**
+     * @access protected
      * @var SolrCoreRepository
      */
-    protected $solrCoreRepository;
+    protected SolrCoreRepository $solrCoreRepository;
 
     /**
+     * @access public
+     *
      * @param SolrCoreRepository $solrCoreRepository
+     *
+     * @return void
      */
-    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository)
+    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository): void
     {
         $this->solrCoreRepository = $solrCoreRepository;
     }
@@ -129,8 +146,11 @@ class NewTenantController extends AbstractController
     /**
      * Initialization for all actions
      *
+     * @access protected
+     *
+     * @return void
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         $this->pid = (int) GeneralUtility::_GP('id');
 
@@ -151,8 +171,12 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding formats records
+     *
+     * @access public
+     *
+     * @return void
      */
-    public function addFormatAction()
+    public function addFormatAction(): void
     {
         // Include formats definition file.
         $formatsDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
@@ -189,74 +213,86 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding metadata records
+     *
+     * @access public
+     *
+     * @return void
      */
-    public function addMetadataAction()
+    public function addMetadataAction(): void
     {
         // Include metadata definition file.
         $metadataDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/MetadataDefaults.php');
 
-        $doPersist = false;
-
         // load language file in own array
         $metadataLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf', $this->siteLanguages[0]->getTypo3Language());
 
+        $insertedFormats = $this->formatRepository->findAll();
+
+        $availableFormats = [];
+        foreach ($insertedFormats as $insertedFormat) {
+            $availableFormats[$insertedFormat->getRoot()] = $insertedFormat->getUid();
+        }
+
+        $defaultWrap = BackendUtility::getTcaFieldConfiguration('tx_dlf_metadata', 'wrap')['default'];
+
+        $data = [];
         foreach ($metadataDefaults as $indexName => $values) {
-            // if default format record is not found, add it to the repository
-            if ($this->metadataRepository->findOneByIndexName($indexName) === null) {
+            $formatIds = [];
 
-                $newRecord = GeneralUtility::makeInstance(Metadata::class);
-                $newRecord->setLabel($this->getLLL('metadata.' . $indexName, $this->siteLanguages[0]->getTypo3Language(), $metadataLabels));
-                $newRecord->setIndexName($indexName);
-                $newRecord->setDefaultValue($values['default_value']);
-                $newRecord->setWrap($values['wrap'] ? : $GLOBALS['TCA']['tx_dlf_metadata']['columns']['wrap']['config']['default']);
-                $newRecord->setIndexTokenized($values['index_tokenized']);
-                $newRecord->setIndexStored((int) $values['index_stored']);
-                $newRecord->setIndexIndexed((int) $values['index_indexed']);
-                $newRecord->setIndexBoost((float) $values['index_boost']);
-                $newRecord->setIsSortable((int) $values['is_sortable']);
-                $newRecord->setIsFacet((int) $values['is_facet']);
-                $newRecord->setIsListed((int) $values['is_listed']);
-                $newRecord->setIndexAutocomplete((int) $values['index_autocomplete']);
+            foreach ($values['format'] as $format) {
+                $format['encoded'] = $availableFormats[$format['format_root']];
+                unset($format['format_root']);
+                $formatIds[] = uniqid('NEW');
+                $data['tx_dlf_metadataformat'][end($formatIds)] = $format;
+                $data['tx_dlf_metadataformat'][end($formatIds)]['pid'] = $this->pid;
+            }
 
-                if (is_array($values['format'])) {
-                    foreach ($values['format'] as $format) {
-                        $formatRecord = $this->formatRepository->findOneByRoot($format['format_root']);
-                        // If formatRecord is null, we cannot create a MetadataFormat record.
-                        if ($formatRecord !== null) {
-                            $newMetadataFormat = GeneralUtility::makeInstance(MetadataFormat::class);
-                            $newMetadataFormat->setEncoded($formatRecord->getUid());
-                            $newMetadataFormat->setXpath($format['xpath']);
-                            $newMetadataFormat->setXpathSorting($format['xpath_sorting']);
-                            $newRecord->addFormat($newMetadataFormat);
-                        }
-                    }
-                }
+            $data['tx_dlf_metadata'][uniqid('NEW')] = [
+                'pid' => $this->pid,
+                'label' => $this->getLLL('metadata.' . $indexName, $this->siteLanguages[0]->getTypo3Language(), $metadataLabels),
+                'index_name' => $indexName,
+                'format' => implode(',', $formatIds),
+                'default_value' => $values['default_value'],
+                'wrap' => !empty($values['wrap']) ? $values['wrap'] : $defaultWrap,
+                'index_tokenized' => $values['index_tokenized'],
+                'index_stored' => $values['index_stored'],
+                'index_indexed' => $values['index_indexed'],
+                'index_boost' => $values['index_boost'],
+                'is_sortable' => $values['is_sortable'],
+                'is_facet' => $values['is_facet'],
+                'is_listed' => $values['is_listed'],
+                'index_autocomplete' => $values['index_autocomplete'],
+            ];
+        }
 
-                foreach ($this->siteLanguages as $siteLanguage) {
-                    if ($siteLanguage->getLanguageId() === 0) {
-                        // skip default language
-                        continue;
-                    }
-                    $translatedRecord = GeneralUtility::makeInstance(Metadata::class);
-                    $translatedRecord->setL18nParent($newRecord);
-                    $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
-                    $translatedRecord->setLabel($this->getLLL('metadata.' . $indexName, $siteLanguage->getTypo3Language(), $metadataLabels));
-                    $translatedRecord->setIndexName($indexName);
-                    $translatedRecord->setWrap($newRecord->getWrap());
+        $metadataIds = Helper::processDatabaseAsAdmin($data, [], true);
 
-                    $this->metadataRepository->add($translatedRecord);
-                }
-
-                $this->metadataRepository->add($newRecord);
-
-                $doPersist = true;
+        $insertedMetadata = [];
+        foreach ($metadataIds as $id => $uid) {
+            $metadata = $this->metadataRepository->findByUid($uid);
+            // id array contains also ids of formats
+            if ($metadata != null) {
+                $insertedMetadata[$uid] = $metadata->getIndexName();
             }
         }
 
-        // We must persist here, if we changed anything.
-        if ($doPersist === true) {
-            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-            $persistenceManager->persistAll();
+        foreach ($this->siteLanguages as $siteLanguage) {
+            if ($siteLanguage->getLanguageId() === 0) {
+                // skip default language
+                continue;
+            }
+
+            $translateData = [];
+            foreach ($insertedMetadata as $id => $indexName) {
+                $translateData['tx_dlf_metadata'][uniqid('NEW')] = [
+                    'pid' => $this->pid,
+                    'sys_language_uid' => $siteLanguage->getLanguageId(),
+                    'l18n_parent' => $id,
+                    'label' => $this->getLLL('metadata.' . $indexName, $siteLanguage->getTypo3Language(), $metadataLabels),
+                ];
+            }
+
+            Helper::processDatabaseAsAdmin($translateData);
         }
 
         $this->forward('index');
@@ -264,8 +300,12 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding Solr core records
+     *
+     * @access public
+     *
+     * @return void
      */
-    public function addSolrCoreAction()
+    public function addSolrCoreAction(): void
     {
         $doPersist = false;
 
@@ -296,49 +336,54 @@ class NewTenantController extends AbstractController
 
     /**
      * Action adding structure records
+     *
+     * @access public
+     *
+     * @return void
      */
-    public function addStructureAction()
+    public function addStructureAction(): void
     {
         // Include structure definition file.
         $structureDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/StructureDefaults.php');
 
-        $doPersist = false;
-
         // load language file in own array
-        $structLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getTypo3Language());
+        $structureLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getTypo3Language());
 
+        $data = [];
         foreach ($structureDefaults as $indexName => $values) {
-            // if default format record is not found, add it to the repository
-            if ($this->structureRepository->findOneByIndexName($indexName) === null) {
-                $newRecord = GeneralUtility::makeInstance(Structure::class);
-                $newRecord->setLabel($this->getLLL('structure.' . $indexName, $this->siteLanguages[0]->getTypo3Language(), $structLabels));
-                $newRecord->setIndexName($indexName);
-                $newRecord->setToplevel($values['toplevel']);
-                $newRecord->setOaiName($values['oai_name']);
-                $this->structureRepository->add($newRecord);
+            $data['tx_dlf_structures'][uniqid('NEW')] = [
+                'pid' => $this->pid,
+                'toplevel' => $values['toplevel'],
+                'label' => $this->getLLL('structure.' . $indexName, $this->siteLanguages[0]->getTypo3Language(), $structureLabels),
+                'index_name' => $indexName,
+                'oai_name' => $values['oai_name'],
+                'thumbnail' => 0,
+            ];
+        }
+        $structureIds = Helper::processDatabaseAsAdmin($data, [], true);
 
-                foreach ($this->siteLanguages as $siteLanguage) {
-                    if ($siteLanguage->getLanguageId() === 0) {
-                        // skip default language
-                        continue;
-                    }
-                    $translatedRecord = GeneralUtility::makeInstance(Structure::class);
-                    $translatedRecord->setL18nParent($newRecord);
-                    $translatedRecord->_setProperty('_languageUid', $siteLanguage->getLanguageId());
-                    $translatedRecord->setLabel($this->getLLL('structure.' . $indexName, $siteLanguage->getTypo3Language(), $structLabels));
-                    $translatedRecord->setIndexName($indexName);
-
-                    $this->structureRepository->add($translatedRecord);
-                }
-
-                $doPersist = true;
-            }
+        $insertedStructures = [];
+        foreach ($structureIds as $id => $uid) {
+            $insertedStructures[$uid] = $this->structureRepository->findByUid($uid)->getIndexName();
         }
 
-        // We must persist here, if we changed anything.
-        if ($doPersist === true) {
-            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-            $persistenceManager->persistAll();
+        foreach ($this->siteLanguages as $siteLanguage) {
+            if ($siteLanguage->getLanguageId() === 0) {
+                // skip default language
+                continue;
+            }
+
+            $translateData = [];
+            foreach ($insertedStructures as $id => $indexName) {
+                $translateData['tx_dlf_structures'][uniqid('NEW')] = [
+                    'pid' => $this->pid,
+                    'sys_language_uid' => $siteLanguage->getLanguageId(),
+                    'l18n_parent' => $id,
+                    'label' => $this->getLLL('structure.' . $indexName, $siteLanguage->getTypo3Language(), $structureLabels),
+                ];
+            }
+
+            Helper::processDatabaseAsAdmin($translateData);
         }
 
         $this->forward('index');
@@ -346,11 +391,14 @@ class NewTenantController extends AbstractController
 
     /**
      * Set up the doc header properly here
+     * 
+     * @access protected
      *
      * @param ViewInterface $view
+     *
      * @return void
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView(ViewInterface $view): void
     {
         /** @var BackendTemplateView $view */
         parent::initializeView($view);
@@ -368,8 +416,9 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
+     * @return void
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $recordInfos = [];
 
@@ -399,21 +448,26 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
+     * @return void
      */
-    public function errorAction()
+    // @phpstan-ignore-next-line
+    public function errorAction(): void
     {
+        // TODO: Call parent::errorAction() when dropping support for TYPO3 v10.
     }
 
     /**
      * Get language label for given key and language.
+     * 
+     * @access protected
      *
      * @param string $index
      * @param string $lang
      * @param array $langArray
      *
-     * @access public
+     * @return string
      */
-    protected function getLLL($index, $lang, $langArray)
+    protected function getLLL(string $index, string $lang, array $langArray): string
     {
         if (isset($langArray[$lang][$index][0]['target'])) {
             return $langArray[$lang][$index][0]['target'];

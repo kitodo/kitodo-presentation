@@ -12,25 +12,35 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Kitodo\Dlf\Common\Doc;
+use Doctrine\DBAL\ForwardCompatibility\Result;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Structure;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+/**
+ * Document repository.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
+class DocumentRepository extends Repository
 {
     /**
-     * The controller settings passed to the repository for some special actions.
-     *
-     * @var array
      * @access protected
+     * @var array The controller settings passed to the repository for some special actions.
      */
     protected $settings;
 
@@ -44,6 +54,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * - 'recordId': the record_id of the document
      *
      * Currently used by EXT:slub_digitalcollections
+     *
+     * @access public
      *
      * @param array $parameters
      *
@@ -64,7 +76,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
-            $doc = Doc::getInstance($parameters['location'], [], true);
+            $doc = AbstractDocument::getInstance($parameters['location'], [], true);
 
             if ($doc->recordId) {
                 $document = $this->findOneByRecordId($doc->recordId);
@@ -79,11 +91,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         }
 
         if ($document !== null && $doc === null) {
-            $doc = Doc::getInstance($document->getLocation(), [], true);
+            $doc = AbstractDocument::getInstance($document->getLocation(), [], true);
         }
 
         if ($doc !== null) {
-            $document->setDoc($doc);
+            $document->setCurrentDocument($doc);
         }
 
         return $document;
@@ -91,6 +103,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * Find the oldest document
+     *
+     * @access public
      *
      * @return Document|null
      */
@@ -105,8 +119,11 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
+     * @access public
+     *
      * @param int $partOf
-     * @param  \Kitodo\Dlf\Domain\Model\Structure $structure
+     * @param Structure $structure
+     *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
     public function getChildrenOfYearAnchor($partOf, $structure)
@@ -117,7 +134,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         $query->matching($query->equals('partof', $partOf));
 
         $query->setOrderings([
-            'mets_orderlabel' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+            'mets_orderlabel' => QueryInterface::ORDER_ASCENDING
         ]);
 
         return $query->execute();
@@ -125,6 +142,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * Finds all documents for the given settings
+     *
+     * @access public
      *
      * @param int $uid
      * @param array $settings
@@ -140,6 +159,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
     /**
      * Finds all documents for the given settings
+     *
+     * @access public
      *
      * @param array $settings
      *
@@ -169,14 +190,17 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
-     * Finds all documents for the given collections
+     * Finds all documents for the given collections and conditions
+     *
+     * @access public
      *
      * @param array $collections
      * @param int $limit
+     * @param int $offset
      *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findAllByCollectionsLimited($collections, $limit = 50)
+    public function findAllByCollectionsLimited($collections, int $limit = 50, int $offset = 0)
     {
         $query = $this->createQuery();
 
@@ -198,6 +222,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 
         if ($limit > 0) {
             $query->setLimit((int) $limit);
+            $query->setOffset($offset);
         }
 
         return $query->execute();
@@ -209,6 +234,8 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
      * Volumes are documents that are both
      *  a) "leaf" elements i.e. partof != 0
      *  b) "root" elements that are not referenced by other documents ("root" elements that have no descendants)
+     *
+     * @access public
      *
      * @param array $settings
      *
@@ -343,11 +370,13 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Build table of contents
      *
+     * @access public
+     *
      * @param int $uid
      * @param int $pid
      * @param array $settings
      *
-     * @return \Doctrine\DBAL\ForwardCompatibility\Result
+     * @return Result
      */
     public function getTableOfContentsFromDb($uid, $pid, $settings)
     {
@@ -385,13 +414,15 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($pid)),
                 $excludeOtherWhere
             )
-            ->addOrderBy('tx_dlf_documents.volume_sorting')
+            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
             ->execute();
     }
 
     /**
      * Find one document by given settings and identifier
+     *
+     * @access public
      *
      * @param array $settings
      * @param array $parameters
@@ -434,12 +465,13 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Finds all documents for the given settings
      *
-     * @param array $settings
+     * @access public
+     *
      * @param array $documentsToProcess
      *
-     * @return array The found document objects
+     * @return Result The found document objects
      */
-    public function getOaiDocumentList($settings, $documentsToProcess)
+    public function getOaiDocumentList($documentsToProcess): Result
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('tx_dlf_documents');
@@ -462,16 +494,16 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
         ];
 
         // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
-        $documents = $connection->executeQuery($sql, $values, $types);
-
-        return $documents;
+        return $connection->executeQuery($sql, $values, $types);
     }
 
     /**
      * Finds all documents with given uids
      *
+     * @access public
+     *
      * @param array $uids
-     * @param array $checkPartof Whether or not to also match $uids against partof.
+     * @param bool $checkPartof Whether or not to also match $uids against partof.
      *
      * @return array
      */
@@ -503,7 +535,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
                 $queryBuilder->expr()->in('tx_dlf_documents.pid', $this->settings['storagePid']),
                 $exprDocumentMatchesUid
             )
-            ->addOrderBy('tx_dlf_documents.volume_sorting', 'asc')
+            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel', 'asc')
             ->execute();
 
@@ -519,7 +551,7 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     }
 
     /**
-     *
+     * @access public
      *
      * @param array $uids
      *
@@ -541,19 +573,72 @@ class DocumentRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
     /**
      * Find all documents with given collection from Solr
      *
-     * @param QueryResult|Collection $collection
+     * @access public
+     *
+     * @param Collection $collection
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
+     *
      * @return SolrSearch
      */
-    public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
+    public function findSolrByCollection(Collection $collection, $settings, $searchParams, $listedMetadata = null)
+    {
+        return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata);
+    }
+
+    /**
+     * Find all documents with given collections from Solr
+     *
+     * @access public
+     *
+     * @param array|QueryResultInterface $collections
+     * @param array $settings
+     * @param array $searchParams
+     * @param QueryResult $listedMetadata
+     *
+     * @return SolrSearch
+     */
+    public function findSolrByCollections($collections, $settings, $searchParams, $listedMetadata = null): SolrSearch
+    {
+        return $this->findSolr($collections, $settings, $searchParams, $listedMetadata);
+    }
+
+    /**
+     * Find all documents without given collection from Solr
+     *
+     * @access public
+     *
+     * @param array $settings
+     * @param array $searchParams
+     * @param QueryResult $listedMetadata
+     *
+     * @return SolrSearch
+     */
+    public function findSolrWithoutCollection($settings, $searchParams, $listedMetadata = null): SolrSearch
+    {
+        return $this->findSolr([], $settings, $searchParams, $listedMetadata);
+    }
+
+    /**
+     * Find all documents with from Solr
+     *
+     * @access private
+     *
+     * @param array|QueryResultInterface $collections
+     * @param array $settings
+     * @param array $searchParams
+     * @param QueryResult $listedMetadata
+     *
+     * @return SolrSearch
+     */
+    private function findSolr($collections, $settings, $searchParams, $listedMetadata = null): SolrSearch
     {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
 
-        $search = new SolrSearch($this, $collection, $settings, $searchParams, $listedMetadata);
+        $search = new SolrSearch($this, $collections, $settings, $searchParams, $listedMetadata);
         $search->prepare();
         return $search;
     }

@@ -18,9 +18,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Controller class for plugin 'Table Of Contents'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class TableOfContentsController extends AbstractController
@@ -28,10 +28,10 @@ class TableOfContentsController extends AbstractController
     /**
      * This holds the active entries according to the currently selected page
      *
-     * @var array
      * @access protected
+     * @var array This holds the active entries according to the currently selected page
      */
-    protected $activeEntries = [];
+    protected array $activeEntries = [];
 
     /**
      * The main method of the plugin
@@ -40,7 +40,7 @@ class TableOfContentsController extends AbstractController
      *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         // Load current document.
         $this->loadDocument();
@@ -61,23 +61,22 @@ class TableOfContentsController extends AbstractController
      *
      * @return array HMENU array
      */
-    private function makeMenuArray()
+    private function makeMenuArray(): array
     {
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
-            !empty($this->document->getDoc()->physicalStructure)
+            !empty($this->document->getCurrentDocument()->physicalStructure)
             || !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
         ) {
             $this->getAllLogicalUnits();
             // Go through table of contents and create all menu entries.
-            foreach ($this->document->getDoc()->tableOfContents as $entry) {
+            foreach ($this->document->getCurrentDocument()->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, true);
             }
         } else {
             // Go through table of contents and create top-level menu entries.
-            foreach ($this->document->getDoc()->tableOfContents as $entry) {
+            foreach ($this->document->getCurrentDocument()->tableOfContents as $entry) {
                 $menuArray[] = $this->getMenuEntry($entry, false);
             }
             // Build table of contents from database.
@@ -111,12 +110,12 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array $entry : The entry's array from \Kitodo\Dlf\Common\Doc->getLogicalStructure
-     * @param bool $recursive : Whether to include the child entries
+     * @param array $entry The entry's array from AbstractDocument->getLogicalStructure
+     * @param bool $recursive Whether to include the child entries
      *
      * @return array HMENU array for menu entry
      */
-    private function getMenuEntry(array $entry, $recursive = false)
+    private function getMenuEntry(array $entry, bool $recursive = false): array
     {
         $entry = $this->resolveMenuEntry($entry);
 
@@ -140,7 +139,7 @@ class TableOfContentsController extends AbstractController
             $entryArray['page'] = $entry['points'];
 
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
+            if (isset($this->settings['basketButton'])) {
                 $entryArray['basketButton'] = [
                     'logId' => $entry['id'],
                     'startpage' => $entry['points']
@@ -153,7 +152,7 @@ class TableOfContentsController extends AbstractController
             $entryArray['id'] = $entry['points'];
             $entryArray['page'] = 1;
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
+            if (isset($this->settings['basketButton'])) {
                 $entryArray['basketButton'] = [
                     'logId' => $entry['id'],
                     'startpage' => $entry['points']
@@ -163,7 +162,7 @@ class TableOfContentsController extends AbstractController
             $entryArray['id'] = $entry['targetUid'];
             $entryArray['page'] = 1;
             $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
+            if (isset($this->settings['basketButton'])) {
                 $entryArray['basketButton'] = [
                     'logId' => $entry['id'],
                     'startpage' => $entry['targetUid']
@@ -186,7 +185,7 @@ class TableOfContentsController extends AbstractController
             if (
                 $entryArray['ITEM_STATE'] == 'CUR'
                 || is_string($entry['points'])
-                || empty($this->document->getDoc()->smLinks['l2p'][$entry['id']])
+                || empty($this->document->getCurrentDocument()->smLinks['l2p'][$entry['id']])
             ) {
                 $entryArray['_SUB_MENU'] = [];
                 foreach ($entry['children'] as $child) {
@@ -213,13 +212,14 @@ class TableOfContentsController extends AbstractController
      * @access private
      *
      * @param array $entry
+     *
      * @return array
      */
-    private function resolveMenuEntry($entry)
+    private function resolveMenuEntry(array $entry): array
     {
         // If the menu entry points to the parent document,
         // resolve to the parent UID set on indexation.
-        $doc = $this->document->getDoc();
+        $doc = $this->document->getCurrentDocument();
         if (
             $doc instanceof MetsDocument
             && ($entry['points'] === $doc->parentHref || $this->isMultiElement($entry['type']))
@@ -239,19 +239,20 @@ class TableOfContentsController extends AbstractController
      *
      * @return void
      */
-    private function getAllLogicalUnits() {
+    private function getAllLogicalUnits(): void
+    {
         if (
             !empty($this->requestData['page'])
-            && !empty($this->document->getDoc()->physicalStructure)
+            && !empty($this->document->getCurrentDocument()->physicalStructure)
         ) {
-            $this->activeEntries = array_merge((array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[0]],
-                (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page']]]);
+            $this->activeEntries = array_merge((array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[0]],
+                (array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]);
             if (
                 !empty($this->requestData['double'])
-                && $this->requestData['page'] < $this->document->getDoc()->numPages
+                && $this->requestData['page'] < $this->document->getCurrentDocument()->numPages
             ) {
                 $this->activeEntries = array_merge($this->activeEntries,
-                    (array) $this->document->getDoc()->smLinks['p2l'][$this->document->getDoc()->physicalStructure[$this->requestData['page'] + 1]]);
+                    (array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page'] + 1]]);
             }
         }
     }
@@ -265,7 +266,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return string
      */
-    private function getTranslatedType($type) {
+    private function getTranslatedType(string $type): string
+    {
         return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
     }
 
@@ -285,7 +287,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return bool
      */
-    private function isMultiElement($type) {
+    private function isMultiElement(string $type): bool
+    {
         return $type === 'multivolume_work' || $type === 'multipart_manuscript';
     }
     /**
@@ -297,7 +300,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return string
      */
-    private function setTitle($entry) {
+    private function setTitle(array $entry): string
+    {
         if (empty($entry['label']) && empty($entry['orderlabel'])) {
             foreach ($this->settings['titleReplacements'] as $titleReplacement) {
                 if ($entry['type'] == $titleReplacement['type']) {
@@ -327,7 +331,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return void
      */
-    private function sortMenu(&$menu) {
+    private function sortMenu(array &$menu): void
+    {
         if ($menu[0]['type'] == $this->getTranslatedType("newspaper")) {
             $this->sortSubMenu($menu);
         }
@@ -345,7 +350,8 @@ class TableOfContentsController extends AbstractController
      *
      * @return void
      */
-    private function sortSubMenu(&$menu) {
+    private function sortSubMenu(array &$menu): void
+    {
         usort($menu[0]['_SUB_MENU'], function ($firstElement, $secondElement) {
             if (!empty($firstElement['orderlabel'])) {
                 return $firstElement['orderlabel'] <=> $secondElement['orderlabel'];

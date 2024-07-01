@@ -1,8 +1,17 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
-use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -13,7 +22,9 @@ class PageViewProxyTest extends FunctionalTestCase
     protected function getDlfConfiguration()
     {
         return array_merge(parent::getDlfConfiguration(), [
-            'enableInternalProxy' => true,
+            'general' => [
+                'enableInternalProxy' => true
+            ]
         ]);
     }
 
@@ -35,7 +46,7 @@ class PageViewProxyTest extends FunctionalTestCase
             'url' => 'file:///etc/passwd',
         ]);
 
-        $this->assertEquals(400, $response->getStatusCode());
+        self::assertEquals(400, $response->getStatusCode());
     }
 
     /**
@@ -47,7 +58,7 @@ class PageViewProxyTest extends FunctionalTestCase
             'url' => 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt',
         ]);
 
-        $this->assertEquals(401, $response->getStatusCode());
+        self::assertEquals(401, $response->getStatusCode());
     }
 
     /**
@@ -60,7 +71,7 @@ class PageViewProxyTest extends FunctionalTestCase
             'uHash' => 'nottherealhash',
         ]);
 
-        $this->assertEquals(401, $response->getStatusCode());
+        self::assertEquals(401, $response->getStatusCode());
     }
 
     /**
@@ -76,8 +87,8 @@ class PageViewProxyTest extends FunctionalTestCase
             'uHash' => $uHash,
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('This is some plain text test file.' . "\n", (string) $response->getBody());
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('This is some plain text test file.' . "\n", (string) $response->getBody());
     }
 
     /**
@@ -93,7 +104,7 @@ class PageViewProxyTest extends FunctionalTestCase
             'uHash' => $uHash,
         ], 'POST');
 
-        $this->assertEquals(405, $response->getStatusCode());
+        self::assertEquals(405, $response->getStatusCode());
     }
 
     /**
@@ -109,8 +120,8 @@ class PageViewProxyTest extends FunctionalTestCase
             'uHash' => $uHash,
         ]);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('Kitodo.Presentation Proxy', (string) $response->getBody());
+        self::assertEquals(200, $response->getStatusCode());
+        self::assertEquals('Kitodo.Presentation Proxy', (string) $response->getBody());
     }
 
     /**
@@ -120,9 +131,9 @@ class PageViewProxyTest extends FunctionalTestCase
     {
         $response = $this->queryProxy([], 'OPTIONS');
 
-        $this->assertGreaterThanOrEqual(200, $response->getStatusCode());
-        $this->assertLessThan(300, $response->getStatusCode());
+        self::assertGreaterThanOrEqual(200, $response->getStatusCode());
+        self::assertLessThan(300, $response->getStatusCode());
 
-        $this->assertNotEmpty($response->getHeader('Access-Control-Allow-Methods'));
+        self::assertNotEmpty($response->getHeader('Access-Control-Allow-Methods'));
     }
 }

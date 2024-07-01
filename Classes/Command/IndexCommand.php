@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Command;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Command\BaseCommand;
-use Kitodo\Dlf\Common\Doc;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,9 +26,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * CLI Command for indexing single documents into database and Solr.
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class IndexCommand extends BaseCommand
@@ -37,9 +37,11 @@ class IndexCommand extends BaseCommand
     /**
      * Configure the command by defining the name, options and arguments
      *
+     * @access public
+     *
      * @return void
      */
-    public function configure()
+    public function configure(): void
     {
         $this
             ->setDescription('Index single document into database and Solr.')
@@ -77,25 +79,27 @@ class IndexCommand extends BaseCommand
     }
 
     /**
-     * Executes the command to index the given document to db and solr.
+     * Executes the command to index the given document to DB and SOLR.
+     *
+     * @access protected
      *
      * @param InputInterface $input The input parameters
      * @param OutputInterface $output The Symfony interface for outputs on console
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $this->initializeRepositories($input->getOption('pid'));
+        $this->initializeRepositories((int) $input->getOption('pid'));
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            exit(1);
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -113,15 +117,15 @@ class IndexCommand extends BaseCommand
                 }
                 if (empty($output_solrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    exit(1);
+                    return BaseCommand::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
-                    exit(1);
+                    return BaseCommand::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            exit(1);
+            return BaseCommand::FAILURE;
         }
 
         if (
@@ -133,7 +137,7 @@ class IndexCommand extends BaseCommand
             )
         ) {
             $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
-            exit(1);
+            return BaseCommand::FAILURE;
         }
 
         if (!empty($input->getOption('owner'))) {
@@ -158,50 +162,85 @@ class IndexCommand extends BaseCommand
                 $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
                 exit(1);
             } else {
-                $doc = Doc::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
+                $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
             }
 
         } else if (GeneralUtility::isValidUrl($input->getOption('doc'))) {
-            $doc = Doc::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
+            $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
 
-            if ($doc->recordId) {
-                $document = $this->documentRepository->findOneByRecordId($doc->recordId);
-            }
-
-            if ($document === null) {
-                // create new Document object
-                $document = GeneralUtility::makeInstance(Document::class);
-            }
-
-            // now there must exist a document object
-            if ($document) {
-                $document->setLocation($input->getOption('doc'));
-            }
+            $document = $this->getDocumentFromUrl($doc, $input->getOption('doc'));
         }
 
         if ($doc === null) {
             $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
-            exit(1);
+            return BaseCommand::FAILURE;
         }
 
         $document->setSolrcore($solrCoreUid);
 
         if ($dryRun) {
             $io->section('DRY RUN: Would index ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+            $io->success('All done!');
+            return BaseCommand::SUCCESS;
         } else {
+            $document->setCurrentDocument($doc);
+
             if ($io->isVerbose()) {
-                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
             }
-            $document->setDoc($doc);
-            // save to database
-            $this->saveToDatabase($document);
-            // add to index
-            Indexer::add($document);
+            $isSaved = $this->saveToDatabase($document);
+
+            if ($isSaved) {
+                if ($io->isVerbose()) {
+                    $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on Solr core ' . $solrCoreUid . '.');
+                }
+                $isSaved = Indexer::add($document, $this->documentRepository);
+            } else {
+                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] . ') in this document.');
+                return BaseCommand::FAILURE;
+            }
+
+            if ($isSaved) {
+                $io->success('All done!');
+                return BaseCommand::SUCCESS;
+            }
+
+            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] . ') in this document.');
+            $io->info('INFO: Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
+            return BaseCommand::FAILURE;
         }
-
-        $io->success('All done!');
-
-        return 0;
     }
 
+    /**
+     * Get document from given URL. Find it in database, if not found create the new one.
+     *
+     * @access private
+     *
+     * @param AbstractDocument $doc
+     * @param string $url
+     *
+     * @return Document
+     */
+    private function getDocumentFromUrl($doc, string $url): Document
+    {
+        $document = null;
+
+        if ($doc->recordId) {
+            $document = $this->documentRepository->findOneByRecordId($doc->recordId);
+        } else {
+            $document = $this->documentRepository->findOneByLocation($url);
+        }
+
+        if ($document === null) {
+            // create new Document object
+            $document = GeneralUtility::makeInstance(Document::class);
+        }
+
+        // now there must exist a document object
+        if ($document) {
+            $document->setLocation($url);
+        }
+
+        return $document;
+    }
 }

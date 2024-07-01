@@ -19,9 +19,9 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 /**
  * Controller class for the plugin 'AudioPlayer'.
  *
- * @author Sebastian Meyer <sebastian.meyer@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class AudioplayerController extends AbstractController
@@ -29,10 +29,10 @@ class AudioplayerController extends AbstractController
     /**
      * Holds the current audio file's URL, MIME type and optional label
      *
-     * @var array
      * @access protected
+     * @var array Holds the current audio file's URL, MIME type and optional label
      */
-    protected $audio = [];
+    protected array $audio = [];
 
     /**
      * Adds Player javascript
@@ -41,7 +41,7 @@ class AudioplayerController extends AbstractController
      *
      * @return void
      */
-    protected function addPlayerJS()
+    protected function addPlayerJS(): void
     {
         // Inline CSS.
         $inlineCSS = '#tx-dlf-audio { width: 100px; height: 100px; }';
@@ -69,36 +69,39 @@ class AudioplayerController extends AbstractController
     /**
      * The main method of the plugin
      *
+     * @access public
+     *
      * @return void
      */
-    public function mainAction()
+    public function mainAction(): void
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return '';
+            return;
         }
 
         $this->setDefaultPage();
 
         // Check if there are any audio files available.
-        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['fileGrpAudio']);
+        $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
-            if (!empty($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio])) {
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]];
+            $fileId = $physicalStructureInfo['files'][$fileGrpAudio];
+            if (!empty($fileId)) {
                 // Get audio data.
-                $this->audio['url'] = $this->document->getDoc()->getFileLocation($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio]);
-                $this->audio['label'] = $this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['label'];
-                $this->audio['mimetype'] = $this->document->getDoc()->getFileMimeType($this->document->getDoc()->physicalStructureInfo[$this->document->getDoc()->physicalStructure[$this->requestData['page']]]['files'][$fileGrpAudio]);
+                $file = $this->document->getCurrentDocument()->getFileInfo($fileId);
+                $this->audio['url'] = $file['location'];
+                $this->audio['label'] = $physicalStructureInfo['label'];
+                $this->audio['mimetype'] = $file['mimeType'];
                 break;
             }
         }
+
         if (!empty($this->audio)) {
             // Add jPlayer javascript.
             $this->addPlayerJS();
-        } else {
-            // Quit without doing anything if required variables are not set.
-            return '';
         }
     }
 }

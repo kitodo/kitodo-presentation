@@ -66,43 +66,39 @@ foreach ($iconArray as $key => $value) {
 $_EXTKEY = 'dlf';
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_scoretool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.scoretool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltexttool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.annotationtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltextdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.fulltextdownloadtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagedownloadtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.imagemanipulationtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.pdfdownloadtool';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_searchindocumenttool'] = 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_toolbox.searchindocumenttool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_scoretool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.scoretool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltexttool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.annotationtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltextdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltextdownloadtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagedownloadtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagemanipulationtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.pdfdownloadtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_searchindocumenttool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.searchindocumenttool';
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/MetsDocument.php']['hookClass'][] = \Kitodo\Dlf\Hooks\KitodoProductionHacks::class;
 // Register AJAX eID handlers.
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_suggest'] = \Kitodo\Dlf\Eid\SearchSuggest::class . '::main';
-$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_search_in_document'] = \Kitodo\Dlf\Eid\SearchInDocument::class . '::main';
-if ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['dlf']['enableInternalProxy'] ?? false) {
+if ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['dlf']['general']['enableInternalProxy'] ?? false) {
     $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_pageview_proxy'] = \Kitodo\Dlf\Eid\PageViewProxy::class . '::main';
 }
 // Use Caching Framework for Solr queries
-if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr'] = [];
-}
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr'] ??= [];
+
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['backend'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\SimpleFileBackend';
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\FileBackend';
 }
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'] = 87600; // 87600 seconds = 1 day
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_solr']['options']['defaultLifeTime'] = 86400; // 86400 seconds = 1 day
 }
 // Use Caching Framework for XML file caching
-if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc'] = [];
-}
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc'] ??= [];
+
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['backend'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\SimpleFileBackend';
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['backend'] = 'TYPO3\\CMS\\Core\\Cache\\Backend\\FileBackend';
 }
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['options']['defaultLifeTime'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['options']['defaultLifeTime'] = 87600; // 87600 seconds = 1 day
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_dlf_doc']['options']['defaultLifeTime'] = 86400; // 86400 seconds = 1 day
 }
 // Add new renderType for TCA fields.
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
@@ -124,200 +120,200 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     = \Kitodo\Dlf\Updates\FileLocationUpdater::class;
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Search',
     [
-        Search::class => 'main, search'
+        \Kitodo\Dlf\Controller\SearchController::class => 'main, search'
     ],
     // non-cacheable actions
     [
-        Search::class => 'main, search'
+        \Kitodo\Dlf\Controller\SearchController::class => 'main, search'
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Feeds',
     [
-        Feeds::class => 'main',
+        \Kitodo\Dlf\Controller\FeedsController::class => 'main',
     ],
     // non-cacheable actions
     [
-        Feeds::class => 'main',
+        \Kitodo\Dlf\Controller\FeedsController::class => 'main',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Statistics',
     [
-        Statistics::class => 'main',
+        \Kitodo\Dlf\Controller\StatisticsController::class => 'main',
     ],
     // non-cacheable actions
     [
-        Statistics::class => '',
+        \Kitodo\Dlf\Controller\StatisticsController::class => '',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'TableOfContents',
     [
-        TableOfContents::class => 'main',
+        \Kitodo\Dlf\Controller\TableOfContentsController::class => 'main',
     ],
     // non-cacheable actions
     [
-        TableOfContents::class => '',
+        \Kitodo\Dlf\Controller\TableOfContentsController::class => '',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'PageGrid',
     [
-        PageGrid::class => 'main',
+        \Kitodo\Dlf\Controller\PageGridController::class => 'main',
     ],
     // non-cacheable actions
     [
-        PageGrid::class => '',
+        \Kitodo\Dlf\Controller\PageGridController::class => '',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Navigation',
     [
-        Navigation::class => 'main, pageSelect',
+        \Kitodo\Dlf\Controller\NavigationController::class => 'main, pageSelect',
     ],
     // non-cacheable actions
     [
-        Navigation::class => 'pageSelect',
+        \Kitodo\Dlf\Controller\NavigationController::class => 'pageSelect',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'AudioPlayer',
     [
-        AudioPlayer::class => 'main',
+        \Kitodo\Dlf\Controller\AudioPlayerController::class => 'main',
     ],
     // non-cacheable actions
     [
-        AudioPlayer::class => '',
+        \Kitodo\Dlf\Controller\AudioPlayerController::class => '',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Calendar',
     [
-        Calendar::class => 'main, years, calendar',
+        \Kitodo\Dlf\Controller\CalendarController::class => 'main, years, calendar',
     ],
     // non-cacheable actions
     [
-        Calendar::class => '',
+        \Kitodo\Dlf\Controller\CalendarController::class => '',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'PageView',
     [
-        PageView::class => 'main, addDocument',
+        \Kitodo\Dlf\Controller\PageViewController::class => 'main, addDocument',
     ],
     // non-cacheable actions
     [
-        PageView::class => 'addDocument',
+        \Kitodo\Dlf\Controller\PageViewController::class => 'addDocument',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Basket',
     [
-        Basket::class => 'main, add, basket',
+        \Kitodo\Dlf\Controller\BasketController::class => 'main, add, basket',
     ],
     // non-cacheable actions
     [
-        Basket::class => 'main, add, basket',
+        \Kitodo\Dlf\Controller\BasketController::class => 'main, add, basket',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Toolbox',
     [
-        Toolbox::class => 'main',
+        \Kitodo\Dlf\Controller\ToolboxController::class => 'main',
     ],
     // non-cacheable actions
     [
-        Toolbox::class => '',
+        \Kitodo\Dlf\Controller\ToolboxController::class => '',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'OaiPmh',
     [
-        OaiPmh::class => 'main',
+        \Kitodo\Dlf\Controller\OaiPmhController::class => 'main',
     ],
     // non-cacheable actions
     [
-        OaiPmh::class => 'main',
+        \Kitodo\Dlf\Controller\OaiPmhController::class => 'main',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'ListView',
     [
-        ListView::class => 'main',
+        \Kitodo\Dlf\Controller\ListViewController::class => 'main',
     ],
     // non-cacheable actions
     [
-        ListView::class => 'main',
+        \Kitodo\Dlf\Controller\ListViewController::class => 'main',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Collection',
     [
-        Collection::class => 'list, show, showSorted'
+        \Kitodo\Dlf\Controller\CollectionController::class => 'list, show, showSorted'
     ],
     // non-cacheable actions
     [
-        Collection::class => 'showSorted',
+        \Kitodo\Dlf\Controller\CollectionController::class => 'showSorted',
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Metadata',
     [
-        Metadata::class => 'main',
+        \Kitodo\Dlf\Controller\MetadataController::class => 'main',
     ],
     // non-cacheable actions
     [
-        Metadata::class => '',
+        \Kitodo\Dlf\Controller\MetadataController::class => '',
     ]
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'View3D',
     [
-        View3D::class => 'main',
+        \Kitodo\Dlf\Controller\View3DController::class => 'main',
     ],
     // non-cacheable actions
     [
-        View3D::class => '',
+        \Kitodo\Dlf\Controller\View3DController::class => '',
     ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Annotation',
     [
-        Annotation::class => 'main'
+        \Kitodo\Dlf\Controller\AnnotationController::class => 'main'
     ],
     // non-cacheable actions
     [

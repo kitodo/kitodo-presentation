@@ -29,35 +29,47 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * - `url` (mandatory): The URL to be proxied
  * - `uHash` (mandatory): HMAC of the URL
  *
- * @author Alexander Bigga <alexander.bigga@slub-dresden.de>
  * @package TYPO3
  * @subpackage dlf
+ *
  * @access public
  */
 class PageViewProxy
 {
     /**
+     * @access protected
      * @var RequestFactory
      */
-    protected $requestFactory;
+    protected RequestFactory $requestFactory;
 
     /**
-     * @var mixed
+     * @access protected
+     * @var array
      */
-    protected $extConf;
+    protected array $extConf;
 
+    /**
+     * Constructs the instance
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
     }
 
     /**
      * Return a response that is derived from $response and contains CORS
      * headers to be sent to the client.
+     * 
+     * @access protected
      *
-     * @return ResponseInterface $response
-     * @return ServerRequestInterface $request The incoming request.
+     * @param ResponseInterface $response
+     * @param ServerRequestInterface $request The incoming request.
+     * 
      * @return ResponseInterface
      */
     protected function withCorsResponseHeaders(
@@ -76,16 +88,19 @@ class PageViewProxy
      * Takes headers listed in $headerNames from $fromResponse, adds them to
      * $toResponse and returns the result.
      *
+     * @access protected
+     *
      * @param ResponseInterface $fromResponse
      * @param ResponseInterface $toResponse
      * @param array $headerNames
+     *
      * @return ResponseInterface
      */
     protected function copyHeaders(
         ResponseInterface $fromResponse,
         ResponseInterface $toResponse,
         array $headerNames
-    ) {
+    ): ResponseInterface {
         $result = $toResponse;
 
         foreach ($headerNames as $headerName) {
@@ -102,7 +117,10 @@ class PageViewProxy
     /**
      * Handle an OPTIONS request.
      *
+     * @access protected
+     *
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
      */
     protected function handleOptions(ServerRequestInterface $request): ResponseInterface
@@ -116,7 +134,10 @@ class PageViewProxy
     /**
      * Handle an HEAD request.
      *
+     * @access protected
+     *
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
      */
     protected function handleHead(ServerRequestInterface $request): ResponseInterface
@@ -127,7 +148,7 @@ class PageViewProxy
         try {
             $targetResponse = $this->requestFactory->request($url, 'HEAD', [
                 'headers' => [
-                    'User-Agent' => $this->extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
                 ]
             ]);
         } catch (\Exception $e) {
@@ -149,7 +170,10 @@ class PageViewProxy
     /**
      * Handle a GET request.
      *
+     * @access protected
+     *
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
      */
     protected function handleGet(ServerRequestInterface $request): ResponseInterface
@@ -169,7 +193,7 @@ class PageViewProxy
         try {
             $targetResponse = $this->requestFactory->request($url, 'GET', [
                 'headers' => [
-                    'User-Agent' => $this->extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
                 ],
 
                 // For performance, don't download content up-front. Rather, we'll
@@ -206,9 +230,10 @@ class PageViewProxy
      * @access public
      *
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
      */
-    public function main(ServerRequestInterface $request)
+    public function main(ServerRequestInterface $request): ResponseInterface
     {
         switch ($request->getMethod()) {
             case 'OPTIONS':

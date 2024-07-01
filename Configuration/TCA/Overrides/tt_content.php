@@ -79,105 +79,105 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_view3d']
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_view3d', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/View3D.xml');
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Search',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-search.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Feeds',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-feeds.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Statistics',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-statistics.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'TableOfContents',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.tableofcontents.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-tableofcontents.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'PageGrid',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-pagegrid.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Navigation',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-navigation.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'AudioPlayer',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.audioplayer.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-audioplayer.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Calendar',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-calendar.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'PageView',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-pageview.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Basket',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-basket.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Toolbox',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-toolbox.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'OaiPmh',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-oaipmh.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'ListView',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.listview.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-listview.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Collection',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-collection.svg'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Metadata',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.title',
     'EXT:dlf/Resources/Public/Icons/tx-dlf-metadata.svg'

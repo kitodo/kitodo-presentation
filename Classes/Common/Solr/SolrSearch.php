@@ -2,12 +2,12 @@
 
 namespace Kitodo\Dlf\Common\Solr;
 
-use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
-use Kitodo\Dlf\Common\Doc;
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Domain\Model\Collection;
+use Kitodo\Dlf\Common\Solr\SearchResult\ResultDocument;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Solarium\QueryType\Select\Result\Document;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -21,68 +21,103 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * - `Countable`: `count()` returns the number of toplevel documents.
  * - `getNumLoadedDocuments()`: Number of toplevel documents that have been fetched from Solr.
  * - `ArrayAccess`/`Iterator`: Access *fetched* toplevel documents indexed in order of their ranking.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
 class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInterface
 {
     /**
+     * @access private
      * @var DocumentRepository
      */
-    private $documentRepository;
+    private DocumentRepository $documentRepository;
 
     /**
-     * @var QueryResult|Collection
+     * @access private
+     * @var array|QueryResultInterface
      */
-    private $collection;
+    private $collections;
 
     /**
+     * @access private
      * @var array
      */
-    private $settings;
+    private array $settings;
 
     /**
+     * @access private
      * @var array
      */
-    private $searchParams;
+    private array $searchParams;
 
     /**
-     * @var QueryResult
+     * @access private
+     * @var QueryResult|null
      */
-    private $listedMetadata;
+    private ?QueryResult $listedMetadata;
 
     /**
+     * @access private
      * @var array
      */
-    private $params;
+    private array $params;
 
+    /**
+     * @access private
+     * @var array
+     */
     private $result;
 
     /**
+     * @access private
      * @var int
      */
-    protected $position = 0;
+    protected int $position = 0;
 
     /**
+     * Constructs SolrSearch instance.
+     *
+     * @access public
      *
      * @param DocumentRepository $documentRepository
-     * @param QueryResult|Collection $collection
+     * @param array|QueryResultInterface $collections can contain 0, 1 or many Collection objects
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
+     *
+     * @return void
      */
-    public function __construct($documentRepository, $collection, $settings, $searchParams, $listedMetadata = null)
+    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null)
     {
         $this->documentRepository = $documentRepository;
-        $this->collection = $collection;
+        $this->collections = $collections;
         $this->settings = $settings;
         $this->searchParams = $searchParams;
         $this->listedMetadata = $listedMetadata;
     }
 
-    public function getNumLoadedDocuments()
+    /**
+     * Gets amount of loaded documents.
+     *
+     * @access public
+     *
+     * @return int
+     */
+    public function getNumLoadedDocuments(): int
     {
         return count($this->result['documents']);
     }
 
+    /**
+     * Count results.
+     *
+     * @access public
+     *
+     * @return int
+     */
     public function count(): int
     {
         if ($this->result === null) {
@@ -92,37 +127,89 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $this->result['numberOfToplevels'];
     }
 
-    public function current()
+    /**
+     * Current result.
+     *
+     * @access public
+     *
+     * @return array
+     */
+    public function current(): array
     {
         return $this[$this->position];
     }
 
-    public function key()
+    /**
+     * Current key.
+     *
+     * @access public
+     *
+     * @return int
+     */
+    public function key(): int
     {
         return $this->position;
     }
 
+    /**
+     * Next key.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function next(): void
     {
         $this->position++;
     }
 
+    /**
+     * First key.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function rewind(): void
     {
         $this->position = 0;
     }
 
+    /**
+     * @access public
+     *
+     * @return bool
+     */
     public function valid(): bool
     {
         return isset($this[$this->position]);
     }
 
+    /**
+     * Checks if the document with given offset exists.
+     *
+     * @access public
+     *
+     * @param int $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset): bool
     {
         $idx = $this->result['document_keys'][$offset];
         return isset($this->result['documents'][$idx]);
     }
 
+    /**
+     * Gets the document with given offset.
+     *
+     * @access public
+     *
+     * @param int $offset
+     *
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $idx = $this->result['document_keys'][$offset];
@@ -142,7 +229,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             // get title of parent/grandparent/... if empty
             if (empty($document['title']) && $document['partOf'] > 0) {
-                $superiorTitle = Doc::getTitle($document['partOf'], true);
+                $superiorTitle = AbstractDocument::getTitle($document['partOf'], true);
                 if (!empty($superiorTitle)) {
                     $document['title'] = '[' . $superiorTitle . ']';
                 }
@@ -152,36 +239,96 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $document;
     }
 
+    /**
+     * Not supported.
+     *
+     * @access public
+     *
+     * @param int $offset
+     * @param int $value
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
     public function offsetSet($offset, $value): void
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
 
+    /**
+     * Not supported.
+     *
+     * @access public
+     *
+     * @param int $offset
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
     public function offsetUnset($offset): void
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
 
+    /**
+     * Gets SOLR results.
+     *
+     * @access public
+     *
+     * @return mixed
+     */
     public function getSolrResults()
     {
         return $this->result['solrResults'];
     }
 
+    /**
+     * Gets by UID.
+     *
+     * @access public
+     *
+     * @param int $uid
+     *
+     * @return mixed
+     */
     public function getByUid($uid)
     {
         return $this->result['documents'][$uid];
     }
 
+    /**
+     * Gets query.
+     *
+     * @access public
+     *
+     * @return SolrSearchQuery
+     */
     public function getQuery()
     {
         return new SolrSearchQuery($this);
     }
 
+    /**
+     * Gets first.
+     *
+     * @access public
+     *
+     * @return SolrSearch
+     */
     public function getFirst()
     {
         return $this[0];
     }
 
+    /**
+     * Parses results to array.
+     *
+     * @access public
+     *
+     * @return array
+     */
     public function toArray()
     {
         return array_values($this->result['documents']);
@@ -191,23 +338,35 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * Get total number of hits.
      *
      * This can be accessed in Fluid template using `.numFound`.
+     *
+     * @access public
+     *
+     * @return int
      */
     public function getNumFound()
     {
         return $this->result['numFound'];
     }
 
+    /**
+     * Prepares SOLR search.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function prepare()
     {
         // Prepare query parameters.
         $params = [];
         $matches = [];
         $fields = Solr::getFields();
+        $query = '';
 
         // Set search query.
         if (
-            (!empty($this->searchParams['fulltext']))
-            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($this->searchParams['query']), $matches)
+            !empty($this->searchParams['fulltext'])
+            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($this->searchParams['query'] ?? ''), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
             $this->searchParams['query'] = empty($matches[1]) ? $this->searchParams['query'] : $matches[1];
@@ -273,54 +432,14 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         }
 
         // if collections are given, we prepare the collection query string
-        if ($this->collection) {
-            $collectionsQueryString = '';
-            $virtualCollectionsQueryString = '';
-            foreach ($this->collection as $collectionEntry) {
-                // check for virtual collections query string
-                if ($collectionEntry->getIndexSearch()) {
-                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR ('. $collectionEntry->getIndexSearch() . ')' ;
-                } else {
-                    $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collectionEntry->getIndexName() . '"' : ' OR "' . $collectionEntry->getIndexName() . '"';
-                }
-            }
-
-            // distinguish between simple collection browsing and actual searching within the collection(s)
-            if (!empty($collectionsQueryString)) {
-                if (empty($query)) {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
-                } else {
-                    $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
-                }
-            }
-
-            // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separatly
-            if (!empty($virtualCollectionsQueryString)) {
-                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
-            }
-
-            // combine both querystrings into a single filterquery via OR if both are given, otherwise pass either of those
-            $params['filterquery'][]['query'] = implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        if (!empty($this->collections)) {
+            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery($query);
         }
 
         // Set some query parameters.
         $params['query'] = !empty($query) ? $query : '*';
 
-        // order the results as given or by title as default
-        if (!empty($this->searchParams['orderBy'])) {
-            $querySort = [
-                $this->searchParams['orderBy'] => $this->searchParams['order'],
-            ];
-        } else {
-            $querySort = [
-                'score' => 'desc',
-                'year_sorting' => 'asc',
-                'title_sorting' => 'asc',
-                'volume' => 'asc'
-            ];
-        }
-
-        $params['sort'] = $querySort;
+        $params['sort'] = $this->getSort();
         $params['listMetadataRecords'] = [];
 
         // Restrict the fields to the required ones.
@@ -342,6 +461,17 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $this->submit(0, 1, false);
     }
 
+    /**
+     * Submits SOLR search.
+     *
+     * @access public
+     *
+     * @param int $start
+     * @param int $rows
+     * @param bool $processResults default value is true
+     *
+     * @return void
+     */
     public function submit($start, $rows, $processResults = true)
     {
         $params = $this->params;
@@ -369,16 +499,11 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $childrenOf = $this->documentRepository->findChildrenOfEach($documentSet);
 
             foreach ($result['documents'] as $doc) {
-                if (empty($documents[$doc['uid']]) && $allDocuments[$doc['uid']]) {
+                if (empty($documents[$doc['uid']]) && isset($allDocuments[$doc['uid']])) {
                     $documents[$doc['uid']] = $allDocuments[$doc['uid']];
                 }
-                if ($documents[$doc['uid']]) {
-                    // translate language code if applicable
-                    if ($doc['metadata']['language']) {
-                        foreach ($doc['metadata']['language'] as $indexName => $language) {
-                            $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
-                        }
-                    }
+                if (isset($documents[$doc['uid']])) {
+                    $this->translateLanguageCode($doc);
                     if ($doc['toplevel'] === false) {
                         // this maybe a chapter, article, ..., year
                         if ($doc['type'] === 'year') {
@@ -414,24 +539,33 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                         if ($this->searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $childrenOf[$doc['uid']] ?? [];
-                            $childrenRows = !empty($this->settings['childrenRows']) ? intval($this->settings['childrenRows']) : 100;
+                        
                             if (!empty($children)) {
-                                $metadataOf = $this->fetchToplevelMetadataFromSolr([
-                                    'query' => 'partof:' . $doc['uid'],
-                                    'start' => 0,
-                                    'rows' => $childrenRows,
-                                ]);
-                                foreach ($children as $docChild) {
-                                    // We need only a few fields from the children, but we need them as array.
-                                    $childDocument = [
-                                        'thumbnail' => $docChild['thumbnail'],
-                                        'title' => $docChild['title'],
-                                        'structure' => $docChild['structure'],
-                                        'metsOrderlabel' => $docChild['metsOrderlabel'],
-                                        'uid' => $docChild['uid'],
-                                        'metadata' => $metadataOf[$docChild['uid']],
-                                    ];
-                                    $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
+                                $batchSize = 100;
+                                $totalChildren = count($children);
+                        
+                                for ($start = 0; $start < $totalChildren; $start += $batchSize) {
+                                    $batch = array_slice($children, $start, $batchSize, true);
+                        
+                                    // Fetch metadata for the current batch
+                                    $metadataOf = $this->fetchToplevelMetadataFromSolr([
+                                        'query' => 'partof:' . $doc['uid'],
+                                        'start' => $start,
+                                        'rows' => min($batchSize, $totalChildren - $start),
+                                    ]);
+                        
+                                    foreach ($batch as $docChild) {
+                                        // We need only a few fields from the children, but we need them as an array.
+                                        $childDocument = [
+                                            'thumbnail' => $docChild['thumbnail'],
+                                            'title' => $docChild['title'],
+                                            'structure' => $docChild['structure'],
+                                            'metsOrderlabel' => $docChild['metsOrderlabel'],
+                                            'uid' => $docChild['uid'],
+                                            'metadata' => $metadataOf[$docChild['uid']],
+                                        ];
+                                        $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
+                                    }
                                 }
                             }
                         }
@@ -446,10 +580,13 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     /**
      * Find all listed metadata using specified query params.
      *
-     * @param int $queryParams
+     * @access protected
+     *
+     * @param array $queryParams
+     *
      * @return array
      */
-    protected function fetchToplevelMetadataFromSolr($queryParams)
+    protected function fetchToplevelMetadataFromSolr(array $queryParams): array
     {
         // Prepare query parameters.
         $params = $queryParams;
@@ -477,12 +614,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $result = $this->searchSolr($params, true);
 
         foreach ($result['documents'] as $doc) {
-            // translate language code if applicable
-            if($doc['metadata']['language']) {
-                foreach($doc['metadata']['language'] as $indexName => $language) {
-                    $doc['metadata']['language'][$indexName] = Helper::getLanguageName($doc['metadata']['language'][$indexName]);
-                }
-            }
+            $this->translateLanguageCode($doc);
             $metadataArray[$doc['uid']] = $doc['metadata'];
         }
 
@@ -492,10 +624,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     /**
      * Processes a search request
      *
-     * @access public
+     * @access protected
      *
-     * @param array $parameters: Additional search parameters
-     * @param boolean $enableCache: Enable caching of Solr requests
+     * @param array $parameters Additional search parameters
+     * @param boolean $enableCache Enable caching of Solr requests
      *
      * @return array The Apache Solr Documents that were fetched
      */
@@ -537,14 +669,15 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $grouping->setLimit(100); // Results in group (TODO: check)
             $grouping->setNumberOfGroups(true);
 
-            if ($parameters['fulltext'] === true) {
+            $fulltextExists = $parameters['fulltext'] ?? false;
+            if ($fulltextExists === true) {
                 // get highlighting component and apply settings
                 $selectQuery->getHighlighting();
             }
 
             $solrRequest = $solr->service->createRequest($selectQuery);
 
-            if ($parameters['fulltext'] === true) {
+            if ($fulltextExists === true) {
                 // If it is a fulltext search, enable highlighting.
                 // field for which highlighting is going to be performed,
                 // is required if you want to have OCR highlighting
@@ -552,7 +685,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                 // return the coordinates of highlighted search as absolute coordinates
                 $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
                 // max amount of snippets for a single page
-                $solrRequest->addParam('hl.snippets', 20);
+                $solrRequest->addParam('hl.snippets', '20');
                 // we store the fulltext on page level and can disable this option
                 $solrRequest->addParam('hl.ocr.trackPages', 'off');
             }
@@ -565,11 +698,13 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
             $result = $solr->service->createResult($selectQuery, $response);
 
+            // TODO: Call to an undefined method Solarium\Core\Query\Result\ResultInterface::getGrouping().
+            // @phpstan-ignore-next-line
             $uidGroup = $result->getGrouping()->getGroup('uid');
             $resultSet['numberOfToplevels'] = $uidGroup->getNumberOfGroups();
             $resultSet['numFound'] = $uidGroup->getMatches();
             $highlighting = [];
-            if ($parameters['fulltext'] === true) {
+            if ($fulltextExists === true) {
                 $data = $result->getData();
                 $highlighting = $data['ocrHighlighting'];
             }
@@ -582,7 +717,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
 
             // Save value in cache.
-            if (!empty($resultSet) && $enableCache === true) {
+            if (!empty($resultSet['documents']) && $enableCache === true) {
                 $cache->set($cacheIdentifier, $resultSet);
             }
         } else {
@@ -592,7 +727,82 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         return $resultSet;
     }
 
-    private function getDocument($record, $highlighting, $fields, $parameters) {
+    /**
+     * Get collection filter query for search.
+     *
+     * @access private
+     *
+     * @param string $query
+     *
+     * @return string
+     */
+    private function getCollectionFilterQuery(string $query) : string
+    {
+        $collectionsQueryString = '';
+        $virtualCollectionsQueryString = '';
+        foreach ($this->collections as $collection) {
+            // check for virtual collections query string
+            if ($collection->getIndexSearch()) {
+                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR (' . $collection->getIndexSearch() . ')';
+            } else {
+                $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collection->getIndexName() . '"' : ' OR "' . $collection->getIndexName() . '"';
+            }
+        }
+
+        // distinguish between simple collection browsing and actual searching within the collection(s)
+        if (!empty($collectionsQueryString)) {
+            if (empty($query)) {
+                $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ') AND toplevel:true AND partof:0)';
+            } else {
+                $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . '))';
+            }
+        }
+
+        // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separately
+        if (!empty($virtualCollectionsQueryString)) {
+            $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
+        }
+
+        // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
+        return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+    }
+
+    /**
+     * Get sort order of the results as given or by title as default.
+     *
+     * @access private
+     *
+     * @return array
+     */
+    private function getSort() : array
+    {
+        if (!empty($this->searchParams['orderBy'])) {
+            return [
+                $this->searchParams['orderBy'] => $this->searchParams['order'],
+            ];
+        }
+
+        return [
+            'score' => 'desc',
+            'year_sorting' => 'asc',
+            'title_sorting' => 'asc',
+            'volume' => 'asc'
+        ];
+    }
+
+    /**
+     * Gets a document
+     *
+     * @access private
+     *
+     * @param Document $record
+     * @param array $highlighting
+     * @param array $fields
+     * @param array $parameters
+     *
+     * @return array The Apache Solr Documents that were fetched
+     */
+    private function getDocument(Document $record, array $highlighting, array $fields, $parameters) {
         $resultDocument = new ResultDocument($record, $highlighting, $fields);
 
         $document = [
@@ -614,5 +824,23 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         }
 
         return $document;
+    }
+
+    /**
+     * Translate language code if applicable.
+     *
+     * @access private
+     *
+     * @param &$doc document array
+     *
+     * @return void
+     */
+    private function translateLanguageCode(&$doc): void
+    {
+        if ($doc['metadata']['language']) {
+            foreach($doc['metadata']['language'] as $indexName => $language) {
+                $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
+            }
+        }
     }
 }

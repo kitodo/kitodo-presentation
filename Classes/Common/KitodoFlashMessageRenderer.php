@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface;
 
 /**
  * A class representing a bootstrap flash messages.
@@ -20,13 +21,18 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
  * bootstrap HTML/CSS framework. It is used in backend context.
  * The created output contains all classes which are required for
  * the TYPO3 backend. Any kind of message contains also a nice icon.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
-class KitodoFlashMessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface
+class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 {
     /**
-     * @var string The message severity class names
+     * @var array The message severity class names
      */
-    protected static $classes = [
+    protected static array $classes = [
         FlashMessage::NOTICE => 'notice',
         FlashMessage::INFO => 'info',
         FlashMessage::OK => 'success',
@@ -35,9 +41,9 @@ class KitodoFlashMessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\F
     ];
 
     /**
-     * @var string The message severity icon names
+     * @var array The message severity icon names
      */
-    protected static $icons = [
+    protected static array $icons = [
         FlashMessage::NOTICE => 'lightbulb-o',
         FlashMessage::INFO => 'info',
         FlashMessage::OK => 'check',
@@ -47,8 +53,11 @@ class KitodoFlashMessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\F
 
     /**
      * Render method
+     * 
+     * @access public
      *
      * @param FlashMessage[] $flashMessages
+     *
      * @return string Representation of the flash message
      */
     public function render(array $flashMessages): string
@@ -58,6 +67,8 @@ class KitodoFlashMessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\F
 
     /**
      * Gets the message severity class name
+     *
+     * @access public
      *
      * @param FlashMessage $flashMessage
      *
@@ -71,6 +82,8 @@ class KitodoFlashMessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\F
     /**
      * Gets the message severity icon name
      *
+     * @access public
+     *
      * @param FlashMessage $flashMessage
      *
      * @return string The message severity icon name
@@ -83,7 +96,10 @@ class KitodoFlashMessageRenderer implements \TYPO3\CMS\Core\Messaging\Renderer\F
     /**
      * Gets the message rendered as clean and secure markup
      *
+     * @access public
+     *
      * @param FlashMessage[] $flashMessages
+     *
      * @return string
      */
     protected function getMessageAsMarkup(array $flashMessages): string

@@ -12,7 +12,7 @@
 
 return [
     'ctrl' => [
-        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog',
+        'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog',
         'label'     => 'label',
         'crdate'    => 'crdate',
         'cruser_id' => 'user_id',
@@ -28,7 +28,7 @@ return [
     ],
     'columns' => [
         'label' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.label',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.label',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -38,12 +38,12 @@ return [
             ],
         ],
         'user_id' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.user_id',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.user_id',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_collections.fe_cruser_id.none', 0],
+                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id.none', 0],
                 ],
                 'foreign_table' => 'fe_users',
                 'foreign_table_where' => 'ORDER BY fe_users.username',
@@ -54,7 +54,7 @@ return [
             ],
         ],
         'file_name' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.file_name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.file_name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -64,7 +64,7 @@ return [
             ],
         ],
         'count_pages' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.count_pages',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.count_pages',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -74,7 +74,7 @@ return [
             ],
         ],
         'name' => [
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.name',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.name',
             'config' => [
                 'type' => 'input',
                 'size' => 30,
@@ -85,7 +85,7 @@ return [
         ]
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_actionlog.tab1,label,name,file_name,crdate,count_pages'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.tab1,label,name,file_name,crdate,count_pages'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

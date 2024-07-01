@@ -213,7 +213,7 @@ var dlfViewer = function(settings){
      * @type {Object|null}
      * @private
      */
-    this.ov_view = null;
+    this.ovView = null;
 
     /**
      * @type {Boolean|false}
@@ -670,9 +670,11 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
     var controls = [];
 
     for (var i in controlNames) {
-        var control = this.createControl(controlNames[i], layers);
-        if (control !== null) {
-            controls.push(control);
+        if (controlNames.hasOwnProperty(i)) {
+            var control = this.createControl(controlNames[i], layers);
+            if (control !== null) {
+                controls.push(control);
+            }
         }
     }
 
@@ -733,10 +735,9 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         this.highlightWords = highlightWords;
     }
 
-    // exctract highlighWords from URL
+    // extract highlighWords from URL
     if (this.highlightWords === null) {
-        var urlParams = dlfUtils.getUrlParams();
-        this.highlightWords = urlParams['tx_dlf[highlight_word]'];
+        this.highlightWords = dlfUtils.getUrlParam('tx_dlf[highlight_word]');
     }
 
     if (!dlfUtils.exists(this.highlightLayer)) {
@@ -1081,7 +1082,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
         extent: extent
     });
 
-    this.ov_view = new ol.View({
+    this.ovView = new ol.View({
         constrainRotation: false,
         projection: layerProj,
         center: ol.extent.getCenter(extent),
@@ -1089,22 +1090,22 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
         rotation: rotation,
     });
 
-    this.ov_map = new ol.Map({
+    this.ovMap = new ol.Map({
         target: 'ov_map',
-        view: this.ov_view,
+        view: this.ovView,
         controls: [],
         interactions: []
     });
 
-    this.ov_map.addLayer(dlfUtils.cloneOlLayer(this.map.getLayers().getArray()[0]));
+    this.ovMap.addLayer(dlfUtils.cloneOlLayer(this.map.getLayers().getArray()[0]));
 
     var mousePosition = null;
     var dlfViewer = this;
-    var ov_map = this.ov_map;
+    var ovMap = this.ovMap;
 
     this.map.on('pointermove', function (evt) {
         mousePosition = dlfViewer.map.getEventCoordinate(evt.originalEvent);
-        dlfViewer.ov_view.setCenter(mousePosition);
+        dlfViewer.ovView.setCenter(mousePosition);
     });
 
     var adjustViews = function(sourceView, destMap) {
@@ -1116,11 +1117,11 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
             }
         },
         adjustViewHandler = function(event) {
-            adjustViews(event.target, ov_map);
+            adjustViews(event.target, ovMap);
         };
 
     this.map.getView().on('change:rotation', adjustViewHandler, this.map);
-    adjustViews(this.map.getView(), this.ov_map);
+    adjustViews(this.map.getView(), this.ovMap);
 
     this.initMagnifier = true;
 };

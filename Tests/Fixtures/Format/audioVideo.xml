@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets xmlns:mets="http://www.loc.gov/METS/"
+    xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:videomd="http://www.loc.gov/videoMD/"
+    xmlns:audiomd="http://www.loc.gov/audioMD/"
+    xmlns:dv="http://dfg-viewer.de/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/videoMD/ https://www.loc.gov/standards/amdvmd/videoMD.xsd">
+    <mets:amdSec ID="AMD">
+        <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="VIDEOMD">
+            <mets:xmlData>
+                <videomd:fileData>
+                    <videomd:color>Color</videomd:color>
+                    <videomd:compression>
+                        <videomd:codecCreatorApp>Phoenix Finish</videomd:codecCreatorApp>
+                        <videomd:codecName>Apple ProRes 4444</videomd:codecName>
+                    </videomd:compression>
+                    <videomd:frameRate mode="Fixed">24</videomd:frameRate>
+                    <videomd:sound>Yes</videomd:sound>
+                </videomd:fileData>
+                <videomd:videoInfo>
+                    <videomd:aspectRatio>1.375:1</videomd:aspectRatio>
+                    <videomd:dimensions LENGTH="1808" UNITS="frames" />
+                    <videomd:duration>00:01:30.07</videomd:duration>
+                    <videomd:frame>
+                        <videomd:frameRate>24</videomd:frameRate>
+                    </videomd:frame>
+                </videomd:videoInfo>
+                <audiomd:audioInfo>
+                    <audiomd:duration>01:10:35.08</audiomd:duration>
+                </audiomd:audioInfo>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:amdSec>
+</mets:mets>
