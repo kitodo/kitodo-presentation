@@ -22,11 +22,12 @@ use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -179,7 +180,7 @@ class NewTenantController extends AbstractController
     public function addFormatAction(): void
     {
         // Include formats definition file.
-        $formatsDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
+        $formatsDefaults = $this->getRecords('Format');
 
         $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
         // tx_dlf_formats are stored on PID = 0
@@ -221,7 +222,7 @@ class NewTenantController extends AbstractController
     public function addMetadataAction(): void
     {
         // Include metadata definition file.
-        $metadataDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/MetadataDefaults.php');
+        $metadataDefaults = $this->getRecords('Metadata');
 
         // load language file in own array
         $metadataLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf', $this->siteLanguages[0]->getTypo3Language());
@@ -344,7 +345,7 @@ class NewTenantController extends AbstractController
     public function addStructureAction(): void
     {
         // Include structure definition file.
-        $structureDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/StructureDefaults.php');
+        $structureDefaults = $this->getRecords('Structure');
 
         // load language file in own array
         $structureLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getTypo3Language());
@@ -426,15 +427,15 @@ class NewTenantController extends AbstractController
             $this->forward('error');
         }
 
-        $formatsDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/FormatDefaults.php');
+        $formatsDefaults = $this->getRecords('Format');
         $recordInfos['formats']['numCurrent'] = $this->formatRepository->countAll();
         $recordInfos['formats']['numDefault'] = count($formatsDefaults);
 
-        $structuresDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/StructureDefaults.php');
+        $structuresDefaults = $this->getRecords('Structure');
         $recordInfos['structures']['numCurrent'] = $this->structureRepository->countByPid($this->pid);
         $recordInfos['structures']['numDefault'] = count($structuresDefaults);
 
-        $metadataDefaults = include(ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Data/MetadataDefaults.php');
+        $metadataDefaults = $this->getRecords('Metadata');
         $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->countByPid($this->pid);
         $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
 
@@ -459,7 +460,7 @@ class NewTenantController extends AbstractController
     /**
      * Get language label for given key and language.
      * 
-     * @access protected
+     * @access private
      *
      * @param string $index
      * @param string $lang
@@ -467,7 +468,7 @@ class NewTenantController extends AbstractController
      *
      * @return string
      */
-    protected function getLLL(string $index, string $lang, array $langArray): string
+    private function getLLL(string $index, string $lang, array $langArray): string
     {
         if (isset($langArray[$lang][$index][0]['target'])) {
             return $langArray[$lang][$index][0]['target'];
@@ -476,5 +477,32 @@ class NewTenantController extends AbstractController
         } else {
             return 'Missing translation for ' . $index;
         }
+    }
+
+    /**
+     * Get records from file for given record type.
+     *
+     * @access private
+     *
+     * @param string $recordType
+     *
+     * @return array
+     */
+    private function getRecords(string $recordType): array
+    {
+        $filePath = Environment::getPublicPath() . '/typo3conf/ext/dlf/Resources/Private/Data/' . $recordType . 'Defaults.json';
+
+        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+        $fileObject = $resourceFactory->getFileObjectFromCombinedIdentifier($filePath);
+
+        if ($fileObject !== null) {
+            $fileContents = $fileObject->getContents();
+            $records = json_decode($fileContents, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $records;
+            }
+        }
+        return [];
     }
 }
