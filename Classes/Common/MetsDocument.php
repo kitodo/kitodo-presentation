@@ -345,27 +345,8 @@ final class MetsDocument extends AbstractDocument
         // Load physical structure.
         $this->magicGetPhysicalStructure();
         // Get the physical page or external file this structure element is pointing at.
-        // Is there a mptr node?
-        if (count($structure->children('http://www.loc.gov/METS/')->mptr)) {
-            // Yes. Get the file reference.
-            $details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
-        } elseif (
-            !empty($this->physicalStructure)
-            && array_key_exists($details['id'], $this->smLinks['l2p'])
-        ) {
-            // Link logical structure to the first corresponding physical page/track.
-            $details['points'] = max((int) array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true), 1);
-            $details['thumbnailId'] = $this->getThumbnail();
-            // Get page/track number of the first page/track related to this structure element.
-            $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
-        } elseif ($details['id'] == $this->magicGetToplevelId()) {
-            // Point to self if this is the toplevel structure.
-            $details['points'] = 1;
-            $details['thumbnailId'] = $this->getThumbnail();
-        }
-        if ($details['thumbnailId'] === null) {
-            unset($details['thumbnailId']);
-        }
+        $this->getPage($details, $structure->children('http://www.loc.gov/METS/')->mptr);
+
         // Get the files this structure element is pointing at.
         $fileUse = $this->magicGetFileGrps();
         // Get the file representations from fileSec node.
@@ -389,6 +370,39 @@ final class MetsDocument extends AbstractDocument
             }
         }
         return $details;
+    }
+
+    /**
+     * Get the physical page or external file this structure element is pointing at.
+     *
+     * @access private
+     *
+     * @param array $details passed as reference
+     * @param array $metsPointers
+     *
+     * @return void
+     */
+    private function getPage(array &$details, array $metsPointers) {
+        if (count($metsPointers)) {
+            // Yes. Get the file reference.
+            $details['points'] = (string) $metsPointers[0]->attributes('http://www.w3.org/1999/xlink')->href;
+        } elseif (
+            !empty($this->physicalStructure)
+            && array_key_exists($details['id'], $this->smLinks['l2p'])
+        ) {
+            // Link logical structure to the first corresponding physical page/track.
+            $details['points'] = max((int) array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true), 1);
+            $details['thumbnailId'] = $this->getThumbnail();
+            // Get page/track number of the first page/track related to this structure element.
+            $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
+        } elseif ($details['id'] == $this->magicGetToplevelId()) {
+            // Point to self if this is the toplevel structure.
+            $details['points'] = 1;
+            $details['thumbnailId'] = $this->getThumbnail();
+        }
+        if ($details['thumbnailId'] === null) {
+            unset($details['thumbnailId']);
+        }
     }
 
     /**
