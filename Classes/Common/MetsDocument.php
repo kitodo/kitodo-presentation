@@ -1206,10 +1206,10 @@ final class MetsDocument extends AbstractDocument
                 $this->physicalStructureInfo[$id]['orderlabel'] = isset($firstNode['ORDERLABEL']) ? (string) $firstNode['ORDERLABEL'] : '';
                 $this->physicalStructureInfo[$id]['type'] = (string) $firstNode['TYPE'];
                 $this->physicalStructureInfo[$id]['contentIds'] = isset($firstNode['CONTENTIDS']) ? (string) $firstNode['CONTENTIDS'] : '';
-                
+
                 $this->getFileRepresentation($id, $firstNode);
 
-                $this->physicalStructure = $this->getPhysicalElements($elementNodes);
+                $this->physicalStructure = $this->getPhysicalElements($elementNodes, $fileUse);
             }
             $this->physicalStructureLoaded = true;
         }
@@ -1234,7 +1234,7 @@ final class MetsDocument extends AbstractDocument
         foreach ($physicalNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
             $fileId = (string) $fptr->attributes()->FILEID;
             // Check if file has valid @USE attribute.
-            if (!empty($fileUse[$fileId ])) {
+            if (!empty($fileUse[$fileId])) {
                 $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
             }
         }
@@ -1246,10 +1246,11 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param array $elementNodes
+     * @param array $fileUse
      *
      * @return array
      */
-    private function getPhysicalElements(array $elementNodes): array
+    private function getPhysicalElements(array $elementNodes, array $fileUse): array
     {
         $elements = [];
 
