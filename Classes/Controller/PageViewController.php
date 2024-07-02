@@ -42,7 +42,6 @@ class PageViewController extends AbstractController
     protected array $images = [];
 
     /**
-<<<<<<< HEAD
      * Holds the current scores' URL, MIME types and the
      * id of the current page
      *
@@ -51,14 +50,16 @@ class PageViewController extends AbstractController
      */
     protected $scores = [];
 
+    /**
+     * @var array
+     * @access protected
+     */
     protected $measures = [];
 
     /**
      * Holds the current fulltexts' URLs
      *
      * @var array
-=======
->>>>>>> master
      * @access protected
      * @var array Holds the current full texts' URLs
      */
@@ -95,7 +96,7 @@ class PageViewController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return;
         } else {
-            if ($this->document->getDoc()->tableOfContents[0]['type'] == 'multivolume_work' && empty($this->requestData['multiview'])) { // @TODO: Change type
+            if ($this->document->getCurrentDocument()->tableOfContents[0]['type'] == 'multivolume_work' && empty($this->requestData['multiview'])) { // @TODO: Change type
                 $params = array_merge(
                     ['tx_dlf' => $this->requestData],
                     ['tx_dlf[multiview]' => 1]
@@ -139,7 +140,7 @@ class PageViewController extends AbstractController
         $this->view->assign('docCount', count($this->documentArray));
         $this->view->assign('docArray', $this->documentArray);
         $this->view->assign('docPage', $this->requestData['docPage']);
-        $this->view->assign('docType', $this->document->getDoc()->tableOfContents[0]['type']);
+        $this->view->assign('docType', $this->document->getCurrentDocument()->tableOfContents[0]['type']);
 
         $this->view->assign('multiview', $this->requestData['multiview']);
         if ($this->requestData['multiview']) {
@@ -278,13 +279,15 @@ class PageViewController extends AbstractController
     /**
      * Get all measures from musical struct
      * @param int $page
-     * @return void
+     * @param null $specificDoc
+     * @return array
      */
-    protected function getMeasures(int $page, $specificDoc = null) {
+    protected function getMeasures(int $page, $specificDoc = null): array
+    {
         if ($specificDoc) {
             $doc = $specificDoc;
         } else {
-            $doc = $this->document->getDoc();
+            $doc = $this->document->getCurrentDocument();
         }
         $currentPhysId = $doc->physicalStructure[$page];
         $measureCoordsFromCurrentSite = [];
@@ -315,10 +318,11 @@ class PageViewController extends AbstractController
     protected function getScore(int $page, $specificDoc = null)
     {
         $score = [];
+        $loc = '';
         if ($specificDoc) {
             $doc = $specificDoc;
         } else {
-            $doc = $this->document->getDoc();
+            $doc = $this->document->getCurrentDocument();
         }
         $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
 
@@ -332,22 +336,24 @@ class PageViewController extends AbstractController
             }
         }
 
-        $score['mimetype'] = $doc->getFileMimeType($loc);
-        $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
-        $score['url'] = $doc->getFileLocation($loc);
-        if ($this->settings['useInternalProxy']) {
-            // Configure @action URL for form.
-            $uri = $this->uriBuilder->reset()
-                ->setTargetPageUid($GLOBALS['TSFE']->id)
-                ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                ->setArguments([
-                    'eID' => 'tx_dlf_pageview_proxy',
-                    'url' => $score['url'],
-                    'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
-                    ])
-                ->build();
+        if (!empty($loc)) {
+            $score['mimetype'] = $doc->getFileMimeType($loc);
+            $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
+            $score['url'] = $doc->getFileLocation($loc);
+            if ($this->settings['useInternalProxy']) {
+                // Configure @action URL for form.
+                $uri = $this->uriBuilder->reset()
+                    ->setTargetPageUid($GLOBALS['TSFE']->id)
+                    ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+                    ->setArguments([
+                        'eID' => 'tx_dlf_pageview_proxy',
+                        'url' => $score['url'],
+                        'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
+                        ])
+                    ->build();
 
-            $score['url'] = $uri;
+                $score['url'] = $uri;
+            }
         }
 
         if (empty($score)) {

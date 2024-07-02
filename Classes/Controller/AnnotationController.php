@@ -30,11 +30,11 @@ class AnnotationController extends AbstractController
      */
     public function mainAction()
     {
-        $this->loadDocument($this->requestData);
+        $this->loadDocument();
 
         if (
             $this->document === null
-            || $this->document->getDoc() === null
+            || $this->document->getCurrentDocument() === null
         ) {
             // Quit without doing anything if required variables are not set.
             return;

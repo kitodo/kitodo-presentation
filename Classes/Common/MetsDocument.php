@@ -1537,8 +1537,10 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of musical elements' id, type, label and file representations ordered
      * by "@ORDER" attribute
+     *
+     * @return array
      */
-    protected function _getMusicalStructure()
+    protected function _getMusicalStructure(): array
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
@@ -1547,7 +1549,7 @@ final class MetsDocument extends AbstractDocument
             $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]/mets:div');
             if (!empty($elementNodes)) {
                 // Get file groups.
-                $fileUse = $this->_getFileGrps();
+                $fileUse = $this->magicGetFileGrps();
 
                 // Get the musical sequence's metadata.
                 $musicalNode = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]');
@@ -1624,7 +1626,7 @@ final class MetsDocument extends AbstractDocument
                     // Get the track/page info (begin and extent time).
                     $this->musicalStructure = [];
                     $measurePages = [];
-                    foreach ($this->_getPhysicalStructureInfo() as $physicalId => $page) {
+                    foreach ($this->magicGetPhysicalStructureInfo() as $physicalId => $page) {
                         if ($page['files']['DEFAULT']) {
                             $measurePages[$physicalId] = $page['files']['DEFAULT'];
                         }

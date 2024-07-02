@@ -116,12 +116,12 @@ class NavigationController extends AbstractController
         }
         $this->view->assign('features', $features);
 
-        if ($this->document->getDoc()->numMeasures > 0) {
+        if ($this->document->getCurrentDocument()->numMeasures > 0) {
             $measureOptions = [];
             $measurePages = [];
-            for ($i = 1; $i <= $this->document->getDoc()->numMeasures; $i++) {
-                $measureOptions[$i] = '[' . $i . ']' . ($this->document->getDoc()->musicalStructureInfo[$this->document->getDoc()->musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getDoc()->musicalStructureInfo[$this->document->getDoc()->musicalStructureInfo[$i]]['orderlabel']) : '');
-                $measurePages[$i] = $this->document->getDoc()->musicalStructure[$i]['page'];
+            for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
+                $measureOptions[$i] = '[' . $i . ']' . ($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructureInfo[$i]]['orderlabel']) : '');
+                $measurePages[$i] = $this->document->getCurrentDocument()->musicalStructure[$i]['page'];
             }
 
             if (!isset($this->requestData['measure'])) {
@@ -131,7 +131,7 @@ class NavigationController extends AbstractController
             }
 
             $this->view->assign('currentMeasure', $currentMeasure);
-            $this->view->assign('numMeasures', $this->document->getDoc()->numMeasures);
+            $this->view->assign('numMeasures', $this->document->getCurrentDocument()->numMeasures);
             $this->view->assign('measureOptions', $measureOptions);
             $this->view->assign('measurePages', $measurePages);
         }

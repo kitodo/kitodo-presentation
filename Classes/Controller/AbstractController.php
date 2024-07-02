@@ -201,7 +201,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         return $this->isDocMissing() ||
             ($this->document->getCurrentDocument()->numPages < 1 &&
-                $this->document->getDoc()->tableOfContents[0]['type'] != 'multivolume_work'); //@TODO change type
+                $this->document->getCurrentDocument()->tableOfContents[0]['type'] != 'multivolume_work'); //@TODO change type
     }
 
     /**
@@ -505,14 +505,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         if ($doc->tableOfContents[0]['type'] === 'multivolume_work') { // @TODO: Change type
             $childDocuments = $doc->tableOfContents[0]['children'];
             foreach ($childDocuments as $document) {
-                $this->documentArray[] = Doc::getInstance($document['points'], $this->settings, true);
+                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings, true);
             }
         } else {
             $this->documentArray[] = $doc;
         }
         if ($this->requestData['multipleSource'] && is_array($this->requestData['multipleSource'])) {
             foreach ($this->requestData['multipleSource'] as $location) {
-                $document = Doc::getInstance($location, $this->settings, true);
+                $document = AbstractDocument::getInstance($location, $this->settings, true);
                 if ($document !== null) {
                     $this->documentArray[] = $document;
                 }

@@ -209,7 +209,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->document === null
-            || $this->document->getDoc()->numPages < 1
+            || $this->document->getCurrentDocument()->numPages < 1
             || empty($this->extConf['fileGrpScore'])
         ) {
             // Quit without doing anything if required variables are not set.
@@ -217,7 +217,7 @@ class ToolboxController extends AbstractController
         }
         $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
         foreach ($fileGrpsScores as $fileGrpScore) {
-            foreach ($this->document->getDoc()->physicalStructureInfo as $page) {
+            foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $page) {
                 if (isset($page['files'])) {
                     $files = $page['files'];
                 } else {

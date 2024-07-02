@@ -73,7 +73,7 @@ class DocumentAnnotation
                 if ($annotationTarget->isValid()) {
 
                     if ($annotationTarget->getId()) {
-                        if ($this->document->getDoc()->getFileLocation($annotationTarget->getId())) {
+                        if ($this->document->getCurrentDocument()->getFileLocation($annotationTarget->getId())) {
                             if (
                                 $meiTargetPages = $this->getMeasurePagesByFileId(
                                     $annotationTarget->getId(), $annotationTarget->getRangeValue()
@@ -126,7 +126,7 @@ class DocumentAnnotation
                         }
                     } elseif ($annotationTarget->getObjectId()) {
                          $objectTargetPages = [];
-                        foreach ($this->document->getDoc()->physicalStructureInfo as $physInfo) {
+                        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physInfo) {
                              $order = $physInfo['order'];
                             if ($order) {
                                  $objectTargetPages[] = $order;
@@ -173,13 +173,13 @@ class DocumentAnnotation
     {
         $pages = [];
         if (
-            array_key_exists('l2p', $this->document->getDoc()->smLinks) &&
-            array_key_exists($logicalId, $this->document->getDoc()->smLinks['l2p'])
+            array_key_exists('l2p', $this->document->getCurrentDocument()->smLinks) &&
+            array_key_exists($logicalId, $this->document->getCurrentDocument()->smLinks['l2p'])
         ) {
-            $physicalIdentifiers = $this->document->getDoc()->smLinks['l2p'][$logicalId];
+            $physicalIdentifiers = $this->document->getCurrentDocument()->smLinks['l2p'][$logicalId];
             foreach ($physicalIdentifiers as $physicalIdentifier) {
-                if (array_key_exists($physicalIdentifier, $this->document->getDoc()->physicalStructureInfo )) {
-                    $order = $this->document->getDoc()->physicalStructureInfo[$physicalIdentifier]['order'];
+                if (array_key_exists($physicalIdentifier, $this->document->getCurrentDocument()->physicalStructureInfo )) {
+                    $order = $this->document->getCurrentDocument()->physicalStructureInfo[$physicalIdentifier]['order'];
                     if (is_numeric($order)) {
                         $pages[] = $order;
                     }
@@ -198,19 +198,19 @@ class DocumentAnnotation
     protected function getPagesByPhysicalId($physicalId)
     {
         $pages = [];
-        foreach ($this->document->getDoc()->physicalStructureInfo as $id => $physicalInfo) {
+        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $id => $physicalInfo) {
             $order = $physicalInfo['order'];
             if (is_numeric($order)) {
                 $pages[] = $order;
             }
         }
 
-        if (array_key_exists($physicalId, $this->document->getDoc()->physicalStructureInfo)) {
-            if ($this->document->getDoc()->physicalStructureInfo[$physicalId]['type'] === 'physSequence') {
+        if (array_key_exists($physicalId, $this->document->getCurrentDocument()->physicalStructureInfo)) {
+            if ($this->document->getCurrentDocument()->physicalStructureInfo[$physicalId]['type'] === 'physSequence') {
                 return $pages;
             }
 
-            return [$this->document->getDoc()->physicalStructureInfo[$physicalId]['order']];
+            return [$this->document->getCurrentDocument()->physicalStructureInfo[$physicalId]['order']];
         }
 
         return [];
@@ -226,7 +226,7 @@ class DocumentAnnotation
     protected function getPagesByFileId($fileId)
     {
         $pages = [];
-        foreach ($this->document->getDoc()->physicalStructureInfo as $key => $physicalInfo) {
+        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $key => $physicalInfo) {
             if (
                 array_key_exists('files', $physicalInfo) &&
                 is_array($physicalInfo['files']) &&
@@ -252,7 +252,7 @@ class DocumentAnnotation
      */
     protected function getAudioPagesByFileId($fileId, $range = null) {
         $tracks = [];
-        foreach ($this->document->getDoc()->physicalStructureInfo as $key => $physicalInfo) {
+        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $key => $physicalInfo) {
             if (array_key_exists('tracks', $physicalInfo) && is_array($physicalInfo['tracks'])) {
                 foreach ($physicalInfo['tracks'] as $track) {
                     if ($track['fileid'] === $fileId && $track['betype'] === 'TIME') {
@@ -319,7 +319,7 @@ class DocumentAnnotation
         $measureIndex = 1;
         $startOrder = 0;
         $endOrder = 0;
-        foreach ($this->document->getDoc()->musicalStructureInfo as $key => $musicalInfo) {
+        foreach ($this->document->getCurrentDocument()->musicalStructureInfo as $key => $musicalInfo) {
             if ($musicalInfo['type'] === 'measure' && is_array($musicalInfo['files'])) {
                 foreach ($musicalInfo['files'] as $file) {
                     if ($file['fileid'] === $fileId && $file['type'] === 'IDREF') {
@@ -365,7 +365,7 @@ class DocumentAnnotation
         // Get the related page numbers
         $measurePages = [];
         foreach ($measures as $measure) {
-            $measurePages[$measure['order']] = $this->document->getDoc()->musicalStructure[$measure['order']]['page'];
+            $measurePages[$measure['order']] = $this->document->getCurrentDocument()->musicalStructure[$measure['order']]['page'];
         }
 
         return $measurePages;
@@ -403,7 +403,7 @@ class DocumentAnnotation
         $apiBaseUrl = $conf['annotationServerUrl'];
 
         if ($apiBaseUrl) {
-            $purl = $document->getDoc()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
+            $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
             if (sizeof($purl) > 0) {
                 $annotationRequest = new AnnotationRequest($apiBaseUrl);
                 $annotationData = $annotationRequest->getAll((string)$purl[0]);

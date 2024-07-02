@@ -25,7 +25,7 @@ class ImplodeViewHelper extends AbstractViewHelper
     /**
      * Checks if a value exists in an array.
      *
-     * @return bool
+     * @return string
      */
     public function render()
     {
