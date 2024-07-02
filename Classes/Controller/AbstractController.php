@@ -67,6 +67,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      * @var array
      */
+    protected $documentArray;
+
+    /**
+     * @access protected
+     * @var array
+     */
     protected array $extConf;
 
     /**
@@ -193,7 +199,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function isDocMissingOrEmpty(): bool
     {
-        return $this->isDocMissing() || $this->document->getCurrentDocument()->numPages < 1;
+        return $this->isDocMissing() ||
+            ($this->document->getCurrentDocument()->numPages < 1 &&
+                $this->document->getCurrentDocument()->tableOfContents[0]['type'] != 'multivolume_work'); //@TODO change type
     }
 
     /**
@@ -298,12 +306,28 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         // Set default values if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
-        if (empty($this->requestData['page'])) {
-            $this->requestData['page'] = 1;
-        } elseif ((int) $this->requestData['page'] > 0) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
-        } else {
-            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getCurrentDocument()->physicalStructure);
+        if (
+            (int) $this->requestData['page'] > 0
+            || empty($this->requestData['page']
+                || is_array($this->requestData['docPage']))
+        ) {
+            if ($this->document->getCurrentDocument()->tableOfContents[0]['type'] != 'multivolume_work') {
+                if (empty($this->requestData['page'])) {
+                    $this->requestData['page'] = 1;
+                } elseif ((int)$this->requestData['page'] > 0) {
+                    $this->requestData['page'] = MathUtility::forceIntegerInRange((int)$this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
+                } else {
+                    $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getCurrentDocument()->physicalStructure);
+                }
+            } else {
+                $i = 0;
+                foreach ($this->documentArray as $document) {
+                    if ($document !== null) {
+                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int)$this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                        $i++;
+                    }
+                }
+            }
         }
         // reassign viewData to get correct page
         $this->viewData['requestData'] = $this->requestData;
@@ -477,6 +501,23 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     private function getDocumentByUrl(string $documentId)
     {
         $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
+
+        if ($doc->tableOfContents[0]['type'] === 'multivolume_work') { // @TODO: Change type
+            $childDocuments = $doc->tableOfContents[0]['children'];
+            foreach ($childDocuments as $document) {
+                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings, true);
+            }
+        } else {
+            $this->documentArray[] = $doc;
+        }
+        if ($this->requestData['multipleSource'] && is_array($this->requestData['multipleSource'])) {
+            foreach ($this->requestData['multipleSource'] as $location) {
+                $document = AbstractDocument::getInstance($location, $this->settings, true);
+                if ($document !== null) {
+                    $this->documentArray[] = $document;
+                }
+            }
+        }
 
         if ($doc !== null) {
             if ($doc->recordId) {

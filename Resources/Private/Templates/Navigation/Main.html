@@ -26,14 +26,16 @@
             <f:if condition="{viewData.requestData.double}">
                 <f:then>
                     <div class="tx-dlf-navigation-single">
-                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'0'}">
+                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'0'}"
+                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}>
                             <f:translate key="doublePageOff"/>
                         </f:link.action>
                     </div>
                     <div class="tx-dlf-navigation-double+">
                         <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
                             <f:then>
-                                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}'}">
+                                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}'}"
+                                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                                     <f:translate key="doublePage+1"/>
                                 </f:link.action>
                             </f:then>
@@ -47,7 +49,8 @@
                 </f:then>
                 <f:else>
                     <div class="tx-dlf-navigation-double">
-                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'1'}">
+                        <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'1'}"
+                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                             <f:translate key="doublePageOn"/>
                         </f:link.action>
                     </div>
@@ -69,7 +72,8 @@
     <div class="tx-dlf-navigation-first">
         <f:if condition="{viewData.requestData.page} > 1">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'1'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'1'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="firstPage"/>
                 </f:link.action>
             </f:then>
@@ -86,7 +90,8 @@
     <div class="tx-dlf-navigation-back">
         <f:if condition="{viewData.requestData.page} > {pageSteps}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
                 </f:link.action>
             </f:then>
@@ -103,7 +108,8 @@
     <div class="tx-dlf-navigation-prev">
         <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="prevPage"/>
                 </f:link.action>
             </f:then>
@@ -145,7 +151,8 @@
     <div class="tx-dlf-navigation-next">
         <f:if condition="{viewData.requestData.page + viewData.requestData.double} < {numPages}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1 + viewData.requestData.double}'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1 + viewData.requestData.double}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="nextPage"/>
                 </f:link.action>
             </f:then>
@@ -162,7 +169,8 @@
         <div class="tx-dlf-navigation-fwd">
             <f:if condition="{viewData.requestData.page} <= {numPages - pageSteps}">
                 <f:then>
-                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}">
+                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}"
+                                   argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                         <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
                     </f:link.action>
                 </f:then>
@@ -179,7 +187,8 @@
     <div class="tx-dlf-navigation-last">
         <f:if condition="{viewData.requestData.page} < {numPages - viewData.requestData.double}">
             <f:then>
-                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}'}">
+                <f:link.action addQueryString="1" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                     <f:translate key="lastPage"/>
                 </f:link.action>
             </f:then>
@@ -235,4 +244,63 @@
         </a>
     </div>
 </f:section>
+
+<f:section name="render.measureBack">
+    <f:if condition="{numMeasures} > 0">
+        <f:then>
+            <div class="measureBacks" style="top: 100px;">
+                <span class="prev">
+                    <f:if condition="{currentMeasure} > 1}">
+                        <f:then>
+                            <f:variable name="prevMeasure" value="{currentMeasure - 1}" />
+                            <f:link.action addQueryString="1" additionalParams="{'tx_dlf[measure]':'{currentMeasure - 1}', 'tx_dlf[page]':'{measurePages.{prevMeasure}}'}">
+                                <f:translate key="prevMeasure"/>
+                            </f:link.action>
+                        </f:then>
+                        <f:else>
+                            <span title="{f:translate(key: 'prevPage')}">
+                                <f:translate key="prevMeasure"/>
+                            </span>
+                        </f:else>
+                    </f:if>
+                </span>
+            </div>
+        </f:then>
+    </f:if>
+</f:section>
+
+<f:section name="render.measureForward">
+    <f:if condition="{numMeasures} > 0">
+        <f:then>
+            <div class="measureFwds" style="top: 200px;">
+                <span class="next">
+                    <f:if condition="{currentMeasure} < {numMeasures}">
+                        <f:then>
+                            <f:if condition="{currentMeasure} > 0">
+                                <f:then>
+                                    <f:variable name="nextMeasure" value="{currentMeasure + 1}" />
+                                    <f:link.action addQueryString="1" additionalParams="{'tx_dlf[measure]':'{currentMeasure + 1}', 'tx_dlf[page]':'{measurePages.{nextMeasure}}'}">
+                                        <f:translate key="nextMeasure"/>
+                                    </f:link.action>
+                                </f:then>
+                                <f:else>
+                                    <f:link.action
+                                        addQueryString="1" additionalParams="{'tx_dlf[measure]':'1', 'tx_dlf[page]':'{measurePages.1}'}">
+                                        <f:translate key="nextMeasure"/>
+                                    </f:link.action>
+                                </f:else>
+                            </f:if>
+                        </f:then>
+                        <f:else>
+                            <span title="{f:translate(key: 'nextMeasure')}">
+                                <f:translate key="nextMeasure"/>
+                            </span>
+                        </f:else>
+                    </f:if>
+                </span>
+            </div>
+        </f:then>
+    </f:if>
+</f:section>
+
 </html>
