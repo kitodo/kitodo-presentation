@@ -344,18 +344,10 @@ final class MetsDocument extends AbstractDocument
         $this->magicGetSmLinks();
         // Load physical structure.
         $this->magicGetPhysicalStructure();
-        // Get the physical page or external file this structure element is pointing at.
-        $this->getPage($details, $structure->children('http://www.loc.gov/METS/')->mptr);
 
-        // Get the files this structure element is pointing at.
-        $fileUse = $this->magicGetFileGrps();
-        // Get the file representations from fileSec node.
-        foreach ($structure->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-            // Check if file has valid @USE attribute.
-            if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                $details['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-            }
-        }
+        $this->getPage($details, $structure->children('http://www.loc.gov/METS/')->mptr);
+        $this->getFiles($details, $structure->children('http://www.loc.gov/METS/')->fptr);
+
         // Keep for later usage.
         $this->logicalUnits[$details['id']] = $details;
         // Walk the structure recursively? And are there any children of the current element?
@@ -373,6 +365,26 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * Get the files this structure element is pointing at.
+     *
+     * @param ?SimpleXMLElement $filePointers
+     *
+     * @return void
+     */
+    private function getFiles(array &$details, ?SimpleXMLElement $filePointers): void
+    {
+        $fileUse = $this->magicGetFileGrps();
+        // Get the file representations from fileSec node.
+        foreach ($filePointers as $filePointer) {
+            $fileId = (string) $filePointer->attributes()->FILEID;
+            // Check if file has valid @USE attribute.
+            if (!empty($fileUse[$fileId])) {
+                $details['files'][$fileUse[$fileId]] = $fileId;
+            }
+        }
+    }
+
+    /**
      * Get the physical page or external file this structure element is pointing at.
      *
      * @access private
@@ -382,7 +394,8 @@ final class MetsDocument extends AbstractDocument
      *
      * @return void
      */
-    private function getPage(array &$details, ?SimpleXMLElement $metsPointers) {
+    private function getPage(array &$details, ?SimpleXMLElement $metsPointers): void
+    {
         if (count($metsPointers)) {
             // Yes. Get the file reference.
             $details['points'] = (string) $metsPointers[0]->attributes('http://www.w3.org/1999/xlink')->href;
