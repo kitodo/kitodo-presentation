@@ -1267,6 +1267,7 @@ final class MetsDocument extends AbstractDocument
     private function getPhysicalElements(array $elementNodes, array $fileUse): array
     {
         $elements = [];
+        $id = '';
 
         foreach ($elementNodes as $elementNode) {
             $id = (string) $elementNode['ID'];
