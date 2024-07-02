@@ -279,11 +279,9 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-<<<<<<< HEAD
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Doc::getPageBeginning()
      */
-
     public function getPageBeginning($pageId, $fileId)
     {
         $mets = $this->mets
@@ -299,9 +297,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * {@inheritDoc}
      * @see \Kitodo\Dlf\Common\Doc::getFileMimeType()
-=======
      * @see AbstractDocument::getFileMimeType()
->>>>>>> master
      */
     public function getFileMimeType(string $id): string
     {
