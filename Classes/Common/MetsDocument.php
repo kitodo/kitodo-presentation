@@ -378,11 +378,11 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param array $details passed as reference
-     * @param array $metsPointers
+     * @param ?SimpleXMLElement $metsPointers
      *
      * @return void
      */
-    private function getPage(array &$details, array $metsPointers) {
+    private function getPage(array &$details, ?SimpleXMLElement $metsPointers) {
         if (count($metsPointers)) {
             // Yes. Get the file reference.
             $details['points'] = (string) $metsPointers[0]->attributes('http://www.w3.org/1999/xlink')->href;
