@@ -39,6 +39,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read array $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
+ * @property-read int $numMeasures This holds the total number of measures
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
  * @property-read array $physicalStructure this holds the physical structure
  * @property-read array $physicalStructureInfo this holds the physical structure metadata
