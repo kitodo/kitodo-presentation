@@ -200,7 +200,7 @@ class DocumentAnnotation
     protected function getPagesByPhysicalId($physicalId)
     {
         $pages = [];
-        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $id => $physicalInfo) {
+        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
             $order = $physicalInfo['order'];
             if (is_numeric($order)) {
                 $pages[] = $order;
@@ -228,7 +228,7 @@ class DocumentAnnotation
     protected function getPagesByFileId($fileId)
     {
         $pages = [];
-        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $key => $physicalInfo) {
+        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
             if (
                 array_key_exists('files', $physicalInfo) &&
                 is_array($physicalInfo['files']) &&
@@ -287,7 +287,7 @@ class DocumentAnnotation
                 if (
                     !(
                         $intervalFrom < $end && (
-                            is_null($intervalTo) || $intervalTo > $begin
+                            $intervalTo === null || $intervalTo > $begin
                         )
                     )
                 ) {
@@ -299,7 +299,7 @@ class DocumentAnnotation
         // Get the related page numbers
         $trackPages = [];
         foreach ($tracks as $track) {
-            if (!is_null($track['order'])) {
+            if ($track['order'] !== null) {
                 $trackPages[] = $track['order'];
             }
         }
@@ -406,7 +406,7 @@ class DocumentAnnotation
 
         if ($apiBaseUrl) {
             $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
-            if (sizeof($purl) > 0) {
+            if (count($purl) > 0) {
                 $annotationRequest = new AnnotationRequest($apiBaseUrl);
                 $annotationData = $annotationRequest->getAll((string)$purl[0]);
             }

@@ -297,7 +297,7 @@ class PageViewController extends AbstractController
             $musicalStruct = $doc->musicalStructureInfo;
 
             $i = 0;
-            foreach ($musicalStruct as $measureId => $measureData) {
+            foreach ($musicalStruct as $measureData) {
                 if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
                     $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
                     $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
@@ -345,7 +345,7 @@ class PageViewController extends AbstractController
             if ($this->settings['useInternalProxy']) {
                 // Configure @action URL for form.
                 $uri = $this->uriBuilder->reset()
-                    ->setTargetPageUid($GLOBALS['TSFE']->id)
+                    ->setTargetPageUid($this->pageUid)
                     ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
                     ->setArguments([
                         'eID' => 'tx_dlf_pageview_proxy',
@@ -412,10 +412,10 @@ class PageViewController extends AbstractController
             $this->document->getCurrentDocument()->tableOfContents[0]['type'] == 'multivolume_work') { // @todo Change type
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
-            $globalPage = $this->requestData['page'];
             foreach ($this->documentArray as $document) {
                 if ($document !== null) {
                     $docPage = $this->requestData['docPage'][$i];
+                    $docImage = [];
 
                     // check if page or measure is set
                     if ($this->requestData['docMeasure'][$i]) {

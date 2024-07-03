@@ -1544,6 +1544,7 @@ final class MetsDocument extends AbstractDocument
             // Does the document have a structMap node of type "MUSICAL"?
             $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]/mets:div');
             if (!empty($elementNodes)) {
+                $musicalSeq = [];
                 // Get file groups.
                 $fileUse = $this->magicGetFileGrps();
 
@@ -1577,6 +1578,8 @@ final class MetsDocument extends AbstractDocument
                         $this->musicalStructureInfo[$musicalSeq[0]]['end'] = (string)$fptr->area->attributes()->END;
                     }
                 }
+
+                $elements = [];
 
                 // Build the physical elements' array from the physical structMap node.
                 foreach ($elementNodes as $elementNode) {
@@ -1614,9 +1617,6 @@ final class MetsDocument extends AbstractDocument
                 ksort($elements);
                 // Set total number of measures.
                 $this->numMeasures = count($elements);
-
-                // Merge and re-index the array to get nice numeric indexes.
-                $measures = array_merge($musicalSeq, $elements);
 
                 // Get the track/page info (begin and extent time).
                 $this->musicalStructure = [];

@@ -1,3 +1,4 @@
+/*global GridStack */
 $( document ).ready(function() {
     var options = { // put in gridstack options here
         disableOneColumnMode: true, // for jfiddle small window size

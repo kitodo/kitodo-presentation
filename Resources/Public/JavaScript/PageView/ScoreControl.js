@@ -7,7 +7,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
+/*global ol */
 const className = 'score-visible';
 const scrollOffset = 100;
 var zoom = 40;
@@ -96,7 +96,7 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
 
 /**
  * Encapsulates especially the score behavior
- * @constructor
+ * @class
  * @param {ol.Map} map
  */
 const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {

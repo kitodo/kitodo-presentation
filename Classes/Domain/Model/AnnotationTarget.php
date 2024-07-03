@@ -118,15 +118,15 @@ class AnnotationTarget
         if (empty($this->rangeParameterName) && empty($this->rangeValue)) {
             return true;
         } elseif ($this->isFacsimileRange()) {
-            return 1 === preg_match("/^(\d+)(,\d+){3}?$/", $this->rangeValue);
+            return preg_match("/^(\d+)(,\d+){3}?$/", $this->rangeValue) === 1;
         } elseif($this->isAudioRange()) {
-            return 1 === preg_match(
+            return preg_match(
                 "/^(?:\d+(?:\.\d*)?|\.\d+){0,1}(?:,(?:\d+(?:\.\d*)?|\.\d+))*$/",
                     $this->rangeValue
-                );
+                ) === 1;
         } elseif($this->isScoreRange()) {
-            return 1 === preg_match("/^((\d+|start|end|all|(\d+|start)(-(\d+|end)){0,1})+)(,(\d+|start|end|all|(\d+|start)(-(\d+|end)){0,1})+){0,}?$/",
-                    $this->rangeValue);
+            return preg_match("/^((\d+|start|end|all|(\d+|start)(-(\d+|end)){0,1})+)(,(\d+|start|end|all|(\d+|start)(-(\d+|end)){0,1})+){0,}?$/",
+                    $this->rangeValue) === 1;
         }
 
         return false;
@@ -137,7 +137,7 @@ class AnnotationTarget
      */
     public function isScoreRange()
     {
-        return 'measureRanges' === $this->getRangeParameterName();
+        return $this->getRangeParameterName() === 'measureRanges' ;
     }
 
     /**
@@ -145,7 +145,7 @@ class AnnotationTarget
      */
     public function isAudioRange()
     {
-        return 't' === $this->getRangeParameterName();
+        return $this->getRangeParameterName() === 't';
     }
 
     /**
@@ -153,7 +153,7 @@ class AnnotationTarget
      */
     public function isFacsimileRange()
     {
-        return 'xywh' === $this->getRangeParameterName();
+        return $this->getRangeParameterName() === 'xywh';
     }
 
 }
