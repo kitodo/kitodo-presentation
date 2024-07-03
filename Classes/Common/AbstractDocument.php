@@ -42,6 +42,8 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
  * @property-read array $physicalStructure this holds the physical structure
  * @property-read array $physicalStructureInfo this holds the physical structure metadata
+ * @property-read array $musicalStructure This holds the musical structure
+ * @property-read array $musicalStructureInfo This holds the musical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
  * @property-read int $pid this holds the PID of the document or zero if not in database
  * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
@@ -56,6 +58,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
  * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
+ * @property-read \SimpleXMLElement $mets this holds the XML file's METS part as \SimpleXMLElement object
  */
 abstract class AbstractDocument
 {

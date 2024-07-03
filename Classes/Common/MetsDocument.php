@@ -1611,35 +1611,34 @@ final class MetsDocument extends AbstractDocument
                 }
 
                 // Sort array by keys (= @ORDER).
-                if (ksort($elements)) {
+                ksort($elements);
+                // Set total number of measures.
+                $this->numMeasures = count($elements);
 
-                    // Set total number of measures.
-                    $this->numMeasures = count($elements);
+                // Merge and re-index the array to get nice numeric indexes.
+                $measures = array_merge($musicalSeq, $elements);
 
-                    // Merge and re-index the array to get nice numeric indexes.
-                    $measures = array_merge($musicalSeq, $elements);
-
-                    // Get the track/page info (begin and extent time).
-                    $this->musicalStructure = [];
-                    $measurePages = [];
-                    foreach ($this->magicGetPhysicalStructureInfo() as $physicalId => $page) {
-                        if ($page['files']['DEFAULT']) {
-                            $measurePages[$physicalId] = $page['files']['DEFAULT'];
-                        }
+                // Get the track/page info (begin and extent time).
+                $this->musicalStructure = [];
+                $measurePages = [];
+                foreach ($this->magicGetPhysicalStructureInfo() as $physicalId => $page) {
+                    if ($page['files']['DEFAULT']) {
+                        $measurePages[$physicalId] = $page['files']['DEFAULT'];
                     }
-                    // Build final musicalStructure: assign pages to measures.
-                    foreach ($this->musicalStructureInfo as $measureId => $measureInfo) {
-                        foreach ($measurePages as $physicalId => $file) {
-                            if ($measureInfo['files']['DEFAULT']['fileid'] === $file) {
-                                $this->musicalStructure[$measureInfo['order']] = [
-                                    'measureid' => $measureId,
-                                    'physicalid' => $physicalId,
-                                    'page' => array_search($physicalId, $this->physicalStructure)
-                                ];
-                            }
+                }
+                // Build final musicalStructure: assign pages to measures.
+                foreach ($this->musicalStructureInfo as $measureId => $measureInfo) {
+                    foreach ($measurePages as $physicalId => $file) {
+                        if ($measureInfo['files']['DEFAULT']['fileid'] === $file) {
+                            $this->musicalStructure[$measureInfo['order']] = [
+                                'measureid' => $measureId,
+                                'physicalid' => $physicalId,
+                                'page' => array_search($physicalId, $this->physicalStructure)
+                            ];
                         }
                     }
                 }
+
             }
             $this->musicalStructureLoaded = true;
         }

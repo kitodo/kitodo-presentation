@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\DocumentAnnotation;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Model\FormAddDocument;
@@ -279,7 +280,7 @@ class PageViewController extends AbstractController
     /**
      * Get all measures from musical struct
      * @param int $page
-     * @param null $specificDoc
+     * @param $specificDoc
      * @return array
      */
     protected function getMeasures(int $page, $specificDoc = null): array
@@ -291,6 +292,7 @@ class PageViewController extends AbstractController
         }
         $currentPhysId = $doc->physicalStructure[$page];
         $measureCoordsFromCurrentSite = [];
+        $measureCounterToMeasureId = [];
         if ($defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT']) {
             $musicalStruct = $doc->musicalStructureInfo;
 
@@ -407,7 +409,7 @@ class PageViewController extends AbstractController
     protected function addViewerJS(): void
     {
         if (count($this->documentArray) > 1 ||
-            $this->document->getDoc()->tableOfContents[0]['type'] == 'multivolume_work') { // @todo Change type
+            $this->document->getCurrentDocument()->tableOfContents[0]['type'] == 'multivolume_work') { // @todo Change type
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
             $globalPage = $this->requestData['page'];

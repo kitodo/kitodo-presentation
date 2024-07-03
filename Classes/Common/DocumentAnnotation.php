@@ -17,6 +17,7 @@ use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Log\Logger;
 
 class DocumentAnnotation
 {
@@ -36,9 +37,10 @@ class DocumentAnnotation
     protected $document;
 
     /**
-     * @var LogManager
+     * @access protected
+     * @var Logger This holds the logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
      * @param array $annotationData
@@ -48,7 +50,7 @@ class DocumentAnnotation
     {
         $this->annotationData = $annotationData;
         $this->document = $document;
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
     }
 
     /**
