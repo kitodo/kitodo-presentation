@@ -1536,7 +1536,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array
      */
-    protected function _getMusicalStructure(): array
+    protected function magicGetMusicalStructure(): array
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
@@ -1653,12 +1653,12 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of elements' type, label and file representations ordered by "@ID" attribute
      */
-    protected function _getMusicalStructureInfo()
+    protected function magicGetMusicalStructureInfo()
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
             // Build musical structure array.
-            $this->_getMusicalStructure();
+            $this->magicGetMusicalStructure();
         }
         return $this->musicalStructureInfo;
     }
@@ -1670,9 +1670,9 @@ final class MetsDocument extends AbstractDocument
      *
      * @return int The total number of measres
      */
-    protected function _getNumMeasures()
+    protected function magicGetNumMeasures()
     {
-        $this->_getMusicalStructure();
+        $this->magicGetMusicalStructure();
         return $this->numMeasures;
     }
 }
