@@ -10,7 +10,7 @@ plugin.tx_dlf {
 }
 
 config {
-    # concatenate all JavaScript files by default
+    # concatenate all Javascript files by default
     concatenateJs = 1
     # concatenate all CSS files by default
     concatenateCss = 1
@@ -18,15 +18,15 @@ config {
 
 page {
   includeCSS {
-    jPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
-    openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.css
+    jPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
+    openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.css
   }
 
   includeJSFooterlibs {
-    jQuery = EXT:dlf/Resources/Public/JavaScript/jQuery/jquery-3.6.0.min.js
+    jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-3.6.0.min.js
     jQuery.forceOnTop = 1
-    jQueryJPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/jquery.jplayer.min.js
-    jQueryUiMouseSlider = EXT:dlf/Resources/Public/JavaScript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
+    jQueryJPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js
+    jQueryUiMouseSlider = EXT:dlf/Resources/Public/Javascript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
   }
 
   includeCSS {
@@ -35,7 +35,7 @@ page {
 
   includeJSFooter {
     # AudioPlayer plugin
-    kitodo-audioPlayer = EXT:dlf/Resources/Public/JavaScript/AudioPlayer/AudioPlayer.js
+    kitodo-audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
 
     # Verovio plugin
     kitodo-verovio = EXT:dlf/Resources/Public/Javascript/Verovio/verovio-toolkit.js
