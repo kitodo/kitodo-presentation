@@ -51,25 +51,25 @@ page {
     gridstack-init = EXT:dlf/Resources/Public/Javascript/PageView/gridstack.js
 
     # PageView plugin
-    kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
+    kitodo-openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.js
 
-    kitodo-pageView-utility = EXT:dlf/Resources/Public/JavaScript/PageView/Utility.js
-    kitodo-pageView-ol = EXT:dlf/Resources/Public/JavaScript/PageView/OL.js
-    kitodo-pageView-olStyles = EXT:dlf/Resources/Public/JavaScript/PageView/OLStyles.js
-    kitodo-pageView-olSources = EXT:dlf/Resources/Public/JavaScript/PageView/OLSources.js
-    kitodo-pageView-altoParser = EXT:dlf/Resources/Public/JavaScript/PageView/AltoParser.js
-    kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/JavaScript/PageView/AnnotationParser.js
-    kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/JavaScript/PageView/AnnotationControl.js
-    kitodo-pageView-imageManipulationControl = EXT:dlf/Resources/Public/JavaScript/PageView/ImageManipulationControl.js
-    kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextDownloadControl.js
-    kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextControl.js
-    kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/JavaScript/PageView/FullTextUtility.js
+    kitodo-pageView-utility = EXT:dlf/Resources/Public/Javascript/PageView/Utility.js
+    kitodo-pageView-ol = EXT:dlf/Resources/Public/Javascript/PageView/OL.js
+    kitodo-pageView-olStyles = EXT:dlf/Resources/Public/Javascript/PageView/OLStyles.js
+    kitodo-pageView-olSources = EXT:dlf/Resources/Public/Javascript/PageView/OLSources.js
+    kitodo-pageView-altoParser = EXT:dlf/Resources/Public/Javascript/PageView/AltoParser.js
+    kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationParser.js
+    kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationControl.js
+    kitodo-pageView-imageManipulationControl = EXT:dlf/Resources/Public/Javascript/PageView/ImageManipulationControl.js
+    kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextDownloadControl.js
+    kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextControl.js
+    kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
     kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/Javascript/PageView/ScoreControl.js
     kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/Javascript/PageView/ScoreUtility.js
     kitodo-pageView-syncControl = EXT:dlf/Resources/Public/Javascript/PageView/SyncControl.js
-    kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
-    kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
-    kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
+    kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
+    kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
+    kitodo-search-suggest = EXT:dlf/Resources/Public/Javascript/Search/Suggester.js
 
   }
 }
