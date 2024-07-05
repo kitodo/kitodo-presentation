@@ -37,6 +37,7 @@
  *  scores?: ScoreDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
  *  measureCoords?: MeasureDesc[] | [];
+ *  measureIdLinks?: MeasureDesc[] | [];
  * }} DlfViewerConfig
  */
 
@@ -93,6 +94,8 @@ var dlfViewer = function(settings){
     this.scoreMap = null;
 
     this.measureCoords = dlfUtils.exists(settings.measureCoords) ? settings.measureCoords : [];
+
+    this.measureIdLinks =  dlfUtils.exists(settings.measureIdLinks) ? settings.measureIdLinks : [];
 
     this.measureLayer = undefined;
 
@@ -480,7 +483,7 @@ dlfViewer.prototype.addCustomControls = function() {
         $('#tx-dlf-tools-fulltext').remove();
     }
 
-	if (this.scoresLoaded_ !== null) {
+    if (this.scoresLoaded_ !== undefined) {
         var context = this;
 		const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
         this.scoresLoaded_.then(function (scoreData) {
@@ -559,8 +562,16 @@ dlfViewer.prototype.addCustomControls = function() {
                 }
                 map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
                     if (feature !== null) {
+                        // show ajax spinner if exists
+                        if ($('#overlay .ajax-spinner')) {
+                            $('#overlay').fadeIn(300);
+                        }
+
                         context.facsimileMeasureActive = feature;
                         context.verovioMeasureActive = $('#tx-dlf-score-'+context.counter+' #' + feature.getId() + ' rect').addClass('active');
+                        if (context.measureIdLinks[feature.getId()]) {
+                            window.location.replace(context.measureIdLinks[feature.getId()]);
+                        }
                         return true;
                     }
                 });

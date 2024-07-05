@@ -98,6 +98,9 @@ class ToolboxController extends AbstractController
                     case 'searchindocumenttool':
                         $this->renderToolByName('renderSearchInDocumentTool');
                         break;
+                    case 'scoretool':
+                        $this->renderToolByName('renderScoreTool');
+                        break;
                     default:
                         $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
                 }
@@ -205,28 +208,26 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    public function scoretool()
+    public function renderScoreTool()
     {
         if (
-            $this->document === null
-            || $this->document->getCurrentDocument()->numPages < 1
-            || empty($this->extConf['fileGrpScore'])
+            $this->isDocMissingOrEmpty()
+            || empty($this->extConf['files']['fileGrpScore'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         }
-        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
+
+        if ($this->requestData['page']) {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
+        } else {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
+        }
+
+        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpScore']);
         foreach ($fileGrpsScores as $fileGrpScore) {
-            foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $page) {
-                if (isset($page['files'])) {
-                    $files = $page['files'];
-                } else {
-                    continue;
-                }
-                if (isset($files[$fileGrpScore])) {
-                    $scoreFile = $files[$fileGrpScore];
-                    break;
-                }
+            if ($this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$fileGrpScore]) {
+                $scoreFile = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$fileGrpScore];
             }
         }
         if (!empty($scoreFile)) {

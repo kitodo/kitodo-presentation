@@ -379,8 +379,8 @@ function runConversion() {
             .append("<a class=\"icon pause\" id=\"midiPlayer_pause\" onclick=\"pause()\"></a>")
             .append("<a class=\"icon stop\" id=\"midiPlayer_stop\" onclick=\"stop()\"></a>");
 
-        $("#midiPlayer_div").css("width", options.width + 200);
-        $("#midiPlayer_bar").css("width", options.width);
+        // $("#midiPlayer_div").css("width", options.width + 200);
+        // $("#midiPlayer_bar").css("width", options.width);
         $("#midiPlayer_progress").css("background", options.color);
 
         // Assign the global variables

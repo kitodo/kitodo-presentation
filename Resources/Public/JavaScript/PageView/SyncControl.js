@@ -51,9 +51,10 @@ class SyncViewsControl extends ol.control.Control {
 /**
  * Encapsulates especially the score behavior
  * @constructor
- * @param {ol.Map} map
+ * @param dlfViewer
+ * @param sync
  */
-const dlfViewerSyncControl = function(dlfViewer, sync = true) {
+const dlfViewerSyncControl = function(dlfViewer, sync = false) {
     this.dlfViewer = dlfViewer;
     this.sync = sync;
     this.dx = 0;
@@ -79,8 +80,8 @@ dlfViewerSyncControl.prototype.addMapEventListener = function () {
             var rotation = map2.getView().getRotation();
             controlContext.sync = false;
             map1.getView().animate({
-                center: [center[0] - controlContext.dx, center[1] - controlContext.dy],
-                zoom: zoom - controlContext.dz,
+                center: [center[0] + controlContext.dx, center[1] + controlContext.dy],
+                zoom: zoom + controlContext.dz,
                 rotation: rotation - controlContext.dr,
                 duration: 0
             }, function() { controlContext.sync = true; });

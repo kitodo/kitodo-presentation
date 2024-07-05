@@ -3,9 +3,28 @@ $( document ).ready(function() {
     var options = { // put in gridstack options here
         disableOneColumnMode: true, // for jfiddle small window size
         float: false,
-        handle: '.drag'
+        handle: '.gridstack-dragging-handle',
+        minW: 2,
+        minH: 2
     };
     var grid = GridStack.init(options);
+
+    if (Cookies.get('gsLayout')) {
+        // only extract saved layout for elements that exist
+        var loadedGridLayout = JSON.parse(Cookies.get('gsLayout'));
+        $(loadedGridLayout).each(function () {
+            if ($("[gs-id='" + this.id + "']").length === 1) {
+                var element = $("[gs-id='" + this.id + "']")[0];
+                grid.update(element, this);
+            }
+        });
+    }
+
+    $('.reset-gridstack-layout').on('click', function (evt) {
+        Cookies.set('gsLayout', '');
+        location.reload();
+        return false;
+    });
 
     if (grid) {
         // resize each map
@@ -13,6 +32,7 @@ $( document ).ready(function() {
             $('.tx-dlf-map').each(function (index) {
                 tx_dlf_viewer[index].map.updateSize()
             });
+            Cookies.set('gsLayout', JSON.stringify(grid.save(false)));
         });
     }
 });
