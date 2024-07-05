@@ -360,23 +360,6 @@ class Helper
     }
 
     /**
-     * Get the unqualified name of a class
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $qualifiedClassName The qualified class name from get_class()
-     *
-     * @return string The unqualified class name
-     */
-    public static function getUnqualifiedClassName(string $qualifiedClassName): string
-    {
-        $nameParts = explode('\\', $qualifiedClassName);
-        return end($nameParts);
-    }
-
-    /**
      * Clean up a string to use in an URL.
      *
      * @access public
@@ -558,94 +541,6 @@ class Helper
     }
 
     /**
-     * Get the URN of an object
-     * @see http://www.persistent-identifier.de/?link=316
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $base The namespace and base URN
-     * @param string $id The object's identifier
-     *
-     * @return string Uniform Resource Name as string
-     */
-    public static function getURN(string $base, string $id): string
-    {
-        $concordance = [
-            '0' => 1,
-            '1' => 2,
-            '2' => 3,
-            '3' => 4,
-            '4' => 5,
-            '5' => 6,
-            '6' => 7,
-            '7' => 8,
-            '8' => 9,
-            '9' => 41,
-            'a' => 18,
-            'b' => 14,
-            'c' => 19,
-            'd' => 15,
-            'e' => 16,
-            'f' => 21,
-            'g' => 22,
-            'h' => 23,
-            'i' => 24,
-            'j' => 25,
-            'k' => 42,
-            'l' => 26,
-            'm' => 27,
-            'n' => 13,
-            'o' => 28,
-            'p' => 29,
-            'q' => 31,
-            'r' => 12,
-            's' => 32,
-            't' => 33,
-            'u' => 11,
-            'v' => 34,
-            'w' => 35,
-            'x' => 36,
-            'y' => 37,
-            'z' => 38,
-            '-' => 39,
-            ':' => 17,
-        ];
-        $urn = strtolower($base . $id);
-        if (preg_match('/[^a-z\d:-]/', $urn)) {
-            self::log('Invalid chars in given parameters', LOG_SEVERITY_WARNING);
-            return '';
-        }
-        $digits = '';
-        for ($i = 0, $j = strlen($urn); $i < $j; $i++) {
-            $digits .= $concordance[substr($urn, $i, 1)];
-        }
-        $checksum = 0;
-        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += ($i + 1) * (int) substr($digits, $i, 1);
-        }
-        $checksum = substr((string) floor($checksum / (int) substr($digits, -1, 1)), -1, 1);
-        return $base . $id . $checksum;
-    }
-
-    /**
-     * Check if given ID is a valid Pica Production Number (PPN)
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $id The identifier to check
-     *
-     * @return bool Is $id a valid PPN?
-     */
-    public static function isPPN(string $id): bool
-    {
-        return self::checkIdentifier($id, 'PPN');
-    }
-
-    /**
      * Determine whether or not $url is a valid URL using HTTP or HTTPS scheme.
      *
      * @access public
@@ -669,28 +564,6 @@ class Helper
             self::log($e->getMessage(), LOG_SEVERITY_ERROR);
             return false;
         }
-    }
-
-    /**
-     * Merges two arrays recursively and actually returns the modified array.
-     * @see ArrayUtility::mergeRecursiveWithOverrule()
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param array $original Original array
-     * @param array $overrule Overrule array, overruling the original array
-     * @param bool $addKeys If set to false, keys that are not found in $original will not be set
-     * @param bool $includeEmptyValues If set, values from $overrule will overrule if they are empty
-     * @param bool $enableUnsetFeature If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
-     *
-     * @return array Merged array
-     */
-    public static function mergeRecursiveWithOverrule(array $original, array $overrule, bool $addKeys = true, bool $includeEmptyValues = true, bool $enableUnsetFeature = true): array
-    {
-        ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
-        return $original;
     }
 
     /**
