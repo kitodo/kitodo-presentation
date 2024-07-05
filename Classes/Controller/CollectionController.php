@@ -81,9 +81,7 @@ class CollectionController extends AbstractController
             $this->logger->error('Apache Solr not available');
             return;
         }
-        // We only care about the UID and partOf in the results and want them sorted
-        $params['fields'] = 'uid,partof';
-        $params['sort'] = ['uid' => 'asc'];
+
         $collections = [];
 
         // Sort collections according to order in plugin flexform configuration
@@ -151,13 +149,16 @@ class CollectionController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
+        // get all indexed metadata fields
+        $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         // get all documents of given collection
         $solrResults = null;
         if (is_array($searchParams) && !empty($searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata, $indexedMetadata);
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
             if (empty($itemsPerPage)) {
@@ -217,22 +218,29 @@ class CollectionController extends AbstractController
 
         // Process results.
         foreach ($collections as $collection) {
-            $solr_query = '';
+            $solrQuery = '';
             if ($collection->getIndexSearch() != '') {
-                $solr_query .= '(' . $collection->getIndexSearch() . ')';
+                $solrQuery .= '(' . $collection->getIndexSearch() . ')';
             } else {
-                $solr_query .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
+                $solrQuery .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
             }
 
+            // We only care about the UID and partOf in the results and want them sorted
+            $params = [
+                'fields' => 'uid,partof',
+                'sort' => [
+                    'uid' => 'asc'
+                ]
+            ];
             // virtual collection might yield documents, that are not toplevel true or partof anything
             if ($collection->getIndexSearch()) {
-                $params['query'] = $solr_query;
+                $params['query'] = $solrQuery;
             } else {
-                $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
+                $params['query'] = $solrQuery . ' AND partof:0 AND toplevel:true';
             }
             $partOfNothing = $solr->searchRaw($params);
 
-            $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
+            $params['query'] = $solrQuery . ' AND NOT partof:0 AND toplevel:true';
             $partOfSomething = $solr->searchRaw($params);
 
             $collectionInfo = [];
