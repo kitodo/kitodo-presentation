@@ -296,6 +296,7 @@ class PageViewController extends AbstractController
         $currentPhysId = $doc->physicalStructure[$page];
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
+        $measureLinks = [];
         if ($defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT']) {
             $musicalStruct = $doc->musicalStructureInfo;
 
