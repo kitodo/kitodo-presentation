@@ -1,0 +1,32 @@
+{
+    "MODS": {
+        "root": "mods",
+        "namespace": "http://www.loc.gov/mods/v3",
+        "class": "Kitodo\\Dlf\\Format\\Mods"
+    },
+    "TEIHDR": {
+        "root": "teiHeader",
+        "namespace": "http://www.tei-c.org/ns/1.0",
+        "class": "Kitodo\\Dlf\\Format\\TeiHeader"
+    },
+    "ALTO": {
+        "root": "alto",
+        "namespace": "http://www.loc.gov/standards/alto/ns-v2#",
+        "class": "Kitodo\\Dlf\\Format\\Alto"
+    },
+    "IIIF1": {
+        "root": "IIIF1",
+        "namespace": "http://www.shared-canvas.org/ns/context.json",
+        "class": ""
+    },
+    "IIIF2": {
+        "root": "IIIF2",
+        "namespace": "http://iiif.io/api/presentation/2/context.json",
+        "class": ""
+    },
+    "IIIF3": {
+        "root": "IIIF3",
+        "namespace": "http://iiif.io/api/presentation/3/context.json",
+        "class": ""
+    }
+}
