@@ -269,7 +269,7 @@
       <str name="dir">${solr.ulog.dir:}</str>
       <int name="numVersionBuckets">${solr.ulog.numVersionBuckets:65536}</int>
     </updateLog>
-    ->
+    -->
 
     <!-- AutoCommit
 
