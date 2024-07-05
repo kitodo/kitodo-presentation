@@ -149,13 +149,16 @@ class CollectionController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
+        // get all indexed metadata fields
+        $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         // get all documents of given collection
         $solrResults = null;
         if (is_array($searchParams) && !empty($searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata, $indexedMetadata);
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
             if (empty($itemsPerPage)) {
