@@ -413,8 +413,8 @@ class Helper
     public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
+        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
+            foreach (self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
                 $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }
         }
@@ -1021,7 +1021,21 @@ class Helper
     }
 
     /**
-     * Get encryption key from configuration.
+     * Get options from local configuration.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @return array
+     */
+    private static function getOptions(): array
+    {
+        return self::getLocalConfigurationByPath('SC_OPTIONS');
+    }
+
+    /**
+     * Get encryption key from local configuration.
      *
      * @access private
      *
@@ -1031,7 +1045,23 @@ class Helper
      */
     private static function getEncryptionKey(): ?string
     {
+        return self::getLocalConfigurationByPath('SYS/encryptionKey');
+    }
+
+    /**
+     * Get local configuration for given path.
+     *
+     * @access private
+     *
+     * @static
+     * 
+     * @param string $path
+     *
+     * @return mixed
+     */
+    private static function getLocalConfigurationByPath(string $path)
+    {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        return $configurationManager->getLocalConfigurationValueByPath('SYS/encryptionKey');
+        return $configurationManager->getLocalConfigurationValueByPath($path);
     }
 }
