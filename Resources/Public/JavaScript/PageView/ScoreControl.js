@@ -149,12 +149,12 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
 
     this.measuresLoaded = false;
 
-    // function makeSVG(tag, attrs) {
-    //     var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
-    //     for (var k in attrs)
-    //         el.setAttribute(k, attrs[k]);
-    //     return el;
-    // }
+    function makeSVG(tag, attrs) {
+        var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (var k in attrs)
+            el.setAttribute(k, attrs[k]);
+        return el;
+    }
 
     this.showMeasures = function() {
         //
@@ -276,9 +276,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     var target = document.getElementById('tx-dlf-score-' + this.dlfViewer.counter);
     // const target = document.getElementById('tx-dlf-score');
 
-    // var extent = [-1050, -1485, 1050, 1485]
-    // var extent = [0, 0, 2100, 2970];
-    // var extent = [-2100, -2970, 2100, 2970];
     var extent = [-2100, -2970, 2100, 2970];
     // [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0]
 
@@ -345,107 +342,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
             },
         })
     );
-
-    function makeSVG(tag, attrs) {
-        var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
-        for (var k in attrs)
-            el.setAttribute(k, attrs[k]);
-        return el;
-    }
-
-    //
-    // Draw boxes for each measure
-    //
-    var measureCoords = this.dlfViewer.measureCoords;
-    var dlfViewer = this.dlfViewer;
-    $( document ).ready(function() {
-        $.each(measureCoords, function (key, value) {
-            var bbox = $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].getBBox();
-
-            var measureRect = makeSVG('rect', {
-                x: bbox['x'],
-                y: bbox['y'],
-                width:bbox['width'],
-                height:bbox['height'],
-                stroke: 'none',
-                'stroke-width': 20,
-                fill: 'red',
-                'fill-opacity': '0'
-            });
-            $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].appendChild(measureRect);
-
-            if (key == dlfViewer.currentMeasureId) {
-                $($('#tx-dlf-score-' + dlfViewer.counter + ' #' + key + ' > rect')[0]).addClass('active');
-
-                dlfViewer.verovioMeasureActive = $($('#tx-dlf-score-' + dlfViewer.counter + ' #' + key + ' > rect')[0]);
-            }
-        });
-
-        //
-        // SVG click event
-        //
-        $('#tx-dlf-score-' + dlfViewer.counter + ' rect').on('click', function(evt) {
-            if (dlfViewer.verovioMeasureActive !== null) {
-                dlfViewer.verovioMeasureActive.removeClass('active');
-                dlfViewer.verovioMeasureActive = null;
-            }
-            if (dlfViewer.facsimileMeasureActive !== null) {
-                dlfViewer.facsimileMeasureActive.setStyle(undefined);
-                dlfViewer.facsimileMeasureActive = null;
-            }
-
-            dlfViewer.verovioMeasureActive = $(this);
-            // set measure as active
-            dlfViewer.verovioMeasureActive.addClass('active');
-            var measureId = $(this).parent().attr('id');
-
-            if (dlfViewer.measureIdLinks[measureId]) {
-                // show ajax spinner if exists
-                if ($('#overlay .ajax-spinner')) {
-                    $('#overlay').fadeIn(300);
-                }
-                window.location.replace(dlfViewer.measureIdLinks[measureId]);
-            }
-
-            // show measure on facsimile
-            if (dlfUtils.exists(dlfViewer.measureLayer)) {
-                dlfViewer.facsimileMeasureActive = dlfViewer.measureLayer.getSource().getFeatureById(measureId);
-                dlfViewer.facsimileMeasureActive.setStyle(dlfViewerOLStyles.selectStyle());
-            }
-
-        });
-        //
-        // SVG hover event
-        //
-        $('#tx-dlf-score-' + dlfViewer.counter + ' rect').on('pointermove', function(evt) {
-            if (dlfViewer.verovioMeasureHover !== null) {
-                dlfViewer.verovioMeasureHover.removeClass('hover');
-                dlfViewer.verovioMeasureHover = null;
-            }
-            if (dlfViewer.facsimileMeasureHover !== null && dlfViewer.facsimileMeasureHover !== dlfViewer.facsimileMeasureActive) {
-                dlfViewer.facsimileMeasureHover.setStyle(undefined);
-                dlfViewer.facsimileMeasureHover = null;
-            }
-
-            dlfViewer.verovioMeasureHover = $(this);
-            // set measure as active
-            dlfViewer.verovioMeasureHover.addClass('hover');
-            var measureId = $(this).parent().attr('id');
-
-            // show measure in openlayer
-            if (dlfUtils.exists(dlfViewer.measureLayer)) {
-                dlfViewer.facsimileMeasureHover = dlfViewer.measureLayer.getSource().getFeatureById(measureId);
-                if (dlfViewer.facsimileMeasureHover !== dlfViewer.facsimileMeasureActive) {
-                    if (dlfViewer.facsimileMeasureHover) {
-                        dlfViewer.facsimileMeasureHover.setStyle(dlfViewerOLStyles.hoverStyle());
-                    }
-                }
-            }
-        });
-
-    });
-
-
 
     $("#tx_dlf_scoredownload").click(function () {
         if (typeof pdf_blob !== 'undefined') {
@@ -675,7 +571,7 @@ dlfViewerScoreControl.prototype.deactivate = function () {
  *
  * @return void
  */
-dlfViewerScoreControl.prototype.disableScoreSelect = function () {
+dlfViewerScoreControl.prototype.disableScoreSelect = function () {console.log("disable");
 
     // Resize viewer back to 100% width and remove custom zoom control
     $('#tx-dfgviewer-map-' + this.dlfViewer.counter).width('100%').find('.custom-zoom').hide();
@@ -685,10 +581,10 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
     $('.view-functions ul li.sync-view').hide();
     // this.dlfViewer.syncControl.unsetSync();
 
-    $("#tx-dlf-tools-score").removeClass(className)
+    $('#tx-dlf-tools-score-' + this.dlfViewer.counter).removeClass(className)
 
     if (this.activateFullTextInitially === 0) {
-        $("#tx-dlf-tools-score")
+        $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
             .text(this.dic['score-on'])
             .attr('title', this.dic['score-on']);
     }
@@ -714,7 +610,7 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 /**
  * Activate Score Features
  */
-dlfViewerScoreControl.prototype.enableScoreSelect = function () {
+dlfViewerScoreControl.prototype.enableScoreSelect = function () {console.log("enable");
 
     // Resize viewer to 50% width and add custom zoom control
     const customZoom = '<div class="custom-zoom">' + $('.view-functions ul li.zoom').html() + '</div>';
@@ -726,10 +622,10 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
     $('.view-functions ul').append('<li class="sync-view"><a class="sync-view-toggle" title="' + syncZoomTitle + '" onclick="dlfViewerCustomViewSync(this)">' + syncZoomTitle + '</></li>');
 
     // show score container
-    $("#tx-dlf-tools-score").addClass(className);
+    $('#tx-dlf-tools-score-' + this.dlfViewer.counter).addClass(className);
 
     if (this.activateFullTextInitially === 0) {
-        $("#tx-dlf-tools-score")
+        $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
             .text(this.dic['score-off'])
             .attr('title', this.dic['score-off']);
     }
@@ -746,6 +642,7 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
     if (this.dlfViewer.measureLayer) {
         this.dlfViewer.measureLayer.setVisible(true);
     }
+    this.showMeasures();
 };
 
 /**
