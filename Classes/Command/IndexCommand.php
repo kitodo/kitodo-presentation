@@ -111,15 +111,15 @@ class IndexCommand extends BaseCommand
 
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
-                $output_solrCores = [];
-                foreach ($allSolrCores as $index_name => $uid) {
-                    $output_solrCores[] = $uid . ' : ' . $index_name;
+                $outputSolrCores = [];
+                foreach ($allSolrCores as $indexName => $uid) {
+                    $outputSolrCores[] = $uid . ' : ' . $indexName;
                 }
-                if (empty($output_solrCores)) {
+                if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
                     return BaseCommand::FAILURE;
                 } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
                     return BaseCommand::FAILURE;
                 }
             }
