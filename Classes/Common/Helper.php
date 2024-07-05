@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\Uri;
@@ -207,7 +208,7 @@ class Helper
             self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
             return false;
         }
-        if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
+        if (empty(self::getEncryptionKey())) {
             self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
@@ -222,7 +223,7 @@ class Helper
         $binary = base64_decode($encrypted);
         $iv = substr($binary, 0, openssl_cipher_iv_length(self::$cipherAlgorithm));
         $data = substr($binary, openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
         // Decrypt data.
         return openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
     }
@@ -342,13 +343,13 @@ class Helper
             self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
             return false;
         }
-        if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
+        if (empty(self::getEncryptionKey())) {
             self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
         // Generate random initialization vector.
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
         // Encrypt data.
         $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
         // Merge initialization vector and encrypted data.
@@ -395,8 +396,8 @@ class Helper
     public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
+        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
+            foreach (self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
                 $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }
         }
@@ -890,5 +891,50 @@ class Helper
     public static function isValidXmlId($id): bool
     {
         return preg_match('/^[_a-z][_a-z0-9-.]*$/i', $id) === 1;
+    }
+
+    /**
+     * Get options from local configuration.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @return array
+     */
+    private static function getOptions(): array
+    {
+        return self::getLocalConfigurationByPath('SC_OPTIONS');
+    }
+
+    /**
+     * Get encryption key from local configuration.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @return string|null
+     */
+    private static function getEncryptionKey(): ?string
+    {
+        return self::getLocalConfigurationByPath('SYS/encryptionKey');
+    }
+
+    /**
+     * Get local configuration for given path.
+     *
+     * @access private
+     *
+     * @static
+     * 
+     * @param string $path
+     *
+     * @return mixed
+     */
+    private static function getLocalConfigurationByPath(string $path)
+    {
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        return $configurationManager->getLocalConfigurationValueByPath($path);
     }
 }
