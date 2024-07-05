@@ -44,6 +44,9 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             ],
             'displayErrors' => '1'
         ],
+        'SC_OPTIONS' => [
+            'dlf/Classes/Plugin/Toolbox.php' => []
+        ],
         'EXTENSIONS' => [
             'dlf' => [], // = $this->getDlfConfiguration(), set in constructor
         ],
