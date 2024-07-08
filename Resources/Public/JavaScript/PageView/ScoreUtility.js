@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
- /**
+/**
  * Base namespace for utility functions used by the dlf module.
  *
  * @const
