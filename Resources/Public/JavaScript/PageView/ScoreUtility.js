@@ -19,27 +19,14 @@
 let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
 const verovioSettings = {
-  //scale: 25,
+    //scale: 25,
 	//adjustPageWidth: true,
 	//spacingLinear: .15,
 	//adjustPageHeight: true,
-  //scaleToPageSize: true,
-  breaks: 'encoded',
-  mdivAll: true
+    //scaleToPageSize: true,
+    breaks: 'encoded',
+    mdivAll: true
 };
-
-
-// dlfScoreUtils.get_play_midi = function (toolkit) {
-//   return function (){
-//     var base64midi = toolkit.renderToMIDI();
-//     var song = 'data:audio/midi;base64,' + base64midi;
-//     console.log($("#player").midiplayer)
-//     $("#player").midiplayer.play(song);
-//   }
-// }
-
-
-
 
 /**
  * Method fetches the score data from the server
@@ -48,18 +35,14 @@ const verovioSettings = {
  * @static
  */
 dlfScoreUtils.get_play_midi = function (toolkit) {
-  $("#tx-dlf-tools-midi").click(
-	function () {
-    console.log('function working?')
-			var base64midi = toolkit.renderToMIDI();
-			var song = 'data:audio/midi;base64,' + base64midi;
-			// $("#player").show();
-			// $("#tx-dlf-tools-midi").hide();
-			console.log("this is song " + song);
-
-			$("#player").midiPlayer.play(song);
-	})
-	return dlfScoreUtils
+    $("#tx-dlf-tools-midi").click(
+	    function () {
+            var base64midi = toolkit.renderToMIDI();
+            var song = 'data:audio/midi;base64,' + base64midi;
+            $("#player").midiPlayer.play(song);
+        }
+    );
+    return dlfScoreUtils;
 }
 
 

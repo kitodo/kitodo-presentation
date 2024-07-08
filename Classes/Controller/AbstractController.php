@@ -308,7 +308,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         if (
             (int) $this->requestData['page'] > 0
             || empty($this->requestData['page']
-                || is_array($this->requestData['docPage']))
+            || is_array($this->requestData['docPage']))
         ) {
             if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
                 $i = 0;
