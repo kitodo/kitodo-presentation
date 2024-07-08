@@ -10,7 +10,7 @@ plugin.tx_dlf {
 }
 
 config {
-    # concatenate all Javascript files by default
+    # concatenate all JavaScript files by default
     concatenateJs = 1
     # concatenate all CSS files by default
     concatenateCss = 1
@@ -18,15 +18,15 @@ config {
 
 page {
   includeCSS {
-    jPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
-    openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.css
+    jPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
+    openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.css
   }
 
   includeJSFooterlibs {
-    jQuery = EXT:dlf/Resources/Public/Javascript/jQuery/jquery-3.6.0.min.js
+    jQuery = EXT:dlf/Resources/Public/JavaScript/jQuery/jquery-3.6.0.min.js
     jQuery.forceOnTop = 1
-    jQueryJPlayer = EXT:dlf/Resources/Public/Javascript/jPlayer/jquery.jplayer.min.js
-    jQueryUiMouseSlider = EXT:dlf/Resources/Public/Javascript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
+    jQueryJPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/jquery.jplayer.min.js
+    jQueryUiMouseSlider = EXT:dlf/Resources/Public/JavaScript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
   }
 
   includeCSS {
@@ -35,37 +35,37 @@ page {
 
   includeJSFooter {
     # AudioPlayer plugin
-    kitodo-audioPlayer = EXT:dlf/Resources/Public/Javascript/AudioPlayer/AudioPlayer.js
+    kitodo-audioPlayer = EXT:dlf/Resources/Public/JavaScript/AudioPlayer/AudioPlayer.js
 
     # Verovio plugin
-    kitodo-verovio = EXT:dlf/Resources/Public/Javascript/Verovio/verovio-toolkit.js
-    kitodo-svgtopdfkit = EXT:dlf/Resources/Public/Javascript/Verovio/svgtopdfkit.js
-    kitodo-saveas = EXT:dlf/Resources/Public/Javascript/Verovio/saveas.js
-    kitodo-pdf= EXT:dlf/Resources/Public/Javascript/Verovio/pdfkit.js
-    kitodo-pdfkita = EXT:dlf/Resources/Public/Javascript/Verovio/blobstream.js
-    wildwebmidi = EXT:dlf/Resources/Public/Javascript/Midiplayer/wildwebmidi.js
-    midiPlayer = EXT:dlf/Resources/Public/Javascript/Midiplayer/midiplayer.js
+    kitodo-verovio = EXT:dlf/Resources/Public/JavaScript/Verovio/verovio-toolkit.js
+    kitodo-svgtopdfkit = EXT:dlf/Resources/Public/JavaScript/Verovio/svgtopdfkit.js
+    kitodo-saveas = EXT:dlf/Resources/Public/JavaScript/Verovio/saveas.js
+    kitodo-pdf= EXT:dlf/Resources/Public/JavaScript/Verovio/pdfkit.js
+    kitodo-pdfkita = EXT:dlf/Resources/Public/JavaScript/Verovio/blobstream.js
+    wildwebmidi = EXT:dlf/Resources/Public/JavaScript/Midiplayer/wildwebmidi.js
+    midiPlayer = EXT:dlf/Resources/Public/JavaScript/Midiplayer/midiplayer.js
 
     # PageView plugin
-    kitodo-openLayers = EXT:dlf/Resources/Public/Javascript/OpenLayers/openlayers.js
+    kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
 
-    kitodo-pageView-utility = EXT:dlf/Resources/Public/Javascript/PageView/Utility.js
-    kitodo-pageView-ol = EXT:dlf/Resources/Public/Javascript/PageView/OL.js
-    kitodo-pageView-olStyles = EXT:dlf/Resources/Public/Javascript/PageView/OLStyles.js
-    kitodo-pageView-olSources = EXT:dlf/Resources/Public/Javascript/PageView/OLSources.js
-    kitodo-pageView-altoParser = EXT:dlf/Resources/Public/Javascript/PageView/AltoParser.js
-    kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationParser.js
-    kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/Javascript/PageView/AnnotationControl.js
-    kitodo-pageView-imageManipulationControl = EXT:dlf/Resources/Public/Javascript/PageView/ImageManipulationControl.js
-    kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextDownloadControl.js
-    kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/Javascript/PageView/FulltextControl.js
-    kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/Javascript/PageView/FullTextUtility.js
-    kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/Javascript/PageView/ScoreControl.js
-    kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/Javascript/PageView/ScoreUtility.js
-    kitodo-pageView-syncControl = EXT:dlf/Resources/Public/Javascript/PageView/SyncControl.js
-    kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/Javascript/PageView/SearchInDocument.js
-    kitodo-pageView-pageView = EXT:dlf/Resources/Public/Javascript/PageView/PageView.js
-    kitodo-search-suggest = EXT:dlf/Resources/Public/Javascript/Search/Suggester.js
+    kitodo-pageView-utility = EXT:dlf/Resources/Public/JavaScript/PageView/Utility.js
+    kitodo-pageView-ol = EXT:dlf/Resources/Public/JavaScript/PageView/OL.js
+    kitodo-pageView-olStyles = EXT:dlf/Resources/Public/JavaScript/PageView/OLStyles.js
+    kitodo-pageView-olSources = EXT:dlf/Resources/Public/JavaScript/PageView/OLSources.js
+    kitodo-pageView-altoParser = EXT:dlf/Resources/Public/JavaScript/PageView/AltoParser.js
+    kitodo-pageView-annotationParser = EXT:dlf/Resources/Public/JavaScript/PageView/AnnotationParser.js
+    kitodo-pageView-annotationControl = EXT:dlf/Resources/Public/JavaScript/PageView/AnnotationControl.js
+    kitodo-pageView-imageManipulationControl = EXT:dlf/Resources/Public/JavaScript/PageView/ImageManipulationControl.js
+    kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextDownloadControl.js
+    kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextControl.js
+    kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/JavaScript/PageView/FullTextUtility.js
+    kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreControl.js
+    kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreUtility.js
+    kitodo-pageView-syncControl = EXT:dlf/Resources/Public/JavaScript/PageView/SyncControl.js
+    kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
+    kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
+    kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
 
   }
 }
@@ -73,8 +73,8 @@ page {
 [like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
 page.includeJSFooter {
     # Gridstack
-    gridstack = EXT:dlf/Resources/Public/Javascript/Gridstack/gridstack-all.js
-    gridstack-init = EXT:dlf/Resources/Public/Javascript/PageView/gridstack.js
+    gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack-all.js
+    gridstack-init = EXT:dlf/Resources/Public/JavaScript/PageView/gridstack.js
 }
 [end]
 
