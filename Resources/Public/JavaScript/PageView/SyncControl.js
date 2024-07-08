@@ -128,10 +128,3 @@ dlfViewerSyncControl.prototype.setSync = function () {
 dlfViewerSyncControl.prototype.unsetSync = function () {
     this.sync = false;
 }
-
-
-
-
-
-
-
