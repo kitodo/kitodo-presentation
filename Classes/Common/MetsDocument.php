@@ -1337,7 +1337,7 @@ final class MetsDocument extends AbstractDocument
         $fileUse = $this->magicGetFileGrps();
 
         foreach ($physicalNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-            $fileNode = isset($fptr->area)? $fptr->area : $fptr;
+            $fileNode = $fptr->area ?? $fptr;
             $fileId = (string) $fileNode->attributes()->FILEID;
 
             // Check if file has valid @USE attribute.
