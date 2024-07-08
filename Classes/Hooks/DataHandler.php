@@ -87,6 +87,7 @@ class DataHandler implements LoggerAwareInterface
                     }
                     break;
                     // Field post-processing for table "tx_dlf_metadata".
+                    // TODO: Include also subentries if available.
                 case 'tx_dlf_metadata':
                     // Store field in index if it should appear in lists.
                     if (!empty($fieldArray['is_listed'])) {

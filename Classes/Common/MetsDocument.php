@@ -12,7 +12,10 @@
 
 namespace Kitodo\Dlf\Common;
 
+use \DOMDocument;
 use \DOMElement;
+use \DOMNode;
+use \DOMNodeList;
 use \DOMXPath;
 use \SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -564,6 +567,66 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * @param array $allSubentries
+     * @param string $parentIndex
+     * @param DOMNode $parentNode
+     * @return array|false
+     */
+    private function getSubentries($allSubentries, string $parentIndex, DOMNode $parentNode)
+    {
+        $domXPath = new DOMXPath($parentNode->ownerDocument);
+        $this->registerNamespaces($domXPath);
+        $theseSubentries = [];
+        foreach ($allSubentries as $subentry) {
+            if ($subentry['parent_index_name'] == $parentIndex) {
+                $values = $domXPath->evaluate($subentry['xpath'], $parentNode);
+                if (!empty($subentry['xpath']) && ($values)) {
+                    $theseSubentries = array_merge($theseSubentries, $this->getSubentryValue($values, $subentry));
+                }
+                // Set default value if applicable.
+                if (
+                    empty($theseSubentries[$subentry['index_name']][0])
+                    && strlen($subentry['default_value']) > 0
+                ) {
+                    $theseSubentries[$subentry['index_name']] = [$subentry['default_value']];
+                }
+            }
+        }
+        if (empty($theseSubentries)) {
+            return false;
+        }
+        return $theseSubentries;
+    }
+
+    /**
+     * @param $values
+     * @param $subentry
+     * @return array
+     */
+    private function getSubentryValue($values, $subentry)
+    {
+        $theseSubentries = [];
+        if (
+            ($values instanceof DOMNodeList
+                && $values->length > 0) || is_string($values)
+        ) {
+            if (is_string($values)) {
+                // if concat is used evaluate returns a string
+                $theseSubentries[$subentry['index_name']][] = trim($values);
+            } else {
+                foreach ($values as $value) {
+                    if (!empty(trim((string) $value->nodeValue))) {
+                        $theseSubentries[$subentry['index_name']][] = trim((string) $value->nodeValue);
+                    }
+                }
+            }
+        } elseif (!($values instanceof DOMNodeList)) {
+            $theseSubentries[$subentry['index_name']] = [trim((string) $values->nodeValue)];
+        }
+        return $theseSubentries;
+    }
+
+    /**
      * Get logical unit type.
      *
      * @access private
@@ -611,7 +674,7 @@ final class MetsDocument extends AbstractDocument
         }
 
         $additionalMetadata = $this->getAdditionalMetadataFromDatabase($cPid, $dmdId);
-        // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
+        // We need a DOMDocument here, because SimpleXML doesn't support XPath functions properly.
         $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
         $domXPath = new DOMXPath($domNode->ownerDocument);
         $this->registerNamespaces($domXPath);
@@ -651,8 +714,13 @@ final class MetsDocument extends AbstractDocument
      */
     private function processAdditionalMetadata(array $additionalMetadata, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
+        $subentries = [];
+        if (isset($additionalMetadata['subentries'])) {
+            $subentries = $additionalMetadata['subentries'];
+            unset($additionalMetadata['subentries']);
+        }
         foreach ($additionalMetadata as $resArray) {
-            $this->setMetadataFieldValues($resArray, $domXPath, $domNode, $metadata);
+            $this->setMetadataFieldValues($resArray, $domXPath, $domNode, $metadata, $subentries);
             $this->setDefaultMetadataValue($resArray, $metadata);
             $this->setSortableMetadataValue($resArray, $domXPath, $domNode, $metadata);
         }
@@ -667,19 +735,25 @@ final class MetsDocument extends AbstractDocument
      * @param DOMXPath $domXPath
      * @param DOMElement $domNode
      * @param array $metadata
+     * @param array $subentryResults
      *
      * @return void
      */
-    private function setMetadataFieldValues(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
+    private function setMetadataFieldValues(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata, array $subentryResults): void
     {
         if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
             $values = $domXPath->evaluate($resArray['xpath'], $domNode);
-            if ($values instanceof \DOMNodeList && $values->length > 0) {
+            if ($values instanceof DOMNodeList && $values->length > 0) {
                 $metadata[$resArray['index_name']] = [];
                 foreach ($values as $value) {
-                    $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
+                    $subentries = $this->getSubentries($subentryResults, $resArray['index_name'], $value);
+                    if ($subentries) {
+                        $metadata[$resArray['index_name']][] = $subentries;
+                    } else {
+                        $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
+                    }
                 }
-            } elseif (!($values instanceof \DOMNodeList)) {
+            } elseif (!($values instanceof DOMNodeList)) {
                 $metadata[$resArray['index_name']] = [trim((string) $values)];
             }
         }
@@ -716,17 +790,25 @@ final class MetsDocument extends AbstractDocument
      */
     private function setSortableMetadataValue(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
-        if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
+        $indexName = $resArray['index_name'];
+        $currentMetadata = $metadata[$indexName][0];
+
+        if (!empty($metadata[$indexName]) && $resArray['is_sortable']) {
             if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
                 $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
-                if ($values instanceof \DOMNodeList && $values->length > 0) {
-                    $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
-                } elseif (!($values instanceof \DOMNodeList)) {
-                    $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $values);
+                if ($values instanceof DOMNodeList && $values->length > 0) {
+                    $metadata[$indexName . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
+                } elseif (!($values instanceof DOMNodeList)) {
+                    $metadata[$indexName . '_sorting'][0] = trim((string) $values);
                 }
             }
-            if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
-                $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
+            if (empty($metadata[$indexName . '_sorting'][0])) {
+                if (is_array($currentMetadata)) {
+                    $sortingValue = implode(',', array_column($currentMetadata, 0));
+                    $metadata[$indexName . '_sorting'][0] = $sortingValue;
+                } else {
+                    $metadata[$indexName . '_sorting'][0] = $currentMetadata;
+                }
             }
         }
     }
@@ -814,6 +896,7 @@ final class MetsDocument extends AbstractDocument
             ->getRestrictions()
             ->removeByType(HiddenRestriction::class);
         // Get all metadata with configured xpath and applicable format first.
+        // Exclude metadata with subentries, we will fetch them later.
         $resultWithFormat = $queryBuilder
             ->select(
                 'tx_dlf_metadata.index_name AS index_name',
@@ -852,7 +935,7 @@ final class MetsDocument extends AbstractDocument
         // Get all metadata without a format, but with a default value next.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_metadata');
-            // Get hidden records, too.
+        // Get hidden records, too.
         $queryBuilder
             ->getRestrictions()
             ->removeByType(HiddenRestriction::class);
@@ -872,7 +955,52 @@ final class MetsDocument extends AbstractDocument
             )
             ->execute();
         // Merge both result sets.
-        return array_merge($resultWithFormat->fetchAllAssociative(), $resultWithoutFormat->fetchAllAssociative());
+        $allResults = array_merge($resultWithFormat->fetchAllAssociative(), $resultWithoutFormat->fetchAllAssociative());
+
+        // Get subentries separately.
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_metadata');
+        // Get hidden records, too.
+        $queryBuilder
+            ->getRestrictions()
+            ->removeByType(HiddenRestriction::class);
+        $subentries = $queryBuilder
+            ->select(
+                'tx_dlf_subentries_joins.index_name AS index_name',
+                'tx_dlf_metadata.index_name AS parent_index_name',
+                'tx_dlf_subentries_joins.xpath AS xpath',
+                'tx_dlf_subentries_joins.default_value AS default_value'
+            )
+            ->from('tx_dlf_metadata')
+            ->innerJoin(
+                'tx_dlf_metadata',
+                'tx_dlf_metadataformat',
+                'tx_dlf_metadataformat_joins',
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_metadataformat_joins.parent_id',
+                    'tx_dlf_metadata.uid'
+                )
+            )
+            ->innerJoin(
+                'tx_dlf_metadataformat_joins',
+                'tx_dlf_metadatasubentries',
+                'tx_dlf_subentries_joins',
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_subentries_joins.parent_id',
+                    'tx_dlf_metadataformat_joins.uid'
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $cPid),
+                $queryBuilder->expr()->gt('tx_dlf_metadataformat_joins.subentries', 0),
+                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.l18n_parent', 0),
+                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', (int) $cPid)
+            )
+            ->orderBy('tx_dlf_subentries_joins.sorting')
+            ->execute();
+        $subentriesResult = $subentries->fetchAll();
+
+        return array_merge($allResults, ['subentries' => $subentriesResult]);
     }
 
     /**
@@ -1498,7 +1626,7 @@ final class MetsDocument extends AbstractDocument
      */
     public function __toString(): string
     {
-        $xml = new \DOMDocument('1.0', 'utf-8');
+        $xml = new DOMDocument('1.0', 'utf-8');
         $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), true));
         $xml->formatOutput = true;
         return $xml->saveXML();
