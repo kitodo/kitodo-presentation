@@ -29,11 +29,8 @@ class IsArrayViewHelper extends AbstractViewHelper
     /**
      * @return bool
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    {
         $subject = $arguments['subject'];
         if ($subject === null) {
             $subject = $renderChildrenClosure();
