@@ -424,7 +424,7 @@ class Helper
         if (
             !$uid
             // NOTE: Only use tables that don't have too many entries!
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries','tx_dlf_structures', 'tx_dlf_solrcores'])
+            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
             self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
             return '';
