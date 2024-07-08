@@ -78,8 +78,9 @@ dlfScoreUtil.parseGeometry_ = function(node) {
         y2 = y1 + height,
         coordinatesWithoutScale = [[[x1, -y1], [x2, -y1], [x2, -y2], [x1, -y2], [x1, -y1]]];
 
-    if (isNaN(width) || isNaN(height))
+    if (isNaN(width) || isNaN(height)) {
         return undefined;
+    }
 
     // return geometry without rescale
     if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_))
