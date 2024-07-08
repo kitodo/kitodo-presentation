@@ -88,9 +88,9 @@ dlfScoreUtil.parseGeometry_ = function(node) {
     }
 
     // rescale coordinates
-    var scale = this.image_.width / this.width_,
-        offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0,
-        coordinatesRescale = [];
+    var scale = this.image_.width / this.width_;
+    var offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0;
+    var coordinatesRescale = [];
 
     for (var i = 0; i < coordinatesWithoutScale[0].length; i++) {
         coordinatesRescale.push([offset + ( scale * coordinatesWithoutScale[0][i][0]),
