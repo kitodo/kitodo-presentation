@@ -131,7 +131,7 @@ plugin.tx_dlf_search {
 
 plugin.tx_dlf_annotation {
     settings {
-      apiUrl = https://slubdfgviewer.ddev.site
+      apiUrl = 
     }
 }
 
