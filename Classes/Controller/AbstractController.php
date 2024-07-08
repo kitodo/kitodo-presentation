@@ -326,42 +326,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->viewData['requestData'] = $this->requestData;
     }
 
-//    /**
-//     * Renders the score tool
-//     *
-//     * @return void
-//     */
-//    public function scoretool()
-//    {
-//        if (
-//            $this->isDocMissingOrEmpty()
-//            || empty($this->extConf['fileGrpScore'])
-//        ) {
-//            // Quit without doing anything if required variables are not set.
-//            return;
-//        }
-//        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
-//        foreach ($fileGrpsScores as $fileGrpScore) {
-//            foreach ($this->document->getDoc()->physicalStructureInfo as $page) {
-//                if (isset($page['files'])) {
-//                    $files = $page['files'];
-//                } else {
-//                    continue;
-//                }
-//                if (isset($files[$fileGrpScore])) {
-//                    $scoreFile = $files[$fileGrpScore];
-//                    break;
-//                }
-//            }
-//        }
-//        if (!empty($scoreFile)) {
-//            $this->view->assign('score', true);
-//            $this->view->assign('activateScoreInitially', MathUtility::forceIntegerInRange($this->settings['activateScoreInitially'], 0, 1, 0));
-//        } else {
-//            $this->view->assign('score', false);
-//        }
-//    }
-
     /**
      * This is the constructor
      *
