@@ -1650,11 +1650,11 @@ final class MetsDocument extends AbstractDocument
                     if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
                         $this->musicalStructureInfo[$musicalSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
                             'fileid' => (string)$fptr->area->attributes()->FILEID,
-                            'begin'  => (string)$fptr->area->attributes()->BEGIN,
-                            'end'    => (string)$fptr->area->attributes()->END,
-                            'type'   => (string)$fptr->area->attributes()->BETYPE,
-                            'shape'   => (string)$fptr->area->attributes()->SHAPE,
-                            'coords'   => (string)$fptr->area->attributes()->COORDS,
+                            'begin' => (string)$fptr->area->attributes()->BEGIN,
+                            'end' => (string)$fptr->area->attributes()->END,
+                            'type' => (string)$fptr->area->attributes()->BETYPE,
+                            'shape' => (string)$fptr->area->attributes()->SHAPE,
+                            'coords' => (string)$fptr->area->attributes()->COORDS
                         ];
                     }
 
