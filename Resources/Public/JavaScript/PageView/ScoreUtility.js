@@ -83,8 +83,9 @@ dlfScoreUtil.parseGeometry_ = function(node) {
     }
 
     // return geometry without rescale
-    if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_))
+    if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_)) {
         return new ol.geom.Polygon(coordinatesWithoutScale);
+    }
 
     // rescale coordinates
     var scale = this.image_.width / this.width_,
