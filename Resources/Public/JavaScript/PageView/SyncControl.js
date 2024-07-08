@@ -44,8 +44,6 @@ class SyncViewsControl extends ol.control.Control {
         button.addEventListener('click', syncViews, false);
         buttonUnsync.addEventListener('click', unsyncViews, false);
     }
-
-
 }
 
 /**
