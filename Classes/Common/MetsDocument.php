@@ -12,7 +12,10 @@
 
 namespace Kitodo\Dlf\Common;
 
+use \DOMDocument;
 use \DOMElement;
+use \DOMNode;
+use \DOMNodeList;
 use \DOMXPath;
 use \SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -566,12 +569,12 @@ final class MetsDocument extends AbstractDocument
     /**
      * @param array $allSubentries
      * @param string $parentIndex
-     * @param \DOMNode $parentNode
+     * @param DOMNode $parentNode
      * @return array|false
      */
-    private function getSubentries($allSubentries, string $parentIndex, \DOMNode $parentNode)
+    private function getSubentries($allSubentries, string $parentIndex, DOMNode $parentNode)
     {
-        $domXPath = new \DOMXPath($parentNode->ownerDocument);
+        $domXPath = new DOMXPath($parentNode->ownerDocument);
         $this->registerNamespaces($domXPath);
         $theseSubentries = [];
         foreach ($allSubentries as $subentry) {
@@ -604,7 +607,7 @@ final class MetsDocument extends AbstractDocument
     {
         $theseSubentries = [];
         if (
-            ($values instanceof \DOMNodeList
+            ($values instanceof DOMNodeList
                 && $values->length > 0) || is_string($values)
         ) {
             if (is_string($values)) {
@@ -617,7 +620,7 @@ final class MetsDocument extends AbstractDocument
                     }
                 }
             }
-        } elseif (!($values instanceof \DOMNodeList)) {
+        } elseif (!($values instanceof DOMNodeList)) {
             $theseSubentries[$subentry['index_name']] = [trim((string) $values->nodeValue)];
         }
         return $theseSubentries;
@@ -671,7 +674,7 @@ final class MetsDocument extends AbstractDocument
         }
 
         $additionalMetadata = $this->getAdditionalMetadataFromDatabase($cPid, $dmdId);
-        // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
+        // We need a DOMDocument here, because SimpleXML doesn't support XPath functions properly.
         $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
         $domXPath = new DOMXPath($domNode->ownerDocument);
         $this->registerNamespaces($domXPath);
@@ -740,7 +743,7 @@ final class MetsDocument extends AbstractDocument
     {
         if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
             $values = $domXPath->evaluate($resArray['xpath'], $domNode);
-            if ($values instanceof \DOMNodeList && $values->length > 0) {
+            if ($values instanceof DOMNodeList && $values->length > 0) {
                 $metadata[$resArray['index_name']] = [];
                 foreach ($values as $value) {
                     $subentries = $this->getSubentries($subentryResults, $resArray['index_name'], $value);
@@ -750,7 +753,7 @@ final class MetsDocument extends AbstractDocument
                         $metadata[$resArray['index_name']][] = trim((string) $value->nodeValue);
                     }
                 }
-            } elseif (!($values instanceof \DOMNodeList)) {
+            } elseif (!($values instanceof DOMNodeList)) {
                 $metadata[$resArray['index_name']] = [trim((string) $values)];
             }
         }
@@ -793,9 +796,9 @@ final class MetsDocument extends AbstractDocument
         if (!empty($metadata[$indexName]) && $resArray['is_sortable']) {
             if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
                 $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
-                if ($values instanceof \DOMNodeList && $values->length > 0) {
+                if ($values instanceof DOMNodeList && $values->length > 0) {
                     $metadata[$indexName . '_sorting'][0] = trim((string) $values->item(0)->nodeValue);
-                } elseif (!($values instanceof \DOMNodeList)) {
+                } elseif (!($values instanceof DOMNodeList)) {
                     $metadata[$indexName . '_sorting'][0] = trim((string) $values);
                 }
             }
@@ -1623,7 +1626,7 @@ final class MetsDocument extends AbstractDocument
      */
     public function __toString(): string
     {
-        $xml = new \DOMDocument('1.0', 'utf-8');
+        $xml = new DOMDocument('1.0', 'utf-8');
         $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), true));
         $xml->formatOutput = true;
         return $xml->saveXML();
