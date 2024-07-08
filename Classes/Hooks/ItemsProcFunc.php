@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Helper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -50,7 +51,9 @@ class ItemsProcFunc implements LoggerAwareInterface
      */
     public function toolList(array &$params): void
     {
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $options = $configurationManager->getLocalConfigurationValueByPath('SC_OPTIONS');
+        foreach ($options['dlf/Classes/Plugin/Toolbox.php']['tools'] as $class => $label) {
             $params['items'][] = [Helper::getLanguageService()->sL($label), $class];
         }
     }
@@ -70,9 +73,9 @@ class ItemsProcFunc implements LoggerAwareInterface
         $pid = $params['flexParentDatabaseRow']['pid'];
         $rootLine = BackendUtility::BEgetRootLine($pid);
         $siteRootRow = [];
-        foreach ($rootLine as $_row) {
-            if ($_row['is_siteroot'] == '1') {
-                $siteRootRow = $_row;
+        foreach ($rootLine as $row) {
+            if ($row['is_siteroot'] == '1') {
+                $siteRootRow = $row;
                 break;
             }
         }
@@ -152,7 +155,7 @@ class ItemsProcFunc implements LoggerAwareInterface
             ->select(...explode(',', $fields))
             ->from($table)
             ->where(
-                $queryBuilder->expr()->eq($table . '.pid', intval($this->storagePid)),
+                $queryBuilder->expr()->eq($table . '.pid', $this->storagePid),
                 $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
                 $andWhere
             )
