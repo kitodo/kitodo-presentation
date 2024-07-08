@@ -1376,7 +1376,7 @@ final class MetsDocument extends AbstractDocument
             $this->physicalStructureInfo[$elements[$order]]['contentIds'] = isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '';
             // Get the file representations from fileSec node.
             foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                $fileNode = isset($fptr->area)? $fptr->area : $fptr;
+                $fileNode = $fptr->area ?? $fptr;
                 $fileId = (string) $fileNode->attributes()->FILEID;
 
                 // Check if file has valid @USE attribute.
