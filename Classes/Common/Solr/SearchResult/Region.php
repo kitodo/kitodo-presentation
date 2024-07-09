@@ -90,7 +90,7 @@ class Region
     public function __construct(int $id, array $region)
     {
         $this->id = $id;
-        $this->pageId = $region['pageIdx'];
+        $this->pageId = $region['pageIdx'] ?? null;
         $this->xBeginPosition = $region['ulx'];
         $this->xEndPosition = $region['lrx'];
         $this->yBeginPosition = $region['uly'];
