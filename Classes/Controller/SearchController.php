@@ -335,7 +335,7 @@ class SearchController extends AbstractController
         }
 
         foreach (array_keys($facets) as $field) {
-            $search['params']['component']['facetset']['facet'][] = [
+            $search['params']['component']['facetset']['facet'][$field] = [
                 'type' => 'field',
                 'mincount' => '1',
                 'key' => $field,
