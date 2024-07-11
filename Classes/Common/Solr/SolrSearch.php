@@ -543,7 +543,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                                 $documents[$doc['uid']]['metadata'][$indexName] = $doc['metadata'][$indexName];
                             }
                         }
-                        if ($this->searchParams['fulltext'] != '1') {
+                        if (!array_key_exists('fulltext', $this->searchParams) || $this->searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $childrenOf[$doc['uid']] ?? [];
                         
