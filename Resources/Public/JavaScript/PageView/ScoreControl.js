@@ -60,7 +60,7 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
                     $("#player").midiPlayer.play(song);
 
                     $('body').addClass('midi-active');
-                })
+                });
 
 
             const midi = tk.renderToMIDI();
@@ -150,7 +150,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
     this.measuresLoaded = false;
 
     function makeSVG(tag, attrs) {
-        var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
+        var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
         for (var k in attrs)
             el.setAttribute(k, attrs[k]);
         return el;
@@ -180,7 +180,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
                     });
                     $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].appendChild(measureRect);
 
-                    if (key == dlfViewer.currentMeasureId) {
+                    if (key === dlfViewer.currentMeasureId) {
                         $($('#tx-dlf-score-' + dlfViewer.counter + ' #' + key + ' > rect')[0]).addClass('active');
 
                         dlfViewer.verovioMeasureActive = $($('#tx-dlf-score-' + dlfViewer.counter + ' #' + key + ' > rect')[0]);
@@ -252,7 +252,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
                 this.measuresLoaded = true;
             }, 1000);
         }
-    }
+    };
 
 
 
@@ -260,12 +260,10 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
 };
 
 function get_pdf_title(tk) {
-    console.log("tk in get pdf function " + tk)
-    parser = new DOMParser();
-    xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
-    //console.log(xmlDoc.evaluate('/title', xmlDoc, null, XPathResult.STRING_TYPE) );
-    var work = xmlDoc.getElementsByTagName("work")
-    pdfTitle = work[0].getElementsByTagName("title")[0].textContent
+    var parser = new DOMParser();
+    var xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
+    var work = xmlDoc.getElementsByTagName("work");
+    var pdfTitle = work[0].getElementsByTagName("title")[0].textContent;
     return pdfTitle;
 }
 
@@ -387,7 +385,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
         options.fontCallback = fontCallback;
 
 
-        doc = new PDFDocument({useCSS: true, compress: true, autoFirstPage: false, layout: pdfOrientation});
+        var doc = new PDFDocument({useCSS: true, compress: true, autoFirstPage: false, layout: pdfOrientation});
         var stream = doc.pipe(blobStream());
 
         stream.on('finish', function () {
@@ -396,7 +394,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
         });
 
 
-        pdfOptions = {
+        var pdfOptions = {
             adjustPageHeight: false,
             adjustPageWidth: false,
             breaks: "auto",
@@ -409,11 +407,10 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
         const pdf_tk = new verovio.toolkit();
         pdf_tk.renderData(tk.getMEI(), pdfOptions);
-        parser = new DOMParser();
-        xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
-        //console.log(xmlDoc.evaluate('/title', xmlDoc, null, XPathResult.STRING_TYPE) );
-        var work = xmlDoc.getElementsByTagName("work")
-        pdfTitle = work[0].getElementsByTagName("title")[0].textContent
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
+        var work = xmlDoc.getElementsByTagName("work");
+        var pdfTitle = work[0].getElementsByTagName("title")[0].textContent;
 
         for (let i = 0; i < pdf_tk.getPageCount(); i++) {
             doc.addPage({size: pdfFormat, layout: pdfOrientation});
@@ -432,7 +429,7 @@ function calc_page_height() {
 }
 
 function calc_page_width() {
-    return ($(".row-offcanvas").width()) * 100 / zoom; // - $( "#sidbar" ).width();
+    return ($(".row-offcanvas").width()) * 100 / zoom;
 }
 
 
@@ -571,7 +568,7 @@ dlfViewerScoreControl.prototype.deactivate = function () {
  *
  * @return void
  */
-dlfViewerScoreControl.prototype.disableScoreSelect = function () {console.log("disable");
+dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 
     // Resize viewer back to 100% width and remove custom zoom control
     $('#tx-dfgviewer-map-' + this.dlfViewer.counter).width('100%').find('.custom-zoom').hide();
@@ -581,7 +578,7 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {console.log("d
     $('.view-functions ul li.sync-view').hide();
     // this.dlfViewer.syncControl.unsetSync();
 
-    $('#tx-dlf-tools-score-' + this.dlfViewer.counter).removeClass(className)
+    $('#tx-dlf-tools-score-' + this.dlfViewer.counter).removeClass(className);
 
     if (this.activateFullTextInitially === 0) {
         $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
@@ -589,10 +586,6 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {console.log("d
             .attr('title', this.dic['score-on']);
     }
 
-    // $('#tx-dlf-score').removeClass(className);
-    // $('#tx-dlf-score').hide();
-    // $('*[id*=tx-dlf-score-]').addClass(className).show();
-    // $('*[id*=tx-dlf-score-]').removeClass(className).hide();
     $('#tx-dlf-score-' + this.dlfViewer.counter).removeClass(className).hide();
     $('#tx-dfgviewer-map-' + this.dlfViewer.counter + ' .ol-overlaycontainer-stopevent').hide();
     $('#tx-dfgviewer-map-' + this.dlfViewer.counter + ' ~ .score-tool #tx-dlf-tools-midi').hide();
@@ -610,7 +603,7 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {console.log("d
 /**
  * Activate Score Features
  */
-dlfViewerScoreControl.prototype.enableScoreSelect = function () {console.log("enable");
+dlfViewerScoreControl.prototype.enableScoreSelect = function () {
 
     // Resize viewer to 50% width and add custom zoom control
     const customZoom = '<div class="custom-zoom">' + $('.view-functions ul li.zoom').html() + '</div>';
@@ -630,12 +623,8 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {console.log("en
             .attr('title', this.dic['score-off']);
     }
 
-    // $('#tx-dlf-score').addClass(className);
-    // $('#tx-dlf-score').show();
-    // $('*[id*=tx-dlf-score-]').addClass(className).show();
     $('#tx-dlf-score-' + this.dlfViewer.counter).addClass(className).show();
 
-    // $('#tx-dlf-score').show();
     $('body').addClass(className);
     this.scrollToPagebeginning();
 
@@ -667,4 +656,4 @@ dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
 dlfViewerCustomViewSync = function (element) {
     const isActive = $(element).toggleClass('active').hasClass('active');
     isActive ? tx_dlf_viewer.syncControl.setSync() : tx_dlf_viewer.syncControl.unsetSync();
-}
+};
