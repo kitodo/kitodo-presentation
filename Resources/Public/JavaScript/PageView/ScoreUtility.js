@@ -20,9 +20,9 @@ let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
 const verovioSettings = {
     //scale: 25,
-	//adjustPageWidth: true,
-	//spacingLinear: .15,
-	//adjustPageHeight: true,
+	//AdjustPageWidth: true,
+	//SpacingLinear: .15,
+	//AdjustPageHeight: true,
     //scaleToPageSize: true,
     breaks: 'encoded',
     mdivAll: true
@@ -65,12 +65,12 @@ dlfScoreUtil.parseGeometry_ = function(node) {
         return undefined;
     }
 
-    // return geometry without rescale
+    // Return geometry without rescale
     if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_)) {
         return new ol.geom.Polygon(coordinatesWithoutScale);
     }
 
-    // rescale coordinates
+    // Rescale coordinates
     var scale = this.image_.width / this.width_;
     var offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0;
     var coordinatesRescale = [];

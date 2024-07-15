@@ -24,10 +24,10 @@ dlfScoreUtil = dlfScoreUtil || {};
 const verovioSetting = {
     pageWidth: 300,
     scale: 25,
-    //adjustPageWidth: true,
+    //AdjustPageWidth: true,
     spacingLinear: .15,
     pageHeight: 300,
-    //adjustPageHeight: true,
+    //AdjustPageHeight: true,
     scaleToPageSize: true,
     breaks: 'encoded',
     mdivAll: true
@@ -191,7 +191,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
                 // SVG click event
                 //
                 $('#tx-dlf-score-' + dlfViewer.counter + ' rect').on('click', function(evt) {
-                    // show ajax spinner if exists
+                    // Show ajax spinner if exists
                     if ($('#overlay .ajax-spinner')) {
                         $('#overlay').fadeIn(300);
                     }
@@ -206,7 +206,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
                     }
 
                     dlfViewer.verovioMeasureActive = $(this);
-                    // set measure as active
+                    // Set measure as active
                     dlfViewer.verovioMeasureActive.addClass('active');
                     var measureId = $(this).parent().attr('id');
 
@@ -214,7 +214,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
                         window.location.replace(dlfViewer.measureIdLinks[measureId]);
                     }
 
-                    // show measure on facsimile
+                    // Show measure on facsimile
                     if (dlfUtils.exists(dlfViewer.measureLayer)) {
                         dlfViewer.facsimileMeasureActive = dlfViewer.measureLayer.getSource().getFeatureById(measureId);
                         dlfViewer.facsimileMeasureActive.setStyle(dlfViewerOLStyles.selectStyle());
@@ -239,7 +239,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
                     dlfViewer.verovioMeasureHover.addClass('hover');
                     var measureId = $(this).parent().attr('id');
 
-                    // show measure in openlayer
+                    // Show measure in openlayer
                     if (dlfUtils.exists(dlfViewer.measureLayer)) {
                         dlfViewer.facsimileMeasureHover = dlfViewer.measureLayer.getSource().getFeatureById(measureId);
                         if (dlfViewer.facsimileMeasureHover !== dlfViewer.facsimileMeasureActive) {
@@ -272,7 +272,7 @@ function get_pdf_title(tk) {
  */
 dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     var target = document.getElementById('tx-dlf-score-' + this.dlfViewer.counter);
-    // const target = document.getElementById('tx-dlf-score');
+    // Const target = document.getElementById('tx-dlf-score');
 
     var extent = [-2100, -2970, 2100, 2970];
     // [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0]
@@ -285,11 +285,10 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
     var map = new ol.Map({
         target: target,
-        // view: tx_dlf_viewer.view,
+        // View: tx_dlf_viewer.view,
         view: new ol.View({
             projection: proj,
-            //center: [0, 0],
-            center: ol.extent.getCenter(extent),
+            //Center: [0, 0],            center: ol.extent.getCenter(extent),
             extent: extent,
             zoom: 1,
             minZoom: 1,

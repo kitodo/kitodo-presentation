@@ -1,7 +1,7 @@
 /*global GridStack */
 $( document ).ready(function() {
-    var options = { // put in gridstack options here
-        disableOneColumnMode: true, // for jfiddle small window size
+    var options = { // Put in gridstack options here
+        disableOneColumnMode: true, // For jfiddle small window size
         float: false,
         handle: '.gridstack-dragging-handle',
         minW: 2,
@@ -10,7 +10,7 @@ $( document ).ready(function() {
     var grid = GridStack.init(options);
 
     if (Cookies.get('gsLayout')) {
-        // only extract saved layout for elements that exist
+        // Only extract saved layout for elements that exist
         var loadedGridLayout = JSON.parse(Cookies.get('gsLayout'));
         $(loadedGridLayout).each(function () {
             if ($("[gs-id='" + this.id + "']").length === 1) {
@@ -27,7 +27,7 @@ $( document ).ready(function() {
     });
 
     if (grid) {
-        // resize each map
+        // Resize each map
         grid.on('change', function(evt, items) {
             $('.tx-dlf-map').each(function (index) {
                 tx_dlf_viewer[index].map.updateSize()

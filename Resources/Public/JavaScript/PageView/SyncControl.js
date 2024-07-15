@@ -22,7 +22,7 @@ class SyncViewsControl extends ol.control.Control {
         buttonUnsync.innerHTML = 'UNSYNC';
 
         var element = document.createElement('div');
-        element.className = 'sync-views ol-unselectable'; // ol-control
+        element.className = 'sync-views ol-unselectable'; // Ol-control
         element.appendChild(button);
         element.appendChild(buttonUnsync);
 
@@ -48,7 +48,7 @@ class SyncViewsControl extends ol.control.Control {
 
 /**
  * Encapsulates especially the score behavior
- * @constructor
+ * @class
  * @param dlfViewer
  * @param sync
  */
