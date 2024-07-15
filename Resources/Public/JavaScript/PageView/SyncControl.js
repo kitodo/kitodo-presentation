@@ -10,10 +10,10 @@
 
 class SyncViewsControl extends ol.control.Control {
     /**
-     * @param {Object} [opt_options] Control options.
+     * @param {object} [optOptions] Control options.
      */
-    constructor(opt_options) {
-        const options = opt_options || {};
+    constructor(optOptions) {
+        const options = optOptions || {};
 
         var button = document.createElement('button');
         button.innerHTML = 'SYNC';
@@ -27,30 +27,23 @@ class SyncViewsControl extends ol.control.Control {
         element.appendChild(buttonUnsync);
 
         super({
-            element: element,
+            element,
             target: options.target,
         });
 
         var viewerContext = options.dlfViewerObject;
 
-        var syncViews = function() {
-            viewerContext.syncControl.setSync();
-        };
-
-        var unsyncViews = function() {
-            viewerContext.syncControl.unsetSync();
-        };
-
-        button.addEventListener('click', syncViews, false);
-        buttonUnsync.addEventListener('click', unsyncViews, false);
+        button.addEventListener('click', viewerContext.syncControl.setSync(), false);
+        buttonUnsync.addEventListener('click', viewerContext.syncControl.unsetSync(), false);
     }
+
 }
 
 /**
  * Encapsulates especially the score behavior
  * @class
- * @param dlfViewer
- * @param sync
+ * @param {object} dlfViewer
+ * @param {boolean} sync
  */
 const dlfViewerSyncControl = function(dlfViewer, sync = false) {
     this.dlfViewer = dlfViewer;
