@@ -43,8 +43,8 @@ page {
     kitodo-saveas = EXT:dlf/Resources/Public/JavaScript/Verovio/saveas.js
     kitodo-pdf= EXT:dlf/Resources/Public/JavaScript/Verovio/pdfkit.js
     kitodo-pdfkita = EXT:dlf/Resources/Public/JavaScript/Verovio/blobstream.js
-    wildwebmidi = EXT:dlf/Resources/Public/JavaScript/Verovio/wildwebmidi.js
-    midiPlayer = EXT:dlf/Resources/Public/JavaScript/Verovio/midiplayer.js
+    kitodo-wildwebmidi = EXT:dlf/Resources/Public/JavaScript/Verovio/wildwebmidi.js
+    kitodo-mediaPlayer = EXT:dlf/Resources/Public/JavaScript/PageView/mediaplayer.js
 
     # PageView plugin
     kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
