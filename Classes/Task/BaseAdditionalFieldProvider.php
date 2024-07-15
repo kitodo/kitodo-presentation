@@ -12,14 +12,14 @@
 namespace Kitodo\Dlf\Task;
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Connection;
 
 /**
  * Base class for additional fields classes of scheduler tasks.
@@ -107,7 +107,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         }
         return $fieldsValid;
     }
-
+    /* @var BaseTask $task */
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
         $task->setDryRun(!empty($submittedData['dryRun']));
