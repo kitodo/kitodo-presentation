@@ -297,7 +297,7 @@ class PageViewController extends AbstractController
     /**
      * Get all measures from musical struct
      * @param int $page
-     * @param $specificDoc
+     * @param ?AbstractDocument $specificDoc
      * @return array
      */
     protected function getMeasures(int $page, $specificDoc = null, $docNumber = null): array
@@ -358,7 +358,7 @@ class PageViewController extends AbstractController
      * @access protected
      *
      * @param int $page: Page number
-     * @param $specificDoc
+     * @param ?AbstractDocument $specificDoc
      *
      * @return array URL and MIME type of fulltext file
      */
@@ -602,7 +602,7 @@ class PageViewController extends AbstractController
      *
      * @param int $page Page number
      *
-     * @param $specificDoc
+     * @param ?AbstractDocument $specificDoc
      *
      * @return array URL and MIME type of image file
      */
