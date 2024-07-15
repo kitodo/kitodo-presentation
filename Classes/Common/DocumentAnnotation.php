@@ -12,6 +12,7 @@ namespace Kitodo\Dlf\Common;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use DateTime;
 use Kitodo\Dlf\Domain\Model\Annotation;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -279,10 +280,10 @@ class DocumentAnnotation
             }
 
             foreach ($tracks as $index => $track) {
-                $begin = new \DateTime("1970-01-01 " . $track['begin']);
-                $extent = new \DateTime("1970-01-01 " . $track['extent']);
-                $diff = (new \DateTime("1970-01-01 00:00:00"))->diff($extent);
-                $end = (new \DateTime("1970-01-01 " . $track['begin']))->add($diff);
+                $begin = new DateTime("1970-01-01 " . $track['begin']);
+                $extent = new DateTime("1970-01-01 " . $track['extent']);
+                $diff = (new DateTime("1970-01-01 00:00:00"))->diff($extent);
+                $end = (new DateTime("1970-01-01 " . $track['begin']))->add($diff);
 
                 if (
                     !(

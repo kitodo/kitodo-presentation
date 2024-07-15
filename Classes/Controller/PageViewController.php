@@ -186,25 +186,37 @@ class PageViewController extends AbstractController
                     MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
             ];
 
-            $navigateAllPageNext = array_merge($navigateAllPageNext, [
-                'tx_dlf[docPage]['.$i.']' =>
-                    MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
-            ]);
+            $navigateAllPageNext = array_merge(
+                $navigateAllPageNext,
+                [
+                    'tx_dlf[docPage][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
+                ]
+            );
 
-            $navigateAllPagePrev = array_merge($navigateAllPagePrev, [
-                'tx_dlf[docPage]['.$i.']' =>
-                    MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
-            ]);
+            $navigateAllPagePrev = array_merge(
+                $navigateAllPagePrev,
+                [
+                    'tx_dlf[docPage][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
+                ]
+            );
 
-            $navigateAllMeasureNext = array_merge($navigateAllMeasureNext, [
-                'tx_dlf[docMeasure]['.$i.']' =>
-                    MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
-            ]);
+            $navigateAllMeasureNext = array_merge(
+                $navigateAllMeasureNext,
+                [
+                    'tx_dlf[docMeasure][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
+                ]
+            );
 
-            $navigateAllMeasurePrev = array_merge($navigateAllMeasurePrev, [
-                'tx_dlf[docMeasure]['.$i.']' =>
-                    MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
-            ]);
+            $navigateAllMeasurePrev = array_merge(
+                $navigateAllMeasurePrev,
+                [
+                    'tx_dlf[docMeasure][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
+                ]
+            );
 
             if ($document->numMeasures > 0) {
                 $navigationMeasureArray[$i]['next'] = [
@@ -241,7 +253,8 @@ class PageViewController extends AbstractController
      * @param $page
      * @return false|int|mixed|string|null
      */
-    public function convertMeasureOrPage($document, $measure = null, $page = null) {
+    public function convertMeasureOrPage($document, $measure = null, $page = null)
+    {
         $return = null;
         $measure2Page = array_column($document->musicalStructure, 'page');
         if ($measure) {
@@ -266,7 +279,7 @@ class PageViewController extends AbstractController
             }
             $params = array_merge(
                 ['tx_dlf' => $this->requestData],
-                ['tx_dlf[multipleSource]['.$nextMultipleSourceKey.']' => $formAddDocument->getLocation()],
+                ['tx_dlf[multipleSource][' . $nextMultipleSourceKey . ']' => $formAddDocument->getLocation()],
                 ['tx_dlf[multiview]' => 1]
             );
             $uriBuilder = $this->uriBuilder;
@@ -297,7 +310,8 @@ class PageViewController extends AbstractController
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
         $measureLinks = [];
-        if ($defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT']) {
+        $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'];
+        if (isset($defaultFileId)) {
             $musicalStruct = $doc->musicalStructureInfo;
 
             $i = 0;

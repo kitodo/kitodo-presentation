@@ -229,7 +229,7 @@ var dlfViewer = function(settings){
      * @type {Object}
      * @public
      */
-     this.tk = null
+     this.tk = null;
 
     /**
      * @type {Boolean|false}
@@ -344,7 +344,6 @@ dlfViewer.prototype.countPages = function () {
 dlfViewer.prototype.addCustomControls = function() {
     var fulltextControl = undefined,
         fulltextDownloadControl = undefined,
-		scoreControl = undefined,
         annotationControl = undefined,
         imageManipulationControl = undefined,
         images = this.images;
@@ -423,7 +422,7 @@ dlfViewer.prototype.addCustomControls = function() {
             });
         });
 
-        let selected = null
+        let selected = null;
         map.on('pointermove', function (e) {
             if (selected !== null) {
                 $('[data-annotation-id="'+selected.getId()+'"]').removeClass('hover')
@@ -919,7 +918,7 @@ dlfViewer.prototype.init = function(controlNames) {
 
 dlfViewer.prototype.updateLayerSize = function() {
   this.map.updateSize();
-}
+};
 
 /**
  * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
