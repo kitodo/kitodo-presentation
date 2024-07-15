@@ -389,7 +389,7 @@ class PageViewController extends AbstractController
             if ($this->settings['useInternalProxy']) {
                 // Configure @action URL for form.
                 $uri = $this->uriBuilder->reset()
-                    ->setTargetPageUid($GLOBALS['TSFE']->id)
+                    ->setTargetPageUid($this->pageUid)
                     ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
                     ->setArguments(
                         [
