@@ -30,11 +30,17 @@ class IndexAdditionalFieldProvider extends BaseAdditionalFieldProvider
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
 
         if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
+            /* @var BaseTask $task */
             $taskInfo['dryRun'] = $task->isDryRun();
+            /* @var BaseTask $task */
             $taskInfo['doc'] = $task->getDoc();
+            /* @var BaseTask $task */
             $taskInfo['pid'] = $task->getPid();
+            /* @var BaseTask $task */
             $taskInfo['solr'] = $task->getSolr();
+            /* @var BaseTask $task */
             $taskInfo['owner'] = $task->getOwner();
+            /* @var BaseTask $task */
         } else {
             $taskInfo['dryRun'] = false;
             $taskInfo['doc'] = 'https://';

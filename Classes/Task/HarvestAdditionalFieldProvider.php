@@ -32,12 +32,19 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
 
         if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
+            /* @var BaseTask $task */
             $taskInfo['dryRun'] = $task->isDryRun();
+            /* @var BaseTask $task */
             $taskInfo['lib'] = $task->getLib();
+            /* @var BaseTask $task */
             $taskInfo['pid'] = $task->getPid();
+            /* @var BaseTask $task */
             $taskInfo['solr'] = $task->getSolr();
+            /* @var BaseTask $task */
             $taskInfo['from'] = $task->getFrom();
+            /* @var BaseTask $task */
             $taskInfo['until'] = $task->getUntil();
+            /* @var BaseTask $task */
             $taskInfo['set'] = $task->getSet();
         } else {
             $taskInfo['dryRun'] = false;

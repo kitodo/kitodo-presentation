@@ -107,38 +107,50 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         }
         return $fieldsValid;
     }
-    /* @var BaseTask $task */
+
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
+        /* @var BaseTask $task */
         $task->setDryRun(!empty($submittedData['dryRun']));
         if (isset($submittedData['doc'])) {
+            /* @var BaseTask $task */
             $task->setDoc(htmlspecialchars($submittedData['doc']));
         }
         if (isset($submittedData['lib'])) {
+            /* @var BaseTask $task */
             $task->setLib((int) $submittedData['lib']);
         }
         if (isset($submittedData['coll']) && is_array($submittedData['coll'])) {
+            /* @var BaseTask $task */
             $task->setColl($submittedData['coll']);
         } else {
+            /* @var BaseTask $task */
             $task->setColl([]);
         }
         if (isset($submittedData['pid'])) {
+            /* @var BaseTask $task */
             $task->setPid((int) $submittedData['pid']);
         }
         if (isset($submittedData['solr'])) {
+            /* @var BaseTask $task */
             $task->setSolr((int) $submittedData['solr']);
         }
         if (isset($submittedData['owner'])) {
+            /* @var BaseTask $task */
             $task->setOwner(htmlspecialchars($submittedData['owner']));
         }
+        /* @var BaseTask $task */
         $task->setAll(!empty($submittedData['all']));
         if (isset($submittedData['from'])) {
+            /* @var BaseTask $task */
             $task->setFrom(htmlspecialchars($submittedData['from']));
         }
         if (isset($submittedData['until'])) {
+            /* @var BaseTask $task */
             $task->setUntil(htmlspecialchars($submittedData['until']));
         }
         if (isset($submittedData['set'])) {
+            /* @var BaseTask $task */
             $task->setSet(htmlspecialchars($submittedData['set']));
         }
     }
