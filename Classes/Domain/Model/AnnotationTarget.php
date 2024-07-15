@@ -119,12 +119,12 @@ class AnnotationTarget
             return true;
         } elseif ($this->isFacsimileRange()) {
             return preg_match("/^(\d+)(,\d+){3}?$/", $this->rangeValue) === 1;
-        } elseif($this->isAudioRange()) {
+        } elseif ($this->isAudioRange()) {
             return preg_match(
                 "/^(?:\d+(?:\.\d*)?|\.\d+){0,1}(?:,(?:\d+(?:\.\d*)?|\.\d+))*$/",
                     $this->rangeValue
                 ) === 1;
-        } elseif($this->isScoreRange()) {
+        } elseif ($this->isScoreRange()) {
             return preg_match("/^((\d+|start|end|all|(\d+|start)(-(\d+|end)){0,1})+)(,(\d+|start|end|all|(\d+|start)(-(\d+|end)){0,1})+){0,}?$/",
                     $this->rangeValue) === 1;
         }

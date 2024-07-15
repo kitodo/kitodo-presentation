@@ -33,11 +33,11 @@ class SyncViewsControl extends ol.control.Control {
 
         var viewerContext = options.dlfViewerObject;
 
-        var syncViews = function(e) {
+        var syncViews = function() {
             viewerContext.syncControl.setSync();
         };
 
-        var unsyncViews = function(e) {
+        var unsyncViews = function() {
             viewerContext.syncControl.unsetSync();
         };
 
@@ -51,7 +51,8 @@ class SyncViewsControl extends ol.control.Control {
 /**
  * Encapsulates especially the score behavior
  * @constructor
- * @param {ol.Map} map
+ * @param dlfViewer
+ * @param sync
  */
 const dlfViewerSyncControl = function(dlfViewer, sync = true) {
     this.dlfViewer = dlfViewer;

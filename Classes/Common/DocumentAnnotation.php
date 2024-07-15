@@ -254,7 +254,7 @@ class DocumentAnnotation
      */
     protected function getAudioPagesByFileId($fileId, $range = null) {
         $tracks = [];
-        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $key => $physicalInfo) {
+        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
             if (array_key_exists('tracks', $physicalInfo) && is_array($physicalInfo['tracks'])) {
                 foreach ($physicalInfo['tracks'] as $track) {
                     if ($track['fileid'] === $fileId && $track['betype'] === 'TIME') {

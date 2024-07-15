@@ -547,6 +547,8 @@ class PageViewController extends AbstractController
      *
      * @param int $page Page number
      *
+     * @param $specificDoc
+     *
      * @return array URL and MIME type of image file
      */
     protected function getImage(int $page, $specificDoc = null): array

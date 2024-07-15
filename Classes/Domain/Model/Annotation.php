@@ -113,7 +113,8 @@ class Annotation
      *
      * @return AnnotationTarget[]
      */
-    public function getTargets() {
+    public function getTargets()
+    {
         if (is_string($this->data['target'])) {
             return [new AnnotationTarget($this->data['target'])];
         }
