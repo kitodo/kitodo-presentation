@@ -30,7 +30,7 @@ page {
   }
 
   includeCSS {
-    gridstack = EXT:dlf/Resources/Public/Css/gridstack.min.css
+    gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack.min.css
   }
 
   includeJSFooter {
