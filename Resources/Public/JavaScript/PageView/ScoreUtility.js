@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
- /**
+/**
  * Base namespace for utility functions used by the dlf module.
  *
  * @const
@@ -19,27 +19,14 @@
 let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
 const verovioSettings = {
-  //scale: 25,
+    //scale: 25,
 	//adjustPageWidth: true,
 	//spacingLinear: .15,
 	//adjustPageHeight: true,
-  //scaleToPageSize: true,
-  breaks: 'encoded',
-  mdivAll: true
+    //scaleToPageSize: true,
+    breaks: 'encoded',
+    mdivAll: true
 };
-
-
-// dlfScoreUtils.get_play_midi = function (toolkit) {
-//   return function (){
-//     var base64midi = toolkit.renderToMIDI();
-//     var song = 'data:audio/midi;base64,' + base64midi;
-//     console.log($("#player").midiplayer)
-//     $("#player").midiplayer.play(song);
-//   }
-// }
-
-
-
 
 /**
  * Method fetches the score data from the server
@@ -48,18 +35,14 @@ const verovioSettings = {
  * @static
  */
 dlfScoreUtils.get_play_midi = function (toolkit) {
-  $("#tx-dlf-tools-midi").click(
-	function () {
-    console.log('function working?')
-			var base64midi = toolkit.renderToMIDI();
-			var song = 'data:audio/midi;base64,' + base64midi;
-			// $("#player").show();
-			// $("#tx-dlf-tools-midi").hide();
-			console.log("this is song " + song);
-
-			$("#player").midiPlayer.play(song);
-	})
-	return dlfScoreUtils
+    $("#tx-dlf-tools-midi").click(
+	    function () {
+            var base64midi = toolkit.renderToMIDI();
+            var song = 'data:audio/midi;base64,' + base64midi;
+            $("#player").midiPlayer.play(song);
+        }
+    );
+    return dlfScoreUtils;
 }
 
 
@@ -78,17 +61,19 @@ dlfScoreUtil.parseGeometry_ = function(node) {
         y2 = y1 + height,
         coordinatesWithoutScale = [[[x1, -y1], [x2, -y1], [x2, -y2], [x1, -y2], [x1, -y1]]];
 
-    if (isNaN(width) || isNaN(height))
+    if (isNaN(width) || isNaN(height)) {
         return undefined;
+    }
 
     // return geometry without rescale
-    if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_))
+    if (!dlfUtils.exists(this.image_) || !dlfUtils.exists(this.width_)) {
         return new ol.geom.Polygon(coordinatesWithoutScale);
+    }
 
     // rescale coordinates
-    var scale = this.image_.width / this.width_,
-        offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0,
-        coordinatesRescale = [];
+    var scale = this.image_.width / this.width_;
+    var offset = dlfUtils.exists(this.offset_) ? this.offset_ : 0;
+    var coordinatesRescale = [];
 
     for (var i = 0; i < coordinatesWithoutScale[0].length; i++) {
         coordinatesRescale.push([offset + ( scale * coordinatesWithoutScale[0][i][0]),

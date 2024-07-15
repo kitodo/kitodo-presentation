@@ -97,7 +97,7 @@ class PageViewController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return;
         } else {
-            if ($this->document->getCurrentDocument()->tableOfContents[0]['type'] == 'multivolume_work' && empty($this->requestData['multiview'])) { // @TODO: Change type
+            if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType'] && empty($this->requestData['multiview'])) {
                 $params = array_merge(
                     ['tx_dlf' => $this->requestData],
                     ['tx_dlf[multiview]' => 1]
@@ -206,14 +206,17 @@ class PageViewController extends AbstractController
                     MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
             ]);
 
-            $navigationMeasureArray[$i]['next'] = [
-                'tx_dlf[docMeasure]['.$i.']' =>
-                    MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
-            ];
-            $navigationMeasureArray[$i]['prev'] = [
-                'tx_dlf[docMeasure]['.$i.']' =>
-                    MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
-            ];
+            if ($document->numMeasures > 0) {
+                $navigationMeasureArray[$i]['next'] = [
+                    'tx_dlf[docMeasure]['.$i.']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
+                ];
+
+                $navigationMeasureArray[$i]['prev'] = [
+                    'tx_dlf[docMeasure]['.$i.']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
+                ];
+            }
 
             $docNumPages[$i] = $document->numPages;
             $i++;
@@ -283,7 +286,7 @@ class PageViewController extends AbstractController
      * @param $specificDoc
      * @return array
      */
-    protected function getMeasures(int $page, $specificDoc = null): array
+    protected function getMeasures(int $page, $specificDoc = null, $docNumber = null): array
     {
         if ($specificDoc) {
             $doc = $specificDoc;
@@ -293,6 +296,7 @@ class PageViewController extends AbstractController
         $currentPhysId = $doc->physicalStructure[$page];
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
+        $measureLinks = [];
         if ($defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT']) {
             $musicalStruct = $doc->musicalStructureInfo;
 
@@ -301,11 +305,36 @@ class PageViewController extends AbstractController
                 if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
                     $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
                     $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
+
+                    if ($specificDoc) {
+                        // build link for each measure
+                        $params = [
+                            'tx_dlf' => $this->requestData,
+                            'tx_dlf[docMeasure]['.$docNumber.']' => $i
+                        ];
+                    } else {
+                        // build link for each measure
+                        $params = [
+                            'tx_dlf' => $this->requestData,
+                            'tx_dlf[measure]' => $i
+                        ];
+                    }
+                    $uriBuilder = $this->uriBuilder;
+                    $uri = $uriBuilder
+                        ->setArguments($params)
+                        ->setArgumentPrefix('tx_dlf')
+                        ->uriFor('main');
+                    $measureLinks[$measureData['files']['SCORE']['begin']] = $uri;
+
                 }
                 $i++;
             }
         }
-        return ['measureCoordsCurrentSite' => $measureCoordsFromCurrentSite, 'measureCounterToMeasureId' => $measureCounterToMeasureId];
+        return [
+            'measureCoordsCurrentSite' => $measureCoordsFromCurrentSite,
+            'measureCounterToMeasureId' => $measureCounterToMeasureId,
+            'measureLinks' => $measureLinks
+        ];
     }
 
     /**
@@ -326,7 +355,7 @@ class PageViewController extends AbstractController
         } else {
             $doc = $this->document->getCurrentDocument();
         }
-        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['fileGrpScore']);
+        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpScore']);
 
         $pageId = $doc->physicalStructure[$page];
         $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
@@ -345,13 +374,15 @@ class PageViewController extends AbstractController
             if ($this->settings['useInternalProxy']) {
                 // Configure @action URL for form.
                 $uri = $this->uriBuilder->reset()
-                    ->setTargetPageUid($this->pageUid)
+                    ->setTargetPageUid($GLOBALS['TSFE']->id)
                     ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                    ->setArguments([
-                        'eID' => 'tx_dlf_pageview_proxy',
-                        'url' => $score['url'],
-                        'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
-                        ])
+                    ->setArguments(
+                        [
+                            'eID' => 'tx_dlf_pageview_proxy',
+                            'url' => $score['url'],
+                            'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
+                        ]
+                    )
                     ->build();
 
                 $score['url'] = $uri;
@@ -408,8 +439,7 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
-        if (count($this->documentArray) > 1 ||
-            $this->document->getCurrentDocument()->tableOfContents[0]['type'] == 'multivolume_work') { // @todo Change type
+        if (count($this->documentArray) > 1) {
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
             foreach ($this->documentArray as $document) {
@@ -448,7 +478,8 @@ class PageViewController extends AbstractController
                                 annotationContainers: ' . json_encode($docAnnotationContainers) . ',
                                 measureCoords: ' . json_encode($docMeasures['measureCoordsCurrentSite']) . ',
                                 useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
-                                currentMeasureId: "' . $currentMeasureId . '"
+                                currentMeasureId: "' . $currentMeasureId . '",
+                                measureIdLinks: ' . json_encode($docMeasures['measureLinks']) . '
                             });
                             ';
                     $i++;
@@ -458,11 +489,17 @@ class PageViewController extends AbstractController
             // Viewer configuration.
             $viewerConfiguration = '$(document).ready(function() {
                     if (dlfUtils.exists(dlfViewer)) {
-                        '.$jsViewer.'
-                        viewerCount = '.($i-1).';
+                        ' . $jsViewer . '
+                        viewerCount = ' . ($i - 1) . ';
                     }
                 });';
         } else {
+            $currentMeasureId = '';
+            $docPage = $this->requestData['page'];
+            $docMeasures = $this->getMeasures($docPage);
+            if ($this->requestData['measure']) {
+                $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
+            }
             // Viewer configuration.
             $viewerConfiguration = '$(document).ready(function() {
                     if (dlfUtils.exists(dlfViewer)) {
@@ -474,9 +511,11 @@ class PageViewController extends AbstractController
                             fulltexts: ' . json_encode($this->fulltexts) . ',
                             score: ' . json_encode($this->scores) . ',
                             annotationContainers: ' . json_encode($this->annotationContainers) . ',
-                            measureCoords: ' . json_encode($this->measures) . ',
+                            measureCoords: ' . json_encode($docMeasures['measureCoordsCurrentSite']) . ',
                             useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
-                            verovioAnnotations: ' . json_encode($this->verovioAnnotations) . '
+                            verovioAnnotations: ' . json_encode($this->verovioAnnotations) . ',
+                            currentMeasureId: "' . $currentMeasureId . '",
+                            measureIdLinks: ' . json_encode($docMeasures['measureLinks']) . '
                         });
                     }
                 });';

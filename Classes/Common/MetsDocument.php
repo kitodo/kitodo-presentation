@@ -12,12 +12,14 @@
 
 namespace Kitodo\Dlf\Common;
 
+use \DOMElement;
+use \DOMXPath;
+use \SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
 
@@ -57,14 +59,14 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
  * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
- * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
+ * @property SimpleXMLElement $xml this holds the whole XML file as SimpleXMLElement object
  * @property-read array $mdSec associative array of METS metadata sections indexed by their IDs.
  * @property bool $mdSecLoaded flag with information if the array of METS metadata sections is loaded
  * @property-read array $dmdSec subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
  * @property-read array $fileGrps this holds the file ID -> USE concordance
  * @property bool $fileGrpsLoaded flag with information if file groups array is loaded
  * @property-read array $fileInfos additional information about files (e.g., ADMID), indexed by ID.
- * @property-read \SimpleXMLElement $mets this holds the XML file's METS part as \SimpleXMLElement object
+ * @property-read SimpleXMLElement $mets this holds the XML file's METS part as SimpleXMLElement object
  * @property-read string $parentHref URL of the parent document (determined via mptr element), or empty string if none is available
  */
 final class MetsDocument extends AbstractDocument
@@ -130,9 +132,9 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * @access protected
-     * @var \SimpleXMLElement This holds the XML file's METS part as \SimpleXMLElement object
+     * @var SimpleXMLElement This holds the XML file's METS part as SimpleXMLElement object
      */
-    protected \SimpleXMLElement $mets;
+    protected SimpleXMLElement $mets;
 
     /**
      * @access protected
@@ -352,12 +354,12 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @param \SimpleXMLElement $structure The logical structure node
+     * @param SimpleXMLElement $structure The logical structure node
      * @param bool $recursive Whether to include the child elements
      *
      * @return array Array of the element's id, label, type and physical page indexes/mptr link
      */
-    protected function getLogicalStructureInfo(\SimpleXMLElement $structure, bool $recursive = false): array
+    protected function getLogicalStructureInfo(SimpleXMLElement $structure, bool $recursive = false): array
     {
         $attributes = $structure->attributes();
 
@@ -396,11 +398,61 @@ final class MetsDocument extends AbstractDocument
         $this->magicGetSmLinks();
         // Load physical structure.
         $this->magicGetPhysicalStructure();
-        // Get the physical page or external file this structure element is pointing at.
-        // Is there a mptr node?
-        if (count($structure->children('http://www.loc.gov/METS/')->mptr)) {
+
+        $this->getPage($details, $structure->children('http://www.loc.gov/METS/')->mptr);
+        $this->getFiles($details, $structure->children('http://www.loc.gov/METS/')->fptr);
+
+        // Keep for later usage.
+        $this->logicalUnits[$details['id']] = $details;
+        // Walk the structure recursively? And are there any children of the current element?
+        if (
+            $recursive
+            && count($structure->children('http://www.loc.gov/METS/')->div)
+        ) {
+            $details['children'] = [];
+            foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
+                // Repeat for all children.
+                $details['children'][] = $this->getLogicalStructureInfo($child, true);
+            }
+        }
+        return $details;
+    }
+
+    /**
+     * Get the files this structure element is pointing at.
+     *
+     * @param ?SimpleXMLElement $filePointers
+     *
+     * @return void
+     */
+    private function getFiles(array &$details, ?SimpleXMLElement $filePointers): void
+    {
+        $fileUse = $this->magicGetFileGrps();
+        // Get the file representations from fileSec node.
+        foreach ($filePointers as $filePointer) {
+            $fileId = (string) $filePointer->attributes()->FILEID;
+            // Check if file has valid @USE attribute.
+            if (!empty($fileUse[$fileId])) {
+                $details['files'][$fileUse[$fileId]] = $fileId;
+            }
+        }
+    }
+
+    /**
+     * Get the physical page or external file this structure element is pointing at.
+     *
+     * @access private
+     *
+     * @param array $details passed as reference
+     * @param ?SimpleXMLElement $metsPointers
+     *
+     * @return void
+     */
+    private function getPage(array &$details, ?SimpleXMLElement $metsPointers): void
+    {
+        if (count($metsPointers)) {
             // Yes. Get the file reference.
-            $details['points'] = (string) $structure->children('http://www.loc.gov/METS/')->mptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+            $details['points'] = (string) $metsPointers[0]->attributes('http://www.w3.org/1999/xlink')->href;
         } elseif (
             !empty($this->physicalStructure)
             && array_key_exists($details['id'], $this->smLinks['l2p'])
@@ -418,29 +470,6 @@ final class MetsDocument extends AbstractDocument
         if ($details['thumbnailId'] === null) {
             unset($details['thumbnailId']);
         }
-        // Get the files this structure element is pointing at.
-        $fileUse = $this->magicGetFileGrps();
-        // Get the file representations from fileSec node.
-        foreach ($structure->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-            // Check if file has valid @USE attribute.
-            if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                $details['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-            }
-        }
-        // Keep for later usage.
-        $this->logicalUnits[$details['id']] = $details;
-        // Walk the structure recursively? And are there any children of the current element?
-        if (
-            $recursive
-            && count($structure->children('http://www.loc.gov/METS/')->div)
-        ) {
-            $details['children'] = [];
-            foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
-                // Repeat for all children.
-                $details['children'][] = $this->getLogicalStructureInfo($child, true);
-            }
-        }
-        return $details;
     }
 
     /**
@@ -557,8 +586,8 @@ final class MetsDocument extends AbstractDocument
             // There is no metadata section for this structure node.
             return [];
         }
-        // Associative array used as set of available section types (dmdSec, techMD, ...)
-        $hasMetadataSection = [];
+        // Array used as set of available section types (dmdSec, techMD, ...)
+        $metadataSections = [];
         // Load available metadata formats and metadata sections.
         $this->loadFormats();
         $this->magicGetMdSec();
@@ -568,19 +597,19 @@ final class MetsDocument extends AbstractDocument
         foreach ($mdIds as $dmdId) {
             $mdSectionType = $this->mdSec[$dmdId]['section'];
 
-            if ($mdSectionType === 'dmdSec' && isset($hasMetadataSection['dmdSec'])) {
+            if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
                 continue;
             }
 
-            if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $hasMetadataSection)) {
+            if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
                 continue;
             }
 
-            $hasMetadataSection[$mdSectionType] = true;
+            $metadataSections[] = $mdSectionType;
         }
 
         // Files are not expected to reference a dmdSec
-        if (isset($this->fileInfos[$id]) || isset($hasMetadataSection['dmdSec'])) {
+        if (isset($this->fileInfos[$id]) || in_array('dmdSec', $metadataSections)) {
             return $metadata;
         } else {
             $this->logger->warning('No supported descriptive metadata found for logical structure with @ID "' . $id . '"');
@@ -619,13 +648,13 @@ final class MetsDocument extends AbstractDocument
      * @param string $mdSectionType
      * @param array $metadata
      * @param integer $cPid
-     * @param array $hasMetadataSection
+     * @param array $metadataSections
      *
      * @return boolean
      */
-    private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, int $cPid, array $hasMetadataSection): bool
+    private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, int $cPid, array $metadataSections): bool
     {
-        if ($mdSectionType === 'dmdSec' && isset($hasMetadataSection['dmdSec'])) {
+        if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
             return true;
         }
 
@@ -638,7 +667,7 @@ final class MetsDocument extends AbstractDocument
         $additionalMetadata = $this->getAdditionalMetadataFromDatabase($cPid, $dmdId);
         // We need a \DOMDocument here, because SimpleXML doesn't support XPath functions properly.
         $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
-        $domXPath = new \DOMXPath($domNode->ownerDocument);
+        $domXPath = new DOMXPath($domNode->ownerDocument);
         $this->registerNamespaces($domXPath);
 
         $this->processAdditionalMetadata($additionalMetadata, $domXPath, $domNode, $metadata);
@@ -647,18 +676,34 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * Check if searched metadata section is stored in the array.
+     *
+     * @access private
+     *
+     * @param array $metadataSections
+     * @param string $currentMetadataSection
+     * @param string $searchedMetadataSection
+     *
+     * @return boolean
+     */
+    private function hasMetadataSection(array $metadataSections, string $currentMetadataSection, string $searchedMetadataSection): bool
+    {
+        return $currentMetadataSection === $searchedMetadataSection && in_array($searchedMetadataSection, $metadataSections);
+    }
+
+    /**
      * Process additional metadata.
      *
      * @access private
      *
      * @param array $additionalMetadata
-     * @param \DOMXPath $domXPath
-     * @param \DOMElement $domNode
+     * @param DOMXPath $domXPath
+     * @param DOMElement $domNode
      * @param array $metadata
      *
      * @return void
      */
-    private function processAdditionalMetadata(array $additionalMetadata, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    private function processAdditionalMetadata(array $additionalMetadata, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
         foreach ($additionalMetadata as $resArray) {
             $this->setMetadataFieldValues($resArray, $domXPath, $domNode, $metadata);
@@ -673,13 +718,13 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param array $resArray
-     * @param \DOMXPath $domXPath
-     * @param \DOMElement $domNode
+     * @param DOMXPath $domXPath
+     * @param DOMElement $domNode
      * @param array $metadata
      *
      * @return void
      */
-    private function setMetadataFieldValues(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    private function setMetadataFieldValues(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
         if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
             $values = $domXPath->evaluate($resArray['xpath'], $domNode);
@@ -717,13 +762,13 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param array $resArray
-     * @param \DOMXPath $domXPath
-     * @param \DOMElement $domNode
+     * @param  $domXPath
+     * @param DOMElement $domNode
      * @param array $metadata
      *
      * @return void
      */
-    private function setSortableMetadataValue(array $resArray, \DOMXPath $domXPath, \DOMElement $domNode, array &$metadata): void
+    private function setSortableMetadataValue(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
         if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
             if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
@@ -1030,7 +1075,7 @@ final class MetsDocument extends AbstractDocument
     protected function setPreloadedDocument($preloadedDocument): bool
     {
 
-        if ($preloadedDocument instanceof \SimpleXMLElement) {
+        if ($preloadedDocument instanceof SimpleXMLElement) {
             $this->xml = $preloadedDocument;
             return true;
         }
@@ -1040,7 +1085,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getDocument()
      */
-    protected function getDocument(): \SimpleXMLElement
+    protected function getDocument(): SimpleXMLElement
     {
         return $this->mets;
     }
@@ -1113,11 +1158,11 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @param \SimpleXMLElement $element
+     * @param SimpleXMLElement $element
      *
      * @return array|null The processed metadata section
      */
-    protected function processMdSec(\SimpleXMLElement $element): ?array
+    protected function processMdSec(SimpleXMLElement $element): ?array
     {
         $mdId = (string) $element->attributes()->ID;
         if (empty($mdId)) {
@@ -1232,9 +1277,9 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @return \SimpleXMLElement The XML's METS part as \SimpleXMLElement object
+     * @return SimpleXMLElement The XML's METS part as SimpleXMLElement object
      */
-    protected function magicGetMets(): \SimpleXMLElement
+    protected function magicGetMets(): SimpleXMLElement
     {
         return $this->mets;
     }
@@ -1263,70 +1308,109 @@ final class MetsDocument extends AbstractDocument
                 $this->physicalStructureInfo[$id]['orderlabel'] = isset($firstNode['ORDERLABEL']) ? (string) $firstNode['ORDERLABEL'] : '';
                 $this->physicalStructureInfo[$id]['type'] = (string) $firstNode['TYPE'];
                 $this->physicalStructureInfo[$id]['contentIds'] = isset($firstNode['CONTENTIDS']) ? (string) $firstNode['CONTENTIDS'] : '';
-                // Get the file representations from fileSec node.
-                foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                    $fileNode = isset($fptr->area)? $fptr->area : $fptr;
 
-                    // Check if file has valid @USE attribute.
-                    if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                        $this->physicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-                    }
-                }
-                // Build the physical elements' array from the physical structMap node.
-                $elements = [];
-                foreach ($elementNodes as $elementNode) {
-                    $id = (string) $elementNode['ID'];
-                    $order = (int) $elementNode['ORDER'];
-                    $elements[$order] = $id;
-                    $this->physicalStructureInfo[$elements[$order]]['id'] = $id;
-                    $this->physicalStructureInfo[$elements[$order]]['dmdId'] = isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['admId'] = isset($elementNode['ADMID']) ? (string) $elementNode['ADMID'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['order'] = isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['label'] = isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['orderlabel'] = isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '';
-                    $this->physicalStructureInfo[$elements[$order]]['type'] = (string) $elementNode['TYPE'];
-                    $this->physicalStructureInfo[$elements[$order]]['contentIds'] = isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '';
-                    // Get the file representations from fileSec node.
-                    foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                        $fileNode = isset($fptr->area)? $fptr->area : $fptr;
+                $this->getFileRepresentation($id, $firstNode);
 
-                        // Check if file has valid @USE attribute.
-                        if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                            $this->physicalStructureInfo[$elements[$order]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-                        }
-                    }
-
-                    // Get track info wtih begin end extent time for later assignment with musical
-                    if ((string) $elementNode['TYPE'] === 'track') {
-                        foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                            if (isset($fptr->area) &&  ((string) $fptr->area->attributes()->BETYPE === 'TIME')) {
-                                // Check if file has valid @USE attribute.
-                                if (!empty($fileUse[(string) $fptr->area->attributes()->FILEID])) {
-                                    $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['tracks'][$fileUse[(string) $fptr->area->attributes()->FILEID]] = [
-                                        'fileid'  => (string)$fptr->area->attributes()->FILEID,
-                                        'begin'   => (string)$fptr->area->attributes()->BEGIN,
-                                        'betype'  => (string)$fptr->area->attributes()->BETYPE,
-                                        'extent'  => (string)$fptr->area->attributes()->EXTENT,
-                                        'exttype' => (string)$fptr->area->attributes()->EXTTYPE,
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
-                // Sort array by keys (= @ORDER).
-                ksort($elements);
-                // Set total number of pages/tracks.
-                $this->numPages = count($elements);
-                // Merge and re-index the array to get numeric indexes.
-                array_unshift($elements, $id);
-                $this->physicalStructure = $elements;
+                $this->physicalStructure = $this->getPhysicalElements($elementNodes, $fileUse);
             }
             $this->physicalStructureLoaded = true;
 
         }
 
         return $this->physicalStructure;
+    }
+
+    /**
+     * Get the file representations from fileSec node.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param SimpleXMLElement $physicalNode
+     *
+     * @return void
+     */
+    private function getFileRepresentation(string $id, SimpleXMLElement $physicalNode): void
+    {
+        // Get file groups.
+        $fileUse = $this->magicGetFileGrps();
+
+        foreach ($physicalNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+            $fileNode = $fptr->area ?? $fptr;
+            $fileId = (string) $fileNode->attributes()->FILEID;
+
+            // Check if file has valid @USE attribute.
+            if (!empty($fileUse[$fileId])) {
+                $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
+            }
+        }
+    }
+
+    /**
+     * Build the physical elements' array from the physical structMap node.
+     *
+     * @access private
+     *
+     * @param array $elementNodes
+     * @param array $fileUse
+     *
+     * @return array
+     */
+    private function getPhysicalElements(array $elementNodes, array $fileUse): array
+    {
+        $elements = [];
+        $id = '';
+
+        foreach ($elementNodes as $elementNode) {
+            $id = (string) $elementNode['ID'];
+            $order = (int) $elementNode['ORDER'];
+            $elements[$order] = $id;
+            $this->physicalStructureInfo[$elements[$order]]['id'] = $id;
+            $this->physicalStructureInfo[$elements[$order]]['dmdId'] = isset($elementNode['DMDID']) ? (string) $elementNode['DMDID'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['admId'] = isset($elementNode['ADMID']) ? (string) $elementNode['ADMID'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['order'] = isset($elementNode['ORDER']) ? (string) $elementNode['ORDER'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['label'] = isset($elementNode['LABEL']) ? (string) $elementNode['LABEL'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['orderlabel'] = isset($elementNode['ORDERLABEL']) ? (string) $elementNode['ORDERLABEL'] : '';
+            $this->physicalStructureInfo[$elements[$order]]['type'] = (string) $elementNode['TYPE'];
+            $this->physicalStructureInfo[$elements[$order]]['contentIds'] = isset($elementNode['CONTENTIDS']) ? (string) $elementNode['CONTENTIDS'] : '';
+            // Get the file representations from fileSec node.
+            foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                $fileNode = $fptr->area ?? $fptr;
+                $fileId = (string) $fileNode->attributes()->FILEID;
+
+                // Check if file has valid @USE attribute.
+                if (!empty($fileUse[(string) $fileId])) {
+                    $this->physicalStructureInfo[$elements[$order]]['files'][$fileUse[$fileId]] = $fileId;
+                }
+            }
+
+            // Get track info wtih begin end extent time for later assignment with musical
+            if ((string) $elementNode['TYPE'] === 'track') {
+                foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                    if (isset($fptr->area) &&  ((string) $fptr->area->attributes()->BETYPE === 'TIME')) {
+                        // Check if file has valid @USE attribute.
+                        if (!empty($fileUse[(string) $fptr->area->attributes()->FILEID])) {
+                            $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['tracks'][$fileUse[(string) $fptr->area->attributes()->FILEID]] = [
+                                'fileid'  => (string)$fptr->area->attributes()->FILEID,
+                                'begin'   => (string)$fptr->area->attributes()->BEGIN,
+                                'betype'  => (string)$fptr->area->attributes()->BETYPE,
+                                'extent'  => (string)$fptr->area->attributes()->EXTENT,
+                                'exttype' => (string)$fptr->area->attributes()->EXTTYPE,
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        // Sort array by keys (= @ORDER).
+        ksort($elements);
+        // Set total number of pages/tracks.
+        $this->numPages = count($elements);
+        // Merge and re-index the array to get numeric indexes.
+        array_unshift($elements, $id);
+
+        return $elements;
     }
 
     /**
@@ -1484,7 +1568,7 @@ final class MetsDocument extends AbstractDocument
      */
     public function __sleep(): array
     {
-        // \SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
+        // SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
         $this->asXML = $this->xml->asXML();
         return ['pid', 'recordId', 'parentId', 'asXML'];
     }
@@ -1536,7 +1620,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array
      */
-    protected function _getMusicalStructure(): array
+    protected function magicGetMusicalStructure(): array
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
@@ -1565,11 +1649,11 @@ final class MetsDocument extends AbstractDocument
                     if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
                         $this->musicalStructureInfo[$musicalSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
                             'fileid' => (string)$fptr->area->attributes()->FILEID,
-                            'begin'  => (string)$fptr->area->attributes()->BEGIN,
-                            'end'    => (string)$fptr->area->attributes()->END,
-                            'type'   => (string)$fptr->area->attributes()->BETYPE,
-                            'shape'   => (string)$fptr->area->attributes()->SHAPE,
-                            'coords'   => (string)$fptr->area->attributes()->COORDS,
+                            'begin' => (string)$fptr->area->attributes()->BEGIN,
+                            'end' => (string)$fptr->area->attributes()->END,
+                            'type' => (string)$fptr->area->attributes()->BETYPE,
+                            'shape' => (string)$fptr->area->attributes()->SHAPE,
+                            'coords' => (string)$fptr->area->attributes()->COORDS
                         ];
                     }
 
@@ -1598,11 +1682,11 @@ final class MetsDocument extends AbstractDocument
                         if (!empty($fileUse[(string)$fptr->area->attributes()->FILEID])) {
                             $this->musicalStructureInfo[$elements[(int)$elementNode['ORDER']]]['files'][$fileUse[(string)$fptr->area->attributes()->FILEID]] = [
                                 'fileid' => (string)$fptr->area->attributes()->FILEID,
-                                'begin'  => (string)$fptr->area->attributes()->BEGIN,
-                                'end'    => (string)$fptr->area->attributes()->END,
-                                'type'   => (string)$fptr->area->attributes()->BETYPE,
-                                'shape'   => (string)$fptr->area->attributes()->SHAPE,
-                                'coords'   => (string)$fptr->area->attributes()->COORDS,
+                                'begin' => (string)$fptr->area->attributes()->BEGIN,
+                                'end' => (string)$fptr->area->attributes()->END,
+                                'type' => (string)$fptr->area->attributes()->BETYPE,
+                                'shape' => (string)$fptr->area->attributes()->SHAPE,
+                                'coords' => (string)$fptr->area->attributes()->COORDS
                             ];
                         }
 
@@ -1653,12 +1737,12 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of elements' type, label and file representations ordered by "@ID" attribute
      */
-    protected function _getMusicalStructureInfo()
+    protected function magicGetMusicalStructureInfo(): array
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
             // Build musical structure array.
-            $this->_getMusicalStructure();
+            $this->magicGetMusicalStructure();
         }
         return $this->musicalStructureInfo;
     }
@@ -1670,9 +1754,9 @@ final class MetsDocument extends AbstractDocument
      *
      * @return int The total number of measres
      */
-    protected function _getNumMeasures()
+    protected function magicGetNumMeasures(): int
     {
-        $this->_getMusicalStructure();
+        $this->magicGetMusicalStructure();
         return $this->numMeasures;
     }
 }
