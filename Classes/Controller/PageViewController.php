@@ -158,7 +158,8 @@ class PageViewController extends AbstractController
      * Add multi page navigation
      * @return void
      */
-    protected function multipageNavigation() {
+    protected function multipageNavigation(): void
+    {
         $navigationArray = [];
         $navigationMeasureArray = [];
         $navigateAllPageNext = [];
@@ -173,16 +174,16 @@ class PageViewController extends AbstractController
                 // convert document page information to measure count information
                 $this->requestData['docMeasure'][$i] = $this->convertMeasureOrPage($document, null, $this->requestData['docPage'][$i]);
 
-            } else if ((empty($this->requestData['docPage'][$i]) || $this->requestData['docPage'][$i] === 1) && $this->requestData['docMeasure'][$i]) {
+            } elseif ((empty($this->requestData['docPage'][$i]) || $this->requestData['docPage'][$i] === 1) && $this->requestData['docMeasure'][$i]) {
                 $this->requestData['docPage'][$i] = $this->convertMeasureOrPage($document, $this->requestData['docMeasure'][$i]);
             }
 
             $navigationArray[$i]['next'] = [
-                'tx_dlf[docPage]['.$i.']' =>
+                'tx_dlf[docPage][' . $i . ']' =>
                     MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
             ];
             $navigationArray[$i]['prev'] = [
-                'tx_dlf[docPage]['.$i.']' =>
+                'tx_dlf[docPage][' . $i . ']' =>
                     MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
             ];
 
@@ -220,12 +221,12 @@ class PageViewController extends AbstractController
 
             if ($document->numMeasures > 0) {
                 $navigationMeasureArray[$i]['next'] = [
-                    'tx_dlf[docMeasure]['.$i.']' =>
+                    'tx_dlf[docMeasure][' . $i . ']' =>
                         MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
                 ];
 
                 $navigationMeasureArray[$i]['prev'] = [
-                    'tx_dlf[docMeasure]['.$i.']' =>
+                    'tx_dlf[docMeasure][' . $i . ']' =>
                         MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
                 ];
             }
@@ -259,7 +260,7 @@ class PageViewController extends AbstractController
         $measure2Page = array_column($document->musicalStructure, 'page');
         if ($measure) {
             $return = $measure2Page[$measure];
-        } else if ($page) {
+        } elseif ($page) {
             $return = array_search($page, $measure2Page);
         }
 
@@ -324,7 +325,7 @@ class PageViewController extends AbstractController
                         // build link for each measure
                         $params = [
                             'tx_dlf' => $this->requestData,
-                            'tx_dlf[docMeasure]['.$docNumber.']' => $i
+                            'tx_dlf[docMeasure][' . $docNumber . ']' => $i
                         ];
                     } else {
                         // build link for each measure
