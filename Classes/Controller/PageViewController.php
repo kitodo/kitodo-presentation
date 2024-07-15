@@ -376,11 +376,13 @@ class PageViewController extends AbstractController
                 $uri = $this->uriBuilder->reset()
                     ->setTargetPageUid($GLOBALS['TSFE']->id)
                     ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                    ->setArguments([
-                        'eID' => 'tx_dlf_pageview_proxy',
-                        'url' => $score['url'],
-                        'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
-                    ])
+                    ->setArguments(
+                        [
+                            'eID' => 'tx_dlf_pageview_proxy',
+                            'url' => $score['url'],
+                            'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
+                        ]
+                    )
                     ->build();
 
                 $score['url'] = $uri;
@@ -487,8 +489,8 @@ class PageViewController extends AbstractController
             // Viewer configuration.
             $viewerConfiguration = '$(document).ready(function() {
                     if (dlfUtils.exists(dlfViewer)) {
-                        '.$jsViewer.'
-                        viewerCount = '.($i-1).';
+                        ' . $jsViewer . '
+                        viewerCount = ' . ($i - 1) . ';
                     }
                 });';
         } else {
