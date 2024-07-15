@@ -1,9 +1,8 @@
-/************************************************************************
+/**
  * Circular Web Audio Buffer Queue
  */
 function CircularAudioBuffer(slots) {
     slots = slots || 24;
-    // number of buffers
     this.slots = slots;
     this.buffers = new Array(slots);
 
@@ -15,37 +14,35 @@ function CircularAudioBuffer(slots) {
     }
 }
 
-// pseudo empty all buffers
+// Empty all buffers
 CircularAudioBuffer.prototype.reset = function () {
     this.used = 0;
     this.filled = 0;
 };
 
-// returns number of buffers that are filled
+// Returns number of buffers that are filled
 CircularAudioBuffer.prototype.filledBuffers = function () {
     var fills = this.filled - this.used;
     if (fills < 0) fills += this.slots;
     return fills;
 }
 
-// returns whether buffers are all filled
+// Returns whether buffers are all filled
 CircularAudioBuffer.prototype.full = function () {
-    //console.debug(this.filledBuffers());
     return this.filledBuffers() >= this.slots - 1;
 }
 
-// returns a reference to next available buffer to be filled
+// Returns a reference to next available buffer to be filled
 CircularAudioBuffer.prototype.prepare = function () {
     if (this.full()) {
-        //console.log('buffers full!!')
-        return
+        return;
     }
     var buffer = this.buffers[ this.filled++];
     this.filled %= this.slots;
     return buffer;
 }
 
-// returns the next buffer in the queue
+// Returns the next buffer in the queue
 CircularAudioBuffer.prototype.use = function () {
     if (! this.filledBuffers()) return;
     var buffer = this.buffers[ this.used++];
@@ -53,7 +50,7 @@ CircularAudioBuffer.prototype.use = function () {
     return buffer;
 }
 
-/************************************************************************
+/**
  * Web Audio Stuff
  */
 
@@ -78,22 +75,19 @@ function initAudio() {
 
     source.connect(scriptNode);
     source.start(0);
-    console.debug("initAudio");
 }
 
 function startAudio() {
     scriptNode.connect(audioCtx.destination);
-    console.debug("startAudio");
 }
 
 function pauseAudio() {
     circularBuffer.reset();
     scriptNode.disconnect();
-	console.debug("pauseAudio");
 }
 
 
-/************************************************************************
+/**
  * Emscripten variables and callback - cannot be renamed
  */
 
@@ -126,14 +120,12 @@ function updateProgress(current, total) {
     }
     if (millisec > midiPlayer_lastMillisec) {
         if (midiPlayer_onUpdate != null) midiPlayer_onUpdate(millisec * midiPlayer_updateRate);
-        //console.log(millisec * UPDATE_RATE);
     }
     midiPlayer_lastMillisec = millisec;
 }
 
 function completeConversion(status) {
     midiPlayer_drainBuffer = true;
-    console.debug('completeConversion');
     midiPlayer_convertionJob = null;
     // Not a pause
     if (_EM_signalStop != 2) {
@@ -141,7 +133,7 @@ function completeConversion(status) {
     }
 }
 
-/************************************************************************
+/**
  * Global player variables and functions
  */
 
@@ -175,11 +167,8 @@ var midiPlayer_onUpdate = null;
 var MidiPlayer = {
     noInitialRun: true,
     totalDependencies: 1,
-    monitorRunDependencies: function(left) {
-        //console.log(this.totalDependencies);
-        //console.log(left);
+    monitorRunDependencies: function (left) {
         if ((left == 0) && !midiPlayer_isLoaded) {
-          console.log("MidiPlayer is loaded");
           midiPlayer_isLoaded = true;
         }
     }
@@ -197,7 +186,6 @@ function onAudioProcess(audioProcessingEvent) {
         return;
     }
     if (!generated) {
-        //console.log('buffer under run!!')
         generated = emptyBuffer;
     }
 
@@ -244,7 +232,6 @@ function convertDataURIToBinary(dataURI) {
 function convertFile(file, data) {
     midiPlayer_midiName = file;
     midiPlayer_input = null;
-    console.log('open ', midiPlayer_midiName);
     MidiPlayer['FS'].writeFile(midiPlayer_midiName, data, {
         encoding: 'binary'
     });
@@ -311,15 +298,17 @@ function runConversion() {
     circularBuffer.reset();
     startAudio();
 
-    console.log(midiPlayer_convertionJob);
-
-    MidiPlayer.ccall('wildwebmidi',
-        null,[ 'string', 'string', 'number'],[midiPlayer_convertionJob.sourceMidi, midiPlayer_convertionJob.targetPath, sleep], {
+    MidiPlayer.ccall(
+        'wildwebmidi',
+        null,
+        ['string', 'string', 'number'],
+        [midiPlayer_convertionJob.sourceMidi, midiPlayer_convertionJob.targetPath, sleep],
+        {
             async: true
         });
 }
 
-/************************************************************************
+/**
  * jQuery player plugin
  */
 
@@ -394,7 +383,6 @@ function runConversion() {
         midiPlayer_pause = document.getElementById('midiPlayer_pause');
         midiPlayer_stop = document.getElementById('midiPlayer_stop');
         midiPlayer_totalTime = document.getElementById('midiPlayer_totalTime');
-
 
         var pageDragStart = 0;
         var barDragStart = 0;
