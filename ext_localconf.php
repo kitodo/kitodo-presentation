@@ -78,6 +78,25 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['too
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/MetsDocument.php']['hookClass'][] = \Kitodo\Dlf\Hooks\KitodoProductionHacks::class;
+// Register scheduler tasks
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\IndexTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:indexTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:indexTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\IndexAdditionalFieldProvider::class,
+];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\ReindexTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:reindexTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:reindexTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\ReindexAdditionalFieldProvider::class,
+];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\HarvestTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:harvestTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:harvestTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\HarvestAdditionalFieldProvider::class,
+];
 // Register AJAX eID handlers.
 if ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['dlf']['general']['enableInternalProxy'] ?? false) {
     $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_pageview_proxy'] = \Kitodo\Dlf\Eid\PageViewProxy::class . '::main';
