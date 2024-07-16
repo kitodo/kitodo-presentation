@@ -34,6 +34,7 @@
     "ext-simplexml": "*",
     "typo3/cms-core": "^10.4.37|^11.5.37",
     "typo3/cms-extbase": "^10.4.37|^11.5.37",
+    "typo3/cms-scheduler" : "^10.4.37|^11.5.37",
     "typo3/cms-tstemplate": "^10.4.37|^11.5.37",
     "caseyamcl/phpoaipmh": "^3.3.1",
     "slub/php-mods-reader": "^0.3.0",
