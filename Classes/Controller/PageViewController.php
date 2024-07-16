@@ -14,6 +14,8 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\DocumentAnnotation;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Common\MetsDocument;
+use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -127,9 +129,10 @@ class PageViewController extends AbstractController
             $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
             $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
         }
-        $this->scores = $this->getScore($this->requestData['page']);
-
-        $this->measures = $this->getMeasures($this->requestData['page']);
+        if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+            $this->scores = $this->getScore($this->requestData['page']);
+            $this->measures = $this->getMeasures($this->requestData['page']);
+        }
 
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
@@ -297,10 +300,11 @@ class PageViewController extends AbstractController
     /**
      * Get all measures from musical struct
      * @param int $page
-     * @param ?AbstractDocument $specificDoc
+     * @param ?Document $specificDoc
+     * @param int|null $docNumber
      * @return array
      */
-    protected function getMeasures(int $page, $specificDoc = null, $docNumber = null): array
+    protected function getMeasures(int $page, Document $specificDoc = null, $docNumber = null): array
     {
         if ($specificDoc) {
             $doc = $specificDoc;
@@ -313,6 +317,7 @@ class PageViewController extends AbstractController
         $measureLinks = [];
         $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'];
         if (isset($defaultFileId)) {
+            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
             $musicalStruct = $doc->musicalStructureInfo;
 
             $i = 0;
@@ -358,11 +363,11 @@ class PageViewController extends AbstractController
      * @access protected
      *
      * @param int $page: Page number
-     * @param ?MetsDocument $specificDoc
+     * @param ?Document $specificDoc
      *
      * @return array URL and MIME type of fulltext file
      */
-    protected function getScore(int $page, $specificDoc = null)
+    protected function getScore(int $page, Document $specificDoc = null)
     {
         $score = [];
         $loc = '';
@@ -385,6 +390,7 @@ class PageViewController extends AbstractController
 
         if (!empty($loc)) {
             $score['mimetype'] = $doc->getFileMimeType($loc);
+            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
             $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
             $score['url'] = $doc->getFileLocation($loc);
             if ($this->settings['useInternalProxy']) {
@@ -602,11 +608,11 @@ class PageViewController extends AbstractController
      *
      * @param int $page Page number
      *
-     * @param ?AbstractDocument $specificDoc
+     * @param ?Document $specificDoc
      *
      * @return array URL and MIME type of image file
      */
-    protected function getImage(int $page, $specificDoc = null): array
+    protected function getImage(int $page, Document $specificDoc = null): array
     {
         $image = [];
         // Get @USE value of METS fileGrp.

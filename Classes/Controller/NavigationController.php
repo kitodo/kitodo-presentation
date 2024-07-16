@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\PageSelectForm;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -116,24 +117,31 @@ class NavigationController extends AbstractController
         }
         $this->view->assign('features', $features);
 
-        if ($this->document->getCurrentDocument()->numMeasures > 0) {
-            $measureOptions = [];
-            $measurePages = [];
-            for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
-                $measureOptions[$i] = '[' . $i . ']' . ($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructureInfo[$i]]['orderlabel']) : '');
-                $measurePages[$i] = $this->document->getCurrentDocument()->musicalStructure[$i]['page'];
-            }
+        if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
+            if ($this->document->getCurrentDocument()->numMeasures > 0) {
+                $measureOptions = [];
+                $measurePages = [];
+                // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
+                for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
+                    // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
+                    $measureOptions[$i] = '[' . $i . ']' . ($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructureInfo[$i]]['orderlabel']) : '');
+                    // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
+                    $measurePages[$i] = $this->document->getCurrentDocument()->musicalStructure[$i]['page'];
+                }
 
-            if (!isset($this->requestData['measure'])) {
-                $currentMeasure = array_search($this->requestData['page'], $measurePages);
-            } else {
-                $currentMeasure = $this->requestData['measure'];
-            }
+                if (!isset($this->requestData['measure'])) {
+                    $currentMeasure = array_search($this->requestData['page'], $measurePages);
+                } else {
+                    $currentMeasure = $this->requestData['measure'];
+                }
 
-            $this->view->assign('currentMeasure', $currentMeasure);
-            $this->view->assign('numMeasures', $this->document->getCurrentDocument()->numMeasures);
-            $this->view->assign('measureOptions', $measureOptions);
-            $this->view->assign('measurePages', $measurePages);
+                $this->view->assign('currentMeasure', $currentMeasure);
+                // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
+                $this->view->assign('numMeasures', $this->document->getCurrentDocument()->numMeasures);
+                $this->view->assign('measureOptions', $measureOptions);
+                $this->view->assign('measurePages', $measurePages);
+            }
         }
     }
 }

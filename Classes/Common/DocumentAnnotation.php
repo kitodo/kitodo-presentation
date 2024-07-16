@@ -77,38 +77,40 @@ class DocumentAnnotation
 
                     if ($annotationTarget->getId()) {
                         if ($this->document->getCurrentDocument()->getFileLocation($annotationTarget->getId())) {
-                            if (
-                                $meiTargetPages = $this->getMeasurePagesByFileId(
-                                    $annotationTarget->getId(), $annotationTarget->getRangeValue()
-                                )
-                            ) {
-                                $targetPages[] = [
-                                    'target' => $annotationTarget,
-                                    'pages' => $meiTargetPages,
-                                    'verovioRelevant' => true
-                                ];
+                            if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+                                if (
+                                    $meiTargetPages = $this->getMeasurePagesByFileId(
+                                        $annotationTarget->getId(), $annotationTarget->getRangeValue()
+                                    )
+                                ) {
+                                    $targetPages[] = [
+                                        'target' => $annotationTarget,
+                                        'pages' => $meiTargetPages,
+                                        'verovioRelevant' => true
+                                    ];
 
-                            } elseif (
-                                $audioTargetPages = $this->getAudioPagesByFileId(
-                                    $annotationTarget->getId(), $annotationTarget->getRangeValue()
-                                )
-                            ) {
-                                $targetPages[] = [
-                                    'target' => $annotationTarget,
-                                    'pages' => $audioTargetPages
-                                ];
+                                } elseif (
+                                    $audioTargetPages = $this->getAudioPagesByFileId(
+                                        $annotationTarget->getId(), $annotationTarget->getRangeValue()
+                                    )
+                                ) {
+                                    $targetPages[] = [
+                                        'target' => $annotationTarget,
+                                        'pages' => $audioTargetPages
+                                    ];
 
-                            } elseif ($fileIdTargetPages = $this->getPagesByFileId($annotationTarget->getId())) {
-                                $targetPages[] = [
-                                    'target' => $annotationTarget,
-                                    'pages' => $fileIdTargetPages
-                                ];
+                                } elseif ($fileIdTargetPages = $this->getPagesByFileId($annotationTarget->getId())) {
+                                    $targetPages[] = [
+                                        'target' => $annotationTarget,
+                                        'pages' => $fileIdTargetPages
+                                    ];
 
-                            } else {
-                                $this->logger->warning(
-                                    ' No target pages found! Annotation: "' . $annotation->getId() . '", '
-                                    . 'Target: "' . $annotationTarget->getUrl() . '"'
-                                );
+                                } else {
+                                    $this->logger->warning(
+                                        ' No target pages found! Annotation: "' . $annotation->getId() . '", '
+                                        . 'Target: "' . $annotationTarget->getUrl() . '"'
+                                    );
+                                }
                             }
                         } elseif ($logicalTargetPages = $this->getPagesByLogicalId($annotationTarget->getId())) {
                             $targetPages[] = [
@@ -322,6 +324,8 @@ class DocumentAnnotation
         $measureIndex = 1;
         $startOrder = 0;
         $endOrder = 0;
+
+        // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
         foreach ($this->document->getCurrentDocument()->musicalStructureInfo as $key => $musicalInfo) {
             if ($musicalInfo['type'] === 'measure' && is_array($musicalInfo['files'])) {
                 foreach ($musicalInfo['files'] as $file) {
@@ -368,6 +372,7 @@ class DocumentAnnotation
         // Get the related page numbers
         $measurePages = [];
         foreach ($measures as $measure) {
+            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
             $measurePages[$measure['order']] = $this->document->getCurrentDocument()->musicalStructure[$measure['order']]['page'];
         }
 
@@ -405,7 +410,8 @@ class DocumentAnnotation
         $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
         $apiBaseUrl = $conf['annotationServerUrl'];
 
-        if ($apiBaseUrl) {
+        if ($apiBaseUrl && $document->getCurrentDocument() instanceof MetsDocument) {
+            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
             $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
             if (count($purl) > 0) {
                 $annotationRequest = new AnnotationRequest($apiBaseUrl);
