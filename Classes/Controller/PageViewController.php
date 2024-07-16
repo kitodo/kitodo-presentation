@@ -466,25 +466,30 @@ class PageViewController extends AbstractController
                 if ($document !== null) {
                     $docPage = $this->requestData['docPage'][$i];
                     $docImage = [];
+                    $docFulltext = [];
+                    $docAnnotationContainers = [];
 
-                    // check if page or measure is set
-                    if ($this->requestData['docMeasure'][$i]) {
-                        // convert document page information to measure count information
-                        $measure2Page = array_column($document->musicalStructure, 'page');
-                        $docPage = $measure2Page[$this->requestData['docMeasure'][$i]];
+                    if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+                        // check if page or measure is set
+                        if ($this->requestData['docMeasure'][$i]) {
+                            // convert document page information to measure count information
+                            $measure2Page = array_column($document->musicalStructure, 'page');
+                            $docPage = $measure2Page[$this->requestData['docMeasure'][$i]];
+                        }
                     }
                     if ($docPage == null) {
                         $docPage = 1;
                     }
                     $docImage[0] = $this->getImage($docPage, $document);
-                    $docScore = $this->getScore($docPage, $document);
-                    $docMeasures = $this->getMeasures($docPage, $document);
-                    $docFulltext = [];
-                    $docAnnotationContainers = [];
-
                     $currentMeasureId = '';
-                    if ($this->requestData['docMeasure'][$i]) {
-                        $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
+
+                    if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+                        $docScore = $this->getScore($docPage, $document);
+                        $docMeasures = $this->getMeasures($docPage, $document);
+
+                        if ($this->requestData['docMeasure'][$i]) {
+                            $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
+                        }
                     }
 
                     $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer({
@@ -516,10 +521,14 @@ class PageViewController extends AbstractController
         } else {
             $currentMeasureId = '';
             $docPage = $this->requestData['page'];
-            $docMeasures = $this->getMeasures($docPage);
-            if ($this->requestData['measure']) {
-                $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
+
+            if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+                $docMeasures = $this->getMeasures($docPage);
+                if ($this->requestData['measure']) {
+                    $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
+                }
             }
+
             // Viewer configuration.
             $viewerConfiguration = '$(document).ready(function() {
                     if (dlfUtils.exists(dlfViewer)) {
