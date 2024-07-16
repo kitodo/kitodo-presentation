@@ -31,11 +31,26 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
+    /**
+     * Gets additional fields to render in the form to add/edit a task
+     *
+     * @param array $taskInfo Values of the fields from the add/edit task form
+     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task The task object being edited. Null when adding a task!
+     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
+     */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
         return [];
     }
 
+    /**
+     * Validates the additional fields' values
+     *
+     * @param array $submittedData An array containing the data submitted by the add/edit task form
+     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     * @return bool TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
+     */
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
     {
         $fieldsValid = true;
@@ -108,49 +123,45 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         return $fieldsValid;
     }
 
+    /**
+     * Takes care of saving the additional fields' values in the task's object
+     *
+     * @param array $submittedData An array containing the data submitted by the add/edit task form
+     * @param BaseTask $task Reference to the scheduler backend module
+     * @return void
+     */
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
-        /* @var BaseTask $task */
+        /** @var BaseTask $task */
         $task->setDryRun(!empty($submittedData['dryRun']));
         if (isset($submittedData['doc'])) {
-            /* @var BaseTask $task */
             $task->setDoc(htmlspecialchars($submittedData['doc']));
         }
         if (isset($submittedData['lib'])) {
-            /* @var BaseTask $task */
             $task->setLib((int) $submittedData['lib']);
         }
         if (isset($submittedData['coll']) && is_array($submittedData['coll'])) {
-            /* @var BaseTask $task */
             $task->setColl($submittedData['coll']);
         } else {
-            /* @var BaseTask $task */
             $task->setColl([]);
         }
         if (isset($submittedData['pid'])) {
-            /* @var BaseTask $task */
             $task->setPid((int) $submittedData['pid']);
         }
         if (isset($submittedData['solr'])) {
-            /* @var BaseTask $task */
             $task->setSolr((int) $submittedData['solr']);
         }
         if (isset($submittedData['owner'])) {
-            /* @var BaseTask $task */
             $task->setOwner(htmlspecialchars($submittedData['owner']));
         }
-        /* @var BaseTask $task */
         $task->setAll(!empty($submittedData['all']));
         if (isset($submittedData['from'])) {
-            /* @var BaseTask $task */
             $task->setFrom(htmlspecialchars($submittedData['from']));
         }
         if (isset($submittedData['until'])) {
-            /* @var BaseTask $task */
             $task->setUntil(htmlspecialchars($submittedData['until']));
         }
         if (isset($submittedData['set'])) {
-            /* @var BaseTask $task */
             $task->setSet(htmlspecialchars($submittedData['set']));
         }
     }

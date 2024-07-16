@@ -25,22 +25,25 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  */
 class IndexAdditionalFieldProvider extends BaseAdditionalFieldProvider
 {
+    /**
+     * Gets additional fields to render in the form to add/edit a task
+     *
+     * @param array $taskInfo Values of the fields from the add/edit task form
+     * @param BaseTask $task The task object being edited. Null when adding a task!
+     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
+     */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
         $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
 
+        /** @var BaseTask $task */
         if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-            /* @var BaseTask $task */
             $taskInfo['dryRun'] = $task->isDryRun();
-            /* @var BaseTask $task */
             $taskInfo['doc'] = $task->getDoc();
-            /* @var BaseTask $task */
             $taskInfo['pid'] = $task->getPid();
-            /* @var BaseTask $task */
             $taskInfo['solr'] = $task->getSolr();
-            /* @var BaseTask $task */
             $taskInfo['owner'] = $task->getOwner();
-            /* @var BaseTask $task */
         } else {
             $taskInfo['dryRun'] = false;
             $taskInfo['doc'] = 'https://';
