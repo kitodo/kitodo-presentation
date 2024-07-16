@@ -415,17 +415,17 @@ class ToolboxController extends AbstractController
             return;
         }
 
-        // Fill markers.
         $viewArray = [
-            'LABEL_QUERY_URL' => $this->settings['queryInputName'],
-            'LABEL_START' => $this->settings['startInputName'],
-            'LABEL_ID' => $this->settings['idInputName'],
-            'LABEL_PID' => $this->settings['pidInputName'],
-            'LABEL_PAGE_URL' => $this->settings['pageInputName'],
-            'LABEL_HIGHLIGHT_WORD' => $this->settings['highlightWordInputName'],
-            'LABEL_ENCRYPTED' => $this->settings['encryptedInputName'],
-            'CURRENT_DOCUMENT' => $this->getCurrentDocumentId(),
-            'SOLR_ENCRYPTED' => $this->getEncryptedCoreName() ? : ''
+            'labelQueryUrl' => $this->settings['queryInputName'],
+            'labelStart' => $this->settings['startInputName'],
+            'labelId' => $this->settings['idInputName'],
+            'labelPid' => $this->settings['pidInputName'],
+            'labelPageUrl' => $this->settings['pageInputName'],
+            'labelHighlightWord' => $this->settings['highlightWordInputName'],
+            'labelEncrypted' => $this->settings['encryptedInputName'],
+            'documentId' => $this->getCurrentDocumentId(),
+            'documentPageId' => $this->document->getPid(),
+            'solrEncrypted' => $this->getEncryptedCoreName() ? : ''
         ];
 
         $this->view->assign('searchInDocument', $viewArray);
