@@ -358,7 +358,7 @@ class PageViewController extends AbstractController
      * @access protected
      *
      * @param int $page: Page number
-     * @param ?AbstractDocument $specificDoc
+     * @param ?MetsDocument $specificDoc
      *
      * @return array URL and MIME type of fulltext file
      */

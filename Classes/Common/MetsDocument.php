@@ -297,7 +297,6 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * {@inheritDoc}
-     * @see \Kitodo\Dlf\Common\Doc::getFileMimeType()
      * @see AbstractDocument::getFileMimeType()
      */
     public function getFileMimeType(string $id): string
@@ -1616,8 +1615,6 @@ final class MetsDocument extends AbstractDocument
      *
      * @return array Array of musical elements' id, type, label and file representations ordered
      * by "@ORDER" attribute
-     *
-     * @return array
      */
     protected function magicGetMusicalStructure(): array
     {
