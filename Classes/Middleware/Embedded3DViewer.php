@@ -183,7 +183,7 @@ class Embedded3DViewer implements MiddlewareInterface
      * @param string $html
      * @param string $modelUrl
      * @param string $modelPath
-     * @param string $modelInfo
+     * @param array $modelInfo
      * @return string
      */
     public function replacePlaceholders(string $viewerUrl, string $html, $modelUrl, array $modelInfo): string
