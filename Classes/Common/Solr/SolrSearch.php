@@ -61,6 +61,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
+     * @var QueryResult|null
+     */
+    private ?QueryResult $indexedMetadata;
+
+    /**
+     * @access private
      * @var array
      */
     private array $params;
@@ -90,13 +96,14 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return void
      */
-    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null)
+    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null, QueryResult $indexedMetadata = null)
     {
         $this->documentRepository = $documentRepository;
         $this->collections = $collections;
         $this->settings = $settings;
         $this->searchParams = $searchParams;
         $this->listedMetadata = $listedMetadata;
+        $this->indexedMetadata = $indexedMetadata;
     }
 
     /**
@@ -365,8 +372,8 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // Set search query.
         if (
-            (!empty($this->searchParams['fulltext']))
-            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($this->searchParams['query']), $matches)
+            !empty($this->searchParams['fulltext'])
+            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($this->searchParams['query'] ?? ''), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
             $this->searchParams['query'] = empty($matches[1]) ? $this->searchParams['query'] : $matches[1];
@@ -499,10 +506,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $childrenOf = $this->documentRepository->findChildrenOfEach($documentSet);
 
             foreach ($result['documents'] as $doc) {
-                if (empty($documents[$doc['uid']]) && $allDocuments[$doc['uid']]) {
+                if (empty($documents[$doc['uid']]) && isset($allDocuments[$doc['uid']])) {
                     $documents[$doc['uid']] = $allDocuments[$doc['uid']];
                 }
-                if ($documents[$doc['uid']]) {
+                if (isset($documents[$doc['uid']])) {
                     $this->translateLanguageCode($doc);
                     if ($doc['toplevel'] === false) {
                         // this maybe a chapter, article, ..., year
@@ -536,7 +543,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                                 $documents[$doc['uid']]['metadata'][$indexName] = $doc['metadata'][$indexName];
                             }
                         }
-                        if ($this->searchParams['fulltext'] != '1') {
+                        if (!array_key_exists('fulltext', $this->searchParams) || $this->searchParams['fulltext'] != '1') {
                             $documents[$doc['uid']]['page'] = 1;
                             $children = $childrenOf[$doc['uid']] ?? [];
                         
@@ -664,19 +671,35 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         if ($enableCache === false || ($entry = $cache->get($cacheIdentifier)) === false) {
             $selectQuery = $solr->service->createSelect($parameters);
 
+            $edismax = $selectQuery->getEDisMax();
+
+            $queryFields = '';
+
+            if ($this->indexedMetadata) {
+                foreach ($this->indexedMetadata as $metadata) {
+                    if ($metadata->getIndexIndexed()) {
+                        $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
+                        $queryFields .= $listMetadataRecord . '^' . $metadata->getIndexBoost() . ' ';
+                    }
+                }
+            }
+
+            $edismax->setQueryFields($queryFields);
+
             $grouping = $selectQuery->getGrouping();
             $grouping->addField('uid');
             $grouping->setLimit(100); // Results in group (TODO: check)
             $grouping->setNumberOfGroups(true);
 
-            if ($parameters['fulltext'] === true) {
+            $fulltextExists = $parameters['fulltext'] ?? false;
+            if ($fulltextExists === true) {
                 // get highlighting component and apply settings
                 $selectQuery->getHighlighting();
             }
 
             $solrRequest = $solr->service->createRequest($selectQuery);
 
-            if ($parameters['fulltext'] === true) {
+            if ($fulltextExists === true) {
                 // If it is a fulltext search, enable highlighting.
                 // field for which highlighting is going to be performed,
                 // is required if you want to have OCR highlighting
@@ -703,7 +726,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             $resultSet['numberOfToplevels'] = $uidGroup->getNumberOfGroups();
             $resultSet['numFound'] = $uidGroup->getMatches();
             $highlighting = [];
-            if ($parameters['fulltext'] === true) {
+            if ($fulltextExists === true) {
                 $data = $result->getData();
                 $highlighting = $data['ocrHighlighting'];
             }
@@ -836,7 +859,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     private function translateLanguageCode(&$doc): void
     {
-        if ($doc['metadata']['language']) {
+        if (array_key_exists('language', $doc['metadata'])) {
             foreach($doc['metadata']['language'] as $indexName => $language) {
                 $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
             }

@@ -476,159 +476,162 @@
 			<trans-unit id="config.metadataFormats">
 				<source>Default metadata namespaces</source>
 			</trans-unit>
-			<trans-unit id="config.enableInternalProxy">
+			<trans-unit id="config.general.enableInternalProxy">
 				<source>Enable internal page view proxy?: (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.useragent">
-				<source>DLF User-Agent: (default is "Kitodo.Presentation")</source>
-			</trans-unit>
-			<trans-unit id="config.forceAbsoluteUrl">
+			<trans-unit id="config.general.forceAbsoluteUrl">
 				<source>Force all links to pages and resources to be absolute?: Only needed for some multi-domain environments; requires a fully qualified Entry Point in Site Configuration (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.forceAbsoluteUrlHttps">
+			<trans-unit id="config.general.userAgent">
+				<source>DLF User-Agent: (default is "Kitodo.Presentation")</source>
+			</trans-unit>
+			<trans-unit id="config.general.forceAbsoluteUrlHttps">
 				<source>Use HTTPS for absolute links?: requires a valid Entry Point with "https://..." in Site Configuration (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.caching">
+			<trans-unit id="config.general.caching">
 				<source>Cache parsed METS files / IIIF manifests: Caching improves performance a little bit but can result in a very large "fe_session_data" table (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.publishNewCollections">
+			<trans-unit id="config.general.publishNewCollections">
 				<source>Publish new collections?: Should new collections automatically be published in the OAI-PMH interface? (default is "TRUE")</source>
 			</trans-unit>
-			<trans-unit id="config.unhideOnIndex">
+			<trans-unit id="config.general.unhideOnIndex">
 				<source>Unhide ided documents?: Should hidden documents be unhidden when re-iding them? (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.useExternalApisForMetadata">
+			<trans-unit id="config.general.useExternalApisForMetadata">
 				<source>Use external APIs for getting metadata?: (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.fileGrpImages">
+			<trans-unit id="config.general.requiredMetadataFields">
+				<source>Metadata fields required for indexing documents</source>
+			</trans-unit>
+			<trans-unit id="config.files.fileGrpImages">
 				<source>Page fileGrps: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
 			</trans-unit>
-			<trans-unit id="config.fileGrpThumbs">
+			<trans-unit id="config.files.fileGrpThumbs">
 				<source>Thumbnail fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</source>
 			</trans-unit>
-			<trans-unit id="config.fileGrpDownload">
+			<trans-unit id="config.files.fileGrpDownload">
 				<source>Download fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
 			</trans-unit>
-			<trans-unit id="config.fileGrpFulltext">
+			<trans-unit id="config.files.fileGrpFulltext">
 				<source>Fulltext fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "FULLTEXT")</source>
 			</trans-unit>
-			<trans-unit id="config.fileGrpAudio">
+			<trans-unit id="config.files.fileGrpAudio">
 				<source>Audio fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
 			</trans-unit>
-			<trans-unit id="config.indexAnnotations">
+			<trans-unit id="config.iiif.indexAnnotations">
 				<source>Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are ided (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.iiifThumbnailWidth">
+			<trans-unit id="config.iiif.thumbnailWidth">
 				<source>Maximum thumbnail width for IIIF images: Only for images without a thumbnail declaration (default is "150")</source>
 			</trans-unit>
-			<trans-unit id="config.iiifThumbnailHeight">
+			<trans-unit id="config.iiif.thumbnailHeight">
 				<source>Maximum thumbnail height for IIIF images: Only for images without a thumbnail declaration (default is "150")</source>
 			</trans-unit>
-			<trans-unit id="config.solrConnect">
+			<trans-unit id="config.solr.connect">
 				<source>Solr Connection</source>
 			</trans-unit>
-			<trans-unit id="config.solrHttps">
+			<trans-unit id="config.solr.https">
 				<source>Use HTTPS: (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.solrHost">
+			<trans-unit id="config.solr.host">
 				<source>Solr Server Host: (default is "localhost")</source>
 			</trans-unit>
-			<trans-unit id="config.solrPort">
+			<trans-unit id="config.solr.port">
 				<source>Solr Server Port: (default is "8983")</source>
 			</trans-unit>
-			<trans-unit id="config.solrPath">
+			<trans-unit id="config.solr.path">
 				<source>Solr Server Path: without API endpoint "/solr" (default is "/")</source>
 			</trans-unit>
-			<trans-unit id="config.solrUser">
+			<trans-unit id="config.solr.user">
 				<source>Solr Server User: (default is "")</source>
 			</trans-unit>
-			<trans-unit id="config.solrPass">
+			<trans-unit id="config.solr.pass">
 				<source>Solr Server Password: (default is "")</source>
 			</trans-unit>
-			<trans-unit id="config.solrTimeout">
+			<trans-unit id="config.solr.timeout">
 				<source>Solr Server Timeout: (default is "10")</source>
 			</trans-unit>
-			<trans-unit id="config.solrAllowCoreDelete">
+			<trans-unit id="config.solr.allowCoreDelete">
 				<source>Allow Solr Core Deletion?: If a Solr Core is deleted in the TYPO3 Backend, should it be deleted in Apache Solr as well? (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldId">
+			<trans-unit id="config.solr.fields.id">
 				<source>Solr Schema Field "id" : Unique identifier for the document in the id (default is "id")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldUid">
+			<trans-unit id="config.solr.fields.uid">
 				<source>Solr Schema Field "uid" : Unique identifier for the document (or its top-level parent) in the TYPO3 database (default is "uid")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldPid">
+			<trans-unit id="config.solr.fields.pid">
 				<source>Solr Schema Field "pid" : PageID for the document (or its top-level parent) in the TYPO3 database (default is "pid")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldPage">
+			<trans-unit id="config.solr.fields.page">
 				<source>Solr Schema Field "page" : Image number where this document starts (default is "page")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldPartof">
+			<trans-unit id="config.solr.fields.partof">
 				<source>Solr Schema Field "partof" : Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! (default is "partof")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldRoot">
+			<trans-unit id="config.solr.fields.root">
 				<source>Solr Schema Field "root" : Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! (default is "root")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldSid">
+			<trans-unit id="config.solr.fields.sid">
 				<source>Solr Schema Field "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (default is "sid")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldToplevel">
+			<trans-unit id="config.solr.fields.toplevel">
 				<source>Solr Schema Field "toplevel" : Information if it is a top-level document (default is "toplevel")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldType">
+			<trans-unit id="config.solr.fields.type">
 				<source>Solr Schema Field "type" : Type of document (eg. monograph, chapter, etc.) (default is "type")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldTitle">
+			<trans-unit id="config.solr.fields.title">
 				<source>Solr Schema Field "title" : Title field is mandatory for identifying documents (default is "title")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldVolume">
+			<trans-unit id="config.solr.fields.volume">
 				<source>Solr Schema Field "volume" : Volume field is mandatory for identifying documents (default is "volume")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldDate">
+			<trans-unit id="config.solr.fields.date">
 				<source>Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (default is "date")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldThumbnail">
+			<trans-unit id="config.solr.fields.thumbnail">
 				<source>Solr Schema Field "thumbnail" : URL of thumbnail image for the document (default is "thumbnail")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldDefault">
+			<trans-unit id="config.solr.fields.default">
 				<source>Solr Schema Field default" : CatchAll field (default is "default")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldTimestamp">
+			<trans-unit id="config.solr.fields.timestamp">
 				<source>Solr Schema Field "timestamp" : (default is "timestamp")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldAutocomplete">
+			<trans-unit id="config.solr.fields.autocomplete">
 				<source>Solr Schema Field "autocomplete" : Autocomplete field for search form (default is "autocomplete")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldFulltext">
+			<trans-unit id="config.solr.fields.fulltext">
 				<source>Solr Schema Field "fulltext" : Fulltext field for OCR results (default is "fulltext")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldRecordId">
+			<trans-unit id="config.solr.fields.recordId">
 				<source>Solr Schema Field "record_id" : Record ID of the document (required for OAI_DC output) (default is "record_id")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldPurl">
+			<trans-unit id="config.solr.fields.purl">
 				<source>Solr Schema Field "purl" : Permanent URL of the document (required for EPICUR output) (default is "purl")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldUrn">
+			<trans-unit id="config.solr.fields.urn">
 				<source>Solr Schema Field "urn" : URN of the Document (required for EPICUR output) (default is "urn")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldLocation">
+			<trans-unit id="config.solr.fields.location">
 				<source>Solr Schema Field "location" : Location of METS XML (required for METS output) (default is "location")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldCollection">
+			<trans-unit id="config.solr.fields.collection">
 				<source>Solr Schema Field "collection" : Associated collection(s) of the document (default is "collection")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldLicense">
+			<trans-unit id="config.solr.fields.license">
 				<source>Solr Schema Field "license" : License (should be URI) (default is "license")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldTerms">
+			<trans-unit id="config.solr.fields.terms">
 				<source>Solr Schema Field "terms" : Term of Use (should be URI) (default is "terms")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldRestrictions">
+			<trans-unit id="config.solr.fields.restrictions">
 				<source>Solr Schema Field "restrictions" : Access Restrictions (should be URI) (default is "restrictions")</source>
 			</trans-unit>
-			<trans-unit id="config.solrFieldGeom">
+			<trans-unit id="config.solr.fields.geom">
 				<source>Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</source>
 			</trans-unit>
 		</body>
-	</file>
+  </file>
 </xliff>

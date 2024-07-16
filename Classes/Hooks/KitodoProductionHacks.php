@@ -39,12 +39,16 @@ class KitodoProductionHacks
         if (!$recordId) {
             $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
-            if (($divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]'))) {
+            $divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]');
+            if (is_array($divs)) {
                 $smLinks = $xml->xpath('//mets:structLink/mets:smLink');
                 if (!empty($smLinks)) {
+                    $links = [];
+
                     foreach ($smLinks as $smLink) {
                         $links[(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
                     }
+
                     foreach ($divs as $div) {
                         if (!empty($links[(string) $div['ID']])) {
                             $id = (string) $div['DMDID'];

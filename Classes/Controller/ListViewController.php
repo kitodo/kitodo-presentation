@@ -81,17 +81,14 @@ class ListViewController extends AbstractController
 
         // extract collection(s) from collection parameter
         $collections = [];
-        if ($this->searchParams['collection']) {
+        if (array_key_exists('collection', $this->searchParams)) {
             foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
                 $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
         }
 
         // Get current page from request data because the parameter is shared between plugins
-        $currentPage = $this->requestData['page'];
-        if (empty($currentPage)) {
-            $currentPage = 1;
-        }
+        $currentPage = $this->requestData['page'] ?? 1;
 
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
@@ -99,10 +96,13 @@ class ListViewController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
+        // get all indexed metadata fields
+        $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+
         $solrResults = null;
         $numResults = 0;
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollections($collections, $this->settings, $this->searchParams, $listedMetadata);
+            $solrResults = $this->documentRepository->findSolrByCollections($collections, $this->settings, $this->searchParams, $listedMetadata, $indexedMetadata);
             $numResults = $solrResults->getNumFound();
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];

@@ -82,6 +82,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected array $viewData;
 
     /**
+     * @access protected
+     * @var int
+     */
+    protected int $pageUid;
+
+    /**
      * Initialize the plugin controller
      *
      * @access protected
@@ -91,6 +97,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function initialize(): void
     {
         $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
+        $this->pageUid = (int) GeneralUtility::_GET('id');
 
         // Sanitize user input to prevent XSS attacks.
         $this->sanitizeRequestData();
@@ -99,7 +106,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
         $this->viewData = [
-            'pageUid' => $GLOBALS['TSFE']->id,
+            'pageUid' => $this->pageUid,
             'uniqueId' => uniqid(),
             'requestData' => $this->requestData
         ];
@@ -165,8 +172,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function configureProxyUrl(string &$url): void
     {
         $this->uriBuilder->reset()
-            ->setTargetPageUid($GLOBALS['TSFE']->id)
-            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
+            ->setTargetPageUid($this->pageUid)
+            ->setCreateAbsoluteUri(!empty($this->extConf['general']['forceAbsoluteUrl']))
             ->setArguments(
                 [
                     'eID' => 'tx_dlf_pageview_proxy',
@@ -259,7 +266,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         }
 
         // tx_dlf[double] may only be 0 or 1.
-        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'] ?? 0, 0, 1);
     }
 
     /**
@@ -291,10 +298,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         // Set default values if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
-        if (
-            (int) $this->requestData['page'] > 0
-            || empty($this->requestData['page'])
-        ) {
+        if (empty($this->requestData['page'])) {
+            $this->requestData['page'] = 1;
+        } elseif ((int) $this->requestData['page'] > 0) {
             $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
         } else {
             $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getCurrentDocument()->physicalStructure);
@@ -322,6 +328,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param PaginatorInterface $paginator
      * @return array
      */
+    //TODO: clean this function
     protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator): array
     {
         $firstPage = $pagination->getFirstPageNumber();
@@ -399,8 +406,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             array_push($pagesSect, ['label' => '...', 'startRecordNumber' => '...']);
         };
 
-        $nextPageNumber = $pages[$currentPageNumber + 1]['startRecordNumber'];
-        $previousPageNumber = $pages[$currentPageNumber - 1]['startRecordNumber'];
+        // Safely get the next and previous page numbers
+        $nextPageNumber = isset($pages[$currentPageNumber + 1]) ? $pages[$currentPageNumber + 1]['startRecordNumber'] : null;
+        $previousPageNumber = isset($pages[$currentPageNumber - 1]) ? $pages[$currentPageNumber - 1]['startRecordNumber'] : null;
 
         // 'startRecordNumber' is not required in GridView, only the variant for each loop is required
         // 'endRecordNumber' is not required in both views

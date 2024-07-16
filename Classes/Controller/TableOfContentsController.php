@@ -131,44 +131,8 @@ class TableOfContentsController extends AbstractController
         $entryArray['doNotLinkIt'] = 1;
         $entryArray['ITEM_STATE'] = 'NO';
 
-        // Build menu links based on the $entry['points'] array.
-        if (
-            !empty($entry['points'])
-            && MathUtility::canBeInterpretedAsInteger($entry['points'])
-        ) {
-            $entryArray['page'] = $entry['points'];
+        $this->buildMenuLinks($entryArray, $entry['id'], $entry['points'], $entry['targetUid']);
 
-            $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
-                $entryArray['basketButton'] = [
-                    'logId' => $entry['id'],
-                    'startpage' => $entry['points']
-                ];
-            }
-        } elseif (
-            !empty($entry['points'])
-            && is_string($entry['points'])
-        ) {
-            $entryArray['id'] = $entry['points'];
-            $entryArray['page'] = 1;
-            $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
-                $entryArray['basketButton'] = [
-                    'logId' => $entry['id'],
-                    'startpage' => $entry['points']
-                ];
-            }
-        } elseif (!empty($entry['targetUid'])) {
-            $entryArray['id'] = $entry['targetUid'];
-            $entryArray['page'] = 1;
-            $entryArray['doNotLinkIt'] = 0;
-            if ($this->settings['basketButton']) {
-                $entryArray['basketButton'] = [
-                    'logId' => $entry['id'],
-                    'startpage' => $entry['targetUid']
-                ];
-            }
-        }
         // Set "ITEM_STATE" to "CUR" if this entry points to current page.
         if (in_array($entry['id'], $this->activeEntries)) {
             $entryArray['ITEM_STATE'] = 'CUR';
@@ -200,6 +164,61 @@ class TableOfContentsController extends AbstractController
             $entryArray['ITEM_STATE'] = ($entryArray['ITEM_STATE'] == 'NO' ? 'IFSUB' : $entryArray['ITEM_STATE'] . 'IFSUB');
         }
         return $entryArray;
+    }
+
+    /**
+     * Build menu links based on the $entry['points'] array.
+     *
+     * @access private
+     *
+     * @param array &$entryArray passed by reference
+     * @param mixed $id
+     * @param mixed $points
+     * @param mixed $targetUid
+     *
+     * @return void
+     */
+    private function buildMenuLinks(array &$entryArray, $id, $points, $targetUid): void
+    {
+        if (
+            !empty($points)
+            && MathUtility::canBeInterpretedAsInteger($points)
+        ) {
+            $entryArray['page'] = $points;
+            $entryArray['doNotLinkIt'] = 0;
+            $this->setBasket($entryArray, $id, $points);
+        } elseif (
+            !empty($points)
+            && is_string($points)
+        ) {
+            $entryArray['id'] = $points;
+            $entryArray['page'] = 1;
+            $entryArray['doNotLinkIt'] = 0;
+            $this->setBasket($entryArray, $id, $points);
+        } elseif (!empty($targetUid)) {
+            $entryArray['id'] = $targetUid;
+            $entryArray['page'] = 1;
+            $entryArray['doNotLinkIt'] = 0;
+            $this->setBasket($entryArray, $id, $targetUid);
+        }
+    }
+
+    /**
+     * Set basket if basket is included in settings.
+     *
+     * @param array $entryArray passed by reference
+     * @param mixed $id
+     * @param mixed $startPage
+     * @return void
+     */
+    private function setBasket(array &$entryArray, $id, $startPage): void
+    {
+        if (isset($this->settings['basketButton'])) {
+            $entryArray['basketButton'] = [
+                'logId' => $id,
+                'startpage' => $startPage
+            ];
+        }
     }
 
     /**
@@ -241,18 +260,25 @@ class TableOfContentsController extends AbstractController
      */
     private function getAllLogicalUnits(): void
     {
+        $page = $this->requestData['page'];
+        $physicalStructure = $this->document->getCurrentDocument()->physicalStructure;
         if (
-            !empty($this->requestData['page'])
-            && !empty($this->document->getCurrentDocument()->physicalStructure)
+            !empty($page)
+            && !empty($physicalStructure)
         ) {
-            $this->activeEntries = array_merge((array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[0]],
-                (array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]]);
+            $structureMapLinks = $this->document->getCurrentDocument()->smLinks;
+            $this->activeEntries = array_merge(
+                (array) $structureMapLinks['p2l'][$physicalStructure[0]],
+                (array) $structureMapLinks['p2l'][$physicalStructure[$page]]
+            );
             if (
                 !empty($this->requestData['double'])
-                && $this->requestData['page'] < $this->document->getCurrentDocument()->numPages
+                && $page < $this->document->getCurrentDocument()->numPages
             ) {
-                $this->activeEntries = array_merge($this->activeEntries,
-                    (array) $this->document->getCurrentDocument()->smLinks['p2l'][$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page'] + 1]]);
+                $this->activeEntries = array_merge(
+                    $this->activeEntries,
+                    (array) $structureMapLinks['p2l'][$physicalStructure[$page + 1]]
+                );
             }
         }
     }
@@ -302,7 +328,10 @@ class TableOfContentsController extends AbstractController
      */
     private function setTitle(array $entry): string
     {
-        if (empty($entry['label']) && empty($entry['orderlabel'])) {
+        $label = $entry['label'];
+        $orderLabel = $entry['orderlabel'];
+
+        if (empty($label) && empty($orderLabel)) {
             foreach ($this->settings['titleReplacements'] as $titleReplacement) {
                 if ($entry['type'] == $titleReplacement['type']) {
                     $fields = explode(",", $titleReplacement['fields']);
@@ -314,12 +343,11 @@ class TableOfContentsController extends AbstractController
                             $title .= $entry[$field] . ' ';
                         }
                     }
-        
                     return trim($title);
                 }
             }
         }
-        return $entry['label'] ?: $entry['orderlabel'];
+        return $label ?: $orderLabel;
     }
 
     /**
@@ -352,11 +380,14 @@ class TableOfContentsController extends AbstractController
      */
     private function sortSubMenu(array &$menu): void
     {
-        usort($menu[0]['_SUB_MENU'], function ($firstElement, $secondElement) {
-            if (!empty($firstElement['orderlabel'])) {
-                return $firstElement['orderlabel'] <=> $secondElement['orderlabel'];
+        usort(
+            $menu[0]['_SUB_MENU'],
+            function ($firstElement, $secondElement) {
+                if (!empty($firstElement['orderlabel'])) {
+                    return $firstElement['orderlabel'] <=> $secondElement['orderlabel'];
+                }
+                return $firstElement['year'] <=> $secondElement['year'];
             }
-            return $firstElement['year'] <=> $secondElement['year'];
-        });
+        );
     }
 }

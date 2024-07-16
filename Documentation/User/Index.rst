@@ -134,11 +134,27 @@ collections or even to reindex all documents on the given page.::
     # long notation
     ./vendor/bin/typo3 kitodo:reindex --coll 1 --pid 123 --solr dlfCore1
 
+    # reindex collection with uid 1 on page 123 with solr core 'dlfCore1' in given range
+    # short notation
+    ./vendor/bin/typo3 kitodo:reindex -c 1 -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -c 1 -l 1000 -b 1000 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
+
     # reindex collection with uid 1 and 4 on page 123 with solr core 'dlfCore1'
     # short notation
     ./vendor/bin/typo3 kitodo:reindex -c 1,4 -p 123 -s dlfCore1
     # long notation
     ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --pid 123 --solr dlfCore1
+
+    # reindex collection with uid 1 and 4 on page 123 with solr core 'dlfCore1' in given range
+    # short notation
+    ./vendor/bin/typo3 kitodo:reindex -c 1,4 -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -c 1,4 -l 1000 -b 1000 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
     # reindex all documents on page 123 with solr core 'dlfCore1' (caution can result in memory problems for big amount of documents)
     # short notation
@@ -148,11 +164,11 @@ collections or even to reindex all documents on the given page.::
 
     # reindex all documents on page 123 with solr core 'dlfCore1' in given range
     # short notation
-    ./vendor/bin/typo3 kitodo:reindex -l 1000 -b 0 -p 123 -s dlfCore1
-    ./vendor/bin/typo3 kitodo:reindex -l 1000 -b 1000 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -a -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -a -l 1000 -b 1000 -p 123 -s dlfCore1
     # long notation
-    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
-    ./vendor/bin/typo3 kitodo:reindex --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
 
 .. t3-field-list-table::
@@ -218,7 +234,7 @@ collections or even to reindex all documents on the given page.::
    :Example:
        123
 
-    - :Option:
+ - :Option:
        ``-l|--index-limit``
    :Required:
        no
@@ -231,7 +247,7 @@ collections or even to reindex all documents on the given page.::
    :Example:
        1000
 
-    - :Option:
+ - :Option:
        ``-b|--index-begin``
    :Required:
        no
@@ -387,4 +403,68 @@ OAI-PMH base URL (e.g. https://digital.slub-dresden.de/oai/).
    :Description:
        Show each processed documents uid and location with timestamp and
        amount of processed/all documents.
+   :Example:
+
+Delete single document
+---------------------
+
+The command `kitodo:delete` is used for deleting a single document::
+
+    ./vendor/bin/typo3 kitodo:delete -d http://example.com/path/mets.xml -p 123 -s dlfCore1
+
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Option:
+       Option
+   :Required:
+       Required
+   :Description:
+       Description
+   :Example:
+       Example
+
+ - :Option:
+      ``-d|--doc``
+   :Required:
+       yes
+   :Description:
+       This may be an UID of an existing document in `tx_dlf_documents` or the
+       URL of a METS XML file.
+
+       Hint: Do not encode the URL! If you have spaces in path, use quotation
+       marks.
+   :Example:
+       123 or http://example.com/path/mets.xml
+
+ - :Option:
+       ``-p|--pid``
+   :Required:
+       yes
+   :Description:
+       The page UID of the Kitodo.Presentation data folder. This keeps all
+       records of documents, metadata, structures, solrcores etc.
+   :Example:
+       123
+
+ - :Option:
+       ``-s|--solr``
+   :Required:
+       yes
+   :Description:
+       This may be the UID of the solrcore record in `tx_dlf_solrcores`.
+       Alternatively you may write the index name of the solr core.
+
+       The solr core must exist in table tx_dlf_solrcores on page "pid".
+       Otherwise an error is shown and the processing won't start.
+   :Example:
+       123 or 'dlfCore1'
+
+ - :Option:
+       ``-v|--verbose``
+   :Required:
+       no
+   :Description:
+       Show processed documents uid and location with deleting parameters.
    :Example:

@@ -37,7 +37,7 @@ class PageGridController extends AbstractController
         $this->loadDocument();
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpThumbs'])
+            || empty($this->extConf['files']['fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -48,16 +48,13 @@ class PageGridController extends AbstractController
         $numPages = $this->document->getCurrentDocument()->numPages;
         // Iterate through visible page set and display thumbnails.
         for ($i = 1; $i <= $numPages; $i++) {
-            $foundEntry = $this->getEntry($i, $this->extConf['fileGrpThumbs']);
+            $foundEntry = $this->getEntry($i, $this->extConf['files']['fileGrpThumbs']);
             $foundEntry['state'] = ($i == $this->requestData['page']) ? 'cur' : 'no';
             $entryArray[] = $foundEntry;
         }
 
         // Get current page from request data because the parameter is shared between plugins
-        $currentPage = $this->requestData['page'];
-        if (empty($currentPage)) {
-            $currentPage = 1;
-        }
+        $currentPage = $this->requestData['page'] ?? 1;
 
         $itemsPerPage = $this->settings['paginate']['itemsPerPage'];
         if (empty($itemsPerPage)) {

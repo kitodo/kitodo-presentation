@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\Uri;
@@ -26,6 +27,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 
 /**
@@ -206,7 +208,7 @@ class Helper
             self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
             return false;
         }
-        if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
+        if (empty(self::getEncryptionKey())) {
             self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
@@ -221,7 +223,7 @@ class Helper
         $binary = base64_decode($encrypted);
         $iv = substr($binary, 0, openssl_cipher_iv_length(self::$cipherAlgorithm));
         $data = substr($binary, openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
         // Decrypt data.
         return openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
     }
@@ -248,12 +250,19 @@ class Helper
 
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(true);
-        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+
+        if (\PHP_VERSION_ID < 80000) {
+            // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
+            $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+        }
+
         // Try to load XML from file.
         $xml = simplexml_load_string($content);
-        // reset entity loader setting
-        libxml_disable_entity_loader($previousValueOfEntityLoader);
+
+        if (\PHP_VERSION_ID < 80000) {
+            // reset entity loader setting
+            libxml_disable_entity_loader($previousValueOfEntityLoader);
+        }
         // Reset libxml's error logging.
         libxml_use_internal_errors($libxmlErrors);
         return $xml;
@@ -334,13 +343,13 @@ class Helper
             self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
             return false;
         }
-        if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
+        if (empty(self::getEncryptionKey())) {
             self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
             return false;
         }
         // Generate random initialization vector.
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
         // Encrypt data.
         $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
         // Merge initialization vector and encrypted data.
@@ -348,23 +357,6 @@ class Helper
             $encrypted = base64_encode($iv . $encrypted);
         }
         return $encrypted;
-    }
-
-    /**
-     * Get the unqualified name of a class
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $qualifiedClassName The qualified class name from get_class()
-     *
-     * @return string The unqualified class name
-     */
-    public static function getUnqualifiedClassName(string $qualifiedClassName): string
-    {
-        $nameParts = explode('\\', $qualifiedClassName);
-        return end($nameParts);
     }
 
     /**
@@ -404,8 +396,8 @@ class Helper
     public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
+        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
+            foreach (self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
                 $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }
         }
@@ -549,94 +541,6 @@ class Helper
     }
 
     /**
-     * Get the URN of an object
-     * @see http://www.persistent-identifier.de/?link=316
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $base The namespace and base URN
-     * @param string $id The object's identifier
-     *
-     * @return string Uniform Resource Name as string
-     */
-    public static function getURN(string $base, string $id): string
-    {
-        $concordance = [
-            '0' => 1,
-            '1' => 2,
-            '2' => 3,
-            '3' => 4,
-            '4' => 5,
-            '5' => 6,
-            '6' => 7,
-            '7' => 8,
-            '8' => 9,
-            '9' => 41,
-            'a' => 18,
-            'b' => 14,
-            'c' => 19,
-            'd' => 15,
-            'e' => 16,
-            'f' => 21,
-            'g' => 22,
-            'h' => 23,
-            'i' => 24,
-            'j' => 25,
-            'k' => 42,
-            'l' => 26,
-            'm' => 27,
-            'n' => 13,
-            'o' => 28,
-            'p' => 29,
-            'q' => 31,
-            'r' => 12,
-            's' => 32,
-            't' => 33,
-            'u' => 11,
-            'v' => 34,
-            'w' => 35,
-            'x' => 36,
-            'y' => 37,
-            'z' => 38,
-            '-' => 39,
-            ':' => 17,
-        ];
-        $urn = strtolower($base . $id);
-        if (preg_match('/[^a-z\d:-]/', $urn)) {
-            self::log('Invalid chars in given parameters', LOG_SEVERITY_WARNING);
-            return '';
-        }
-        $digits = '';
-        for ($i = 0, $j = strlen($urn); $i < $j; $i++) {
-            $digits .= $concordance[substr($urn, $i, 1)];
-        }
-        $checksum = 0;
-        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += ($i + 1) * (int) substr($digits, $i, 1);
-        }
-        $checksum = substr((string) floor($checksum / (int) substr($digits, -1, 1)), -1, 1);
-        return $base . $id . $checksum;
-    }
-
-    /**
-     * Check if given ID is a valid Pica Production Number (PPN)
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $id The identifier to check
-     *
-     * @return bool Is $id a valid PPN?
-     */
-    public static function isPPN(string $id): bool
-    {
-        return self::checkIdentifier($id, 'PPN');
-    }
-
-    /**
      * Determine whether or not $url is a valid URL using HTTP or HTTPS scheme.
      *
      * @access public
@@ -663,25 +567,55 @@ class Helper
     }
 
     /**
-     * Merges two arrays recursively and actually returns the modified array.
-     * @see ArrayUtility::mergeRecursiveWithOverrule()
+     * Process a data and/or command map with TYPO3 core engine as admin.
      *
      * @access public
      *
-     * @static
+     * @param array $data Data map
+     * @param array $cmd Command map
+     * @param bool $reverseOrder Should the data map be reversed?
+     * @param bool $cmdFirst Should the command map be processed first?
      *
-     * @param array $original Original array
-     * @param array $overrule Overrule array, overruling the original array
-     * @param bool $addKeys If set to false, keys that are not found in $original will not be set
-     * @param bool $includeEmptyValues If set, values from $overrule will overrule if they are empty
-     * @param bool $enableUnsetFeature If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
-     *
-     * @return array Merged array
+     * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
      */
-    public static function mergeRecursiveWithOverrule(array $original, array $overrule, bool $addKeys = true, bool $includeEmptyValues = true, bool $enableUnsetFeature = true): array
+    public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], $reverseOrder = false, $cmdFirst = false)
     {
-        ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
-        return $original;
+        $context = GeneralUtility::makeInstance(Context::class);
+
+        if (
+            \TYPO3_MODE === 'BE'
+            && $context->getPropertyFromAspect('backend.user', 'isAdmin')
+        ) {
+            // Instantiate TYPO3 core engine.
+            $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+            // We do not use workspaces and have to bypass restrictions in DataHandler.
+            $dataHandler->bypassWorkspaceRestrictions = true;
+            // Load data and command arrays.
+            $dataHandler->start($data, $cmd);
+            // Process command map first if default order is reversed.
+            if (
+                !empty($cmd)
+                && $cmdFirst
+            ) {
+                $dataHandler->process_cmdmap();
+            }
+            // Process data map.
+            if (!empty($data)) {
+                $dataHandler->reverseOrder = $reverseOrder;
+                $dataHandler->process_datamap();
+            }
+            // Process command map if processing order is not reversed.
+            if (
+                !empty($cmd)
+                && !$cmdFirst
+            ) {
+                $dataHandler->process_cmdmap();
+            }
+            return $dataHandler->substNEWwithIDs;
+        } else {
+            self::log('Current backend user has no admin privileges', LOG_SEVERITY_ERROR);
+            return [];
+        }
     }
 
     /**
@@ -923,14 +857,14 @@ class Helper
         }
 
         // Get extension configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
 
         /** @var RequestFactory $requestFactory */
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $configuration = [
             'timeout' => 30,
             'headers' => [
-                'User-Agent' => $extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
             ],
         ];
         try {
@@ -957,5 +891,55 @@ class Helper
     public static function isValidXmlId($id): bool
     {
         return preg_match('/^[_a-z][_a-z0-9-.]*$/i', $id) === 1;
+    }
+
+    /**
+     * Get options from local configuration.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @return array
+     */
+    private static function getOptions(): array
+    {
+        return self::getLocalConfigurationByPath('SC_OPTIONS');
+    }
+
+    /**
+     * Get encryption key from local configuration.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @return string|null
+     */
+    private static function getEncryptionKey(): ?string
+    {
+        return self::getLocalConfigurationByPath('SYS/encryptionKey');
+    }
+
+    /**
+     * Get local configuration for given path.
+     *
+     * @access private
+     *
+     * @static
+     * 
+     * @param string $path
+     *
+     * @return mixed
+     */
+    private static function getLocalConfigurationByPath(string $path)
+    {
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+
+        if (array_key_exists(strtok($path, '/'), $configurationManager->getLocalConfiguration())) {
+            return $configurationManager->getLocalConfigurationValueByPath($path);
+        }
+
+        return ArrayUtility::getValueByPath($GLOBALS['TYPO3_CONF_VARS'], $path);
     }
 }

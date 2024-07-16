@@ -243,34 +243,34 @@ class Solr implements LoggerAwareInterface
     public static function getFields(): array
     {
         if (empty(self::$fields)) {
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-
-            self::$fields['id'] = $conf['solrFieldId'];
-            self::$fields['uid'] = $conf['solrFieldUid'];
-            self::$fields['pid'] = $conf['solrFieldPid'];
-            self::$fields['page'] = $conf['solrFieldPage'];
-            self::$fields['partof'] = $conf['solrFieldPartof'];
-            self::$fields['root'] = $conf['solrFieldRoot'];
-            self::$fields['sid'] = $conf['solrFieldSid'];
-            self::$fields['toplevel'] = $conf['solrFieldToplevel'];
-            self::$fields['type'] = $conf['solrFieldType'];
-            self::$fields['title'] = $conf['solrFieldTitle'];
-            self::$fields['volume'] = $conf['solrFieldVolume'];
-            self::$fields['date'] = $conf['solrFieldDate'];
-            self::$fields['thumbnail'] = $conf['solrFieldThumbnail'];
-            self::$fields['default'] = $conf['solrFieldDefault'];
-            self::$fields['timestamp'] = $conf['solrFieldTimestamp'];
-            self::$fields['autocomplete'] = $conf['solrFieldAutocomplete'];
-            self::$fields['fulltext'] = $conf['solrFieldFulltext'];
-            self::$fields['record_id'] = $conf['solrFieldRecordId'];
-            self::$fields['purl'] = $conf['solrFieldPurl'];
-            self::$fields['urn'] = $conf['solrFieldUrn'];
-            self::$fields['location'] = $conf['solrFieldLocation'];
-            self::$fields['collection'] = $conf['solrFieldCollection'];
-            self::$fields['license'] = $conf['solrFieldLicense'];
-            self::$fields['terms'] = $conf['solrFieldTerms'];
-            self::$fields['restrictions'] = $conf['solrFieldRestrictions'];
-            self::$fields['geom'] = $conf['solrFieldGeom'];
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'solr');
+            $solrFields = $conf['fields'];
+            self::$fields['id'] = $solrFields['id'];
+            self::$fields['uid'] = $solrFields['uid'];
+            self::$fields['pid'] = $solrFields['pid'];
+            self::$fields['page'] = $solrFields['page'];
+            self::$fields['partof'] = $solrFields['partof'];
+            self::$fields['root'] = $solrFields['root'];
+            self::$fields['sid'] = $solrFields['sid'];
+            self::$fields['toplevel'] = $solrFields['toplevel'];
+            self::$fields['type'] = $solrFields['type'];
+            self::$fields['title'] = $solrFields['title'];
+            self::$fields['volume'] = $solrFields['volume'];
+            self::$fields['date'] = $solrFields['date'];
+            self::$fields['thumbnail'] = $solrFields['thumbnail'];
+            self::$fields['default'] = $solrFields['default'];
+            self::$fields['timestamp'] = $solrFields['timestamp'];
+            self::$fields['autocomplete'] = $solrFields['autocomplete'];
+            self::$fields['fulltext'] = $solrFields['fulltext'];
+            self::$fields['record_id'] = $solrFields['recordId'];
+            self::$fields['purl'] = $solrFields['purl'];
+            self::$fields['urn'] = $solrFields['urn'];
+            self::$fields['location'] = $solrFields['location'];
+            self::$fields['collection'] = $solrFields['collection'];
+            self::$fields['license'] = $solrFields['license'];
+            self::$fields['terms'] = $solrFields['terms'];
+            self::$fields['restrictions'] = $solrFields['restrictions'];
+            self::$fields['geom'] = $solrFields['geom'];
         }
 
         return self::$fields;
@@ -301,7 +301,7 @@ class Solr implements LoggerAwareInterface
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
             if (
-                is_object(self::$registry[$core])
+                array_key_exists($core, self::$registry)
                 && self::$registry[$core] instanceof self
             ) {
                 // Return singleton instance if available.
@@ -350,25 +350,25 @@ class Solr implements LoggerAwareInterface
         if (empty($this->config)) {
             $config = [];
             // Extract extension configuration.
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
+            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'solr');
             // Derive Solr scheme
-            $config['scheme'] = empty($conf['solrHttps']) ? 'http' : 'https';
+            $config['scheme'] = empty($conf['https']) ? 'http' : 'https';
             // Derive Solr host name.
-            $config['host'] = ($conf['solrHost'] ? $conf['solrHost'] : '127.0.0.1');
+            $config['host'] = ($conf['host'] ? $conf['host'] : '127.0.0.1');
             // Set username and password.
-            $config['username'] = $conf['solrUser'];
-            $config['password'] = $conf['solrPass'];
+            $config['username'] = $conf['user'];
+            $config['password'] = $conf['pass'];
             // Set port if not set.
-            $config['port'] = MathUtility::forceIntegerInRange($conf['solrPort'], 1, 65535, 8983);
+            $config['port'] = MathUtility::forceIntegerInRange($conf['port'], 1, 65535, 8983);
             // Trim path of slashes and (re-)add trailing slash if path not empty.
-            $config['path'] = trim($conf['solrPath'], '/');
+            $config['path'] = trim($conf['path'], '/');
             if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
 
             // Set connection timeout lower than PHP's max_execution_time.
             $maxExecutionTime = (int) ini_get('max_execution_time') ? : 30;
-            $config['timeout'] = MathUtility::forceIntegerInRange($conf['solrTimeout'], 1, $maxExecutionTime, 10);
+            $config['timeout'] = MathUtility::forceIntegerInRange($conf['timeout'], 1, $maxExecutionTime, 10);
             $this->config = $config;
         }
     }

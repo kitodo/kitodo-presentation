@@ -115,6 +115,11 @@ class SearchController extends AbstractController
         $this->searchParams = $this->getParametersSafely('searchParameter');
         // if search was triggered by the ListView plugin, get the parameters from GET variables
         $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
+        // Quit without doing anything if no search parameters.
+        if (empty($this->searchParams) && empty($listRequestData)) {
+            $this->logger->warning('Missing search parameters');
+            return;
+        }
 
         if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
             $this->searchParams = array_merge($this->searchParams ?: [], $listRequestData['searchParameter']);
@@ -123,16 +128,20 @@ class SearchController extends AbstractController
         }
 
         // sanitize date search input
-        if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
-            $this->searchParams['dateFrom'] = '*';
-        }
-        if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
-            $this->searchParams['dateTo'] = 'NOW';
-        }
-        if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
-            $tmpDate = $this->searchParams['dateFrom'];
-            $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
-            $this->searchParams['dateTo'] = $tmpDate;
+        if (!empty($this->searchParams['dateFrom']) || !empty($this->searchParams['dateTo'])) {
+            if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+                $this->searchParams['dateFrom'] = '*';
+            }
+
+            if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+                $this->searchParams['dateTo'] = 'NOW';
+            }
+
+            if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+                $tmpDate = $this->searchParams['dateFrom'];
+                $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
+                $this->searchParams['dateTo'] = $tmpDate;
+            }
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
@@ -163,11 +172,14 @@ class SearchController extends AbstractController
             // get all metadata records to be shown in results
             $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
+            // get all indexed metadata fields
+            $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+
             $solrResults = null;
             $numResults = 0;
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
-                $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->searchParams, $listedMetadata);
+                $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->searchParams, $listedMetadata, $indexedMetadata);
                 $numResults = $solrResults->getNumFound();
 
                 $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
@@ -323,7 +335,7 @@ class SearchController extends AbstractController
         }
 
         foreach (array_keys($facets) as $field) {
-            $search['params']['component']['facetset']['facet'][] = [
+            $search['params']['component']['facetset']['facet'][$field] = [
                 'type' => 'field',
                 'mincount' => '1',
                 'key' => $field,
@@ -381,7 +393,7 @@ class SearchController extends AbstractController
         // if collections are given, we prepare the collections query string
         // extract collections from collection parameter
         $collections = null;
-        if ($this->searchParams['collection']) {
+        if (array_key_exists('collection', $this->searchParams)) {
             foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
                 $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }

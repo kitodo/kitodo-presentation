@@ -41,11 +41,11 @@ class MetadataRepository extends Repository
 
         $constraints = [];
 
-        if ($settings['is_listed']) {
+        if (isset($settings['is_listed']) && $settings['is_listed'] == true) {
             $constraints[] = $query->equals('is_listed', 1);
         }
 
-        if ($settings['is_sortable']) {
+        if (isset($settings['is_sortable']) && $settings['is_sortable'] == true) {
             $constraints[] = $query->equals('is_sortable', 1);
         }
 

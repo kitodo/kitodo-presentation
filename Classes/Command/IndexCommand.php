@@ -95,7 +95,7 @@ class IndexCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $this->initializeRepositories($input->getOption('pid'));
+        $this->initializeRepositories((int) $input->getOption('pid'));
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
@@ -111,15 +111,15 @@ class IndexCommand extends BaseCommand
 
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
-                $output_solrCores = [];
-                foreach ($allSolrCores as $index_name => $uid) {
-                    $output_solrCores[] = $uid . ' : ' . $index_name;
+                $outputSolrCores = [];
+                foreach ($allSolrCores as $indexName => $uid) {
+                    $outputSolrCores[] = $uid . ' : ' . $indexName;
                 }
-                if (empty($output_solrCores)) {
+                if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
                     return BaseCommand::FAILURE;
                 } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
                     return BaseCommand::FAILURE;
                 }
             }
@@ -180,20 +180,35 @@ class IndexCommand extends BaseCommand
 
         if ($dryRun) {
             $io->section('DRY RUN: Would index ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+            $io->success('All done!');
+            return BaseCommand::SUCCESS;
         } else {
-            if ($io->isVerbose()) {
-                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
-            }
             $document->setCurrentDocument($doc);
-            // save to database
-            $this->saveToDatabase($document);
-            // add to index
-            Indexer::add($document, $this->documentRepository);
+
+            if ($io->isVerbose()) {
+                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
+            }
+            $isSaved = $this->saveToDatabase($document);
+
+            if ($isSaved) {
+                if ($io->isVerbose()) {
+                    $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on Solr core ' . $solrCoreUid . '.');
+                }
+                $isSaved = Indexer::add($document, $this->documentRepository);
+            } else {
+                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] . ') in this document.');
+                return BaseCommand::FAILURE;
+            }
+
+            if ($isSaved) {
+                $io->success('All done!');
+                return BaseCommand::SUCCESS;
+            }
+
+            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['requiredMetadataFields'] . ') in this document.');
+            $io->info('INFO: Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
+            return BaseCommand::FAILURE;
         }
-
-        $io->success('All done!');
-
-        return BaseCommand::SUCCESS;
     }
 
     /**
