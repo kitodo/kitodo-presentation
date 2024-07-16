@@ -321,57 +321,60 @@ class DocumentAnnotation
     {
         // Get all measures referencing the fileid
         $measures = [];
+        // Get the related page numbers
+        $measurePages = [];
         $measureIndex = 1;
         $startOrder = 0;
         $endOrder = 0;
 
-        foreach ($this->document->getCurrentDocument()->musicalStructureInfo as $key => $musicalInfo) {
-            if ($musicalInfo['type'] === 'measure' && is_array($musicalInfo['files'])) {
-                foreach ($musicalInfo['files'] as $file) {
-                    if ($file['fileid'] === $fileId && $file['type'] === 'IDREF') {
-                        $measures[] = $musicalInfo;
+        if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+            foreach ($this->document->getCurrentDocument()->musicalStructureInfo as $key => $musicalInfo) {
+                if ($musicalInfo['type'] === 'measure' && is_array($musicalInfo['files'])) {
+                    foreach ($musicalInfo['files'] as $file) {
+                        if ($file['fileid'] === $fileId && $file['type'] === 'IDREF') {
+                            $measures[] = $musicalInfo;
+                        }
+                    }
+
+                    if ($measureIndex === 1) {
+                        $startOrder = $musicalInfo['order'];
+                    }
+
+                    $endOrder = $musicalInfo['order'];
+
+                    $measureIndex += 1;
+                }
+            }
+
+            // Filter measures by the given range of measure numbers
+            if ($measures && $range && !preg_match("/\ball\b/", $range)) {
+                $measureNumbers = [];
+
+                $range = preg_replace("/\bend\b/", $endOrder, $range);
+                $range = preg_replace("/\bstart\b/", $startOrder, $range);
+
+                $ranges = array_map('trim', explode(',', $range));
+
+                foreach ($ranges as $measureNumber) {
+                    if (preg_match('/\d+-\d+/', $measureNumber)) {
+                        list($from, $to) = array_map('trim', explode('-', $measureNumber));
+                        $measureNumbers = array_merge($measureNumbers, range($from, $to));
+                    } else {
+                        $measureNumbers[] = (int)$measureNumber;
                     }
                 }
 
-                if ($measureIndex === 1) {
-                    $startOrder = $musicalInfo['order'];
-                }
-
-                $endOrder = $musicalInfo['order'];
-
-                $measureIndex += 1;
-            }
-        }
-
-        // Filter measures by the given range of measure numbers
-        if ($measures && $range && !preg_match("/\ball\b/", $range)) {
-            $measureNumbers = [];
-
-            $range = preg_replace("/\bend\b/", $endOrder, $range);
-            $range = preg_replace("/\bstart\b/", $startOrder, $range);
-
-            $ranges = array_map('trim', explode(',', $range));
-
-            foreach ($ranges as $measureNumber) {
-                if (preg_match('/\d+-\d+/', $measureNumber)) {
-                    list($from,$to) = array_map('trim', explode('-', $measureNumber));
-                    $measureNumbers = array_merge($measureNumbers, range($from, $to));
-                } else {
-                    $measureNumbers[] = (int) $measureNumber;
+                foreach ($measures as $key => $measure) {
+                    if (!in_array($measure['order'], $measureNumbers)) {
+                        unset($measures[$key]);
+                    }
                 }
             }
 
-            foreach ($measures as $key => $measure) {
-                if (!in_array($measure['order'], $measureNumbers)) {
-                    unset($measures[$key]);
-                }
-            }
-        }
 
-        // Get the related page numbers
-        $measurePages = [];
-        foreach ($measures as $measure) {
-            $measurePages[$measure['order']] = $this->document->getCurrentDocument()->musicalStructure[$measure['order']]['page'];
+            foreach ($measures as $measure) {
+                $measurePages[$measure['order']] = $this->document->getCurrentDocument()->musicalStructure[$measure['order']]['page'];
+            }
         }
 
         return $measurePages;

@@ -523,11 +523,9 @@ class PageViewController extends AbstractController
             $currentMeasureId = '';
             $docPage = $this->requestData['page'];
 
-            if ($this->document->getCurrentDocument() instanceof MetsDocument) {
-                $docMeasures = $this->getMeasures($docPage);
-                if ($this->requestData['measure']) {
-                    $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
-                }
+            $docMeasures = $this->getMeasures($docPage);
+            if ($this->requestData['measure']) {
+                $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
             }
 
             // Viewer configuration.
