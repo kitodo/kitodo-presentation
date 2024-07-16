@@ -402,7 +402,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
             pageHeight: pdfHeight,
             pageWidth: pdfWidth,
             scale: 100
-        }
+        };
 
         const pdf_tk = new verovio.toolkit();
         pdf_tk.renderData(tk.getMEI(), pdfOptions);

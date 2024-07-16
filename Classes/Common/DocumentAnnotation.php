@@ -20,6 +20,14 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Log\Logger;
 
+/**
+ * Implementation for displaying annotations from an annotation server to a document
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class DocumentAnnotation
 {
     /**

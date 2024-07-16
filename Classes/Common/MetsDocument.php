@@ -281,7 +281,7 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see \Kitodo\Dlf\Common\Doc::getPageBeginning()
+     * This gets the measure beginning of a page
      */
     public function getPageBeginning($pageId, $fileId)
     {
