@@ -129,10 +129,9 @@ class PageViewController extends AbstractController
             $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
             $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
         }
-        if ($this->document->getCurrentDocument() instanceof MetsDocument) {
-            $this->scores = $this->getScore($this->requestData['page']);
-            $this->measures = $this->getMeasures($this->requestData['page']);
-        }
+
+        $this->scores = $this->getScore($this->requestData['page']);
+        $this->measures = $this->getMeasures($this->requestData['page']);
 
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
@@ -316,37 +315,39 @@ class PageViewController extends AbstractController
         $measureCounterToMeasureId = [];
         $measureLinks = [];
         $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'];
-        if (isset($defaultFileId)) {
-            $musicalStruct = $doc->musicalStructureInfo;
+        if ($doc instanceof MetsDocument) {
+            if (isset($defaultFileId)) {
+                $musicalStruct = $doc->musicalStructureInfo;
 
-            $i = 0;
-            foreach ($musicalStruct as $measureData) {
-                if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
-                    $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
-                    $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
+                $i = 0;
+                foreach ($musicalStruct as $measureData) {
+                    if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
+                        $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
+                        $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
 
-                    if ($specificDoc) {
-                        // build link for each measure
-                        $params = [
-                            'tx_dlf' => $this->requestData,
-                            'tx_dlf[docMeasure][' . $docNumber . ']' => $i
-                        ];
-                    } else {
-                        // build link for each measure
-                        $params = [
-                            'tx_dlf' => $this->requestData,
-                            'tx_dlf[measure]' => $i
-                        ];
+                        if ($specificDoc) {
+                            // build link for each measure
+                            $params = [
+                                'tx_dlf' => $this->requestData,
+                                'tx_dlf[docMeasure][' . $docNumber . ']' => $i
+                            ];
+                        } else {
+                            // build link for each measure
+                            $params = [
+                                'tx_dlf' => $this->requestData,
+                                'tx_dlf[measure]' => $i
+                            ];
+                        }
+                        $uriBuilder = $this->uriBuilder;
+                        $uri = $uriBuilder
+                            ->setArguments($params)
+                            ->setArgumentPrefix('tx_dlf')
+                            ->uriFor('main');
+                        $measureLinks[$measureData['files']['SCORE']['begin']] = $uri;
+
                     }
-                    $uriBuilder = $this->uriBuilder;
-                    $uri = $uriBuilder
-                        ->setArguments($params)
-                        ->setArgumentPrefix('tx_dlf')
-                        ->uriFor('main');
-                    $measureLinks[$measureData['files']['SCORE']['begin']] = $uri;
-
+                    $i++;
                 }
-                $i++;
             }
         }
         return [
@@ -375,37 +376,39 @@ class PageViewController extends AbstractController
         } else {
             $doc = $this->document->getCurrentDocument();
         }
-        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpScore']);
+        if ($doc instanceof MetsDocument) {
+            $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpScore']);
 
-        $pageId = $doc->physicalStructure[$page];
-        $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
+            $pageId = $doc->physicalStructure[$page];
+            $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
 
-        foreach ($fileGrpsScores as $fileGrpScore) {
-            if (isset($files[$fileGrpScore])) {
-                $loc = $files[$fileGrpScore];
-                break;
+            foreach ($fileGrpsScores as $fileGrpScore) {
+                if (isset($files[$fileGrpScore])) {
+                    $loc = $files[$fileGrpScore];
+                    break;
+                }
             }
-        }
 
-        if (!empty($loc)) {
-            $score['mimetype'] = $doc->getFileMimeType($loc);
-            $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
-            $score['url'] = $doc->getFileLocation($loc);
-            if ($this->settings['useInternalProxy']) {
-                // Configure @action URL for form.
-                $uri = $this->uriBuilder->reset()
-                    ->setTargetPageUid($this->pageUid)
-                    ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                    ->setArguments(
-                        [
-                            'eID' => 'tx_dlf_pageview_proxy',
-                            'url' => $score['url'],
-                            'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
-                        ]
-                    )
-                    ->build();
+            if (!empty($loc)) {
+                $score['mimetype'] = $doc->getFileMimeType($loc);
+                $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
+                $score['url'] = $doc->getFileLocation($loc);
+                if ($this->settings['useInternalProxy']) {
+                    // Configure @action URL for form.
+                    $uri = $this->uriBuilder->reset()
+                        ->setTargetPageUid($this->pageUid)
+                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+                        ->setArguments(
+                            [
+                                'eID' => 'tx_dlf_pageview_proxy',
+                                'url' => $score['url'],
+                                'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
+                            ]
+                        )
+                        ->build();
 
-                $score['url'] = $uri;
+                    $score['url'] = $uri;
+                }
             }
         }
 
@@ -468,8 +471,6 @@ class PageViewController extends AbstractController
                     $docImage = [];
                     $docFulltext = [];
                     $docAnnotationContainers = [];
-                    $docScore = [];
-                    $docMeasures = [];
 
                     if ($this->document->getCurrentDocument() instanceof MetsDocument) {
                         // check if page or measure is set
@@ -485,13 +486,11 @@ class PageViewController extends AbstractController
                     $docImage[0] = $this->getImage($docPage, $document);
                     $currentMeasureId = '';
 
-                    if ($this->document->getCurrentDocument() instanceof MetsDocument) {
-                        $docScore = $this->getScore($docPage, $document);
-                        $docMeasures = $this->getMeasures($docPage, $document);
+                    $docScore = $this->getScore($docPage, $document);
+                    $docMeasures = $this->getMeasures($docPage, $document);
 
-                        if ($this->requestData['docMeasure'][$i]) {
-                            $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
-                        }
+                    if ($this->requestData['docMeasure'][$i]) {
+                        $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
                     }
 
                     $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer({
