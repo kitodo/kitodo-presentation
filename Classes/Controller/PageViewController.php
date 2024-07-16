@@ -317,7 +317,6 @@ class PageViewController extends AbstractController
         $measureLinks = [];
         $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'];
         if (isset($defaultFileId)) {
-            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
             $musicalStruct = $doc->musicalStructureInfo;
 
             $i = 0;
@@ -390,7 +389,6 @@ class PageViewController extends AbstractController
 
         if (!empty($loc)) {
             $score['mimetype'] = $doc->getFileMimeType($loc);
-            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
             $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
             $score['url'] = $doc->getFileLocation($loc);
             if ($this->settings['useInternalProxy']) {

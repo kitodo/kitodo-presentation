@@ -325,7 +325,6 @@ class DocumentAnnotation
         $startOrder = 0;
         $endOrder = 0;
 
-        // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
         foreach ($this->document->getCurrentDocument()->musicalStructureInfo as $key => $musicalInfo) {
             if ($musicalInfo['type'] === 'measure' && is_array($musicalInfo['files'])) {
                 foreach ($musicalInfo['files'] as $file) {
@@ -372,7 +371,6 @@ class DocumentAnnotation
         // Get the related page numbers
         $measurePages = [];
         foreach ($measures as $measure) {
-            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
             $measurePages[$measure['order']] = $this->document->getCurrentDocument()->musicalStructure[$measure['order']]['page'];
         }
 
@@ -411,7 +409,6 @@ class DocumentAnnotation
         $apiBaseUrl = $conf['annotationServerUrl'];
 
         if ($apiBaseUrl && $document->getCurrentDocument() instanceof MetsDocument) {
-            // @phpstan-ignore-next-line It is ensured that getCurrentDocument returns a MetsDocument
             $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
             if (count($purl) > 0) {
                 $annotationRequest = new AnnotationRequest($apiBaseUrl);
