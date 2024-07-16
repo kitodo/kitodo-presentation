@@ -182,7 +182,6 @@ class Embedded3DViewer implements MiddlewareInterface
      * @param string $viewerUrl
      * @param string $html
      * @param string $modelUrl
-     * @param string $modelPath
      * @param array $modelInfo
      * @return string
      */
