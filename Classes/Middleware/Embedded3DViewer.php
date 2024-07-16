@@ -19,9 +19,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
+use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
 
 /**
@@ -76,7 +79,17 @@ class Embedded3DViewer implements MiddlewareInterface
             $viewer = $parameters['viewer'];
         }
 
-        // create response object
+        if (empty($viewer)) {
+            // render default viewer html
+            $htmlFilePath = GeneralUtility::getFileAbsFileName('EXT:dlf/Resources/Private/Templates/View3D/Standalone.html');
+            $html = file_get_contents($htmlFilePath);
+            $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+            $file = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/JavaScript/3DViewer/model-viewer-3.5.0.min.js');
+            $html = str_replace('{{modelViewerJS}}', $file->getPublicUrl(), $html);
+            $html = str_replace("{{modelUrl}}", $parameters['model'], $html);
+            return new HtmlResponse($html);
+        }
+
         /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);
 
@@ -112,7 +125,7 @@ class Embedded3DViewer implements MiddlewareInterface
         }
 
         $htmlFile = "index.html";
-        if (isset($config["base"]) && !empty($config["base"]) ) {
+        if (isset($config["base"]) && !empty($config["base"])) {
             $htmlFile = $config["base"];
         }
 
@@ -122,7 +135,7 @@ class Embedded3DViewer implements MiddlewareInterface
         }
 
         $html = $viewerFolder->getFile($htmlFile)->getContents();
-        $html = $this->replacePlaceholders($viewerUrl, $html, $parameters['model'], $modelInfo);
+        $html = $this->replacePlaceholders($viewerUrl, $html, $model, $modelInfo);
 
         $response->getBody()->write($html);
         return $response;
@@ -203,4 +216,5 @@ class Embedded3DViewer implements MiddlewareInterface
         $html = str_replace("{{modelResource}}", $modelInfo["basename"], $html);
         return $html;
     }
+
 }
