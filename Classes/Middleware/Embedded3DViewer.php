@@ -81,56 +81,8 @@ class Embedded3DViewer implements MiddlewareInterface
         if (empty($viewer)) {
             return $this->renderDefaultViewer($parameters['model']);
         }
+        return $this->renderCustomViewer($request, $viewer, $modelFormat, $parameters['model'], $modelInfo);
 
-        /** @var Response $response */
-        $response = GeneralUtility::makeInstance(Response::class);
-
-        /** @var StorageRepository $storageRepository */
-        $storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
-        $defaultStorage = $storageRepository->getDefaultStorage();
-
-        if (!$defaultStorage->hasFolder(self::VIEWER_FOLDER)) {
-            return $this->errorResponse('Required folder "' . self::VIEWER_FOLDER . '" was not found in the default storage "' . $defaultStorage->getName() . '"', $request);
-        }
-
-        $viewerModules = $defaultStorage->getFolder(self::VIEWER_FOLDER);
-        if (!$viewerModules->hasFolder($viewer)) {
-            return $this->errorResponse('Viewer folder "' . $viewer . '" was not found under the folder "' . self::VIEWER_FOLDER . '"', $request);
-        }
-
-        $viewerFolder = $viewerModules->getSubfolder($viewer);
-        if (!$viewerFolder->hasFile(self::VIEWER_CONFIG_YML)) {
-            return $this->errorResponse('Viewer folder "' . $viewer . '" does not contain a file named "' . self::VIEWER_CONFIG_YML . '"', $request);
-        }
-
-        /** @var YamlFileLoader $yamlFileLoader */
-        $yamlFileLoader = GeneralUtility::makeInstance(YamlFileLoader::class);
-        $viewerConfigPath = $defaultStorage->getName() . "/" . self::VIEWER_FOLDER . "/" . $viewer . "/";
-        $config = $yamlFileLoader->load($viewerConfigPath . self::VIEWER_CONFIG_YML)["viewer"];
-
-        if (!isset($config["supportedModelFormats"]) || empty($config["supportedModelFormats"])) {
-            return $this->errorResponse('Required key "supportedModelFormats" does not exist in the file "' . self::VIEWER_CONFIG_YML . '" of viewer "' . $viewer . '" or has no value', $request);
-        }
-
-        if (array_search(strtolower($modelFormat), array_map('strtolower', $config["supportedModelFormats"])) === false) {
-            return $this->warningResponse('Viewer "' . $viewer . '" does not support the model format "' . $modelFormat . '"', $request);
-        }
-
-        $htmlFile = "index.html";
-        if (isset($config["base"]) && !empty($config["base"])) {
-            $htmlFile = $config["base"];
-        }
-
-        $viewerUrl = $viewerConfigPath;
-        if (isset($config["url"]) && !empty($config["url"])) {
-            $viewerUrl = rtrim($config["url"]);
-        }
-
-        $html = $viewerFolder->getFile($htmlFile)->getContents();
-        $html = $this->replacePlaceholders($viewerUrl, $html, $parameters['model'], $modelInfo);
-
-        $response->getBody()->write($html);
-        return $response;
     }
 
     /**
@@ -218,6 +170,7 @@ class Embedded3DViewer implements MiddlewareInterface
     {
         $htmlFilePath = GeneralUtility::getFileAbsFileName('EXT:dlf/Resources/Private/Templates/View3D/Standalone.html');
         $html = file_get_contents($htmlFilePath);
+        /** @var ResourceFactory $resourceFactory */
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
         $file = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/JavaScript/3DViewer/model-viewer-3.5.0.min.js');
         $html = str_replace('{{modelViewerJS}}', $file->getPublicUrl(), $html);
@@ -225,4 +178,68 @@ class Embedded3DViewer implements MiddlewareInterface
         return new HtmlResponse($html);
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param mixed $viewer
+     * @param mixed $modelFormat
+     * @param $model
+     * @param array|string $modelInfo
+     * @return ResponseInterface|Response
+     * @throws \TYPO3\CMS\Core\Error\Http\InternalServerErrorException
+     * @throws \TYPO3\CMS\Core\Error\Http\PageNotFoundException
+     * @throws \TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException
+     * @throws \TYPO3\CMS\Core\Resource\Exception\InsufficientFolderReadPermissionsException
+     */
+    public function renderCustomViewer(ServerRequestInterface $request, mixed $viewer, mixed $modelFormat, $model, array|string $modelInfo): ResponseInterface|Response
+    {
+        /** @var Response $response */
+        $response = GeneralUtility::makeInstance(Response::class);
+
+        /** @var StorageRepository $storageRepository */
+        $storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
+        $defaultStorage = $storageRepository->getDefaultStorage();
+
+        if (!$defaultStorage->hasFolder(self::VIEWER_FOLDER)) {
+            return $this->errorResponse('Required folder "' . self::VIEWER_FOLDER . '" was not found in the default storage "' . $defaultStorage->getName() . '"', $request);
+        }
+
+        $viewerModules = $defaultStorage->getFolder(self::VIEWER_FOLDER);
+        if (!$viewerModules->hasFolder($viewer)) {
+            return $this->errorResponse('Viewer folder "' . $viewer . '" was not found under the folder "' . self::VIEWER_FOLDER . '"', $request);
+        }
+
+        $viewerFolder = $viewerModules->getSubfolder($viewer);
+        if (!$viewerFolder->hasFile(self::VIEWER_CONFIG_YML)) {
+            return $this->errorResponse('Viewer folder "' . $viewer . '" does not contain a file named "' . self::VIEWER_CONFIG_YML . '"', $request);
+        }
+
+        /** @var YamlFileLoader $yamlFileLoader */
+        $yamlFileLoader = GeneralUtility::makeInstance(YamlFileLoader::class);
+        $viewerConfigPath = $defaultStorage->getName() . "/" . self::VIEWER_FOLDER . "/" . $viewer . "/";
+        $config = $yamlFileLoader->load($viewerConfigPath . self::VIEWER_CONFIG_YML)["viewer"];
+
+        if (!isset($config["supportedModelFormats"]) || empty($config["supportedModelFormats"])) {
+            return $this->errorResponse('Required key "supportedModelFormats" does not exist in the file "' . self::VIEWER_CONFIG_YML . '" of viewer "' . $viewer . '" or has no value', $request);
+        }
+
+        if (array_search(strtolower($modelFormat), array_map('strtolower', $config["supportedModelFormats"])) === false) {
+            return $this->warningResponse('Viewer "' . $viewer . '" does not support the model format "' . $modelFormat . '"', $request);
+        }
+
+        $htmlFile = "index.html";
+        if (isset($config["base"]) && !empty($config["base"])) {
+            $htmlFile = $config["base"];
+        }
+
+        $viewerUrl = $viewerConfigPath;
+        if (isset($config["url"]) && !empty($config["url"])) {
+            $viewerUrl = rtrim($config["url"]);
+        }
+
+        $html = $viewerFolder->getFile($htmlFile)->getContents();
+        $html = $this->replacePlaceholders($viewerUrl, $html, $model, $modelInfo);
+
+        $response->getBody()->write($html);
+        return $response;
+    }
 }
