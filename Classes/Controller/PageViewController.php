@@ -468,6 +468,8 @@ class PageViewController extends AbstractController
                     $docImage = [];
                     $docFulltext = [];
                     $docAnnotationContainers = [];
+                    $docScore = [];
+                    $docMeasures = [];
 
                     if ($this->document->getCurrentDocument() instanceof MetsDocument) {
                         // check if page or measure is set
