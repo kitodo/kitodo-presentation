@@ -54,10 +54,10 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * This holds the current document
      *
-     * @var Document|null
+     * @var Document
      * @access protected
      */
-    protected ?Document $document;
+    protected Document $document;
 
     /**
      * @var ConfigurationManager
