@@ -14,3 +14,5 @@ paths-ignore:
   - Resources/Public/JavaScript/jQueryUI
   - Resources/Public/JavaScript/OpenLayers
   - Resources/Public/JavaScript/Toastify
+  - Resources/Public/JavaScript/Gridstack
+  - Resources/Public/JavaScript/Verovio

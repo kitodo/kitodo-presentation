@@ -98,6 +98,9 @@ class ToolboxController extends AbstractController
                     case 'searchindocumenttool':
                         $this->renderToolByName('renderSearchInDocumentTool');
                         break;
+                    case 'scoretool':
+                        $this->renderToolByName('renderScoreTool');
+                        break;
                     default:
                         $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
                 }
@@ -201,6 +204,42 @@ class ToolboxController extends AbstractController
     }
 
     /**
+     * Renders the score tool
+     *
+     * @return void
+     */
+    public function renderScoreTool()
+    {
+        if (
+            $this->isDocMissingOrEmpty()
+            || empty($this->extConf['files']['fileGrpScore'])
+        ) {
+            // Quit without doing anything if required variables are not set.
+            return;
+        }
+
+        if ($this->requestData['page']) {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
+        } else {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
+        }
+
+        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpScore']);
+        foreach ($fileGrpsScores as $fileGrpScore) {
+            if ($this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$fileGrpScore]) {
+                $scoreFile = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$fileGrpScore];
+            }
+        }
+        if (!empty($scoreFile)) {
+            $this->view->assign('score', true);
+            $this->view->assign('activateScoreInitially', MathUtility::forceIntegerInRange($this->settings['activateScoreInitially'], 0, 1, 0));
+        } else {
+            $this->view->assign('score', false);
+        }
+    }
+
+    /**
+     * Renders the image download tool
      * Renders the image download tool (used in template)
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
@@ -415,17 +454,17 @@ class ToolboxController extends AbstractController
             return;
         }
 
-        // Fill markers.
         $viewArray = [
-            'LABEL_QUERY_URL' => $this->settings['queryInputName'],
-            'LABEL_START' => $this->settings['startInputName'],
-            'LABEL_ID' => $this->settings['idInputName'],
-            'LABEL_PID' => $this->settings['pidInputName'],
-            'LABEL_PAGE_URL' => $this->settings['pageInputName'],
-            'LABEL_HIGHLIGHT_WORD' => $this->settings['highlightWordInputName'],
-            'LABEL_ENCRYPTED' => $this->settings['encryptedInputName'],
-            'CURRENT_DOCUMENT' => $this->getCurrentDocumentId(),
-            'SOLR_ENCRYPTED' => $this->getEncryptedCoreName() ? : ''
+            'labelQueryUrl' => $this->settings['queryInputName'],
+            'labelStart' => $this->settings['startInputName'],
+            'labelId' => $this->settings['idInputName'],
+            'labelPid' => $this->settings['pidInputName'],
+            'labelPageUrl' => $this->settings['pageInputName'],
+            'labelHighlightWord' => $this->settings['highlightWordInputName'],
+            'labelEncrypted' => $this->settings['encryptedInputName'],
+            'documentId' => $this->getCurrentDocumentId(),
+            'documentPageId' => $this->document->getPid(),
+            'solrEncrypted' => $this->getEncryptedCoreName() ? : ''
         ];
 
         $this->view->assign('searchInDocument', $viewArray);

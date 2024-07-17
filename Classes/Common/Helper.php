@@ -935,6 +935,11 @@ class Helper
     private static function getLocalConfigurationByPath(string $path)
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        return $configurationManager->getLocalConfigurationValueByPath($path);
+
+        if (array_key_exists(strtok($path, '/'), $configurationManager->getLocalConfiguration())) {
+            return $configurationManager->getLocalConfigurationValueByPath($path);
+        }
+
+        return ArrayUtility::getValueByPath($GLOBALS['TYPO3_CONF_VARS'], $path);
     }
 }

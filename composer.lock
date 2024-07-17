@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd3bfc47ff15cf3a39b881512541048a",
+    "content-hash": "3297b24d6516d2bbc90630a3be0fce7f",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2261,6 +2261,54 @@
                 "source": "https://github.com/ralouphie/getallheaders/tree/develop"
             },
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "slub/php-mods-reader",
+            "version": "v0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/slub/php-mods-reader.git",
+                "reference": "a2335db290349990fd0f5e5fdc0e396da851f0b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/slub/php-mods-reader/zipball/a2335db290349990fd0f5e5fdc0e396da851f0b3",
+                "reference": "a2335db290349990fd0f5e5fdc0e396da851f0b3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~9.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Slub\\Mods\\": "src/Mods/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Beatrycze Volk",
+                    "email": "beatrycze.volk@slub-dresden.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Read MODS metadata into PHP objects that offer some convenient data extraction methods",
+            "keywords": [
+                "mods",
+                "mods-reader"
+            ],
+            "support": {
+                "issues": "https://github.com/slub/php-mods-reader/issues",
+                "source": "https://github.com/slub/php-mods-reader/tree/v0.3.0"
+            },
+            "time": "2024-04-30T15:19:40+00:00"
         },
         {
             "name": "solarium/solarium",
@@ -6562,16 +6610,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.1",
+            "version": "1.11.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e524358f930e41a2b4cca1320e3b04fc26b39e0b"
+                "reference": "52d2bbfdcae7f895915629e4694e9497d0f8e28d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e524358f930e41a2b4cca1320e3b04fc26b39e0b",
-                "reference": "e524358f930e41a2b4cca1320e3b04fc26b39e0b",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/52d2bbfdcae7f895915629e4694e9497d0f8e28d",
+                "reference": "52d2bbfdcae7f895915629e4694e9497d0f8e28d",
                 "shasum": ""
             },
             "require": {
@@ -6616,7 +6664,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-15T08:00:59+00:00"
+            "time": "2024-07-06T11:17:41+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

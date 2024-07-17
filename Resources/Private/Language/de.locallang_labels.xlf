@@ -577,6 +577,10 @@
 				<source>Search in Document</source>
 				<target>Suche im Dokument</target>
 			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.scoretool">
+				<target>Notentext</target>
+				<source>Score</source>
+			</trans-unit>
 			<trans-unit id="tt_content.dlf_audioplayer">
 				<source>DLF: Audio Player</source>
 				<target>DLF: Audioplayer</target>
@@ -840,6 +844,10 @@
 			<trans-unit id="config.solr.fields.geom">
 				<target>Solr-Schema-Feld "geom" : GeoJSON geometry for spatial search (Standard ist "geom")</target>
 				<source>Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</source>
+			</trans-unit>
+			<trans-unit id="config.annotationServerUrl">
+				<target>Annotation server url</target>
+				<source>Annotation server url</source>
 			</trans-unit>
 		</body>
 	</file>

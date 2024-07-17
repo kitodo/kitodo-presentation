@@ -1,3 +1,5 @@
+# cat=Annotations; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.annotationServerUrl
+annotationServerUrl =
 # cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.enableInternalProxy
 general.enableInternalProxy = 0
 # cat=General; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.userAgent
@@ -26,6 +28,8 @@ files.fileGrpDownload = DOWNLOAD
 files.fileGrpFulltext = FULLTEXT
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpAudio
 files.fileGrpAudio = AUDIO
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpScore
+files.fileGrpScore = SCORE
 # cat=IIIF; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.indexAnnotations
 iiif.indexAnnotations = 0
 # cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.thumbnailWidth
