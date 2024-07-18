@@ -383,8 +383,6 @@ class MetadataController extends AbstractController
             foreach ($metadata[$i][$name] as &$langValue) {
                 $langValue = Helper::getLanguageName($langValue);
             }
-        } elseif (!empty($value)) {
-            $metadata[$i][$name][0] = $metadata[$i][$name][0];
         }
     }
 
