@@ -239,7 +239,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'PageView',
     [
         \Kitodo\Dlf\Controller\PageViewController::class => 'main',
-        \Kitodo\Dlf\Controller\PageViewController::class => 'addDocument',
     ],
     // non-cacheable actions
     [
