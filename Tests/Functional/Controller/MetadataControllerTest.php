@@ -34,7 +34,7 @@ class MetadataControllerTest extends AbstractControllerTest
     public function canMainAction()
     {
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'storagePid' => 0
         ];
         $templateHtml = '<html>

@@ -45,7 +45,7 @@ class PageViewControllerTest extends AbstractControllerTest
                     {image.mimetype}</f:for>
                 viewerConfiguration:{viewerConfiguration}
             </html>';
-        $controller = $this->setUpController(PageViewController::class, ['solrcore' => 4], $templateHtml);
+        $controller = $this->setUpController(PageViewController::class, ['solrcore' => $this->currentSolrUid], $templateHtml);
         $request = $this->setUpRequest('main');
         $response = $this->getResponse();
 

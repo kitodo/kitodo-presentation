@@ -39,7 +39,7 @@ class CollectionControllerTest extends AbstractControllerTest {
     public function canListAction()
     {
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'collections' => '1',
             'dont_show_single' => 'some_value',
             'randomize' => ''
@@ -62,7 +62,7 @@ class CollectionControllerTest extends AbstractControllerTest {
     public function canListActionForwardToShow()
     {
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'collections' => '1',
             'randomize' => ''
         ];
@@ -80,7 +80,7 @@ class CollectionControllerTest extends AbstractControllerTest {
     public function canShowAction()
     {
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'collections' => '1',
             'dont_show_single' => 'some_value',
             'randomize' => ''
@@ -104,7 +104,7 @@ class CollectionControllerTest extends AbstractControllerTest {
     public function canShowSortedAction()
     {
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'collections' => '1',
             'dont_show_single' => 'some_value',
             'randomize' => ''

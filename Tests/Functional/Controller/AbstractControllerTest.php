@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Controller\AbstractController;
+use Kitodo\Dlf\Domain\Model\SolrCore;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
@@ -26,6 +27,9 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 
 abstract class AbstractControllerTest extends FunctionalTestCase
 {
+    public $currentSolrUid = 1;
+
+    public $currentCoreName = '';
 
     protected function setUpData($databaseFixtures): void
     {
@@ -33,15 +37,21 @@ abstract class AbstractControllerTest extends FunctionalTestCase
             $this->importCSVDataSet($filePath);
         }
         $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $this->initializeRepository(DocumentRepository::class, 0);
+        $documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
+
+        $allFixtureDocuments = $documentRepository->findAll();
+        foreach ($allFixtureDocuments as $document) {
+            $document->setSolrCore($this->currentSolrUid);
+            $documentRepository->update($document);
+        }
+        $this->persistenceManager->persistAll();
     }
 
-    protected function setUpSolr($uid, $storagePid, $solrFixtures)
+    protected function setUpSolr($uid, $storagePid, $solrFixtures, $name = '')
     {
         $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
 
-        // Setup Solr only once for all tests in this suite
-        static $solr = null;
+        $solr = null;
 
         if ($solr === null) {
             $coreName = Solr::createCore();
@@ -51,10 +61,13 @@ abstract class AbstractControllerTest extends FunctionalTestCase
             }
         }
 
-        $coreModel = $this->solrCoreRepository->findByUid($uid);
-        $coreModel->setIndexName($solr->core);
-        $this->solrCoreRepository->update($coreModel);
+        $coreModel = new SolrCore();
+        $coreModel->setIndexName($coreName);
+        $this->solrCoreRepository->add($coreModel);
         $this->persistenceManager->persistAll();
+        $this->currentSolrUid = $coreModel->getUid();
+        $this->currentCoreName = $coreName;
+
     }
 
     protected function setUpRequest($actionName, $arguments = []): Request
