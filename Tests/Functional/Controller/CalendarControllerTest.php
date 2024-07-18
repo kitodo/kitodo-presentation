@@ -36,7 +36,7 @@ class CalendarControllerTest extends AbstractControllerTest
      */
     public function canCalendarAction()
     {
-        $settings = ['solrcore' => 4];
+        $settings = ['solrcore' => $this->currentSolrUid];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             calendarData:<f:for each="{calendarData}" as="month">
                 <f:for each="{month.week}" as="week"><f:for each="{week}" as="day"><f:if condition="{day.issues}">
@@ -89,7 +89,7 @@ class CalendarControllerTest extends AbstractControllerTest
      */
     public function canYearsAction()
     {
-        $settings = ['solrcore' => 4];
+        $settings = ['solrcore' => $this->currentSolrUid];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             documentId: {documentId}
             allYearDocTitle: {allYearDocTitle}

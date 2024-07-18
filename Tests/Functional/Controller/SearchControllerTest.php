@@ -31,8 +31,8 @@ class SearchControllerTest extends AbstractControllerTest
     public function setUp(): void
     {
         parent::setUp();
-        $this->setUpData(self::$databaseFixtures);
         $this->setUpSolr(4, 0, self::$solrFixtures);
+        $this->setUpData(self::$databaseFixtures);
     }
 
     /**
@@ -52,7 +52,7 @@ class SearchControllerTest extends AbstractControllerTest
             ]
         ];
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'extendedFields' => 'field1,field2,field3',
             'extendedSlotCount' => 1
         ];
@@ -94,7 +94,7 @@ class SearchControllerTest extends AbstractControllerTest
             'query' => '*'
         ];
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'storagePid' => 0,
             'facets' => 'type',
             'facetCollections' => '1'

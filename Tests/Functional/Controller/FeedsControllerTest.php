@@ -36,7 +36,7 @@ class FeedsControllerTest extends AbstractControllerTest
     {
         $GLOBALS['LANG'] = LanguageService::create('default');
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'collections' => '1',
             'limit' => 1
         ];

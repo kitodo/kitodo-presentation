@@ -139,7 +139,7 @@ class ToolboxControllerTest extends AbstractControllerTest
             'double' => 1
         ];
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'library' => 1,
             'tools' => 'tx_dlf_annotationtool',
             'limit' => 1
@@ -197,7 +197,7 @@ class ToolboxControllerTest extends AbstractControllerTest
             'page' => 1
         ];
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'tools' => 'tx_dlf_searchindocumenttool',
             'queryInputName' => 'queryInputName',
             'startInputName' => 'startInputName',

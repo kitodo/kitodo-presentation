@@ -44,7 +44,7 @@ class ListViewControllerTest extends AbstractControllerTest
             ]
         ];
         $settings = [
-            'solrcore' => 4,
+            'solrcore' => $this->currentSolrUid,
             'storagePid' => 2,
             'dont_show_single' => 'some_value',
             'randomize' => ''
@@ -52,9 +52,8 @@ class ListViewControllerTest extends AbstractControllerTest
         $templateHtml = '<html xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
                 <f:spaceless>
                 uniqueId-length: <v:count.bytes>{viewData.uniqueId}</v:count.bytes>
-                page: {viewData.requestData.page}
+                page: {page}
                 double: {viewData.requestData.double}
-                widgetPage: {widgetPage.currentPage}
                 lastSearch.query: {lastSearch.query}
                 numResults: {numResults}
                 </f:spaceless>

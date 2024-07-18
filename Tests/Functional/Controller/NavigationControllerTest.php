@@ -43,7 +43,7 @@ class NavigationControllerTest extends AbstractControllerTest
                 numPages: {numPages}
                 pageOptions:<f:for each="{pageOptions}" as="entry">{entry},</f:for>
             </html>';
-        $controller = $this->setUpController(NavigationController::class, ['solrcore' => 4], $templateHtml);
+        $controller = $this->setUpController(NavigationController::class, ['solrcore' => $this->currentSolrUid], $templateHtml);
         $request = $this->setUpRequest('main');
         $response = $this->getResponse();
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
@@ -69,7 +69,7 @@ class NavigationControllerTest extends AbstractControllerTest
         $pageSelectForm->setPage(2);
         $pageSelectForm->setDouble(false);
 
-        $controller = $this->setUpController(NavigationController::class, ['solrcore' => 4], '');
+        $controller = $this->setUpController(NavigationController::class, ['solrcore' => $this->currentSolrUid], '');
         $request = $this->setUpRequest('pageSelect', ['pageSelectForm' => $pageSelectForm]);
         $response = $this->getResponse();
 
