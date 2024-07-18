@@ -43,8 +43,8 @@ page {
     kitodo-saveas = EXT:dlf/Resources/Public/JavaScript/Verovio/saveas.js
     kitodo-pdf= EXT:dlf/Resources/Public/JavaScript/Verovio/pdfkit.js
     kitodo-pdfkita = EXT:dlf/Resources/Public/JavaScript/Verovio/blobstream.js
-    kitodo-wildwebmidi = EXT:dlf/Resources/Public/JavaScript/Verovio/wildwebmidi.js
-    kitodo-mediaPlayer = EXT:dlf/Resources/Public/JavaScript/PageView/mediaplayer.js
+    kitodo-wildWebMidi = EXT:dlf/Resources/Public/JavaScript/WildWebMidi/wildwebmidi.js
+    kitodo-webAudioPlayer = EXT:dlf/Resources/Public/JavaScript/WildWebMidi/web_audio_player.js
 
     # PageView plugin
     kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
@@ -131,7 +131,7 @@ plugin.tx_dlf_search {
 
 plugin.tx_dlf_annotation {
     settings {
-      apiUrl = 
+      apiUrl =
     }
 }
 
