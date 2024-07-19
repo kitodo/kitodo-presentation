@@ -1748,7 +1748,7 @@ final class MetsDocument extends AbstractDocument
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
-
+            $this->numMeasures = 0;
             // Does the document have a structMap node of type "MUSICAL"?
             $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]/mets:div');
             if (!empty($elementNodes)) {
