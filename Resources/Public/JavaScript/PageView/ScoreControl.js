@@ -289,6 +289,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
         view: new ol.View({
             projection: proj,
             //Center: [0, 0],            center: ol.extent.getCenter(extent),
+            center: [0, 0],
             extent: extent,
             zoom: 1,
             minZoom: 1,

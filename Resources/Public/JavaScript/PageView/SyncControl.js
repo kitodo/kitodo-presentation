@@ -33,8 +33,16 @@ class SyncViewsControl extends ol.control.Control {
 
         var viewerContext = options.dlfViewerObject;
 
-        button.addEventListener('click', viewerContext.syncControl.setSync(), false);
-        buttonUnsync.addEventListener('click', viewerContext.syncControl.unsetSync(), false);
+        var syncViews = function(e) {
+            viewerContext.syncControl.setSync();
+        };
+
+        var unsyncViews = function(e) {
+            viewerContext.syncControl.unsetSync();
+        };
+
+        button.addEventListener('click', syncViews, false);
+        buttonUnsync.addEventListener('click', unsyncViews, false);
     }
 
 }
