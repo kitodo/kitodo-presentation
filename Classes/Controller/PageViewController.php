@@ -299,11 +299,11 @@ class PageViewController extends AbstractController
     /**
      * Get all measures from musical struct
      * @param int $page
-     * @param ?Document $specificDoc
+     * @param ?MetsDocument $specificDoc
      * @param int|null $docNumber
      * @return array
      */
-    protected function getMeasures(int $page, Document $specificDoc = null, $docNumber = null): array
+    protected function getMeasures(int $page, MetsDocument $specificDoc = null, $docNumber = null): array
     {
         if ($specificDoc) {
             $doc = $specificDoc;
@@ -363,11 +363,11 @@ class PageViewController extends AbstractController
      * @access protected
      *
      * @param int $page: Page number
-     * @param ?Document $specificDoc
+     * @param ?MetsDocument $specificDoc
      *
      * @return array URL and MIME type of fulltext file
      */
-    protected function getScore(int $page, Document $specificDoc = null)
+    protected function getScore(int $page, MetsDocument $specificDoc = null)
     {
         $score = [];
         $loc = '';
@@ -614,11 +614,11 @@ class PageViewController extends AbstractController
      *
      * @param int $page Page number
      *
-     * @param ?Document $specificDoc
+     * @param ?MetsDocument $specificDoc
      *
      * @return array URL and MIME type of image file
      */
-    protected function getImage(int $page, Document $specificDoc = null): array
+    protected function getImage(int $page, MetsDocument $specificDoc = null): array
     {
         $image = [];
         // Get @USE value of METS fileGrp.
@@ -626,10 +626,10 @@ class PageViewController extends AbstractController
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
             if ($specificDoc) {
                 // Get image link.
-                $physicalStructureInfo = $specificDoc->getCurrentDocument()->physicalStructureInfo[$specificDoc->getCurrentDocument()->physicalStructure[$page]];
+                $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
                 $files = $physicalStructureInfo['files'];
                 if (!empty($files[$fileGrpImages])) {
-                    $file = $specificDoc->getCurrentDocument()->getFileInfo($files[$fileGrpImages]);
+                    $file = $specificDoc->getFileInfo($files[$fileGrpImages]);
                     $image['url'] = $file['location'];
                     $image['mimetype'] = $file['mimeType'];
 
