@@ -404,9 +404,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
         const pdf_tk = new verovio.toolkit();
         pdf_tk.renderData(tk.getMEI(), pdfOptions);
-        var parser = new DOMParser();
-        var xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
-        var work = xmlDoc.getElementsByTagName("work");
 
         for (let i = 0; i < pdf_tk.getPageCount(); i++) {
             doc.addPage({size: pdfFormat, layout: pdfOrientation});
