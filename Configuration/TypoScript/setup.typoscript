@@ -18,6 +18,7 @@ config {
 
 page {
   includeCSS {
+    3dviewer = EXT:dlf/Resources/Public/Stylesheets/3d-viewer.css
     jPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
     openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.css
   }
