@@ -43,8 +43,8 @@ class AnnotationTarget
     {
         $this->url = $url;
 
-        $path = parse_url($url,  PHP_URL_PATH);
-        $fragment = parse_url($url,  PHP_URL_FRAGMENT);
+        $path = parse_url($url, PHP_URL_PATH);
+        $fragment = parse_url($url, PHP_URL_FRAGMENT);
         list($objectId, $id) = explode('/', trim($path, '/'));
         list($rangeParameterName, $rangeValue) = explode('=', $fragment);
 
@@ -103,7 +103,7 @@ class AnnotationTarget
             return false;
         }
 
-        if (parse_url($this->getUrl(),  PHP_URL_FRAGMENT)) {
+        if (parse_url($this->getUrl(), PHP_URL_FRAGMENT)) {
             return !empty($this->getId()) && $this->isValidRange();
         }
 
@@ -133,7 +133,7 @@ class AnnotationTarget
      */
     public function isScoreRange()
     {
-        return $this->getRangeParameterName() === 'measureRanges' ;
+        return $this->getRangeParameterName() === 'measureRanges';
     }
 
     /**
@@ -151,5 +151,4 @@ class AnnotationTarget
     {
         return $this->getRangeParameterName() === 'xywh';
     }
-
 }

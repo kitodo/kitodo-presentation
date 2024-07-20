@@ -67,22 +67,18 @@ class DocumentAnnotation
      *
      * @return Annotation[]|array
      */
-    function getAnnotations() {
-
+    public function getAnnotations()
+    {
         if (empty($this->annotationData)) {
             return [];
         }
-
         $annotations = [];
-
         foreach ($this->annotationData as $item) {
             $annotation = new Annotation($item);
             $annotationTargets = $annotation->getTargets();
             $targetPages = [];
             foreach ($annotationTargets as $annotationTarget) {
-
                 if ($annotationTarget->isValid()) {
-
                     if ($annotationTarget->getId()) {
                         if ($this->document->getCurrentDocument()->getFileLocation($annotationTarget->getId())) {
                             if ($this->document->getCurrentDocument() instanceof MetsDocument) {
@@ -96,7 +92,6 @@ class DocumentAnnotation
                                         'pages' => $meiTargetPages,
                                         'verovioRelevant' => true
                                     ];
-
                                 } elseif (
                                     $audioTargetPages = $this->getAudioPagesByFileId(
                                         $annotationTarget->getId(), $annotationTarget->getRangeValue()
@@ -106,13 +101,11 @@ class DocumentAnnotation
                                         'target' => $annotationTarget,
                                         'pages' => $audioTargetPages
                                     ];
-
                                 } elseif ($fileIdTargetPages = $this->getPagesByFileId($annotationTarget->getId())) {
                                     $targetPages[] = [
                                         'target' => $annotationTarget,
                                         'pages' => $fileIdTargetPages
                                     ];
-
                                 } else {
                                     $this->logger->warning(
                                         ' No target pages found! Annotation: "' . $annotation->getId() . '", '
@@ -125,7 +118,6 @@ class DocumentAnnotation
                                 'target' => $annotationTarget,
                                 'pages' => $logicalTargetPages
                             ];
-
                         } elseif ($physicalTargetPages = $this->getPagesByPhysicalId($annotationTarget->getId())) {
                             $targetPages[] = [
                                 'target' => $annotationTarget,
@@ -145,21 +137,18 @@ class DocumentAnnotation
                                  $objectTargetPages[] = $order;
                             }
                         }
-
                         if ($objectTargetPages) {
                             $targetPages[] = [
                                 'target' => $annotationTarget,
                                 'pages' => $objectTargetPages
                             ];
                         }
-
                     } else {
                         $this->logger->warning(
                             ' No target pages found! Annotation: "' . $annotation->getId() . '", '
                             . 'Target: "' . $annotationTarget->getUrl() . '"'
                         );
                     }
-
                 } else {
                     $this->logger->warning(
                         'Invalid target! Annotation: "' . $annotation->getId() . '", '
@@ -167,12 +156,9 @@ class DocumentAnnotation
                     );
                 }
             }
-
             $annotation->setTargetPages($targetPages);
-
             $annotations[] = $annotation;
         }
-
         return $annotations;
     }
 
@@ -191,7 +177,7 @@ class DocumentAnnotation
         ) {
             $physicalIdentifiers = $this->document->getCurrentDocument()->smLinks['l2p'][$logicalId];
             foreach ($physicalIdentifiers as $physicalIdentifier) {
-                if (array_key_exists($physicalIdentifier, $this->document->getCurrentDocument()->physicalStructureInfo )) {
+                if (array_key_exists($physicalIdentifier, $this->document->getCurrentDocument()->physicalStructureInfo)) {
                     $order = $this->document->getCurrentDocument()->physicalStructureInfo[$physicalIdentifier]['order'];
                     if (is_numeric($order)) {
                         $pages[] = $order;
@@ -199,7 +185,6 @@ class DocumentAnnotation
                 }
             }
         }
-
         return $pages;
     }
 
@@ -217,18 +202,14 @@ class DocumentAnnotation
                 $pages[] = $order;
             }
         }
-
         if (array_key_exists($physicalId, $this->document->getCurrentDocument()->physicalStructureInfo)) {
             if ($this->document->getCurrentDocument()->physicalStructureInfo[$physicalId]['type'] === 'physSequence') {
                 return $pages;
             }
-
             return [$this->document->getCurrentDocument()->physicalStructureInfo[$physicalId]['order']];
         }
-
         return [];
     }
-
 
     /**
      * Gets the fileId related page numbers
@@ -252,7 +233,6 @@ class DocumentAnnotation
                 }
             }
         }
-
         return $pages;
     }
 
@@ -263,7 +243,8 @@ class DocumentAnnotation
      * @param string $range
      * @return array
      */
-    protected function getAudioPagesByFileId($fileId, $range = null) {
+    protected function getAudioPagesByFileId($fileId, $range = null)
+    {
         $tracks = [];
         foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
             if (array_key_exists('tracks', $physicalInfo) && is_array($physicalInfo['tracks'])) {
@@ -275,26 +256,21 @@ class DocumentAnnotation
                 }
             }
         }
-
         if ($tracks && $range) {
             list($from, $to) = array_map('trim', explode(',', $range));
-
             $from = sprintf('%02.6f', (empty($from) ? "0" : $from));
             $intervalFrom = \DateTime::createFromFormat('U.u', $from);
-
             if (empty($to)) {
                 $intervalTo = null;
             } else {
                 $to = sprintf('%02.6f', $to);
                 $intervalTo = \DateTime::createFromFormat('U.u', $to);
             }
-
             foreach ($tracks as $index => $track) {
                 $begin = new DateTime("1970-01-01 " . $track['begin']);
                 $extent = new DateTime("1970-01-01 " . $track['extent']);
                 $diff = (new DateTime("1970-01-01 00:00:00"))->diff($extent);
                 $end = (new DateTime("1970-01-01 " . $track['begin']))->add($diff);
-
                 if (
                     !(
                         $intervalFrom < $end && (
@@ -306,7 +282,6 @@ class DocumentAnnotation
                 }
             }
         }
-
         // Get the related page numbers
         $trackPages = [];
         foreach ($tracks as $track) {
@@ -314,7 +289,6 @@ class DocumentAnnotation
                 $trackPages[] = $track['order'];
             }
         }
-
         return $trackPages;
     }
 
@@ -334,7 +308,6 @@ class DocumentAnnotation
         $measureIndex = 1;
         $startOrder = 0;
         $endOrder = 0;
-
         if ($this->document->getCurrentDocument() instanceof MetsDocument) {
             foreach ($this->document->getCurrentDocument()->musicalStructureInfo as $key => $musicalInfo) {
                 if ($musicalInfo['type'] === 'measure' && is_array($musicalInfo['files'])) {
@@ -343,58 +316,47 @@ class DocumentAnnotation
                             $measures[] = $musicalInfo;
                         }
                     }
-
                     if ($measureIndex === 1) {
                         $startOrder = $musicalInfo['order'];
                     }
-
                     $endOrder = $musicalInfo['order'];
-
                     $measureIndex += 1;
                 }
             }
-
             // Filter measures by the given range of measure numbers
             if ($measures && $range && !preg_match("/\ball\b/", $range)) {
                 $measureNumbers = [];
-
                 $range = preg_replace("/\bend\b/", $endOrder, $range);
                 $range = preg_replace("/\bstart\b/", $startOrder, $range);
-
                 $ranges = array_map('trim', explode(',', $range));
-
                 foreach ($ranges as $measureNumber) {
                     if (preg_match('/\d+-\d+/', $measureNumber)) {
                         list($from, $to) = array_map('trim', explode('-', $measureNumber));
                         $measureNumbers = array_merge($measureNumbers, range($from, $to));
                     } else {
-                        $measureNumbers[] = (int)$measureNumber;
+                        $measureNumbers[] = (int) $measureNumber;
                     }
                 }
-
                 foreach ($measures as $key => $measure) {
                     if (!in_array($measure['order'], $measureNumbers)) {
                         unset($measures[$key]);
                     }
                 }
             }
-
-
             foreach ($measures as $measure) {
                 $measurePages[$measure['order']] = $this->document->getCurrentDocument()->musicalStructure[$measure['order']]['page'];
             }
         }
-
         return $measurePages;
     }
-
 
     /**
      * Returns the raw data of all annotations with a valid verovio target
      *
      * @return array
      */
-    public function getVerovioRelevantAnnotations() {
+    public function getVerovioRelevantAnnotations()
+    {
         $annotations = [];
         /** @var Annotation $annotation */
         foreach ($this->getAnnotations() as $annotation) {
@@ -402,7 +364,6 @@ class DocumentAnnotation
                 $annotations[] = $annotation->getRawData();
             }
         }
-
         return $annotations;
     }
 
@@ -415,18 +376,15 @@ class DocumentAnnotation
     protected static function loadData($document)
     {
         $annotationData = [];
-
         $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
         $apiBaseUrl = $conf['annotationServerUrl'];
-
         if ($apiBaseUrl && $document->getCurrentDocument() instanceof MetsDocument) {
             $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
             if (count($purl) > 0) {
                 $annotationRequest = new AnnotationRequest($apiBaseUrl);
-                $annotationData = $annotationRequest->getAll((string)$purl[0]);
+                $annotationData = $annotationRequest->getAll((string) $purl[0]);
             }
         }
-
         return $annotationData;
     }
 
@@ -437,12 +395,10 @@ class DocumentAnnotation
      */
     public static function getInstance($document)
     {
-        if (self::$instance == null)
-        {
+        if (self::$instance == null) {
             $annotationData = self::loadData($document);
-            self::$instance =  new DocumentAnnotation($annotationData, $document);
+            self::$instance = new DocumentAnnotation($annotationData, $document);
         }
-
         return self::$instance;
     }
 }

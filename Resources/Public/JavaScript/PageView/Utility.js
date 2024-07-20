@@ -85,7 +85,7 @@ dlfUtils.cloneOlLayer = function (layer) {
 /**
  * @param imageSourceObjs
  * @param {string=} origin
- * @return {Array.<ol.layer.Layer>}
+ * @returns {Array.<ol.layer.Layer>}
  */
 dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
 
@@ -95,7 +95,7 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
 
     imageSourceObjs.forEach(function (imageSourceObj) {
         if (widthSum > 0) {
-            // set offset width in case of multiple images
+            // Set offset width in case of multiple images
             offsetWidth = widthSum;
         }
 
@@ -105,12 +105,11 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
         var extent = [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0],
             layer = void 0;
 
-        // OL's Zoomify source also supports IIP; we just need to make sure
-        // the url is a proper template.
+        // OL's Zoomify source also supports IIP; we just need to make sure the url is a proper template.
         if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY
             || imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
         ) {
-            // create zoomify layer
+            // Create zoomify layer
             var url = imageSourceObj.src;
 
             if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP
@@ -145,7 +144,7 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
             });
         } else {
 
-            // create static image source
+            // Create static image source
             layer = new ol.layer.Image({
                 source: new ol.source.ImageStatic({
                     url: imageSourceObj.src,
@@ -161,7 +160,7 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
         }
         layers.push(layer);
 
-        // add to cumulative width
+        // Add to cumulative width
         widthSum += imageSourceObj.width;
     });
 
@@ -170,7 +169,7 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
 
 /**
  * @param {Array.<{src: *, width: *, height: *}>} images
- * @return {ol.View}
+ * @returns {ol.View}
  */
 dlfUtils.createOlView = function (images) {
 
@@ -185,17 +184,17 @@ dlfUtils.createOlView = function (images) {
     }, 0),
         extent = [0, -maxLatY, maxLonX, 0];
 
-    // globally define max zoom
+    // Globally define max zoom
     window.DLF_MAX_ZOOM = 5;
 
-    // define map projection
+    // Define map projection
     var proj = new ol.proj.Projection({
         code: 'kitodo-image',
         units: 'pixels',
-        extent: extent
+        extent
     });
 
-    // define view
+    // Define view
     var viewParams = {
         projection: proj,
         center: ol.extent.getCenter(extent),
@@ -213,7 +212,7 @@ dlfUtils.createOlView = function (images) {
 /**
  * Returns true if the specified value is not undefined
  * @param {?} val
- * @return {boolean}
+ * @returns {boolean}
  */
 dlfUtils.exists = function (val) {
     return val !== undefined;
@@ -224,11 +223,11 @@ dlfUtils.exists = function (val) {
  *
  * @param {ImageDesc[]} imageSourceObjs
  * @param {LoadingIndicator} loadingIndicator
- * @return {JQueryStatic.Deferred}
+ * @returns {JQueryStatic.Deferred}
  */
 dlfUtils.fetchImageData = function (imageSourceObjs, loadingIndicator) {
 
-    // use deferred for async behavior
+    // Use deferred for async behavior
     var deferredResponse = new $.Deferred();
 
     /**
@@ -283,7 +282,7 @@ dlfUtils.fetchImageData = function (imageSourceObjs, loadingIndicator) {
  *
  * @param {ImageDesc} imageSourceObj
  * @param {LoadingIndicator} loadingIndicator
- * @return {JQueryStatic.Deferred}
+ * @returns {JQueryStatic.Deferred}
  */
 dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
     // Load the image while trying to reconcile the following constraints:
@@ -310,7 +309,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
     // TODO: Revisit this. Perhaps we find a way to pass the Image directly to OpenLayers.
     //       Even so, loading via XHR is beneficial in that it allows implementing a loading indicator.
 
-    // use deferred for async behavior
+    // Use deferred for async behavior
     var deferredResponse = new $.Deferred();
     var imageKey = imageSourceObj.url;
 
@@ -427,11 +426,11 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
  * Fetches the image data for iip images source.
  *
  * @param {ImageDesc} imageSourceObj
- * @return {JQueryStatic.Deferred}
+ * @returns {JQueryStatic.Deferred}
  */
 dlfUtils.fetchIIPData = function (imageSourceObj) {
 
-    // use deferred for async behavior
+    // Use deferred for async behavior
     var deferredResponse = new $.Deferred();
 
     $.ajax({
@@ -457,11 +456,11 @@ dlfUtils.fetchIIPData = function (imageSourceObj) {
  * Fetch image data for zoomify source.
  *
  * @param {ImageDesc} imageSourceObj
- * @return {JQueryStatic.Deferred}
+ * @returns {JQueryStatic.Deferred}
  */
 dlfUtils.fetchZoomifyData = function (imageSourceObj) {
 
-    // use deferred for async behavior
+    // Use deferred for async behavior
     var deferredResponse = new $.Deferred();
 
     $.ajax({
@@ -490,8 +489,7 @@ dlfUtils.fetchZoomifyData = function (imageSourceObj) {
 
 /**
  * @param {string} name Name of the cookie
- * @return {string|null} Value of the cookie
- * @TODO replace unescape function
+ * @returns {string|null} Value of the cookie
  */
 dlfUtils.getCookie = function (name) {
 
@@ -521,7 +519,7 @@ dlfUtils.getUrlParam = function (param) {
 /**
  * Returns true if the specified value is null.
  * @param {?} val
- * @return {boolean}
+ * @returns {boolean}
  */
 dlfUtils.isNull = function (val) {
     return val === null;
@@ -530,18 +528,18 @@ dlfUtils.isNull = function (val) {
 /**
  * Returns true if the specified value is null, empty or undefined.
  * @param {?} val
- * @return {boolean}
+ * @returns {boolean}
  */
 dlfUtils.isNullEmptyUndefinedOrNoNumber = function (val) {
     return val === null || val === undefined || val === '' || isNaN(val);
 };
 
 /**
- * Checks if {@link obj} is a valid object describing the location of a
- * fulltext (@see PageView::getFulltext in PageView.php).
+ * Checks if {@link obj} is a valid object describing the location of a fulltext
+ * @see PageView::getFulltext in PageView.php
  *
  * @param {any} obj The object to test.
- * @return {obj is FulltextDesc}
+ * @returns {obj is FulltextDesc}
  */
 dlfUtils.isFulltextDescriptor = function (obj) {
     return (
@@ -554,7 +552,7 @@ dlfUtils.isFulltextDescriptor = function (obj) {
 
 /**
  * @param {Element | null} element
- * @return {Object}
+ * @returns {Object}
  */
 dlfUtils.parseDataDic = function (element) {
     var dataDicString = $('html').find(element).data('dic') || '',
@@ -576,12 +574,12 @@ dlfUtils.parseDataDic = function (element) {
  * @param {string} name The key of the value
  * @param {?} value The value to save
  * @param {string} samesite Sets the SameSite attribute: lax, strict or none
- * 
+ *
  */
 dlfUtils.setCookie = function (name, value, samesite) {
     switch(samesite) {
         case "lax":
-        case "strict": 
+        case "strict":
             break;
         case "none":
             samesite+= ";secure"
@@ -589,24 +587,24 @@ dlfUtils.setCookie = function (name, value, samesite) {
         default:
             samesite = "lax"
     }
-    
+
     document.cookie = name + "=" + decodeURI(value) + "; path=/" + "; SameSite=" + samesite;
 };
 
 /**
- * Scales down the given features geometries. as a further improvement this function
- * adds a unique id to every feature
+ * Scales down the given features geometries.
+ * As a further improvement this function adds a unique ID to every feature.
  * @param {Array.<ol.Feature>} features
  * @param {Object} imageObj
  * @param {number} width
  * @param {number} height
  * @param {number=} optOffset
  * @deprecated
- * @return {Array.<ol.Feature>}
+ * @returns {Array.<ol.Feature>}
  */
 dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffset) {
 
-    // update size / scale settings of imageObj
+    // Update size / scale settings of imageObj
     var image = void 0;
     if (width && height) {
 
@@ -624,7 +622,7 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
     var scale = image.scale,
         offset = optOffset !== undefined ? optOffset : 0;
 
-    // do rescaling and set a id
+    // Do rescaling and set an ID
     for (var i in features) {
 
         if (features.hasOwnProperty(i)) {
@@ -638,7 +636,7 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
 
             features[i].setGeometry(new ol.geom.Polygon([newCoordinates]));
 
-            // set index
+            // Set index
             dlfUtils.RUNNING_INDEX += 1;
             features[i].setId('' + dlfUtils.RUNNING_INDEX);
         }
@@ -651,7 +649,7 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
  * Search a feature collection for a feature with the given coordinates
  * @param {Array.<ol.Feature>} featureCollection
  * @param {string} coordinates
- * @return {Array.<ol.Feature>|undefined}
+ * @returns {Array.<ol.Feature>|undefined}
  */
 dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, coordinates) {
     var features = [];

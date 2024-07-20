@@ -15,24 +15,21 @@ var format = 'mei';
 var customOptions = undefined;
 var tk = {};
 var ids = [];
-var pdfTitle = "";
 
-let pdf_blob;
+let pdfBlob;
+
+const verovioSettings = {
+  pageWidth: 300,
+  scale: 25,
+  spacingLinear: .15,
+  pageHeight: 300,
+  scaleToPageSize: true,
+  breaks: 'encoded',
+  mdivAll: true
+};
 
 let dlfScoreUtil;
 dlfScoreUtil = dlfScoreUtil || {};
-const verovioSetting = {
-    pageWidth: 300,
-    scale: 25,
-    //AdjustPageWidth: true,
-    spacingLinear: .15,
-    pageHeight: 300,
-    //AdjustPageHeight: true,
-    scaleToPageSize: true,
-    breaks: 'encoded',
-    mdivAll: true
-};
-
 dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
     const result = new $.Deferred();
     tk = new verovio.toolkit();
@@ -46,10 +43,10 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
         try {
             tk.renderData(jqXHR.responseText, verovioSettings);
             const pageToShow = tk.getPageWithElement(pagebeginning);
-            let score = tk.renderToSVG(pageToShow);
+            const score = tk.renderToSVG(pageToShow);
 
             $("#player").midiPlayer({
-                onStop: function () { $('body').removeClass('midi-active') }
+                onStop () { $('body').removeClass('midi-active') }
             });
 
             $("#tx-dlf-tools-midi").click(
@@ -151,8 +148,9 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
 
     function makeSVG(tag, attrs) {
         var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-        for (var k in attrs)
+        for (var k in attrs) {
             el.setAttribute(k, attrs[k]);
+        }
         return el;
     }
 
@@ -169,10 +167,10 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
                     var bbox = $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].getBBox();
 
                     var measureRect = makeSVG('rect', {
-                        x: bbox['x'],
-                        y: bbox['y'],
-                        width:bbox['width'],
-                        height:bbox['height'],
+                        x: bbox.x,
+                        y: bbox.y,
+                        width:bbox.width,
+                        height:bbox.height,
                         stroke: 'none',
                         'stroke-width': 20,
                         fill: 'red',
@@ -235,7 +233,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
                     }
 
                     dlfViewer.verovioMeasureHover = $(this);
-                    // set measure as active
+                    // Set measure as active
                     dlfViewer.verovioMeasureHover.addClass('hover');
                     var measureId = $(this).parent().attr('id');
 
@@ -259,7 +257,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
     this.changeActiveBehaviour();
 };
 
-function get_pdf_title(tk) {
+function getPdfTitle(tk) {
     var parser = new DOMParser();
     var xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
     var work = xmlDoc.getElementsByTagName("work");
@@ -280,17 +278,15 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     var proj = new ol.proj.Projection({
         code: 'score-projection',
         units: 'pixels',
-        extent: extent
+        extent
     });
 
     var map = new ol.Map({
-        target: target,
-        // View: tx_dlf_viewer.view,
+        target,
         view: new ol.View({
             projection: proj,
-            //Center: [0, 0],            center: ol.extent.getCenter(extent),
             center: [0, 0],
-            extent: extent,
+            extent,
             zoom: 1,
             minZoom: 1,
         }),
@@ -342,16 +338,19 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     );
 
     $("#tx_dlf_scoredownload").click(function () {
-        if (typeof pdf_blob !== 'undefined') {
-            saveAs(pdf_blob, get_pdf_title(tk));
+        if (typeof pdfBlob !== 'undefined') {
+            saveAs(pdfBlob, getPdfTitle(tk));
 
             return;
         }
 
         var pdfFormat = $("#pdfFormat").val() || "A4";
         var pdfSize = [2100, 2970];
-        if (pdfFormat === "letter") pdfSize = [2159, 2794];
-        else if (pdfFormat === "B4") pdfSize = [2500, 3530];
+        if (pdfFormat === "letter") {
+            pdfSize = [2159, 2794];
+        } else if (pdfFormat === "B4") {
+            pdfSize = [2500, 3530];
+        }
 
         var pdfOrientation = $("#pdfOrientation").val() || "portrait";
         var pdfLandscape = pdfOrientation === 'landscape';
@@ -386,8 +385,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
         var stream = doc.pipe(blobStream());
 
         stream.on('finish', function () {
-            pdf_blob = stream.toBlob('application/pdf');
-            saveAs(pdf_blob, get_pdf_title(tk));
+            pdfBlob = stream.toBlob('application/pdf');
+            saveAs(pdfBlob, getPdfTitle(tk));
         });
 
 

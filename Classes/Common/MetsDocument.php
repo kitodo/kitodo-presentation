@@ -1517,11 +1517,11 @@ final class MetsDocument extends AbstractDocument
                         // Check if file has valid @USE attribute.
                         if (!empty($fileUse[(string) $fptr->area->attributes()->FILEID])) {
                             $this->physicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['tracks'][$fileUse[(string) $fptr->area->attributes()->FILEID]] = [
-                                'fileid'  => (string)$fptr->area->attributes()->FILEID,
-                                'begin'   => (string)$fptr->area->attributes()->BEGIN,
-                                'betype'  => (string)$fptr->area->attributes()->BETYPE,
-                                'extent'  => (string)$fptr->area->attributes()->EXTENT,
-                                'exttype' => (string)$fptr->area->attributes()->EXTTYPE,
+                                'fileid'  => (string) $fptr->area->attributes()->FILEID,
+                                'begin'   => (string) $fptr->area->attributes()->BEGIN,
+                                'betype'  => (string) $fptr->area->attributes()->BETYPE,
+                                'extent'  => (string) $fptr->area->attributes()->EXTENT,
+                                'exttype' => (string) $fptr->area->attributes()->EXTTYPE,
                             ];
                         }
                     }
@@ -1772,18 +1772,18 @@ final class MetsDocument extends AbstractDocument
                     // Check if file has valid @USE attribute.
                     if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
                         $this->musicalStructureInfo[$musicalSeq[0]]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
-                            'fileid' => (string)$fptr->area->attributes()->FILEID,
-                            'begin' => (string)$fptr->area->attributes()->BEGIN,
-                            'end' => (string)$fptr->area->attributes()->END,
-                            'type' => (string)$fptr->area->attributes()->BETYPE,
-                            'shape' => (string)$fptr->area->attributes()->SHAPE,
-                            'coords' => (string)$fptr->area->attributes()->COORDS
+                            'fileid' => (string) $fptr->area->attributes()->FILEID,
+                            'begin' => (string) $fptr->area->attributes()->BEGIN,
+                            'end' => (string) $fptr->area->attributes()->END,
+                            'type' => (string) $fptr->area->attributes()->BETYPE,
+                            'shape' => (string) $fptr->area->attributes()->SHAPE,
+                            'coords' => (string) $fptr->area->attributes()->COORDS
                         ];
                     }
 
                     if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
-                        $this->musicalStructureInfo[$musicalSeq[0]]['begin'] = (string)$fptr->area->attributes()->BEGIN;
-                        $this->musicalStructureInfo[$musicalSeq[0]]['end'] = (string)$fptr->area->attributes()->END;
+                        $this->musicalStructureInfo[$musicalSeq[0]]['begin'] = (string) $fptr->area->attributes()->BEGIN;
+                        $this->musicalStructureInfo[$musicalSeq[0]]['end'] = (string) $fptr->area->attributes()->END;
                     }
                 }
 
@@ -1803,20 +1803,20 @@ final class MetsDocument extends AbstractDocument
 
                     foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
                         // Check if file has valid @USE attribute.
-                        if (!empty($fileUse[(string)$fptr->area->attributes()->FILEID])) {
-                            $this->musicalStructureInfo[$elements[(int)$elementNode['ORDER']]]['files'][$fileUse[(string)$fptr->area->attributes()->FILEID]] = [
-                                'fileid' => (string)$fptr->area->attributes()->FILEID,
-                                'begin' => (string)$fptr->area->attributes()->BEGIN,
-                                'end' => (string)$fptr->area->attributes()->END,
-                                'type' => (string)$fptr->area->attributes()->BETYPE,
-                                'shape' => (string)$fptr->area->attributes()->SHAPE,
-                                'coords' => (string)$fptr->area->attributes()->COORDS
+                        if (!empty($fileUse[(string) $fptr->area->attributes()->FILEID])) {
+                            $this->musicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['files'][$fileUse[(string) $fptr->area->attributes()->FILEID]] = [
+                                'fileid' => (string) $fptr->area->attributes()->FILEID,
+                                'begin' => (string) $fptr->area->attributes()->BEGIN,
+                                'end' => (string) $fptr->area->attributes()->END,
+                                'type' => (string) $fptr->area->attributes()->BETYPE,
+                                'shape' => (string) $fptr->area->attributes()->SHAPE,
+                                'coords' => (string) $fptr->area->attributes()->COORDS
                             ];
                         }
 
                         if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
-                            $this->musicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['begin'] = (string)$fptr->area->attributes()->BEGIN;
-                            $this->musicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['end'] = (string)$fptr->area->attributes()->END;
+                            $this->musicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['begin'] = (string) $fptr->area->attributes()->BEGIN;
+                            $this->musicalStructureInfo[$elements[(int) $elementNode['ORDER']]]['end'] = (string) $fptr->area->attributes()->END;
                         }
                     }
                 }
