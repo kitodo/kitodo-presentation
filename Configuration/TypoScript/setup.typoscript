@@ -30,9 +30,22 @@ page {
     jQueryUiMouseSlider = EXT:dlf/Resources/Public/JavaScript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
   }
 
+  includeCSS {
+    gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack.min.css
+  }
+
   includeJSFooter {
     # AudioPlayer plugin
     kitodo-audioPlayer = EXT:dlf/Resources/Public/JavaScript/AudioPlayer/AudioPlayer.js
+
+    # Verovio plugin
+    kitodo-verovio = EXT:dlf/Resources/Public/JavaScript/Verovio/verovio-toolkit.js
+    kitodo-svgtopdfkit = EXT:dlf/Resources/Public/JavaScript/Verovio/svgtopdfkit.js
+    kitodo-saveas = EXT:dlf/Resources/Public/JavaScript/Verovio/saveas.js
+    kitodo-pdf= EXT:dlf/Resources/Public/JavaScript/Verovio/pdfkit.js
+    kitodo-pdfkita = EXT:dlf/Resources/Public/JavaScript/Verovio/blobstream.js
+    kitodo-wildWebMidi = EXT:dlf/Resources/Public/JavaScript/WildWebMidi/wildwebmidi.js
+    kitodo-webAudioPlayer = EXT:dlf/Resources/Public/JavaScript/WildWebMidi/web_audio_player.js
 
     # PageView plugin
     kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
@@ -48,12 +61,23 @@ page {
     kitodo-pageView-fullTextDownloadControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextDownloadControl.js
     kitodo-pageView-fullTextControl = EXT:dlf/Resources/Public/JavaScript/PageView/FulltextControl.js
     kitodo-pageView-fullTextUtility = EXT:dlf/Resources/Public/JavaScript/PageView/FullTextUtility.js
+    kitodo-pageView-scoreControl = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreControl.js
+    kitodo-pageView-scoreUtility = EXT:dlf/Resources/Public/JavaScript/PageView/ScoreUtility.js
+    kitodo-pageView-syncControl = EXT:dlf/Resources/Public/JavaScript/PageView/SyncControl.js
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
     kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
 
   }
 }
+
+[like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
+page.includeJSFooter {
+    # Gridstack
+    gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack-all.js
+    gridstack-init = EXT:dlf/Resources/Public/JavaScript/PageView/Gridstack.js
+}
+[end]
 
 plugin.tx_dlf_pagegrid {
     settings {
@@ -103,6 +127,12 @@ plugin.tx_dlf_search {
             maximumNumberOfLinks = 10
             section = showResults
         }
+    }
+}
+
+plugin.tx_dlf_annotation {
+    settings {
+      apiUrl =
     }
 }
 

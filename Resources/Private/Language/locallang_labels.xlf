@@ -434,6 +434,9 @@
 			<trans-unit id="tx_dlf_toolbox.searchindocumenttool">
 				<source>Search in Document</source>
 			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.scoretool">
+				<source>Score</source>
+			</trans-unit>
 			<trans-unit id="tt_content.dlf_audioplayer">
 				<source>DLF: Audio Player</source>
 			</trans-unit>
@@ -631,6 +634,9 @@
 			</trans-unit>
 			<trans-unit id="config.solr.fields.geom">
 				<source>Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</source>
+			</trans-unit>
+			<trans-unit id="config.annotationServerUrl">
+				<source>Annotation Server URL</source>
 			</trans-unit>
 			<trans-unit id="config.3dviewer.viewerModelFormatMapping">
 				<source>Viewer model format mapping : Add a semicolon-separated list of supported viewers (from the "dlf_3d_viewers" directory). A colon must follow each viewer name, followed by a comma-separated list of model formats. (Example: "dlf-model-viewer:glb;dlf-threejs:ply,obj;...")</source>

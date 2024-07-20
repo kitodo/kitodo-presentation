@@ -510,6 +510,7 @@ class Indexer
     {
         $autocomplete = [];
         foreach ($metadata as $indexName => $data) {
+            // TODO: Include also subentries if available.
             if (
                 !empty($data)
                 && substr($indexName, -8) !== '_sorting'
@@ -545,6 +546,7 @@ class Indexer
      */
     private static function addFaceting($doc, &$solrDoc): void
     {
+        // TODO: Include also subentries if available.
         foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
             if (
                 !empty($data)
