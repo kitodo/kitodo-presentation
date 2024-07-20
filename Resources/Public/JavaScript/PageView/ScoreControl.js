@@ -44,9 +44,9 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
 
     $.ajax({url}).done(function (data, status, jqXHR) {
         try {
-            let score = tk.renderData(jqXHR.responseText, verovioSettings);
+            tk.renderData(jqXHR.responseText, verovioSettings);
             const pageToShow = tk.getPageWithElement(pagebeginning);
-            score = tk.renderToSVG(pageToShow);
+            let score = tk.renderToSVG(pageToShow);
 
             $("#player").midiPlayer({
                 onStop: function () { $('body').removeClass('midi-active') }
@@ -348,15 +348,12 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
             return;
         }
 
-        var pdfFormat = "A4";
-        var pdfOrientation = "portrait";
-
-        var pdfFormat = $("#pdfFormat").val();
+        var pdfFormat = $("#pdfFormat").val() || "A4";
         var pdfSize = [2100, 2970];
         if (pdfFormat === "letter") pdfSize = [2159, 2794];
         else if (pdfFormat === "B4") pdfSize = [2500, 3530];
 
-        var pdfOrientation = $("#pdfOrientation").val();
+        var pdfOrientation = $("#pdfOrientation").val() || "portrait";
         var pdfLandscape = pdfOrientation === 'landscape';
         var pdfHeight = pdfLandscape ? pdfSize[0] : pdfSize[1];
         var pdfWidth = pdfLandscape ? pdfSize[1] : pdfSize[0];
@@ -410,7 +407,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
         var parser = new DOMParser();
         var xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
         var work = xmlDoc.getElementsByTagName("work");
-        var pdfTitle = work[0].getElementsByTagName("title")[0].textContent;
 
         for (let i = 0; i < pdf_tk.getPageCount(); i++) {
             doc.addPage({size: pdfFormat, layout: pdfOrientation});

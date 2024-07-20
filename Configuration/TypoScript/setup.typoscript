@@ -75,7 +75,7 @@ page {
 page.includeJSFooter {
     # Gridstack
     gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack-all.js
-    gridstack-init = EXT:dlf/Resources/Public/JavaScript/PageView/gridstack.js
+    gridstack-init = EXT:dlf/Resources/Public/JavaScript/PageView/Gridstack.js
 }
 [end]
 
