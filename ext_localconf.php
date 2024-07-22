@@ -47,7 +47,7 @@ $iconArray = [
     'tx-dlf-statistics' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-statistics.svg',
     'tx-dlf-tableofcontents' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-tableofcontents.svg',
     'tx-dlf-toolbox' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-toolbox.svg',
-    'tx_dlf_embedded3dviewer' => 'EXT:dlf/Resources/Public/Icons/tx_dlf_embedded3dViewer.svg',
+    'tx-dlf-embedded3dviewer' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-embedded3dviewer.svg',
 ];
 $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     \TYPO3\CMS\Core\Imaging\IconRegistry::class
