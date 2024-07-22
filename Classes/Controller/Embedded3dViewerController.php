@@ -94,5 +94,4 @@ class Embedded3dViewerController extends AbstractController
             $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model));
         }
     }
-
 }
