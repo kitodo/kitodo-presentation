@@ -525,6 +525,23 @@
 				<source><![CDATA[Kitodo: Toolbox]]></source>
 				<target><![CDATA[Kitodo: Werkzeugkasten]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.title">
+				<source><![CDATA[Kitodo: Embedded 3D Viewer]]></source>
+				<target><![CDATA[Kitodo: Eingebetteter 3D-Viewer]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.description">
+				<source><![CDATA[Embedded 3D Viewer Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Eingebetteter 3D-Viewer Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.document">
+				<source><![CDATA[METS/MODS url containing the model]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.model">
+				<source><![CDATA[Url of model]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.viewer">
+				<source><![CDATA[Name of viewer]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.annotation.title" approved="yes">
         		<source><![CDATA[Kitodo: Annotations]]></source>
         		<target><![CDATA[Kitodo: Annotationen]]></target>

@@ -292,6 +292,44 @@ The collection plugin shows one collection, all collections or selected collecti
        `t3tsref:data-type-page-id`
    :Default:
 
+Embedded 3D Viewer
+-----------
+
+The embedded3dviewer plugin renders an iFrame in which the configured 3D viewer displays the model.
+
+:typoscript:`plugin.tx_dlf_embedded3dviewer.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Description:
+       Description
+
+ - :Property:
+        document_
+   :Data Type:
+        :ref:`t3tsref:data-type-string`
+   :Description:
+        The URL of the XML document which contains the model.
+
+ - :Property:
+       model_
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Description:
+        The URL of the 3D model.
+
+ - :Property:
+       viewer_
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Description:
+      Override the default viewer from the extension configuration (see :ref:`Embedded 3D Viewer Configuration`) with a supported viewer (from the "dlf_3d_viewers" directory).
+
 
 Feeds
 -----

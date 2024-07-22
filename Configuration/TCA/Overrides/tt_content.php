@@ -184,6 +184,13 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_embedded
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Dlf',
+    'Embedded3dViewer',
+    'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.title',
+    'EXT:dlf/Resources/Public/Icons/tx-dlf-embedded3dviewer.svg'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Kitodo.Dlf',
     'Annotation',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.annotation.title',

@@ -11,6 +11,8 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\AbstractDocument;
+
 /**
  * Plugin 'Embedded3dViewer' for the 'dlf' extension
  *
@@ -31,20 +33,20 @@ class Embedded3dViewerController extends AbstractController
      */
     public function mainAction(): void
     {
-        if (!empty($this->requestData['model'])) {
-            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($this->requestData['model']));
+        if (!empty($this->requestData['model']) || !empty($this->settings['model'])) {
+            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl());
             return;
         }
 
-        // Load current document.
-        $this->loadDocument();
-        if (
-            !($this->isDocMissingOrEmpty()
-                || $this->document->getCurrentDocument()->metadataArray['LOG_0001']['type'][0] != 'object')
-        ) {
-            $model = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['DEFAULT']));
-            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model));
+        if (!empty($this->settings['document'])) {
+            $this->assignModelFromDocument($this->getDocumentByUrl($this->settings['document']));
+        } else {
+            $this->loadDocument();
+            if (!$this->isDocMissingOrEmpty()) {
+                $this->assignModelFromDocument($this->document->getCurrentDocument());
+            }
         }
+
     }
 
     /**
@@ -53,14 +55,44 @@ class Embedded3dViewerController extends AbstractController
      * @param string $model The model url
      * @return string The embedded 3D viewer url
      */
-    public function buildEmbedded3dViewerUrl(string $model): string
+    public function buildEmbedded3dViewerUrl(string $model = ""): string
     {
-        $embedded3dViewerUrl = self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX . '&model=' . $model;
+        $viewer = "";
+        $embedded3dViewerUrl = self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX;
+
+        if (!empty($this->requestData['model'])) {
+            $model = $this->requestData['model'];
+        } elseif (!empty($this->settings['model'])) {
+            $model = $this->settings['model'];
+        }
+
+        if (!empty($model)) {
+            $embedded3dViewerUrl .= '&model=' . $model;
+        }
 
         if (!empty($this->requestData['viewer'])) {
-            $embedded3dViewerUrl .= '&viewer=' . $this->requestData['viewer'];
+            $viewer = $this->requestData['viewer'];
+        } elseif (!empty($this->settings['viewer'])) {
+            $viewer = $this->settings['viewer'];
+        }
+
+        if (!empty($viewer)) {
+            $embedded3dViewerUrl .= '&viewer=' . $viewer;
         }
         return $embedded3dViewerUrl;
+    }
+
+    /**
+     * Assign the model from document to view.
+     *
+     * @param AbstractDocument $document The document containing the model
+     */
+    public function assignModelFromDocument(AbstractDocument $document): void
+    {
+        if ($document->metadataArray['LOG_0001']['type'][0] == 'object') {
+            $model = trim($document->getFileLocation($document->physicalStructureInfo[$document->physicalStructure[1]]['files']['DEFAULT']));
+            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model));
+        }
     }
 
 }

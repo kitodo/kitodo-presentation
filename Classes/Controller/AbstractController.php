@@ -491,7 +491,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return AbstractDocument
      */
-    private function getDocumentByUrl(string $documentId)
+    protected function getDocumentByUrl(string $documentId)
     {
         $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
 

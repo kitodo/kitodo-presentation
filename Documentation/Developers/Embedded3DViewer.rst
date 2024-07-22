@@ -18,6 +18,8 @@ Setup
 .. IMPORTANT::
    When creating folders through the Filelist module in TYPO3, follow the usual process. However, when creating folders in the system, ensure that the name is URL-compliant.
 
+.. _Embedded 3D Viewer Configuration:
+
 Configuration
 =======
 
@@ -27,8 +29,6 @@ For this, only the parameter ``tx_dlf[viewer]`` with the name of the viewer and 
 
 .. note::
    For example in the DFG Viewer, this is the page whose ID is set via the constant ``config.kitodoPageView``.
-
-.. _Automatic selection of the viewer:
 
 Automatic selection of the viewer
 -------
