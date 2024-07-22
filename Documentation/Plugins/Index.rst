@@ -310,21 +310,21 @@ The embedded3dviewer plugin renders an iFrame in which the configured 3D viewer 
        Description
 
  - :Property:
-        document_
+        document
    :Data Type:
         :ref:`t3tsref:data-type-string`
    :Description:
         The URL of the XML document which contains the model.
 
  - :Property:
-       model_
+       model
    :Data Type:
        :ref:`t3tsref:data-type-string`
    :Description:
         The URL of the 3D model.
 
  - :Property:
-       viewer_
+       viewer
    :Data Type:
        :ref:`t3tsref:data-type-string`
    :Description:
