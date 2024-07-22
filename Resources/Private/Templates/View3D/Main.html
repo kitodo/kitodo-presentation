@@ -1,0 +1,20 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:content="http://purl.org/rss/1.0/modules/content/"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+    <f:if condition="{is3DViewer}">
+        <iframe class="dlf-3d-viewer" src="{embedded3DViewerUrl}" ></iframe>
+    </f:if>
+
+</html>

@@ -140,6 +140,17 @@
                                 </config>
                         </TCEforms>
                     </settings.targetBasket>
+                    <settings.multiViewType>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.multiViewType</label>
+                            <config>
+                                <type>input</type>
+                                <eval>nospace</eval>
+                                <default></default>
+                            </config>
+                        </TCEforms>
+                    </settings.multiViewType>
                 </el>
             </ROOT>
         </sDEF>
