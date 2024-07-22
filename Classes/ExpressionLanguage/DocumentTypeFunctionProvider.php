@@ -194,8 +194,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             } elseif (GeneralUtility::isValidUrl($requestData['id'])) {
                 $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid], true);
                 if ($doc !== null) {
-                    $this->document = null;
-
                     if ($doc->recordId) {
                         $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
                     }
