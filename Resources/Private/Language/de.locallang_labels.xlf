@@ -841,11 +841,11 @@
 				<target>Solr-Schema-Feld "geom" : GeoJSON geometry for spatial search (Standard ist "geom")</target>
 				<source>Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</source>
 			</trans-unit>
-			<trans-unit id="config.3dviewer.viewerModelFormatMapping">
+			<trans-unit id="config.embedded3dviewer.viewerModelFormatMapping">
 				<target>Viewer-Modellformat-Zuordnung: Fügen Sie eine durch Semikolons getrennte Liste unterstützter Viewer (aus dem "dlf_3d_viewers" Verzeichnis) hinzu. Nach jedem Viewer-Namen muss ein Doppelpunkt folgen, gefolgt von einer kommagetrennten Liste der Modellformate. (Beispiel: "dlf-model-viewer:glb;dlf-threejs:ply,obj;...")</target>
 				<source>Viewer model format mapping : Add a semicolon-separated list of supported viewers (from the "dlf_3d_viewers" directory). A colon must follow each viewer name, followed by a comma-separated list of model formats. (Example: "dlf-model-viewer:glb;dlf-threejs:ply,obj;...")</source>
 			</trans-unit>
-			<trans-unit id="config.3dviewer.defaultViewer">
+			<trans-unit id="config.embedded3dviewer.defaultViewer">
 				<target>Standard-Viewer : Überschreiben Sie den eingebauten Standard-Viewer mit einem der unterstützten Viewer (aus dem "dlf_3d_viewers" Verzeichnis), der als Fallback verwendet werden soll. (Der eingebaute Standard-Viewer ist der "model-viewer", der nur "glTF/GLB 3D-Modelle" als Modelldateiformat unterstützt.)</target>
 				<source>Default viewer : Overwrite the build-in default viewer with a supported viewer (from the "dlf_3d_viewers" directory) to be used as a fallback. (The built-in default viewer is the "model-viewer", which only supports "glTF/GLB 3D models" as the model file format.)</source>
 			</trans-unit>

@@ -73,10 +73,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_tableofc
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_toolbox'] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_toolbox'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_toolbox', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Toolbox.xml');
-// Plugin "view3d".
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_view3d'] = 'layout,select_key,pages,recursive';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_view3d'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_view3d', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/View3D.xml');
+// Plugin "embedded3dviewer".
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['dlf_embedded3dviewer'] = 'layout,select_key,pages,recursive';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_embedded3dviewer'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('dlf_embedded3dviewer', 'FILE:EXT:' . 'dlf/Configuration/FlexForms/Embedded3dViewer.xml');
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',

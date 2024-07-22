@@ -12,17 +12,17 @@
 namespace Kitodo\Dlf\Controller;
 
 /**
- * Plugin 'View3D' for the 'dlf' extension
+ * Plugin 'Embedded3dViewer' for the 'dlf' extension
  *
  * @package TYPO3
  * @subpackage dlf
  *
  * @access public
  */
-class View3DController extends AbstractController
+class Embedded3dViewerController extends AbstractController
 {
 
-    const MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX = '/?middleware=dlf/embedded3DViewer';
+    const MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX = '/?middleware=dlf/embedded3dviewer';
 
     /**
      * @access public
@@ -31,14 +31,8 @@ class View3DController extends AbstractController
      */
     public function mainAction(): void
     {
-
         if (!empty($this->requestData['model'])) {
-            $this->view->assign('is3DViewer', $this->is3dViewer($this->requestData['model']));
-            $embedded3DViewerUrl = $this->buildEmbedded3dViewerUrl($this->requestData['model']);
-            if (!empty($this->requestData['viewer'])) {
-                $embedded3DViewerUrl .= '&viewer=' . $this->requestData['viewer'];
-            }
-            $this->view->assign('embedded3DViewerUrl', $embedded3DViewerUrl);
+            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($this->requestData['model']));
             return;
         }
 
@@ -49,19 +43,8 @@ class View3DController extends AbstractController
                 || $this->document->getCurrentDocument()->metadataArray['LOG_0001']['type'][0] != 'object')
         ) {
             $model = trim($this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[1]]['files']['DEFAULT']));
-            $this->view->assign('is3DViewer', $this->is3dViewer($model));
-            $this->view->assign('embedded3DViewerUrl', $this->buildEmbedded3dViewerUrl($model));
+            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model));
         }
-    }
-
-    /**
-     * Checks if the 3D viewer can be rendered.
-     *
-     * @return bool True if the 3D viewer can be rendered
-     */
-    private function is3dViewer($model): bool
-    {
-        return !empty($model);
     }
 
     /**
@@ -72,8 +55,12 @@ class View3DController extends AbstractController
      */
     public function buildEmbedded3dViewerUrl(string $model): string
     {
-        return self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX . '&model=' . $model;
-    }
+        $embedded3dViewerUrl = self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX . '&model=' . $model;
 
+        if (!empty($this->requestData['viewer'])) {
+            $embedded3dViewerUrl .= '&viewer=' . $this->requestData['viewer'];
+        }
+        return $embedded3dViewerUrl;
+    }
 
 }

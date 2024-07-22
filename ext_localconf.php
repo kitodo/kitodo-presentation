@@ -47,7 +47,7 @@ $iconArray = [
     'tx-dlf-statistics' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-statistics.svg',
     'tx-dlf-tableofcontents' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-tableofcontents.svg',
     'tx-dlf-toolbox' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-toolbox.svg',
-    'tx_dlf_view3d' => 'EXT:dlf/Resources/Public/Icons/tx_dlf_view3d.svg',
+    'tx_dlf_embedded3dviewer' => 'EXT:dlf/Resources/Public/Icons/tx_dlf_embedded3dViewer.svg',
 ];
 $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     \TYPO3\CMS\Core\Imaging\IconRegistry::class
@@ -317,13 +317,13 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Dlf',
-    'View3D',
+    'Embedded3dViewer',
     [
-        \Kitodo\Dlf\Controller\View3DController::class => 'main',
+        \Kitodo\Dlf\Controller\Embedded3dViewerController::class => 'main',
     ],
     // non-cacheable actions
     [
-        \Kitodo\Dlf\Controller\View3DController::class => '',
+        \Kitodo\Dlf\Controller\Embedded3dViewerController::class => '',
     ]
 );
 

@@ -27,6 +27,8 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
+const TYPE_3D_OBJECT = "3d-object";
+
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
  *
@@ -73,7 +75,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * @var DocumentRepository
      */
     protected $documentRepository;
-    
+
     /**
      * @param DocumentRepository $documentRepository
      */
@@ -134,25 +136,35 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                     return $type;
                 }
 
+                // 3d object type if model parameter is not empty
+                if (!empty($queryParams['tx_dlf']['model'])) {
+                    return TYPE_3D_OBJECT;
+                }
+
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
                 if ($this->document === null || $this->document->getCurrentDocument() === null) {
                     return $type;
                 }
+
                 // Set PID for metadata definitions.
                 $this->document->getCurrentDocument()->cPid = $cPid;
 
                 $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
                 if (!empty($metadata['type'][0])) {
                     // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
-                    if (
-                        $this->document->getCurrentDocument() instanceof IiifManifest
-                        && array_search($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']) !== false
+                    if (!($this->document->getCurrentDocument() instanceof IiifManifest
+                        && in_array($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']))
                     ) {
-                        return $type;
+                        $type = $metadata['type'][0];
                     }
-                    $type = $metadata['type'][0];
                 }
+
+                // set 3d object type if object element exist at the first element of LOGICAL struct map
+                if ($this->document->getCurrentDocument()->metadataArray['LOG_0001']['type'][0] == 'object') {
+                    $type = TYPE_3D_OBJECT;
+                }
+
                 return $type;
             });
     }
@@ -188,6 +200,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid], true);
 
                 if ($doc !== null) {
+                    $this->document = null;
+
                     if ($doc->recordId) {
                         $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
                     }
@@ -196,7 +210,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                         // create new dummy Document object
                         $this->document = GeneralUtility::makeInstance(Document::class);
                     }
-
                     $this->document->setLocation($requestData['id']);
                 } else {
                     $this->logger->error('Invalid location given "' . $requestData['id'] . '" for document loading');

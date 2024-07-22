@@ -34,7 +34,7 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
  * @subpackage dlf
  * @access public
  */
-class Embedded3DViewer implements MiddlewareInterface
+class Embedded3dViewer implements MiddlewareInterface
 {
     use LoggerAwareTrait;
 
@@ -58,7 +58,7 @@ class Embedded3DViewer implements MiddlewareInterface
         // parameters are sent by POST --> use getParsedBody() instead of getQueryParams()
         $parameters = $request->getQueryParams();
         // Return if not this middleware
-        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/embedded3DViewer')) {
+        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/embedded3dviewer')) {
             return $response;
         }
 
@@ -202,8 +202,8 @@ class Embedded3DViewer implements MiddlewareInterface
     {
         /** @var ResourceFactory $resourceFactory */
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
-        $html = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Private/Templates/View3D/Standalone.html')->getContents();
-        $file = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/JavaScript/3DViewer/model-viewer-3.5.0.min.js');
+        $html = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Private/Templates/Embedded3dViewer/Standalone.html')->getContents();
+        $file = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/JavaScript/Embedded3dViewer/model-viewer-3.5.0.min.js');
         $html = str_replace('{{modelViewerJS}}', $file->getPublicUrl(), $html);
         $html = str_replace("{{modelUrl}}", $model, $html);
         return new HtmlResponse($html);
