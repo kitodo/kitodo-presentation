@@ -275,7 +275,7 @@ class Mods implements MetadataInterface
      * Get holder from XML display form.
      *
      * @access private
-     * 
+     *
      * @param array $holders
      * @param int $i
      *
@@ -284,7 +284,7 @@ class Mods implements MetadataInterface
     private function getHolderFromXmlDisplayForm(array $holders, int $i): void
     {
         // Check if there is a display form.
-        $displayForms = $holders[$i]->getDisplayForm();
+        $displayForms = $holders[$i]->getDisplayForms();
         if ($displayForms) {
             $this->metadata['holder'][$i] = $displayForms[0]->getValue();
         }

@@ -504,7 +504,7 @@ Navigation
    :Default:
       By default all features are activated. The selection is stored as comma separated list.
 
-       doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation
+       doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation,measureForward,measureBack
 
  - :Property:
        pageStep

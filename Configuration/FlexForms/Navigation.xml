@@ -72,8 +72,16 @@
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.rotation</numIndex>
                                         <numIndex index="1">rotation</numIndex>
                                     </numIndex>
+                                    <numIndex index="10">
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.measureForward</numIndex>
+                                        <numIndex index="1">measureForward</numIndex>
+                                    </numIndex>
+                                    <numIndex index="11">
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.measureBack</numIndex>
+                                        <numIndex index="1">measureBack</numIndex>
+                                    </numIndex>
                                 </items>
-                                <default>doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation</default>
+                                <default>doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation,measureForward,measureBack</default>
                                 <minitems>1</minitems>
                             </config>
                         </TCEforms>
