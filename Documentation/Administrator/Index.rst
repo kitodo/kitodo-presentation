@@ -208,6 +208,28 @@ e. Restart Solr.
 f. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
 
 
+Version 5.0 -> 5.1
+==================
+
+Version 5.1 supports Solr 9 (9.4+) now, a revised configuration for Solr 8 (8.11.2) is included and support for Solr 7 and earlier is dropped.
+
+Steps to Upgrade to Solr 9
+----------------
+
+a. Get the latest release ("jar"-file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.8.0 is the minimum version number. Make sure to pick the right file for Solr 9.
+b. Copy the jar-file (e.g. "solr-ocrhighlighting-0.8.0.jar") to the modules/ocrsearch/lib/ directory of your Solr.
+c. Copy the updated schema.xml and solrconfig.xml to your Solr configsets in $SOLR_HOME/configsets/dlf/
+e. Restart Solr.
+f. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
+
+Steps to Upgrade to Solr 8.11.2
+----------------
+
+a. Copy the updated schema.xml and solrconfig_8.11.2.xml to your Solr configsets in $SOLR_HOME/configsets/dlf/
+b. Rename solrconfig_8.11.2.xml in $SOLR_HOME/configsets/dlf/ to solrconfig.xml
+e. Restart Solr.
+f. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
+
 *******
 Logging
 *******
