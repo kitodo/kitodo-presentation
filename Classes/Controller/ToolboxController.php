@@ -98,6 +98,9 @@ class ToolboxController extends AbstractController
                     case 'searchindocumenttool':
                         $this->renderToolByName('renderSearchInDocumentTool');
                         break;
+                    case 'scoretool':
+                        $this->renderToolByName('renderScoreTool');
+                        break;
                     default:
                         $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
                 }
@@ -201,6 +204,42 @@ class ToolboxController extends AbstractController
     }
 
     /**
+     * Renders the score tool
+     *
+     * @return void
+     */
+    public function renderScoreTool()
+    {
+        if (
+            $this->isDocMissingOrEmpty()
+            || empty($this->extConf['files']['fileGrpScore'])
+        ) {
+            // Quit without doing anything if required variables are not set.
+            return;
+        }
+
+        if ($this->requestData['page']) {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
+        } else {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
+        }
+
+        $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpScore']);
+        foreach ($fileGrpsScores as $fileGrpScore) {
+            if ($this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$fileGrpScore]) {
+                $scoreFile = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$fileGrpScore];
+            }
+        }
+        if (!empty($scoreFile)) {
+            $this->view->assign('score', true);
+            $this->view->assign('activateScoreInitially', MathUtility::forceIntegerInRange($this->settings['activateScoreInitially'], 0, 1, 0));
+        } else {
+            $this->view->assign('score', false);
+        }
+    }
+
+    /**
+     * Renders the image download tool
      * Renders the image download tool (used in template)
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
