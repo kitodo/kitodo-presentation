@@ -220,10 +220,12 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
      *
-     * @param $metadata
+     * @access private
+     *
+     * @param array $metadata The metadata
      * @return bool
      */
-    function isIiifManifestWithNewspaperRelatedType($metadata): bool
+    private function isIiifManifestWithNewspaperRelatedType(array $metadata): bool
     {
         return ($this->document->getCurrentDocument() instanceof IiifManifest
             && in_array($metadata, ['newspaper', 'ephemera', 'year', 'issue']));
