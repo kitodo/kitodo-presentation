@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-const TYPE_3D_OBJECT = "3d-object";
+const TYPE_OBJECT = "object";
 
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
@@ -136,7 +136,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 // 3d object type if model parameter is not empty
                 if (!empty($queryParams['tx_dlf']['model'])) {
-                    return TYPE_3D_OBJECT;
+                    return TYPE_OBJECT;
                 }
 
                 // Load document with current plugin parameters.
@@ -150,17 +150,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
                 if (!empty($metadata['type'][0])) {
-                    // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
-                    if (!($this->document->getCurrentDocument() instanceof IiifManifest
-                        && in_array($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']))
-                    ) {
+                    if (!$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0]) || $metadata['type'][0] == TYPE_OBJECT) {
                         $type = $metadata['type'][0];
                     }
-                }
-
-                // set 3d object type if object element exist at the first element of LOGICAL struct map
-                if ($this->document->getCurrentDocument()->metadataArray['LOG_0001']['type'][0] == 'object') {
-                    $type = TYPE_3D_OBJECT;
                 }
 
                 return $type;
@@ -222,5 +214,19 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         } else {
             $this->logger->error('Empty UID or invalid PID "' . $pid . '" for document loading');
         }
+    }
+
+    /**
+     * Check if is IIIF Manifest with newspaper related type.
+     *
+     * Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
+     *
+     * @param $metadata
+     * @return bool
+     */
+    function isIiifManifestWithNewspaperRelatedType($metadata): bool
+    {
+        return ($this->document->getCurrentDocument() instanceof IiifManifest
+            && in_array($metadata, ['newspaper', 'ephemera', 'year', 'issue']));
     }
 }

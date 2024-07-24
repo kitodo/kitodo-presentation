@@ -89,7 +89,7 @@ class Embedded3dViewerController extends AbstractController
      */
     public function assignModelFromDocument(AbstractDocument $document): void
     {
-        if ($document->metadataArray['LOG_0001']['type'][0] == 'object') {
+        if ($document->getToplevelMetadata()['type'][0] == 'object') {
             $model = trim($document->getFileLocation($document->physicalStructureInfo[$document->physicalStructure[1]]['files']['DEFAULT']));
             $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model));
         }
