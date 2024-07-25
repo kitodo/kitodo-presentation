@@ -659,7 +659,7 @@ class Solr implements LoggerAwareInterface
      * 
      *
      * @param bool $commit If true, the commit command is sent to the index
-     * @param bool $optimze If true, the optimize command is sent to the index
+     * @param bool $optimize If true, the optimize command is sent to the index
      *
      *
      * @return bool true if executing the command worked
