@@ -29,5 +29,5 @@ services:
 
   Kitodo\Dlf\Command\OptimizeCommand:
     tags:
-      - name: 'console.command'
+      - name: console.command
         command: 'kitodo:optimize'
