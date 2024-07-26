@@ -27,8 +27,6 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-const TYPE_OBJECT = "object";
-
 /**
  * Provider class for additional "getDocumentType" function to the ExpressionLanguage.
  *
@@ -134,9 +132,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                     return $type;
                 }
 
-                // 3d object type if model parameter is not empty
+                // object type if model parameter is not empty so we assume that it is a 3d object
                 if (!empty($queryParams['tx_dlf']['model'])) {
-                    return TYPE_OBJECT;
+                    return 'object';
                 }
 
                 // Load document with current plugin parameters.
