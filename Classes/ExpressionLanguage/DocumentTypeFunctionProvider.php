@@ -150,7 +150,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
                 if (!empty($metadata['type'][0])
-                    && (!$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0]) || $metadata['type'][0] == TYPE_OBJECT)) {
+                    && !$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0])) {
                     $type = $metadata['type'][0];
                 }
 
