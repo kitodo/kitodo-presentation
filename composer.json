@@ -32,9 +32,9 @@
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "^10.4.37|^11.5.37",
-    "typo3/cms-extbase": "^10.4.37|^11.5.37",
-    "typo3/cms-tstemplate": "^10.4.37|^11.5.37",
+    "typo3/cms-core": "^10.4.37|^11.5.38",
+    "typo3/cms-extbase": "^10.4.37|^11.5.38",
+    "typo3/cms-tstemplate": "^10.4.37|^11.5.38",
     "caseyamcl/phpoaipmh": "^3.3.1",
     "ubl/php-iiif-prezi-reader": "0.3.0",
     "solarium/solarium": "5.2 - 6.3"
@@ -42,12 +42,12 @@
   "require-dev": {
     "phpstan/phpstan": "^1.11.1",
     "spatie/phpunit-watcher": "^1.23.6",
-    "typo3/cms-backend": "^10.4.37|^11.5.37",
-    "typo3/cms-fluid": "^10.4.37|^11.5.37",
-    "typo3/cms-fluid-styled-content": "^10.4.37|^11.5.37",
-    "typo3/cms-frontend": "^10.4.37|^11.5.37",
+    "typo3/cms-backend": "^10.4.37|^11.5.38",
+    "typo3/cms-fluid": "^10.4.37|^11.5.38",
+    "typo3/cms-fluid-styled-content": "^10.4.37|^11.5.38",
+    "typo3/cms-frontend": "^10.4.37|^11.5.38",
     "typo3/testing-framework": "^6.16.9",
-    "vlucas/phpdotenv": "^5.6.0"
+    "vlucas/phpdotenv": "^5.6.1"
   },
   "replace": {
     "typo3-ter/dlf": "self.version"
@@ -79,25 +79,25 @@
       "@test:unit",
       "@test:func"
     ],
-	"install-via-docker": "Build/Test/runTests.sh -s composerInstall",
+    "install-via-docker": "Build/Test/runTests.sh -s composerInstall",
     "test:unit": "Build/Test/runTests.sh -s unit",
     "test:unit:local": "phpunit -c Build/Test/UnitTests.xml",
     "test:unit:watch": "phpunit-watcher watch -c Build/Test/UnitTests.xml",
     "test:func": "Build/Test/runTests.sh -s functional",
     "test:func:watch": "@test:func -w",
-	"docs:db": "./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst",
-  	"docs:build": [
-	  	"rm -Rf ./Documentation-GENERATED-temp",
-	  	"docker run --user=$(id -u):$(id -g) --rm -v ./:/project -it ghcr.io/typo3-documentation/render-guides:latest --config ./Documentation",
-	  	"cp ./Build/Documentation/index.html ./Documentation-GENERATED-temp"
+    "docs:db": "./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst",
+    "docs:build": [
+      "rm -Rf ./Documentation-GENERATED-temp",
+      "docker run --user=$(id -u):$(id -g) --rm -v ./:/project -it ghcr.io/typo3-documentation/render-guides:latest --config ./Documentation",
+      "cp ./Build/Documentation/index.html ./Documentation-GENERATED-temp"
   	],
-	"docs:start": "docker run -d --name dlf_docs --rm -v ./Documentation-GENERATED-temp:/serve -p 9000:8000 jdkelley/simple-http-server:latest",
-	"docs:stop": "docker stop dlf_docs",
-	"docs:rebuild": [
-	  "@composer docs:stop",
-	  "@composer docs:build",
-	  "@composer docs:start"
-	]
+    "docs:start": "docker run -d --name dlf_docs --rm -v ./Documentation-GENERATED-temp:/serve -p 9000:8000 jdkelley/simple-http-server:latest",
+    "docs:stop": "docker stop dlf_docs",
+    "docs:rebuild": [
+      "@composer docs:stop",
+      "@composer docs:build",
+      "@composer docs:start"
+    ]
   },
   "config": {
     "allow-plugins": {
