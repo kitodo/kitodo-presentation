@@ -147,6 +147,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 $this->document->getCurrentDocument()->cPid = $cPid;
 
                 $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
+
                 if (!empty($metadata['type'][0])
                     && !$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0])) {
                     $type = $metadata['type'][0];
@@ -220,12 +221,12 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @access private
      *
-     * @param array $metadata The metadata
+     * @param string $type The metadata type
      * @return bool
      */
-    private function isIiifManifestWithNewspaperRelatedType(array $metadata): bool
+    private function isIiifManifestWithNewspaperRelatedType(string $type): bool
     {
         return ($this->document->getCurrentDocument() instanceof IiifManifest
-            && in_array($metadata, ['newspaper', 'ephemera', 'year', 'issue']));
+            && in_array($type, ['newspaper', 'ephemera', 'year', 'issue']));
     }
 }
