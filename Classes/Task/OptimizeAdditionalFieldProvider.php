@@ -11,19 +11,21 @@
  */
 namespace Kitodo\Dlf\Task;
 
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
- * Additional fields for index document task.
+ * Additional fields for reindex documents task.
  *
  * @package TYPO3
  * @subpackage dlf
  *
  * @access public
  */
-class IndexAdditionalFieldProvider extends BaseAdditionalFieldProvider
+class OptimizeAdditionalFieldProvider extends BaseAdditionalFieldProvider
 {
     /**
      * Gets additional fields to render in the form to add/edit a task
@@ -39,48 +41,41 @@ class IndexAdditionalFieldProvider extends BaseAdditionalFieldProvider
 
         /** @var BaseTask $task */
         if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-            $taskInfo['dryRun'] = $task->isDryRun();
-            $taskInfo['doc'] = $task->getDoc();
-            $taskInfo['pid'] = $task->getPid();
             $taskInfo['solr'] = $task->getSolr();
-            $taskInfo['owner'] = $task->getOwner();
-            $taskInfo['softCommit'] = $task->isSoftCommit();
+            $taskInfo['commit'] = $task->isCommit();
+            $taskInfo['optimize'] = $task->isOptimize();
         } else {
-            $taskInfo['dryRun'] = false;
-            $taskInfo['doc'] = 'https://';
-            $taskInfo['pid'] = - 1;
             $taskInfo['solr'] = - 1;
-            $taskInfo['owner'] = '';
-            $taskInfo['softCommit'] = false;
+            $taskInfo['commit'] = false;
+            $taskInfo['optimize'] = false;
         }
 
         $additionalFields = [];
 
-        // Checkbox for dry-run
-        $additionalFields['dryRun'] = $this->getDryRunField($taskInfo['dryRun']);
+        // DropDown for Solr core
+        $additionalFields['solr'] = $this->getSolrField($taskInfo['solr']);
 
-        // Text field for document URL
-        $fieldName = 'doc';
+        // Checkbox for commit
+        $fieldName = 'commit';
         $fieldId = 'task_' . $fieldName;
-        $fieldHtml = '<input type="text" name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '" value="' . $taskInfo[$fieldName] . '" >';
+        $fieldHtml = '<input type="checkbox" name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '" value="1"' . ($taskInfo['commit'] ? ' checked="checked"' : '') . '>';
         $additionalFields[$fieldId] = [
             'code' => $fieldHtml,
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:additionalFields.doc',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:additionalFields.commit',
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
 
-        // DropDown for storage page
-        $additionalFields['pid'] = $this->getPidField($taskInfo['pid']);
-
-        // DropDown for Solr core
-        $additionalFields['solr'] = $this->getSolrField($taskInfo['solr'], $taskInfo['pid']);
-
-        // Text field for owner
-        $additionalFields['owner'] = $this->getOwnerField($taskInfo['owner']);
-
-        // Checkbox for soft commit
-        $additionalFields['softCommit'] = $this->getSoftCommitField($taskInfo['softCommit']);
+        // Checkbox for optimize
+        $fieldName = 'optimize';
+        $fieldId = 'task_' . $fieldName;
+        $fieldHtml = '<input type="checkbox" name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '" value="1"' . ($taskInfo['optimize'] ? ' checked="checked"' : '') . '>';
+        $additionalFields[$fieldId] = [
+            'code' => $fieldHtml,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:additionalFields.optimize',
+            'cshKey' => '_MOD_system_txschedulerM1',
+            'cshLabel' => $fieldId
+        ];
 
         return $additionalFields;
     }

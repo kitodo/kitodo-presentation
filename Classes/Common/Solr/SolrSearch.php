@@ -93,6 +93,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @param array $settings
      * @param array $searchParams
      * @param QueryResult $listedMetadata
+     * @param QueryResult $indexedMetadata
      *
      * @return void
      */

@@ -63,6 +63,12 @@ class DeleteCommand extends BaseCommand
                 's',
                 InputOption::VALUE_REQUIRED,
                 '[UID|index_name] of the Solr core the document should be added to.'
+            )
+            ->addOption(
+                'softCommit',
+                null,
+                InputOption::VALUE_NONE,
+                'If this option is set, documents are just added to the index by a soft commit.'
             );
     }
 
@@ -179,10 +185,10 @@ class DeleteCommand extends BaseCommand
 
         $isDeleted = false;
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))) {
-            $isDeleted = Indexer::delete($input, 'uid', $solrCoreUid);
+            $isDeleted = Indexer::delete($input, 'uid', $solrCoreUid, $input->getOption('softCommit'));
 
         } elseif (GeneralUtility::isValidUrl($input->getOption('doc'))) {
-            $isDeleted = Indexer::delete($input, 'location', $solrCoreUid);
+            $isDeleted = Indexer::delete($input, 'location', $solrCoreUid, $input->getOption('softCommit'));
         }
 
         if ($isDeleted) {

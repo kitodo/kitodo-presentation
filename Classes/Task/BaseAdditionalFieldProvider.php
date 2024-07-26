@@ -71,7 +71,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             $fieldsValid = false;
         }
 
-        if ((isset($submittedData['pid']) && (int) $submittedData['pid'] <= 0) || !isset($submittedData['pid'])) {
+        if ((isset($submittedData['pid']) && (int) $submittedData['pid'] <= 0)) {
             Helper::addMessage(
                 Helper::getLanguageService()->getLL('additionalFields.pid') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
                 $messageTitle,
@@ -79,6 +79,17 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
+            $fieldsValid = false;
+        }
+
+        if (!isset($submittedData['commit']) && !isset($submittedData['optimize']) && !isset($submittedData['pid'])) {
+            Helper::addMessage(
+                Helper::getLanguageService()->getLL('additionalFields.commitOrOptimize'),
+                $messageTitle,
+                $messageSeverity,
+                true,
+                'core.template.flashMessages'
+                );
             $fieldsValid = false;
         }
 
@@ -95,7 +106,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = false;
+            $fieldsValid = $messageSeverity == FlashMessage::ERROR ? false : $fieldsValid;
         }
 
         if ((isset($submittedData['solr']) && (int) $submittedData['solr'] <= 0) || !isset($submittedData['solr'])) {
@@ -106,11 +117,11 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = false;
+            $fieldsValid = $messageSeverity == FlashMessage::ERROR ? false : $fieldsValid;
         }
 
         if (((isset($submittedData['coll']) && isset($submittedData['all'])) || (!isset($submittedData['coll']) && !isset($submittedData['all'])))
-            && !isset($submittedData['doc']) && !isset($submittedData['lib'])) {
+            && !isset($submittedData['doc']) && !isset($submittedData['lib']) && isset($submittedData['pid'])) {
             Helper::addMessage(
                 Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
                 $messageTitle,
@@ -118,7 +129,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = false;
+            $fieldsValid = $messageSeverity == FlashMessage::ERROR ? false : $fieldsValid;
         }
         return $fieldsValid;
     }
@@ -164,6 +175,9 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         if (isset($submittedData['set'])) {
             $task->setSet(htmlspecialchars($submittedData['set']));
         }
+        $task->setSoftCommit(!empty($submittedData['softCommit']));
+        $task->setCommit(!empty($submittedData['commit']));
+        $task->setOptimize(!empty($submittedData['optimize']));
     }
 
     /**
@@ -194,11 +208,11 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      * @access protected
      *
      * @param int $solr UID of the selected Solr core
-     * @param int $pid UID of the selected storage page
+     * @param int|null $pid UID of the selected storage page
      *
      * @return array additional field solr dropdown
      */
-    protected function getSolrField(int $solr, int $pid): array
+    protected function getSolrField(int $solr, int $pid = null): array
     {
         $fieldName = 'solr';
         $fieldId = 'task_' . $fieldName;
@@ -278,27 +292,51 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @access protected
      *
-     * @param int $pid UID of storage page
+     * @param int|null $pid UID of storage page
      *
      * @return array Array of valid Solr cores
      */
-    private function getSolrCores(int $pid): array
+    private function getSolrCores(int $pid = null): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
 
         $solrCores = [];
-        $result = $queryBuilder->select('uid', 'label')
-            ->from('tx_dlf_solrcores')
-            ->where(
+        $result = $queryBuilder->select('uid', 'label', 'index_name')
+            ->from('tx_dlf_solrcores');
+        if($pid !== null) {
+            $queryBuilder->where(
                 $queryBuilder->expr()
                     ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
-            )
-            ->execute();
+            );
+        }
+        $result = $queryBuilder->execute();
 
         while ($record = $result->fetchAssociative()) {
-            $solrCores[$record['label']] = $record['uid'];
+            $solrCores[$record['label'] . ' (' . $record['index_name'] . ')'] = $record['uid'];
         }
 
         return $solrCores;
+    }
+
+    /**
+     * Return HTML for soft commit checkbox
+     *
+     * @access protected
+     *
+     * @param bool $softCommit
+     *
+     * @return array additional field soft commit checkbox
+     */
+    protected function getSoftCommitField(bool $softCommit): array
+    {
+        $fieldName = 'softCommit';
+        $fieldId = 'task_' . $fieldName;
+        $fieldHtml = '<input type="checkbox" name="tx_scheduler[' . $fieldName . ']" id="' . $fieldId . '" value="1"' . ($softCommit ? ' checked="checked"' : '') . '>';
+        return [
+            'code' => $fieldHtml,
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:additionalFields.softCommit',
+            'cshKey' => '_MOD_system_txschedulerM1',
+            'cshLabel' => $fieldId
+        ];
     }
 }

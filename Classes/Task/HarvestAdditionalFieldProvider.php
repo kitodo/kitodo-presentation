@@ -48,6 +48,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
             $taskInfo['from'] = $task->getFrom();
             $taskInfo['until'] = $task->getUntil();
             $taskInfo['set'] = $task->getSet();
+            $taskInfo['softCommit'] = $task->isSoftCommit();
         } else {
             $taskInfo['dryRun'] = false;
             $taskInfo['lib'] = - 1;
@@ -56,6 +57,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
             $taskInfo['from'] = '';
             $taskInfo['until'] = '';
             $taskInfo['set'] = '';
+            $taskInfo['softCommit'] = false;
         }
 
         $additionalFields = [];
@@ -120,6 +122,9 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
+
+        // Checkbox for soft commit
+        $additionalFields['softCommit'] = $this->getSoftCommitField($taskInfo['softCommit']);
 
         return $additionalFields;
     }

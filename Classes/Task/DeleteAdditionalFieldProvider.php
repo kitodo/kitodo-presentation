@@ -23,7 +23,7 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  *
  * @access public
  */
-class IndexAdditionalFieldProvider extends BaseAdditionalFieldProvider
+class DeleteAdditionalFieldProvider extends BaseAdditionalFieldProvider
 {
     /**
      * Gets additional fields to render in the form to add/edit a task
@@ -39,25 +39,18 @@ class IndexAdditionalFieldProvider extends BaseAdditionalFieldProvider
 
         /** @var BaseTask $task */
         if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
-            $taskInfo['dryRun'] = $task->isDryRun();
             $taskInfo['doc'] = $task->getDoc();
             $taskInfo['pid'] = $task->getPid();
             $taskInfo['solr'] = $task->getSolr();
-            $taskInfo['owner'] = $task->getOwner();
             $taskInfo['softCommit'] = $task->isSoftCommit();
         } else {
-            $taskInfo['dryRun'] = false;
             $taskInfo['doc'] = 'https://';
             $taskInfo['pid'] = - 1;
             $taskInfo['solr'] = - 1;
-            $taskInfo['owner'] = '';
             $taskInfo['softCommit'] = false;
         }
 
         $additionalFields = [];
-
-        // Checkbox for dry-run
-        $additionalFields['dryRun'] = $this->getDryRunField($taskInfo['dryRun']);
 
         // Text field for document URL
         $fieldName = 'doc';
@@ -75,9 +68,6 @@ class IndexAdditionalFieldProvider extends BaseAdditionalFieldProvider
 
         // DropDown for Solr core
         $additionalFields['solr'] = $this->getSolrField($taskInfo['solr'], $taskInfo['pid']);
-
-        // Text field for owner
-        $additionalFields['owner'] = $this->getOwnerField($taskInfo['owner']);
 
         // Checkbox for soft commit
         $additionalFields['softCommit'] = $this->getSoftCommitField($taskInfo['softCommit']);
