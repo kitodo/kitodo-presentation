@@ -55,7 +55,7 @@ class Embedded3dViewerController extends AbstractController
      * @param string $model The model url
      * @return string The embedded 3D viewer url
      */
-    public function buildEmbedded3dViewerUrl(string $model = ""): string
+    public function buildEmbedded3dViewerUrl(string $model = ''): string
     {
         $viewer = "";
         $embedded3dViewerUrl = self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX;
@@ -89,7 +89,7 @@ class Embedded3dViewerController extends AbstractController
      */
     public function assignModelFromDocument(AbstractDocument $document): void
     {
-        if ($document->getToplevelMetadata()['type'][0] == 'object') {
+        if ($document->getToplevelMetadata()['type'][0] === 'object') {
             $model = trim($document->getFileLocation($document->physicalStructureInfo[$document->physicalStructure[1]]['files']['DEFAULT']));
             $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model));
         }
