@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0938012015526483c346079d1a2298a7",
+    "content-hash": "26a72c02794e17457a54dabc108ce6fc",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2264,16 +2264,16 @@
         },
         {
             "name": "slub/php-mods-reader",
-            "version": "v0.3.0",
+            "version": "v0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slub/php-mods-reader.git",
-                "reference": "a2335db290349990fd0f5e5fdc0e396da851f0b3"
+                "reference": "f12ece98bdcd2b1569055707bfe1e7e87bee0046"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slub/php-mods-reader/zipball/a2335db290349990fd0f5e5fdc0e396da851f0b3",
-                "reference": "a2335db290349990fd0f5e5fdc0e396da851f0b3",
+                "url": "https://api.github.com/repos/slub/php-mods-reader/zipball/f12ece98bdcd2b1569055707bfe1e7e87bee0046",
+                "reference": "f12ece98bdcd2b1569055707bfe1e7e87bee0046",
                 "shasum": ""
             },
             "require": {
@@ -2306,9 +2306,9 @@
             ],
             "support": {
                 "issues": "https://github.com/slub/php-mods-reader/issues",
-                "source": "https://github.com/slub/php-mods-reader/tree/v0.3.0"
+                "source": "https://github.com/slub/php-mods-reader/tree/v0.4.0"
             },
-            "time": "2024-04-30T15:19:40+00:00"
+            "time": "2024-06-17T16:17:41+00:00"
         },
         {
             "name": "solarium/solarium",
