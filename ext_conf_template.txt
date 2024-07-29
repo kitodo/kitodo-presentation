@@ -106,7 +106,7 @@ solr.fields.terms = terms
 solr.fields.restrictions = restrictions
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.fields.geom
 solr.fields.geom = geom
-# cat=3D Viewer; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.3dviewer.viewerModelFormatMapping
-3dviewer.viewerModelFormatMapping =
-# cat=3D Viewer; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.3dviewer.defaultViewer
-3dviewer.defaultViewer =
+# cat=Embedded 3D Viewer; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.embedded3dviewer.viewerModelFormatMapping
+embedded3dviewer.viewerModelFormatMapping =
+# cat=Embedded 3D Viewer; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.embedded3dviewer.defaultViewer
+embedded3dviewer.defaultViewer =

@@ -419,6 +419,21 @@
 			<trans-unit id="plugins.metadata.flexform.separator">
 				<source><![CDATA[Separator for multi-valued fields]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.title">
+				<source><![CDATA[Kitodo: Embedded 3D Viewer]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.description">
+				<source><![CDATA[Embedded 3D Viewer Plugin for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.document">
+				<source><![CDATA[METS/MODS url containing the model]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.model">
+				<source><![CDATA[Url of model]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.viewer">
+				<source><![CDATA[Name of viewer]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.annotation.title">
         		<source><![CDATA[Kitodo: Annotations]]></source>
         	</trans-unit>

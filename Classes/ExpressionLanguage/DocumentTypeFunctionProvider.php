@@ -132,25 +132,27 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                     return $type;
                 }
 
+                // object type if model parameter is not empty so we assume that it is a 3d object
+                if (!empty($queryParams['tx_dlf']['model'])) {
+                    return 'object';
+                }
+
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
                 if (!isset($this->document) || $this->document->getCurrentDocument() === null) {
                     return $type;
                 }
+
                 // Set PID for metadata definitions.
                 $this->document->getCurrentDocument()->cPid = $cPid;
 
                 $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
-                if (!empty($metadata['type'][0])) {
-                    // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
-                    if (
-                        $this->document->getCurrentDocument() instanceof IiifManifest
-                        && array_search($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']) !== false
-                    ) {
-                        return $type;
-                    }
+
+                if (!empty($metadata['type'][0])
+                    && !$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0])) {
                     $type = $metadata['type'][0];
                 }
+
                 return $type;
             });
     }
@@ -210,5 +212,21 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         } else {
             $this->logger->error('Empty UID or invalid PID "' . $pid . '" for document loading');
         }
+    }
+
+    /**
+     * Check if is IIIF Manifest with newspaper related type.
+     *
+     * Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
+     *
+     * @access private
+     *
+     * @param string $type The metadata type
+     * @return bool
+     */
+    private function isIiifManifestWithNewspaperRelatedType(string $type): bool
+    {
+        return ($this->document->getCurrentDocument() instanceof IiifManifest
+            && in_array($type, ['newspaper', 'ephemera', 'year', 'issue']));
     }
 }
