@@ -91,10 +91,11 @@ class Indexer
      *
      * @param Document $document The document to add
      * @param DocumentRepository $documentRepository The document repository for search of parent
+     * @param bool $softCommit If true, documents are just added by a soft commit to the index
      *
      * @return bool true on success or false on failure
      */
-    public static function add(Document $document, DocumentRepository $documentRepository): bool
+    public static function add(Document $document, DocumentRepository $documentRepository, bool $softCommit = false): bool
     {
         if (in_array($document->getUid(), self::$processedDocs)) {
             return true;
@@ -144,7 +145,7 @@ class Indexer
                 }
                 // Commit all changes.
                 $updateQuery = self::$solr->service->createUpdate();
-                $updateQuery->addCommit();
+                $updateQuery->addCommit($softCommit);
                 self::$solr->service->update($updateQuery);
 
                 if (!(Environment::isCli())) {
@@ -184,14 +185,17 @@ class Indexer
      * @static
      *
      * @param InputInterface $input The input parameters
+     * @param string $field by which document should be removed
+     * @param int $solrCoreUid UID of the SolrCore
+     * @param bool $softCommit If true, documents are just deleted from the index by a soft commit
      *
      * @return bool true on success or false on failure
      */
-    public static function delete(InputInterface $input, string $field, int $solrCoreUid): bool
+    public static function delete(InputInterface $input, string $field, int $solrCoreUid, bool $softCommit = false): bool
     {
         if (self::solrConnect($solrCoreUid, $input->getOption('pid'))) {
             try {
-                self::deleteDocument($field, $input->getOption('doc'));
+                self::deleteDocument($field, $input->getOption('doc'), $softCommit);
                 return true;
             } catch (\Exception $e) {
                 if (!(Environment::isCli())) {
@@ -581,10 +585,11 @@ class Indexer
      *
      * @param string $field by which document should be removed
      * @param string $value of the field by which document should be removed
+     * @param bool $softCommit If true, documents are just deleted from the index by a soft commit
      *
      * @return void
      */
-    private static function deleteDocument(string $field, string $value): void
+    private static function deleteDocument(string $field, string $value, bool $softCommit = false): void
     {
         $update = self::$solr->service->createUpdate();
         $query = "";
@@ -594,7 +599,7 @@ class Indexer
             $query = $field . ':"' . $value . '"';
         }
         $update->addDeleteQuery($query);
-        $update->addCommit();
+        $update->addCommit($softCommit);
         self::$solr->service->update($update);
     }
 

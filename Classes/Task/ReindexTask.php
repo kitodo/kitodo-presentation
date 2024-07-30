@@ -42,6 +42,9 @@ class ReindexTask extends BaseTask
         if ($this->all) {
             $inputArray['--all'] = true;
         }
+        if (!empty($this->softCommit)) {
+            $inputArray['--softCommit'] = true;
+        }
 
         $reindexCommand = GeneralUtility::makeInstance(\Kitodo\Dlf\Command\ReindexCommand::class);
         $inputInterface = GeneralUtility::makeInstance(\Symfony\Component\Console\Input\ArrayInput::class, $inputArray);

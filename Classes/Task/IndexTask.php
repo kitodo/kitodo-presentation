@@ -37,6 +37,9 @@ class IndexTask extends BaseTask
         if (!empty($this->owner)) {
             $inputArray['-o'] = $this->owner;
         }
+        if (!empty($this->softCommit)) {
+            $inputArray['--softCommit'] = true;
+        }
 
         $indexCommand = GeneralUtility::makeInstance(\Kitodo\Dlf\Command\IndexCommand::class);
         $inputInterface = GeneralUtility::makeInstance(\Symfony\Component\Console\Input\ArrayInput::class, $inputArray);

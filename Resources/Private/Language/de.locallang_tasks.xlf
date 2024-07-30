@@ -29,6 +29,22 @@
                 <source><![CDATA[Harvest documents.]]></source>
                 <target><![CDATA[Dokumente harvesten.]]></target>
             </trans-unit>
+            <trans-unit id="deleteTask.title" approved="yes">
+                <source><![CDATA[Delete]]></source>
+                <target><![CDATA[Delete]]></target>
+            </trans-unit>
+            <trans-unit id="deleteTask.description" approved="yes">
+                <source><![CDATA[Delete documents.]]></source>
+                <target><![CDATA[Dokumente löschen.]]></target>
+            </trans-unit>
+            <trans-unit id="optimizeTask.title" approved="yes">
+                <source><![CDATA[Optimize]]></source>
+                <target><![CDATA[Optimize]]></target>
+            </trans-unit>
+            <trans-unit id="optimizeTask.description" approved="yes">
+                <source><![CDATA[Optimize index.]]></source>
+                <target><![CDATA[Index optimieren.]]></target>
+            </trans-unit>
             <trans-unit id="additionalFields.dryRun" approved="yes">
                 <source><![CDATA[Dry run]]></source>
                 <target><![CDATA[Dry run]]></target>
@@ -73,6 +89,18 @@
                 <source><![CDATA[Set]]></source>
                 <target><![CDATA[Set]]></target>
             </trans-unit>
+            <trans-unit id="additionalFields.softCommit" approved="yes">
+                <source><![CDATA[Soft commit]]></source>
+                <target><![CDATA[Soft commit]]></target>
+            </trans-unit>
+            <trans-unit id="additionalFields.commit" approved="yes">
+                <source><![CDATA[Commit]]></source>
+                <target><![CDATA[Commit]]></target>
+            </trans-unit>
+            <trans-unit id="additionalFields.optimize" approved="yes">
+                <source><![CDATA[Optimize]]></source>
+                <target><![CDATA[Optimieren]]></target>
+            </trans-unit>
             <trans-unit id="additionalFields.warning" approved="yes">
                 <source><![CDATA[Warning!]]></source>
                 <target><![CDATA[Warnung!]]></target>
@@ -92,6 +120,10 @@
             <trans-unit id="additionalFields.collOrAll" approved="yes">
                 <source><![CDATA[At least one collection or "All" has to be selected!]]></source>
                 <target><![CDATA[Mindestens eine Sammlung oder "Alle" muss ausgewählt werden!]]></target>
+            </trans-unit>
+            <trans-unit id="additionalFields.commitOrOptimize" approved="yes">
+                <source><![CDATA[Commit and/or Optimize has to be selected!]]></source>
+                <target><![CDATA[Commit und/oder Optimieren muss ausgewählt werden!]]></target>
             </trans-unit>
         </body>
     </file>

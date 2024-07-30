@@ -651,4 +651,39 @@ class Solr implements LoggerAwareInterface
             // Nothing to do here.
         }
     }
+
+    /**
+     * Sends the commit and optimize command to the index.
+     *
+     * @access public
+     *
+     * @param bool $commit If true, the commit command is sent to the index
+     * @param bool $optimize If true, the optimize command is sent to the index
+     *
+     * @return bool true if executing the command worked
+     */
+    public function optimize(bool $commit, bool $optimize): bool
+    {
+        // get an update query instance
+        $update = $this->service->createUpdate();
+
+        // commit the index
+        if ($commit) {
+            $update->addCommit(false);
+        }
+
+        // optimize the index
+        if ($optimize) {
+            $update->addOptimize(false);
+        }
+
+        // this executes the query and returns the result
+        $result = $this->service->update($update);
+
+        if ($result->getStatus()) {
+            return false;
+        }
+
+        return true;
+    }
 }
