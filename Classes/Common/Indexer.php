@@ -145,7 +145,7 @@ class Indexer
                 }
                 // Commit all changes.
                 $updateQuery = self::$solr->service->createUpdate();
-                $updateQuery->addCommit($softCommit, null, null);
+                $updateQuery->addCommit($softCommit);
                 self::$solr->service->update($updateQuery);
 
                 if (!(Environment::isCli())) {
@@ -599,7 +599,7 @@ class Indexer
             $query = $field . ':"' . $value . '"';
         }
         $update->addDeleteQuery($query);
-        $update->addCommit($softCommit, null, null);
+        $update->addCommit($softCommit);
         self::$solr->service->update($update);
     }
 

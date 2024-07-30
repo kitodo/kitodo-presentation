@@ -671,12 +671,12 @@ class Solr implements LoggerAwareInterface
 
         // commit the index
         if($commit) {
-            $update->addCommit(false, null, null);
+            $update->addCommit(false);
         }
 
         // optimize the index
         if($optimize) {
-            $update->addOptimize(false, null, null);
+            $update->addOptimize(false);
         }
 
         // this executes the query and returns the result
