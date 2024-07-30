@@ -686,4 +686,25 @@ class Solr implements LoggerAwareInterface
 
         return true;
     }
+
+    /**
+     * Sends the suggest.build=true command to the index.
+     *
+     * @access public
+     *
+     * @return bool true if executing the command worked
+     */
+    public function suggestBuild(): bool
+    {
+        $query = $this->service->createSuggester();
+        $query->addParam('suggest.build', 'true');
+        $query->setCount(0);
+        $result = $this->service->execute($query);
+
+        if ($result->getStatus()) {
+            return false;
+        }
+
+        return true;
+    }
 }
