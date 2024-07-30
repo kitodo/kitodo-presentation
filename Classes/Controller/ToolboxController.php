@@ -90,6 +90,10 @@ class ToolboxController extends AbstractController
                     case 'imagemanipulationtool':
                         $this->renderToolByName('renderImageManipulationTool');
                         break;
+                    case 'tx_dlf_modeldownloadtool':
+                    case 'modeldownloadtool':
+                        $this->renderToolByName('renderModelDownloadTool');
+                        break;
                     case 'tx_dlf_pdfdownloadtool':
                     case 'pdfdownloadtool':
                         $this->renderToolByName('renderPdfDownloadTool');
@@ -121,6 +125,32 @@ class ToolboxController extends AbstractController
     {
         $this->$tool();
         $this->view->assign($tool, true);
+    }
+
+    /**
+     * Get image's URL and MIME type information's.
+     *
+     * @access private
+     *
+     * @param int $page Page number
+     *
+     * @return array Array of image information's.
+     */
+    public function getImage(int $page): array
+    {
+        // Get @USE value of METS fileGroup.
+        $image = $this->getFile($page, GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']));
+        switch ($image['mimetype']) {
+            case 'image/jpeg':
+                $image['mimetypeLabel'] = ' (JPG)';
+                break;
+            case 'image/tiff':
+                $image['mimetypeLabel'] = ' (TIFF)';
+                break;
+            default:
+                $image['mimetypeLabel'] = '';
+        }
+        return $image;
     }
 
     /**
@@ -265,46 +295,33 @@ class ToolboxController extends AbstractController
         if ($this->requestData['double'] == 1) {
             $imageArray[1] = $this->getImage($this->requestData['page'] + 1);
         }
+
         $this->view->assign('imageDownload', $imageArray);
     }
 
     /**
-     * Get image's URL and MIME type
+     * Get file's URL and MIME type
      *
      * @access private
      *
      * @param int $page Page number
      *
-     * @return array Array of image links and image format information
+     * @return array Array of file information
      */
-    private function getImage(int $page): array
+    private function getFile(int $page, array $fileGrps): array
     {
-        $image = [];
-        // Get @USE value of METS fileGrp.
-        $fileGrps = GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
+        $file = [];
         while ($fileGrp = @array_pop($fileGrps)) {
-            // Get image link.
             $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]];
             $fileId = $physicalStructureInfo['files'][$fileGrp];
             if (!empty($fileId)) {
-                $image['url'] = $this->currentDocument->getDownloadLocation($fileId);
-                $image['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
-                switch ($image['mimetype']) {
-                    case 'image/jpeg':
-                        $image['mimetypeLabel']  = ' (JPG)';
-                        break;
-                    case 'image/tiff':
-                        $image['mimetypeLabel']  = ' (TIFF)';
-                        break;
-                    default:
-                        $image['mimetypeLabel']  = '';
-                }
-                break;
+                $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
+                $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
             } else {
                 $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
             }
         }
-        return $image;
+        return $file;
     }
 
     /**
@@ -322,6 +339,30 @@ class ToolboxController extends AbstractController
 
         $this->view->assign('imageManipulation', true);
         $this->view->assign('parentContainer', $parentContainer);
+    }
+
+    /**
+     * Renders the model download tool
+     * Renders the model download tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderModelDownloadTool(): void
+    {
+        if (
+            $this->isDocMissingOrEmpty()
+            || empty($this->settings['fileGrpsModelDownload'])
+        ) {
+            // Quit without doing anything if required variables are not set.
+            return;
+        }
+
+        $this->setPage();
+
+        $this->view->assign('modelDownload', $this->getFile($this->requestData['page'], GeneralUtility::trimExplode(',', $this->settings['fileGrpsModelDownload'])));
     }
 
     /**

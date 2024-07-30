@@ -75,6 +75,18 @@
         </f:then>
     </f:if>
 
+    <f:if condition="{renderModelDownloadTool} && {modelDownload}">
+        <f:then>
+            <li>
+                <span class="tx-dlf-tools-modeldownload">
+                    <f:link.external uri="{modelDownload.url}">
+                        <f:translate key="downloadModel" />
+                    </f:link.external>
+                </span>
+            </li>
+        </f:then>
+    </f:if>
+
     <f:if condition="{renderFulltextTool}">
         <f:then>
             <li>
