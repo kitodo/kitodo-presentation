@@ -78,13 +78,11 @@ class OptimizeCommand extends Command
         $io->title($this->getDescription());
 
         if (empty($input->getOption('solr')) || is_array($input->getOption('solr'))) {
-
                 $io->error('ERROR: Required parameter --solr|-s is missing or array.');
                 return BaseCommand::FAILURE;
         }
 
         if (empty($input->getOption('commit')) && empty($input->getOption('optimize'))) {
-            
             $io->error('ERROR: Parameter --commit or --optimize is missing.');
             return BaseCommand::FAILURE;
         }

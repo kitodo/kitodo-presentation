@@ -68,7 +68,7 @@ class DeleteCommand extends BaseCommand
                 'softCommit',
                 null,
                 InputOption::VALUE_NONE,
-                'If this option is set, documents are just added to the index by a soft commit.'
+                'If this option is set, documents are just deleted from the index by a soft commit.'
             );
     }
 

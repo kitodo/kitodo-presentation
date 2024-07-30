@@ -97,7 +97,7 @@ class ReindexCommand extends BaseCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If this option is set, documents are just added to the index with a soft commit.'
-                );
+            );
     }
 
     /**

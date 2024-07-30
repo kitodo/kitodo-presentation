@@ -656,11 +656,9 @@ class Solr implements LoggerAwareInterface
      * Sends the commit and optimize command to the index.
      *
      * @access public
-     * 
      *
      * @param bool $commit If true, the commit command is sent to the index
      * @param bool $optimize If true, the optimize command is sent to the index
-     *
      *
      * @return bool true if executing the command worked
      */
@@ -670,12 +668,12 @@ class Solr implements LoggerAwareInterface
         $update = $this->service->createUpdate();
 
         // commit the index
-        if($commit) {
+        if ($commit) {
             $update->addCommit(false);
         }
 
         // optimize the index
-        if($optimize) {
+        if ($optimize) {
             $update->addOptimize(false);
         }
 

@@ -321,7 +321,7 @@ class BaseTask extends AbstractTask
     {
         return $this->softCommit;
     }
-    
+
     /**
      *
      * @param bool $softCommit

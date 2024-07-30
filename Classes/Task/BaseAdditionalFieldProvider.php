@@ -89,7 +89,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 $messageSeverity,
                 true,
                 'core.template.flashMessages'
-                );
+            );
             $fieldsValid = false;
         }
 
@@ -106,7 +106,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity == FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
         }
 
         if ((isset($submittedData['solr']) && (int) $submittedData['solr'] <= 0) || !isset($submittedData['solr'])) {
@@ -117,7 +117,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity == FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
         }
 
         if (((isset($submittedData['coll']) && isset($submittedData['all'])) || (!isset($submittedData['coll']) && !isset($submittedData['all'])))
@@ -129,7 +129,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity == FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
         }
         return $fieldsValid;
     }
@@ -303,7 +303,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         $solrCores = [];
         $result = $queryBuilder->select('uid', 'label', 'index_name')
             ->from('tx_dlf_solrcores');
-        if($pid !== null) {
+        if ($pid !== null) {
             $queryBuilder->where(
                 $queryBuilder->expr()
                     ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))

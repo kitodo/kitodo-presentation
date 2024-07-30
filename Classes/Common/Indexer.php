@@ -187,7 +187,7 @@ class Indexer
      * @param InputInterface $input The input parameters
      * @param string $field by which document should be removed
      * @param int $solrCoreUid UID of the SolrCore
-     * @param bool $softCommit If true, documents are just added to the index by a soft commit
+     * @param bool $softCommit If true, documents are just deleted from the index by a soft commit
      *
      * @return bool true on success or false on failure
      */
@@ -585,7 +585,7 @@ class Indexer
      *
      * @param string $field by which document should be removed
      * @param string $value of the field by which document should be removed
-     * @param bool $softCommit If true, documents are just added to the index by a soft commit
+     * @param bool $softCommit If true, documents are just deleted from the index by a soft commit
      *
      * @return void
      */
