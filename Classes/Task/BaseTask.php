@@ -357,7 +357,6 @@ class BaseTask extends AbstractTask
     {
         return $this->optimize;
     }
-    
     /**
      *
      * @param bool $optimize
