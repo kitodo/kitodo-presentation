@@ -720,22 +720,22 @@
       </arr>
   </requestHandler>
 
-    <!-- Add a new named search component that takes care of highlighting OCR field values. -->
-    <searchComponent class="solrocr.OcrHighlightComponent" name="ocrHighlight" />
+  <!-- Add a new named search component that takes care of highlighting OCR field values. -->
+  <searchComponent class="solrocr.OcrHighlightComponent" name="ocrHighlight" />
 
   <!-- Autocomplete Component -->
-    <searchComponent name="suggest" class="solr.SuggestComponent">
-        <lst name="suggester">
-            <str name="name">suggest</str>
-            <str name="lookupImpl">FuzzyLookupFactory</str>
-            <str name="dictionaryImpl">DocumentDictionaryFactory</str>
-            <str name="field">autocomplete</str>
-            <str name="suggestAnalyzerFieldType">autocomplete</str>
-            <str name="buildOnStartup">false</str>
-            <str name="buildOnCommit">false</str>
-            <str name="buildOnOptimize">false</str>
-        </lst>
-    </searchComponent>
+  <searchComponent name="suggest" class="solr.SuggestComponent">
+      <lst name="suggester">
+          <str name="name">suggest</str>
+          <str name="lookupImpl">FuzzyLookupFactory</str>
+          <str name="dictionaryImpl">DocumentDictionaryFactory</str>
+          <str name="field">autocomplete</str>
+          <str name="suggestAnalyzerFieldType">autocomplete</str>
+          <str name="buildOnStartup">false</str>
+          <str name="buildOnCommit">false</str>
+          <str name="buildOnOptimize">false</str>
+      </lst>
+  </searchComponent>
 
   <schemaFactory class="ClassicIndexSchemaFactory"/>
 
