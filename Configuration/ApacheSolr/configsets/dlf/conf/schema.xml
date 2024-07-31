@@ -152,7 +152,7 @@ limitations under the License.
         <field name="default" type="standard" indexed="true" stored="false" required="true" multiValued="true" default="" />
         <field name="timestamp" type="date" indexed="true" stored="true" required="true" multiValued="false" default="NOW" />
         <!-- Autocomplete field for search form. -->
-        <field name="autocomplete" type="autocomplete" indexed="true" stored="false" multiValued="true" />
+        <field name="autocomplete" type="autocomplete" indexed="true" stored="true" multiValued="true" />
         <!-- Fulltext field for OCR results. -->
         <field name="fulltext" type="text_ocr" indexed="true" stored="true" multiValued="false" default="" termVectors="true" termPositions="true" termOffsets="true" />
         <!-- Record ID of the document (required for OAI_DC output). -->

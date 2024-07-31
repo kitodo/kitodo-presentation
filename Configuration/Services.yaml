@@ -31,3 +31,8 @@ services:
     tags:
       - name: console.command
         command: 'kitodo:optimize'
+
+  Kitodo\Dlf\Command\SuggestBuildCommand:
+    tags:
+      - name: console.command
+        command: 'kitodo:suggestBuld'
