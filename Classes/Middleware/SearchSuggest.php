@@ -68,8 +68,7 @@ class SearchSuggest implements MiddlewareInterface
             foreach ($results as $termResult) {
                 foreach ($termResult as $termSuggestions) {
                     $suggestions = $termSuggestions->getSuggestions();
-                    foreach($suggestions as $suggestion)
-                    {
+                    foreach ($suggestions as $suggestion) {
                         $output[] = $suggestion['term'];
                     }
                 }
