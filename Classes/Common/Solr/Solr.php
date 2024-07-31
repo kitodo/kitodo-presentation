@@ -701,7 +701,7 @@ class Solr implements LoggerAwareInterface
         $query->setCount(0);
         $result = $this->service->execute($query);
 
-        if ($result->getStatus()) {
+        if ($result->getResponse()->getStatusCode() == 400) {
             return false;
         }
 
