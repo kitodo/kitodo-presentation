@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e39d6c9934d0472a12598fd4b9ae805",
+    "content-hash": "1ae4b5b06ca1d28a390bf9d229855a40",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -5607,16 +5607,16 @@
         },
         {
             "name": "typo3fluid/fluid",
-            "version": "2.14.0",
+            "version": "2.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TYPO3/Fluid.git",
-                "reference": "9aeb4b1333022b804eed7a8cd2326a634370a38c"
+                "reference": "ad0deb5ee02b6149efcd635892563d20c0663274"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TYPO3/Fluid/zipball/9aeb4b1333022b804eed7a8cd2326a634370a38c",
-                "reference": "9aeb4b1333022b804eed7a8cd2326a634370a38c",
+                "url": "https://api.github.com/repos/TYPO3/Fluid/zipball/ad0deb5ee02b6149efcd635892563d20c0663274",
+                "reference": "ad0deb5ee02b6149efcd635892563d20c0663274",
                 "shasum": ""
             },
             "require": {
@@ -5655,7 +5655,7 @@
                 "issues": "https://github.com/TYPO3/Fluid/issues",
                 "source": "https://github.com/TYPO3/Fluid"
             },
-            "time": "2024-07-23T13:34:08+00:00"
+            "time": "2024-07-31T09:09:50+00:00"
         },
         {
             "name": "ubl/php-iiif-prezi-reader",
@@ -6510,16 +6510,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.8",
+            "version": "1.11.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec"
+                "reference": "640410b32995914bde3eed26fa89552f9c2c082f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec",
-                "reference": "6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/640410b32995914bde3eed26fa89552f9c2c082f",
+                "reference": "640410b32995914bde3eed26fa89552f9c2c082f",
                 "shasum": ""
             },
             "require": {
@@ -6564,7 +6564,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-24T07:01:22+00:00"
+            "time": "2024-08-08T09:02:50+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
