@@ -99,9 +99,9 @@ You may also interact with the Docker containers directly:
 ```bash
 cd Build/Test/
 vim .env  # Edit configuration
-docker-compose run unit
-docker-compose run functional
-docker-compose down
+docker compose run unit
+docker compose run functional
+docker compose down
 ```
 
 ### Fixtures
