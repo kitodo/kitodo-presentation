@@ -3,16 +3,16 @@
 # Adopted/reduced from https://github.com/TYPO3/typo3/blob/f6d73fea5a8f3a5cd8537e29308f18bec65a0c92/Build/Scripts/runTests.sh
 
 # Function to write a .env file in Build/Test
-# This is read by docker-compose and vars defined here are
+# This is read by docker compose and vars defined here are
 # used in Build/Test/docker-compose.yml
 setUpDockerComposeDotEnv() {
     # Delete possibly existing local .env file if exists
     [ -e .env ] && rm .env
-    # Set up a new .env file for docker-compose
+    # Set up a new .env file for docker compose
     {
         echo "COMPOSE_PROJECT_NAME=dlf_testing"
         # To prevent access rights of files created by the testing, the docker image later
-        # runs with the same user that is currently executing the script. docker-compose can't
+        # runs with the same user that is currently executing the script. docker compose can't
         # use $UID directly itself since it is a shell variable and not an env variable, so
         # we have to set it explicitly here.
         echo "HOST_UID=$(id -u)"
@@ -61,7 +61,7 @@ Execute unit, functional and other test suites in a docker based test environmen
 execution of single test files, sending xdebug information to a local IDE and more.
 
 Recommended docker version is >=20.10 for xdebug break pointing to work reliably, and
-a recent docker-compose (tested >=1.21.2) is needed.
+a recent docker compose (tested >=2.27.1) is needed.
 
 Usage: $0 [options] [file]
 
@@ -159,12 +159,6 @@ Options:
     -h
         Show this help.
 EOF
-
-# Test if docker-compose exists, else exit out with error
-if ! type "docker-compose" > /dev/null; then
-    echo "This script relies on docker and docker-compose. Please install" >&2
-    exit 1
-fi
 
 # Go to the directory this script is located, so everything else is relative
 # to this dir, no matter from where this script is called.
@@ -292,9 +286,9 @@ fi
 case ${TEST_SUITE} in
     composerInstall)
         setUpDockerComposeDotEnv
-        docker-compose run composer_install
+        docker compose run composer_install
         SUITE_EXIT_CODE=$?
-        docker-compose down
+        docker compose down
         ;;
     functional)
         handleDbmsAndDriverOptions
@@ -302,7 +296,7 @@ case ${TEST_SUITE} in
         case ${DBMS} in
             mariadb|mysql)
                 echo "Using driver: ${DATABASE_DRIVER}"
-                docker-compose run functional
+                docker compose run functional
                 SUITE_EXIT_CODE=$?
                 ;;
             *)
@@ -311,13 +305,13 @@ case ${TEST_SUITE} in
                 echo "call \".Build/Test/runTests.sh -h\" to display help and valid options" >&2
                 exit 1
         esac
-        docker-compose down
+        docker compose down
         ;;
     unit)
         setUpDockerComposeDotEnv
-        docker-compose run unit
+        docker compose run unit
         SUITE_EXIT_CODE=$?
-        docker-compose down
+        docker compose down
         ;;
     update)
         # pull typo3/core-testing-*:latest versions of those ones that exist locally
