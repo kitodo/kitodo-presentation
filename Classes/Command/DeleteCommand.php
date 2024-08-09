@@ -87,6 +87,28 @@ class DeleteCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
+        $allowWrite = (int) $this->extConf['solr']['allowWrite'] === 1 ? true : false;
+
+        if ($allowWrite) {
+            return $this->executeDeleteCommand($input, $output);
+        } else {
+            $io->error('ERROR: This system is not allowed to write into the SOLR Index.');
+            return BaseCommand::FAILURE;
+        }
+    }
+
+    /**
+     * Execute delete command basing on the user input.
+     *
+     * @access private
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return int BaseCommand::FAILURE or BaseCommand::SUCCESS
+     */
+    private function executeDeleteCommand(InputInterface $input, SymfonyStyle $io): int
+    {
         $this->initializeRepositories((int) $input->getOption('pid'));
 
         if ($this->storagePid == 0) {
@@ -148,7 +170,7 @@ class DeleteCommand extends BaseCommand
      *
      * @return void
      */
-    private function deleteFromDatabase($input, $io): void
+    private function deleteFromDatabase(InputInterface $input, SymfonyStyle $io): void
     {
         $document = $this->getDocument($input);
 
@@ -177,7 +199,7 @@ class DeleteCommand extends BaseCommand
      *
      * @return void
      */
-    private function deleteFromSolr($input, $io, $solrCoreUid): void
+    private function deleteFromSolr(InputInterface $input, SymfonyStyle $io, int $solrCoreUid): void
     {
         if ($io->isVerbose()) {
             $io->section('Deleting ' . $input->getOption('doc') . ' on Solr core ' . $solrCoreUid . '.');
@@ -210,7 +232,7 @@ class DeleteCommand extends BaseCommand
      *
      * @return ?Document
      */
-    private function getDocument($input): ?Document
+    private function getDocument(InputInterface $input): ?Document
     {
         $document = null;
 
