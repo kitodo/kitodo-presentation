@@ -96,15 +96,38 @@ class IndexCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
         $this->initializeRepositories((int) $input->getOption('pid'));
 
+        $allowWrite = (int) $this->extConf['solr']['allowWrite'] === 1 ? true : false;
+
+        if ($allowWrite) {
+            return $this->executeIndexCommand($input, $io);
+        } else {
+            $io->error('This system is not allowed to write into the SOLR Index.');
+            return BaseCommand::FAILURE;
+        }
+    }
+
+    /**
+     * Execute index command basing on the user input.
+     *
+     * @access private
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return int BaseCommand::FAILURE or BaseCommand::SUCCESS
+     */
+    private function executeIndexCommand(InputInterface $input, SymfonyStyle $io): int
+    {
+        $dryRun = $input->getOption('dry-run') != false ? true : false;
+
         if ($this->storagePid == 0) {
-            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
+            $io->error('No valid PID (' . $this->storagePid . ') given.');
             return BaseCommand::FAILURE;
         }
 
@@ -117,20 +140,11 @@ class IndexCommand extends BaseCommand
 
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
-                $outputSolrCores = [];
-                foreach ($allSolrCores as $indexName => $uid) {
-                    $outputSolrCores[] = $uid . ' : ' . $indexName;
-                }
-                if (empty($outputSolrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return BaseCommand::FAILURE;
-                } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return BaseCommand::FAILURE;
-                }
+                $this->validateSolrCores($allSolrCores, $input->getOption('solr'), $io);
+                return BaseCommand::FAILURE;
             }
         } else {
-            $io->error('ERROR: Required parameter --solr|-s is missing or array.');
+            $io->error('Required parameter --solr|-s is missing or array.');
             return BaseCommand::FAILURE;
         }
 
@@ -142,45 +156,26 @@ class IndexCommand extends BaseCommand
                 && !GeneralUtility::isValidUrl($input->getOption('doc'))
             )
         ) {
-            $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
+            $io->error('Required parameter --doc|-d is not a valid document UID or URL.');
             return BaseCommand::FAILURE;
         }
 
-        if (!empty($input->getOption('owner'))) {
-            if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
-                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
-            } else {
-                $this->owner = $this->libraryRepository->findOneByIndexName((string) $input->getOption('owner'));
-            }
-        } else {
-            $this->owner = null;
-        }
+        $this->getOwner($input->getOption('owner'));
 
-        $document = null;
-        $doc = null;
+        $result = $this->getDocument($input->getOption('doc'));
 
-        // Try to find existing document in database
-        if (MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))) {
-
-            $document = $this->documentRepository->findByUid($input->getOption('doc'));
-
-            if ($document === null) {
-                $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
-                return BaseCommand::FAILURE;
-            } else {
-                $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
-            }
-
-        } else if (GeneralUtility::isValidUrl($input->getOption('doc'))) {
-            $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
-
-            $document = $this->getDocumentFromUrl($doc, $input->getOption('doc'));
-        }
-
-        if ($doc === null) {
-            $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
+        if ($result['message'] !== null) {
+            $io->error($result['message']);
             return BaseCommand::FAILURE;
         }
+
+        if ($result['doc'] === null) {
+            $io->error('Document "' . $input->getOption('doc') . '" could not be loaded.');
+            return BaseCommand::FAILURE;
+        }
+
+        $document = $result['document'];
+        $doc = $result['doc'];
 
         $document->setSolrcore($solrCoreUid);
 
@@ -202,7 +197,7 @@ class IndexCommand extends BaseCommand
                 }
                 $isSaved = Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
             } else {
-                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
+                $io->error('Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
                 return BaseCommand::FAILURE;
             }
 
@@ -211,10 +206,46 @@ class IndexCommand extends BaseCommand
                 return BaseCommand::SUCCESS;
             }
 
-            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
-            $io->info('INFO: Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
+            $io->error('Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
+            $io->info('Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
             return BaseCommand::FAILURE;
         }
+    }
+
+    /**
+     * Get document from database or XML file,
+     * if not found then save error message.
+     *
+     * @access private
+     *
+     * @param mixed $inputDoc
+     *
+     * @return array associative array wih document and doc objects or error message
+     */
+    private function getDocument($inputDoc): array
+    {
+        $result = [
+            'document' => null,
+            'doc' => null,
+            'message' => null
+        ];
+
+        if (MathUtility::canBeInterpretedAsInteger($inputDoc)) {
+            $result['document'] = $this->documentRepository->findByUid($inputDoc);
+
+            if ($result['document'] === null) {
+                $result['message'] = 'Document with UID "' . $inputDoc . '" could not be found on PID ' . $this->storagePid . ' .';
+                return $result;
+            } else {
+                $result['doc'] = AbstractDocument::getInstance($result['document']->getLocation(), ['storagePid' => $this->storagePid], true);
+                return $result;
+            }
+        } elseif (GeneralUtility::isValidUrl($inputDoc)) {
+            $result['doc']  = AbstractDocument::getInstance($inputDoc, ['storagePid' => $this->storagePid], true);
+            $result['document'] = $this->getDocumentFromUrl($result['doc'], $inputDoc);
+        }
+
+        return $result;
     }
 
     /**
@@ -248,5 +279,49 @@ class IndexCommand extends BaseCommand
         }
 
         return $document;
+    }
+
+    /**
+     * Get owner from user input.
+     *
+     * @access private
+     *
+     * @param mixed $owner
+     *
+     * @return void
+     */
+    private function getOwner($owner): void
+    {
+        if (!empty($owner)) {
+            if (MathUtility::canBeInterpretedAsInteger($owner)) {
+                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $owner, 1));
+            } else {
+                $this->owner = $this->libraryRepository->findOneByIndexName((string) $owner);
+            }
+        } else {
+            $this->owner = null;
+        }
+    }
+
+    /**
+     * Validate SOLR core and print matching error message for user.
+     *
+     * @param array $allSolrCores
+     * @param mixed $solr
+     * @param SymfonyStyle $io
+     *
+     * @return void
+     */
+    private function validateSolrCores(array $allSolrCores, $solr, SymfonyStyle $io): void
+    {
+        $outputSolrCores = [];
+        foreach ($allSolrCores as $indexName => $uid) {
+            $outputSolrCores[] = $uid . ' : ' . $indexName;
+        }
+        if (empty($outputSolrCores)) {
+            $io->error('No valid Solr core ("' . $solr . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
+        } else {
+            $io->error('No valid Solr core ("' . $solr . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
+        }
     }
 }
