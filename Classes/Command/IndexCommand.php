@@ -96,10 +96,34 @@ class IndexCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
+
+        $allowWrite = (int) $this->extConf['solr']['allowWrite'] === 1 ? true : false;
+
+        if ($allowWrite) {
+            return $this->executeIndexCommand($input, $output);
+        } else {
+            $io->error('ERROR: This system is not allowed to write into the SOLR Index.');
+            return BaseCommand::FAILURE;
+        }
+        
+    }
+
+    /**
+     * Execute index command basing on the user input.
+     *
+     * @access private
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return int BaseCommand::FAILURE or BaseCommand::SUCCESS
+     */
+    private function executeIndexCommand(InputInterface $input, SymfonyStyle $io): int
+    {
+        $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $this->initializeRepositories((int) $input->getOption('pid'));
 
@@ -146,41 +170,22 @@ class IndexCommand extends BaseCommand
             return BaseCommand::FAILURE;
         }
 
-        if (!empty($input->getOption('owner'))) {
-            if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
-                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
-            } else {
-                $this->owner = $this->libraryRepository->findOneByIndexName((string) $input->getOption('owner'));
-            }
-        } else {
-            $this->owner = null;
+        $this->getOwner($input->getOption('owner'));
+
+        $result = $this->getDocument($input->getOption('doc'));
+
+        if ($result['message'] !== null) {
+            $io->error($result['message']);
+            return BaseCommand::FAILURE;
         }
 
-        $document = null;
-        $doc = null;
-
-        // Try to find existing document in database
-        if (MathUtility::canBeInterpretedAsInteger($input->getOption('doc'))) {
-
-            $document = $this->documentRepository->findByUid($input->getOption('doc'));
-
-            if ($document === null) {
-                $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
-                return BaseCommand::FAILURE;
-            } else {
-                $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
-            }
-
-        } else if (GeneralUtility::isValidUrl($input->getOption('doc'))) {
-            $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
-
-            $document = $this->getDocumentFromUrl($doc, $input->getOption('doc'));
-        }
-
-        if ($doc === null) {
+        if ($result['doc'] === null) {
             $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
             return BaseCommand::FAILURE;
         }
+
+        $document = $result['document'];
+        $doc = $result['doc'];
 
         $document->setSolrcore($solrCoreUid);
 
@@ -218,6 +223,42 @@ class IndexCommand extends BaseCommand
     }
 
     /**
+     * Get document from database or XML file,
+     * if not found then save error message.
+     *
+     * @access private
+     *
+     * @param mixed $inputDoc
+     *
+     * @return array associative array wih document and doc objects or error message
+     */
+    private function getDocument($inputDoc): array
+    {
+        $result = [
+            'document' => null,
+            'doc' => null,
+            'message' => null
+        ];
+
+        if (MathUtility::canBeInterpretedAsInteger($inputDoc)) {
+            $result['document'] = $this->documentRepository->findByUid($inputDoc);
+
+            if ($result['document'] === null) {
+                $result['message'] = 'ERROR: Document with UID "' . $inputDoc . '" could not be found on PID ' . $this->storagePid . ' .';
+                return $result;
+            } else {
+                $result['doc'] = AbstractDocument::getInstance($result['document']->getLocation(), ['storagePid' => $this->storagePid], true);
+                return $result;
+            }
+        } else if (GeneralUtility::isValidUrl($inputDoc)) {
+            $result['doc']  = AbstractDocument::getInstance($inputDoc, ['storagePid' => $this->storagePid], true);
+            $result['document'] = $this->getDocumentFromUrl($result['doc'] , $inputDoc);
+        }
+
+        return $result;
+    }
+
+    /**
      * Get document from given URL. Find it in database, if not found create the new one.
      *
      * @access private
@@ -248,5 +289,27 @@ class IndexCommand extends BaseCommand
         }
 
         return $document;
+    }
+
+    /**
+     * Get owner from user input.
+     *
+     * @access private
+     *
+     * @param mixed $owner
+     *
+     * @return void
+     */
+    private function getOwner($owner): void
+    {
+        if (!empty($owner)) {
+            if (MathUtility::canBeInterpretedAsInteger($owner)) {
+                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $owner, 1));
+            } else {
+                $this->owner = $this->libraryRepository->findOneByIndexName((string) $owner);
+            }
+        } else {
+            $this->owner = null;
+        }
     }
 }
