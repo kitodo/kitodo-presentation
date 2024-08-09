@@ -89,8 +89,30 @@ class DeleteCommand extends BaseCommand
 
         $this->initializeRepositories((int) $input->getOption('pid'));
 
+        $allowWrite = (int) $this->extConf['solr']['allowWrite'] === 1 ? true : false;
+
+        if ($allowWrite) {
+            return $this->executeDeleteCommand($input, $io);
+        } else {
+            $io->error('This system is not allowed to write into the SOLR Index.');
+            return BaseCommand::FAILURE;
+        }
+    }
+
+    /**
+     * Execute delete command basing on the user input.
+     *
+     * @access private
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return int BaseCommand::FAILURE or BaseCommand::SUCCESS
+     */
+    private function executeDeleteCommand(InputInterface $input, SymfonyStyle $io): int
+    {
         if ($this->storagePid == 0) {
-            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
+            $io->error('No valid PID (' . $this->storagePid . ') given.');
             return BaseCommand::FAILURE;
         }
 
@@ -108,15 +130,15 @@ class DeleteCommand extends BaseCommand
                     $outputSolrCores[] = $uid . ' : ' . $indexName;
                 }
                 if (empty($outputSolrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
+                    $io->error('No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
                     return BaseCommand::FAILURE;
                 } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
+                    $io->error('No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
                     return BaseCommand::FAILURE;
                 }
             }
         } else {
-            $io->error('ERROR: Required parameter --solr|-s is missing or array.');
+            $io->error('Required parameter --solr|-s is missing or array.');
             return BaseCommand::FAILURE;
         }
 
@@ -128,7 +150,7 @@ class DeleteCommand extends BaseCommand
                 && !GeneralUtility::isValidUrl($input->getOption('doc'))
             )
         ) {
-            $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
+            $io->error('Required parameter --doc|-d is not a valid document UID or URL.');
             return BaseCommand::FAILURE;
         }
 
@@ -148,12 +170,12 @@ class DeleteCommand extends BaseCommand
      *
      * @return void
      */
-    private function deleteFromDatabase($input, $io): void
+    private function deleteFromDatabase(InputInterface $input, SymfonyStyle $io): void
     {
         $document = $this->getDocument($input);
 
         if ($document === null) {
-            $io->info('INFO: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . '. It is probably already deleted from DB.');
+            $io->info('Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . '. It is probably already deleted from DB.');
         } else {
             if ($io->isVerbose()) {
                 $io->section('Deleting ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
@@ -177,7 +199,7 @@ class DeleteCommand extends BaseCommand
      *
      * @return void
      */
-    private function deleteFromSolr($input, $io, $solrCoreUid): void
+    private function deleteFromSolr(InputInterface $input, SymfonyStyle $io, int $solrCoreUid): void
     {
         if ($io->isVerbose()) {
             $io->section('Deleting ' . $input->getOption('doc') . ' on Solr core ' . $solrCoreUid . '.');
@@ -210,7 +232,7 @@ class DeleteCommand extends BaseCommand
      *
      * @return ?Document
      */
-    private function getDocument($input): ?Document
+    private function getDocument(InputInterface $input): ?Document
     {
         $document = null;
 
