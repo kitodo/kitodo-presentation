@@ -21,6 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * CLI Command for re-indexing collections into database and Solr.
@@ -112,15 +113,37 @@ class ReindexCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
-
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
         $this->initializeRepositories((int) $input->getOption('pid'));
 
+        $allowWrite = (int) $this->extConf['solr']['allowWrite'] === 1 ? true : false;
+
+        if ($allowWrite) {
+            return $this->executeReindexCommand($input, $io);
+        } else {
+            $io->error('This system is not allowed to write into the SOLR Index.');
+            return BaseCommand::FAILURE;
+        }
+    }
+
+    /**
+     * Execute reindex command basing on the user input.
+     *
+     * @access private
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return int BaseCommand::FAILURE or BaseCommand::SUCCESS
+     */
+    private function executeReindexCommand(InputInterface $input, SymfonyStyle $io): int
+    {
+        $dryRun = $input->getOption('dry-run') != false ? true : false;
+
         if ($this->storagePid == 0) {
-            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
+            $io->error('No valid PID (' . $this->storagePid . ') given.');
             return BaseCommand::FAILURE;
         }
 
@@ -133,49 +156,18 @@ class ReindexCommand extends BaseCommand
 
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
-                $outputSolrCores = [];
-                foreach ($allSolrCores as $indexName => $uid) {
-                    $outputSolrCores[] = $uid . ' : ' . $indexName;
-                }
-                if (empty($outputSolrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return BaseCommand::FAILURE;
-                } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return BaseCommand::FAILURE;
-                }
+                $this->validateSolrCores($allSolrCores, $input->getOption('solr'), $io);
+                return BaseCommand::FAILURE;
             }
         } else {
-            $io->error('ERROR: Required parameter --solr|-s is missing or array.');
+            $io->error('Required parameter --solr|-s is missing or array.');
             return BaseCommand::FAILURE;
         }
 
-        if (!empty($input->getOption('owner'))) {
-            if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
-                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
-            } else {
-                $this->owner = $this->libraryRepository->findOneByIndexName((string) $input->getOption('owner'));
-            }
-        } else {
-            $this->owner = null;
-        }
+        $this->getOwner($input->getOption('owner'));
 
         if (!empty($input->getOption('all'))) {
-            if (
-                !empty($input->getOption('index-limit'))
-                && $input->getOption('index-begin') >= 0
-            ) {
-                // Get all documents for given limit and start.
-                $documents = $this->documentRepository->findAll()
-                    ->getQuery()
-                    ->setLimit((int) $input->getOption('index-limit'))
-                    ->setOffset((int) $input->getOption('index-begin'))
-                    ->execute();
-                $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
-            } else {
-                // Get all documents.
-                $documents = $this->documentRepository->findAll();
-            }
+            $documents = $this->getAllDocuments($input, $io);
         } elseif (
             !empty($input->getOption('coll'))
             && !is_array($input->getOption('coll'))
@@ -183,23 +175,13 @@ class ReindexCommand extends BaseCommand
             $collections = GeneralUtility::intExplode(',', $input->getOption('coll'), true);
             // "coll" may be a single integer or a comma-separated list of integers.
             if (empty(array_filter($collections))) {
-                $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
+                $io->error('Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
                 return BaseCommand::FAILURE;
             }
 
-            if (
-                !empty($input->getOption('index-limit'))
-                && $input->getOption('index-begin') >= 0
-            ) {
-                $documents = $this->documentRepository->findAllByCollectionsLimited($collections, (int) $input->getOption('index-limit'), (int) $input->getOption('index-begin'));
-
-                $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
-            } else {
-                // Get all documents of given collections.
-                $documents = $this->documentRepository->findAllByCollectionsLimited($collections, 0);
-            }
+            $documents = $this->getAllDocumentsInCollections($collections, $input, $io);
         } else {
-            $io->error('ERROR: One of parameters --all|-a or --coll|-c must be given.');
+            $io->error('One of parameters --all|-a or --coll|-c must be given.');
             return BaseCommand::FAILURE;
         }
 
@@ -207,7 +189,7 @@ class ReindexCommand extends BaseCommand
             $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
 
             if ($doc === null) {
-                $io->warning('WARNING: Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
+                $io->warning('Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
                 continue;
             }
 
@@ -233,5 +215,99 @@ class ReindexCommand extends BaseCommand
         $io->success('All done!');
 
         return BaseCommand::SUCCESS;
+    }
+
+    /**
+     * Get all documents or all documents in given range.
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return QueryResultInterface|array
+     */
+    private function getAllDocuments(InputInterface $input, SymfonyStyle $io)
+    {
+        if (
+            !empty($input->getOption('index-limit'))
+            && $input->getOption('index-begin') >= 0
+        ) {
+            $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
+            // Get all documents for given limit and start.
+            return $this->documentRepository->findAll()
+                ->getQuery()
+                ->setLimit((int) $input->getOption('index-limit'))
+                ->setOffset((int) $input->getOption('index-begin'))
+                ->execute();
+        }
+
+        // Get all documents.
+        return $this->documentRepository->findAll();
+    }
+
+    /**
+     * Get all documents or all documents in given range for collections.
+     *
+     * @param array $collections
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return QueryResultInterface|array
+     */
+    private function getAllDocumentsInCollections(array $collections, InputInterface $input, SymfonyStyle $io)
+    {
+        if (
+            !empty($input->getOption('index-limit'))
+            && $input->getOption('index-begin') >= 0
+        ) {
+            $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
+            return $this->documentRepository->findAllByCollectionsLimited($collections, (int) $input->getOption('index-limit'), (int) $input->getOption('index-begin'));
+        }
+
+        // Get all documents of given collections.
+        return $this->documentRepository->findAllByCollectionsLimited($collections, 0);
+    }
+
+    /**
+     * Get owner from user input.
+     *
+     * @access private
+     *
+     * @param mixed $owner
+     *
+     * @return void
+     */
+    private function getOwner($owner): void
+    {
+        if (!empty($owner)) {
+            if (MathUtility::canBeInterpretedAsInteger($owner)) {
+                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $owner, 1));
+            } else {
+                $this->owner = $this->libraryRepository->findOneByIndexName((string) $owner);
+            }
+        } else {
+            $this->owner = null;
+        }
+    }
+
+    /**
+     * Validate SOLR core and print matching error message for user.
+     *
+     * @param array $allSolrCores
+     * @param mixed $solr
+     * @param SymfonyStyle $io
+     *
+     * @return void
+     */
+    private function validateSolrCores(array $allSolrCores, $solr, SymfonyStyle $io): void
+    {
+        $outputSolrCores = [];
+        foreach ($allSolrCores as $indexName => $uid) {
+            $outputSolrCores[] = $uid . ' : ' . $indexName;
+        }
+        if (empty($outputSolrCores)) {
+            $io->error('No valid Solr core ("' . $solr . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
+        } else {
+            $io->error('No valid Solr core ("' . $solr . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
+        }
     }
 }
