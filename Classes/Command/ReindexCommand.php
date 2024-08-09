@@ -112,10 +112,32 @@ class ReindexCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
-
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
+
+        $allowWrite = (int) $this->extConf['solr']['allowWrite'] === 1 ? true : false;
+
+        if ($allowWrite) {
+            return $this->executeReindexCommand($input, $output);
+        } else {
+            $io->error('ERROR: This system is not allowed to write into the SOLR Index.');
+            return BaseCommand::FAILURE;
+        }
+    }
+
+    /**
+     * Execute reindex command basing on the user input.
+     *
+     * @access private
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return int BaseCommand::FAILURE or BaseCommand::SUCCESS
+     */
+    private function executeReindexCommand(InputInterface $input, SymfonyStyle $io): int
+    {
+        $dryRun = $input->getOption('dry-run') != false ? true : false;
 
         $this->initializeRepositories((int) $input->getOption('pid'));
 
