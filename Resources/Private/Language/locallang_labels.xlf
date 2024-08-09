@@ -560,6 +560,9 @@
 			<trans-unit id="config.solr.allowCoreDelete">
 				<source>Allow Solr Core Deletion?: If a Solr Core is deleted in the TYPO3 Backend, should it be deleted in Apache Solr as well? (default is "FALSE")</source>
 			</trans-unit>
+            <trans-unit id="config.solr.allowWrite">
+				<source>Allow write to the SOLR? (default is "TRUE")</source>
+			</trans-unit>
 			<trans-unit id="config.solr.fields.id">
 				<source>Solr Schema Field "id" : Unique identifier for the document in the id (default is "id")</source>
 			</trans-unit>

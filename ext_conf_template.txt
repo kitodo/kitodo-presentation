@@ -54,6 +54,8 @@ solr.pass =
 solr.timeout = 10
 # cat=Solr; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.allowCoreDelete
 solr.allowCoreDelete = 0
+# cat=Solr; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.allowWrite
+solr.allowWrite = 1
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.fields.id
 solr.fields.id = id
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.fields.uid
