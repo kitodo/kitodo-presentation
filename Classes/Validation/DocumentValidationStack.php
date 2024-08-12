@@ -21,7 +21,7 @@ class DocumentValidationStack extends BaseValidationStack
             if (!class_exists($configurationItem["className"])) {
                 throw new \InvalidArgumentException('Unable to load class ' . $configurationItem["className"] . '.', 1723200537037);
             }
-            $breakOnError = !isset($configurationItem["breakOnError"]) || $configurationItem["breakOnError"] !== false;
+            $breakOnError = !isset($configurationItem["breakOnError"]) || $configurationItem["breakOnError"] !== "false";
             $this->addValidationItem($configurationItem["className"], $configurationItem["title"], $breakOnError, $configurationItem["configuration"]);
         }
     }
