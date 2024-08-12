@@ -569,6 +569,10 @@
 				<source>Image Manipulation</source>
 				<target>Bildbearbeitung</target>
 			</trans-unit>
+			<trans-unit id="tx_dlf_toolbox.modeldownloadtool">
+				<source>Model Download</source>
+				<target>Model-Download</target>
+			</trans-unit>
 			<trans-unit id="tx_dlf_toolbox.pdfdownloadtool">
 				<target>PDF-Download</target>
 				<source>PDF Download</source>

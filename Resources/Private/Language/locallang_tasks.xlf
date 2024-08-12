@@ -35,6 +35,12 @@
             <trans-unit id="optimizeTask.description" approved="yes">
                 <source><![CDATA[Optimize index.]]></source>
             </trans-unit>
+            <trans-unit id="suggestBuildTask.title" approved="yes">
+                <source><![CDATA[Suggest]]></source>
+            </trans-unit>
+            <trans-unit id="suggestBuildTask.description" approved="yes">
+                <source><![CDATA[Build suggestion dictionary.]]></source>
+            </trans-unit>
             <trans-unit id="additionalFields.dryRun" approved="yes">
                 <source><![CDATA[Dry run]]></source>
             </trans-unit>

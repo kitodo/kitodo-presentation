@@ -27,7 +27,7 @@
                 <f:then>
                     <div class="tx-dlf-navigation-single">
                         <f:link.action addQueryString="1" additionalParams="{'tx_dlf[double]':'0'}"
-                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}>
+                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
                             <f:translate key="doublePageOff"/>
                         </f:link.action>
                     </div>
@@ -143,7 +143,6 @@
                 additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
             </f:form.select>
         </f:form>
-        </form>
     </li>
 </f:section>
 
@@ -193,7 +192,7 @@
                 </f:link.action>
             </f:then>
             <f:else>
-                <span title="{f:translate(key: 'lastPage'}">
+                <span title="{f:translate(key: 'lastPage')}">
                     <f:translate key="lastPage"/>
                 </span>
             </f:else>
@@ -250,7 +249,7 @@
         <f:then>
             <div class="measureBacks" style="top: 100px;">
                 <span class="prev">
-                    <f:if condition="{currentMeasure} > 1}">
+                    <f:if condition="{currentMeasure} > 1">
                         <f:then>
                             <f:variable name="prevMeasure" value="{currentMeasure - 1}" />
                             <f:link.action addQueryString="1" additionalParams="{'tx_dlf[measure]':'{currentMeasure - 1}', 'tx_dlf[page]':'{measurePages.{prevMeasure}}'}">

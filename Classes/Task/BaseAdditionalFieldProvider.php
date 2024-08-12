@@ -82,7 +82,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             $fieldsValid = false;
         }
 
-        if (!isset($submittedData['commit']) && !isset($submittedData['optimize']) && !isset($submittedData['pid'])) {
+        if (!isset($submittedData['commit']) && !isset($submittedData['optimize']) && !isset($submittedData['pid']) && ($submittedData['class'] != 'Kitodo\Dlf\Task\SuggestBuildTask')) {
             Helper::addMessage(
                 Helper::getLanguageService()->getLL('additionalFields.commitOrOptimize'),
                 $messageTitle,

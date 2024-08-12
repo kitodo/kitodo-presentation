@@ -113,6 +113,10 @@
 				<source><![CDATA[Show double pages]]></source>
 				<target><![CDATA[Doppelseitenansicht]]></target>
 			</trans-unit>
+			<trans-unit id="downloadModel" approved="yes">
+				<source><![CDATA[Download model]]></source>
+				<target><![CDATA[Model herunterladen]]></target>
+			</trans-unit>
 			<trans-unit id="downloadLeftPage" approved="yes">
 				<source><![CDATA[Download left page]]></source>
 				<target><![CDATA[Linke Seite herunterladen]]></target>

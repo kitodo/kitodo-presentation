@@ -113,6 +113,9 @@
 			<trans-unit id="doublePageOff">
 				<source><![CDATA[Show single page]]></source>
 			</trans-unit>
+			<trans-unit id="downloadModel">
+				<source><![CDATA[Download model]]></source>
+			</trans-unit>
 			<trans-unit id="doublePageOn">
 				<source><![CDATA[Show double pages]]></source>
 			</trans-unit>
