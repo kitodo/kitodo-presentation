@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mets="http://www.loc.gov/METS/" xmlns:dv="http://dfg-viewer.de/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:slub="http://www.slub-dresden.de/namespace" xmlns:slubarchiv="http://slubarchiv.slub-dresden.de/rights1" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+    <mets:metsHdr CREATEDATE="2021-06-21T12:58:10.000+02:00" LASTMODDATE="2023-12-08T22:05:22.616+01:00"/>
+    <mets:dmdSec ID="uuid-b6cf1e58-29a9-3a16-9a91-f0998a104007">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:name type="corporate">
+                        <mods:displayForm>SLUB Dresden</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">len</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Deutsche Forschungsgemeinschaft</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">fnd</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:typeOfResource>text</mods:typeOfResource>
+                    <mods:originInfo eventType="publication">
+                        <mods:dateIssued encoding="iso8601" keyDate="yes">1910-02-23</mods:dateIssued>
+                        <mods:displayDate>1910-02-23</mods:displayDate>
+                    </mods:originInfo>
+                    <mods:language>
+                        <mods:languageTerm type="code" authority="rfc3066">eng</mods:languageTerm>
+                        <mods:scriptTerm type="code" authority="iso15924">Latn</mods:scriptTerm>
+                    </mods:language>
+                    <mods:relatedItem type="host">
+                        <mods:recordInfo>
+                            <mods:recordIdentifier source="http://digital.slub-dresden.de/oai/">oai:de:slub-dresden:db:id-416971482</mods:recordIdentifier>
+                        </mods:recordInfo>
+                    </mods:relatedItem>
+                    <mods:relatedItem type="series">
+                        <mods:titleInfo>
+                            <mods:title lang="ger">Zeitungen</mods:title>
+                        </mods:titleInfo>
+                    </mods:relatedItem>
+                    <mods:relatedItem type="series">
+                        <mods:titleInfo>
+                            <mods:title lang="ger">Projekt: Historische Zeitungen</mods:title>
+                        </mods:titleInfo>
+                    </mods:relatedItem>
+                    <mods:identifier type="purl">http://digital.slub-dresden.de/id416971482-19100223</mods:identifier>
+                    <mods:identifier type="urn">urn:nbn:de:bsz:14-db-id416971482-191002234</mods:identifier>
+                    <mods:identifier type="kitodo">110905</mods:identifier>
+                    <mods:location>
+                        <mods:physicalLocation valueURI="https://ld.zdb-services.de/resource/organisations/DE-14">Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden</mods:physicalLocation>
+                    </mods:location>
+                    <mods:accessCondition type="use and reproduction" xlink:href="http://creativecommons.org/publicdomain/mark/1.0/">Public Domain Mark 1.0</mods:accessCondition>
+                    <mods:accessCondition type="restriction on access" xlink:href="http://purl.org/coar/access_right/c_abf2" displayLabel="Access Status">Open Access</mods:accessCondition>
+                    <mods:accessCondition type="slubRightsRecord">
+                        <slubarchiv:rightsRecord>
+                            <slubarchiv:copyrightStatus>publicdomain</slubarchiv:copyrightStatus>
+                        </slubarchiv:rightsRecord>
+                    </mods:accessCondition>
+                    <mods:part type="host" order="19100223">
+                        <mods:detail type="issue">
+                            <mods:number>1910-02-23</mods:number>
+                        </mods:detail>
+                    </mods:part>
+                    <mods:extension>
+                        <slub:slub>
+                            <slub:id type="digital">416971482-19100223</slub:id>
+                            <slub:footer>slubdfg</slub:footer>
+                        </slub:slub>
+                    </mods:extension>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="http://digital.slub-dresden.de/oai/">oai:de:slub-dresden:db:id-416971482-19100223</mods:recordIdentifier>
+                    </mods:recordInfo>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:amdSec ID="AMD">
+        <mets:rightsMD ID="uuid-a707e8e9-aa64-3f53-9924-cb393277d80c">
+            <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVRIGHTS">
+                <mets:xmlData>
+                    <dv:rights>
+                        <dv:owner>Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden</dv:owner>
+                        <dv:ownerLogo>https://digital.slub-dresden.de/fileadmin/images/dfgviewer_logo_slub.gif</dv:ownerLogo>
+                        <dv:ownerSiteURL>https://www.slub-dresden.de/</dv:ownerSiteURL>
+                        <dv:ownerContact>mailto:digital@slub-dresden.de</dv:ownerContact>
+                        <dv:license>pdm</dv:license>
+                    </dv:rights>
+                </mets:xmlData>
+            </mets:mdWrap>
+        </mets:rightsMD>
+        <mets:digiprovMD ID="uuid-bf0af207-8e85-38f8-9262-083ce784b5a5">
+            <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVLINKS">
+                <mets:xmlData>
+                    <dv:links>
+                        <dv:presentation>https://digital.slub-dresden.de/id416971482-19100223</dv:presentation>
+                        <dv:reference>https://katalog.slub-dresden.de/ppn/416971482</dv:reference>
+                    </dv:links>
+                </mets:xmlData>
+            </mets:mdWrap>
+        </mets:digiprovMD>
+    </mets:amdSec>
+    <mets:fileSec>
+        <mets:fileGrp USE="DEFAULT">
+            <mets:file ID="uuid-317064ee-8466-48eb-b85f-117e579e9adb" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000001.tif.medium.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-aaea81f0-5f19-4a4c-ad36-c5300156c6f5" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000002.tif.medium.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-9d04794c-f323-4d38-b679-009579cd8b65" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000003.tif.medium.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-9ce58618-631d-45f9-a397-422d16bc5f5d" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000004.tif.medium.jpg" LOCTYPE="URL"/>
+            </mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="FULLTEXT">
+            <mets:file ID="uuid-6f55b0df-c480-4f90-bd56-ebe6861dc895" MIMETYPE="text/xml">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_ocr/00000001.xml" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-804866d4-a163-43a5-a3d3-0517548bafb7" MIMETYPE="text/xml">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_ocr/00000002.xml" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-6245748a-c8d4-470e-9c16-a786e3c2d60c" MIMETYPE="text/xml">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_ocr/00000003.xml" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-1de335f4-6eb1-485a-98a6-d06b2eb5d1a5" MIMETYPE="text/xml">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_ocr/00000004.xml" LOCTYPE="URL"/>
+            </mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="DOWNLOAD">
+            <mets:file ID="uuid-548a3494-b136-411d-8397-5cf9b7f9a1d5" MIMETYPE="application/pdf">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000001.tif.pdf" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-64d86fd2-cd2a-4863-b9f3-f264a6dc0bb2" MIMETYPE="application/pdf">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000002.tif.pdf" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-b2504d25-6314-4518-9364-cfa382524f50" MIMETYPE="application/pdf">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000003.tif.pdf" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-5e6f4c33-e35f-4f5b-8fee-d28610087155" MIMETYPE="application/pdf">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000004.tif.pdf" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="FULLDOWNLOAD" MIMETYPE="application/pdf"><mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/TheDarea_416971482-19100223.pdf"/></mets:file></mets:fileGrp>
+        <mets:fileGrp USE="ORIGINAL">
+            <mets:file ID="uuid-0988351b-bdff-4d1e-b9fe-faa6352640f0" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000001.tif.original.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-8bb9b722-298d-4f9b-920f-baa15e740f38" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000002.tif.original.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-9a39605d-39bb-4eee-bf90-c2891ce79cad" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000003.tif.original.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-0961234d-8a55-4ca8-8653-636e3fe91f41" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000004.tif.original.jpg" LOCTYPE="URL"/>
+            </mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="THUMBS">
+            <mets:file ID="uuid-8cf0ba7d-8c80-4095-aa7e-590707466f98" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000001.tif.thumbnail.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-69fd095f-0899-4621-9870-5c5067f04eef" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000002.tif.thumbnail.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-e26c219c-3166-4ba0-b453-b0b4f393bed5" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000003.tif.thumbnail.jpg" LOCTYPE="URL"/>
+            </mets:file>
+            <mets:file ID="uuid-7d08b02a-7169-4665-ae2d-4f3b057fbdf8" MIMETYPE="image/jpeg">
+                <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-19100223/TheDarea_416971482-19100223_tif/jpegs/00000004.tif.thumbnail.jpg" LOCTYPE="URL"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="PHYSICAL">
+        <mets:div TYPE="physSequence" ID="PHYS_0000"><mets:fptr FILEID="FULLDOWNLOAD"/>
+            <mets:div ID="PHYS_0001" TYPE="page" ORDER="1" ORDERLABEL="1">
+                <mets:fptr FILEID="uuid-0988351b-bdff-4d1e-b9fe-faa6352640f0"/>
+                <mets:fptr FILEID="uuid-6f55b0df-c480-4f90-bd56-ebe6861dc895"/>
+                <mets:fptr FILEID="uuid-8cf0ba7d-8c80-4095-aa7e-590707466f98"/>
+                <mets:fptr FILEID="uuid-548a3494-b136-411d-8397-5cf9b7f9a1d5"/>
+                <mets:fptr FILEID="uuid-317064ee-8466-48eb-b85f-117e579e9adb"/>
+            </mets:div>
+            <mets:div ID="PHYS_0002" TYPE="page" ORDER="2" ORDERLABEL="2">
+                <mets:fptr FILEID="uuid-8bb9b722-298d-4f9b-920f-baa15e740f38"/>
+                <mets:fptr FILEID="uuid-804866d4-a163-43a5-a3d3-0517548bafb7"/>
+                <mets:fptr FILEID="uuid-69fd095f-0899-4621-9870-5c5067f04eef"/>
+                <mets:fptr FILEID="uuid-64d86fd2-cd2a-4863-b9f3-f264a6dc0bb2"/>
+                <mets:fptr FILEID="uuid-aaea81f0-5f19-4a4c-ad36-c5300156c6f5"/>
+            </mets:div>
+            <mets:div ID="PHYS_0003" TYPE="page" ORDER="3" ORDERLABEL="3">
+                <mets:fptr FILEID="uuid-9a39605d-39bb-4eee-bf90-c2891ce79cad"/>
+                <mets:fptr FILEID="uuid-6245748a-c8d4-470e-9c16-a786e3c2d60c"/>
+                <mets:fptr FILEID="uuid-e26c219c-3166-4ba0-b453-b0b4f393bed5"/>
+                <mets:fptr FILEID="uuid-b2504d25-6314-4518-9364-cfa382524f50"/>
+                <mets:fptr FILEID="uuid-9d04794c-f323-4d38-b679-009579cd8b65"/>
+            </mets:div>
+            <mets:div ID="PHYS_0004" TYPE="page" ORDER="4" ORDERLABEL="4">
+                <mets:fptr FILEID="uuid-0961234d-8a55-4ca8-8653-636e3fe91f41"/>
+                <mets:fptr FILEID="uuid-1de335f4-6eb1-485a-98a6-d06b2eb5d1a5"/>
+                <mets:fptr FILEID="uuid-7d08b02a-7169-4665-ae2d-4f3b057fbdf8"/>
+                <mets:fptr FILEID="uuid-5e6f4c33-e35f-4f5b-8fee-d28610087155"/>
+                <mets:fptr FILEID="uuid-9ce58618-631d-45f9-a397-422d16bc5f5d"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ID="uuid-61106a0c-e7ab-4c8f-9e9a-1114cf2d024c" TYPE="newspaper" ORDERLABEL="Daily record and the Dresden daily" LABEL="The Daily record and the Dresden daily">
+            <mets:mptr LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482/TheDarea_416971482_mets.xml"/>
+            <mets:div ID="uuid-164d8136-46fb-4eb9-a153-48d6914b3470" TYPE="year" ORDERLABEL="1910">
+                <mets:mptr LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/TheDarea_416971482-1910/TheDarea_416971482-1910_mets.xml"/>
+                <mets:div TYPE="month" ORDERLABEL="1910-02" ID="LOG_0009" ADMID="AMD">
+                    <mets:div TYPE="day" ID="LOG_0010" ORDERLABEL="1910-02-23">
+                        <mets:div ID="LOG_0011" DMDID="uuid-b6cf1e58-29a9-3a16-9a91-f0998a104007" TYPE="issue" ORDER="1"/>
+                    </mets:div>
+                </mets:div>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structLink>
+        <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0011"/>
+        <mets:smLink xlink:to="PHYS_0002" xlink:from="LOG_0011"/>
+        <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0011"/>
+        <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0011"/>
+    </mets:structLink>
+</mets:mets>

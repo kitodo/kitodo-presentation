@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:mets="http://www.loc.gov/METS/"
+           targetNamespace="https://dfg-viewer.de/"
+           elementFormDefault="qualified"
+           version="1.1">
+    <xs:import namespace="http://www.openarchives.org/OAI/2.0/" schemaLocation="/home/weigelt/Work/DFGViewer3D/extensions/kitodo-presentation/Resources/Public/Xsd/OAI-PMH.xsd"/>
+</xs:schema>
+
+
+

@@ -12,6 +12,8 @@ namespace Kitodo\Dlf\Middleware;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use DOMDocument;
+use Kitodo\Dlf\Validation\DocumentValidationStack;
 use Kitodo\Dlf\Validation\XmlValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,6 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Http\ResponseFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Middleware for embedding custom 3D Viewer implementation of the 'dlf' extension.
@@ -53,9 +56,17 @@ class Validator implements MiddlewareInterface
             return $response;
         }
 
-        /** @var XmlValidator $xmlValidator */
-        $xmlValidator = GeneralUtility::makeInstance(XmlValidator::class);
-        $data = $xmlValidator->validate($parameters['url']);
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $configuration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)["validatorStack"]["mets"];
+
+        /** @var DocumentValidationStack $documentValidationStack */
+        $documentValidationStack = GeneralUtility::makeInstance(DocumentValidationStack::class, $configuration);
+
+        $content = file_get_contents($parameters['url']);
+
+        $document = new DOMDocument();
+        $document->loadXML($content);
+        $data = $documentValidationStack->validate($document);
 
         $errorMessages = [];
 

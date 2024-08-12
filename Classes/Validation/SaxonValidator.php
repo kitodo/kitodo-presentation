@@ -7,16 +7,28 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
-class SaxonValidator extends AbstractValidator {
+class SaxonValidator extends BaseValidator {
+
+    private string $jar;
+
+    private string $xsl;
+
+    public function __construct(array $configuration)
+    {
+        // sudo apt-get update
+        // sudo apt install default-jdk
+
+        parent::__construct(\DOMDocument::class);
+        $this->jar = $configuration["jar"];
+        $this->xsl = $configuration["xsl"];
+    }
 
     protected function isValid($value)
     {
-        $path = "/var/www/html/public/typo3conf/ext/dlf/Resources/Private/Saxon/";
-        $process = new Process(['java','-jar', $path.'saxon-he-10.6.jar', '-xsl:'.$path.'ddb_validierung_mets-mods-ap-digitalisierte-medien.xsl', '-s:'.$path.'mets.xml']);
+        // using source from standard input
+        $process = new Process(['java','-jar', $this->jar, '-xsl:'.$this->xsl, '-s:-', '<(echo "'.$value->saveXML().'")']);
 
-       // $process = new Process(['/usr/bin/java -jar '. $path .'saxon-he-10.6.jar -xsl:ddb_validierung_mets-mods-ap-digitalisierte-medien.xsl -s:mets.xml']);
         $process->run();
-
         // executes after the command finishes
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
