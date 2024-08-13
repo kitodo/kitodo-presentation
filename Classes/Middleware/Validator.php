@@ -57,7 +57,7 @@ class Validator implements MiddlewareInterface
         }
 
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-        $configuration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)["validatorStack"]["mets"];
+        $configuration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)["validationStacks"]["mets"];
 
         /** @var DocumentValidationStack $documentValidationStack */
         $documentValidationStack = GeneralUtility::makeInstance(DocumentValidationStack::class, $configuration);

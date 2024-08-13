@@ -6,13 +6,13 @@
 
   <annotation>
     <documentation>
-    XML Schema which can be used to validate replies to all OAI-PMH 
+    XML Schema which can be used to validate replies to all OAI-PMH
     v2.0 requests. Herbert Van de Sompel, 2002-05-13.
     Validated with XML Spy v.4.3 on 2002-05-13.
     Validated with XSV 1.203.2.45/1.106.2.22 on 2002-05-13.
-    Added definition of protocolVersionType instead of using anonymous 
+    Added definition of protocolVersionType instead of using anonymous
     type. No change of function. Simeon Warner, 2004-03-29.
-    Tightened definition of UTCdatetimeType to enforce the restriction 
+    Tightened definition of UTCdatetimeType to enforce the restriction
     to UTC Z notation. Simeon Warner, 2004-09-14.
     Corrected pattern matches for setSpecType and metadataPrefixType
     to agree with protocol specification. Simeon Warner, 2004-10-12.
@@ -41,9 +41,9 @@
 
   <complexType name="requestType">
     <annotation>
-      <documentation>Define requestType, indicating the protocol request that 
-      led to the response. Element content is BASE-URL, attributes are arguments 
-      of protocol request, attribute-values are values of arguments of protocol 
+      <documentation>Define requestType, indicating the protocol request that
+      led to the response. Element content is BASE-URL, attributes are arguments
+      of protocol request, attribute-values are values of arguments of protocol
       request</documentation>
     </annotation>
     <simpleContent>
@@ -107,7 +107,7 @@
       <element name="deletedRecord" type="oai:deletedRecordType"/>
       <element name="granularity" type="oai:granularityType"/>
       <element name="compression" type="string" minOccurs="0" maxOccurs="unbounded"/>
-      <element name="description" type="oai:descriptionType" 
+      <element name="description" type="oai:descriptionType"
                minOccurs="0" maxOccurs="unbounded"/>
     </sequence>
   </complexType>
@@ -145,7 +145,7 @@
     </sequence>
   </complexType>
 
-  <!-- define basic types used in replies to 
+  <!-- define basic types used in replies to
        GetRecord, ListRecords, ListIdentifiers -->
   <!-- ======================================= -->
 
@@ -190,7 +190,7 @@
   <complexType name="metadataType">
     <annotation>
       <documentation>Metadata must be expressed in XML that complies
-       with another XML Schema (namespace=#other). Metadata must be 
+       with another XML Schema (namespace=#other). Metadata must be
        explicitly qualified in the response.</documentation>
     </annotation>
     <sequence>
@@ -227,7 +227,7 @@
     <annotation>
       <documentation>The descriptionType is used for the description
       element in Identify and for setDescription element in ListSets.
-      Content must be compliant with an XML Schema defined by a 
+      Content must be compliant with an XML Schema defined by a
       community.</documentation>
     </annotation>
     <sequence>
@@ -303,7 +303,7 @@
     <sequence>
       <element name="setSpec" type="oai:setSpecType"/>
       <element name="setName" type="string"/>
-      <element name="setDescription" type="oai:descriptionType" 
+      <element name="setDescription" type="oai:descriptionType"
                minOccurs="0" maxOccurs="unbounded"/>
     </sequence>
   </complexType>
