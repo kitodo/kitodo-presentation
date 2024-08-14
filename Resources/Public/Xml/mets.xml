@@ -71,7 +71,7 @@
     </mets:dmdSec>
     <mets:amdSec ID="AMD">
         <mets:rightsMD ID="RIGHTS">
-            <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVRIGHTS">
+            <mets:mdWrap MDTYP="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVRIGHTS">
                 <mets:xmlData>
                     <dv:rights>
                         <dv:owner>3D Repository</dv:owner>
