@@ -177,7 +177,7 @@ class Embedded3dViewer implements MiddlewareInterface
                 }
             }
         } catch (Exception $exception) {
-            $this->logger->error($exception->getMessage());
+            $this->logger->debug($exception->getMessage());
         }
         return $extConf['defaultViewer'] ?? "";
     }
