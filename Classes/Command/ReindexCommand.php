@@ -123,7 +123,7 @@ class ReindexCommand extends BaseCommand
         if ($allowWrite) {
             return $this->executeReindexCommand($input, $io);
         } else {
-            $io->error('This system is not allowed to write into the SOLR Index.');
+            $io->error('This system is not allowed to write to the Solr index.');
             return BaseCommand::FAILURE;
         }
     }
