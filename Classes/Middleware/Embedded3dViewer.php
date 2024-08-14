@@ -163,9 +163,8 @@ class Embedded3dViewer implements MiddlewareInterface
      */
     private function getViewerByExtensionConfiguration(string $modelFormat): string
     {
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         try {
-            $extConf = $extensionConfiguration->get(self::EXT_KEY, '3dviewer');
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXT_KEY, '3dviewer');
             $viewerModelFormatMappings = explode(";", $extConf['viewerModelFormatMapping']);
             foreach ($viewerModelFormatMappings as $viewerModelFormatMapping) {
                 $explodedViewerModelMapping = explode(":", $viewerModelFormatMapping);
