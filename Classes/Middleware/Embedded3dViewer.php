@@ -19,6 +19,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
+use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -160,21 +161,24 @@ class Embedded3dViewer implements MiddlewareInterface
      * @param $modelFormat string The model format
      * @return string The 3D viewer
      */
-    private function getViewerByExtensionConfiguration($modelFormat): string
+    private function getViewerByExtensionConfiguration(string $modelFormat): string
     {
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXT_KEY, '3dviewer');
-        $viewerModelFormatMappings = explode(";", $extConf['viewerModelFormatMapping']);
-        foreach ($viewerModelFormatMappings as $viewerModelFormatMapping) {
-            $explodedViewerModelMapping = explode(":", $viewerModelFormatMapping);
-            if (count($explodedViewerModelMapping) == 2) {
-                $viewer = trim($explodedViewerModelMapping[0]);
-                $viewerModelFormats = array_map('trim', explode(",", $explodedViewerModelMapping[1]));
-                if (in_array($modelFormat, $viewerModelFormats)) {
-                    return $viewer;
+        try {
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXT_KEY, '3dviewer');
+            $viewerModelFormatMappings = explode(";", $extConf['viewerModelFormatMapping']);
+            foreach ($viewerModelFormatMappings as $viewerModelFormatMapping) {
+                $explodedViewerModelMapping = explode(":", $viewerModelFormatMapping);
+                if (count($explodedViewerModelMapping) == 2) {
+                    $viewer = trim($explodedViewerModelMapping[0]);
+                    $viewerModelFormats = array_map('trim', explode(",", $explodedViewerModelMapping[1]));
+                    if (in_array($modelFormat, $viewerModelFormats)) {
+                        return $viewer;
+                    }
                 }
             }
+        } catch (Exception $exception) {
+            $this->logger->debug($exception->getMessage());
         }
-
         return $extConf['defaultViewer'] ?? "";
     }
 
