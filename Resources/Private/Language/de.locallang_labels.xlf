@@ -746,8 +746,8 @@
 				<source>Allow Solr Core Deletion?: If a Solr Core is deleted in the TYPO3 Backend, should it be deleted in Apache Solr as well? (default is "FALSE")</source>
 			</trans-unit>
             <trans-unit id="config.solr.allowWrite">
-                <target>Schreibzugriff auf SOLR? (Standard ist "TRUE")</target>
-                <source>Allow write to the SOLR? (default is "TRUE")</source>
+                <target>Schreibzugriff auf Solr-Index? (Standard ist "TRUE")</target>
+                <source>Allow write to the Solr index? (default is "TRUE")</source>
             </trans-unit>
 			<trans-unit id="config.solr.fields.id">
 				<target>Solr-Schema-Feld "id" : Unique identifier for the document in the id (Standard ist "id")</target>
