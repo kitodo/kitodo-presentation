@@ -161,7 +161,7 @@ class Embedded3dViewer implements MiddlewareInterface
      * @param $modelFormat string The model format
      * @return string The 3D viewer
      */
-    private function getViewerByExtensionConfiguration($modelFormat): string
+    private function getViewerByExtensionConfiguration(string $modelFormat): string
     {
         $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         try {
