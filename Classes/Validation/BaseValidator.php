@@ -37,7 +37,7 @@ abstract class BaseValidator extends AbstractValidator
         $errors = libxml_get_errors();
 
         foreach ($errors as $error) {
-            $this->addError($error->message, $error->code, [], "XmlValidator");
+            $this->addError($error->message, $error->code);
         }
 
         libxml_clear_errors();
