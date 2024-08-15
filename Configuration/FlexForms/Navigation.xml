@@ -29,8 +29,8 @@
                                 <renderType>selectMultipleSideBySide</renderType>
                                 <items>
                                     <numIndex index="0">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.doublepage</numIndex>
-                                        <numIndex index="1">doublepage</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.doublePage</numIndex>
+                                        <numIndex index="1">doublePage</numIndex>
                                     </numIndex>
                                     <numIndex index="1">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageFirst</numIndex>
@@ -45,8 +45,8 @@
                                         <numIndex index="1">pageStepBack</numIndex>
                                     </numIndex>
                                     <numIndex index="4">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageselect</numIndex>
-                                        <numIndex index="1">pageselect</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageSelect</numIndex>
+                                        <numIndex index="1">pageSelect</numIndex>
                                     </numIndex>
                                     <numIndex index="5">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageForward</numIndex>
@@ -61,8 +61,8 @@
                                         <numIndex index="1">pageLast</numIndex>
                                     </numIndex>
                                     <numIndex index="8">
-                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.listview</numIndex>
-                                        <numIndex index="1">listview</numIndex>
+                                        <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.listView</numIndex>
+                                        <numIndex index="1">listView</numIndex>
                                     </numIndex>
                                     <numIndex index="9">
                                         <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.zoom</numIndex>
@@ -81,7 +81,7 @@
                                         <numIndex index="1">measureBack</numIndex>
                                     </numIndex>
                                 </items>
-                                <default>doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation,measureForward,measureBack</default>
+                                <default>doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation,measureForward,measureBack</default>
                                 <minitems>1</minitems>
                             </config>
                         </TCEforms>
@@ -101,7 +101,7 @@
                     <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <displayCond>FIELD:settings.features:IN:listview</displayCond>
+                            <displayCond>FIELD:settings.features:IN:listView</displayCond>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
                             <config>
                                 <type>group</type>
