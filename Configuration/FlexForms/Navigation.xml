@@ -81,7 +81,6 @@
                     <settings.pageStep>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <displayCond>FIELD:settings.features:IN:pagestep</displayCond>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.pageStep</label>
                             <config>
                                 <type>input</type>
