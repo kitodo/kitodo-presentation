@@ -502,9 +502,9 @@ Navigation
    :Data Type:
        :ref:`t3tsref:data-type-string`
    :Default:
-      By default all features are activated. The selection is stored as comma separated list.
+       By default all features are activated. The selection is stored as comma separated list.
 
-       doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation
+       doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation
 
  - :Property:
        pageStep

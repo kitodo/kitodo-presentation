@@ -20,7 +20,7 @@
 </f:for>
 
 <f:comment>One section for each feature.</f:comment>
-<f:section name="render.doublepage">
+<f:section name="render.doublePage">
     <f:if condition="{numPages} > 0">
         <f:then>
             <f:if condition="{viewData.requestData.double}">
@@ -116,7 +116,7 @@
     </div>
 </f:section>
 
-<f:section name="render.pageselect">
+<f:section name="render.pageSelect">
     <li class="pages">
         <f:form method="post" action="pageSelect" controller="Navigation" name="pageSelectForm" object="{pageSelectForm}" addQueryString="1">
             <f:if condition="{viewData.requestData.id}">
@@ -192,7 +192,7 @@
     </div>
 </f:section>
 
-<f:section name="render.listview">
+<f:section name="render.listView">
         <div class="tx-dlf-navigation-listview">
             <f:link.page pageUid="{settings.targetPid}" additionalParams="{lastSearchParams}">
                 <f:translate key="linkToList"/>

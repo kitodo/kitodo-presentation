@@ -197,13 +197,13 @@
 			<trans-unit id="plugins.navigation.flexform.features.zoom">
 				<source><![CDATA[Buttons for zoom-in, zoom-out and full screen]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.doublepage">
+			<trans-unit id="plugins.navigation.flexform.features.doublePage">
 				<source><![CDATA[Buttons for double page mode and recto/verso adjustment]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageselect">
+			<trans-unit id="plugins.navigation.flexform.features.pageSelect">
 				<source><![CDATA[Page navigation menu]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.listview">
+			<trans-unit id="plugins.navigation.flexform.features.listView">
 				<source><![CDATA[Link to page with listview plugin]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.navigation.title">
