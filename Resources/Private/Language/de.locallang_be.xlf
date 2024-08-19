@@ -253,11 +253,11 @@
 				<source><![CDATA[Show selected navigation features]]></source>
 				<target><![CDATA[Zeige ausgewählte Navigations-Funktionen]]></target>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.doublepage" approved="yes">
+			<trans-unit id="plugins.navigation.flexform.features.doublePage" approved="yes">
 				<source><![CDATA[Buttons for double page mode and recto/verso adjustment]]></source>
 				<target><![CDATA[Buttons für Doppelseitenansicht und Recto/Verso-Korrektur]]></target>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.listview" approved="yes">
+			<trans-unit id="plugins.navigation.flexform.features.listView" approved="yes">
 				<source><![CDATA[Link to page with listview plugin]]></source>
 				<target><![CDATA[Link zur Listenansicht]]></target>
 			</trans-unit>
@@ -285,7 +285,7 @@
 				<source><![CDATA[Forward X pages]]></source>
 				<target><![CDATA[X Seiten vor]]></target>
 			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageselect" approved="yes">
+			<trans-unit id="plugins.navigation.flexform.features.pageSelect" approved="yes">
 				<source><![CDATA[Page navigation menu]]></source>
 				<target><![CDATA[Seitennavigation]]></target>
 			</trans-unit>

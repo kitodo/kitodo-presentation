@@ -493,20 +493,22 @@ class PageViewController extends AbstractController
                         $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
                     }
 
-                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer({
-                                controls: ["' . implode('", "', $this->controls) . '"],
-                                div: "tx-dfgviewer-map-' . $i . '",
-                                progressElementId: "' . $this->settings['progressElementId'] . '",
-                                counter: "' . $i . '",
-                                images: ' . json_encode($docImage) . ',
-                                fulltexts: ' . json_encode($docFulltext) . ',
-                                score: ' . json_encode($docScore) . ',
-                                annotationContainers: ' . json_encode($docAnnotationContainers) . ',
-                                measureCoords: ' . json_encode($docMeasures['measureCoordsCurrentSite']) . ',
-                                useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
-                                currentMeasureId: "' . $currentMeasureId . '",
-                                measureIdLinks: ' . json_encode($docMeasures['measureLinks']) . '
-                            });
+                    $viewer = [
+                        'controls' => $this->controls,
+                        'div' => "tx-dfgviewer-map-' . $i . '",
+                        'progressElementId' => $this->settings['progressElementId'],
+                        'counter' => $i,
+                        'images' => $docImage,
+                        'fulltexts' => $docFulltext,
+                        'score' => $docScore,
+                        'annotationContainers' => $docAnnotationContainers,
+                        'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
+                        'useInternalProxy' => $this->settings['useInternalProxy'] ? 1 : 0,
+                        'currentMeasureId' => $currentMeasureId,
+                        'measureIdLinks' => $docMeasures['measureLinks']
+                    ];
+
+                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer(' . json_encode($viewer) . ');
                             ';
                     $i++;
                 }
@@ -528,23 +530,25 @@ class PageViewController extends AbstractController
                 $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
             }
 
+            $viewer = [
+                'controls' => $this->controls,
+                'div' => $this->settings['elementId'],
+                'progressElementId' => $this->settings['progressElementId'],
+                'images' => $this->images,
+                'fulltexts' => $this->fulltexts,
+                'score' => $this->scores,
+                'annotationContainers' => $this->annotationContainers,
+                'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
+                'useInternalProxy' => $this->settings['useInternalProxy'] ? 1 : 0,
+                'verovioAnnotations' => $this->verovioAnnotations,
+                'currentMeasureId' => $currentMeasureId,
+                'measureIdLinks' => $docMeasures['measureLinks']
+            ];
+
             // Viewer configuration.
             $viewerConfiguration = '$(document).ready(function() {
                     if (dlfUtils.exists(dlfViewer)) {
-                        tx_dlf_viewer = new dlfViewer({
-                            controls: ["' . implode('", "', $this->controls) . '"],
-                            div: "' . $this->settings['elementId'] . '",
-                            progressElementId: "' . $this->settings['progressElementId'] . '",
-                            images: ' . json_encode($this->images) . ',
-                            fulltexts: ' . json_encode($this->fulltexts) . ',
-                            score: ' . json_encode($this->scores) . ',
-                            annotationContainers: ' . json_encode($this->annotationContainers) . ',
-                            measureCoords: ' . json_encode($docMeasures['measureCoordsCurrentSite']) . ',
-                            useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . ',
-                            verovioAnnotations: ' . json_encode($this->verovioAnnotations) . ',
-                            currentMeasureId: "' . $currentMeasureId . '",
-                            measureIdLinks: ' . json_encode($docMeasures['measureLinks']) . '
-                        });
+                        tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
                     }
                 });';
         }
