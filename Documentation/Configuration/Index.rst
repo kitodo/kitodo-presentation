@@ -185,7 +185,7 @@ To setup Apache Solr, perform the following steps:
 
 3. Get the Solr OCR Highlighting plugin and put it into contrib-directory.
 
-   The plugin is available on GitHub (https://github.com/dbmdz/solr-ocrhighlighting/releases).
+   The plugin is available on GitHub: https://github.com/dbmdz/solr-ocrhighlighting/releases.
    The documentation can be found here: https://dbmdz.github.io/solr-ocrhighlighting/.
 
    The Solr OCR Highlighting plugin is required for full text search as of Kitodo.Presentation 3.3.
