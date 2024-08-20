@@ -479,7 +479,7 @@
 			<trans-unit id="tt_content.dlf_toolbox">
 				<source>DLF: Toolbox</source>
 			</trans-unit>
-			<trans-unit id="config.metadataFormats">
+			<trans-unit id="config.general.metadataFormats">
 				<source>Default metadata namespaces</source>
 			</trans-unit>
 			<trans-unit id="config.general.enableInternalProxy">
