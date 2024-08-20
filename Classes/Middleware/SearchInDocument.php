@@ -93,7 +93,7 @@ class SearchInDocument implements MiddlewareInterface
             $highlighting = $data['ocrHighlighting'];
 
             $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-            $site = $siteFinder->getSiteByPageId($parameters['pid']);
+            $site = $siteFinder->getSiteByPageId((int) $parameters['pid']);
 
             // @phpstan-ignore-next-line
             foreach ($result as $record) {
