@@ -138,7 +138,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
 
                 // It happens that $queryParams does not contain a key 'tx_dlf[id]'
-                if (!empty($queryParams['tx_dlf']['id'])) {
+                if (!isset($queryParams['tx_dlf']['id'])) {
                     return $type;
                 }
 
