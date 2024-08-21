@@ -137,6 +137,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                     return 'object';
                 }
 
+                // It happens that $queryParams does not contain a key 'tx_dlf[id]'
+                if (!empty($queryParams['tx_dlf']['id'])) {
+                    return $type;
+                }
+
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
                 if (!isset($this->document) || $this->document->getCurrentDocument() === null) {
