@@ -73,7 +73,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * @var DocumentRepository
      */
     protected $documentRepository;
-    
+
     /**
      * @param DocumentRepository $documentRepository
      */
@@ -131,6 +131,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 // It happens that $queryParams is an empty array or does not contain a key 'tx_dlf'
                 // in case of other contexts. In this case we have to return here to avoid log messages.
                 if (empty($queryParams) || !isset($queryParams['tx_dlf'])) {
+                    return $type;
+                }
+
+                // It happens that $queryParams does not contain a key 'tx_dlf[id]'
+                if (!isset($queryParams['tx_dlf']['id'])) {
                     return $type;
                 }
 
