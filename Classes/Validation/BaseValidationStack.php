@@ -1,9 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Validation;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Abstract class provides functions for implementing a validation stack.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 abstract class BaseValidationStack extends BaseValidator
 {
     const ITEM_KEY_TITLE = "title";
@@ -20,6 +40,15 @@ abstract class BaseValidationStack extends BaseValidator
         $this->valueClassName = $valueClassName;
     }
 
+    /**
+     * Add validator to the internal validator stack.
+     *
+     * @param string $className Class name of the validator which was derived from Kitodo\Dlf\Validation\BaseValidator
+     * @param string $title The title of the validator
+     * @param bool $breakOnError True if the execution of validator stack is interrupted when validator throws an error
+     * @param array|null $configuration The configuration of validator
+     * @return void
+     */
     protected function addValidationItem(string $className, string $title, bool $breakOnError = true, array $configuration = null): void
     {
         if ($configuration === null) {
@@ -29,8 +58,9 @@ abstract class BaseValidationStack extends BaseValidator
         }
 
         if (!$validator instanceof BaseValidator) {
-            throw new \InvalidArgumentException('$className must be an instance of BaseValidator.', 1723121212747);
+            throw new \InvalidArgumentException($className . ' must be an instance of BaseValidator.', 1723121212747);
         }
+
         $this->validatorStack[] = array(
             self::ITEM_KEY_TITLE => $title,
             self::ITEM_KEY_VALIDATOR => $validator,
@@ -38,6 +68,12 @@ abstract class BaseValidationStack extends BaseValidator
         );
     }
 
+    /**
+     * Check if value is valid across all validation classes of validation stack.
+     *
+     * @param $value The value of defined class name.
+     * @return void
+     */
     protected function isValid($value): void
     {
         if (!$value instanceof $this->valueClassName) {
