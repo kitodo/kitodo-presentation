@@ -29,6 +29,12 @@ return [
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering'
             ]
+        ],
+        'dlf/validation' => [
+            'target' => \Kitodo\Dlf\Middleware\Validation::class,
+            'after' => [
+                'typo3/cms-frontend/prepare-tsfe-rendering'
+            ]
         ]
     ],
 ];

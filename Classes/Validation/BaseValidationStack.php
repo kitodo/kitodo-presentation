@@ -32,12 +32,29 @@ abstract class BaseValidationStack extends BaseValidator
 
     protected array $validatorStack;
 
-    private $valueClassName;
+    private string $valueClassName;
 
-    public function __construct($valueClassName, array $options = [])
+    public function __construct(string $valueClassName, array $options = [])
     {
         parent::__construct($options);
         $this->valueClassName = $valueClassName;
+    }
+
+    /**
+     * Add validators by validation stack configuration to the internal validator stack.
+     *
+     * @param array $configuration The configuration of validators
+     * @return void
+     */
+    public function addValidators(array $configuration): void
+    {
+        foreach ($configuration as $configurationItem) {
+            if (!class_exists($configurationItem["className"])) {
+                throw new \InvalidArgumentException('Unable to load class ' . $configurationItem["className"] . '.', 1723200537037);
+            }
+            $breakOnError = !isset($configurationItem["breakOnError"]) || $configurationItem["breakOnError"] !== "false";
+            $this->addValidator($configurationItem["className"], $configurationItem["title"], $breakOnError, $configurationItem["configuration"]);
+        }
     }
 
     /**
@@ -49,7 +66,7 @@ abstract class BaseValidationStack extends BaseValidator
      * @param array|null $configuration The configuration of validator
      * @return void
      */
-    protected function addValidationItem(string $className, string $title, bool $breakOnError = true, array $configuration = null): void
+    protected function addValidator(string $className, string $title, bool $breakOnError = true, array $configuration = null): void
     {
         if ($configuration === null) {
             $validator = GeneralUtility::makeInstance($className);
@@ -71,20 +88,25 @@ abstract class BaseValidationStack extends BaseValidator
     /**
      * Check if value is valid across all validation classes of validation stack.
      *
-     * @param $value The value of defined class name.
+     * @param $value mixed The value of defined class name.
      * @return void
      */
-    protected function isValid($value): void
+    protected function isValid(mixed $value): void
     {
         if (!$value instanceof $this->valueClassName) {
             throw new \InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723127564821);
         }
 
         foreach ($this->validatorStack as $validationStackItem) {
-            $result = $validationStackItem[self::ITEM_KEY_VALIDATOR]->validate($value);
+            $validator = $validationStackItem[self::ITEM_KEY_VALIDATOR];
+
+            // check whether the validator supports the class name of the value
+            $result = $validator->setValue($value)->validateValue();
+
             foreach ($result->getErrors() as $error) {
                 $this->addError($error->getMessage(), $error->getCode(), [], $validationStackItem[self::ITEM_KEY_TITLE]);
             }
+
             if ($validationStackItem[self::ITEM_KEY_BREAK_ON_ERROR] && $result->hasErrors()) {
                 break;
             }
