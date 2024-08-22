@@ -2,6 +2,7 @@
 
 namespace Kitodo\Dlf\Validation;
 
+use \TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 abstract class BaseValidator extends AbstractValidator
@@ -24,13 +25,16 @@ abstract class BaseValidator extends AbstractValidator
         $this->value = $value;
     }
 
-    public function validateValue(): void
+    /**
+     * @return Result
+     */
+    public function validateValue(): Result
     {
         if (!$this->value) {
             throw new \InvalidArgumentException('No value set for validation.', 1723126168704);
         }
 
-        $this->validate($this->value);
+        return $this->validate($this->value);
     }
 
     protected function addLibXmlErrors() {

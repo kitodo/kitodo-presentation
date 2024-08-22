@@ -20,10 +20,13 @@ abstract class BaseValidationStack extends BaseValidator
         $this->valueClassName = $valueClassName;
     }
 
-    protected function addValidationItem(string $className, string $title, bool $breakOnError = true, array $configuration): void
+    protected function addValidationItem(string $className, string $title, bool $breakOnError = true, array $configuration = null): void
     {
-
-        $validator = GeneralUtility::makeInstance($className,$configuration);
+        if ($configuration === null) {
+            $validator = GeneralUtility::makeInstance($className);
+        } else {
+            $validator = GeneralUtility::makeInstance($className, $configuration);
+        }
 
         if (!$validator instanceof BaseValidator) {
             throw new \InvalidArgumentException('$className must be an instance of BaseValidator.', 1723121212747);
