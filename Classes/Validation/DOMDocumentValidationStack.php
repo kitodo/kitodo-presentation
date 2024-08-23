@@ -14,6 +14,14 @@ declare(strict_types=1);
 
 namespace Kitodo\Dlf\Validation;
 
+/**
+ * Implementation of BaseValidationStack for validating DOMDocument against the configured validators.
+ *
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
+ */
 class DOMDocumentValidationStack extends BaseValidationStack
 {
     public function __construct(array $configuration, array $options = [])

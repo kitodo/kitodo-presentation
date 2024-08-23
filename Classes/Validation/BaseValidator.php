@@ -15,10 +15,11 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Validation;
 
 use \TYPO3\CMS\Extbase\Error\Result;
+use TYPO3\CMS\Extbase\Validation\Exception\InvalidValidationOptionsException;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
- * Search in document Middleware for plugin 'Search' of the 'dlf' extension
+ * Base Validator provides functionalities for using the derived validator within a validation stack.
  *
  * @package TYPO3
  * @subpackage dlf
@@ -27,17 +28,27 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  */
 abstract class BaseValidator extends AbstractValidator
 {
-    private $value;
+    private mixed $value;
 
-    private $valueClassName;
+    private string $valueClassName;
 
-    public function __construct($valueClassName)
+    /**
+     * @param $valueClassName string The class name of the value
+     * @throws InvalidValidationOptionsException
+     */
+    public function __construct(string $valueClassName)
     {
         parent::__construct();
         $this->valueClassName = $valueClassName;
     }
 
-    public function setValue($value): void
+    /**
+     * Set the value that needs to be validated.
+     *
+     * @param $value mixed The value of type value class name.
+     * @return void
+     */
+    public function setValue(mixed $value): void
     {
         if (!$value instanceof $this->valueClassName) {
             throw new \InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723126505626);
@@ -46,7 +57,9 @@ abstract class BaseValidator extends AbstractValidator
     }
 
     /**
-     * @return Result
+     * Validate the configured value.
+     *
+     * @return Result The validation result
      */
     public function validateValue(): Result
     {
@@ -57,7 +70,15 @@ abstract class BaseValidator extends AbstractValidator
         return $this->validate($this->value);
     }
 
-    protected function addLibXmlErrors() {
+    /**
+     * Add the errors from the libxml error buffer as validation error.
+     *
+     * To enable user error handling, you need to use libxml_use_internal_errors(true) beforehand.
+     *
+     * @return void
+     */
+    protected function addLibXmlErrors(): void
+    {
         $errors = libxml_get_errors();
 
         foreach ($errors as $error) {
