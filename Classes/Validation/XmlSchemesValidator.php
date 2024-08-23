@@ -17,7 +17,7 @@ namespace Kitodo\Dlf\Validation;
 use DOMDocument;
 
 /**
- * The class combines the configured schemes into one schema and validates the provided DOMDocument against this.
+ * The validator combines the configured schemes into one schema and validates the provided DOMDocument against this.
  *
  * @package TYPO3
  * @subpackage dlf
