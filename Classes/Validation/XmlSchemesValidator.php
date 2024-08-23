@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Validation;
 
 use DOMDocument;
+use LibXmlTrait;
 
 /**
  * The validator combines the configured schemes into one schema and validates the provided DOMDocument against this.
@@ -26,6 +27,7 @@ use DOMDocument;
  */
 class XmlSchemesValidator extends BaseValidator
 {
+    use LibXmlTrait;
     private $schemes;
 
     public function __construct(array $configuration)
@@ -52,11 +54,11 @@ class XmlSchemesValidator extends BaseValidator
 
     protected function isValid($value): void
     {
-        libxml_use_internal_errors(true);
+        $this->enableErrorBuffer();
         if (!$this->isSchemeValid($value)) {
-            $this->addLibXmlErrors();
+            $this->addErrorsOfBuffer();
         }
-        libxml_use_internal_errors(false);
+        $this->disableErrorBuffer();
     }
 
 }

@@ -69,23 +69,4 @@ abstract class BaseValidator extends AbstractValidator
 
         return $this->validate($this->value);
     }
-
-    /**
-     * Add the errors from the libxml error buffer as validation error.
-     *
-     * To enable user error handling, you need to use libxml_use_internal_errors(true) beforehand.
-     *
-     * @return void
-     */
-    protected function addLibXmlErrors(): void
-    {
-        $errors = libxml_get_errors();
-
-        foreach ($errors as $error) {
-            $this->addError($error->message, $error->code);
-        }
-
-        libxml_clear_errors();
-    }
-
 }
