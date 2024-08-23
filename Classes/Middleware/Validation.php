@@ -67,23 +67,31 @@ class Validation implements MiddlewareInterface
 
         if (!array_key_exists(self::SETTINGS_KEY_VALIDATION, $settings) ||
             !array_key_exists($validationParam, $settings[self::SETTINGS_KEY_VALIDATION])) {
-            throw new \InvalidArgumentException('Validation ' . $validationParam . ' is not configured.', 1724335328);
+            throw new \InvalidArgumentException('Validation "' . $validationParam . '" is not configured.', 1724335328);
         }
 
         if (!array_key_exists("className", $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]) ||
             !array_key_exists("validators", $settings[self::SETTINGS_KEY_VALIDATION][$validationParam])) {
-            throw new \InvalidArgumentException('Validation ' . $validationParam . ' is not configured correctly.', 1724335601);
+            throw new \InvalidArgumentException('Validation "' . $validationParam . '" is not configured correctly.', 1724335601);
         }
 
         $validationClassName = $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["className"];
         if (!class_exists($validationClassName)) {
-            throw new \InvalidArgumentException('Unable to load class ' . $validationClassName . '.', 1724336440);
+            throw new \InvalidArgumentException('Unable to load class "' . $validationClassName . '".', 1724336440);
         }
 
         $validation = GeneralUtility::makeInstance($validationClassName, $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["validators"]);
 
+        $content = file_get_contents($parameters['url']);
+        if ($content === false) {
+            throw new \InvalidArgumentException('Error while loading content of "' . $parameters['url'] . '"' , 1724420640);
+        }
+
         $document = new DOMDocument();
-        $document->loadXML(file_get_contents($parameters['url']));
+        if ($document->loadXML($content) === false) {
+            throw new \InvalidArgumentException('Error converting content of "' . $parameters['url'] . '" to xml.' , 1724420648);
+        }
+
         $result = $validation->validate($document);
 
         $errorMessages = [];
