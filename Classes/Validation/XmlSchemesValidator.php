@@ -41,7 +41,7 @@ class XmlSchemesValidator extends BaseValidator
      * @param $value DOMDocument The value to validate
      * @return bool True if is valid
      */
-    public function isSchemeValid(DOMDocument $value): bool
+    protected function isSchemeValid(DOMDocument $value): bool
     {
         $xsd = '<?xml version="1.0" encoding="utf-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">';
         foreach ($this->schemes as $scheme) {

@@ -31,7 +31,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class DOMDocumentValidationStackTest extends UnitTestCase
 {
-
     public function testValueTypeException(): void
     {
         $domDocumentValidationStack = new DOMDocumentValidationStack([]);
@@ -75,5 +74,4 @@ class DOMDocumentValidationStackTest extends UnitTestCase
         $result = $domDocumentValidationStack->validate(new DOMDocument());
         self::assertCount(2, $result->getErrors());
     }
-
 }
