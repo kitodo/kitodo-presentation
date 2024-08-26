@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Validation;
 
 use DOMDocument;
-use LibXmlTrait;
 
 /**
  * The validator combines the configured schemes into one schema and validates the provided DOMDocument against this.

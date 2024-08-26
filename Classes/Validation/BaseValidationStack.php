@@ -32,12 +32,9 @@ abstract class BaseValidationStack extends BaseValidator
 
     protected array $validatorStack;
 
-    private string $valueClassName;
-
-    public function __construct(string $valueClassName, array $options = [])
+    public function __construct(string $valueClassName)
     {
-        parent::__construct($options);
-        $this->valueClassName = $valueClassName;
+        parent::__construct($valueClassName);
     }
 
     /**
@@ -53,7 +50,7 @@ abstract class BaseValidationStack extends BaseValidator
                 throw new \InvalidArgumentException('Unable to load class ' . $configurationItem["className"] . '.', 1723200537037);
             }
             $breakOnError = !isset($configurationItem["breakOnError"]) || $configurationItem["breakOnError"] !== "false";
-            $this->addValidator($configurationItem["className"], $configurationItem["title"], $breakOnError, $configurationItem["configuration"]);
+            $this->addValidator($configurationItem["className"], $configurationItem["title"] ?? "", $breakOnError, $configurationItem["configuration"] ?? []);
         }
     }
 
@@ -78,6 +75,8 @@ abstract class BaseValidationStack extends BaseValidator
             throw new \InvalidArgumentException($className . ' must be an instance of BaseValidator.', 1723121212747);
         }
 
+        $title = empty($title) ? $className : $title;
+
         $this->validatorStack[] = array(
             self::ITEM_KEY_TITLE => $title,
             self::ITEM_KEY_VALIDATOR => $validator,
@@ -88,20 +87,22 @@ abstract class BaseValidationStack extends BaseValidator
     /**
      * Check if value is valid across all validation classes of validation stack.
      *
-     * @param $value mixed The value of defined class name.
+     * @param $value The value of defined class name.
      * @return void
      */
-    protected function isValid(mixed $value): void
+    protected function isValid($value): void
     {
         if (!$value instanceof $this->valueClassName) {
             throw new \InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723127564821);
         }
 
+        if (empty($this->validatorStack)) {
+            throw new \InvalidArgumentException('The validation stack has no validator.', 1724662426);
+        }
+
         foreach ($this->validatorStack as $validationStackItem) {
             $validator = $validationStackItem[self::ITEM_KEY_VALIDATOR];
-
-            // check whether the validator supports the class name of the value
-            $result = $validator->setValue($value)->validateValue();
+            $result = $validator->validate($value);
 
             foreach ($result->getErrors() as $error) {
                 $this->addError($error->getMessage(), $error->getCode(), [], $validationStackItem[self::ITEM_KEY_TITLE]);
@@ -112,4 +113,5 @@ abstract class BaseValidationStack extends BaseValidator
             }
         }
     }
+
 }

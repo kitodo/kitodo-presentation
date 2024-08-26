@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Kitodo\Dlf\Validation;
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *

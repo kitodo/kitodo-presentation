@@ -24,9 +24,9 @@ namespace Kitodo\Dlf\Validation;
  */
 class DOMDocumentValidationStack extends BaseValidationStack
 {
-    public function __construct(array $configuration, array $options = [])
+    public function __construct(array $configuration)
     {
-        parent::__construct(\DOMDocument::class, $options);
+        parent::__construct(\DOMDocument::class);
         $this->addValidators($configuration);
     }
 }

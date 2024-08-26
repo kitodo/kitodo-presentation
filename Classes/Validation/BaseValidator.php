@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Kitodo\Dlf\Validation;
 
-use \TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Validation\Exception\InvalidValidationOptionsException;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
@@ -28,9 +27,8 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  */
 abstract class BaseValidator extends AbstractValidator
 {
-    private mixed $value;
 
-    private string $valueClassName;
+    protected string $valueClassName;
 
     /**
      * @param $valueClassName string The class name of the value
@@ -42,31 +40,11 @@ abstract class BaseValidator extends AbstractValidator
         $this->valueClassName = $valueClassName;
     }
 
-    /**
-     * Set the value that needs to be validated.
-     *
-     * @param $value mixed The value of type value class name.
-     * @return void
-     */
-    public function setValue(mixed $value): void
+    public function validate($value)
     {
         if (!$value instanceof $this->valueClassName) {
             throw new \InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723126505626);
         }
-        $this->value = $value;
-    }
-
-    /**
-     * Validate the configured value.
-     *
-     * @return Result The validation result
-     */
-    public function validateValue(): Result
-    {
-        if (!$this->value) {
-            throw new \InvalidArgumentException('No value set for validation.', 1723126168704);
-        }
-
-        return $this->validate($this->value);
+        return parent::validate($value);
     }
 }
