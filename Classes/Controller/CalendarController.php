@@ -489,10 +489,8 @@ class CalendarController extends AbstractController
             foreach ($year['children'] as $month) {
                 foreach ($month['children'] as $day) {
                     foreach ($day['children'] as $issue) {
-                        $title = $issue['label'] ?: $issue['orderlabel'];
-                        if (strtotime($title) !== false) {
-                            $title = strftime('%x', strtotime($title));
-                        }
+                        $label = $issue['label'] ?: $issue['orderlabel'];
+                        $title = $this->getIssueTitle($day['orderlabel'], $label);
 
                         yield [
                             'uid' => $issue['points'],
@@ -503,6 +501,29 @@ class CalendarController extends AbstractController
                 }
             }
         }
+    }
+
+    /**
+     * Get the issue title from issue label if this one is actually
+     * longer than the day label.
+     *
+     * @param string $dayLabel
+     * @param string $issueLabel
+     *
+     * @return string
+     */
+    private function getIssueTitle($dayLabel, $issueLabel): string {
+        if (strlen($dayLabel) > strlen($issueLabel)) {
+            if (strtotime($dayLabel) !== false) {
+                return strftime('%x', strtotime($dayLabel));
+            }
+        }
+
+        if (strtotime($issueLabel) !== false) {
+            return strftime('%x', strtotime($issueLabel));
+        }
+
+        return $issueLabel;
     }
 
     /**
