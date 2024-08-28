@@ -59,7 +59,7 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator
     public function validFile(string $filename): bool
     {
         $absFilename = GeneralUtility::getFileAbsFileName($filename);
-        return empty($absFilename) && file_exists($absFilename) ;
+        return empty($absFilename) && file_exists($absFilename);
     }
 
     protected function isValid($value)

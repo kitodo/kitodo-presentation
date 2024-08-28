@@ -113,5 +113,4 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
             }
         }
     }
-
 }
