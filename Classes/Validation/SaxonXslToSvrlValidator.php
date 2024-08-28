@@ -17,6 +17,7 @@ namespace Kitodo\Dlf\Validation;
 use DOMDocument;
 use Exception;
 use InvalidArgumentException;
+use Psr\Log\LoggerAwareTrait;
 use SimpleXMLElement;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -32,6 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SaxonXslToSvrlValidator extends AbstractDlfValidator
 {
+    use LoggerAwareTrait;
 
     private string $jar;
 
@@ -42,9 +44,11 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator
         parent::__construct(DOMDocument::class);
 
         if (!isset($configuration["jar"]) || !$this->validFile($configuration["jar"])) {
+            $this->logger->error('Saxon JAR file not found.');
             throw new InvalidArgumentException('Saxon JAR file not found.', 1723121212747);
         }
         if (!isset($configuration["xsl"]) || !$this->validFile($configuration["xsl"])) {
+            $this->logger->error('XSL Schematron file not found.');
             throw new InvalidArgumentException('XSL Schematron file not found.', 1723121212747);
         }
 
