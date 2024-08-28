@@ -63,10 +63,10 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
         // using source from standard input
         $process = new Process(['java', '-jar', $this->jar, '-xsl:' . $this->xsl, '-s:-'], null, null, $value->saveXML());
         $process->run();
-        // executes after the command finishes
+        // executes after the command finish
         if (!$process->isSuccessful()) {
             $this->logger->error('Processing exits with code "' . $process->getExitCode() . '"');
-            throw new InvalidArgumentException('Processing was not successful.', 1723121212747);
+            throw new InvalidArgumentException('Processing was not successful.', 1724862680);
         }
         return $process->getOutput();
     }
