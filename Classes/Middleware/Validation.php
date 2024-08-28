@@ -109,5 +109,4 @@ class Validation implements MiddlewareInterface
         $response->getBody()->write(json_encode($errorMessages));
         return $response;
     }
-
 }

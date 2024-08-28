@@ -27,7 +27,8 @@ use DOMDocument;
 class XmlSchemesValidator extends AbstractDlfValidator
 {
     use LibXmlTrait;
-    private $schemes;
+
+    private array $schemes;
 
     public function __construct(array $configuration)
     {
@@ -45,7 +46,7 @@ class XmlSchemesValidator extends AbstractDlfValidator
     {
         $xsd = '<?xml version="1.0" encoding="utf-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">';
         foreach ($this->schemes as $scheme) {
-            $xsd .= '<xs:import namespace="'.$scheme["namespace"].'" schemaLocation="'.$scheme["schemaLocation"].'"/>';
+            $xsd .= '<xs:import namespace="' . $scheme["namespace"] . '" schemaLocation="' . $scheme["schemaLocation"] . '"/>';
         }
         $xsd .= '</xs:schema>';
         return $value->schemaValidateSource($xsd);
@@ -59,5 +60,4 @@ class XmlSchemesValidator extends AbstractDlfValidator
         }
         $this->disableErrorBuffer();
     }
-
 }

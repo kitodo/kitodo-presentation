@@ -70,10 +70,8 @@ class XmlSchemesValidatorTest extends UnitTestCase
 
     public function testValidation(): void
     {
-        $xmlSchemesValidator = new XmlSchemesValidator([
-            ["namespace" => "http://www.loc.gov/METS/", "schemaLocation" => "http://www.loc.gov/standards/mets/mets.xsd"],
-            ["namespace" => "http://www.loc.gov/mods/v3", "schemaLocation" => "http://www.loc.gov/standards/mods/mods.xsd"]
-        ]);
+        $xmlSchemesValidator = new XmlSchemesValidator([["namespace" => "http://www.loc.gov/METS/", "schemaLocation" => "http://www.loc.gov/standards/mets/mets.xsd"],
+            ["namespace" => "http://www.loc.gov/mods/v3", "schemaLocation" => "http://www.loc.gov/standards/mods/mods.xsd"]]);
 
         $domDocument = new DOMDocument();
         // Test with empty document

@@ -73,6 +73,7 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator
     /**
      * Add errors of schematron output.
      *
+     * @throws InvalidArgumentException
      */
     private function addErrorsOfSvrl(string $svrl): void
     {
