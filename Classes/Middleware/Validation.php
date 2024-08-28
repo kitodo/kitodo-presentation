@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Middleware;
  */
 
 use DOMDocument;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -43,6 +44,8 @@ class Validation implements MiddlewareInterface
      * @param ServerRequestInterface $request for processing
      * @param RequestHandlerInterface $handler for processing
      *
+     * @throws InvalidArgumentException
+     *
      * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -58,7 +61,7 @@ class Validation implements MiddlewareInterface
 
         $validationParam = $parameters['validation'];
         if (!isset($validationParam) || $parameters['url']) {
-            throw new \InvalidArgumentException('No valid parameter passed', 1724334674);
+            throw new InvalidArgumentException('No valid parameter passed', 1724334674);
         }
 
         /** @var ConfigurationManagerInterface $configurationManager */
@@ -67,29 +70,29 @@ class Validation implements MiddlewareInterface
 
         if (!array_key_exists(self::SETTINGS_KEY_VALIDATION, $settings) ||
             !array_key_exists($validationParam, $settings[self::SETTINGS_KEY_VALIDATION])) {
-            throw new \InvalidArgumentException('Validation "' . $validationParam . '" is not configured.', 1724335328);
+            throw new InvalidArgumentException('Validation "' . $validationParam . '" is not configured.', 1724335328);
         }
 
         if (!array_key_exists("className", $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]) ||
             !array_key_exists("validators", $settings[self::SETTINGS_KEY_VALIDATION][$validationParam])) {
-            throw new \InvalidArgumentException('Validation "' . $validationParam . '" is not configured correctly.', 1724335601);
+            throw new InvalidArgumentException('Validation "' . $validationParam . '" is not configured correctly.', 1724335601);
         }
 
         $validationClassName = $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["className"];
         if (!class_exists($validationClassName)) {
-            throw new \InvalidArgumentException('Unable to load class "' . $validationClassName . '".', 1724336440);
+            throw new InvalidArgumentException('Unable to load class "' . $validationClassName . '".', 1724336440);
         }
 
         $validation = GeneralUtility::makeInstance($validationClassName, $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["validators"]);
 
         $content = file_get_contents($parameters['url']);
         if ($content === false) {
-            throw new \InvalidArgumentException('Error while loading content of "' . $parameters['url'] . '"' , 1724420640);
+            throw new InvalidArgumentException('Error while loading content of "' . $parameters['url'] . '"' , 1724420640);
         }
 
         $document = new DOMDocument();
         if ($document->loadXML($content) === false) {
-            throw new \InvalidArgumentException('Error converting content of "' . $parameters['url'] . '" to xml.' , 1724420648);
+            throw new InvalidArgumentException('Error converting content of "' . $parameters['url'] . '" to xml.' , 1724420648);
         }
 
         $result = $validation->validate($document);
