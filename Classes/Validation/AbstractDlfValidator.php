@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  *
  * @access public
  */
-abstract class BaseValidator extends AbstractValidator
+abstract class AbstractDlfValidator extends AbstractValidator
 {
 
     protected string $valueClassName;

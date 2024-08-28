@@ -24,7 +24,7 @@ use DOMDocument;
  *
  * @access public
  */
-class XmlSchemesValidator extends BaseValidator
+class XmlSchemesValidator extends AbstractDlfValidator
 {
     use LibXmlTrait;
     private $schemes;

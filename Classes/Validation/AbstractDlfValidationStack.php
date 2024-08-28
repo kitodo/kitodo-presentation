@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Kitodo\Dlf\Validation;
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @access public
  */
-abstract class BaseValidationStack extends BaseValidator
+abstract class AbstractDlfValidationStack extends AbstractDlfValidator
 {
     const ITEM_KEY_TITLE = "title";
     const ITEM_KEY_BREAK_ON_ERROR = "breakOnError";
@@ -47,7 +48,7 @@ abstract class BaseValidationStack extends BaseValidator
     {
         foreach ($configuration as $configurationItem) {
             if (!class_exists($configurationItem["className"])) {
-                throw new \InvalidArgumentException('Unable to load class ' . $configurationItem["className"] . '.', 1723200537037);
+                throw new InvalidArgumentException('Unable to load class ' . $configurationItem["className"] . '.', 1723200537037);
             }
             $breakOnError = !isset($configurationItem["breakOnError"]) || $configurationItem["breakOnError"] !== "false";
             $this->addValidator($configurationItem["className"], $configurationItem["title"] ?? "", $breakOnError, $configurationItem["configuration"] ?? []);
@@ -71,8 +72,8 @@ abstract class BaseValidationStack extends BaseValidator
             $validator = GeneralUtility::makeInstance($className, $configuration);
         }
 
-        if (!$validator instanceof BaseValidator) {
-            throw new \InvalidArgumentException($className . ' must be an instance of BaseValidator.', 1723121212747);
+        if (!$validator instanceof AbstractDlfValidator) {
+            throw new InvalidArgumentException($className . ' must be an instance of BaseValidator.', 1723121212747);
         }
 
         $title = empty($title) ? $className : $title;
@@ -93,11 +94,11 @@ abstract class BaseValidationStack extends BaseValidator
     protected function isValid($value): void
     {
         if (!$value instanceof $this->valueClassName) {
-            throw new \InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723127564821);
+            throw new InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723127564821);
         }
 
         if (empty($this->validatorStack)) {
-            throw new \InvalidArgumentException('The validation stack has no validator.', 1724662426);
+            throw new InvalidArgumentException('The validation stack has no validator.', 1724662426);
         }
 
         foreach ($this->validatorStack as $validationStackItem) {

@@ -22,7 +22,7 @@ namespace Kitodo\Dlf\Validation;
  *
  * @access public
  */
-class DOMDocumentValidationStack extends BaseValidationStack
+class DOMDocumentValidationStack extends AbstractDlfValidationStack
 {
     public function __construct(array $configuration)
     {

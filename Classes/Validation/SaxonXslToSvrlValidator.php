@@ -28,7 +28,7 @@ use Symfony\Component\Process\Process;
  *
  * @access public
  */
-class SaxonXslToSvrlValidator extends BaseValidator {
+class SaxonXslToSvrlValidator extends AbstractDlfValidator {
 
     private string $jar;
 
@@ -85,5 +85,4 @@ class SaxonXslToSvrlValidator extends BaseValidator {
             throw new \InvalidArgumentException('Schematron output XML could not be parsed.', 1724754882);
         }
     }
-
 }

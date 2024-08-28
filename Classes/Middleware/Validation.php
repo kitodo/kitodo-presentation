@@ -92,7 +92,7 @@ class Validation implements MiddlewareInterface
 
         $document = new DOMDocument();
         if ($document->loadXML($content) === false) {
-            throw new InvalidArgumentException('Error converting content of "' . $parameters['url'] . '" to xml.' , 1724420648);
+            throw new InvalidArgumentException('Error converting content of "' . $parameters['url'] . '" to xml.', 1724420648);
         }
 
         $result = $validation->validate($document);
