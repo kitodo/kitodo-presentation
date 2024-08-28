@@ -42,6 +42,9 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
      * Add validators by validation stack configuration to the internal validator stack.
      *
      * @param array $configuration The configuration of validators
+     *
+     * @throws InvalidArgumentException
+     *
      * @return void
      */
     public function addValidators(array $configuration): void
