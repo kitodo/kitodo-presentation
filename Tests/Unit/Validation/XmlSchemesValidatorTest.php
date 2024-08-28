@@ -67,6 +67,11 @@ class XmlSchemesValidatorTest extends UnitTestCase
         </mets:mets>
     METS_MODS;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->resetSingletonInstances = true;
+    }
 
     public function testValidation(): void
     {

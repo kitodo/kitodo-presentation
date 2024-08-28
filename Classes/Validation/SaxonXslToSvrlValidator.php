@@ -17,7 +17,7 @@ namespace Kitodo\Dlf\Validation;
 use DOMDocument;
 use Exception;
 use InvalidArgumentException;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerAwareInterface;
 use SimpleXMLElement;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -31,10 +31,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @access public
  */
-class SaxonXslToSvrlValidator extends AbstractDlfValidator
+class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwareInterface
 {
-    use LoggerAwareTrait;
-
     private string $jar;
 
     private string $xsl;
@@ -63,7 +61,7 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator
     public function validFile(string $filename): bool
     {
         $absFilename = GeneralUtility::getFileAbsFileName($filename);
-        return empty($absFilename) && file_exists($absFilename);
+        return !empty($absFilename) && file_exists($absFilename);
     }
 
     protected function isValid($value)

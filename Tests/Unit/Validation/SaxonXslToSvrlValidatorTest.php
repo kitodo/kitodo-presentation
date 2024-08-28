@@ -41,6 +41,12 @@ class SaxonXslToSvrlValidatorTest extends UnitTestCase
         </svrl:schematron-output>
     SVRL;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->resetSingletonInstances = true;
+    }
+
     public function testJarFileNotFound(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -53,12 +59,12 @@ class SaxonXslToSvrlValidatorTest extends UnitTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("XSL Schematron file not found.");
         // It only checks if a file exists at the specified path, so we can use one of the test files.
-        new SaxonXslToSvrlValidator(["jar" => __DIR__ . '/../../Fixtures/Format/alto.xml']);
+        new SaxonXslToSvrlValidator(["jar" => 'EXT:dlf/Tests/Fixtures/Format/alto.xml']);
     }
 
     public function testValidation(): void
     {
-        $saxonXslToSvrlValidator = new SaxonXslToSvrlValidator(["jar" => __DIR__ . '/../../Fixtures/Format/alto.xml', "xsl" => __DIR__ . '/../../Fixtures/Format/alto.xml']);
+        $saxonXslToSvrlValidator = new SaxonXslToSvrlValidator(["jar" => 'EXT:dlf/Tests/Fixtures/Format/alto.xml', "xsl" => 'EXT:dlf/Tests/Fixtures/Format/alto.xml']);
         $reflection = new ReflectionClass($saxonXslToSvrlValidator);
 
         $result = $reflection->getProperty("result");

@@ -31,11 +31,17 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class DOMDocumentValidationStackTest extends UnitTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->resetSingletonInstances = true;
+    }
+
     public function testValueTypeException(): void
     {
         $domDocumentValidationStack = new DOMDocumentValidationStack([]);
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Value must be an instance of DOMDocument.");
+        $this->expectExceptionMessage("Type of value is not valid.");
         $domDocumentValidationStack->validate("");
     }
 
@@ -50,14 +56,14 @@ class DOMDocumentValidationStackTest extends UnitTestCase
     public function testValidatorClassNotExists(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Unable to load class Kitodo\Tests\TestValidator.");
+        $this->expectExceptionMessage("Unable to load validator class.");
         new DOMDocumentValidationStack([["className" => "Kitodo\Tests\TestValidator"]]);
     }
 
     public function testValidatorDerivation(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("TYPO3\CMS\Extbase\Validation\Validator\UrlValidator must be an instance of AbstractDlfValidator.");
+        $this->expectExceptionMessage("Class must be an instance of AbstractDlfValidator.");
         new DOMDocumentValidationStack([["className" => UrlValidator::class]]);
     }
 
