@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Kitodo\Dlf\Validation;
 
+use DOMDocument;
+use Exception;
 use SimpleXMLElement;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -34,27 +36,53 @@ class SaxonXslToSvrlValidator extends BaseValidator {
 
     public function __construct(array $configuration)
     {
-        parent::__construct(\DOMDocument::class);
+        parent::__construct(DOMDocument::class);
+
+        if (!isset($configuration["jar"]) || !is_file($configuration["jar"])) {
+            throw new \InvalidArgumentException('Saxon JAR file not found.', 1723121212747);
+        }
+
+        if (!isset($configuration["xsl"]) || !is_file($configuration["xsl"])) {
+            throw new \InvalidArgumentException('XSL Schematron file not found.', 1723121212747);
+        }
+
         $this->jar = $configuration["jar"];
         $this->xsl = $configuration["xsl"];
     }
 
     protected function isValid($value)
     {
-        // using source from standard input
-        $process = new Process(['java','-jar', $this->jar, '-xsl:'.$this->xsl, '-s:-'], null, null, $value->saveXML());
+        $svrl = $this->process($value);
+        $this->addErrorsOfSvrl($svrl);
+    }
 
+    protected function process(mixed $value): string
+    {
+        // using source from standard input
+        $process = new Process(['java', '-jar', $this->jar, '-xsl:' . $this->xsl, '-s:-'], null, null, $value->saveXML());
         $process->run();
         // executes after the command finishes
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+        return $process->getOutput();
+    }
 
-        $xml = new SimpleXMLElement($process->getOutput());
-        $results = $xml->xpath("/svrl:schematron-output/svrl:failed-assert[@role = 'error']/svrl:text");
+    /**
+     * Add errors of schematron output.
+     *
+     */
+    private function addErrorsOfSvrl(string $svrl): void
+    {
+        try {
+            $xml = new SimpleXMLElement($svrl);
+            $results = $xml->xpath("/svrl:schematron-output/svrl:failed-assert/svrl:text");
 
-        foreach ($results as $error) {
-            $this->addError($error, 1724405095);
+            foreach ($results as $error) {
+                $this->addError($error, 1724405095);
+            }
+        } catch (Exception $e) {
+            throw new \InvalidArgumentException('Schematron output XML could not be parsed.', 1724754882);
         }
     }
 

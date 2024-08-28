@@ -12,7 +12,6 @@ declare(strict_types=1);
  * LICENSE.txt file that was distributed with this source code.
  */
 
-
 namespace Kitodo\Dlf\Tests\Unit\Validation;
 
 use Kitodo\Dlf\Validation\XmlSchemesValidator;
@@ -28,15 +27,52 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class XmlSchemesValidatorTest extends UnitTestCase
 {
-    const METS = '<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" ><mets:metsHdr></mets:metsHdr><mets:amdSec></mets:amdSec><mets:fileSec><mets:fileGrp></mets:fileGrp></mets:fileSec><mets:structMap><mets:div></mets:div></mets:structMap></mets:mets>';
+    const METS = <<<METS
+        <mets:mets
+            xmlns:mets="http://www.loc.gov/METS/"
+            xmlns:mods="http://www.loc.gov/mods/v3" >
+            <mets:metsHdr></mets:metsHdr>
+            <mets:amdSec></mets:amdSec>
+            <mets:fileSec>
+                <mets:fileGrp></mets:fileGrp>
+            </mets:fileSec>
+            <mets:structMap>
+                <mets:div></mets:div>
+            </mets:structMap>
+        </mets:mets>
+    METS;
 
-    const METS_MODS = '<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" ><mets:metsHdr></mets:metsHdr><mets:dmdSec ID="DMD1"><mets:mdWrap MDTYPE="MODS"><mets:xmlData><mods:mods><mods:titleInfo></mods:titleInfo></mods:mods></mets:xmlData></mets:mdWrap></mets:dmdSec><mets:amdSec></mets:amdSec><mets:fileSec><mets:fileGrp></mets:fileGrp></mets:fileSec><mets:structMap><mets:div></mets:div></mets:structMap></mets:mets>';
+    const METS_MODS = <<<METS_MODS
+        <mets:mets
+            xmlns:mets="http://www.loc.gov/METS/"
+            xmlns:mods="http://www.loc.gov/mods/v3" >
+            <mets:metsHdr></mets:metsHdr>
+            <mets:dmdSec ID="DMD1">
+                <mets:mdWrap MDTYPE="MODS">
+                    <mets:xmlData>
+                        <mods:mods>
+                            <mods:titleInfo></mods:titleInfo>
+                        </mods:mods>
+                    </mets:xmlData>
+                </mets:mdWrap>
+            </mets:dmdSec>
+            <mets:amdSec></mets:amdSec>
+            <mets:fileSec>
+                <mets:fileGrp></mets:fileGrp>
+            </mets:fileSec>
+            <mets:structMap>
+                <mets:div></mets:div>
+            </mets:structMap>
+        </mets:mets>
+    METS_MODS;
+
 
     public function testValidation(): void
     {
-        $mets = ["namespace" => "http://www.loc.gov/METS/", "schemaLocation" => "http://www.loc.gov/standards/mets/mets.xsd"];
-        $mods = ["namespace" => "http://www.loc.gov/mods/v3", "schemaLocation" => "http://www.loc.gov/standards/mods/mods.xsd"];
-        $xmlSchemesValidator = new XmlSchemesValidator([$mets, $mods]);
+        $xmlSchemesValidator = new XmlSchemesValidator([
+            ["namespace" => "http://www.loc.gov/METS/", "schemaLocation" => "http://www.loc.gov/standards/mets/mets.xsd"],
+            ["namespace" => "http://www.loc.gov/mods/v3", "schemaLocation" => "http://www.loc.gov/standards/mods/mods.xsd"]
+        ]);
 
         $domDocument = new \DOMDocument();
         // Test with empty document
