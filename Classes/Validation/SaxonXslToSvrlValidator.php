@@ -16,6 +16,7 @@ namespace Kitodo\Dlf\Validation;
 
 use DOMDocument;
 use Exception;
+use InvalidArgumentException;
 use SimpleXMLElement;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -39,11 +40,11 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator {
         parent::__construct(DOMDocument::class);
 
         if (!isset($configuration["jar"]) || !is_file($configuration["jar"])) {
-            throw new \InvalidArgumentException('Saxon JAR file not found.', 1723121212747);
+            throw new InvalidArgumentException('Saxon JAR file not found.', 1723121212747);
         }
 
         if (!isset($configuration["xsl"]) || !is_file($configuration["xsl"])) {
-            throw new \InvalidArgumentException('XSL Schematron file not found.', 1723121212747);
+            throw new InvalidArgumentException('XSL Schematron file not found.', 1723121212747);
         }
 
         $this->jar = $configuration["jar"];
@@ -79,10 +80,10 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator {
             $results = $xml->xpath("/svrl:schematron-output/svrl:failed-assert/svrl:text");
 
             foreach ($results as $error) {
-                $this->addError($error->asXML(), 1724405095);
+                $this->addError($error->__toString(), 1724405095);
             }
         } catch (Exception $e) {
-            throw new \InvalidArgumentException('Schematron output XML could not be parsed.', 1724754882);
+            throw new InvalidArgumentException('Schematron output XML could not be parsed.', 1724754882);
         }
     }
 }
