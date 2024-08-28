@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Validation;
 
 use InvalidArgumentException;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,6 +28,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractDlfValidationStack extends AbstractDlfValidator
 {
+    use LoggerAwareTrait;
+
     const ITEM_KEY_TITLE = "title";
     const ITEM_KEY_BREAK_ON_ERROR = "breakOnError";
     const ITEM_KEY_VALIDATOR = "validator";
@@ -51,7 +54,8 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
     {
         foreach ($configuration as $configurationItem) {
             if (!class_exists($configurationItem["className"])) {
-                throw new InvalidArgumentException('Unable to load class ' . $configurationItem["className"] . '.', 1723200537037);
+                $this->logger->error('Unable to load class ' . $configurationItem["className"] . '.');
+                throw new InvalidArgumentException('Unable to load validator class.', 1723200537037);
             }
             $breakOnError = !isset($configurationItem["breakOnError"]) || $configurationItem["breakOnError"] !== "false";
             $this->addValidator($configurationItem["className"], $configurationItem["title"] ?? "", $breakOnError, $configurationItem["configuration"] ?? []);
@@ -76,12 +80,13 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
         }
 
         if (!$validator instanceof AbstractDlfValidator) {
-            throw new InvalidArgumentException($className . ' must be an instance of AbstractDlfValidator.', 1723121212747);
+            $this->logger->error($className . ' must be an instance of AbstractDlfValidator.');
+            throw new InvalidArgumentException('Class must be an instance of AbstractDlfValidator.', 1723121212747);
         }
 
         $title = empty($title) ? $className : $title;
 
-        array_push($this->validatorStack, [self::ITEM_KEY_TITLE => $title, self::ITEM_KEY_VALIDATOR => $validator, self::ITEM_KEY_BREAK_ON_ERROR => $breakOnError]);
+        $this->validatorStack[] = [self::ITEM_KEY_TITLE => $title, self::ITEM_KEY_VALIDATOR => $validator, self::ITEM_KEY_BREAK_ON_ERROR => $breakOnError];
     }
 
     /**
@@ -93,10 +98,12 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
     protected function isValid($value): void
     {
         if (!$value instanceof $this->valueClassName) {
-            throw new InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723127564821);
+            $this->logger->error('Value must be an instance of ' . $this->valueClassName . '.');
+            throw new InvalidArgumentException('Type of value is not valid.', 1723127564821);
         }
 
         if (empty($this->validatorStack)) {
+            $this->logger->error('The validation stack has no validator.');
             throw new InvalidArgumentException('The validation stack has no validator.', 1724662426);
         }
 
