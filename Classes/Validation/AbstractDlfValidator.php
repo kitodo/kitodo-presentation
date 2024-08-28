@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Kitodo\Dlf\Validation;
 
-use TYPO3\CMS\Extbase\Validation\Exception\InvalidValidationOptionsException;
+use InvalidArgumentException;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
@@ -32,7 +32,6 @@ abstract class AbstractDlfValidator extends AbstractValidator
 
     /**
      * @param $valueClassName string The class name of the value
-     * @throws InvalidValidationOptionsException
      */
     public function __construct(string $valueClassName)
     {
@@ -43,7 +42,7 @@ abstract class AbstractDlfValidator extends AbstractValidator
     public function validate($value)
     {
         if (!$value instanceof $this->valueClassName) {
-            throw new \InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723126505626);
+            throw new InvalidArgumentException('Value must be an instance of ' . $this->valueClassName . '.', 1723126505626);
         }
         return parent::validate($value);
     }

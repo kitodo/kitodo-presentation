@@ -29,7 +29,8 @@ use Symfony\Component\Process\Process;
  *
  * @access public
  */
-class SaxonXslToSvrlValidator extends AbstractDlfValidator {
+class SaxonXslToSvrlValidator extends AbstractDlfValidator
+{
 
     private string $jar;
 

@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\UrlValidator;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
- * Testing BaseValidatorStack with implementation of DOMDocumentValidationStack.
+ * Testing AbstractDlfValidatorStack with implementation of DOMDocumentValidationStack.
  *
  * @package TYPO3
  * @subpackage dlf
@@ -57,7 +57,7 @@ class DOMDocumentValidationStackTest extends UnitTestCase
     public function testValidatorDerivation(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("TYPO3\CMS\Extbase\Validation\Validator\UrlValidator must be an instance of BaseValidator.");
+        $this->expectExceptionMessage("TYPO3\CMS\Extbase\Validation\Validator\UrlValidator must be an instance of AbstractDlfValidator.");
         new DOMDocumentValidationStack([["className" => UrlValidator::class]]);
     }
 

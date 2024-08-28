@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Kitodo\Dlf\Tests\Unit\Validation;
 
+use DOMDocument;
 use Kitodo\Dlf\Validation\XmlSchemesValidator;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -74,7 +75,7 @@ class XmlSchemesValidatorTest extends UnitTestCase
             ["namespace" => "http://www.loc.gov/mods/v3", "schemaLocation" => "http://www.loc.gov/standards/mods/mods.xsd"]
         ]);
 
-        $domDocument = new \DOMDocument();
+        $domDocument = new DOMDocument();
         // Test with empty document
         $result = $xmlSchemesValidator->validate($domDocument);
         self::assertCount(1, $result->getErrors());

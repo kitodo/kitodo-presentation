@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Validation;
 
 /**
- * Implementation of BaseValidationStack for validating DOMDocument against the configured validators.
+ * Implementation of AbstractDlfValidationStack for validating DOMDocument against the configured validators.
  *
  * @package TYPO3
  * @subpackage dlf

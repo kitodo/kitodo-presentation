@@ -87,7 +87,7 @@ class Validation implements MiddlewareInterface
 
         $content = file_get_contents($parameters['url']);
         if ($content === false) {
-            throw new InvalidArgumentException('Error while loading content of "' . $parameters['url'] . '"' , 1724420640);
+            throw new InvalidArgumentException('Error while loading content of "' . $parameters['url'] . '"', 1724420640);
         }
 
         $document = new DOMDocument();

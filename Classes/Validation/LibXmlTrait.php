@@ -14,8 +14,8 @@ namespace Kitodo\Dlf\Validation;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-trait LibXmlTrait {
-
+trait LibXmlTrait
+{
     /**
      * Add the errors from the libxml error buffer as validation error.
      *
@@ -41,5 +41,4 @@ trait LibXmlTrait {
     {
         libxml_use_internal_errors(false);
     }
-
 }

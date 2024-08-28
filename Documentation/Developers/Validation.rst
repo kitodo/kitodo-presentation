@@ -12,7 +12,7 @@ Validators
 DOMDocumentValidationStack
 --------------------------
 
-``Kitodo\Dlf\Validation\DOMDocumentValidationStack`` implementation of ``Kitodo\Dlf\Validation\BaseValidationStack`` for validating DOMDocument against the configurable validators.
+``Kitodo\Dlf\Validation\DOMDocumentValidationStack`` implementation of ``Kitodo\Dlf\Validation\AbstractDlfValidationStack`` for validating DOMDocument against the configurable validators.
 
 The configuration is an array validator configurations each with following entries:
 
@@ -128,13 +128,13 @@ Following fields are necessary for binding validator or validation stack to the 
      :description:              Description
 
    - :field:                    className
-     :description:              Fully qualified class name of validator class derived from ``Kitodo\Dlf\Validation\BaseValidator`` or of validation stack class derived from ``Kitodo\Dlf\Validation\BaseValidationStack``
+     :description:              Fully qualified class name of validator class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidator`` or of validation stack class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidationStack``
 
    - :field:                    configuration
-     :description:              Block of specific configuration of validator. (Only for validator class derived from ``Kitodo\Dlf\Validation\BaseValidator``)
+     :description:              Block of specific configuration of validator. (Only for validator class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidator``)
 
    - :field:                    validators
-     :description:              Blocks of validators or nested validation stacks. (Only for validation stack class derived from ``Kitodo\Dlf\Validation\BaseValidationStack``)
+     :description:              Blocks of validators or nested validation stacks. (Only for validation stack class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidationStack``)
 
 
 TypoScript Example
