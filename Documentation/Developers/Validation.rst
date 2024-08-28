@@ -26,7 +26,7 @@ The configuration is an array validator configurations each with following entri
      :description:              Title of the validator
 
    - :field:                    className
-     :description:              Fully qualified class name of validator class derived from ``Kitodo\Dlf\Validation\BaseValidator``
+     :description:              Fully qualified class name of validator class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidator``
 
    - :field:                    breakOnError
      :description:              Indicates whether the validation of the validation stack should be interrupted in case of errors.

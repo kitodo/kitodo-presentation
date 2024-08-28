@@ -61,7 +61,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
     /**
      * Add validator to the internal validator stack.
      *
-     * @param string $className Class name of the validator which was derived from Kitodo\Dlf\Validation\BaseValidator
+     * @param string $className Class name of the validator which was derived from Kitodo\Dlf\Validation\AbstractDlfValidator
      * @param string $title The title of the validator
      * @param bool $breakOnError True if the execution of validator stack is interrupted when validator throws an error
      * @param array|null $configuration The configuration of validator
@@ -81,7 +81,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
 
         $title = empty($title) ? $className : $title;
 
-        array_push($this->validatorStack, array(self::ITEM_KEY_TITLE => $title, self::ITEM_KEY_VALIDATOR => $validator, self::ITEM_KEY_BREAK_ON_ERROR => $breakOnError));
+        array_push($this->validatorStack, [self::ITEM_KEY_TITLE => $title, self::ITEM_KEY_VALIDATOR => $validator, self::ITEM_KEY_BREAK_ON_ERROR => $breakOnError]);
     }
 
     /**

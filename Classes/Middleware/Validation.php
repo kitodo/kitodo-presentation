@@ -81,13 +81,14 @@ class Validation implements MiddlewareInterface
 
         $validationClassName = $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["className"];
         if (!class_exists($validationClassName)) {
-            throw new InvalidArgumentException('Unable to load class "' . $validationClassName . '".', 1724336440);
+            $this->logger->error('Unable to load class "' . $validationClassName . '".');
+            throw new InvalidArgumentException('Unable to load validation class', 1724336440);
         }
 
         $validation = GeneralUtility::makeInstance($validationClassName, $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["validators"]);
 
         if (GeneralUtility::isValidUrl($urlParam)) {
-            throw new InvalidArgumentException('Parameter "' . $urlParam . '" is not a valid url.', 1724852611);
+            throw new InvalidArgumentException('Parameter "' . htmlspecialchars($urlParam . '" is not a valid url.', 1724852611);
         }
 
         $content = GeneralUtility::getUrl($urlParam);
