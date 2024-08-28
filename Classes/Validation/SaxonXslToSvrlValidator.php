@@ -79,7 +79,7 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator {
             $results = $xml->xpath("/svrl:schematron-output/svrl:failed-assert/svrl:text");
 
             foreach ($results as $error) {
-                $this->addError($error, 1724405095);
+                $this->addError($error->asXML(), 1724405095);
             }
         } catch (Exception $e) {
             throw new \InvalidArgumentException('Schematron output XML could not be parsed.', 1724754882);
