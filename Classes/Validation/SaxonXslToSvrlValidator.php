@@ -41,11 +41,11 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
     {
         parent::__construct(DOMDocument::class);
 
-        if (!isset($configuration["jar"]) || !$this->validFile($configuration["jar"])) {
+        if (!isset($configuration["jar"]) || !empty(GeneralUtility::getFileAbsFileName($configuration["jar"]))) {
             $this->logger->error('Saxon JAR file not found.');
             throw new InvalidArgumentException('Saxon JAR file not found.', 1723121212747);
         }
-        if (!isset($configuration["xsl"]) || !$this->validFile($configuration["xsl"])) {
+        if (!isset($configuration["xsl"]) || !empty(GeneralUtility::getFileAbsFileName($configuration["xsl"]))) {
             $this->logger->error('XSL Schematron file not found.');
             throw new InvalidArgumentException('XSL Schematron file not found.', 1723121212747);
         }
@@ -53,17 +53,7 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
         $this->jar = $configuration["jar"];
         $this->xsl = $configuration["xsl"];
     }
-
-    /**
-     * @param string $filename
-     * @return bool
-     */
-    public function validFile(string $filename): bool
-    {
-        $absFilename = GeneralUtility::getFileAbsFileName($filename);
-        return !empty($absFilename) && file_exists($absFilename);
-    }
-
+    
     protected function isValid($value)
     {
         $svrl = $this->process($value);

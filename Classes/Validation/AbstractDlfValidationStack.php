@@ -69,6 +69,9 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
      * @param string $title The title of the validator
      * @param bool $breakOnError True if the execution of validator stack is interrupted when validator throws an error
      * @param array|null $configuration The configuration of validator
+     *
+     * @throws InvalidArgumentException
+     *
      * @return void
      */
     protected function addValidator(string $className, string $title, bool $breakOnError = true, array $configuration = null): void
