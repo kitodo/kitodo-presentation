@@ -296,8 +296,7 @@ class ToolboxController extends AbstractController
         "image/x-portable-anymap",
         "image/x-portable-bitmap",
         "image/x-portable-graymap",
-        "image/x-portable-pixmap",
-        "application/pdf"
+        "image/x-portable-pixmap"
     ];
 
     /**
