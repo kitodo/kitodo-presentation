@@ -31,7 +31,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
     const ITEM_KEY_BREAK_ON_ERROR = "breakOnError";
     const ITEM_KEY_VALIDATOR = "validator";
 
-    protected array $validatorStack;
+    protected array $validatorStack = [];
 
     public function __construct(string $valueClassName)
     {
@@ -73,16 +73,12 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
         }
 
         if (!$validator instanceof AbstractDlfValidator) {
-            throw new InvalidArgumentException($className . ' must be an instance of BaseValidator.', 1723121212747);
+            throw new InvalidArgumentException($className . ' must be an instance of AbstractDlfValidator.', 1723121212747);
         }
 
         $title = empty($title) ? $className : $title;
 
-        $this->validatorStack[] = array(
-            self::ITEM_KEY_TITLE => $title,
-            self::ITEM_KEY_VALIDATOR => $validator,
-            self::ITEM_KEY_BREAK_ON_ERROR => $breakOnError,
-        );
+        array_push($this->validatorStack, array(self::ITEM_KEY_TITLE => $title, self::ITEM_KEY_VALIDATOR => $validator, self::ITEM_KEY_BREAK_ON_ERROR => $breakOnError));
     }
 
     /**
