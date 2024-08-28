@@ -60,7 +60,8 @@ class Validation implements MiddlewareInterface
         }
 
         $validationParam = $parameters['validation'];
-        if (!isset($validationParam) || $parameters['url']) {
+        $urlParam = $parameters['url'];
+        if (!isset($validationParam) || $urlParam) {
             throw new InvalidArgumentException('No valid parameter passed', 1724334674);
         }
 
@@ -85,14 +86,18 @@ class Validation implements MiddlewareInterface
 
         $validation = GeneralUtility::makeInstance($validationClassName, $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["validators"]);
 
-        $content = file_get_contents($parameters['url']);
+        if (GeneralUtility::isValidUrl($urlParam)) {
+            throw new InvalidArgumentException('Parameter "' . $urlParam . '" is not a valid url.', 1724852611);
+        }
+
+        $content = GeneralUtility::getUrl($urlParam);
         if ($content === false) {
-            throw new InvalidArgumentException('Error while loading content of "' . $parameters['url'] . '"', 1724420640);
+            throw new InvalidArgumentException('Error while loading content of "' . $urlParam . '"', 1724420640);
         }
 
         $document = new DOMDocument();
         if ($document->loadXML($content) === false) {
-            throw new InvalidArgumentException('Error converting content of "' . $parameters['url'] . '" to xml.', 1724420648);
+            throw new InvalidArgumentException('Error converting content of "' . $urlParam . '" to xml.', 1724420648);
         }
 
         $result = $validation->validate($document);
