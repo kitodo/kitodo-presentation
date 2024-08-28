@@ -62,7 +62,7 @@ class Validation implements MiddlewareInterface
         $validationParam = $parameters['validation'];
         $urlParam = $parameters['url'];
         if (!isset($validationParam) || $urlParam) {
-            throw new InvalidArgumentException('No valid parameter passed', 1724334674);
+            throw new InvalidArgumentException('No valid parameter passed.', 1724334674);
         }
 
         /** @var ConfigurationManagerInterface $configurationManager */
@@ -71,34 +71,39 @@ class Validation implements MiddlewareInterface
 
         if (!array_key_exists(self::SETTINGS_KEY_VALIDATION, $settings) ||
             !array_key_exists($validationParam, $settings[self::SETTINGS_KEY_VALIDATION])) {
-            throw new InvalidArgumentException('Validation "' . $validationParam . '" is not configured.', 1724335328);
+            $this->logger->error('Validation "' . $validationParam . '" is not configured.');
+            throw new InvalidArgumentException('Validation is not configured.', 1724335328);
         }
 
         if (!array_key_exists("className", $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]) ||
             !array_key_exists("validators", $settings[self::SETTINGS_KEY_VALIDATION][$validationParam])) {
-            throw new InvalidArgumentException('Validation "' . $validationParam . '" is not configured correctly.', 1724335601);
+            $this->logger->error('Validation "' . $validationParam . '" is not configured correctly.');
+            throw new InvalidArgumentException('Validation is not configured correctly.', 1724335601);
         }
 
         $validationClassName = $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["className"];
         if (!class_exists($validationClassName)) {
             $this->logger->error('Unable to load class "' . $validationClassName . '".');
-            throw new InvalidArgumentException('Unable to load validation class', 1724336440);
+            throw new InvalidArgumentException('Unable to load validation class.', 1724336440);
         }
 
         $validation = GeneralUtility::makeInstance($validationClassName, $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["validators"]);
 
         if (GeneralUtility::isValidUrl($urlParam)) {
-            throw new InvalidArgumentException('Parameter "' . htmlspecialchars($urlParam . '" is not a valid url.', 1724852611);
+            $this->logger->debug('Parameter "' . $urlParam . '" is not a valid url.');
+            throw new InvalidArgumentException('Value of url parameter is not a valid url.', 1724852611);
         }
 
         $content = GeneralUtility::getUrl($urlParam);
         if ($content === false) {
-            throw new InvalidArgumentException('Error while loading content of "' . $urlParam . '"', 1724420640);
+            $this->logger->debug('Error while loading content of "' . $urlParam . '"');
+            throw new InvalidArgumentException('Error while loading content of url.', 1724420640);
         }
 
         $document = new DOMDocument();
         if ($document->loadXML($content) === false) {
-            throw new InvalidArgumentException('Error converting content of "' . $urlParam . '" to xml.', 1724420648);
+            $this->logger->debug('Error converting content of "' . $urlParam . '" to xml.');
+            throw new InvalidArgumentException('Error converting content to xml.', 1724420648);
         }
 
         $result = $validation->validate($document);
