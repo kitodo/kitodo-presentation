@@ -20,6 +20,7 @@ use InvalidArgumentException;
 use SimpleXMLElement;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The validator validates the DOMDocument against an XSL Schematron and converts error output to validation errors.
@@ -40,16 +41,25 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator
     {
         parent::__construct(DOMDocument::class);
 
-        if (!isset($configuration["jar"]) || !is_file($configuration["jar"])) {
+        if (!isset($configuration["jar"]) || !$this->validFile($configuration["jar"])) {
             throw new InvalidArgumentException('Saxon JAR file not found.', 1723121212747);
         }
-
-        if (!isset($configuration["xsl"]) || !is_file($configuration["xsl"])) {
+        if (!isset($configuration["xsl"]) || !$this->validFile($configuration["xsl"])) {
             throw new InvalidArgumentException('XSL Schematron file not found.', 1723121212747);
         }
 
         $this->jar = $configuration["jar"];
         $this->xsl = $configuration["xsl"];
+    }
+
+    /**
+     * @param string $filename
+     * @return bool
+     */
+    public function validFile(string $filename): bool
+    {
+        $absFilename = GeneralUtility::getFileAbsFileName($filename);
+        return empty($absFilename) && file_exists($absFilename) ;
     }
 
     protected function isValid($value)
