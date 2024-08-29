@@ -14,9 +14,7 @@ namespace Kitodo\Dlf\Middleware;
 
 use DOMDocument;
 use InvalidArgumentException;
-use Kitodo\Dlf\Validation\DocumentValidator;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
-use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -72,12 +70,12 @@ class DOMDocumentValidation implements MiddlewareInterface
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
         $settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
 
-        if (!array_key_exists("domDocumentValidationStackValidators", $settings)) {
+        if (!array_key_exists("domDocumentValidationValidators", $settings)) {
             $this->logger->error('DOMDocumentValidation is not configured correctly.');
             throw new InvalidArgumentException('DOMDocumentValidation is not configured correctly.', 1724335601);
         }
 
-        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $settings['domDocumentValidationStackValidators']);
+        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $settings['domDocumentValidationValidators']);
 
         if (!GeneralUtility::isValidUrl($urlParam)) {
             $this->logger->debug('Parameter "' . $urlParam . '" is not a valid url.');

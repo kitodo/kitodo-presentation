@@ -74,99 +74,59 @@ To use the validator, the XSL Schematron must be available alongside the XSL pro
    - :field:                    xsl
      :description:              Absolute path to the XSL Schematron
 
-Middleware
+DOMDocumentValidation Middleware
 =======
+
+``Kitodo\Dlf\Validation\DOMDocumentValidation`` middleware can be used via the parameter ``middleware`` with the value ``dlf/domDocumentValidation`` and the parameter ``url`` with the URL to the ``DOMDocument`` content to validate.
 
 Configuration
 --------------------------
 
-The validation middleware can be configured through the plugin settings in TypoScript with the block called ``validation``.
+The validation middleware can be configured through the plugin settings in TypoScript with the block called ``domDocumentValidationValidators``.
 
    .. code-block::
 
       plugin.tx_dlf {
           settings {
-              validation {
-                  KEY {
+              domDocumentValidationValidators {
+                  validator {
+                     ...
+                  },
+                  validatorStack {
                      ...
                   },
                   ...
 
+Validators derived from ``Kitodo\Dlf\Validation\AbstractDlfValidator`` can be configured here. This also includes the use of validation stack implementations derived from ``Kitodo\Dlf\Validation\AbstractDlfValidationStack``, which use ``DOMDocument`` as the ``valueClassName`` for validation. This allows for multiple levels of nesting.
 
-The ``KEY`` is used in the validation middleware for identifying the validation configuration through the ``validation`` parameter.
-
-   .. code-block::
-
-      plugin.tx_dlf {
-          settings {
-              validation {
-                  // ?middleware=dlf/validation&validation=specificValidatorKey&url=...
-                  specificValidatorKey {
-                     className = Kitodo\Dlf\Validation\XmlSchemesValidator
-                     configuration {
-                            ...
-                     }
-                  },
-                  // ?middleware=dlf/validation&validation=specificValidationStackKey&url=...
-                  specificValidationStackKey {
-                     className = Kitodo\Dlf\Validation\DOMDocumentValidationStack
-                     validators {
-                           10 {
-                              ...
-                           },
-                           ...
-                     }
-                  },
-                  ...
-
-Following fields are necessary for binding validator or validation stack to the ``KEY``.
-
-.. t3-field-list-table::
-   :header-rows: 1
-
-   - :field:                    Key
-     :description:              Description
-
-   - :field:                    className
-     :description:              Fully qualified class name of validator class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidator`` or of validation stack class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidationStack``
-
-   - :field:                    configuration
-     :description:              Block of specific configuration of validator. (Only for validator class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidator``)
-
-   - :field:                    validators
-     :description:              Blocks of validators or nested validation stacks. (Only for validation stack class derived from ``Kitodo\Dlf\Validation\AbstractDlfValidationStack``)
-
+In the background of the middleware, the ``Kitodo\Dlf\Validation\DOMDocumentValidationStack`` is used, to which the configured validators are assigned.
 
 TypoScript Example
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
    .. code-block::
 
       plugin.tx_dlf {
           settings {
               storagePid = {$config.storagePid}
-              validation {
-                  mets {
-                      className = Kitodo\Dlf\Validation\DOMDocumentValidationStack
-                      validators {
-                          10 {
-                              title = XML-Schemes Validator
-                              className = Kitodo\Dlf\Validation\XmlSchemesValidator
-                              breakOnError = false
-                              configuration {
-                                  oai {
-                                      namespace = http://www.openarchives.org/OAI/2.0/
-                                      schemaLocation = https://www.openarchives.org/OAI/2.0/OAI-PMH.xsd
-                                  }
-                                  mets {
-                                      namespace = http://www.loc.gov/METS/
-                                      schemaLocation = http://www.loc.gov/standards/mets/mets.xsd
-                                  }
-                                  mods {
-                                      namespace = http://www.loc.gov/mods/v3
-                                      schemaLocation = http://www.loc.gov/standards/mods/mods.xsd
-                                  }
-                              }
-                          }
+              domDocumentValidationValidators {
+                 10 {
+                     title = XML-Schemes Validator
+                     className = Kitodo\Dlf\Validation\XmlSchemesValidator
+                     breakOnError = false
+                     configuration {
+                         oai {
+                             namespace = http://www.openarchives.org/OAI/2.0/
+                             schemaLocation = https://www.openarchives.org/OAI/2.0/OAI-PMH.xsd
+                         }
+                         mets {
+                             namespace = http://www.loc.gov/METS/
+                             schemaLocation = http://www.loc.gov/standards/mets/mets.xsd
+                         }
+                         mods {
+                             namespace = http://www.loc.gov/mods/v3
+                             schemaLocation = http://www.loc.gov/standards/mods/mods.xsd
+                         }
                      }
-                  }
+                 },
+                 ...
