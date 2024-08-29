@@ -30,8 +30,8 @@ return [
                 'typo3/cms-frontend/prepare-tsfe-rendering'
             ]
         ],
-        'dlf/validation' => [
-            'target' => \Kitodo\Dlf\Middleware\Validation::class,
+        'dlf/domDocumentValidation' => [
+            'target' => \Kitodo\Dlf\Middleware\DOMDocumentValidation::class,
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering'
             ]

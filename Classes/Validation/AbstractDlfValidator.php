@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  *
  * @access public
  */
-abstract class AbstractDlfValidator extends AbstractValidator implements LoggerAwareInterface
+abstract class AbstractDlfValidator extends AbstractValidator
 {
     use LoggerAwareTrait;
 

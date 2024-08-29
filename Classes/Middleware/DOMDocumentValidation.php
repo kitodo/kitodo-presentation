@@ -14,27 +14,30 @@ namespace Kitodo\Dlf\Middleware;
 
 use DOMDocument;
 use InvalidArgumentException;
+use Kitodo\Dlf\Validation\DocumentValidator;
+use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Http\ResponseFactory;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Error\Result;
 
 /**
- * Middleware for embedding custom 3D Viewer implementation of the 'dlf' extension.
+ * Middleware for validation of DOMDocuments.
  *
  * @package TYPO3
  * @subpackage dlf
  * @access public
  */
-class Validation implements MiddlewareInterface
+class DOMDocumentValidation implements MiddlewareInterface
 {
     use LoggerAwareTrait;
-
-    const SETTINGS_KEY_VALIDATION = "validation";
 
     /**
      * The main method of the middleware.
@@ -50,46 +53,33 @@ class Validation implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $response = $handler->handle($request);
         // parameters are sent by POST --> use getParsedBody() instead of getQueryParams()
         $parameters = $request->getQueryParams();
 
         // Return if not this middleware
-        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/validation')) {
+        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/domDocumentValidation')) {
             return $response;
         }
 
-        $validationParam = $parameters['validation'];
         $urlParam = $parameters['url'];
-        if (!isset($validationParam) || $urlParam) {
-            throw new InvalidArgumentException('No valid parameter passed.', 1724334674);
+        if (!isset($urlParam)) {
+            throw new InvalidArgumentException('URL parameter is missing.', 1724334674);
         }
 
         /** @var ConfigurationManagerInterface $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
         $settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
 
-        if (!array_key_exists(self::SETTINGS_KEY_VALIDATION, $settings) ||
-            !array_key_exists($validationParam, $settings[self::SETTINGS_KEY_VALIDATION])) {
-            $this->logger->error('Validation "' . $validationParam . '" is not configured.');
-            throw new InvalidArgumentException('Validation is not configured.', 1724335328);
+        if (!array_key_exists("domDocumentValidationStackValidators", $settings)) {
+            $this->logger->error('DOMDocumentValidation is not configured correctly.');
+            throw new InvalidArgumentException('DOMDocumentValidation is not configured correctly.', 1724335601);
         }
 
-        if (!array_key_exists("className", $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]) ||
-            !array_key_exists("validators", $settings[self::SETTINGS_KEY_VALIDATION][$validationParam])) {
-            $this->logger->error('Validation "' . $validationParam . '" is not configured correctly.');
-            throw new InvalidArgumentException('Validation is not configured correctly.', 1724335601);
-        }
+        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $settings['domDocumentValidationStackValidators']);
 
-        $validationClassName = $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["className"];
-        if (!class_exists($validationClassName)) {
-            $this->logger->error('Unable to load class "' . $validationClassName . '".');
-            throw new InvalidArgumentException('Unable to load validation class.', 1724336440);
-        }
-
-        $validation = GeneralUtility::makeInstance($validationClassName, $settings[self::SETTINGS_KEY_VALIDATION][$validationParam]["validators"]);
-
-        if (GeneralUtility::isValidUrl($urlParam)) {
+        if (!GeneralUtility::isValidUrl($urlParam)) {
             $this->logger->debug('Parameter "' . $urlParam . '" is not a valid url.');
             throw new InvalidArgumentException('Value of url parameter is not a valid url.', 1724852611);
         }
@@ -107,17 +97,22 @@ class Validation implements MiddlewareInterface
         }
 
         $result = $validation->validate($document);
+        return $this->getJsonResponse($result);
+    }
 
-        $errorMessages = [];
+    protected function getJsonResponse(Result $result): ResponseInterface
+    {
+        $resultContent = ["valid" => !$result->hasErrors()];
+
         foreach ($result->getErrors() as $error) {
-            $errorMessages[$error->getTitle()][] = $error->getMessage();
+            $resultContent["results"][$error->getTitle()][] = $error->getMessage();
         }
 
         /** @var ResponseFactory $responseFactory */
         $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
         $response = $responseFactory->createResponse()
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
-        $response->getBody()->write(json_encode($errorMessages));
+        $response->getBody()->write(json_encode($resultContent));
         return $response;
     }
 }
