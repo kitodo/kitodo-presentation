@@ -488,13 +488,17 @@ final class MetsDocument extends AbstractDocument
      * @param array $logInfo
      * @return ?array
      */
-    protected function getTimecode(array $logInfo)
+    protected function getTimecode(array $logInfo): ?array
     {
         // Load plugin configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
         $fileGrpsVideo = GeneralUtility::trimExplode(',', $extConf['fileGrpVideo']);
 
         foreach ($fileGrpsVideo as $fileGrpVideo) {
+            if (!isset($this->smLinks['l2p'][$logInfo['id']][0])) {
+                continue;
+            }
+
             $physInfo = $this->physicalStructureInfo[$this->smLinks['l2p'][$logInfo['id']][0]];
             $fileIds = $physInfo['all_files'][$fileGrpVideo] ?? [];
 
@@ -521,6 +525,8 @@ final class MetsDocument extends AbstractDocument
                 return $chapter;
             }
         }
+
+        return null;
     }
 
     /**
