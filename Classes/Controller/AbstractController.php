@@ -270,6 +270,55 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
+     * Sanitize settings from FlexForm.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function sanitizeSettings(): void
+    {
+        $this->setDefaultIntSetting('storagePid', 0);
+
+        if ($this instanceof MetadataController) {
+            $this->setDefaultIntSetting('rootline', 0);
+            $this->setDefaultIntSetting('originalIiifMetadata', 0);
+            $this->setDefaultIntSetting('displayIiifDescription', 1);
+            $this->setDefaultIntSetting('displayIiifRights', 1);
+            $this->setDefaultIntSetting('displayIiifLinks', 1);
+        }
+
+        if ($this instanceof OaiPmhController) {
+            $this->setDefaultIntSetting('limit', 5);
+            $this->setDefaultIntSetting('solr_limit', 50000);
+        }
+
+        if ($this instanceof PageViewController) {
+            $this->setDefaultIntSetting('useInternalProxy', 0);
+        }
+    }
+
+    /**
+     * Sets default value for setting if not yet set.
+     *
+     * @access protected
+     *
+     * @param string $setting name of setting
+     * @param int $value for being set if empty
+     *
+     * @return void
+     */
+    protected function setDefaultIntSetting(string $setting, int $value): void
+    {
+        if (empty($this->settings[$setting])) {
+            $this->settings[$setting] = $value;
+            $this->logger->warning('Setting "' . $setting . '" not set, using default value "' . $value . '". Probably FlexForm for controller "' . get_class($this) . '" is not read.');
+        } else {
+            $this->settings[$setting] = (int) $this->settings[$setting];
+        }
+    }
+
+    /**
      * Sets page value.
      *
      * @access protected
@@ -492,7 +541,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
             // Make sure configuration PID is set when applicable
             if ($doc->cPid == 0) {
-                $doc->cPid = max((int) $this->settings['storagePid'], 0);
+                $doc->cPid = max($this->settings['storagePid'], 0);
             }
 
             $this->document->setLocation($documentId);
