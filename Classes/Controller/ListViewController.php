@@ -81,7 +81,7 @@ class ListViewController extends AbstractController
 
         // extract collection(s) from collection parameter
         $collections = [];
-        if (array_key_exists('collection', $this->searchParams)) {
+        if (is_array($this->searchParams) && array_key_exists('collection', $this->searchParams)) {
             foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
                 $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }

@@ -107,15 +107,9 @@ class MetadataController extends AbstractController
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
-        } else {
-            // Set default values if not set.
-            $this->setDefault('rootline', 0);
-            $this->setDefault('originalIiifMetadata', 0);
-            $this->setDefault('displayIiifDescription', 1);
-            $this->setDefault('displayIiifRights', 1);
-            $this->setDefault('displayIiifLinks', 1);
-            $this->setPage();
         }
+
+        $this->setPage();
 
         $this->currentDocument = $this->document->getCurrentDocument();
         $this->useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
@@ -437,9 +431,9 @@ class MetadataController extends AbstractController
      */
     private function parseType(int $i, array &$metadata) : void
     {
-        $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type'][0]);
+        $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type']);
         if ($structure) {
-            $metadata[$i]['type'][0] = $structure->getLabel();
+            $metadata[$i]['type'] = $structure->getLabel();
         }
     }
 
@@ -528,22 +522,5 @@ class MetadataController extends AbstractController
             }
         }
         return $metadata;
-    }
-
-    /**
-     * Sets default value for setting if not yet set.
-     *
-     * @access private
-     *
-     * @param string $setting name of setting
-     * @param int $value 0 or 1
-     *
-     * @return void
-     */
-    private function setDefault(string $setting, int $value): void
-    {
-        if (!isset($this->settings[$setting])) {
-            $this->settings[$setting] = $value;
-        }
     }
 }
