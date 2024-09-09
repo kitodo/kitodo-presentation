@@ -503,7 +503,7 @@ class PageViewController extends AbstractController
                         'score' => $docScore,
                         'annotationContainers' => $docAnnotationContainers,
                         'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
-                        'useInternalProxy' => $this->settings['useInternalProxy'] ? 1 : 0,
+                        'useInternalProxy' => $this->settings['useInternalProxy'],
                         'currentMeasureId' => $currentMeasureId,
                         'measureIdLinks' => $docMeasures['measureLinks']
                     ];
@@ -539,7 +539,7 @@ class PageViewController extends AbstractController
                 'score' => $this->scores,
                 'annotationContainers' => $this->annotationContainers,
                 'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
-                'useInternalProxy' => $this->settings['useInternalProxy'] ? 1 : 0,
+                'useInternalProxy' => $this->settings['useInternalProxy'],
                 'verovioAnnotations' => $this->verovioAnnotations,
                 'currentMeasureId' => $currentMeasureId,
                 'measureIdLinks' => $docMeasures['measureLinks']
