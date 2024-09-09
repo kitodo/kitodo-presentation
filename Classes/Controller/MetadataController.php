@@ -437,9 +437,9 @@ class MetadataController extends AbstractController
      */
     private function parseType(int $i, array &$metadata) : void
     {
-        $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type'][0]);
+        $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type']);
         if ($structure) {
-            $metadata[$i]['type'][0] = $structure->getLabel();
+            $metadata[$i]['type'] = $structure->getLabel();
         }
     }
 
