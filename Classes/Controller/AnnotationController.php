@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
  */
 
 use Kitodo\Dlf\Common\DocumentAnnotation;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Controller class for plugin 'Annotation'.
@@ -26,9 +27,9 @@ class AnnotationController extends AbstractController
     /**
      * The main method of the plugin
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction()
+    public function mainAction(): ResponseInterface
     {
         $this->loadDocument();
 
@@ -37,12 +38,13 @@ class AnnotationController extends AbstractController
             || $this->document->getCurrentDocument() === null
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
         } else {
             $documentAnnotation = DocumentAnnotation::getInstance($this->document);
 
             $this->view->assign('annotations', $documentAnnotation->getAnnotations());
             $this->view->assign('currentPage', $this->requestData['page']);
         }
+        
+        return $this->htmlResponse();
     }
 }

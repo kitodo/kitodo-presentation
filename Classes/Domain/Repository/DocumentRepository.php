@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Doctrine\DBAL\ForwardCompatibility\Result;
+use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\SolrSearch;
@@ -172,8 +172,8 @@ class DocumentRepository extends Repository
 
         $constraints = [];
 
-        if ($settings['documentSets']) {
-            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['documentSets']));
+        if ($settings['documentSets'] ?? false) {
+            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', strval($settings['documentSets'])));
         }
 
         if (isset($settings['excludeOther']) && (int) $settings['excludeOther'] === 0) {
@@ -182,7 +182,7 @@ class DocumentRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd($constraints)
+                $query->logicalAnd(...array_values($constraints))
             );
         }
 
@@ -216,7 +216,7 @@ class DocumentRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd($constraints)
+                $query->logicalAnd(...array_values($constraints))
             );
         }
 

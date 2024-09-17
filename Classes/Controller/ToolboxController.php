@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -38,9 +39,9 @@ class ToolboxController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
@@ -53,6 +54,8 @@ class ToolboxController extends AbstractController
 
         $this->renderTools();
         $this->view->assign('viewData', $this->viewData);
+
+        return $this->htmlResponse();
     }
 
     /**

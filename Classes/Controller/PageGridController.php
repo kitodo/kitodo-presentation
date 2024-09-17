@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Pagination\PageGridPagination;
 use Kitodo\Dlf\Pagination\PageGridPaginator;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -30,9 +31,9 @@ class PageGridController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         $this->loadDocument();
         if (
@@ -40,7 +41,7 @@ class PageGridController extends AbstractController
             || empty($this->extConf['files']['fileGrpThumbs'])
         ) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         $entryArray = [];
@@ -68,6 +69,8 @@ class PageGridController extends AbstractController
         $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $pageGridPaginator ]);
 
         $this->view->assign('docUid', $this->requestData['id']);
+
+        return $this->htmlResponse();
     }
 
     /**

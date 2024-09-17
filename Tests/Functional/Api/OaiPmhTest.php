@@ -25,7 +25,7 @@ class OaiPmhTest extends FunctionalTestCase
 {
     protected $disableJsonWrappedResponse = true;
 
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'fluid',
         'fluid_styled_content',
     ];

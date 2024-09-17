@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Controller;
 use Generator;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -56,9 +57,9 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Set initial document (anchor or year file) if configured.
         if (empty($this->requestData['id']) && !empty($this->settings['initialDocument'])) {
@@ -69,27 +70,28 @@ class CalendarController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         $metadata = $this->document->getCurrentDocument()->getToplevelMetadata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
-            return;
+            return $this->htmlResponse();
         }
 
         switch ($type) {
             case 'newspaper':
             case 'ephemera':
-                $this->forward('years', null, null, $this->requestData);
+                return $this->redirect('years', null, null, $this->requestData);
             case 'year':
-                $this->forward('calendar', null, null, $this->requestData);
+                return $this->redirect('calendar', null, null, $this->requestData);
             case 'issue':
             default:
                 break;
         }
 
+        return $this->htmlResponse();
     }
 
     /**
@@ -97,9 +99,9 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function calendarAction(): void
+    public function calendarAction(): ResponseInterface
     {
         // access arguments passed by the mainAction()
         $mainRequestData = $this->request->getArguments();
@@ -111,7 +113,7 @@ class CalendarController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         $calendarData = $this->buildCalendar();
@@ -136,6 +138,8 @@ class CalendarController extends AbstractController
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
         $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getCurrentDocument()->tableOfContents[0]['points']);
         $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getPartof()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
+    
+        return $this->htmlResponse();
     }
 
     /**
@@ -143,9 +147,9 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function yearsAction(): void
+    public function yearsAction(): ResponseInterface
     {
         // access arguments passed by the mainAction()
         $mainRequestData = $this->request->getArguments();
@@ -157,7 +161,7 @@ class CalendarController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         // Get all children of anchor. This should be the year anchor documents
@@ -221,6 +225,8 @@ class CalendarController extends AbstractController
 
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle((int) $this->document->getUid()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
+    
+        return $this->htmlResponse();
     }
 
     /**

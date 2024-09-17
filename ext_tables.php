@@ -10,21 +10,25 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-// Register backend module.
-if (\TYPO3_MODE === 'BE') {
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'Dlf',
-        'tools', // Main area
-        'newTenantModule', // Name of the module
-        'bottom', // Position of the module
-        [// Allowed controller action combinations
-            \Kitodo\Dlf\Controller\Backend\NewTenantController::class => 'index,error,addFormat,addMetadata,addSolrCore,addStructure',
-        ],
-        [// Additional configuration
-            'access'    => 'admin',
-            'icon'      => 'EXT:dlf/Resources/Public/Icons/Extension.svg',
-            'labels'    => 'LLL:EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf',
-            'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
-        ],
-    );
+ if (!defined('TYPO3')) {
+    die('Access denied.');
 }
+
+// Register backend module for Typo3 v11.
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+    'Dlf',
+    'tools', // Main area
+    'newTenantModule', // Name of the module
+    'bottom', // Position of the module
+    [// Allowed controller action combinations
+        \Kitodo\Dlf\Controller\Backend\NewTenantController::class => 'index,error,addFormat,addMetadata,addSolrCore,addStructure',
+    ],
+    [// Additional configuration
+        'access'    => 'admin',
+        'icon'      => 'EXT:dlf/Resources/Public/Icons/Extension.svg',
+        'labels'    => 'LLL:EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf',
+        'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
+    ],
+);
+
