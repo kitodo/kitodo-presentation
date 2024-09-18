@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
- if (!defined('TYPO3')) {
+if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
@@ -31,4 +31,3 @@
         'navigationComponentId' => 'TYPO3/CMS/Backend/PageTree/PageTreeElement'
     ],
 );
-

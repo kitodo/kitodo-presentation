@@ -143,6 +143,15 @@ class NewTenantController extends AbstractController
         $this->solrCoreRepository = $solrCoreRepository;
     }
 
+    /**
+     * Returns a response object with either the given html string or the current rendered view as content.
+     * 
+     * @access protected
+     * 
+     * @param ?string $html optional html
+     * 
+     * @return ResponseInterface the response
+     */
     protected function htmlResponse(?string $html = null): ResponseInterface
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
@@ -152,7 +161,7 @@ class NewTenantController extends AbstractController
         $moduleTemplate = $moduleTemplateFactory->create($this->request);
         $moduleTemplate->setContent($this->view->render());
         $moduleTemplate->setFlashMessageQueue($messageQueue);
-        return parent::htmlResponse($moduleTemplate->renderContent());
+        return parent::htmlResponse(($html ?? $moduleTemplate->renderContent()));
     }
 
     /**
@@ -412,7 +421,7 @@ class NewTenantController extends AbstractController
     public function indexAction(): ResponseInterface
     {
         $recordInfos = [];
-                
+
         $this->pageInfo = BackendUtility::readPageAccess($this->pid, $GLOBALS['BE_USER']->getPagePermsClause(1));
 
         if (!isset($this->pageInfo['doktype']) || $this->pageInfo['doktype'] != 254) {

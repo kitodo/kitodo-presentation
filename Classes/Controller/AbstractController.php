@@ -383,7 +383,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * Wrapper for ActionController::processRequest in order to initialize things 
+     * Wrapper for ActionController::processRequest in order to initialize things
      * without using a constructor.
      *
      * @access public

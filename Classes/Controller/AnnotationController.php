@@ -44,7 +44,7 @@ class AnnotationController extends AbstractController
             $this->view->assign('annotations', $documentAnnotation->getAnnotations());
             $this->view->assign('currentPage', $this->requestData['page']);
         }
-        
+
         return $this->htmlResponse();
     }
 }

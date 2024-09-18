@@ -323,8 +323,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * Sets query.
      *
      * @access public
-     * 
+     *
      * @param QueryInterface $query the query
+     *
+     * @throws Exception not implemented
      *
      * @return void
      */
