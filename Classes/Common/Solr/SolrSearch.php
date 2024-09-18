@@ -326,7 +326,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @param QueryInterface $query the query
      *
-     * @throws Exception not implemented
+     * @throws \Exception not implemented
      *
      * @return void
      */
