@@ -272,37 +272,6 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * List of common web image mimetypes
-     * The MIMETYPE attribute must specify the media type of the digital representation. All web-compatible formats as per RFC2046 are allowed.
-     */
-    private const IMAGE_MIMETYPES = [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/gif",
-        "image/bmp",
-        "image/tiff",
-        "image/x-tiff",
-        "image/webp",
-        "image/svg+xml",
-        "image/vnd.microsoft.icon",
-        "image/x-icon",
-        "image/heif",
-        "image/heic",
-        "image/vnd.adobe.photoshop",
-        "image/x-xbitmap",
-        "image/x-xpixmap",
-        "image/jp2",
-        "image/jpx",
-        "image/jpm",
-        "image/mj2",
-        "image/x-portable-anymap",
-        "image/x-portable-bitmap",
-        "image/x-portable-graymap",
-        "image/x-portable-pixmap"
-    ];
-
-    /**
      * Renders the image download tool
      * Renders the image download tool (used in template)
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
@@ -326,36 +295,18 @@ class ToolboxController extends AbstractController
         $imageArray = [];
         // Get left or single page download.
         $image = $this->getImage($this->requestData['page']);
-        if ($this->filterImageFiles($image)) {
+        if (Helper::filterFilesByMimeType($image, 'image')) {
             $imageArray[0] = $image;
         }
 
         if ($this->requestData['double'] == 1) {
             $image = $this->getImage($this->requestData['page'] + 1);
-            if ($this->filterImageFiles($image)) {
+            if (Helper::filterFilesByMimeType($image, 'image')) {
                 $imageArray[1] = $image;
             }
         }
 
         $this->view->assign('imageDownload', $imageArray);
-    }
-
-    /**
-     * Filters an image file based on its mimetype.
-     *
-     * This method checks if the provided image array contains a 'mimetype' key and
-     * verifies if the mimetype is one of the supported image types defined in the class constant IMAGE_MIMETYPES.
-     *
-     * @param mixed $image The image array to filter
-     *
-     * @return bool True if the image mimetype is supported, false otherwise
-     */
-    private function filterImageFiles($image): bool
-    {
-        if (is_array($image) && isset($image['mimetype'])) {
-            return in_array($image['mimetype'], self::IMAGE_MIMETYPES);
-        }
-        return false;
     }
 
     /**

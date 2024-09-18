@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\DocumentAnnotation;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\Document;
@@ -637,15 +638,17 @@ class PageViewController extends AbstractController
                 $files = $physicalStructureInfo['files'];
                 if (!empty($files[$fileGrpImages])) {
                     $file = $specificDoc->getFileInfo($files[$fileGrpImages]);
-                    $image['url'] = $file['location'];
-                    $image['mimetype'] = $file['mimeType'];
+                    if (Helper::filterFilesByMimeType($file, 'image', 'mimeType')) {
+                        $image['url'] = $file['location'];
+                        $image['mimetype'] = $file['mimeType'];
 
-                    // Only deliver static images via the internal PageViewProxy.
-                    // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
-                    if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
-                        $this->configureProxyUrl($image['url']);
+                        // Only deliver static images via the internal PageViewProxy.
+                        // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
+                        if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
+                            $this->configureProxyUrl($image['url']);
+                        }
+                        break;
                     }
-                    break;
                 } else {
                     $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
                 }
@@ -657,15 +660,17 @@ class PageViewController extends AbstractController
                 $files = $physicalStructureInfo['files'];
                 if (!empty($files[$fileGrpImages])) {
                     $file = $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpImages]);
-                    $image['url'] = $file['location'];
-                    $image['mimetype'] = $file['mimeType'];
+                    if (Helper::filterFilesByMimeType($file, 'image', 'mimeType')) {
+                        $image['url'] = $file['location'];
+                        $image['mimetype'] = $file['mimeType'];
 
-                    // Only deliver static images via the internal PageViewProxy.
-                    // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
-                    if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
-                        $this->configureProxyUrl($image['url']);
+                        // Only deliver static images via the internal PageViewProxy.
+                        // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
+                        if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
+                            $this->configureProxyUrl($image['url']);
+                        }
+                        break;
                     }
-                    break;
                 } else {
                     $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
                 }
