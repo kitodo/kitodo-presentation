@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
-
 /**
  * Abstract controller class for most of the plugin controller.
  *
@@ -101,7 +100,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * Initialize the plugin controller
      *
      * @access protected
-     * 
+     *
      * @param RequestInterface $request the HTTP request
      *
      * @return void

@@ -18,7 +18,7 @@ if (!defined('TYPO3')) {
 return [
     'newTenantModule' => [
         'extensionName'         => 'Dlf',
-        'parent'                => 'tools', 
+        'parent'                => 'tools',
         'position'              => 'bottom',
         'access'                => 'admin',
         'labels'                => 'LLL:EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf',

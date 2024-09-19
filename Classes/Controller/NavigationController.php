@@ -35,7 +35,7 @@ class NavigationController extends AbstractController
      *
      * @return ResponseInterface the response
      */
-    public function pageSelectAction(PageSelectForm $pageSelectForm = NULL): ResponseInterface
+    public function pageSelectAction(PageSelectForm $pageSelectForm = null): ResponseInterface
     {
         if ($pageSelectForm) {
             $uri = $this->uriBuilder->reset()

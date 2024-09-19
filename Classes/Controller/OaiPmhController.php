@@ -301,7 +301,7 @@ class OaiPmhController extends AbstractController
 
         $this->view->assign('parameters', $this->parameters);
         $this->view->assign('error', $this->error);
-        
+
         return $this->htmlResponse();
     }
 

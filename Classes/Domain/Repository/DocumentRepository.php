@@ -173,7 +173,7 @@ class DocumentRepository extends Repository
         $constraints = [];
 
         if ($settings['documentSets'] ?? false) {
-            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', ((string)$settings['documentSets'])));
+            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', ((string) $settings['documentSets'])));
         }
 
         if (isset($settings['excludeOther']) && (int) $settings['excludeOther'] === 0) {

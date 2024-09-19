@@ -2,6 +2,7 @@
 
 namespace Kitodo\Dlf\Common\Solr;
 
+use Exception;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
@@ -326,13 +327,13 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @param QueryInterface $query the query
      *
-     * @throws \Exception not implemented
+     * @throws Exception not implemented
      *
      * @return void
      */
     public function setQuery(QueryInterface $query): void
     {
-        throw new \Exception("setQuery not supported on SolrSearch instance");
+        throw new Exception("setQuery not supported on SolrSearch instance");
     }
 
     /**

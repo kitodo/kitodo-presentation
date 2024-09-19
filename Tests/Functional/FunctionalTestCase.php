@@ -176,7 +176,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $siteConfigPath = $this->instancePath . '/typo3conf/sites/' . $identifier;
         @mkdir($siteConfigPath, 0775, true);
         file_put_contents($siteConfigPath . '/config.yaml', Yaml::dump($siteConfig));
-        
+
         // refresh site cache (otherwise site config is not found)
         $finder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
         $finder->getAllSites(false); // useCache = false
