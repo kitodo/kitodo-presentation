@@ -386,7 +386,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * without using a constructor.
      *
      * @access public
-     * 
+     *
      * @param RequestInterface $request the request
      *
      * @return ResponseInterface the response
