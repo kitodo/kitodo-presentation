@@ -16,11 +16,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\StorageRepository;
@@ -35,7 +37,7 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
  * @subpackage dlf
  * @access public
  */
-class Embedded3dViewer implements MiddlewareInterface
+class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface 
 {
     use LoggerAwareTrait;
 
@@ -62,6 +64,8 @@ class Embedded3dViewer implements MiddlewareInterface
         if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/embedded3dviewer')) {
             return $response;
         }
+
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
         if (empty($parameters['model'])) {
             return $this->warningResponse('Model url is missing.', $request);
