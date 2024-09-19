@@ -960,9 +960,12 @@ class Helper
     {
         // Retrieves MIME types from the TYPO3 Core MimeTypeCollection
         $mimeTypeCollection = GeneralUtility::makeInstance(MimeTypeCollection::class);
-        $mimeTypes = array_filter($mimeTypeCollection->getMimeTypes(), function($mimeType) use ($category) {
-            return strpos($mimeType, $category . '/') === 0;
-        });
+        $mimeTypes = array_filter(
+            $mimeTypeCollection->getMimeTypes(),
+            function ($mimeType) use ($category) {
+                return strpos($mimeType, $category . '/') === 0;
+            }
+        );
 
         if (is_array($file) && isset($file[$mimeTypeKey])) {
             return in_array($file[$mimeTypeKey], $mimeTypes);
