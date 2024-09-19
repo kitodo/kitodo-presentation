@@ -166,8 +166,8 @@ class MetadataController extends AbstractController
                     // NOTE: Labels are to be escaped in Fluid template
 
                     $metadata[$i][$name] = is_array($value)
-                        ? implode($this->settings['separator'], $value)
-                        : $value;
+                        ? $value
+                        : explode($this->settings['separator'], $value);
 
                     if ($metadata[$i][$name] === 'Array') {
                         $metadata[$i][$name] = [];
@@ -431,9 +431,9 @@ class MetadataController extends AbstractController
      */
     private function parseType(int $i, array &$metadata) : void
     {
-        $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type']);
+        $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type'][0]);
         if ($structure) {
-            $metadata[$i]['type'] = $structure->getLabel();
+            $metadata[$i]['type'][0] = $structure->getLabel();
         }
     }
 
