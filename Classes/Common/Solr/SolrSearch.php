@@ -809,7 +809,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             'score' => 'desc',
             'year_sorting' => 'asc',
             'title_sorting' => 'asc',
-            'volume' => 'asc'
+            'volume_sorting' => 'asc'
         ];
     }
 
