@@ -37,7 +37,7 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
  * @subpackage dlf
  * @access public
  */
-class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface 
+class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
 {
     use LoggerAwareTrait;
 
