@@ -84,12 +84,14 @@ Build/Test/runTests.sh -w  # Watch mode
 Functional tests may only be run in Docker as they require more infrastructure to be set up.
 
 ```bash
+Build/Test/runTests.sh -s functional
 Build/Test/runTests.sh -s functional -w  # Watch mode
 ```
 
 To learn about available options (e.g., to select the PHP version), check the usage info:
 
 ```bash
+Build/Test/runTests.sh -h
 ```
 
 You may also interact with the Docker containers directly:
