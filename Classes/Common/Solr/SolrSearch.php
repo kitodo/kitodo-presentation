@@ -827,7 +827,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             'score' => 'desc',
             'year_sorting' => 'asc',
             'title_sorting' => 'asc',
-            'volume' => 'asc'
+            'volume_sorting' => 'asc'
         ];
     }
 
@@ -878,7 +878,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     private function translateLanguageCode(&$doc): void
     {
-        if (isset($doc['metadata']) && array_key_exists('language', $doc['metadata'])) {
+        if (is_array($doc['metadata']) && array_key_exists('language', $doc['metadata'])) {
             foreach($doc['metadata']['language'] as $indexName => $language) {
                 $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
             }

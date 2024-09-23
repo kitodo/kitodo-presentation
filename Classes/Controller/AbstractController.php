@@ -20,6 +20,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -117,6 +118,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
         $this->viewData = [
             'pageUid' => $this->pageUid,
             'uniqueId' => uniqid(),
@@ -135,6 +138,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function loadDocument(int $documentId = 0): void
     {
+        // Sanitize FlexForm settings to avoid later casting.
+        $this->sanitizeSettings();
+
         // Get document ID from request data if not passed as parameter.
         if ($documentId === 0 && !empty($this->requestData['id'])) {
             $documentId = $this->requestData['id'];
@@ -323,7 +329,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function setDefaultIntSetting(string $setting, int $value): void
     {
-        if (empty($this->settings[$setting])) {
+        if (!array_key_exists($setting, $this->settings) || empty($this->settings[$setting])) {
             $this->settings[$setting] = $value;
             $this->logger->warning('Setting "' . $setting . '" not set, using default value "' . $value . '". Probably FlexForm for controller "' . get_class($this) . '" is not read.');
         } else {
