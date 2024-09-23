@@ -107,15 +107,9 @@ class MetadataController extends AbstractController
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return;
-        } else {
-            // Set default values if not set.
-            $this->setDefault('rootline', 0);
-            $this->setDefault('originalIiifMetadata', 0);
-            $this->setDefault('displayIiifDescription', 1);
-            $this->setDefault('displayIiifRights', 1);
-            $this->setDefault('displayIiifLinks', 1);
-            $this->setPage();
         }
+
+        $this->setPage();
 
         $this->currentDocument = $this->document->getCurrentDocument();
         $this->useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
@@ -172,15 +166,17 @@ class MetadataController extends AbstractController
                     // NOTE: Labels are to be escaped in Fluid template
 
                     $metadata[$i][$name] = is_array($value)
-                        ? implode($this->settings['separator'], $value)
-                        : $value;
+                        ? $value
+                        : explode($this->settings['separator'], $value);
 
-                    if ($metadata[$i][$name] === 'Array') {
+                    // PHPStan error
+                    // I don't understand what this code does, so I take it away until author can fix it
+                    /*if ($metadata[$i][$name][0] === 'Array') {
                         $metadata[$i][$name] = [];
                         foreach ($value as $subKey => $subValue) {
                             $metadata[$i][$name][$subKey] = $subValue;
                         }
-                    }
+                    }*/
 
                     $this->parseMetadata($i, $name, $value, $metadata);
 
@@ -528,22 +524,5 @@ class MetadataController extends AbstractController
             }
         }
         return $metadata;
-    }
-
-    /**
-     * Sets default value for setting if not yet set.
-     *
-     * @access private
-     *
-     * @param string $setting name of setting
-     * @param int $value 0 or 1
-     *
-     * @return void
-     */
-    private function setDefault(string $setting, int $value): void
-    {
-        if (!isset($this->settings[$setting])) {
-            $this->settings[$setting] = $value;
-        }
     }
 }

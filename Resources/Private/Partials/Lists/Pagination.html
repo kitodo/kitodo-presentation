@@ -3,10 +3,10 @@
     <f:if condition="{pagination.previousPageNumberG} && {pagination.previousPageNumberG} >= {pagination.firstPageNumber}">
         <f:then>
             <li class="first">
-                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': 1}" arguments="{searchParameter: lastSearch}" title="1">1</f:link.action>
+                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': 1, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="1">1</f:link.action>
             </li>
             <li class="previous">
-                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.previousPageNumber}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'pagination.previous')}">{f:translate(key: 'prevPage')}</f:link.action>
+                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.previousPageNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'pagination.previous')}">{f:translate(key: 'prevPage')}</f:link.action>
             </li>
         </f:then>
         <f:else>
@@ -43,7 +43,7 @@
                     </f:case>
                     <f:defaultCase>
                         <li class="{f:if(condition: '{page.label} == {paginator.currentPageNumber}', then:'current')}">
-                            <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': page.startRecordNumber}" arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
+                            <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': page.startRecordNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
                         </li>
                     </f:defaultCase>
                 </f:switch>
@@ -53,10 +53,10 @@
     <f:if condition="{pagination.nextPageNumberG} && {pagination.nextPageNumberG} <= {pagination.lastPageNumber}">
         <f:then>
             <li class="next">
-                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.nextPageNumber}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'nextPage')}">{f:translate(key: 'nextPage')}</f:link.action>
+                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.nextPageNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'nextPage')}">{f:translate(key: 'nextPage')}</f:link.action>
             </li>
             <li class="last">
-                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.lastPageNumberG}" arguments="{searchParameter: lastSearch}" title="{pagination.lastPageNumber}">{pagination.lastPageNumber}</f:link.action>
+                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.lastPageNumberG, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{pagination.lastPageNumber}">{pagination.lastPageNumber}</f:link.action>
             </li>
         </f:then>
         <f:else>

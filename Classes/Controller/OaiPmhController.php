@@ -645,8 +645,8 @@ class OaiPmhController extends AbstractController
             $this->logger->error('Apache Solr not available');
             return $documentSet;
         }
-        if ((int) $this->settings['solr_limit'] > 0) {
-            $solr->limit = (int) $this->settings['solr_limit'];
+        if ($this->settings['solr_limit'] > 0) {
+            $solr->limit = $this->settings['solr_limit'];
         }
         // We only care about the UID in the results and want them sorted
         $parameters = [
@@ -785,11 +785,13 @@ class OaiPmhController extends AbstractController
      */
     protected function generateOutputForDocumentList(array $documentListSet)
     {
-        $documentsToProcess = array_splice($documentListSet['elements'], 0, (int) $this->settings['limit']);
-        if (empty($documentsToProcess)) {
+        // check whether any result elements are available
+        if (empty($documentListSet) || empty($documentListSet['elements'])) {
             $this->error = 'noRecordsMatch';
             return [];
         }
+        // consume result elements from list to implement pagination logic of resumptionToken
+        $documentsToProcess = array_splice($documentListSet['elements'], 0, $this->settings['limit']);
         $verb = $this->parameters['verb'];
 
         $documents = $this->documentRepository->getOaiDocumentList($documentsToProcess);
