@@ -39,7 +39,8 @@
     "caseyamcl/phpoaipmh": "^3.3.1",
     "slub/php-mods-reader": "^0.4.0",
     "ubl/php-iiif-prezi-reader": "0.3.0",
-    "solarium/solarium": "5.2 - 6.3"
+    "solarium/solarium": "5.2 - 6.3",
+	"symfony/process": "^5.4.40"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.11.10",

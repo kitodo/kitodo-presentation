@@ -1,6 +1,5 @@
 # Adopted/reduced from https://github.com/TYPO3/typo3/blob/608f238a8b7696a49a47e1e73ce8e2845455f0f5/Build/testing-docker/local/docker-compose.yml
 
-version: "2.3"
 services:
   mysql:
     image: docker.io/mysql:${MYSQL_VERSION}
