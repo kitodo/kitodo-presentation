@@ -85,7 +85,7 @@ class FeedsController extends AbstractController
             || GeneralUtility::inList($this->settings['collections'], $requestData['collection'])
         ) {
 
-            $documents = $this->documentRepository->findAllByCollectionsLimited(GeneralUtility::intExplode(',', $requestData['collection'], true), $this->settings['limit']);
+            $documents = $this->documentRepository->findAllByCollectionsLimited(GeneralUtility::intExplode(',', $requestData['collection'] ?? "", true), $this->settings['limit']);
 
             foreach ($documents as $document) {
 
