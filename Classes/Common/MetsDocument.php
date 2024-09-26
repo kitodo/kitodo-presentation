@@ -1351,17 +1351,16 @@ final class MetsDocument extends AbstractDocument
                 }
             }
 
-            // Get all file groups.
-            $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
-            if (!empty($fileGrps)) {
-                // Build concordance for configured USE attributes.
-                foreach ($fileGrps as $fileGrp) {
-                    if (in_array((string) $fileGrp['USE'], $useGrps)) {
+            foreach ($useGrps as $useGrp) {
+                // Perform XPath query for each configured USE attribute
+                $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGrp']");
+                if (!empty($fileGrps)) {
+                    foreach ($fileGrps as $fileGrp) {
                         foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
                             $fileId = (string) $file->attributes()->ID;
-                            $this->fileGrps[$fileId] = (string) $fileGrp['USE'];
+                            $this->fileGrps[$fileId] = $useGrp;
                             $this->fileInfos[$fileId] = [
-                                'fileGrp' => (string) $fileGrp['USE'],
+                                'fileGrp' => $useGrp,
                                 'admId' => (string) $file->attributes()->ADMID,
                                 'dmdId' => (string) $file->attributes()->DMDID,
                             ];
