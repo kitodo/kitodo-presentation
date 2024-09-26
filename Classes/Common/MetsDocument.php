@@ -1336,20 +1336,19 @@ final class MetsDocument extends AbstractDocument
             // Get configured USE attributes.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
             $useGrps = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
-            if (!empty($extConf['fileGrpThumbs'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']));
-            }
-            if (!empty($extConf['fileGrpDownload'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']));
-            }
-            if (!empty($extConf['fileGrpFulltext'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']));
-            }
-            if (!empty($extConf['fileGrpAudio'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']));
-            }
-            if (!empty($extConf['fileGrpScore'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpScore']));
+            
+            $configKeys = [
+                'fileGrpThumbs',
+                'fileGrpDownload',
+                'fileGrpFulltext',
+                'fileGrpAudio',
+                'fileGrpScore'
+            ];
+            
+            foreach ($configKeys as $key) {
+                if (!empty($extConf[$key])) {
+                    $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf[$key]));
+                }
             }
 
             // Get all file groups.
