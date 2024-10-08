@@ -18,6 +18,7 @@ use InvalidArgumentException;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
@@ -44,7 +45,7 @@ abstract class AbstractDlfValidator extends AbstractValidator
         $this->valueClassName = $valueClassName;
     }
 
-    public function validate($value)
+    public function validate($value): Result
     {
         if (!$value instanceof $this->valueClassName) {
             $this->logger->debug('Value must be an instance of ' . $this->valueClassName . '.');
