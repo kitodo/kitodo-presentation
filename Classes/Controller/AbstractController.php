@@ -294,6 +294,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->setDefaultIntSetting('displayIiifLinks', 1);
         }
 
+        if ($this instanceof NavigationController) {
+            $this->setDefaultIntSetting('pageStep', 5);
+        }
+
         if ($this instanceof OaiPmhController) {
             $this->setDefaultIntSetting('limit', 5);
             $this->setDefaultIntSetting('solr_limit', 50000);
