@@ -307,6 +307,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->setDefaultIntSetting('displayIiifLinks', 1);
         }
 
+        if ($this instanceof NavigationController) {
+            $this->setDefaultIntSetting('pageStep', 5);
+        }
+
         if ($this instanceof OaiPmhController) {
             $this->setDefaultIntSetting('limit', 5);
             $this->setDefaultIntSetting('solr_limit', 50000);
@@ -535,11 +539,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     private function getDocumentByUid(int $documentId)
     {
+        // TODO: implement multiView as it is in getDocumentByUrl
         $doc = null;
         $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
 
         if ($this->document) {
             $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
+            // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
+            $this->documentArray[] = $doc;
         } else {
             $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
