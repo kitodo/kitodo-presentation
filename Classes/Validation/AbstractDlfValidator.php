@@ -19,6 +19,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
@@ -45,7 +46,12 @@ abstract class AbstractDlfValidator extends AbstractValidator
         $this->valueClassName = $valueClassName;
     }
 
-    public function validate($value)
+    /**
+     * @param mixed $value The value to validate
+     *
+     * @return Result
+     */
+    public function validate(mixed $value): Result
     {
         if (!$value instanceof $this->valueClassName) {
             $this->logger->debug('Value must be an instance of ' . $this->valueClassName . '.');

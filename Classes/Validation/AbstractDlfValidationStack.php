@@ -95,13 +95,13 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
     /**
      * Check if value is valid across all validation classes of validation stack.
      *
-     * @param $value The value of defined class name.
+     * @param object $value The value of defined class name.
      *
      * @throws InvalidArgumentException
      *
      * @return void
      */
-    protected function isValid($value): void
+    protected function isValid(object $value): void
     {
         if (!$value instanceof $this->valueClassName) {
             $this->logger->error('Value must be an instance of ' . $this->valueClassName . '.');
