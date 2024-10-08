@@ -40,7 +40,6 @@ abstract class AbstractDlfValidator extends AbstractValidator
      */
     public function __construct(string $valueClassName)
     {
-        parent::__construct();
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->valueClassName = $valueClassName;
     }
