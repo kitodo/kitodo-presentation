@@ -51,12 +51,7 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
         }
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return void
-     */
-    protected function isValid(mixed $value): void
+    protected function isValid($value): void
     {
         $svrl = $this->process($value);
         $this->addErrorsOfSvrl($svrl);
