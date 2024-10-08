@@ -131,7 +131,7 @@ class TableOfContentsController extends AbstractController
         $entryArray['doNotLinkIt'] = 1;
         $entryArray['ITEM_STATE'] = 'NO';
 
-        $this->buildMenuLinks($entryArray, $entry['id'], $entry['points'], $entry['targetUid']);
+        $this->buildMenuLinks($entryArray, $entry['id'], $entry['points'] ?? null, $entry['targetUid'] ?? null);
 
         // Set "ITEM_STATE" to "CUR" if this entry points to current page.
         if (in_array($entry['id'], $this->activeEntries)) {
@@ -148,7 +148,7 @@ class TableOfContentsController extends AbstractController
             // 3. Current menu node has no corresponding images
             if (
                 $entryArray['ITEM_STATE'] == 'CUR'
-                || is_string($entry['points'])
+                || (array_key_exists('points', $entry) && is_string($entry['points']))
                 || empty($this->document->getCurrentDocument()->smLinks['l2p'][$entry['id']])
             ) {
                 $entryArray['_SUB_MENU'] = [];
@@ -241,7 +241,7 @@ class TableOfContentsController extends AbstractController
         $doc = $this->document->getCurrentDocument();
         if (
             $doc instanceof MetsDocument
-            && ($entry['points'] === $doc->parentHref || $this->isMultiElement($entry['type']))
+            && ((array_key_exists('points', $entry) && $entry['points'] === $doc->parentHref) || $this->isMultiElement($entry['type']))
             && !empty($this->document->getPartof())
         ) {
             unset($entry['points']);
