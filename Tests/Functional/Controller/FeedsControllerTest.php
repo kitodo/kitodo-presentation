@@ -36,7 +36,7 @@ class FeedsControllerTest extends AbstractControllerTest
     {
         $GLOBALS['LANG'] = LanguageService::create('default');
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'collections' => '1',
             'limit' => 1
         ];
@@ -49,10 +49,9 @@ class FeedsControllerTest extends AbstractControllerTest
             'collection' => '1'
         ];
         $request = $this->setUpRequest('main', $arguments);
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             1003 – NEW: 6 Fugues - Go. S. 317
             feedMeta:0

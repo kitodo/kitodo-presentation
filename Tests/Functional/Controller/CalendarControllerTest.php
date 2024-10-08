@@ -36,7 +36,7 @@ class CalendarControllerTest extends AbstractControllerTest
      */
     public function canCalendarAction()
     {
-        $settings = ['solrcore' => $this->currentSolrUid];
+        $settings = ['solrcore' => $this->currentCoreName];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             calendarData:<f:for each="{calendarData}" as="month">
                 <f:for each="{month.week}" as="week"><f:for each="{week}" as="day"><f:if condition="{day.issues}">
@@ -49,10 +49,9 @@ class CalendarControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(CalendarController::class, $settings, $templateHtml);
         $arguments = ['id' => 2001];
         $request = $this->setUpRequest('calendar', $arguments);
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             calendarData:
                 xxx[01:issue 1]x[03:issue 2]x|xxxxxxx|xxxxxxx|xxxxxxx|xxxxxxx|xxxxxxx|
@@ -77,11 +76,10 @@ class CalendarControllerTest extends AbstractControllerTest
             'page' => '2',
         ];
         $controller = $this->setUpController(CalendarController::class, $settings, '');
-        $response = $this->getResponse();
 
         $request = $this->setUpRequest('main');
         $this->expectException(StopActionException::class);
-        $controller->processRequest($request, $response);
+        $response = $controller->processRequest($request);
     }
 
     /**
@@ -89,7 +87,7 @@ class CalendarControllerTest extends AbstractControllerTest
      */
     public function canYearsAction()
     {
-        $settings = ['solrcore' => $this->currentSolrUid];
+        $settings = ['solrcore' => $this->currentCoreName];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             documentId: {documentId}
             allYearDocTitle: {allYearDocTitle}
@@ -98,10 +96,9 @@ class CalendarControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(CalendarController::class, $settings, $templateHtml);
         $arguments = ['id' => "2002"];
         $request = $this->setUpRequest('years', $arguments);
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             documentId: 2002
             allYearDocTitle: Newspaper for testing purposes

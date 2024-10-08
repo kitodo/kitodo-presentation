@@ -39,7 +39,7 @@ class CollectionControllerTest extends AbstractControllerTest {
     public function canListAction()
     {
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'collections' => '1',
             'dont_show_single' => 'some_value',
             'randomize' => ''
@@ -47,11 +47,10 @@ class CollectionControllerTest extends AbstractControllerTest {
         $templateHtml = '<html><f:for each="{collections}" as="item">{item.collection.indexName}</f:for></html>';
         $subject = $this->setUpController(CollectionController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('list', ['id' => 1]);
-        $response = $this->getResponse();
 
-        $subject->processRequest($request, $response);
+        $response = $subject->processRequest($request);
 
-        $actual = $response->getContent();
+        $actual = $response->getBody()->getContents();
         $expected = '<html>test-collection</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -62,16 +61,15 @@ class CollectionControllerTest extends AbstractControllerTest {
     public function canListActionForwardToShow()
     {
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'collections' => '1',
             'randomize' => ''
         ];
         $subject = $this->setUpController(CollectionController::class, $settings);
         $request = $this->setUpRequest('list', ['id' => 1]);
-        $response = $this->getResponse();
 
         $this->expectException(StopActionException::class);
-        $subject->processRequest($request, $response);
+        $response = $subject->processRequest($request);
     }
 
     /**
@@ -80,20 +78,20 @@ class CollectionControllerTest extends AbstractControllerTest {
     public function canShowAction()
     {
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'collections' => '1',
             'dont_show_single' => 'some_value',
-            'randomize' => ''
+            'randomize' => '',
+            'storagePid' => 0
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"><f:for each="{documents.solrResults.documents}" as="page" iteration="docIterator">{page.title},</f:for></html>';
 
         $subject = $this->setUpController(CollectionController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('show', ['collection' => '1']);
-        $response = $this->getResponse();
 
-        $subject->processRequest($request, $response);
-        $actual = $response->getContent();
-        $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,Beigefügte Quellenbeschreibung,Beigefügtes Inhaltsverzeichnis,</html>';
+        $response = $subject->processRequest($request);
+        $actual = $response->getBody()->getContents();
+        $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,</html>';
         $this->assertEquals($expected, $actual);
 
     }
@@ -104,16 +102,15 @@ class CollectionControllerTest extends AbstractControllerTest {
     public function canShowSortedAction()
     {
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'collections' => '1',
             'dont_show_single' => 'some_value',
             'randomize' => ''
         ];
         $subject = $this->setUpController(CollectionController::class, $settings);
         $request = $this->setUpRequest('showSorted');
-        $response = $this->getResponse();
 
         $this->expectException(StopActionException::class);
-        $subject->processRequest($request, $response);
+        $response = $subject->processRequest($request);
     }
 }

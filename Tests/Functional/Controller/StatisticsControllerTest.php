@@ -36,7 +36,7 @@ class StatisticsControllerTest extends AbstractControllerTest {
         $GLOBALS['LANG'] = LanguageService::create('default');
 
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'collections' => '1',
             'storagePid' => '0',
             'description' => 'There are ###TITLES### and ###VOLUMES###.'
@@ -44,11 +44,10 @@ class StatisticsControllerTest extends AbstractControllerTest {
         $templateHtml = '<html>{content}</html>';
 
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
         $controller = $this->setUpController(StatisticsController::class, $settings, $templateHtml);
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>There are 3 titles and 3 volumes.</html>';
         $this->assertEquals($expected, $actual);
     }

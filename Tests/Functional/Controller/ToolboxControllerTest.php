@@ -43,10 +43,9 @@ class ToolboxControllerTest extends AbstractControllerTest
         $templateHtml = '<html>fulltextDownload:{fulltextDownload}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>fulltextDownload:1</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -67,10 +66,9 @@ class ToolboxControllerTest extends AbstractControllerTest
         $templateHtml = '<html>fulltext:{fulltext},activateFullTextInitially:{activateFullTextInitially}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>fulltext:1,activateFullTextInitially:1</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -94,10 +92,9 @@ class ToolboxControllerTest extends AbstractControllerTest
         </html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>imageDownload:
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000001.tif.large.jpg (JPG)
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000002.tif.large.jpg (JPG)
@@ -121,10 +118,9 @@ class ToolboxControllerTest extends AbstractControllerTest
         $templateHtml = '<html>imageManipulation:{imageManipulation},parentContainer:{parentContainer}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>imageManipulation:1,parentContainer:.parent-container</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -139,7 +135,7 @@ class ToolboxControllerTest extends AbstractControllerTest
             'double' => 1
         ];
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'library' => 1,
             'tools' => 'tx_dlf_annotationtool',
             'limit' => 1
@@ -147,10 +143,9 @@ class ToolboxControllerTest extends AbstractControllerTest
         $templateHtml = '<html>double:{double}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>double:1</html>';
         $this->assertEquals($expected, $actual);
 
@@ -175,14 +170,13 @@ class ToolboxControllerTest extends AbstractControllerTest
         </html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>pageLinks:
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000001.tif.pdf
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000002.tif.pdf
-            workLink:http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/full.pdf
+            workLink:http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000002.tif.pdf
         </html>';
         $this->assertEquals($expected, $actual);
     }
@@ -208,20 +202,19 @@ class ToolboxControllerTest extends AbstractControllerTest
             'documentIdUrlSchema' => 'https://host.de/items/*id*/record',
         ];
         $templateHtml = '<html>
-            LABEL_QUERY_URL:{searchInDocument.LABEL_QUERY_URL}
-            LABEL_START:{searchInDocument.LABEL_START}
-            LABEL_ID:{searchInDocument.LABEL_ID}
-            LABEL_PAGE_URL:{searchInDocument.LABEL_PAGE_URL}
-            LABEL_HIGHLIGHT_WORD:{searchInDocument.LABEL_HIGHLIGHT_WORD}
-            LABEL_ENCRYPTED:{searchInDocument.LABEL_ENCRYPTED}
-            CURRENT_DOCUMENT:{searchInDocument.CURRENT_DOCUMENT}
+            LABEL_QUERY_URL:{searchInDocument.labelQueryUrl}
+            LABEL_START:{searchInDocument.labelStart}
+            LABEL_ID:{searchInDocument.labelId}
+            LABEL_PAGE_URL:{searchInDocument.labelPageUrl}
+            LABEL_HIGHLIGHT_WORD:{searchInDocument.labelHighlightWord}
+            LABEL_ENCRYPTED:{searchInDocument.labelEncrypted}
+            CURRENT_DOCUMENT:{searchInDocument.documentId}
         </html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             LABEL_QUERY_URL:queryInputName
             LABEL_START:startInputName

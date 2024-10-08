@@ -43,10 +43,9 @@ class PageGridControllerTest extends AbstractControllerTest
         </html>';
         $controller = $this->setUpController(PageGridController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             pageGridEntries:2
             pageGridEntries[0]: - , http://example.com/mets_audio/jpegs/00000001.tif.thumbnail.jpg

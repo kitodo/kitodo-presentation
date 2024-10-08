@@ -43,14 +43,13 @@ class PageViewControllerTest extends AbstractControllerTest
                 images:<f:for each="{images}" as="image">
                     {image.url}
                     {image.mimetype}</f:for>
-                viewerConfiguration:{viewerConfiguration}
+                viewerConfiguration:<f:format.raw>{viewerConfiguration}</f:format.raw>
             </html>';
-        $controller = $this->setUpController(PageViewController::class, ['solrcore' => $this->currentSolrUid], $templateHtml);
+        $controller = $this->setUpController(PageViewController::class, ['solrcore' => $this->currentCoreName], $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
                 docId:2001
                 page:2
@@ -58,18 +57,10 @@ class PageViewControllerTest extends AbstractControllerTest
                     http://example.com/mets_audio/jpegs/00000002.tif.large.jpg
                     image/jpeg
                 viewerConfiguration:$(document).ready(function() {
-                if (dlfUtils.exists(dlfViewer)) {
-                    tx_dlf_viewer = new dlfViewer({
-                        controls: [&quot;&quot;],
-                        div: &quot;&quot;,
-                        progressElementId: &quot;&quot;,
-                        images: [{&quot;url&quot;:&quot;http:\/\/example.com\/mets_audio\/jpegs\/00000002.tif.large.jpg&quot;,&quot;mimetype&quot;:&quot;image\/jpeg&quot;}],
-                        fulltexts: [[]],
-                        annotationContainers: [[]],
-                        useInternalProxy: 0
-                    });
-                }
-            });
+                    if (dlfUtils.exists(dlfViewer)) {
+                        tx_dlf_viewer = new dlfViewer({"controls":[""],"div":null,"progressElementId":null,"images":[{"url":"http:\/\/example.com\/mets_audio\/jpegs\/00000002.tif.large.jpg","mimetype":"image\/jpeg"}],"fulltexts":[[]],"score":[],"annotationContainers":[[]],"measureCoords":[],"useInternalProxy":0,"verovioAnnotations":[],"currentMeasureId":"","measureIdLinks":[]});
+                    }
+                });
             </html>';
         $this->assertEquals($expected, $actual);
     }

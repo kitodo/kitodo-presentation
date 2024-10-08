@@ -34,7 +34,7 @@ class MetadataControllerTest extends AbstractControllerTest
     public function canMainAction()
     {
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'storagePid' => 0
         ];
         $templateHtml = '<html>
@@ -44,10 +44,9 @@ class MetadataControllerTest extends AbstractControllerTest
 
         $controller = $this->setUpController(MetadataController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             mets_label:10 Keyboard pieces - Go. S. 658
         </html>';

@@ -13,6 +13,9 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\SearchController;
+use TYPO3\CMS\Core\Session\UserSession;
+use TYPO3\CMS\Core\Session\UserSessionManager;
+use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -52,7 +55,7 @@ class SearchControllerTest extends AbstractControllerTest
             ]
         ];
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'extendedFields' => 'field1,field2,field3',
             'extendedSlotCount' => 1
         ];
@@ -61,13 +64,35 @@ class SearchControllerTest extends AbstractControllerTest
             currentDocument:{currentDocument.uid}
             searchFields:<f:for each="{searchFields}" as="field">{field},</f:for>
         </html>';
+
+        $uniqueSessionId = StringUtility::getUniqueId('test');
+        $currentTime = $GLOBALS['EXEC_TIME'];
+
+        // Main session backend setup
+        $userSession = UserSession::createNonFixated($uniqueSessionId);
+        $userSessionManagerMock = $this->createMock(UserSessionManager::class);
+        $userSessionManagerMock->method('createFromRequestOrAnonymous')->withAnyParameters()->willReturn($userSession);
+        $userSessionManagerMock->method('createAnonymousSession')->withAnyParameters()->willReturn($userSession);
+
+        // new session should be written
+        $sessionRecord = [
+            'ses_id' => 'newSessionId',
+            'ses_iplock' => '',
+            'ses_userid' => 0,
+            'ses_tstamp' => $currentTime,
+            'ses_data' => serialize(['foo' => 'bar']),
+            'ses_permanent' => 0,
+        ];
+        $userSessionToBePersisted = UserSession::createFromRecord($uniqueSessionId, $sessionRecord, true);
+        $userSessionToBePersisted->set('foo', 'bar');
+
         $controller = $this->setUpController(SearchController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main', $arguments);
-        $response = $this->getResponse();
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
+        $GLOBALS['TSFE']->fe_user->initializeUserSessionManager($userSessionManagerMock);
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             lastSearch:dateFrom:1800,dateTo:NOW,
             currentDocument:1001
@@ -94,7 +119,7 @@ class SearchControllerTest extends AbstractControllerTest
             'query' => '*'
         ];
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'storagePid' => 0,
             'facets' => 'type',
             'facetCollections' => '1'
@@ -106,13 +131,35 @@ class SearchControllerTest extends AbstractControllerTest
                 {menuEntry.field}
                 <f:for each="{menuEntry._SUB_MENU}" as="subMenuEntry"> {subMenuEntry.title}: {subMenuEntry.queryColumn.0}</f:for></f:for>
         </html>';
+
+        $uniqueSessionId = StringUtility::getUniqueId('test');
+        $currentTime = $GLOBALS['EXEC_TIME'];
+
+        // Main session backend setup
+        $userSession = UserSession::createNonFixated($uniqueSessionId);
+        $userSessionManagerMock = $this->createMock(UserSessionManager::class);
+        $userSessionManagerMock->method('createFromRequestOrAnonymous')->withAnyParameters()->willReturn($userSession);
+        $userSessionManagerMock->method('createAnonymousSession')->withAnyParameters()->willReturn($userSession);
+
+        // new session should be written
+        $sessionRecord = [
+            'ses_id' => 'newSessionId',
+            'ses_iplock' => '',
+            'ses_userid' => 0,
+            'ses_tstamp' => $currentTime,
+            'ses_data' => serialize(['foo' => 'bar']),
+            'ses_permanent' => 0,
+        ];
+        $userSessionToBePersisted = UserSession::createFromRecord($uniqueSessionId, $sessionRecord, true);
+        $userSessionToBePersisted->set('foo', 'bar');
+
         $controller = $this->setUpController(SearchController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main', $arguments);
-        $response = $this->getResponse();
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
+        $GLOBALS['TSFE']->fe_user->initializeUserSessionManager($userSessionManagerMock);
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             lastSearch:title:10 Keyboard pieces,
             currentDocument:1001
@@ -131,9 +178,8 @@ class SearchControllerTest extends AbstractControllerTest
     {
         $controller = $this->setUpController(SearchController::class, [], '');
         $request = $this->setUpRequest('search', []);
-        $response = $this->getResponse();
 
         $this->expectException(StopActionException::class);
-        $controller->processRequest($request, $response);
+        $response = $controller->processRequest($request);
     }
 }

@@ -38,11 +38,10 @@ class AudioPlayerControllerTest extends AbstractControllerTest
         $templateHtml = 'This template should be returned.';
         $controller = $this->setUpController(AudioPlayerController::class, [], $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
 
-        $controller->processRequest($request, $response);
+        $response = $controller->processRequest($request);
 
-        $actual = $response->getContent();
+        $actual = $response->getBody()->getContents();
         $expected = 'This template should be returned.';
         $this->assertEquals($expected, $actual);
     }

@@ -19,7 +19,6 @@ use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -63,6 +62,7 @@ abstract class AbstractControllerTest extends FunctionalTestCase
 
         $coreModel = new SolrCore();
         $coreModel->setIndexName($coreName);
+        $coreModel->setLabel($coreName);
         $this->solrCoreRepository->add($coreModel);
         $this->persistenceManager->persistAll();
         $this->currentSolrUid = $coreModel->getUid();
@@ -90,11 +90,6 @@ abstract class AbstractControllerTest extends FunctionalTestCase
         $controller->injectViewResolver($viewResolverMock);
         $controller->setSettingsForTest($settings);
         return $controller;
-    }
-
-    protected function getResponse(): Response
-    {
-        return $this->objectManager->get(Response::class);
     }
 
 }

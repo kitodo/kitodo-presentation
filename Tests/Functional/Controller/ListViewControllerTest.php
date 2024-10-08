@@ -44,7 +44,7 @@ class ListViewControllerTest extends AbstractControllerTest
             ]
         ];
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => $this->currentCoreName,
             'storagePid' => 2,
             'dont_show_single' => 'some_value',
             'randomize' => ''
@@ -60,16 +60,14 @@ class ListViewControllerTest extends AbstractControllerTest
             </html>';
         $request = $this->setUpRequest('main', $arguments);
         $controller = $this->setUpController(ListViewController::class, $settings, $templateHtml);
-        $response =  $this->getResponse();
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
 
-        $controller->processRequest($request, $response);
-        $actual =  $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual =  $response->getBody()->getContents();
         $expected = '<html xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
                 uniqueId-length: 13
                 page: 1
                 double: 0
-                widgetPage: 1
                 lastSearch.query: 10 Keyboard pieces
                 numResults: 1
             </html>';

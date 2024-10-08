@@ -43,14 +43,13 @@ class NavigationControllerTest extends AbstractControllerTest
                 numPages: {numPages}
                 pageOptions:<f:for each="{pageOptions}" as="entry">{entry},</f:for>
             </html>';
-        $controller = $this->setUpController(NavigationController::class, ['solrcore' => $this->currentSolrUid], $templateHtml);
+        $controller = $this->setUpController(NavigationController::class, ['solrcore' => $this->currentCoreName], $templateHtml);
         $request = $this->setUpRequest('main');
-        $response = $this->getResponse();
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
         $GLOBALS['TSFE']->fe_user->id = 1;
 
-        $controller->processRequest($request, $response);
-        $actual = $response->getContent();
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
                 pageSteps: 0
                 numPages: 76
@@ -69,11 +68,10 @@ class NavigationControllerTest extends AbstractControllerTest
         $pageSelectForm->setPage(2);
         $pageSelectForm->setDouble(false);
 
-        $controller = $this->setUpController(NavigationController::class, ['solrcore' => $this->currentSolrUid], '');
+        $controller = $this->setUpController(NavigationController::class, ['solrcore' => $this->currentCoreName], '');
         $request = $this->setUpRequest('pageSelect', ['pageSelectForm' => $pageSelectForm]);
-        $response = $this->getResponse();
 
         $this->expectException(StopActionException::class);
-        $controller->processRequest($request, $response);
+        $response = $controller->processRequest($request);
     }
 }
