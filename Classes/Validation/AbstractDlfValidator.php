@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Validation;
 
 use InvalidArgumentException;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
