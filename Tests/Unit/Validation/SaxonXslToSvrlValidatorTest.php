@@ -17,6 +17,7 @@ namespace Kitodo\Dlf\Tests\Unit\Validation;
 use InvalidArgumentException;
 use Kitodo\Dlf\Validation\SaxonXslToSvrlValidator;
 use ReflectionClass;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -41,10 +42,13 @@ class SaxonXslToSvrlValidatorTest extends UnitTestCase
         </svrl:schematron-output>
     SVRL;
 
+    private string $dlfExtensionPath;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->resetSingletonInstances = true;
+        $this->dlfExtensionPath = Environment::getExtensionsPath() . 'dlf';
     }
 
     public function testJarFileNotFound(): void
@@ -59,12 +63,12 @@ class SaxonXslToSvrlValidatorTest extends UnitTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("XSL Schematron file not found.");
         // It only checks if a file exists at the specified path, so we can use one of the test files.
-        new SaxonXslToSvrlValidator(["jar" => 'EXT:dlf/Tests/Fixtures/Format/alto.xml']);
+        new SaxonXslToSvrlValidator(["jar" => $this->dlfExtensionPath . '/Tests/Fixtures/Format/alto.xml']);
     }
 
     public function testValidation(): void
     {
-        $saxonXslToSvrlValidator = new SaxonXslToSvrlValidator(["jar" => 'EXT:dlf/Tests/Fixtures/Format/alto.xml', "xsl" => 'EXT:dlf/Tests/Fixtures/Format/alto.xml']);
+        $saxonXslToSvrlValidator = new SaxonXslToSvrlValidator(["jar" => $this->dlfExtensionPath . '/Tests/Fixtures/Format/alto.xml', "xsl" => $this->dlfExtensionPath . '/Tests/Fixtures/Format/alto.xml']);
         $reflection = new ReflectionClass($saxonXslToSvrlValidator);
 
         $result = $reflection->getProperty("result");
