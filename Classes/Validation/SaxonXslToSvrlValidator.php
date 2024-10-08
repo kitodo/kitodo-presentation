@@ -19,7 +19,6 @@ use Exception;
 use InvalidArgumentException;
 use Psr\Log\LoggerAwareInterface;
 use SimpleXMLElement;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -52,12 +51,24 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
         }
     }
 
-    protected function isValid($value)
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    protected function isValid(mixed $value): void
     {
         $svrl = $this->process($value);
         $this->addErrorsOfSvrl($svrl);
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return string
+     */
     protected function process(mixed $value): string
     {
         // using source from standard input
@@ -74,7 +85,11 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
     /**
      * Add errors of schematron output.
      *
+     * @param string $svrl
+     *
      * @throws InvalidArgumentException
+     *
+     * @return void
      */
     private function addErrorsOfSvrl(string $svrl): void
     {

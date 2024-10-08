@@ -52,7 +52,12 @@ class XmlSchemesValidator extends AbstractDlfValidator
         return $value->schemaValidateSource($xsd);
     }
 
-    protected function isValid($value): void
+    /**
+     * @param mixed $value
+     *
+     * @return void
+     */
+    protected function isValid(mixed $value): void
     {
         $this->enableErrorBuffer();
         if (!$this->isSchemeValid($value)) {
