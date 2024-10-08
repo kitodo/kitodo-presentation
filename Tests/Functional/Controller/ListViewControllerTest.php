@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\ListViewController;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 class ListViewControllerTest extends AbstractControllerTest
@@ -62,8 +63,14 @@ class ListViewControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(ListViewController::class, $settings, $templateHtml);
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
 
-        $response = $controller->processRequest($request);
-        $actual =  $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
                 uniqueId-length: 13
                 page: 1

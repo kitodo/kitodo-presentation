@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\PageViewController;
+use TYPO3\CMS\Core\Http\Response;
 
 class PageViewControllerTest extends AbstractControllerTest
 {
@@ -48,8 +49,14 @@ class PageViewControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(PageViewController::class, ['solrcore' => $this->currentCoreName], $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>
                 docId:2001
                 page:2

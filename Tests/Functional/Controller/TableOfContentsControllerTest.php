@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\TableOfContentsController;
+use TYPO3\CMS\Core\Http\Response;
 
 class TableOfContentsControllerTest extends AbstractControllerTest
 {
@@ -45,8 +46,14 @@ class TableOfContentsControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(TableOfContentsController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>
 manuscript – 10 Keyboard pieces - Go. S. 658
 

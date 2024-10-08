@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\ToolboxController;
+use TYPO3\CMS\Core\Http\Response;
 
 class ToolboxControllerTest extends AbstractControllerTest
 {
@@ -44,8 +45,14 @@ class ToolboxControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>fulltextDownload:1</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -67,8 +74,14 @@ class ToolboxControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>fulltext:1,activateFullTextInitially:1</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -93,8 +106,14 @@ class ToolboxControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>imageDownload:
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000001.tif.large.jpg (JPG)
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000002.tif.large.jpg (JPG)
@@ -119,8 +138,14 @@ class ToolboxControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>imageManipulation:1,parentContainer:.parent-container</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -144,8 +169,14 @@ class ToolboxControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>double:1</html>';
         $this->assertEquals($expected, $actual);
 
@@ -171,8 +202,14 @@ class ToolboxControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>pageLinks:
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000001.tif.pdf
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000002.tif.pdf
@@ -213,8 +250,14 @@ class ToolboxControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>
             LABEL_QUERY_URL:queryInputName
             LABEL_START:startInputName

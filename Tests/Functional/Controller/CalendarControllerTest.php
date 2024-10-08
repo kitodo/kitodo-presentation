@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\CalendarController;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 class CalendarControllerTest extends AbstractControllerTest
@@ -97,8 +98,14 @@ class CalendarControllerTest extends AbstractControllerTest
         $arguments = ['id' => "2002"];
         $request = $this->setUpRequest('years', $arguments);
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             documentId: 2002
             allYearDocTitle: Newspaper for testing purposes

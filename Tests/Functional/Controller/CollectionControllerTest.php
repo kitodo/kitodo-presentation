@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\CollectionController;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 class CollectionControllerTest extends AbstractControllerTest {
@@ -45,12 +46,17 @@ class CollectionControllerTest extends AbstractControllerTest {
             'randomize' => ''
         ];
         $templateHtml = '<html><f:for each="{collections}" as="item">{item.collection.indexName}</f:for></html>';
-        $subject = $this->setUpController(CollectionController::class, $settings, $templateHtml);
+        $controller = $this->setUpController(CollectionController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('list', ['id' => 1]);
 
-        $response = $subject->processRequest($request);
-
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>test-collection</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -65,11 +71,16 @@ class CollectionControllerTest extends AbstractControllerTest {
             'collections' => '1',
             'randomize' => ''
         ];
-        $subject = $this->setUpController(CollectionController::class, $settings);
+        $controller = $this->setUpController(CollectionController::class, $settings);
         $request = $this->setUpRequest('list', ['id' => 1]);
 
         $this->expectException(StopActionException::class);
-        $response = $subject->processRequest($request);
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+        } else {
+            $response = $controller->processRequest($request);
+        }
     }
 
     /**
@@ -86,11 +97,17 @@ class CollectionControllerTest extends AbstractControllerTest {
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"><f:for each="{documents.solrResults.documents}" as="page" iteration="docIterator">{page.title},</f:for></html>';
 
-        $subject = $this->setUpController(CollectionController::class, $settings, $templateHtml);
+        $controller = $this->setUpController(CollectionController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('show', ['collection' => '1']);
 
-        $response = $subject->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,</html>';
         $this->assertEquals($expected, $actual);
 
@@ -107,10 +124,15 @@ class CollectionControllerTest extends AbstractControllerTest {
             'dont_show_single' => 'some_value',
             'randomize' => ''
         ];
-        $subject = $this->setUpController(CollectionController::class, $settings);
+        $controller = $this->setUpController(CollectionController::class, $settings);
         $request = $this->setUpRequest('showSorted');
 
         $this->expectException(StopActionException::class);
-        $response = $subject->processRequest($request);
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+        } else {
+            $response = $controller->processRequest($request);
+        }
     }
 }

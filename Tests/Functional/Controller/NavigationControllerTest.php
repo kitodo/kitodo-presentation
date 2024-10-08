@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\NavigationController;
 use Kitodo\Dlf\Domain\Model\PageSelectForm;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -48,8 +49,14 @@ class NavigationControllerTest extends AbstractControllerTest
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
         $GLOBALS['TSFE']->fe_user->id = 1;
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>
                 pageSteps: 0
                 numPages: 76
@@ -72,6 +79,11 @@ class NavigationControllerTest extends AbstractControllerTest
         $request = $this->setUpRequest('pageSelect', ['pageSelectForm' => $pageSelectForm]);
 
         $this->expectException(StopActionException::class);
-        $response = $controller->processRequest($request);
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+        } else {
+            $response = $controller->processRequest($request);
+        }
     }
 }

@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\SearchController;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Session\UserSession;
 use TYPO3\CMS\Core\Session\UserSessionManager;
 use TYPO3\CMS\Core\Utility\StringUtility;
@@ -158,8 +159,14 @@ class SearchControllerTest extends AbstractControllerTest
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
         $GLOBALS['TSFE']->fe_user->initializeUserSessionManager($userSessionManagerMock);
 
-        $response = $controller->processRequest($request);
-        $actual = $response->getBody()->getContents();
+        if (explode('.', TYPO3_version)[0] === '10') {
+            $response = $this->objectManager->get(Response::class);
+            $controller->processRequest($request, $response);
+            $actual = $response->getContent();
+        } else {
+            $response = $controller->processRequest($request);
+            $actual = $response->getBody()->getContents();
+        }
         $expected = '<html>
             lastSearch:title:10 Keyboard pieces,
             currentDocument:1001
