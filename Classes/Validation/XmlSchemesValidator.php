@@ -32,7 +32,7 @@ class XmlSchemesValidator extends AbstractDlfValidator
 
     public function __construct(array $configuration)
     {
-        parent::__construct(\DOMDocument::class);
+        parent::__construct(DOMDocument::class);
         $this->schemes = $configuration;
     }
 
@@ -52,12 +52,7 @@ class XmlSchemesValidator extends AbstractDlfValidator
         return $value->schemaValidateSource($xsd);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return void
-     */
-    protected function isValid(mixed $value): void
+    protected function isValid($value): void
     {
         $this->enableErrorBuffer();
         if (!$this->isSchemeValid($value)) {
