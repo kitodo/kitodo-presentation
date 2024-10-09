@@ -16,7 +16,8 @@ use Kitodo\Dlf\Controller\CollectionController;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
-class CollectionControllerTest extends AbstractControllerTest {
+class CollectionControllerTest extends AbstractControllerTest
+{
 
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',

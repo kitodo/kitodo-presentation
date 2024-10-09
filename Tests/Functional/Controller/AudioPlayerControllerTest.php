@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\Http\Response;
 
 class AudioPlayerControllerTest extends AbstractControllerTest
 {
-    static array $databaseFixtures = [
+    private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents_local.csv',
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
     ];

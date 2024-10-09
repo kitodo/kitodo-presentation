@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 class CalendarControllerTest extends AbstractControllerTest
 {
 
-    static array $databaseFixtures = [
+    private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
         __DIR__ . '/../../Fixtures/Controller/documents_calendar.csv',
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv',

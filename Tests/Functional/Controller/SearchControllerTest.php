@@ -22,7 +22,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 class SearchControllerTest extends AbstractControllerTest
 {
-    static array $databaseFixtures = [
+    private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
         __DIR__ . '/../../Fixtures/Controller/documents.csv',
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv'
@@ -148,7 +148,7 @@ class SearchControllerTest extends AbstractControllerTest
             'ses_iplock' => '',
             'ses_userid' => 0,
             'ses_tstamp' => $currentTime,
-            'ses_data' => serialize(['foo' => 'bar']),
+            'ses_data' => 'a:1:{s:3:"foo";s:3:"bar";}',
             'ses_permanent' => 0,
         ];
         $userSessionToBePersisted = UserSession::createFromRecord($uniqueSessionId, $sessionRecord, true);

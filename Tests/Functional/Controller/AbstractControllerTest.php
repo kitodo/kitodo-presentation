@@ -84,7 +84,7 @@ abstract class AbstractControllerTest extends FunctionalTestCase
         $view->setTemplateSource($templateHtml);
 
         $controller = $this->get($class);
-        $viewResolverMock = $this->getMockBuilder( GenericViewResolver::class)
+        $viewResolverMock = $this->getMockBuilder(GenericViewResolver::class)
             ->disableOriginalConstructor()->getMock();
         $viewResolverMock->expects(self::once())->method('resolve')->willReturn($view);
         $controller->injectViewResolver($viewResolverMock);

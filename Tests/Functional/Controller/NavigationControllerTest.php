@@ -21,7 +21,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 class NavigationControllerTest extends AbstractControllerTest
 {
 
-    static array $databaseFixtures = [
+    private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents.csv',
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv'
