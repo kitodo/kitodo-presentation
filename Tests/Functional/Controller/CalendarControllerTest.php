@@ -80,7 +80,7 @@ class CalendarControllerTest extends AbstractControllerTest
 
         $request = $this->setUpRequest('main');
         $this->expectException(StopActionException::class);
-        $response = $controller->processRequest($request);
+        $controller->processRequest($request);
     }
 
     /**
@@ -98,14 +98,8 @@ class CalendarControllerTest extends AbstractControllerTest
         $arguments = ['id' => "2002"];
         $request = $this->setUpRequest('years', $arguments);
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             documentId: 2002
             allYearDocTitle: Newspaper for testing purposes

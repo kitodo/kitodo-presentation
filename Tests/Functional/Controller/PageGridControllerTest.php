@@ -45,14 +45,8 @@ class PageGridControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(PageGridController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             pageGridEntries:2
             pageGridEntries[0]: - , http://example.com/mets_audio/jpegs/00000001.tif.thumbnail.jpg

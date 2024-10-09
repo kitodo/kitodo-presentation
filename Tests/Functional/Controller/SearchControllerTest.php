@@ -159,14 +159,8 @@ class SearchControllerTest extends AbstractControllerTest
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
         $GLOBALS['TSFE']->fe_user->initializeUserSessionManager($userSessionManagerMock);
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             lastSearch:title:10 Keyboard pieces,
             currentDocument:1001

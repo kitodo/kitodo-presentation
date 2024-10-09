@@ -40,14 +40,8 @@ class AudioPlayerControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(AudioPlayerController::class, [], $templateHtml);
         $request = $this->setUpRequest('main');
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = 'This template should be returned.';
         $this->assertEquals($expected, $actual);
     }

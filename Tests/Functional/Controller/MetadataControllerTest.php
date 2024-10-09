@@ -46,14 +46,8 @@ class MetadataControllerTest extends AbstractControllerTest
         $controller = $this->setUpController(MetadataController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main');
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             mets_label:10 Keyboard pieces - Go. S. 658
         </html>';

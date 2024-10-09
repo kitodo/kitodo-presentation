@@ -51,14 +51,8 @@ class FeedsControllerTest extends AbstractControllerTest
         ];
         $request = $this->setUpRequest('main', $arguments);
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
             1003 – NEW: 6 Fugues - Go. S. 317
             feedMeta:0

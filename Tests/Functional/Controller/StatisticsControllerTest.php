@@ -47,14 +47,8 @@ class StatisticsControllerTest extends AbstractControllerTest {
         $request = $this->setUpRequest('main');
         $controller = $this->setUpController(StatisticsController::class, $settings, $templateHtml);
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>There are 3 titles and 3 volumes.</html>';
         $this->assertEquals($expected, $actual);
     }

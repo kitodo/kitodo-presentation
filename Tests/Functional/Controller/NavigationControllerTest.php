@@ -49,14 +49,8 @@ class NavigationControllerTest extends AbstractControllerTest
         $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
         $GLOBALS['TSFE']->fe_user->id = 1;
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>
                 pageSteps: 0
                 numPages: 76
@@ -79,11 +73,6 @@ class NavigationControllerTest extends AbstractControllerTest
         $request = $this->setUpRequest('pageSelect', ['pageSelectForm' => $pageSelectForm]);
 
         $this->expectException(StopActionException::class);
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-        } else {
-            $response = $controller->processRequest($request);
-        }
+        $controller->processRequest($request);
     }
 }

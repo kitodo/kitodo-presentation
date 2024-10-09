@@ -49,14 +49,8 @@ class CollectionControllerTest extends AbstractControllerTest {
         $controller = $this->setUpController(CollectionController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('list', ['id' => 1]);
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html>test-collection</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -75,12 +69,7 @@ class CollectionControllerTest extends AbstractControllerTest {
         $request = $this->setUpRequest('list', ['id' => 1]);
 
         $this->expectException(StopActionException::class);
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-        } else {
-            $response = $controller->processRequest($request);
-        }
+        $controller->processRequest($request);
     }
 
     /**
@@ -100,14 +89,8 @@ class CollectionControllerTest extends AbstractControllerTest {
         $controller = $this->setUpController(CollectionController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('show', ['collection' => '1']);
 
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-            $actual = $response->getContent();
-        } else {
-            $response = $controller->processRequest($request);
-            $actual = $response->getBody()->getContents();
-        }
+        $response = $controller->processRequest($request);
+        $actual = $response->getBody()->getContents();
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,</html>';
         $this->assertEquals($expected, $actual);
 
@@ -128,11 +111,6 @@ class CollectionControllerTest extends AbstractControllerTest {
         $request = $this->setUpRequest('showSorted');
 
         $this->expectException(StopActionException::class);
-        if (explode('.', TYPO3_version)[0] === '10') {
-            $response = $this->objectManager->get(Response::class);
-            $controller->processRequest($request, $response);
-        } else {
-            $response = $controller->processRequest($request);
-        }
+        $controller->processRequest($request);
     }
 }
