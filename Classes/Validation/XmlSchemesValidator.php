@@ -32,7 +32,7 @@ class XmlSchemesValidator extends AbstractDlfValidator
 
     public function __construct(array $configuration)
     {
-        parent::__construct(\DOMDocument::class);
+        parent::__construct(DOMDocument::class);
         $this->schemes = $configuration;
     }
 

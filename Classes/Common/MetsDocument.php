@@ -1336,33 +1336,31 @@ final class MetsDocument extends AbstractDocument
             // Get configured USE attributes.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
             $useGrps = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
-            if (!empty($extConf['fileGrpThumbs'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']));
-            }
-            if (!empty($extConf['fileGrpDownload'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']));
-            }
-            if (!empty($extConf['fileGrpFulltext'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']));
-            }
-            if (!empty($extConf['fileGrpAudio'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']));
-            }
-            if (!empty($extConf['fileGrpScore'])) {
-                $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf['fileGrpScore']));
+            
+            $configKeys = [
+                'fileGrpThumbs',
+                'fileGrpDownload',
+                'fileGrpFulltext',
+                'fileGrpAudio',
+                'fileGrpScore'
+            ];
+            
+            foreach ($configKeys as $key) {
+                if (!empty($extConf[$key])) {
+                    $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf[$key]));
+                }
             }
 
-            // Get all file groups.
-            $fileGrps = $this->mets->xpath('./mets:fileSec/mets:fileGrp');
-            if (!empty($fileGrps)) {
-                // Build concordance for configured USE attributes.
-                foreach ($fileGrps as $fileGrp) {
-                    if (in_array((string) $fileGrp['USE'], $useGrps)) {
+            foreach ($useGrps as $useGrp) {
+                // Perform XPath query for each configured USE attribute
+                $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGrp']");
+                if (!empty($fileGrps)) {
+                    foreach ($fileGrps as $fileGrp) {
                         foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
                             $fileId = (string) $file->attributes()->ID;
-                            $this->fileGrps[$fileId] = (string) $fileGrp['USE'];
+                            $this->fileGrps[$fileId] = $useGrp;
                             $this->fileInfos[$fileId] = [
-                                'fileGrp' => (string) $fileGrp['USE'],
+                                'fileGrp' => $useGrp,
                                 'admId' => (string) $file->attributes()->ADMID,
                                 'dmdId' => (string) $file->attributes()->DMDID,
                             ];
