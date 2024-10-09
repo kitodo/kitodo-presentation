@@ -187,6 +187,6 @@ class SearchControllerTest extends AbstractControllerTest
         $request = $this->setUpRequest('search', []);
 
         $this->expectException(StopActionException::class);
-        $response = $controller->processRequest($request);
+        $controller->processRequest($request);
     }
 }
