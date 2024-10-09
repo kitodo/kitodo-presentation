@@ -81,7 +81,7 @@ class SearchControllerTest extends AbstractControllerTest
             'ses_iplock' => '',
             'ses_userid' => 0,
             'ses_tstamp' => $currentTime,
-            'ses_data' => serialize(['foo' => 'bar']),
+            'ses_data' => 'a:1:{s:3:"foo";s:3:"bar";}',
             'ses_permanent' => 0,
         ];
         $userSessionToBePersisted = UserSession::createFromRecord($uniqueSessionId, $sessionRecord, true);

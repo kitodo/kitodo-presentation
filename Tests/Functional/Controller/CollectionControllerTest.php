@@ -18,12 +18,12 @@ use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 class CollectionControllerTest extends AbstractControllerTest {
 
-    static array $databaseFixtures = [
+    private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv'
     ];
 
-    static array $solrFixtures = [
+    private static array $solrFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents.solr.json'
     ];
 

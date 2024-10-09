@@ -15,9 +15,10 @@ use Kitodo\Dlf\Controller\StatisticsController;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Localization\LanguageService;
 
-class StatisticsControllerTest extends AbstractControllerTest {
+class StatisticsControllerTest extends AbstractControllerTest
+{
 
-    static array $databaseFixtures = [
+    private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv',
         __DIR__ . '/../../Fixtures/Controller/documents.csv'
