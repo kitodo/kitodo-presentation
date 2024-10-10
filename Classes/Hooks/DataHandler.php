@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\DataHandling\DataHandler
@@ -36,29 +35,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class DataHandler implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
-
-    /**
-     * @access protected
-     * @var DocumentRepository
-     */
-    protected DocumentRepository $documentRepository;
-
-    /**
-     * Gets document repository
-     *
-     * @access protected
-     *
-     * @return DocumentRepository
-     */
-    protected function getDocumentRepository(): DocumentRepository
-    {
-        if (!isset($this->documentRepository)) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->documentRepository = $objectManager->get(DocumentRepository::class);
-        }
-
-        return $this->documentRepository;
-    }
 
     /**
      * Field post-processing hook for the process_datamap() method.
@@ -365,11 +341,12 @@ class DataHandler implements LoggerAwareInterface
      */
     private function reindexDocument($id):void
     {
-        $document = $this->getDocumentRepository()->findByUid((int) $id);
+        $documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+        $document = $documentRepository->findByUid((int) $id);
         $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
         if ($document !== null && $doc !== null) {
             $document->setCurrentDocument($doc);
-            Indexer::add($document, $this->getDocumentRepository());
+            Indexer::add($document, $documentRepository);
         } else {
             $this->logger->error('Failed to re-index document with UID ' . (string) $id);
         }

@@ -70,7 +70,7 @@ page {
   }
 }
 
-[like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
+[request && like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
 page.includeJSFooter {
     # Gridstack
     gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack-all.js
