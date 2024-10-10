@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractControllerTest extends FunctionalTestCase
 {
@@ -35,7 +35,7 @@ abstract class AbstractControllerTest extends FunctionalTestCase
         foreach ($databaseFixtures as $filePath) {
             $this->importCSVDataSet($filePath);
         }
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
 
         $allFixtureDocuments = $documentRepository->findAll();
