@@ -2,6 +2,7 @@
 
 namespace Kitodo\Dlf\Common\Solr;
 
+use Exception;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
@@ -13,6 +14,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Targeted towards being used in ``PaginateController`` (``<f:widget.paginate>``).
@@ -316,6 +318,22 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     public function getQuery()
     {
         return new SolrSearchQuery($this);
+    }
+
+    /**
+     * Sets query.
+     *
+     * @access public
+     *
+     * @param QueryInterface $query the query
+     *
+     * @throws Exception not implemented
+     *
+     * @return void
+     */
+    public function setQuery(QueryInterface $query): void
+    {
+        throw new Exception("setQuery not supported on SolrSearch instance");
     }
 
     /**

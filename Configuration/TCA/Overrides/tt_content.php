@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-if (!defined('TYPO3_MODE')) {
+if (!defined('TYPO3')) {
     die('Access denied.');
 }
 // Plugin "audioplayer".
@@ -191,7 +191,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['dlf_embedded
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Kitodo.Dlf',
+    'Dlf',
     'Annotation',
     'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.annotation.title',
 );

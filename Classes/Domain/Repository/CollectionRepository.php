@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Doctrine\DBAL\ForwardCompatibility\Result;
+use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -57,7 +57,7 @@ class CollectionRepository extends Repository
         $constraints[] = $query->in('uid', $uids);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...array_values($constraints)));
         }
 
         return $query->execute();
@@ -97,27 +97,27 @@ class CollectionRepository extends Repository
 
         $constraints = [];
 
-        if ($settings['collections']) {
+        if ($settings['collections'] ?? false) {
             $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['collections']));
         }
 
-        if ($settings['index_name']) {
+        if ($settings['index_name'] ?? false) {
             $constraints[] = $query->in('index_name', $settings['index_name']);
         }
 
         // do not find user created collections (used by oai-pmh plugin)
-        if (!$settings['show_userdefined']) {
+        if (!($settings['show_userdefined'] ?? false)) {
             $constraints[] = $query->equals('fe_cruser_id', 0);
         }
 
         // do not find collections without oai_name set (used by oai-pmh plugin)
-        if ($settings['hideEmptyOaiNames']) {
+        if ($settings['hideEmptyOaiNames'] ?? false) {
             $constraints[] = $query->logicalNot($query->equals('oai_name', ''));
         }
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd($constraints)
+                $query->logicalAnd(...array_values($constraints))
             );
         }
 

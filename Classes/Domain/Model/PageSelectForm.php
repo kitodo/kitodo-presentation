@@ -83,7 +83,7 @@ class PageSelectForm extends AbstractEntity
     /**
      * @return string
      */
-    public function getDouble(): string
+    public function getDouble(): ?string
     {
         return $this->double;
     }
