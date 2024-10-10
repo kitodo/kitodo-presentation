@@ -1,6 +1,5 @@
 # Adopted/reduced from https://github.com/TYPO3/typo3/blob/608f238a8b7696a49a47e1e73ce8e2845455f0f5/Build/testing-docker/local/docker-compose.yml
 
-version: "2.3"
 services:
   mysql:
     image: docker.io/mysql:${MYSQL_VERSION}
@@ -45,10 +44,18 @@ services:
       "
 
   solr:
-    image: docker.io/solr:8
+    image: docker.io/solr:9
     volumes:
       - ${DLF_ROOT}/Configuration/ApacheSolr/configsets:/var/solr/data/configsets
-      - ./solr/contrib/ocrsearch:/opt/solr/contrib/ocrsearch
+      - ./solr/modules/ocrsearch:/opt/solr/modules/ocrsearch
+    ports:
+      - 8983:8983
+    user: root # run as root to change the permissions of the solr folder
+    # Change permissions of the solr folder, create a default core and start solr as solr user
+    command: /bin/sh -c "
+        chown -R 8983:8983 /var/solr
+        && runuser -u solr -- solr-precreate default-core
+      "
 
   composer_install:
     image: docker.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest

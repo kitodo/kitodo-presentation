@@ -301,6 +301,14 @@
 				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
 				<target><![CDATA[Wieviele Seiten sollen mit den Schnellblätter-Tasten übersprungen werden?]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.measureForward">
+				<source><![CDATA[One measure forward]]></source>
+				<target><![CDATA[Ein Takt vor]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.measureBack">
+				<source><![CDATA[One measureBack back]]></source>
+				<target><![CDATA[Ein Takt zurück]]></target>
+			</trans-unit>
 			<trans-unit id="plugins.navigation.title" approved="yes">
 				<source><![CDATA[Kitodo: Navigation]]></source>
 				<target><![CDATA[Kitodo: Navigation]]></target>
@@ -517,6 +525,27 @@
 				<source><![CDATA[Kitodo: Toolbox]]></source>
 				<target><![CDATA[Kitodo: Werkzeugkasten]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.title">
+				<source><![CDATA[Kitodo: Embedded 3D Viewer]]></source>
+				<target><![CDATA[Kitodo: Eingebetteter 3D-Viewer]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.description">
+				<source><![CDATA[Embedded 3D Viewer Plugin for Kitodo.Presentation]]></source>
+				<target><![CDATA[Eingebetteter 3D-Viewer Plugin für Kitodo.Presentation]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.document">
+				<source><![CDATA[METS/MODS url containing the model]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.model">
+				<source><![CDATA[Url of model]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.viewer">
+				<source><![CDATA[Name of viewer]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.annotation.title" approved="yes">
+        		<source><![CDATA[Kitodo: Annotations]]></source>
+        		<target><![CDATA[Kitodo: Annotationen]]></target>
+        	</trans-unit>
 			<trans-unit id="text.all" approved="yes">
 				<source><![CDATA[all]]></source>
 				<target><![CDATA[alle]]></target>

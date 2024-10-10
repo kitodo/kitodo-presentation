@@ -75,6 +75,12 @@ class IndexCommand extends BaseCommand
                 'o',
                 InputOption::VALUE_OPTIONAL,
                 '[UID|index_name] of the Library which should be set as owner of the document.'
+            )
+            ->addOption(
+                'softCommit',
+                null,
+                InputOption::VALUE_NONE,
+                'If this option is set, documents are just added to the index by a soft commit.'
             );
     }
 
@@ -160,7 +166,7 @@ class IndexCommand extends BaseCommand
 
             if ($document === null) {
                 $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
-                exit(1);
+                return BaseCommand::FAILURE;
             } else {
                 $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
             }
@@ -180,20 +186,35 @@ class IndexCommand extends BaseCommand
 
         if ($dryRun) {
             $io->section('DRY RUN: Would index ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+            $io->success('All done!');
+            return BaseCommand::SUCCESS;
         } else {
-            if ($io->isVerbose()) {
-                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
-            }
             $document->setCurrentDocument($doc);
-            // save to database
-            $this->saveToDatabase($document);
-            // add to index
-            Indexer::add($document, $this->documentRepository);
+
+            if ($io->isVerbose()) {
+                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
+            }
+            $isSaved = $this->saveToDatabase($document, $input->getOption('softCommit'));
+
+            if ($isSaved) {
+                if ($io->isVerbose()) {
+                    $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on Solr core ' . $solrCoreUid . '.');
+                }
+                $isSaved = Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
+            } else {
+                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
+                return BaseCommand::FAILURE;
+            }
+
+            if ($isSaved) {
+                $io->success('All done!');
+                return BaseCommand::SUCCESS;
+            }
+
+            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . ' . There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
+            $io->info('INFO: Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
+            return BaseCommand::FAILURE;
         }
-
-        $io->success('All done!');
-
-        return BaseCommand::SUCCESS;
     }
 
     /**

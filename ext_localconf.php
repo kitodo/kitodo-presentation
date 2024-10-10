@@ -47,7 +47,7 @@ $iconArray = [
     'tx-dlf-statistics' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-statistics.svg',
     'tx-dlf-tableofcontents' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-tableofcontents.svg',
     'tx-dlf-toolbox' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-toolbox.svg',
-    'tx_dlf_view3d' => 'EXT:dlf/Resources/Public/Icons/tx_dlf_view3d.svg',
+    'tx-dlf-embedded3dviewer' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-embedded3dviewer.svg',
 ];
 $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     \TYPO3\CMS\Core\Imaging\IconRegistry::class
@@ -66,17 +66,56 @@ foreach ($iconArray as $key => $value) {
 $_EXTKEY = 'dlf';
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_scoretool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.scoretool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltexttool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltexttool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_annotationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.annotationtool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_fulltextdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltextdownloadtool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagedownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagedownloadtool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_imagemanipulationtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagemanipulationtool';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_modeldownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.modeldownloadtool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_pdfdownloadtool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.pdfdownloadtool';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'][\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getCN($_EXTKEY) . '_searchindocumenttool'] = 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.searchindocumenttool';
 // Register hooks.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \Kitodo\Dlf\Hooks\DataHandler::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Common/MetsDocument.php']['hookClass'][] = \Kitodo\Dlf\Hooks\KitodoProductionHacks::class;
+// Register scheduler tasks
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\IndexTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:indexTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:indexTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\IndexAdditionalFieldProvider::class,
+];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\ReindexTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:reindexTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:reindexTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\ReindexAdditionalFieldProvider::class,
+];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\HarvestTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:harvestTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:harvestTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\HarvestAdditionalFieldProvider::class,
+];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\DeleteTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:deleteTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:deleteTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\DeleteAdditionalFieldProvider::class,
+];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\OptimizeTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:optimizeTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:optimizeTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\OptimizeAdditionalFieldProvider::class,
+];
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Kitodo\Dlf\Task\SuggestBuildTask::class] = [
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:suggestBuildTask.title',
+    'description' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:suggestBuildTask.description',
+    'additionalFields' => \Kitodo\Dlf\Task\SuggestBuildAdditionalFieldProvider::class,
+];
 // Register AJAX eID handlers.
 if ($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['dlf']['general']['enableInternalProxy'] ?? false) {
     $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_dlf_pageview_proxy'] = \Kitodo\Dlf\Eid\PageViewProxy::class . '::main';
@@ -218,11 +257,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     'Dlf',
     'PageView',
     [
-        \Kitodo\Dlf\Controller\PageViewController::class => 'main',
+        \Kitodo\Dlf\Controller\PageViewController::class => 'main, addDocument',
     ],
     // non-cacheable actions
     [
-        \Kitodo\Dlf\Controller\PageViewController::class => '',
+        \Kitodo\Dlf\Controller\PageViewController::class => 'addDocument',
     ]
 );
 
@@ -298,16 +337,26 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Dlf',
-    'View3D',
+    'Embedded3dViewer',
     [
-        \Kitodo\Dlf\Controller\View3DController::class => 'main',
+        \Kitodo\Dlf\Controller\Embedded3dViewerController::class => 'main',
     ],
     // non-cacheable actions
     [
-        \Kitodo\Dlf\Controller\View3DController::class => '',
+        \Kitodo\Dlf\Controller\Embedded3dViewerController::class => '',
     ]
 );
 
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Dlf',
+    'Annotation',
+    [
+        \Kitodo\Dlf\Controller\AnnotationController::class => 'main'
+    ],
+    // non-cacheable actions
+    [
+    ]
+);
 
 // Register a node in ext_localconf.php
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1638809996] = [

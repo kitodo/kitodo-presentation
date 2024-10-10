@@ -14,28 +14,59 @@
       data-namespace-typo3-fluid="true">
 
 {configObject.wrap -> kitodo:metadataWrapVariable(name: 'metadataWrap')}
-<f:variable name="metaSectionConfigObject" value="{metaConfigObjectData.{sectionIterator.index}}" />
+<f:variable name="metaSectionCObj" value="{metaCObjData.{sectionIterator.index}}" />
 
 <f:variable name="wrappedValues"><f:spaceless>
-    <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
-        <f:variable name="buildUrlVariable" value="{buildUrl.{sectionIterator.index}}" />
-        <f:if condition="{buildUrlVariable.{configObject.indexName}}">
-            <f:then>
-                <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
-            </f:then>
-            <f:else if="{externalUrlVariable.{configObject.indexName}}">
-                <f:render partial="Metadata/ExternalLinkEntry" arguments="{_all}"/>
-            </f:else>
-            <f:else>
-                <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionConfigObject}">{value}</kitodo:stdWrap>
-            </f:else>
-        </f:if>
-    </f:for>
+    <f:if condition="{kitodo:isArray(subject: '{documentMetadataSection.{configObject.indexName}}')}">
+        <f:then>
+            <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
+                <f:variable name="buildUrlVariable" value="{buildUrl.{sectionIterator.index}}" />
+                <f:if condition="{buildUrlVariable.{configObject.indexName}}">
+                    <f:then>
+                        <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
+                    </f:then>
+                    <f:else if="{externalUrlVariable.{configObject.indexName}}">
+                        <f:render partial="Metadata/ExternalLinkEntry" arguments="{_all}"/>
+                    </f:else>
+                    <f:else>
+                        <f:if condition="{kitodo:isArray(subject: '{value}')}">
+                            <f:then>
+                                <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionCObj}">
+                                    <f:for each="{value}" key="key" iteration="subiterator" as="val">
+                                        <f:for each="{configObject.format.0.subentries}" as="subentry">
+                                            <f:if condition="{subentry.indexName} === {key}">
+                                                <f:variable name="subConfigObject">{subentry}</f:variable>
+                                                {subConfigObject.wrap -> kitodo:metadataWrapVariable(name: 'subMetadataWrap')}
+                                                <kitodo:stdWrap wrap="{subMetadataWrap.all}" data="{metaSectionCObj}">
+                                                    <kitodo:stdWrap wrap="{subMetadataWrap.key}" data="{metaSectionCObj}">{subConfigObject.label}</kitodo:stdWrap>
+                                                    <f:for each="{val}" as="subvalue">
+                                                        <kitodo:stdWrap wrap="{subMetadataWrap.value}" data="{metaSectionCObj}">
+                                                            {subvalue}
+                                                        </kitodo:stdWrap>
+                                                    </f:for>
+                                                </kitodo:stdWrap>
+                                            </f:if>
+                                        </f:for>
+                                    </f:for>
+                                </kitodo:stdWrap>
+                            </f:then>
+                            <f:else>
+                                <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionCObj}">{value}</kitodo:stdWrap>
+                            </f:else>
+                        </f:if>
+                    </f:else>
+                </f:if>
+            </f:for>
+        </f:then>
+        <f:else>
+            <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionCObj}">{documentMetadataSection.{configObject.indexName}}</kitodo:stdWrap>
+        </f:else>
+    </f:if>
 </f:spaceless></f:variable>
 
 <f:if condition="{wrappedValues}">
-    <kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaSectionConfigObject}">
-        <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaSectionConfigObject}">{configObject.label}</kitodo:stdWrap>
+    <kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaSectionCObj}">
+        <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaSectionCObj}">{configObject.label}</kitodo:stdWrap>
         {wrappedValues -> f:format.raw()}
     </kitodo:stdWrap>
 </f:if>

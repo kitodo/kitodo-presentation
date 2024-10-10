@@ -11,7 +11,12 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\DocumentAnnotation;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Common\MetsDocument;
+use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
@@ -40,6 +45,24 @@ class PageViewController extends AbstractController
     protected array $images = [];
 
     /**
+     * Holds the current scores' URL, MIME types and the
+     * id of the current page
+     *
+     * @var array
+     * @access protected
+     */
+    protected $scores = [];
+
+    /**
+     * @var array
+     * @access protected
+     */
+    protected $measures = [];
+
+    /**
+     * Holds the current fulltexts' URLs
+     *
+     * @var array
      * @access protected
      * @var array Holds the current full texts' URLs
      */
@@ -52,6 +75,14 @@ class PageViewController extends AbstractController
      * @var array Holds the current AnnotationLists / AnnotationPages
      */
     protected array $annotationContainers = [];
+
+
+    /**
+     * Holds the verovio relevant annotations
+     *
+     * @var array
+     */
+    protected $verovioAnnotations = [];
 
     /**
      * The main method of the plugin
@@ -67,6 +98,24 @@ class PageViewController extends AbstractController
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return;
+        } else {
+            if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType'] && empty($this->requestData['multiview'])) {
+                $params = array_merge(
+                    ['tx_dlf' => $this->requestData],
+                    ['tx_dlf[multiview]' => 1]
+                );
+                $uriBuilder = $this->uriBuilder;
+                $uri = $uriBuilder
+                    ->setArguments($params)
+                    ->setArgumentPrefix('tx_dlf')
+                    ->uriFor('main');
+                $this->redirectToUri($uri);
+            }
+            $this->setPage();
+            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+
+            $documentAnnotation = DocumentAnnotation::getInstance($this->document);
+            $this->verovioAnnotations = $documentAnnotation->getVerovioRelevantAnnotations();
         }
 
         $this->setPage();
@@ -81,6 +130,9 @@ class PageViewController extends AbstractController
             $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
         }
 
+        $this->scores = $this->getScore($this->requestData['page']);
+        $this->measures = $this->getMeasures($this->requestData['page']);
+
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
 
@@ -88,9 +140,282 @@ class PageViewController extends AbstractController
 
         $this->addViewerJS();
 
+        $this->view->assign('docCount', count($this->documentArray));
+        $this->view->assign('docArray', $this->documentArray);
+        $this->view->assign('docPage', $this->requestData['docPage']);
+        $this->view->assign('docType', $this->document->getCurrentDocument()->tableOfContents[0]['type']);
+
+        $this->view->assign('multiview', $this->requestData['multiview']);
+        if ($this->requestData['multiview']) {
+            $this->multipageNavigation();
+        }
+
         $this->view->assign('images', $this->images);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $this->requestData['page']);
+
+    }
+
+    /**
+     * Add multi page navigation
+     * @return void
+     */
+    protected function multipageNavigation(): void
+    {
+        $navigationArray = [];
+        $navigationMeasureArray = [];
+        $navigateAllPageNext = [];
+        $navigateAllPagePrev = [];
+        $navigateAllMeasureNext = [];
+        $navigateAllMeasurePrev = [];
+        $docNumPages = [];
+        $i = 0;
+        foreach ($this->documentArray as $document) {
+            // convert either page or measure if requestData exists
+            if ($this->requestData['docPage'][$i] && empty($this->requestData['docMeasure'][$i])) {
+                // convert document page information to measure count information
+                $this->requestData['docMeasure'][$i] = $this->convertMeasureOrPage($document, null, $this->requestData['docPage'][$i]);
+
+            } elseif ((empty($this->requestData['docPage'][$i]) || $this->requestData['docPage'][$i] === 1) && $this->requestData['docMeasure'][$i]) {
+                $this->requestData['docPage'][$i] = $this->convertMeasureOrPage($document, $this->requestData['docMeasure'][$i]);
+            }
+
+            $navigationArray[$i]['next'] = [
+                'tx_dlf[docPage][' . $i . ']' =>
+                    MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
+            ];
+            $navigationArray[$i]['prev'] = [
+                'tx_dlf[docPage][' . $i . ']' =>
+                    MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
+            ];
+
+            $navigateAllPageNext = array_merge(
+                $navigateAllPageNext,
+                [
+                    'tx_dlf[docPage][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
+                ]
+            );
+
+            $navigateAllPagePrev = array_merge(
+                $navigateAllPagePrev,
+                [
+                    'tx_dlf[docPage][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
+                ]
+            );
+
+            $navigateAllMeasureNext = array_merge(
+                $navigateAllMeasureNext,
+                [
+                    'tx_dlf[docMeasure][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
+                ]
+            );
+
+            $navigateAllMeasurePrev = array_merge(
+                $navigateAllMeasurePrev,
+                [
+                    'tx_dlf[docMeasure][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
+                ]
+            );
+
+            if ($document->numMeasures > 0) {
+                $navigationMeasureArray[$i]['next'] = [
+                    'tx_dlf[docMeasure][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
+                ];
+
+                $navigationMeasureArray[$i]['prev'] = [
+                    'tx_dlf[docMeasure][' . $i . ']' =>
+                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
+                ];
+            }
+
+            $docNumPages[$i] = $document->numPages;
+            $i++;
+        }
+
+        // page navigation
+        $this->view->assign('navigationArray', $navigationArray);
+        $this->view->assign('navigateAllPageNext', $navigateAllPageNext);
+        $this->view->assign('navigateAllPagePrev', $navigateAllPagePrev);
+        // measure navigation
+        $this->view->assign('navigateAllMeasurePrev', $navigateAllMeasurePrev);
+        $this->view->assign('navigateAllMeasureNext', $navigateAllMeasureNext);
+        $this->view->assign('navigationMeasureArray', $navigationMeasureArray);
+
+        $this->view->assign('docNumPage', $docNumPages);
+    }
+
+    /**
+     * Converts either measure into page or page into measure
+     * @param $document
+     * @param $measure
+     * @param $page
+     * @return false|int|mixed|string|null
+     */
+    public function convertMeasureOrPage($document, $measure = null, $page = null)
+    {
+        $return = null;
+        $measure2Page = array_column($document->musicalStructure, 'page');
+        if ($measure) {
+            $return = $measure2Page[$measure];
+        } elseif ($page) {
+            $return = array_search($page, $measure2Page);
+        }
+
+        return $return;
+    }
+
+    /**
+     * Action to add multiple mets sources (multi page view)
+     * @return void
+     */
+    public function addDocumentAction(FormAddDocument $formAddDocument)
+    {
+        if (GeneralUtility::isValidUrl($formAddDocument->getLocation())) {
+            $nextMultipleSourceKey = 0;
+            if ($this->requestData['multipleSource']) {
+                $nextMultipleSourceKey = max(array_keys($this->requestData['multipleSource'])) + 1;
+            }
+            $params = array_merge(
+                ['tx_dlf' => $this->requestData],
+                ['tx_dlf[multipleSource][' . $nextMultipleSourceKey . ']' => $formAddDocument->getLocation()],
+                ['tx_dlf[multiview]' => 1]
+            );
+            $uriBuilder = $this->uriBuilder;
+            $uri = $uriBuilder
+                ->setArguments($params)
+                ->setArgumentPrefix('tx_dlf')
+                ->uriFor('main');
+
+            $this->redirectToUri($uri);
+        }
+
+    }
+
+    /**
+     * Get all measures from musical struct
+     * @param int $page
+     * @param ?MetsDocument $specificDoc
+     * @param int|null $docNumber
+     * @return array
+     */
+    protected function getMeasures(int $page, MetsDocument $specificDoc = null, $docNumber = null): array
+    {
+        if ($specificDoc) {
+            $doc = $specificDoc;
+        } else {
+            $doc = $this->document->getCurrentDocument();
+        }
+        $currentPhysId = $doc->physicalStructure[$page];
+        $measureCoordsFromCurrentSite = [];
+        $measureCounterToMeasureId = [];
+        $measureLinks = [];
+        $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'];
+        if ($doc instanceof MetsDocument) {
+            if (isset($defaultFileId)) {
+                $musicalStruct = $doc->musicalStructureInfo;
+
+                $i = 0;
+                foreach ($musicalStruct as $measureData) {
+                    if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
+                        $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
+                        $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
+
+                        if ($specificDoc) {
+                            // build link for each measure
+                            $params = [
+                                'tx_dlf' => $this->requestData,
+                                'tx_dlf[docMeasure][' . $docNumber . ']' => $i
+                            ];
+                        } else {
+                            // build link for each measure
+                            $params = [
+                                'tx_dlf' => $this->requestData,
+                                'tx_dlf[measure]' => $i
+                            ];
+                        }
+                        $uriBuilder = $this->uriBuilder;
+                        $uri = $uriBuilder
+                            ->setArguments($params)
+                            ->setArgumentPrefix('tx_dlf')
+                            ->uriFor('main');
+                        $measureLinks[$measureData['files']['SCORE']['begin']] = $uri;
+
+                    }
+                    $i++;
+                }
+            }
+        }
+        return [
+            'measureCoordsCurrentSite' => $measureCoordsFromCurrentSite,
+            'measureCounterToMeasureId' => $measureCounterToMeasureId,
+            'measureLinks' => $measureLinks
+        ];
+    }
+
+    /**
+     * Get score URL and MIME type
+     *
+     * @access protected
+     *
+     * @param int $page: Page number
+     * @param ?MetsDocument $specificDoc
+     *
+     * @return array URL and MIME type of fulltext file
+     */
+    protected function getScore(int $page, MetsDocument $specificDoc = null)
+    {
+        $score = [];
+        $loc = '';
+        if ($specificDoc) {
+            $doc = $specificDoc;
+        } else {
+            $doc = $this->document->getCurrentDocument();
+        }
+        if ($doc instanceof MetsDocument) {
+            $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpScore']);
+
+            $pageId = $doc->physicalStructure[$page];
+            $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
+
+            foreach ($fileGrpsScores as $fileGrpScore) {
+                if (isset($files[$fileGrpScore])) {
+                    $loc = $files[$fileGrpScore];
+                    break;
+                }
+            }
+
+            if (!empty($loc)) {
+                $score['mimetype'] = $doc->getFileMimeType($loc);
+                $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
+                $score['url'] = $doc->getFileLocation($loc);
+                if ($this->settings['useInternalProxy']) {
+                    // Configure @action URL for form.
+                    $uri = $this->uriBuilder->reset()
+                        ->setTargetPageUid($this->pageUid)
+                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+                        ->setArguments(
+                            [
+                                'eID' => 'tx_dlf_pageview_proxy',
+                                'url' => $score['url'],
+                                'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
+                            ]
+                        )
+                        ->build();
+
+                    $score['url'] = $uri;
+                }
+            }
+        }
+
+        if (empty($score)) {
+            $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpScore'] . '"');
+        }
+        return $score;
     }
 
     /**
@@ -137,20 +462,96 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
-        // Viewer configuration.
-        $viewerConfiguration = '$(document).ready(function() {
-                if (dlfUtils.exists(dlfViewer)) {
-                    tx_dlf_viewer = new dlfViewer({
-                        controls: ["' . implode('", "', $this->controls) . '"],
-                        div: "' . $this->settings['elementId'] . '",
-                        progressElementId: "' . $this->settings['progressElementId'] . '",
-                        images: ' . json_encode($this->images) . ',
-                        fulltexts: ' . json_encode($this->fulltexts) . ',
-                        annotationContainers: ' . json_encode($this->annotationContainers) . ',
-                        useInternalProxy: ' . ($this->settings['useInternalProxy'] ? 1 : 0) . '
-                    });
+        if (count($this->documentArray) > 1) {
+            $jsViewer = 'tx_dlf_viewer = [];';
+            $i = 0;
+            foreach ($this->documentArray as $document) {
+                if ($document !== null) {
+                    $docPage = $this->requestData['docPage'][$i];
+                    $docImage = [];
+                    $docFulltext = [];
+                    $docAnnotationContainers = [];
+
+                    if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+                        // check if page or measure is set
+                        if ($this->requestData['docMeasure'][$i]) {
+                            // convert document page information to measure count information
+                            $measure2Page = array_column($document->musicalStructure, 'page');
+                            $docPage = $measure2Page[$this->requestData['docMeasure'][$i]];
+                        }
+                    }
+                    if ($docPage == null) {
+                        $docPage = 1;
+                    }
+                    $docImage[0] = $this->getImage($docPage, $document);
+                    $currentMeasureId = '';
+
+                    $docScore = $this->getScore($docPage, $document);
+                    $docMeasures = $this->getMeasures($docPage, $document);
+
+                    if ($this->requestData['docMeasure'][$i]) {
+                        $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
+                    }
+
+                    $viewer = [
+                        'controls' => $this->controls,
+                        'div' => "tx-dfgviewer-map-' . $i . '",
+                        'progressElementId' => $this->settings['progressElementId'],
+                        'counter' => $i,
+                        'images' => $docImage,
+                        'fulltexts' => $docFulltext,
+                        'score' => $docScore,
+                        'annotationContainers' => $docAnnotationContainers,
+                        'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
+                        'useInternalProxy' => $this->settings['useInternalProxy'],
+                        'currentMeasureId' => $currentMeasureId,
+                        'measureIdLinks' => $docMeasures['measureLinks']
+                    ];
+
+                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer(' . json_encode($viewer) . ');
+                            ';
+                    $i++;
                 }
-            });';
+            }
+
+            // Viewer configuration.
+            $viewerConfiguration = '$(document).ready(function() {
+                    if (dlfUtils.exists(dlfViewer)) {
+                        ' . $jsViewer . '
+                        viewerCount = ' . ($i - 1) . ';
+                    }
+                });';
+        } else {
+            $currentMeasureId = '';
+            $docPage = $this->requestData['page'];
+
+            $docMeasures = $this->getMeasures($docPage);
+            if ($this->requestData['measure']) {
+                $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
+            }
+
+            $viewer = [
+                'controls' => $this->controls,
+                'div' => $this->settings['elementId'],
+                'progressElementId' => $this->settings['progressElementId'],
+                'images' => $this->images,
+                'fulltexts' => $this->fulltexts,
+                'score' => $this->scores,
+                'annotationContainers' => $this->annotationContainers,
+                'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
+                'useInternalProxy' => $this->settings['useInternalProxy'],
+                'verovioAnnotations' => $this->verovioAnnotations,
+                'currentMeasureId' => $currentMeasureId,
+                'measureIdLinks' => $docMeasures['measureLinks']
+            ];
+
+            // Viewer configuration.
+            $viewerConfiguration = '$(document).ready(function() {
+                    if (dlfUtils.exists(dlfViewer)) {
+                        tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
+                    }
+                });';
+        }
         $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
 
@@ -217,30 +618,54 @@ class PageViewController extends AbstractController
      *
      * @param int $page Page number
      *
+     * @param ?MetsDocument $specificDoc
+     *
      * @return array URL and MIME type of image file
      */
-    protected function getImage(int $page): array
+    protected function getImage(int $page, MetsDocument $specificDoc = null): array
     {
         $image = [];
         // Get @USE value of METS fileGrp.
         $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpImages']);
         while ($fileGrpImages = array_pop($fileGrpsImages)) {
-            // Get image link.
-            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
-            $files = $physicalStructureInfo['files'];
-            if (!empty($files[$fileGrpImages])) {
-                $file = $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpImages]);
-                $image['url'] = $file['location'];
-                $image['mimetype'] = $file['mimeType'];
+            if ($specificDoc) {
+                // Get image link.
+                $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
+                $files = $physicalStructureInfo['files'];
+                if (!empty($files[$fileGrpImages])) {
+                    $file = $specificDoc->getFileInfo($files[$fileGrpImages]);
+                    $image['url'] = $file['location'];
+                    $image['mimetype'] = $file['mimeType'];
 
-                // Only deliver static images via the internal PageViewProxy.
-                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
-                if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
-                    $this->configureProxyUrl($image['url']);
+                    // Only deliver static images via the internal PageViewProxy.
+                    // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
+                    if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
+                        $this->configureProxyUrl($image['url']);
+                    }
+                    break;
+                } else {
+                    $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
                 }
-                break;
+
             } else {
-                $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
+
+                // Get image link.
+                $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+                $files = $physicalStructureInfo['files'];
+                if (!empty($files[$fileGrpImages])) {
+                    $file = $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpImages]);
+                    $image['url'] = $file['location'];
+                    $image['mimetype'] = $file['mimeType'];
+
+                    // Only deliver static images via the internal PageViewProxy.
+                    // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
+                    if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
+                        $this->configureProxyUrl($image['url']);
+                    }
+                    break;
+                } else {
+                    $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
+                }
             }
         }
         if (empty($image)) {

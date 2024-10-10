@@ -404,3 +404,144 @@ OAI-PMH base URL (e.g. https://digital.slub-dresden.de/oai/).
        Show each processed documents uid and location with timestamp and
        amount of processed/all documents.
    :Example:
+
+Delete single document
+---------------------
+
+The command `kitodo:delete` is used for deleting a single document::
+
+    ./vendor/bin/typo3 kitodo:delete -d http://example.com/path/mets.xml -p 123 -s dlfCore1
+
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Option:
+       Option
+   :Required:
+       Required
+   :Description:
+       Description
+   :Example:
+       Example
+
+ - :Option:
+      ``-d|--doc``
+   :Required:
+       yes
+   :Description:
+       This may be an UID of an existing document in `tx_dlf_documents` or the
+       URL of a METS XML file.
+
+       Hint: Do not encode the URL! If you have spaces in path, use quotation
+       marks.
+   :Example:
+       123 or http://example.com/path/mets.xml
+
+ - :Option:
+       ``-p|--pid``
+   :Required:
+       yes
+   :Description:
+       The page UID of the Kitodo.Presentation data folder. This keeps all
+       records of documents, metadata, structures, solrcores etc.
+   :Example:
+       123
+
+ - :Option:
+       ``-s|--solr``
+   :Required:
+       yes
+   :Description:
+       This may be the UID of the solrcore record in `tx_dlf_solrcores`.
+       Alternatively you may write the index name of the solr core.
+
+       The solr core must exist in table tx_dlf_solrcores on page "pid".
+       Otherwise an error is shown and the processing won't start.
+   :Example:
+       123 or 'dlfCore1'
+
+ - :Option:
+       ``-v|--verbose``
+   :Required:
+       no
+   :Description:
+       Show processed documents uid and location with deleting parameters.
+   :Example:
+
+Commit and/or optimize index
+-------------------------
+
+With the command `kitodo:optimize` it is possible to hard commit documents to and/or optimize the index.::
+
+    # example
+    ./vendor/bin/typo3 kitodo:optimize --solr=<CORE> --commit --optimize
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Option:
+       Option
+   :Required:
+       Required
+   :Description:
+       Description
+   :Example:
+       Example
+
+ - :Option:
+       ``-s|--solr``
+   :Required:
+       yes
+   :Description:
+       This may be the UID of the solrcore record in `tx_dlf_solrcores`.
+       Alternatively you may write the index name of the solr core.
+
+       The solr core must exist in table tx_dlf_solrcores on page "pid".
+       Otherwise an error is shown and the processing won't start.
+   :Example:
+       123 or 'dlfCore1'
+
+ - :Option:
+       ``--commit``
+   :Required:
+       no
+   :Description:
+       Hard commit documents to the index.
+   :Example:
+
+ - :Option:
+       ``--optimize``
+   :Required:
+       no
+   :Description:
+       Optimize the index.
+   :Example:
+
+ - :Option:
+       ``--dry-run``
+   :Required:
+       no
+   :Description:
+       Nothing will be written to database or index. All documents will be
+       listed which would be processed on a real run.
+   :Example:
+
+ - :Option:
+       ``-q|--quite``
+   :Required:
+       no
+   :Description:
+       Do not output any message. Useful when using a wrapper script. The
+       script may check the return value of the CLI job. This is always 0 on
+       success and 1 on failure.
+   :Example:
+
+ - :Option:
+       ``-v|--verbose``
+   :Required:
+       no
+   :Description:
+       Show each processed documents uid and location with timestamp and
+       amount of processed/all documents.
+   :Example:

@@ -98,10 +98,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         $configurationManager = $objectManager->get(ConfigurationManager::class);
         $this->injectConfigurationManager($configurationManager);
         $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
         $this->configurationManager->setConfiguration($frameworkConfiguration);
-
         $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
     }
 
@@ -134,6 +132,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                     return $type;
                 }
 
+                // object type if model parameter is not empty so we assume that it is a 3d object
+                if (!empty($queryParams['tx_dlf']['model'])) {
+                    return 'object';
+                }
+
                 // It happens that $queryParams does not contain a key 'tx_dlf[id]'
                 if (!isset($queryParams['tx_dlf']['id'])) {
                     return $type;
@@ -141,23 +144,20 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $cPid);
-                if ($this->document === null || $this->document->getCurrentDocument() === null) {
+                if (!isset($this->document) || $this->document->getCurrentDocument() === null) {
                     return $type;
                 }
+
                 // Set PID for metadata definitions.
                 $this->document->getCurrentDocument()->cPid = $cPid;
 
                 $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
-                if (!empty($metadata['type'][0])) {
-                    // Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
-                    if (
-                        $this->document->getCurrentDocument() instanceof IiifManifest
-                        && array_search($metadata['type'][0], ['newspaper', 'ephemera', 'year', 'issue']) !== false
-                    ) {
-                        return $type;
-                    }
+
+                if (!empty($metadata['type'][0])
+                    && !$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0])) {
                     $type = $metadata['type'][0];
                 }
+
                 return $type;
             });
     }
@@ -176,9 +176,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     {
         // Try to get document format from database
         if (!empty($requestData['id'])) {
-
             $this->initializeRepositories($pid);
-
             $doc = null;
             if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
                 // find document from repository by uid
@@ -188,34 +186,26 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 } else {
                     $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
                 }
-            } else if (GeneralUtility::isValidUrl($requestData['id'])) {
-
+            } elseif (GeneralUtility::isValidUrl($requestData['id'])) {
                 $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid], true);
-
                 if ($doc !== null) {
                     if ($doc->recordId) {
                         $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
                     }
-
-                    if ($this->document === null) {
+                    if (!isset($this->document)) {
                         // create new dummy Document object
                         $this->document = GeneralUtility::makeInstance(Document::class);
                     }
-
                     $this->document->setLocation($requestData['id']);
                 } else {
                     $this->logger->error('Invalid location given "' . $requestData['id'] . '" for document loading');
                 }
             }
-
             if ($this->document !== null && $doc !== null) {
                 $this->document->setCurrentDocument($doc);
             }
-
         } elseif (!empty($requestData['recordId'])) {
-
             $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
-
             if ($this->document !== null) {
                 $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
                 if ($doc !== null) {
@@ -227,5 +217,21 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         } else {
             $this->logger->error('Empty UID or invalid PID "' . $pid . '" for document loading');
         }
+    }
+
+    /**
+     * Check if is IIIF Manifest with newspaper related type.
+     *
+     * Calendar plugin does not support IIIF (yet). Abort for all newspaper related types.
+     *
+     * @access private
+     *
+     * @param string $type The metadata type
+     * @return bool
+     */
+    private function isIiifManifestWithNewspaperRelatedType(string $type): bool
+    {
+        return ($this->document->getCurrentDocument() instanceof IiifManifest
+            && in_array($type, ['newspaper', 'ephemera', 'year', 'issue']));
     }
 }

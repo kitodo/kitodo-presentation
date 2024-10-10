@@ -167,6 +167,19 @@ class MetadataController extends AbstractController
                         ? $value
                         : explode($this->settings['separator'], $value);
 
+                    $metadata[$i][$name] = is_array($value)
+                        ? $value
+                        : explode($this->settings['separator'], $value);
+
+                    // PHPStan error
+                    // I don't understand what this code does, so I take it away until author can fix it
+                    /*if ($metadata[$i][$name][0] === 'Array') {
+                        $metadata[$i][$name] = [];
+                        foreach ($value as $subKey => $subValue) {
+                            $metadata[$i][$name][$subKey] = $subValue;
+                        }
+                    }*/
+
                     $this->parseMetadata($i, $name, $value, $metadata);
 
                     if (is_array($metadata[$i][$name])) {

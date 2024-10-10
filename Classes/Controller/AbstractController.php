@@ -68,6 +68,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      * @var array
      */
+    protected $documentArray;
+
+    /**
+     * @access protected
+     * @var array
+     */
     protected array $extConf;
 
     /**
@@ -199,7 +205,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function isDocMissingOrEmpty(): bool
     {
-        return $this->isDocMissing() || $this->document->getCurrentDocument()->numPages < 1;
+        $multiViewType = $this->settings['multiViewType'] ?? '';
+        return $this->isDocMissing() || ($this->document->getCurrentDocument()->numPages < 1 && $this->document->getCurrentDocument()->tableOfContents[0]['type'] !== $multiViewType);
     }
 
     /**
@@ -357,12 +364,22 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         // Set default values if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
-        if (empty($this->requestData['page'])) {
-            $this->requestData['page'] = 1;
-        } elseif ((int) $this->requestData['page'] > 0) {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
-        } else {
-            $this->requestData['page'] = array_search($this->requestData['page'], $this->document->getCurrentDocument()->physicalStructure);
+        if (
+            (int) $this->requestData['page'] > 0
+            || empty($this->requestData['page'])
+            || is_array($this->requestData['docPage'])
+        ) {
+            if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
+                $i = 0;
+                foreach ($this->documentArray as $document) {
+                    if ($document !== null) {
+                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                        $i++;
+                    }
+                }
+            } else {
+                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
+            }
         }
         // reassign viewData to get correct page
         $this->viewData['requestData'] = $this->requestData;
@@ -512,11 +529,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     private function getDocumentByUid(int $documentId)
     {
+        // TODO: implement multiView as it is in getDocumentByUrl
         $doc = null;
         $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
 
         if ($this->document) {
             $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
+            // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
+            $this->documentArray[] = $doc;
         } else {
             $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
@@ -527,25 +547,49 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     /**
      * Get document by URL.
      *
-     * @access private
+     * @access protected
      *
      * @param string $documentId The document's URL
      *
      * @return AbstractDocument
      */
-    private function getDocumentByUrl(string $documentId)
+    protected function getDocumentByUrl(string $documentId)
     {
         $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
 
+        if (isset($this->settings['multiViewType']) && $doc->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
+            $childDocuments = $doc->tableOfContents[0]['children'];
+            $i = 0;
+            foreach ($childDocuments as $document) {
+                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings, true);
+                if (!isset($this->requestData['docPage'][$i]) && isset(explode('#', $document['points'])[1])) {
+                    $initPage = explode('#', $document['points'])[1];
+                    $this->requestData['docPage'][$i] = $initPage;
+                }
+                $i++;
+            }
+        } else {
+            $this->documentArray[] = $doc;
+        }
+        if ($this->requestData['multipleSource'] && is_array($this->requestData['multipleSource'])) {
+            $i = 0;
+            foreach ($this->requestData['multipleSource'] as $location) {
+                $document = AbstractDocument::getInstance($location, $this->settings, true);
+                if ($document !== null) {
+                    $this->documentArray['extra_' . $i] = $document;
+                }
+                $i++;
+            }
+        }
+
         if ($doc !== null) {
+            $this->document = GeneralUtility::makeInstance(Document::class);
+
             if ($doc->recordId) {
                 // find document from repository by recordId
                 $docFromRepository = $this->documentRepository->findOneByRecordId($doc->recordId);
                 if ($docFromRepository !== null) {
                     $this->document = $docFromRepository;
-                } else {
-                    // create new dummy Document object
-                    $this->document = GeneralUtility::makeInstance(Document::class);
                 }
             }
 

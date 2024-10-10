@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\PageSelectForm;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -106,6 +107,7 @@ class NavigationController extends AbstractController
             $orderLabel = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$i]]['orderlabel'];
             $pageOptions[$i] = '[' . $i . ']' . ($orderLabel ? ' - ' . htmlspecialchars($orderLabel) : '');
         }
+
         $this->view->assign('pageOptions', $pageOptions);
 
         // prepare feature array for fluid
@@ -114,5 +116,27 @@ class NavigationController extends AbstractController
             $features[$feature] = true;
         }
         $this->view->assign('features', $features);
+
+        if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+            if ($this->document->getCurrentDocument()->numMeasures > 0) {
+                $measureOptions = [];
+                $measurePages = [];
+                for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
+                    $measureOptions[$i] = '[' . $i . ']' . ($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructureInfo[$i]]['orderlabel']) : '');
+                    $measurePages[$i] = $this->document->getCurrentDocument()->musicalStructure[$i]['page'];
+                }
+
+                if (!isset($this->requestData['measure'])) {
+                    $currentMeasure = array_search($this->requestData['page'], $measurePages);
+                } else {
+                    $currentMeasure = $this->requestData['measure'];
+                }
+
+                $this->view->assign('currentMeasure', $currentMeasure);
+                $this->view->assign('numMeasures', $this->document->getCurrentDocument()->numMeasures);
+                $this->view->assign('measureOptions', $measureOptions);
+                $this->view->assign('measurePages', $measurePages);
+            }
+        }
     }
 }

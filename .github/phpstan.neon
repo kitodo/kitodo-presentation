@@ -2,6 +2,7 @@ parameters:
   ignoreErrors:
     - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::countByPid\(\)\.#'
     - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIsListed\(\)\.#'
+    - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIndexIndexed\(\)\.#'
     - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findByIsSortable\(\)\.#'
     - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByFeUserId\(\)\.#'
     - '#Call to an undefined method Kitodo\\Dlf\\Domain\\Repository\\[a-zA-Z]+Repository::findOneByIndexName\(\)\.#'

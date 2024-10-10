@@ -1,3 +1,4 @@
+*.bak
 /.buildpath
 /.cache
 /.idea/
@@ -16,3 +17,4 @@
 /public/
 /var/
 /vendor/
+.DS_Store

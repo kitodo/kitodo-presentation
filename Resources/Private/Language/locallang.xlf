@@ -113,6 +113,9 @@
 			<trans-unit id="doublePageOff">
 				<source><![CDATA[Show single page]]></source>
 			</trans-unit>
+			<trans-unit id="downloadModel">
+				<source><![CDATA[Download model]]></source>
+			</trans-unit>
 			<trans-unit id="doublePageOn">
 				<source><![CDATA[Show double pages]]></source>
 			</trans-unit>
@@ -127,6 +130,12 @@
 			</trans-unit>
 			<trans-unit id="downloadWork">
 				<source><![CDATA[Download whole work]]></source>
+			</trans-unit>
+			<trans-unit id="mididownload">
+				<source><![CDATA[Download midi file]]></source>
+			</trans-unit>
+			<trans-unit id="scoredownload">
+				<source><![CDATA[Download score pdf file]]></source>
 			</trans-unit>
 			<trans-unit id="firstPage">
 				<source><![CDATA[First Page]]></source>
@@ -169,6 +178,12 @@
 			</trans-unit>
 			<trans-unit id="rotateRight">
 				<source><![CDATA[Rotate Right]]></source>
+			</trans-unit>
+			<trans-unit id="prevMeasure">
+				<source><![CDATA[Previus Measure]]></source>
+			</trans-unit>
+			<trans-unit id="nextMeasure">
+				<source><![CDATA[Next Measure]]></source>
 			</trans-unit>
 			<trans-unit id="selectPage">
 				<source><![CDATA[Page]]></source>
@@ -419,6 +434,15 @@
             <trans-unit id="newTenant.wrongPageTypeMsg" approved="yes">
                 <source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
             </trans-unit>
+			<trans-unit id="annotation.creator.label" approved="yes">
+				<source><![CDATA[Annotation created by:]]></source>
+			</trans-unit>
+			<trans-unit id="annotation.created.label" approved="yes">
+				<source><![CDATA[Created:]]></source>
+			</trans-unit>
+			<trans-unit id="annotation.modified.label" approved="yes">
+				<source><![CDATA[Modified:]]></source>
+			</trans-unit>
 
 		</body>
 	</file>

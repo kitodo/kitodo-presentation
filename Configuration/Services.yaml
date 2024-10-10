@@ -7,17 +7,32 @@ services:
   Kitodo\Dlf\:
     resource: '../Classes/*'
 
+  Kitodo\Dlf\Command\DeleteCommand:
+    tags:
+      - name: console.command
+        command: 'kitodo:delete'
+
   Kitodo\Dlf\Command\HarvestCommand:
     tags:
-      - name: 'console.command'
+      - name: console.command
         command: 'kitodo:harvest'
 
   Kitodo\Dlf\Command\IndexCommand:
     tags:
-      - name: 'console.command'
+      - name: console.command
         command: 'kitodo:index'
 
   Kitodo\Dlf\Command\ReindexCommand:
     tags:
-      - name: 'console.command'
+      - name: console.command
         command: 'kitodo:reindex'
+
+  Kitodo\Dlf\Command\OptimizeCommand:
+    tags:
+      - name: console.command
+        command: 'kitodo:optimize'
+
+  Kitodo\Dlf\Command\SuggestBuildCommand:
+    tags:
+      - name: console.command
+        command: 'kitodo:suggestBuld'
