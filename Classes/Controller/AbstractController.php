@@ -15,15 +15,19 @@ use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
  * Abstract controller class for most of the plugin controller.
@@ -98,10 +102,13 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access protected
      *
+     * @param RequestInterface $request the HTTP request
+     *
      * @return void
      */
-    protected function initialize(): void
+    protected function initialize(RequestInterface $request): void
     {
+        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
         $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
         $this->pageUid = (int) GeneralUtility::_GET('id');
 
@@ -110,6 +117,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
         $this->viewData = [
             'pageUid' => $this->pageUid,
@@ -129,6 +138,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function loadDocument(int $documentId = 0): void
     {
+        // Sanitize FlexForm settings to avoid later casting.
+        $this->sanitizeSettings();
+
         // Get document ID from request data if not passed as parameter.
         if ($documentId === 0 && !empty($this->requestData['id'])) {
             $documentId = $this->requestData['id'];
@@ -277,6 +289,59 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
+     * Sanitize settings from FlexForm.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function sanitizeSettings(): void
+    {
+        $this->setDefaultIntSetting('storagePid', 0);
+
+        if ($this instanceof MetadataController) {
+            $this->setDefaultIntSetting('rootline', 0);
+            $this->setDefaultIntSetting('originalIiifMetadata', 0);
+            $this->setDefaultIntSetting('displayIiifDescription', 1);
+            $this->setDefaultIntSetting('displayIiifRights', 1);
+            $this->setDefaultIntSetting('displayIiifLinks', 1);
+        }
+
+        if ($this instanceof NavigationController) {
+            $this->setDefaultIntSetting('pageStep', 5);
+        }
+
+        if ($this instanceof OaiPmhController) {
+            $this->setDefaultIntSetting('limit', 5);
+            $this->setDefaultIntSetting('solr_limit', 50000);
+        }
+
+        if ($this instanceof PageViewController) {
+            $this->setDefaultIntSetting('useInternalProxy', 0);
+        }
+    }
+
+    /**
+     * Sets default value for setting if not yet set.
+     *
+     * @access protected
+     *
+     * @param string $setting name of setting
+     * @param int $value for being set if empty
+     *
+     * @return void
+     */
+    protected function setDefaultIntSetting(string $setting, int $value): void
+    {
+        if (!array_key_exists($setting, $this->settings) || empty($this->settings[$setting])) {
+            $this->settings[$setting] = $value;
+            $this->logger->warning('Setting "' . $setting . '" not set, using default value "' . $value . '". Probably FlexForm for controller "' . get_class($this) . '" is not read.');
+        } else {
+            $this->settings[$setting] = (int) $this->settings[$setting];
+        }
+    }
+
+    /**
      * Sets page value.
      *
      * @access protected
@@ -327,15 +392,19 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * This is the constructor
+     * Wrapper for ActionController::processRequest in order to initialize things
+     * without using a constructor.
      *
      * @access public
      *
-     * @return void
+     * @param RequestInterface $request the request
+     *
+     * @return ResponseInterface the response
      */
-    public function __construct()
+    public function processRequest(RequestInterface $request): ResponseInterface
     {
-        $this->initialize();
+        $this->initialize($request);
+        return parent::processRequest($request);
     }
 
     /**
@@ -470,11 +539,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     private function getDocumentByUid(int $documentId)
     {
+        // TODO: implement multiView as it is in getDocumentByUrl
         $doc = null;
         $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
 
         if ($this->document) {
             $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
+            // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
+            $this->documentArray[] = $doc;
         } else {
             $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
@@ -533,7 +605,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
             // Make sure configuration PID is set when applicable
             if ($doc->cPid == 0) {
-                $doc->cPid = max((int) $this->settings['storagePid'], 0);
+                $doc->cPid = max($this->settings['storagePid'], 0);
             }
 
             $this->document->setLocation($documentId);

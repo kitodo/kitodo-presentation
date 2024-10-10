@@ -36,3 +36,12 @@ services:
     tags:
       - name: console.command
         command: 'kitodo:suggestBuld'
+
+  Kitodo\Dlf\Validation\DOMDocumentValidationStack:
+    autowire: false
+
+  Kitodo\Dlf\Validation\SaxonXslToSvrlValidator:
+    autowire: false
+
+  Kitodo\Dlf\Validation\XmlSchemesValidator:
+    autowire: false

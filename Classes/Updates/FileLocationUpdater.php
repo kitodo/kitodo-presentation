@@ -304,7 +304,6 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
         if ($fileUid > 0) {
             $fields = [
                 'fieldname' => $this->fieldsToMigrate[$table],
-                'table_local' => 'sys_file',
                 'pid' => ($table === 'pages' ? $row['uid'] : $row['pid']),
                 'uid_foreign' => $row['uid'],
                 'uid_local' => $fileUid,

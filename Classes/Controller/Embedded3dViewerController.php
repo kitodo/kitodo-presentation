@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Plugin 'Embedded3dViewer' for the 'dlf' extension
@@ -29,13 +30,13 @@ class Embedded3dViewerController extends AbstractController
     /**
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         if (!empty($this->requestData['model']) || !empty($this->settings['model'])) {
             $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl());
-            return;
+            return $this->htmlResponse();
         }
 
         if (!empty($this->settings['document'])) {
@@ -47,6 +48,7 @@ class Embedded3dViewerController extends AbstractController
             }
         }
 
+        return $this->htmlResponse();
     }
 
     /**

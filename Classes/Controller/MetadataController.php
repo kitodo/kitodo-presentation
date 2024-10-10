@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use Psr\Http\Message\ResponseInterface;
 use Ubl\Iiif\Context\IRI;
 
 /**
@@ -98,24 +99,18 @@ class MetadataController extends AbstractController
     /**
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
-        } else {
-            // Set default values if not set.
-            $this->setDefault('rootline', 0);
-            $this->setDefault('originalIiifMetadata', 0);
-            $this->setDefault('displayIiifDescription', 1);
-            $this->setDefault('displayIiifRights', 1);
-            $this->setDefault('displayIiifLinks', 1);
-            $this->setPage();
+            return $this->htmlResponse();
         }
+
+        $this->setPage();
 
         $this->currentDocument = $this->document->getCurrentDocument();
         $this->useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
@@ -137,11 +132,13 @@ class MetadataController extends AbstractController
 
         if (empty(array_filter($metadata))) {
             $this->logger->warning('No metadata found for document with UID ' . $this->document->getUid());
-            return;
+            return $this->htmlResponse();
         }
         ksort($metadata);
 
         $this->printMetadata($metadata);
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -172,15 +169,17 @@ class MetadataController extends AbstractController
                     // NOTE: Labels are to be escaped in Fluid template
 
                     $metadata[$i][$name] = is_array($value)
-                        ? implode($this->settings['separator'], $value)
-                        : $value;
+                        ? $value
+                        : explode($this->settings['separator'], $value);
 
-                    if ($metadata[$i][$name] === 'Array') {
+                    // PHPStan error
+                    // I don't understand what this code does, so I take it away until author can fix it
+                    /*if ($metadata[$i][$name][0] === 'Array') {
                         $metadata[$i][$name] = [];
                         foreach ($value as $subKey => $subValue) {
                             $metadata[$i][$name][$subKey] = $subValue;
                         }
-                    }
+                    }*/
 
                     $this->parseMetadata($i, $name, $value, $metadata);
 
@@ -311,7 +310,7 @@ class MetadataController extends AbstractController
 
         foreach ($metadata as $i => $section) {
             if ($this->settings['linkTitle'] && $section['_id'] && isset($section['title']) && !empty($section['title'])) {
-                $details = $this->currentDocument->getLogicalStructure($section['_id']);
+                $details = $this->currentDocument->getLogicalStructure($section['_id'][0]);
                 $buildUrl[$i]['title'] = [
                     'id' => $this->document->getUid(),
                     'page' => (!empty($details['points']) ? (int) $details['points'] : 1),
@@ -528,22 +527,5 @@ class MetadataController extends AbstractController
             }
         }
         return $metadata;
-    }
-
-    /**
-     * Sets default value for setting if not yet set.
-     *
-     * @access private
-     *
-     * @param string $setting name of setting
-     * @param int $value 0 or 1
-     *
-     * @return void
-     */
-    private function setDefault(string $setting, int $value): void
-    {
-        if (!isset($this->settings[$setting])) {
-            $this->settings[$setting] = $value;
-        }
     }
 }

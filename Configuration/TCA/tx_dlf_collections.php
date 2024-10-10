@@ -171,7 +171,6 @@ return [
                     'foreign_match_fields' => [
                         'fieldname' => 'thumbnail',
                         'tablenames' => 'tx_dlf_collections',
-                        'table_local' => 'sys_file',
                     ],
                 ],
                 $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']

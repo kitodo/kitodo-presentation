@@ -51,7 +51,7 @@ class MetadataRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd($constraints)
+                $query->logicalAnd(...array_values($constraints))
             );
         }
 

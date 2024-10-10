@@ -19,10 +19,12 @@ use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Psr\Http\Message\ResponseInterface;
 use Solarium\Component\Result\FacetSet;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -82,15 +84,15 @@ class SearchController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function searchAction(): void
+    public function searchAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
 
         // output is done by main action
-        $this->forward('main', null, null, ['searchParameter' => $this->searchParams]);
+        return $this->redirect('main', null, null, ['searchParameter' => $this->searchParams]);
     }
 
     /**
@@ -100,25 +102,26 @@ class SearchController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         $listViewSearch = false;
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
             $this->logger->warning('Incomplete plugin configuration');
-            return;
+            return $this->htmlResponse();
         }
 
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
         // if search was triggered by the ListView plugin, get the parameters from GET variables
+        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
         $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
         // Quit without doing anything if no search parameters.
         if (empty($this->searchParams) && empty($listRequestData)) {
             $this->logger->warning('Missing search parameters');
-            return;
+            return $this->htmlResponse();
         }
 
         if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
@@ -152,7 +155,7 @@ class SearchController extends AbstractController
 
         // If a targetPid is given, the results will be shown by ListView on the target page.
         if (!empty($this->settings['targetPid']) && !empty($this->searchParams) && !$listViewSearch) {
-            $this->redirect(
+            return $this->redirect(
                 'main',
                 'ListView',
                 null,
@@ -219,6 +222,8 @@ class SearchController extends AbstractController
         }
 
         $this->view->assign('viewData', $this->viewData);
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -395,7 +400,9 @@ class SearchController extends AbstractController
         $collections = null;
         if (array_key_exists('collection', $this->searchParams)) {
             foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
+                if (!empty($collectionEntry)) {
+                    $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
+                }
             }
         }
         if ($collections) {
