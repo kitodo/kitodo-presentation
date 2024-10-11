@@ -595,18 +595,20 @@ final class MetsDocument extends AbstractDocument
 
         $metadata['type'] = $this->getLogicalUnitType($id);
 
-        foreach ($mdIds as $dmdId) {
-            $mdSectionType = $this->mdSec[$dmdId]['section'];
-
-            if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
-                continue;
+        if (!empty($this->mdSec)) {
+            foreach ($mdIds as $dmdId) {
+                $mdSectionType = $this->mdSec[$dmdId]['section'];
+    
+                if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
+                    continue;
+                }
+    
+                if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
+                    continue;
+                }
+    
+                $metadataSections[] = $mdSectionType;
             }
-
-            if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
-                continue;
-            }
-
-            $metadataSections[] = $mdSectionType;
         }
 
         // Files are not expected to reference a dmdSec
