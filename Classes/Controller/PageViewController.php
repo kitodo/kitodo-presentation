@@ -632,23 +632,20 @@ class PageViewController extends AbstractController
         $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpImages']);
 
         foreach ($fileGrpsImages as $fileGrpImages) {
-            $files = $this->getFiles($page, $specificDoc);
-            if (!empty($files)) {
-                // Get image link.
-                $file = $this->getFileInfo($files, $fileGrpImages, $specificDoc);
-                if ($file) {
-                    if (Helper::filterFilesByMimeType($file, 'image', 'mimeType')) {
-                        $image['url'] = $file['location'];
-                        $image['mimetype'] = $file['mimeType'];
-                    }
-
-                    // Only deliver static images via the internal PageViewProxy.
-                    // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
-                    if ($this->settings['useInternalProxy'] && !Helper::filterFilesByMimeType($file, 'application', 'mimeType')) {
-                        $this->configureProxyUrl($image['url']);
-                    }
-                    break;
+            // Get file info for the specific page and file group
+            $file = $this->fetchFileInfo($page, $fileGrpImages, $specificDoc);
+            if ($file) {
+                if (Helper::filterFilesByMimeType($file, 'image', 'mimeType')) {
+                    $image['url'] = $file['location'];
+                    $image['mimetype'] = $file['mimeType'];
                 }
+
+                // Only deliver static images via the internal PageViewProxy.
+                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
+                if ($this->settings['useInternalProxy'] && !Helper::filterFilesByMimeType($file, 'application', 'mimeType')) {
+                    $this->configureProxyUrl($image['url']);
+                }
+                break;
             } else {
                 $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
             }
@@ -662,36 +659,27 @@ class PageViewController extends AbstractController
     }
 
     /**
-     * Get files for a specific page and file group.
+     * Fetch file info for a specific page and file group.
      *
      * @param int $page Page number
-     * @param ?MetsDocument $specificDoc
+     * @param string $fileGrpImages File group
+     * @param ?MetsDocument $specificDoc Optional specific document
      *
-     * @return array|null Files array or null if not found
+     * @return array|null File info array or null if not found
      */
-    private function getFiles(int $page, ?MetsDocument $specificDoc): ?array
+    private function fetchFileInfo(int $page, string $fileGrpImages, ?MetsDocument $specificDoc): ?array
     {
+        // Get the physical structure info for the specified page
         if ($specificDoc) {
             $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
         } else {
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
         }
 
-        return $physicalStructureInfo['files'] ?? null;
-    }
-
-    /**
-     * Get file info for a specific file group.
-     *
-     * @param array $files Files array
-     * @param string $fileGrpImages
-     * @param ?MetsDocument $specificDoc
-     *
-     * @return array|null File info array or null if not found
-     */
-    private function getFileInfo(array $files, string $fileGrpImages, ?MetsDocument $specificDoc): ?array
-    {
-        if (!empty($files[$fileGrpImages])) {
+        // Get the files for the specified file group
+        $files = $physicalStructureInfo['files'] ?? null;
+        if ($files && !empty($files[$fileGrpImages])) {
+            // Get the file info for the specified file group
             if ($specificDoc) {
                 return $specificDoc->getFileInfo($files[$fileGrpImages]);
             } else {
