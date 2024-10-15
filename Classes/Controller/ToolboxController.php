@@ -272,7 +272,6 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the image download tool
      * Renders the image download tool (used in template)
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
@@ -295,13 +294,13 @@ class ToolboxController extends AbstractController
         $imageArray = [];
         // Get left or single page download.
         $image = $this->getImage($this->requestData['page']);
-        if (Helper::filterFilesByMimeType($image, 'image')) {
+        if (Helper::filterFilesByMimeType($image, ['image'])) {
             $imageArray[0] = $image;
         }
 
         if ($this->requestData['double'] == 1) {
             $image = $this->getImage($this->requestData['page'] + 1);
-            if (Helper::filterFilesByMimeType($image, 'image')) {
+            if (Helper::filterFilesByMimeType($image, ['image'])) {
                 $imageArray[1] = $image;
             }
         }

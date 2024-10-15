@@ -945,30 +945,46 @@ class Helper
     }
 
     /**
-     * Filters a file based on its mimetype category.
+     * Filters a file based on its mimetype categories.
      *
      * This method checks if the provided file array contains a specified mimetype key and
-     * verifies if the mimetype belongs to the specified category.
+     * verifies if the mimetype belongs to any of the specified categories or matches any of the additional custom mimetypes.
      *
      * @param mixed $file The file array to filter
-     * @param string $category The MIME type category to filter by (e.g., 'image', 'video', 'audio')
+     * @param array $categories The MIME type categories to filter by (e.g., ['audio'], ['video'] or ['image', 'application'])
+     * @param array $dlfMimeTypes The custom DLF mimetype keys IIIF, IIP or ZOOMIFY to check against (default is an empty array)
      * @param string $mimeTypeKey The key used to access the mimetype in the file array (default is 'mimetype')
      *
-     * @return bool True if the file mimetype belongs to the specified category, false otherwise
+     * @return bool True if the file mimetype belongs to any of the specified categories or matches any custom mimetypes, false otherwise
      */
-    public static function filterFilesByMimeType($file, string $category, string $mimeTypeKey = 'mimetype'): bool
+    public static function filterFilesByMimeType($file, array $categories, array $dlfMimeTypes = [], string $mimeTypeKey = 'mimetype'): bool
     {
         // Retrieves MIME types from the TYPO3 Core MimeTypeCollection
         $mimeTypeCollection = GeneralUtility::makeInstance(MimeTypeCollection::class);
         $mimeTypes = array_filter(
             $mimeTypeCollection->getMimeTypes(),
-            function ($mimeType) use ($category) {
-                return strpos($mimeType, $category . '/') === 0;
+            function ($mimeType) use ($categories) {
+                foreach ($categories as $category) {
+                    if (strpos($mimeType, $category . '/') === 0) {
+                        return true;
+                    }
+                }
+                return false;
             }
         );
 
+        // Custom dlf MIME types
+        $dlfMimeTypeArray = [
+            'IIIF' => 'application/vnd.kitodo.iiif',
+            'IIP' => 'application/vnd.netfpx',
+            'ZOOMIFY' => 'application/vnd.kitodo.zoomify'
+        ];
+
+        // Filter custom MIME types based on provided keys
+        $filteredDlfMimeTypes = array_intersect_key($dlfMimeTypeArray, array_flip($dlfMimeTypes));
+
         if (is_array($file) && isset($file[$mimeTypeKey])) {
-            return in_array($file[$mimeTypeKey], $mimeTypes);
+            return in_array($file[$mimeTypeKey], $mimeTypes) || in_array($file[$mimeTypeKey], $filteredDlfMimeTypes);
         }
         return false;
     }
