@@ -12,19 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        typo3: [ 10.4, 11.5 ]
+        variants: [ {typo3: 11.5, php: 7.4}, {typo3: 12.4, php: 8.1} ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.typo3 }}
+        run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.variants.typo3 }} -p ${{ matrix.variants.php }}
 
       - name: Run unit tests
-        run: Build/Test/runTests.sh -s unit
+        run: Build/Test/runTests.sh -s unit -p ${{ matrix.variants.php }}
 
       - name: Run functional tests
-        run: Build/Test/runTests.sh -s functional
+        run: Build/Test/runTests.sh -s functional -p ${{ matrix.variants.php }}
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4

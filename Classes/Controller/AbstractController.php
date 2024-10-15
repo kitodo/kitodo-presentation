@@ -15,16 +15,19 @@ use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
  * Abstract controller class for most of the plugin controller.
@@ -99,10 +102,13 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access protected
      *
+     * @param RequestInterface $request the HTTP request
+     *
      * @return void
      */
-    protected function initialize(): void
+    protected function initialize(RequestInterface $request): void
     {
+        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
         $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
         $this->pageUid = (int) GeneralUtility::_GET('id');
 
@@ -386,15 +392,19 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * This is the constructor
+     * Wrapper for ActionController::processRequest in order to initialize things
+     * without using a constructor.
      *
      * @access public
      *
-     * @return void
+     * @param RequestInterface $request the request
+     *
+     * @return ResponseInterface the response
      */
-    public function __construct()
+    public function processRequest(RequestInterface $request): ResponseInterface
     {
-        $this->initialize();
+        $this->initialize($request);
+        return parent::processRequest($request);
     }
 
     /**

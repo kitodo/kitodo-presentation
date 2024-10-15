@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\PageSelectForm;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -32,9 +33,9 @@ class NavigationController extends AbstractController
      *
      * @param PageSelectForm|NULL $pageSelectForm
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function pageSelectAction(PageSelectForm $pageSelectForm = NULL): void
+    public function pageSelectAction(PageSelectForm $pageSelectForm = null): ResponseInterface
     {
         if ($pageSelectForm) {
             $uri = $this->uriBuilder->reset()
@@ -48,8 +49,10 @@ class NavigationController extends AbstractController
                     ]
                 )
                 ->uriFor('main');
-            $this->redirectToUri($uri);
+            return $this->redirectToUri($uri);
         }
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -57,15 +60,15 @@ class NavigationController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         // Set default values if not set.
@@ -138,5 +141,7 @@ class NavigationController extends AbstractController
                 $this->view->assign('measurePages', $measurePages);
             }
         }
+
+        return $this->htmlResponse();
     }
 }

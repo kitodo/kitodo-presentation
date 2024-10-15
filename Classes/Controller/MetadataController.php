@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use Psr\Http\Message\ResponseInterface;
 use Ubl\Iiif\Context\IRI;
 
 /**
@@ -98,15 +99,15 @@ class MetadataController extends AbstractController
     /**
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         $this->setPage();
@@ -131,11 +132,13 @@ class MetadataController extends AbstractController
 
         if (empty(array_filter($metadata))) {
             $this->logger->warning('No metadata found for document with UID ' . $this->document->getUid());
-            return;
+            return $this->htmlResponse();
         }
         ksort($metadata);
 
         $this->printMetadata($metadata);
+
+        return $this->htmlResponse();
     }
 
     /**

@@ -17,6 +17,7 @@ use Kitodo\Dlf\Domain\Model\Token;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Controller class for the plugin 'OAI-PMH Interface'.
@@ -91,7 +92,7 @@ class OaiPmhController extends AbstractController
      */
     public function initializeAction()
     {
-        $this->request->setFormat('xml');
+        $this->request = $this->request->withFormat("xml");
     }
 
     /**
@@ -163,6 +164,7 @@ class OaiPmhController extends AbstractController
         $this->parameters = [];
         // Set only allowed parameters.
         foreach ($allowedParams as $param) {
+            // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
             if (GeneralUtility::_GP($param)) {
                 $this->parameters[$param] = GeneralUtility::_GP($param);
             }
@@ -263,9 +265,9 @@ class OaiPmhController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface
      */
-    public function mainAction()
+    public function mainAction(): ResponseInterface
     {
         // Get allowed GET and POST variables.
         $this->getUrlParams();
@@ -273,7 +275,7 @@ class OaiPmhController extends AbstractController
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
 
-        switch ($this->parameters['verb']) {
+        switch ($this->parameters['verb'] ?? null) {
             case 'GetRecord':
                 $this->verbGetRecord();
                 break;
@@ -300,7 +302,7 @@ class OaiPmhController extends AbstractController
         $this->view->assign('parameters', $this->parameters);
         $this->view->assign('error', $this->error);
 
-        return;
+        return $this->htmlResponse();
     }
 
     /**

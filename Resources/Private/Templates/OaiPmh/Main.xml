@@ -17,7 +17,14 @@
     <responseDate><f:format.date format="Y-m-d\TH:i:s\Z">now</f:format.date></responseDate>
     <f:comment>As per the specification, don't show arguments on badVerb or badArgument.</f:comment>
     {f:if(condition: '{error} == "badVerb" || {error} == "badArgument"', then: '{}', else: '{parameters}') -> f:variable(name: 'shownParameters')}
-    <request{f:if(condition: i.isFirst, then: ' {key}="{value}"', else: ' {key}="{value}"') -> f:for(each:'{shownParameters}', as:'value', key:'key', iteration:'i')}><f:uri.page absolute="1" /></request>
+    <f:if condition="{shownParameters}">
+        <f:then>
+            <request{f:if(condition: i.isFirst, then: ' {key}="{value}"', else: ' {key}="{value}"') -> f:for(each:'{shownParameters}', as:'value', key:'key', iteration:'i')}><f:uri.page absolute="1" /></request>
+        </f:then>
+        <f:else>
+            <request><f:uri.page absolute="1" /></request>
+        </f:else>
+    </f:if>
     <f:if condition="{error}">
         <f:then>
             <error code="{error}">

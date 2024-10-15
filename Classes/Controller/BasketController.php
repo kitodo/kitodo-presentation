@@ -19,6 +19,7 @@ use Kitodo\Dlf\Domain\Repository\ActionLogRepository;
 use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
@@ -112,9 +113,9 @@ class BasketController extends AbstractController
      * 
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function basketAction(): void
+    public function basketAction(): ResponseInterface
     {
         $basket = $this->getBasketData();
 
@@ -153,7 +154,7 @@ class BasketController extends AbstractController
             }
         }
 
-        $this->redirect('main');
+        return $this->redirect('main');
     }
 
     /**
@@ -161,9 +162,9 @@ class BasketController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function addAction(): void
+    public function addAction(): ResponseInterface
     {
         $basket = $this->getBasketData();
 
@@ -174,7 +175,7 @@ class BasketController extends AbstractController
             $basket = $this->addToBasket($this->requestData, $basket);
         }
 
-        $this->redirect('main');
+        return $this->redirect('main');
     }
 
     /**
@@ -182,9 +183,9 @@ class BasketController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         $basket = $this->getBasketData();
 
@@ -224,6 +225,8 @@ class BasketController extends AbstractController
             }
             $this->view->assign('entries', $entries);
         }
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -237,10 +240,9 @@ class BasketController extends AbstractController
     {
         // get user session
         $userSession = $GLOBALS['TSFE']->fe_user->getSession();
-        $context = GeneralUtility::makeInstance(Context::class);
 
         // Checking if a user is logged in
-        $userIsLoggedIn = $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+        $userIsLoggedIn = $this->isUserLoggedIn();
 
         if ($userIsLoggedIn) {
             $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
@@ -601,7 +603,7 @@ class BasketController extends AbstractController
         $newActionLog->setCountPages($numberOfPages);
         $newActionLog->setLabel('Mail: ' . $mailObject->getMail());
 
-        if ($GLOBALS["TSFE"]->loginUser) {
+        if ($this->isUserLoggedIn()) {
             // internal user
             $newActionLog->setUserId($GLOBALS["TSFE"]->fe_user->user['uid']);
             $newActionLog->setName($GLOBALS["TSFE"]->fe_user->user['username']);
@@ -612,8 +614,6 @@ class BasketController extends AbstractController
         }
 
         $this->actionLogRepository->add($newActionLog);
-
-        $this->redirect('main');
     }
 
     /**
@@ -661,7 +661,7 @@ class BasketController extends AbstractController
         $actionLog->setFileName($pdfUrl);
         $actionLog->setCountPages($numberOfPages);
 
-        if ($GLOBALS["TSFE"]->loginUser) {
+        if ($this->isUserLoggedIn()) {
             // internal user
             $actionLog->setUserId($GLOBALS["TSFE"]->fe_user->user['uid']);
             $actionLog->setName($GLOBALS["TSFE"]->fe_user->user['username']);
@@ -676,5 +676,18 @@ class BasketController extends AbstractController
         $this->actionLogRepository->add($actionLog);
 
         $this->redirectToUri($pdfUrl);
+    }
+
+    /**
+     * Return true if the user is logged in.
+     * 
+     * @access protected
+     * 
+     * @return bool whether the user is logged in
+     */
+    protected function isUserLoggedIn(): bool
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        return $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
     }
 }

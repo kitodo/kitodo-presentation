@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -71,15 +72,15 @@ class AudioplayerController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         $this->setDefaultPage();
@@ -103,5 +104,7 @@ class AudioplayerController extends AbstractController
             // Add jPlayer javascript.
             $this->addPlayerJS();
         }
+
+        return $this->htmlResponse();
     }
 }

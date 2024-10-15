@@ -14,8 +14,10 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Context\Context;
@@ -583,7 +585,7 @@ class Helper
         $context = GeneralUtility::makeInstance(Context::class);
 
         if (
-            \TYPO3_MODE === 'BE'
+            ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()
             && $context->getPropertyFromAspect('backend.user', 'isAdmin')
         ) {
             // Instantiate TYPO3 core engine.
@@ -783,8 +785,7 @@ class Helper
      */
     public static function whereExpression(string $table, bool $showHidden = false): string
     {
-        // TODO: Check with applicationType; TYPO3_MODE is removed in v12
-        if (\TYPO3_MODE === 'FE') {
+        if (!Environment::isCli() && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             // Should we ignore the record's hidden flag?
             $ignoreHide = 0;
             if ($showHidden) {
@@ -799,14 +800,13 @@ class Helper
             } else {
                 return '';
             }
-            // TODO: Check with applicationType; TYPO3_MODE is removed in v12
-        } elseif (\TYPO3_MODE === 'BE') {
+        } elseif (Environment::isCli() || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             return GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table)
                 ->expr()
                 ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
-            self::log('Unexpected TYPO3_MODE', LOG_SEVERITY_ERROR);
+            self::log('Unexpected application type (neither frontend or backend)', LOG_SEVERITY_ERROR);
             return '1=-1';
         }
     }

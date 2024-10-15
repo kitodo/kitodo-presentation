@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\MetsDocument;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -38,20 +39,22 @@ class TableOfContentsController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         } else {
             $this->setPage();
 
             $this->view->assign('toc', $this->makeMenuArray());
         }
+
+        return $this->htmlResponse();
     }
 
     /**
