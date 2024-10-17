@@ -35,7 +35,7 @@ services:
   Kitodo\Dlf\Command\SuggestBuildCommand:
     tags:
       - name: console.command
-        command: 'kitodo:suggestBuld'
+        command: 'kitodo:suggestBuild'
 
   Kitodo\Dlf\Validation\DOMDocumentValidationStack:
     autowire: false
