@@ -595,18 +595,20 @@ final class MetsDocument extends AbstractDocument
 
         $metadata['type'] = $this->getLogicalUnitType($id);
 
-        foreach ($mdIds as $dmdId) {
-            $mdSectionType = $this->mdSec[$dmdId]['section'];
-
-            if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
-                continue;
+        if (!empty($this->mdSec)) {
+            foreach ($mdIds as $dmdId) {
+                $mdSectionType = $this->mdSec[$dmdId]['section'];
+    
+                if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
+                    continue;
+                }
+    
+                if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
+                    continue;
+                }
+    
+                $metadataSections[] = $mdSectionType;
             }
-
-            if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
-                continue;
-            }
-
-            $metadataSections[] = $mdSectionType;
         }
 
         // Files are not expected to reference a dmdSec
@@ -1507,7 +1509,7 @@ final class MetsDocument extends AbstractDocument
                 }
             }
 
-            // Get track info wtih begin end extent time for later assignment with musical
+            // Get track info with begin and extent time for later assignment with musical
             if ((string) $elementNode['TYPE'] === 'track') {
                 foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
                     if (isset($fptr->area) &&  ((string) $fptr->area->attributes()->BETYPE === 'TIME')) {

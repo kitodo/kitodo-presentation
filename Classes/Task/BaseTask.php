@@ -367,11 +367,11 @@ class BaseTask extends AbstractTask
     }
 
     /**
-     * Generates and adds flash messages based on a string seperated by PHP_EOL.
+     * Generates and adds flash messages based on a string separated by PHP_EOL.
      *
      * @access protected
      *
-     * @param string $message Messages seperated by PHP_EOL
+     * @param string $message Messages separated by PHP_EOL
      * @param int $severity
      *
      * @return void
