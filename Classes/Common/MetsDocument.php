@@ -1510,7 +1510,7 @@ final class MetsDocument extends AbstractDocument
                 }
             }
 
-            // Get track info wtih begin end extent time for later assignment with musical
+            // Get track info with begin and extent time for later assignment with musical
             if ((string) $elementNode['TYPE'] === 'track') {
                 foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
                     if (isset($fptr->area) &&  ((string) $fptr->area->attributes()->BETYPE === 'TIME')) {
