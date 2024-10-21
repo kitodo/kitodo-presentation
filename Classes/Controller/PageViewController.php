@@ -414,7 +414,7 @@ class PageViewController extends AbstractController
         }
 
         if (empty($score)) {
-            $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . $this->settings['fileGrpScore'] . '"');
+            $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['fileGrpScore'] ?? '') . '"');
         }
         return $score;
     }
