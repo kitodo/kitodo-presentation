@@ -122,18 +122,20 @@ class PageViewController extends AbstractController
 
         $this->setPage();
 
+        $page = $this->requestData['page'] ?? 0;
+
         // Get image data.
-        $this->images[0] = $this->getImage($this->requestData['page']);
-        $this->fulltexts[0] = $this->getFulltext($this->requestData['page']);
-        $this->annotationContainers[0] = $this->getAnnotationContainers($this->requestData['page']);
-        if ($this->requestData['double'] && $this->requestData['page'] < $this->document->getCurrentDocument()->numPages) {
-            $this->images[1] = $this->getImage($this->requestData['page'] + 1);
-            $this->fulltexts[1] = $this->getFulltext($this->requestData['page'] + 1);
-            $this->annotationContainers[1] = $this->getAnnotationContainers($this->requestData['page'] + 1);
+        $this->images[0] = $this->getImage($page);
+        $this->fulltexts[0] = $this->getFulltext($page);
+        $this->annotationContainers[0] = $this->getAnnotationContainers($page);
+        if ($this->requestData['double'] && $page < $this->document->getCurrentDocument()->numPages) {
+            $this->images[1] = $this->getImage($page + 1);
+            $this->fulltexts[1] = $this->getFulltext($page + 1);
+            $this->annotationContainers[1] = $this->getAnnotationContainers($page + 1);
         }
 
-        $this->scores = $this->getScore($this->requestData['page']);
-        $this->measures = $this->getMeasures($this->requestData['page']);
+        $this->scores = $this->getScore($page);
+        $this->measures = $this->getMeasures($page);
 
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
@@ -154,7 +156,7 @@ class PageViewController extends AbstractController
 
         $this->view->assign('images', $this->images);
         $this->view->assign('docId', $this->requestData['id']);
-        $this->view->assign('page', $this->requestData['page']);
+        $this->view->assign('page', $page);
 
         return $this->htmlResponse();
     }
@@ -280,7 +282,7 @@ class PageViewController extends AbstractController
     {
         if (GeneralUtility::isValidUrl($formAddDocument->getLocation())) {
             $nextMultipleSourceKey = 0;
-            if ($this->requestData['multipleSource']) {
+            if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
                 $nextMultipleSourceKey = max(array_keys($this->requestData['multipleSource'])) + 1;
             }
             $params = array_merge(
@@ -527,7 +529,7 @@ class PageViewController extends AbstractController
                 });';
         } else {
             $currentMeasureId = '';
-            $docPage = $this->requestData['page'];
+            $docPage = $this->requestData['page'] ?? 0;
 
             $docMeasures = $this->getMeasures($docPage);
             if ($this->requestData['measure'] ?? false) {
@@ -537,7 +539,7 @@ class PageViewController extends AbstractController
             $viewer = [
                 'controls' => $this->controls,
                 'div' => $this->settings['elementId'],
-                'progressElementId' => $this->settings['progressElementId'],
+                'progressElementId' => $this->settings['progressElementId'] ?? 'tx-dlf-page-progress',
                 'images' => $this->images,
                 'fulltexts' => $this->fulltexts,
                 'score' => $this->scores,

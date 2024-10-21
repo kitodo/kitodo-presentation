@@ -8,7 +8,7 @@
          <channel>
             <title>{settings.title}</title>
             <description>{settings.description}</description>
-            <link><f:uri.action addQueryString="1" absolute="1" /></link>
+            <link><f:uri.action addQueryString="untrusted" absolute="1" /></link>
             <f:if condition="{feedMeta.copyright}">
                 <copyright>{feedMeta.copyright}</copyright>
             </f:if>

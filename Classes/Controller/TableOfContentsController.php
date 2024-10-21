@@ -263,12 +263,12 @@ class TableOfContentsController extends AbstractController
      */
     private function getAllLogicalUnits(): void
     {
-        $page = $this->requestData['page'];
         $physicalStructure = $this->document->getCurrentDocument()->physicalStructure;
-        if (
-            !empty($page)
+        if (isset($this->requestData['page']) &&
+            !empty($this->requestData['page'])
             && !empty($physicalStructure)
         ) {
+            $page = $this->requestData['page'];
             $structureMapLinks = $this->document->getCurrentDocument()->smLinks;
             $this->activeEntries = array_merge(
                 (array) $structureMapLinks['p2l'][$physicalStructure[0]],

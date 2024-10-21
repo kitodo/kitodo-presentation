@@ -371,9 +371,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // Set default values if not set.
         // $this->requestData['page'] may be integer or string (physical structure @ID)
         if (
-            (int) $this->requestData['page'] > 0
-            || empty($this->requestData['page'])
-            || is_array($this->requestData['docPage'])
+            isset($this->requestData['page'])
+            && (
+                (int) $this->requestData['page'] > 0
+                || empty($this->requestData['page'])
+                || is_array($this->requestData['docPage'])
+            )
         ) {
             if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
                 $i = 0;
@@ -471,7 +474,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 // array with label as screen/pagination page number
                 // and startRecordNumber for correct structure of the link
                 //<f:link.action action="{action}"
-                //      addQueryString="true"
+                //      addQueryString="untrusted"
                 //      argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"
                 //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
                 //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
@@ -581,7 +584,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         } else {
             $this->documentArray[] = $doc;
         }
-        if ($this->requestData['multipleSource'] && is_array($this->requestData['multipleSource'])) {
+        if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
             $i = 0;
             foreach ($this->requestData['multipleSource'] as $location) {
                 $document = AbstractDocument::getInstance($location, $this->settings, true);

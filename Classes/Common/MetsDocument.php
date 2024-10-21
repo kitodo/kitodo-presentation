@@ -845,9 +845,8 @@ final class MetsDocument extends AbstractDocument
     private function setSortableMetadataValue(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
         $indexName = $resArray['index_name'];
-        $currentMetadata = $metadata[$indexName][0];
-
         if (!empty($metadata[$indexName]) && $resArray['is_sortable']) {
+            $currentMetadata = $metadata[$indexName][0];
             if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
                 $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
                 if ($values instanceof DOMNodeList && $values->length > 0) {
@@ -1338,7 +1337,7 @@ final class MetsDocument extends AbstractDocument
             // Get configured USE attributes.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
             $useGrps = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
-            
+
             $configKeys = [
                 'fileGrpThumbs',
                 'fileGrpDownload',
@@ -1346,7 +1345,7 @@ final class MetsDocument extends AbstractDocument
                 'fileGrpAudio',
                 'fileGrpScore'
             ];
-            
+
             foreach ($configKeys as $key) {
                 if (!empty($extConf[$key])) {
                     $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf[$key]));

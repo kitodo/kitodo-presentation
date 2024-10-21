@@ -18,3 +18,5 @@
 /var/
 /vendor/
 .DS_Store
+_build
+venv
