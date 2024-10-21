@@ -459,7 +459,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 $lastStartRecordNumberGrid = $startRecordNumber; // save last $startRecordNumber for LastPage button
 
                 // array with label as screen/pagination page number
-                // and startRecordNumer for correct structure of the link
+                // and startRecordNumber for correct structure of the link
                 //<f:link.action action="{action}"
                 //      addQueryString="true"
                 //      argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"

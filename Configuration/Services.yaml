@@ -35,4 +35,13 @@ services:
   Kitodo\Dlf\Command\SuggestBuildCommand:
     tags:
       - name: console.command
-        command: 'kitodo:suggestBuld'
+        command: 'kitodo:suggestBuild'
+
+  Kitodo\Dlf\Validation\DOMDocumentValidationStack:
+    autowire: false
+
+  Kitodo\Dlf\Validation\SaxonXslToSvrlValidator:
+    autowire: false
+
+  Kitodo\Dlf\Validation\XmlSchemesValidator:
+    autowire: false
