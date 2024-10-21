@@ -19,7 +19,7 @@ Currently **TYPO3 11.5 ELTS** and **TYPO3 12.4 LTS** is supported with the follo
 | TYPO3                   | 11.5.37+               | 12.4.16+               |
 | PHP                     | 7.4.x - 8.3.x          | 8.1.x - 8.3.x          |
 | MySQL                   | 5.7.9 - 8.0.x          | 5.7.9 - 8.0.x          |
-| MariaDB                 | 10.2.7 - 10.11.x       | 10.2.7 - 10.11.x       |
+| MariaDB                 | 10.2.7 - 11.4.x        | 10.2.7 - 11.4.x        |
 | Apache Solr             | 8.x                    | 8.x                    |
 | OCR Highlighting Plugin | 0.8.x-solr78           | 0.8.x-solr78           |
 
