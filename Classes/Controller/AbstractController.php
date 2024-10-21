@@ -373,7 +373,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         if (
             isset($this->requestData['page'])
             && (
-                (int)$this->requestData['page'] > 0
+                (int) $this->requestData['page'] > 0
                 || empty($this->requestData['page'])
                 || is_array($this->requestData['docPage']
                 ))
