@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\DocumentAnnotation;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\Document;
@@ -416,7 +417,7 @@ class PageViewController extends AbstractController
         }
 
         if (empty($score)) {
-            $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . ($this->settings['fileGrpScore'] ?? '') . '"');
+            $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['fileGrpScore'] ?? '') . '"');
         }
         return $score;
     }
@@ -620,7 +621,6 @@ class PageViewController extends AbstractController
      * @access protected
      *
      * @param int $page Page number
-     *
      * @param ?MetsDocument $specificDoc
      *
      * @return array URL and MIME type of image file
@@ -630,50 +630,61 @@ class PageViewController extends AbstractController
         $image = [];
         // Get @USE value of METS fileGrp.
         $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpImages']);
-        while ($fileGrpImages = array_pop($fileGrpsImages)) {
-            if ($specificDoc) {
-                // Get image link.
-                $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
-                $files = $physicalStructureInfo['files'];
-                if (!empty($files[$fileGrpImages])) {
-                    $file = $specificDoc->getFileInfo($files[$fileGrpImages]);
-                    $image['url'] = $file['location'];
-                    $image['mimetype'] = $file['mimeType'];
 
-                    // Only deliver static images via the internal PageViewProxy.
-                    // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
-                    if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
-                        $this->configureProxyUrl($image['url']);
-                    }
-                    break;
-                } else {
-                    $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
+        foreach ($fileGrpsImages as $fileGrpImages) {
+            // Get file info for the specific page and file group
+            $file = $this->fetchFileInfo($page, $fileGrpImages, $specificDoc);
+            if ($file && Helper::filterFilesByMimeType($file, ['image', 'application'], ['IIIF', 'IIP', 'ZOOMIFY'], 'mimeType')) {
+                $image['url'] = $file['location'];
+                $image['mimetype'] = $file['mimeType'];
+
+                // Only deliver static images via the internal PageViewProxy.
+                // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
+                if ($this->settings['useInternalProxy'] && !Helper::filterFilesByMimeType($file, ['application'], ['IIIF', 'IIP', 'ZOOMIFY'], 'mimeType')) {
+                    $this->configureProxyUrl($image['url']);
                 }
-
+                break;
             } else {
-
-                // Get image link.
-                $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
-                $files = $physicalStructureInfo['files'];
-                if (!empty($files[$fileGrpImages])) {
-                    $file = $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpImages]);
-                    $image['url'] = $file['location'];
-                    $image['mimetype'] = $file['mimeType'];
-
-                    // Only deliver static images via the internal PageViewProxy.
-                    // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
-                    if ($this->settings['useInternalProxy'] && !str_contains(strtolower($image['mimetype']), 'application')) {
-                        $this->configureProxyUrl($image['url']);
-                    }
-                    break;
-                } else {
-                    $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
-                }
+                $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
             }
         }
+
         if (empty($image)) {
             $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->extConf['files']['fileGrpImages'] . '"');
         }
+
         return $image;
+    }
+
+    /**
+     * Fetch file info for a specific page and file group.
+     *
+     * @param int $page Page number
+     * @param string $fileGrpImages File group
+     * @param ?MetsDocument $specificDoc Optional specific document
+     *
+     * @return array|null File info array or null if not found
+     */
+    private function fetchFileInfo(int $page, string $fileGrpImages, ?MetsDocument $specificDoc): ?array
+    {
+        // Get the physical structure info for the specified page
+        if ($specificDoc) {
+            $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
+        } else {
+            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+        }
+
+        // Get the files for the specified file group
+        $files = $physicalStructureInfo['files'] ?? null;
+        if ($files && !empty($files[$fileGrpImages])) {
+            // Get the file info for the specified file group
+            if ($specificDoc) {
+                return $specificDoc->getFileInfo($files[$fileGrpImages]);
+            } else {
+                return $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpImages]);
+            }
+        }
+
+        return null;
     }
 }
