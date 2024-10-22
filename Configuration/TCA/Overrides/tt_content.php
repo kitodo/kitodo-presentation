@@ -36,7 +36,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'AudioPlayer.xml'
+    'FILE:' . $flexFormsDirectory . 'AudioPlayer.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -54,7 +54,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Basket.xml'
+    'FILE:' . $flexFormsDirectory . 'Basket.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -72,7 +72,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Calendar.xml'
+    'FILE:' . $flexFormsDirectory . 'Calendar.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -90,7 +90,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Collection.xml'
+    'FILE:' . $flexFormsDirectory . 'Collection.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -108,7 +108,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'dlf_embedded3dviewer',
-    $flexFormsDirectory . 'Embedded3dViewer.xml'
+    'FILE:' . $flexFormsDirectory . 'Embedded3dViewer.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -126,7 +126,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Feeds.xml'
+    'FILE:' . $flexFormsDirectory . 'Feeds.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -144,7 +144,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'ListView.xml'
+    'FILE:' . $flexFormsDirectory . 'ListView.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -161,7 +161,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Metadata.xml'
+    'FILE:' . $flexFormsDirectory . 'Metadata.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -179,7 +179,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Navigation.xml'
+    'FILE:' . $flexFormsDirectory . 'Navigation.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -197,7 +197,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'OaiPmh.xml'
+    'FILE:' . $flexFormsDirectory . 'OaiPmh.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -214,7 +214,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'PageGrid.xml'
+    'FILE:' . $flexFormsDirectory . 'PageGrid.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -231,7 +231,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'PageView.xml'
+    'FILE:' . $flexFormsDirectory . 'PageView.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -249,7 +249,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Search.xml'
+    'FILE:' . $flexFormsDirectory . 'Search.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -267,7 +267,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Statistics.xml'
+    'FILE:' . $flexFormsDirectory . 'Statistics.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -285,7 +285,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'TableOfContents.xml'
+    'FILE:' . $flexFormsDirectory . 'TableOfContents.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -302,7 +302,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
-    $flexFormsDirectory . 'Toolbox.xml'
+    'FILE:' . $flexFormsDirectory . 'Toolbox.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
