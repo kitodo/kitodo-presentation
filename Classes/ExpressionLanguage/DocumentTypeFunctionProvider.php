@@ -141,7 +141,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                     && !$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0])) {
                     $type = $metadata['type'][0];
                 }
-
                 return $type;
             });
     }
@@ -162,6 +161,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         if (!empty($requestData['id'])) {
             $this->initializeRepositories($pid);
             $doc = null;
+            $this->document = null;
             if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
                 // find document from repository by uid
                 $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id'], ['storagePid' => $pid]);
@@ -172,6 +172,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
             } elseif (GeneralUtility::isValidUrl($requestData['id'])) {
                 $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid], true);
+
                 if ($doc !== null) {
                     if ($doc->recordId) {
                         $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);

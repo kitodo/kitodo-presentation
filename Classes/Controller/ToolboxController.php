@@ -372,7 +372,9 @@ class ToolboxController extends AbstractController
 
         $this->setPage();
 
-        $this->view->assign('modelDownload', $this->getFile($this->requestData['page'], GeneralUtility::trimExplode(',', $this->settings['fileGrpsModelDownload'])));
+        if (isset($this->requestData['page'])) {
+            $this->view->assign('modelDownload', $this->getFile($this->requestData['page'], GeneralUtility::trimExplode(',', $this->settings['fileGrpsModelDownload'])));
+        }
     }
 
     /**
