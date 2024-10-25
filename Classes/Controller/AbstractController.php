@@ -108,7 +108,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function initialize(RequestInterface $request): void
     {
         $this->requestData = $request->getQueryParams()['tx_dlf'];
-        $this->pageUid = (int) $this->requestData['id'] ?? 0;
+        $this->pageUid = (int) $this->requestData['id'] ?? null;
+        $this->requestData['page'] = $this->requestData['page'] ?? 1;
 
         // Sanitize user input to prevent XSS attacks.
         $this->sanitizeRequestData();
