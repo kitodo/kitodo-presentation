@@ -419,7 +419,7 @@ class ToolboxController extends AbstractController
         $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpDownload']);
         // Get image link.
         while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
-            $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$fileGrpDownload];
+            $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$fileGrpDownload] ?? [];
             if (!empty($firstFileGroupDownload)) {
                 $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
                 // Get second page, too, if double page view is activated.
@@ -463,7 +463,7 @@ class ToolboxController extends AbstractController
         $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpDownload']);
         // Get work link.
         while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
-            $fileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[0]]['files'][$fileGrpDownload];
+            $fileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[0]]['files'][$fileGrpDownload] ?? [];
             if (!empty($fileGroupDownload)) {
                 $workLink = $this->currentDocument->getFileLocation($fileGroupDownload);
                 break;
