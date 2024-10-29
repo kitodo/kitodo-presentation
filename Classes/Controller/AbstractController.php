@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
@@ -107,8 +108,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function initialize(RequestInterface $request): void
     {
+        /** @var Request $request */
         $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
-        $this->pageUid = (int) $this->requestData['id'] ?? null;
+        $this->pageUid = (isset($this->requestData['id'])) ? (int)$this->requestData['id'] : null;
         $this->requestData['page'] = $this->requestData['page'] ?? 1;
 
         // Sanitize user input to prevent XSS attacks.
