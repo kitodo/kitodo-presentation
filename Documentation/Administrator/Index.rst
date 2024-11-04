@@ -220,6 +220,9 @@ b. Rename solrconfig_8.11.2.xml in $SOLR_HOME/configsets/dlf/ to solrconfig.xml
 c. Restart Solr.
 d. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
 
+Furthermore version 5.1 supports the use of Solr Managed Schemas to update the schemas automatically during the update of the extension.
+To use this feature you have to change the schemaFactory within solrconfig.xml from "ClassicIndexSchemaFactory" to "ManagedIndexSchemaFactory".
+
 *******
 Logging
 *******
