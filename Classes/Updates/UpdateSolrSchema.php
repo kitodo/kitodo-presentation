@@ -21,7 +21,7 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Class UpdateSolrSchema
- * 
+ *
  * @package TYPO3
  * @subpackage dlf
  *
@@ -80,27 +80,31 @@ class UpdateSolrSchema implements UpgradeWizardInterface
     {
         $affectedSolrCores = $this->getAllAffectedSolrCores();
 
-        foreach($affectedSolrCores as $affectedSolrCore) {
+        foreach ($affectedSolrCores as $affectedSolrCore) {
 
             $solr = Solr::getInstance($affectedSolrCore['uid']);
             if (!$solr->ready) {
                 continue;
             }
 
-            $query = $solr->service->createApi([
-                'version' => Request::API_V1,
-                'handler' => $affectedSolrCore['index_name'].'/schema',
-                'method' => Request::METHOD_POST,
-                'rawdata' => json_encode([
-                    'replace-field' => [
-                        'name' => 'autocomplete',
-                        'type' => 'autocomplete',
-                        'indexed' => true,
-                        'stored' => true,
-                        'multiValued' => true,
-                    ],
-                ]),
-            ]);
+            $query = $solr->service->createApi(
+                [
+                    'version' => Request::API_V1,
+                    'handler' => $affectedSolrCore['index_name'].'/schema',
+                    'method' => Request::METHOD_POST,
+                    'rawdata' => json_encode(
+                        [
+                            'replace-field' => [
+                                'name' => 'autocomplete',
+                                'type' => 'autocomplete',
+                                'indexed' => true,
+                                'stored' => true,
+                                'multiValued' => true,
+                            ],
+                        ]
+                    ),
+                ]
+            );
             $result = $solr->service->execute($query);
 
             if ($result->getResponse()->getStatusCode() == 400) {
@@ -121,7 +125,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
      */
     public function updateNecessary(): bool
     {
-        if(count($this->getAllAffectedSolrCores())) {
+        if (count($this->getAllAffectedSolrCores())) {
             return true;
         }
         return false;
@@ -146,7 +150,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
 
     /**
      * Returns all affected Solr cores
-     * 
+     *
      * @access private
      *
      * @return array
@@ -162,39 +166,35 @@ class UpdateSolrSchema implements UpgradeWizardInterface
 
         $affectedSolrCores = [];
 
-        foreach($allSolrCores as $solrCore) {
+        foreach ($allSolrCores as $solrCore) {
             $solr = Solr::getInstance($solrCore['uid']);
             if (!$solr->ready) {
                 continue;
             }
 
-            $query = $solr->service->createApi([
-                'version' => Request::API_V1,
-                'handler' => $solrCore['index_name'].'/config/schemaFactory',
-                'method' => Request::METHOD_GET
-                
-            ]);
+            $query = $solr->service->createApi(
+                [
+                    'version' => Request::API_V1,
+                    'handler' => $solrCore['index_name'].'/config/schemaFactory',
+                    'method' => Request::METHOD_GET
+                ]
+            );
             $result = $solr->service->execute($query)->getData();
 
-            if(!isset($result['config']['schemaFactory']['class'])) {
-                continue;
-            }
-            else if($result['config']['schemaFactory']['class'] != 'ManagedIndexSchemaFactory') {
+            if (!isset($result['config']['schemaFactory']['class']) || $result['config']['schemaFactory']['class'] != 'ManagedIndexSchemaFactory') {
                 continue;
             }
 
-            $query = $solr->service->createApi([
-                'version' => Request::API_V1,
-                'handler' => $solrCore['index_name'].'/schema/fields/autocomplete',
-                'method' => Request::METHOD_GET
-                
-            ]);
+            $query = $solr->service->createApi(
+                [
+                    'version' => Request::API_V1,
+                    'handler' => $solrCore['index_name'].'/schema/fields/autocomplete',
+                    'method' => Request::METHOD_GET
+                ]
+            );
             $result = $solr->service->execute($query)->getData();
 
-            if(!isset($result['field']['stored'])) {
-                continue;
-            }
-            else if($result['field']['stored'] === true) {
+            if (!isset($result['field']['stored']) || $result['field']['stored'] === true) {
                 continue;
             }
 
