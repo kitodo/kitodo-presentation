@@ -22,11 +22,11 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
@@ -108,9 +108,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function initialize(RequestInterface $request): void
     {
-        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-        $this->requestData = GeneralUtility::_GPmerged('tx_dlf');
-        $this->pageUid = (int) GeneralUtility::_GET('id');
+        /** @var Request $request */
+        $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
+        $this->pageUid = (int) ($this->requestData['id'] ?? 0);
+        $this->requestData['page'] = $this->requestData['page'] ?? 1;
 
         // Sanitize user input to prevent XSS attacks.
         $this->sanitizeRequestData();
