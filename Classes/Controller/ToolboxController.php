@@ -516,7 +516,7 @@ class ToolboxController extends AbstractController
             'labelHighlightWord' => $this->settings['highlightWordInputName'],
             'labelEncrypted' => $this->settings['encryptedInputName'],
             'documentId' => $this->getCurrentDocumentId(),
-            'documentPageId' => $this->document->getPid(),
+            'pageId' => $this->request->getAttribute('routing')->getPageId(),
             'solrEncrypted' => $this->getEncryptedCoreName() ? : ''
         ];
 
