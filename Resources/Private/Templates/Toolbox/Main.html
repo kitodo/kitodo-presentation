@@ -87,6 +87,18 @@
         </f:then>
     </f:if>
 
+    <f:if condition="{renderViewerSelectionTool} && {viewers}">
+        <f:then>
+            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" name="tx_dlf[viewer]"
+                           options="{viewers}"
+                           optionValueField="id"
+                           optionLabelField="name"
+                           value="{viewData.requestData.page}"
+                           additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
+            </f:form.select>
+        </f:then>
+    </f:if>
+
     <f:if condition="{renderFulltextTool}">
         <f:then>
             <li>
