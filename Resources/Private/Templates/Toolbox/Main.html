@@ -75,11 +75,11 @@
         </f:then>
     </f:if>
 
-    <f:if condition="{renderModelDownloadTool} && {modelDownloadUrl}">
+    <f:if condition="{renderModelDownloadTool} && {modelUrl}">
         <f:then>
             <li>
             <span class="tx-dlf-tools-modeldownload">
-                <f:link.external uri="{modelDownloadUrl}">
+                <f:link.external uri="{modelUrl}">
                     <f:translate key="downloadModel"/>
                 </f:link.external>
             </span>

@@ -400,7 +400,7 @@ class ToolboxController extends AbstractController
             $this->logger->debug("Model URL could not be determined");
             return;
         }
-        $this->view->assign('modelDownloadUrl', $modelUrl);
+        $this->view->assign('modelUrl', $modelUrl);
     }
 
 
