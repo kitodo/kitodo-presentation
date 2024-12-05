@@ -438,7 +438,7 @@ class ToolboxController extends AbstractController
                         $fileIdentifier = $viewerFolder->getFile(Embedded3dViewer::VIEWER_CONFIG_YML)->getIdentifier();
                         $viewerConfig = $yamlFileLoader->load($defaultStorage->getName() . $fileIdentifier)["viewer"];
                         if (!empty($viewerConfig["supportedModelFormats"]) && in_array($modelFormat, array_map('strtolower', $viewerConfig["supportedModelFormats"]))) {
-                            $viewers[] = (object)['id' => $viewerFolder->getName(), 'name' => $viewerConfig["name"] ?? $viewerFolder->getName()];
+                            $viewers[] = (object) ['id' => $viewerFolder->getName(), 'name' => $viewerConfig["name"] ?? $viewerFolder->getName()];
                         }
                     }
                 }
