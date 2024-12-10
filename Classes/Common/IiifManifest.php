@@ -755,17 +755,23 @@ final class IiifManifest extends AbstractDocument
             // ... and extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['files']['fileGrpFulltext']);
-            if (!empty($this->physicalStructureInfo[$id])) {
+            
+            $physicalStructureNode = $this->physicalStructureInfo[$id];
+            if (!empty($physicalStructureNode)) {
                 while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-                    if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
-                        $rawText = parent::getFullTextFromXml($id);
+                    if (!empty($physicalStructureNode['files'][$fileGrpFulltext])) {
+                        $rawText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml(
+                            $id,
+                            [$fileGrpFulltext => $this->getFileLocation($physicalStructureNode['files'][$fileGrpFulltext])],
+                            $physicalStructureNode
+                        );
                         break;
                     }
                 }
                 if ($extConf['iiif']['indexAnnotations'] == 1) {
                     $iiifResource = $this->iiif->getContainedResourceById($id);
                     // Get annotation containers
-                    $annotationContainerIds = $this->physicalStructureInfo[$id]['annotationContainers'];
+                    $annotationContainerIds = $physicalStructureNode['annotationContainers'];
                     if (!empty($annotationContainerIds)) {
                         $annotationTexts = $this->getAnnotationTexts($annotationContainerIds, $iiifResource->getId());
                         $rawText .= implode(' ', $annotationTexts);
