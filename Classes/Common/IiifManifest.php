@@ -807,11 +807,7 @@ final class IiifManifest extends AbstractDocument
     {
         $fileResource = GeneralUtility::getUrl($location);
         if ($fileResource !== false) {
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-            IiifHelper::setMaxThumbnailHeight($conf['thumbnailHeight']);
-            IiifHelper::setMaxThumbnailWidth($conf['thumbnailWidth']);
-            $resource = IiifHelper::loadIiifResource($fileResource);
+            $resource = self::loadIiifResource($fileResource);
             if ($resource instanceof ManifestInterface) {
                 $this->iiif = $resource;
                 return true;
@@ -998,11 +994,7 @@ final class IiifManifest extends AbstractDocument
      */
     public function __wakeup(): void
     {
-        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-        IiifHelper::setMaxThumbnailHeight($conf['thumbnailHeight']);
-        IiifHelper::setMaxThumbnailWidth($conf['thumbnailWidth']);
-        $resource = IiifHelper::loadIiifResource($this->asJson);
+        $resource = self::loadIiifResource($this->asJson);
         if ($resource instanceof ManifestInterface) {
             $this->asJson = '';
             $this->iiif = $resource;

@@ -231,11 +231,7 @@ final class MetsDocument extends AbstractDocument
         $file = $this->getFileInfo($id);
         if ($file['mimeType'] === 'application/vnd.kitodo.iiif') {
             $file['location'] = (strrpos($file['location'], 'info.json') === strlen($file['location']) - 9) ? $file['location'] : (strrpos($file['location'], '/') === strlen($file['location']) ? $file['location'] . 'info.json' : $file['location'] . '/info.json');
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-            IiifHelper::setMaxThumbnailHeight($conf['thumbnailHeight']);
-            IiifHelper::setMaxThumbnailWidth($conf['thumbnailWidth']);
-            $service = IiifHelper::loadIiifResource($file['location']);
+            $service = self::loadIiifResource($file['location']);
             if ($service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
