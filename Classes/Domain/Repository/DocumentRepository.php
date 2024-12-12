@@ -653,36 +653,38 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param int $uid
-     * 
+     *
      * @return int
      */
     public function getPreviousDocumentUid($uid)
     {
         $currentDocument = $this->findOneByUid($uid);
-        if ($parentId = $currentDocument->getPartof()) {
+        $currentVolume = '';
+        $parentId = $currentDocument->getPartof();
 
-            $currentVolume['volume_sorting'] = $currentDocument->getVolumeSorting();
+        if ($parentId) {
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+            $currentVolume = (string) $currentDocument->getVolumeSorting();
+
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
 
             // Grab previous volume
             $prevDocument = $queryBuilder
-            ->select(
-                'tx_dlf_documents.uid AS uid'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($parentId)),
-                'tx_dlf_documents.volume_sorting < \'' . strval($currentVolume['volume_sorting']) . '\''
-            )
-            ->add('orderBy', 'volume_sorting desc')
-            ->addOrderBy('tx_dlf_documents.volume_sorting')
-            ->execute()
-            ->fetch();
+                ->select(
+                    'tx_dlf_documents.uid AS uid'
+                )
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', (int) $parentId),
+                    'tx_dlf_documents.volume_sorting < \'' . $currentVolume . '\''
+                )
+                ->add('orderBy', 'volume_sorting desc')
+                ->addOrderBy('tx_dlf_documents.volume_sorting')
+                ->execute()
+                ->fetch();
 
-            if (!empty($prevDocument))
-            {
+            if (!empty($prevDocument)) {
                 return $prevDocument['uid'];
             }
 
@@ -697,36 +699,38 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param int $uid
-     * 
+     *
      * @return int
      */
     public function getNextDocumentUid($uid)
     {
         $currentDocument = $this->findOneByUid($uid);
-        if ($parentId = $currentDocument->getPartof()) {
+        $currentVolume = '';
+        $parentId = $currentDocument->getPartof();
 
-            $currentVolume['volume_sorting'] = $currentDocument->getVolumeSorting();
+        if ($parentId) {
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_documents');
+            $currentVolume = (string) $currentDocument->getVolumeSorting();
+
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
 
             // Grab next volume
             $nextDocument = $queryBuilder
-            ->select(
-                'tx_dlf_documents.uid AS uid'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($parentId)),
-                'tx_dlf_documents.volume_sorting > \'' . strval($currentVolume['volume_sorting']) . '\''
-            )
-            ->add('orderBy', 'volume_sorting asc')
-            ->addOrderBy('tx_dlf_documents.volume_sorting')
-            ->execute()
-            ->fetch();
+                ->select(
+                    'tx_dlf_documents.uid AS uid'
+                )
+                ->from('tx_dlf_documents')
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', (int) $parentId),
+                    'tx_dlf_documents.volume_sorting > \'' . $currentVolume . '\''
+                )
+                ->add('orderBy', 'volume_sorting asc')
+                ->addOrderBy('tx_dlf_documents.volume_sorting')
+                ->execute()
+                ->fetch();
 
-            if (!empty($nextDocument))
-            {
+            if (!empty($nextDocument)) {
                 return $nextDocument['uid'];
             }
 
@@ -740,12 +744,13 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param int $uid
-     * 
+     *
      * @return int
      */
-    public function getFirstChild($uid) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-        ->getQueryBuilderForTable('tx_dlf_documents');
+    public function getFirstChild($uid)
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
 
         $child = $queryBuilder
             ->select(
@@ -753,15 +758,14 @@ class DocumentRepository extends Repository
             )
             ->from('tx_dlf_documents')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($uid))
+                $queryBuilder->expr()->eq('tx_dlf_documents.partof', (int) $uid)
             )
             ->add('orderBy', 'volume_sorting asc')
             ->addOrderBy('tx_dlf_documents.volume_sorting')
             ->execute()
             ->fetch();
 
-        if(empty($child['uid']))
-        {
+        if (empty($child['uid'])) {
             return $uid;
         }
 
@@ -774,12 +778,13 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param int $uid
-     * 
+     *
      * @return int
      */
-    public function getLastChild($uid) {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-        ->getQueryBuilderForTable('tx_dlf_documents');
+    public function getLastChild($uid)
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
 
         $child = $queryBuilder
             ->select(
@@ -787,15 +792,14 @@ class DocumentRepository extends Repository
             )
             ->from('tx_dlf_documents')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($uid))
+                $queryBuilder->expr()->eq('tx_dlf_documents.partof', (int) $uid)
             )
             ->add('orderBy', 'volume_sorting desc')
             ->addOrderBy('tx_dlf_documents.volume_sorting')
             ->execute()
             ->fetch();
 
-        if(empty($child['uid']))
-        {
+        if (empty($child['uid'])) {
             return $uid;
         }
 
