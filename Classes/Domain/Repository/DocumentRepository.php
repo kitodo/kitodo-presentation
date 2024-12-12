@@ -624,6 +624,29 @@ class DocumentRepository extends Repository
     }
 
     /**
+     * Find all documents with from Solr
+     *
+     * @access private
+     *
+     * @param array|QueryResultInterface $collections
+     * @param array $settings
+     * @param array $searchParams
+     * @param QueryResult $listedMetadata
+     *
+     * @return SolrSearch
+     */
+    private function findSolr($collections, $settings, $searchParams, $listedMetadata = null, $indexedMetadata = null): SolrSearch
+    {
+        // set settings global inside this repository
+        // (may be necessary when SolrSearch calls back)
+        $this->settings = $settings;
+
+        $search = new SolrSearch($this, $collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
+        $search->prepare();
+        return $search;
+    }
+
+    /**
      * Find the uid of the previous document relative to the current document uid.
      * Otherwise backtrack the closest previous leaf node.
      *
