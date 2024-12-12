@@ -45,9 +45,6 @@ class PageGridController extends AbstractController
             return $this->htmlResponse();
         }
 
-        // Get current page from request data because the parameter is shared between plugins
-        $currentPage = $this->requestData['page'] ?? 1;
-
         // Access cachemanager for pagegrid
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_pagegrid');
         $cacheKey = $this->document->getCurrentDocument()->recordId;
@@ -68,6 +65,10 @@ class PageGridController extends AbstractController
 
             $cache->set($cacheKey, $entryArray);
         }
+
+        // Get current page from request data because the parameter is shared between plugins
+        $currentPage = $this->requestData['page'] ?? 1;
+
         // Mark currently active page
         $entryArray[$currentPage - 1]['state'] = 'cur';
 
