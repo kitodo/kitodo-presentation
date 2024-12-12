@@ -480,9 +480,7 @@ final class MetsDocument extends AbstractDocument
      */
     private function getThumbnail(string $id = '')
     {
-        // Load plugin configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-        $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+        $fileGrpsThumb = $this->getUseGroup('fileGrpThumbs');
 
         $thumbnail = null;
 
@@ -1347,37 +1345,21 @@ final class MetsDocument extends AbstractDocument
     protected function magicGetFileGrps(): array
     {
         if (!$this->fileGrpsLoaded) {
-            // Get configured USE attributes.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-            $useGrps = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
-
-            $configKeys = [
-                'fileGrpThumbs',
-                'fileGrpDownload',
-                'fileGrpFulltext',
-                'fileGrpAudio',
-                'fileGrpScore'
-            ];
-
-            foreach ($configKeys as $key) {
-                if (!empty($extConf[$key])) {
-                    $useGrps = array_merge($useGrps, GeneralUtility::trimExplode(',', $extConf[$key]));
-                }
-            }
-
-            foreach ($useGrps as $useGrp) {
-                // Perform XPath query for each configured USE attribute
-                $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGrp']");
-                if (!empty($fileGrps)) {
-                    foreach ($fileGrps as $fileGrp) {
-                        foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
-                            $fileId = (string) $file->attributes()->ID;
-                            $this->fileGrps[$fileId] = $useGrp;
-                            $this->fileInfos[$fileId] = [
-                                'fileGrp' => $useGrp,
-                                'admId' => (string) $file->attributes()->ADMID,
-                                'dmdId' => (string) $file->attributes()->DMDID,
-                            ];
+            foreach (array_values($this->getUseGroups()) as $useGroups) {
+                foreach ($useGroups as $useGroup) {
+                    // Perform XPath query for each configured USE attribute
+                    $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
+                    if (!empty($fileGrps)) {
+                        foreach ($fileGrps as $fileGrp) {
+                            foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
+                                $fileId = (string) $file->attributes()->ID;
+                                $this->fileGrps[$fileId] = $useGroup;
+                                $this->fileInfos[$fileId] = [
+                                    'fileGrp' => $useGroup,
+                                    'admId' => (string) $file->attributes()->ADMID,
+                                    'dmdId' => (string) $file->attributes()->DMDID,
+                                ];
+                            }
                         }
                     }
                 }
@@ -1385,8 +1367,8 @@ final class MetsDocument extends AbstractDocument
 
             // Are there any fulltext files available?
             if (
-                !empty($extConf['fileGrpFulltext'])
-                && array_intersect(GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']), $this->fileGrps) !== []
+                !empty($this->getUseGroup('fileGrpFulltext'))
+                && array_intersect($this->getUseGroup('fileGrpFulltext'), $this->fileGrps) !== []
             ) {
                 $this->hasFulltext = true;
             }
@@ -1585,9 +1567,8 @@ final class MetsDocument extends AbstractDocument
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
-            // Load extension configuration.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-            if (empty($extConf['fileGrpThumbs'])) {
+
+            if (empty($this->getUseGroup('fileGrpThumbs'))) {
                 $this->logger->warning('No fileGrp for thumbnails specified');
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
@@ -1626,7 +1607,7 @@ final class MetsDocument extends AbstractDocument
                 // Load smLinks.
                 $this->magicGetSmLinks();
                 // Get thumbnail location.
-                $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
+                $fileGrpsThumb = $this->getUseGroup('fileGrpThumbs');
                 while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
                     if (
                         $this->magicGetPhysicalStructure()
