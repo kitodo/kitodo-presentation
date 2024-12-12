@@ -654,7 +654,7 @@ class DocumentRepository extends Repository
      *
      * @param int $uid
      *
-     * @return int
+     * @return int|null
      */
     public function getPreviousDocumentUid($uid)
     {
@@ -690,6 +690,8 @@ class DocumentRepository extends Repository
 
             return $this->getLastChild($this->getPreviousDocumentUid($parentId));
         }
+
+        return null;
     }
 
     /**
@@ -700,7 +702,7 @@ class DocumentRepository extends Repository
      *
      * @param int $uid
      *
-     * @return int
+     * @return int|null
      */
     public function getNextDocumentUid($uid)
     {
@@ -736,6 +738,8 @@ class DocumentRepository extends Repository
 
             return $this->getFirstChild($this->getNextDocumentUid($parentId));
         }
+
+        return null;
     }
 
     /**
