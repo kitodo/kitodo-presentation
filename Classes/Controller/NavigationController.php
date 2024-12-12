@@ -81,7 +81,7 @@ class NavigationController extends AbstractController
         // get the closest previous sibling or leaf node
         $prevDocumentUid = $this->documentRepository->getPreviousDocumentUid($this->document->getUid());
         $this->view->assign('documentBack', $prevDocumentUid);
-        
+
         // get the closest next sibling or leaf node
         $nextDocumentUid = $this->documentRepository->getNextDocumentUid($this->document->getUid());
         $this->view->assign('documentForward', $nextDocumentUid);
