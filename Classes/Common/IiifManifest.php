@@ -264,7 +264,7 @@ final class IiifManifest extends AbstractDocument
             if ($this->iiif == null || !($this->iiif instanceof ManifestInterface)) {
                 return [];
             }
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
+
             $iiifId = $this->iiif->getId();
             $this->physicalStructureInfo[$iiifId]['id'] = $iiifId;
             $this->physicalStructureInfo[$iiifId]['dmdId'] = $iiifId;
@@ -307,7 +307,7 @@ final class IiifManifest extends AbstractDocument
                         $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = [];
                         foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'][] = $annotationContainer->getId();
-                            if ($extConf['indexAnnotations']) {
+                            if ($this->getIndexAnnotations() == 1) {
                                 $this->hasFulltext = true;
                                 $this->hasFulltextSet = true;
                             }
@@ -768,7 +768,7 @@ final class IiifManifest extends AbstractDocument
                         break;
                     }
                 }
-                if ($extConf['iiif']['indexAnnotations'] == 1) {
+                if ($this->getIndexAnnotations() == 1) {
                     $iiifResource = $this->iiif->getContainedResourceById($id);
                     // Get annotation containers
                     $annotationContainerIds = $physicalStructureNode['annotationContainers'];
@@ -867,8 +867,8 @@ final class IiifManifest extends AbstractDocument
                     $this->hasFulltext = true;
                     return;
                 }
-                $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-                if ($extConf['indexAnnotations'] == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
+
+                if ($this->getIndexAnnotations() == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                         $textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING);
                         if ($textAnnotations != null) {
@@ -938,6 +938,18 @@ final class IiifManifest extends AbstractDocument
             }
         }
         return $annotationTexts;
+    }
+
+    /**
+     * Get index annotations setting from extension configuration.
+     *
+     * @access private
+     *
+     * @return integer value 0 or 1
+     */
+    private function getIndexAnnotations(): int
+    {
+        return (int) GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif')['indexAnnotations'];
     }
 
     /**
