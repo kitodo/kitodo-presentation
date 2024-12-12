@@ -53,6 +53,8 @@ class PageGridController extends AbstractController
         $cacheKey = $this->document->getCurrentDocument()->recordId;
         $cachedData = $cache->get($cacheKey);
 
+        $entryArray = [];
+
         if ($cachedData) {
             $entryArray = $cachedData; // Load from cache
         } else {
