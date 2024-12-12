@@ -548,7 +548,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
 
         if ($this->document) {
-            $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
+            $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, false);
             // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
             $this->documentArray[] = $doc;
         } else {
