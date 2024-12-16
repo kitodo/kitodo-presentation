@@ -57,7 +57,7 @@ class CollectionRepository extends Repository
         $constraints[] = $query->in('uid', $uids);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd(...array_values($constraints)));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         return $query->execute();
@@ -98,7 +98,7 @@ class CollectionRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd(...array_values($constraints))
+                $query->logicalAnd(...$constraints)
             );
         }
 
