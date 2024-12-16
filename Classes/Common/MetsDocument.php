@@ -1116,12 +1116,29 @@ final class MetsDocument extends AbstractDocument
     public function getFullText(string $id): string
     {
         $fullText = '';
-
-        // Load fileGrps and check for full text files.
+        // Load available text formats, ...
+        $this->loadFormats();
+        // ... physical structure ...
+        $this->magicGetPhysicalStructure();
+        // ... fileGrps and check for full text files.
         $this->magicGetFileGrps();
+
         if ($this->hasFulltext) {
-            $fullText = $this->getFullTextFromXml($id);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
+            $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
+
+            $physicalStructureNode = $this->physicalStructureInfo[$id];
+
+            $fileLocations = [];
+            if (!empty($physicalStructureNode)) {
+                while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
+                    $fileLocations[$fileGrpFulltext] = $this->getFileLocation($physicalStructureNode['files'][$fileGrpFulltext]);
+                }
+            }
+
+            $fullText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml($id, $fileLocations, $physicalStructureNode);
         }
+
         return $fullText;
     }
 
