@@ -336,7 +336,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         if (!array_key_exists($setting, $this->settings) || empty($this->settings[$setting])) {
             $this->settings[$setting] = $value;
-            $this->logger->warning('Setting "' . $setting . '" not set, using default value "' . $value . '". Probably FlexForm for controller "' . get_class($this) . '" is not read.');
+            $this->logger->info('Setting "' . $setting . '" not set, using default value "' . $value . '" in ' . get_class($this) . '.');
         } else {
             $this->settings[$setting] = (int) $this->settings[$setting];
         }

@@ -231,11 +231,7 @@ final class MetsDocument extends AbstractDocument
         $file = $this->getFileInfo($id);
         if ($file['mimeType'] === 'application/vnd.kitodo.iiif') {
             $file['location'] = (strrpos($file['location'], 'info.json') === strlen($file['location']) - 9) ? $file['location'] : (strrpos($file['location'], '/') === strlen($file['location']) ? $file['location'] . 'info.json' : $file['location'] . '/info.json');
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-            IiifHelper::setMaxThumbnailHeight($conf['thumbnailHeight']);
-            IiifHelper::setMaxThumbnailWidth($conf['thumbnailWidth']);
-            $service = IiifHelper::loadIiifResource($file['location']);
+            $service = self::loadIiifResource($file['location']);
             if ($service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
@@ -1120,12 +1116,29 @@ final class MetsDocument extends AbstractDocument
     public function getFullText(string $id): string
     {
         $fullText = '';
-
-        // Load fileGrps and check for full text files.
+        // Load available text formats, ...
+        $this->loadFormats();
+        // ... physical structure ...
+        $this->magicGetPhysicalStructure();
+        // ... fileGrps and check for full text files.
         $this->magicGetFileGrps();
+
         if ($this->hasFulltext) {
-            $fullText = $this->getFullTextFromXml($id);
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
+            $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
+
+            $physicalStructureNode = $this->physicalStructureInfo[$id];
+
+            $fileLocations = [];
+            if (!empty($physicalStructureNode)) {
+                while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
+                    $fileLocations[$fileGrpFulltext] = $this->getFileLocation($physicalStructureNode['files'][$fileGrpFulltext]);
+                }
+            }
+
+            $fullText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml($id, $fileLocations, $physicalStructureNode);
         }
+
         return $fullText;
     }
 
@@ -1137,9 +1150,9 @@ final class MetsDocument extends AbstractDocument
         $ancestors = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*');
         if (!empty($ancestors)) {
             return count($ancestors);
-        } else {
-            return 0;
         }
+
+        return false;
     }
 
     /**

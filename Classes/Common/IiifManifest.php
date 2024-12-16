@@ -755,17 +755,23 @@ final class IiifManifest extends AbstractDocument
             // ... and extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
             $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['files']['fileGrpFulltext']);
-            if (!empty($this->physicalStructureInfo[$id])) {
+            
+            $physicalStructureNode = $this->physicalStructureInfo[$id];
+            if (!empty($physicalStructureNode)) {
                 while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-                    if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
-                        $rawText = parent::getFullTextFromXml($id);
+                    if (!empty($physicalStructureNode['files'][$fileGrpFulltext])) {
+                        $rawText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml(
+                            $id,
+                            [$fileGrpFulltext => $this->getFileLocation($physicalStructureNode['files'][$fileGrpFulltext])],
+                            $physicalStructureNode
+                        );
                         break;
                     }
                 }
                 if ($extConf['iiif']['indexAnnotations'] == 1) {
                     $iiifResource = $this->iiif->getContainedResourceById($id);
                     // Get annotation containers
-                    $annotationContainerIds = $this->physicalStructureInfo[$id]['annotationContainers'];
+                    $annotationContainerIds = $physicalStructureNode['annotationContainers'];
                     if (!empty($annotationContainerIds)) {
                         $annotationTexts = $this->getAnnotationTexts($annotationContainerIds, $iiifResource->getId());
                         $rawText .= implode(' ', $annotationTexts);
@@ -807,11 +813,7 @@ final class IiifManifest extends AbstractDocument
     {
         $fileResource = GeneralUtility::getUrl($location);
         if ($fileResource !== false) {
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-            IiifHelper::setMaxThumbnailHeight($conf['thumbnailHeight']);
-            IiifHelper::setMaxThumbnailWidth($conf['thumbnailWidth']);
-            $resource = IiifHelper::loadIiifResource($fileResource);
+            $resource = self::loadIiifResource($fileResource);
             if ($resource instanceof ManifestInterface) {
                 $this->iiif = $resource;
                 return true;
@@ -998,11 +1000,7 @@ final class IiifManifest extends AbstractDocument
      */
     public function __wakeup(): void
     {
-        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-        IiifHelper::setMaxThumbnailHeight($conf['thumbnailHeight']);
-        IiifHelper::setMaxThumbnailWidth($conf['thumbnailWidth']);
-        $resource = IiifHelper::loadIiifResource($this->asJson);
+        $resource = self::loadIiifResource($this->asJson);
         if ($resource instanceof ManifestInterface) {
             $this->asJson = '';
             $this->iiif = $resource;
