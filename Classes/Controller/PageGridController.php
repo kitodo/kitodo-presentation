@@ -85,6 +85,8 @@ class PageGridController extends AbstractController
      */
     protected function getEntry(int $number, string $fileGrpThumbs): array
     {
+        $entry = [];
+
         // Set pagination.
         $entry['pagination'] = htmlspecialchars($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['orderlabel']);
         $entry['page'] = $number;
