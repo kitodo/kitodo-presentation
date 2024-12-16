@@ -58,6 +58,6 @@ association cannot provide further assistance in selecting service providers.
 
 ## Getting started
 
-* [Extension Documentation](https://docs.typo3.org/p/kitodo/presentation/master/en-us/)
+* [Extension Documentation](https://docs.typo3.org/p/kitodo/presentation/main/en-us/)
 * [DDEV Development Environment](https://github.com/kitodo/ddev-kitodo-presentation)
 * [Demo Server](https://presentation-demo.kitodo.org/)
