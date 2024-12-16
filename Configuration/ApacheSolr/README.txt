@@ -7,4 +7,4 @@ Installation instructions
 -------------------------
 
 Please follow the Solr installation instruction in the official
-Kitodo.Presentation documentation at https://docs.typo3.org/p/kitodo/presentation/master/en-us/Configuration/Index.html#solr-installation.
+Kitodo.Presentation documentation at https://docs.typo3.org/p/kitodo/presentation/main/en-us/Configuration/Index.html#solr-installation.

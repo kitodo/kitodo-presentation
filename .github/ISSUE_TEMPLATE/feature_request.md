@@ -23,7 +23,7 @@ If applicable, add mockups and/or provide examples to help explain your proposal
 
 ## Target Version
 
-In general new features are only implemented for the current master branch. If you need the proposed feature to be backported to an earlier version as well, please tell us what prevents you from updating to the latest release.
+In general new features are only implemented for the current main branch. If you need the proposed feature to be backported to an earlier version as well, please tell us what prevents you from updating to the latest release.
 
 ## Additional Context
 Add any other context about the feature request here.
