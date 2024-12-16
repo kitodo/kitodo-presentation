@@ -1133,9 +1133,9 @@ final class MetsDocument extends AbstractDocument
         $ancestors = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*');
         if (!empty($ancestors)) {
             return count($ancestors);
-        } else {
-            return 0;
         }
+
+        return false;
     }
 
     /**

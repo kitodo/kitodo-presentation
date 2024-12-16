@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Common;
 
-use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
@@ -536,7 +535,7 @@ abstract class AbstractDocument
         $iiif = null;
 
         if (!$forceReload) {
-            $instance = self::getDocumentCache($location);
+            $instance = GeneralUtility::makeInstance(DocumentCacheManager::class)->get($location);
             if ($instance !== false) {
                 return $instance;
             }
@@ -578,25 +577,10 @@ abstract class AbstractDocument
         }
 
         if ($instance !== null) {
-            self::setDocumentCache($location, $instance);
+            GeneralUtility::makeInstance(DocumentCacheManager::class)->set($location, $instance);
         }
 
         return $instance;
-    }
-
-    /**
-     * Clear document cache.
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @return void
-     */
-    public static function clearDocumentCache(): void
-    {
-        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
-        $cache->flush();
     }
 
     /**
@@ -1274,46 +1258,5 @@ abstract class AbstractDocument
         } else {
             $this->$method($value);
         }
-    }
-
-    /**
-     * Get Cache Hit for document instance
-     *
-     * @access private
-     *
-     * @static
-     *
-     * @param string $location
-     *
-     * @return AbstractDocument|false
-     */
-    private static function getDocumentCache(string $location)
-    {
-        $cacheIdentifier = hash('md5', $location);
-        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
-        $cacheHit = $cache->get($cacheIdentifier);
-
-        return $cacheHit;
-    }
-
-    /**
-     * Set Cache for document instance
-     *
-     * @access private
-     *
-     * @static
-     *
-     * @param string $location
-     * @param AbstractDocument $currentDocument
-     *
-     * @return void
-     */
-    private static function setDocumentCache(string $location, AbstractDocument $currentDocument): void
-    {
-        $cacheIdentifier = hash('md5', $location);
-        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
-
-        // Save value in cache
-        $cache->set($cacheIdentifier, $currentDocument);
     }
 }

@@ -480,9 +480,9 @@ dlfViewer.prototype.addCustomControls = function() {
         $('#tx-dlf-tools-fulltext').remove();
     }
 
-    if (this.scoresLoaded_ !== undefined) {
+    if (this.scoresLoaded_ !== undefined && this.scoresLoaded_ !== null) {
         var context = this;
-		const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
+        const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
         this.scoresLoaded_.then(function (scoreData) {
             scoreControl.loadScoreData(scoreData, tk);
 
@@ -828,7 +828,11 @@ dlfViewer.prototype.init = function(controlNames) {
 
             // Initiate loading fulltexts
             this.initLoadFulltexts();
-            this.initLoadScores();
+
+            if (this.score !== '') {
+                // Initiate loading scores
+                this.initLoadScores();
+            }
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
