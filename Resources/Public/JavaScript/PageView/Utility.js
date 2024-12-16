@@ -575,12 +575,12 @@ dlfUtils.parseDataDic = function (element) {
  * @param {string} name The key of the value
  * @param {?} value The value to save
  * @param {string} samesite Sets the SameSite attribute: lax, strict or none
- * 
+ *
  */
 dlfUtils.setCookie = function (name, value, samesite) {
     switch(samesite) {
         case "lax":
-        case "strict": 
+        case "strict":
             break;
         case "none":
             samesite+= ";secure"
@@ -588,7 +588,7 @@ dlfUtils.setCookie = function (name, value, samesite) {
         default:
             samesite = "lax"
     }
-    
+
     document.cookie = name + "=" + decodeURI(value) + "; path=/" + "; SameSite=" + samesite;
 };
 
@@ -647,16 +647,16 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
 };
 
 /**
- * Search a feature collection for a feature with the given coordinates
+ * Search a feature collection for a feature with the given word in its fulltext
  * @param {Array.<ol.Feature>} featureCollection
- * @param {string} coordinates
- * @return {Array.<ol.Feature>|undefined}
+ * @param {string} word for highlighting
+ * @returns {Array.<ol.Feature>|undefined}
  */
-dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, coordinates) {
+dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, word) {
     var features = [];
     featureCollection.forEach(function (ft) {
         if (ft.values_.fulltext !== undefined) {
-            if (ft.values_.fulltext.includes(coordinates)) {
+            if (ft.values_.fulltext.toLowerCase().includes(word.toLowerCase())) {
                 features.push(ft);
             }
         }
