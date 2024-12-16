@@ -213,14 +213,14 @@ class BaseCommand extends Command
 
         if ($validator->hasAllMandatoryMetadataFields()) {
             // set title data
-            $document->setTitle($metadata['title'][0] ? : '');
-            $document->setTitleSorting($metadata['title_sorting'][0] ? : '');
+            $document->setTitle($metadata['title'][0] ?? '');
+            $document->setTitleSorting($metadata['title_sorting'][0] ?? '');
             $document->setPlace(implode('; ', $metadata['place']));
             $document->setYear(implode('; ', $metadata['year']));
             $document->setAuthor($this->getAuthors($metadata['author']));
-            $document->setThumbnail($doc->thumbnail ? : '');
-            $document->setMetsLabel($metadata['mets_label'][0] ? : '');
-            $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
+            $document->setThumbnail($doc->thumbnail ?? '');
+            $document->setMetsLabel($metadata['mets_label'][0] ?? '');
+            $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ?? '');
 
             $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
             $document->setStructure($structure);
@@ -230,29 +230,29 @@ class BaseCommand extends Command
             }
 
             // set identifiers
-            $document->setProdId($metadata['prod_id'][0] ? : '');
-            $document->setOpacId($metadata['opac_id'][0] ? : '');
-            $document->setUnionId($metadata['union_id'][0] ? : '');
+            $document->setProdId($metadata['prod_id'][0] ?? '');
+            $document->setOpacId($metadata['opac_id'][0] ?? '');
+            $document->setUnionId($metadata['union_id'][0] ?? '');
 
             $document->setRecordId($metadata['record_id'][0]);
-            $document->setUrn($metadata['urn'][0] ? : '');
-            $document->setPurl($metadata['purl'][0] ? : '');
-            $document->setDocumentFormat($metadata['document_format'][0] ? : '');
+            $document->setUrn($metadata['urn'][0] ?? '');
+            $document->setPurl($metadata['purl'][0] ?? '');
+            $document->setDocumentFormat($metadata['document_format'][0] ?? '');
 
             // set access
-            $document->setLicense($metadata['license'][0] ? : '');
-            $document->setTerms($metadata['terms'][0] ? : '');
-            $document->setRestrictions($metadata['restrictions'][0] ? : '');
-            $document->setOutOfPrint($metadata['out_of_print'][0] ? : '');
-            $document->setRightsInfo($metadata['rights_info'][0] ? : '');
+            $document->setLicense($metadata['license'][0] ?? '');
+            $document->setTerms($metadata['terms'][0] ?? '');
+            $document->setRestrictions($metadata['restrictions'][0] ?? '');
+            $document->setOutOfPrint($metadata['out_of_print'][0] ?? '');
+            $document->setRightsInfo($metadata['rights_info'][0] ?? '');
             $document->setStatus(0);
 
             $this->setOwner($metadata['owner'][0]);
             $document->setOwner($this->owner);
 
             // set volume data
-            $document->setVolume($metadata['volume'][0] ? : '');
-            $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
+            $document->setVolume($metadata['volume'][0] ?? '');
+            $document->setVolumeSorting($metadata['volume_sorting'][0] ?? $metadata['mets_order'][0] ?? '');
 
             // Get UID of parent document.
             if ($document->getDocumentFormat() === 'METS') {
