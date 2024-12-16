@@ -332,7 +332,11 @@ class Indexer
             $solrDoc->setField('restrictions', $metadata['restrictions']);
             $coordinates = json_decode($metadata['coordinates'][0]);
             if (is_object($coordinates)) {
-                $solrDoc->setField('geom', json_encode($coordinates->features[0]));
+                $feature = (array) $coordinates->features[0];
+                $geometry = (array) $feature['geometry'];
+                krsort($geometry);
+                $feature['geometry'] = $geometry;
+                $solrDoc->setField('geom', json_encode($feature));
             }
             $autocomplete = self::processMetadata($document, $metadata, $solrDoc);
             // Add autocomplete values to index.
