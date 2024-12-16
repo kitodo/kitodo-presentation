@@ -545,9 +545,6 @@ abstract class AbstractDocument
 
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
-            // Load extension configuration
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-
             $content = Helper::getUrl($location);
             if ($content !== false) {
                 $xml = Helper::getXmlFileAsString($content);
@@ -560,10 +557,7 @@ abstract class AbstractDocument
                     // Try to load file as IIIF resource instead.
                     $contentAsJsonArray = json_decode($content, true);
                     if ($contentAsJsonArray !== null) {
-                        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-                        IiifHelper::setMaxThumbnailHeight($extConf['iiif']['thumbnailHeight']);
-                        IiifHelper::setMaxThumbnailWidth($extConf['iiif']['thumbnailWidth']);
-                        $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
+                        $iiif = self::loadIiifResource($contentAsJsonArray);
                         if ($iiif instanceof IiifResourceInterface) {
                             $documentFormat = 'IIIF';
                         }
@@ -909,6 +903,27 @@ abstract class AbstractDocument
             }
             $this->formatsLoaded = true;
         }
+    }
+
+    /**
+     * Load IIIF resource from resource.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param string|array $resource IIIF resource. Can be an IRI, the JSON document as string
+     * or a dictionary in form of a PHP associative array
+     *
+     * @return NULL|\Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity An instance of the IIIF resource 
+     */
+    protected static function loadIiifResource($resource): mixed
+    {
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
+        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
+        IiifHelper::setMaxThumbnailHeight($extConf['thumbnailHeight']);
+        IiifHelper::setMaxThumbnailWidth($extConf['thumbnailWidth']);
+        return IiifHelper::loadIiifResource($resource);
     }
 
     /**
