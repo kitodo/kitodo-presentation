@@ -364,7 +364,7 @@ class DocumentRepository extends Repository
                 ->fetchFirstColumn();
         }
 
-        return ['titles' => $countTitles, 'volumes' => $countVolumes];
+        return ['titles' => $countTitles[0] ?? 0, 'volumes' => $countVolumes[0] ?? 0];
     }
 
     /**
