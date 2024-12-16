@@ -64,25 +64,6 @@ class CollectionRepository extends Repository
     }
 
     /**
-     * Finds all collections
-     *
-     * @access public
-     *
-     * @param string $pages
-     *
-     * @return QueryResultInterface
-     */
-    public function getCollectionForMetadata(string $pages): QueryResultInterface
-    {
-        // Get list of collections to show.
-        $query = $this->createQuery();
-
-        $query->matching($query->equals('pid', $pages));
-
-        return $query->execute();
-    }
-
-    /**
      * Finds all collection for the given settings
      *
      * @access public
