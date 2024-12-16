@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Command\BaseCommand;
+use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -224,7 +224,7 @@ class ReindexCommand extends BaseCommand
                 Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
             }
             // Clear document cache to prevent memory exhaustion.
-            AbstractDocument::clearDocumentCache();
+            GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
         }
 
         // Clear state of persistence manager to prevent memory exhaustion.
