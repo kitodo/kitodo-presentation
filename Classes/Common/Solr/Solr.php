@@ -104,7 +104,7 @@ class Solr implements LoggerAwareInterface
 
     /**
      * @access protected
-     * @var array(Solr) This holds the singleton search objects with their core as array key
+     * @var Solr[] This holds the singleton search objects with their core as array key
      */
     protected static array $registry = [];
 
