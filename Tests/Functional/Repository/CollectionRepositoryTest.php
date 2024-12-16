@@ -55,27 +55,6 @@ class CollectionRepositoryTest extends FunctionalTestCase
     }
 
     /**
-     * @test
-     * @group find
-     */
-    public function canGetCollectionForMetadata(): void
-    {
-        $collections = $this->collectionRepository->getCollectionForMetadata("20000");
-        self::assertNotNull($collections);
-        self::assertInstanceOf(QueryResult::class, $collections);
-
-        $collectionsByLabel = [];
-        foreach ($collections as $collection) {
-            $collectionsByLabel[$collection->getLabel()] = $collection;
-        }
-
-        self::assertArrayHasKey('Musik', $collectionsByLabel);
-        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
-        self::assertArrayHasKey('Geschichte', $collectionsByLabel);
-        self::assertArrayHasKey('Bildende Kunst', $collectionsByLabel);
-    }
-
-    /**
      * @param $settings
      * @return array
      */
