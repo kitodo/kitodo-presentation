@@ -57,27 +57,8 @@ class CollectionRepository extends Repository
         $constraints[] = $query->in('uid', $uids);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd(...array_values($constraints)));
+            $query->matching($query->logicalAnd(...$constraints));
         }
-
-        return $query->execute();
-    }
-
-    /**
-     * Finds all collections
-     *
-     * @access public
-     *
-     * @param string $pages
-     *
-     * @return QueryResultInterface
-     */
-    public function getCollectionForMetadata(string $pages): QueryResultInterface
-    {
-        // Get list of collections to show.
-        $query = $this->createQuery();
-
-        $query->matching($query->equals('pid', $pages));
 
         return $query->execute();
     }
@@ -117,7 +98,7 @@ class CollectionRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd(...array_values($constraints))
+                $query->logicalAnd(...$constraints)
             );
         }
 
