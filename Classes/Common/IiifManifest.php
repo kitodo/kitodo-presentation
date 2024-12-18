@@ -202,59 +202,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * True if getUseGroups() has been called and $this->useGrps is loaded
-     *
-     * @var bool
-     * @access protected
-     */
-    protected bool $useGrpsLoaded = false;
-
-    /**
-     * Holds the configured useGrps as array.
-     *
-     * @var array
-     * @access protected
-     */
-    protected array $useGrps = [];
-
-    /**
-     * IiifManifest also populates the physical structure array entries for matching
-     * 'fileGrp's. To do that, the configuration has to be loaded; afterwards configured
-     * 'fileGrp's for thumbnails, downloads, audio, fulltext and the 'fileGrp's for images
-     * can be requested with this method.
-     *
-     * @access protected
-     *
-     * @param string $use
-     *
-     * @return array|string
-     */
-    protected function getUseGroups(string $use)
-    {
-        if (!$this->useGrpsLoaded) {
-            // Get configured USE attributes.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-            if (!empty($extConf['fileGrpImages'])) {
-                $this->useGrps['fileGrpImages'] = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
-            }
-            if (!empty($extConf['fileGrpThumbs'])) {
-                $this->useGrps['fileGrpThumbs'] = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-            }
-            if (!empty($extConf['fileGrpDownload'])) {
-                $this->useGrps['fileGrpDownload'] = GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']);
-            }
-            if (!empty($extConf['fileGrpFulltext'])) {
-                $this->useGrps['fileGrpFulltext'] = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
-            }
-            if (!empty($extConf['fileGrpAudio'])) {
-                $this->useGrps['fileGrpAudio'] = GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']);
-            }
-            $this->useGrpsLoaded = true;
-        }
-        return array_key_exists($use, $this->useGrps) ? $this->useGrps[$use] : [];
-    }
-
-    /**
      * @see AbstractDocument::magicGetPhysicalStructure()
      */
     protected function magicGetPhysicalStructure(): array
@@ -276,8 +223,8 @@ final class IiifManifest extends AbstractDocument
             $this->setFileUseDownload($iiifId, $this->iiif);
             $this->setFileUseFulltext($iiifId, $this->iiif);
 
-            $fileUseThumbs = $this->getUseGroups('fileGrpThumbs');
-            $fileUses = $this->getUseGroups('fileGrpImages');
+            $fileUseThumbs = $this->getUseGroup('fileGrpThumbs');
+            $fileUses = $this->getUseGroup('fileGrpImages');
 
             if (!empty($this->iiif->getDefaultCanvases())) {
                 // canvases have not order property, but the context defines canveses as @list with a specific order, so we can provide an alternative
@@ -495,10 +442,7 @@ final class IiifManifest extends AbstractDocument
                 $details['points'] = $startCanvasIndex + 1;
             }
         }
-        $useGroups = $this->getUseGroups('fileGrpImages');
-        if (is_string($useGroups)) {
-            $useGroups = [$useGroups];
-        }
+
         // Keep for later usage.
         $this->logicalUnits[$details['id']] = $details;
         // Walk the structure recursively? And are there any children of the current element?
@@ -754,8 +698,8 @@ final class IiifManifest extends AbstractDocument
             $this->magicGetPhysicalStructure();
             // ... and extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['files']['fileGrpFulltext']);
-            
+            $fileGrpsFulltext = $this->getUseGroup('fileGrpFulltext');
+
             $physicalStructureNode = $this->physicalStructureInfo[$id];
             if (!empty($physicalStructureNode)) {
                 while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
@@ -964,7 +908,7 @@ final class IiifManifest extends AbstractDocument
      */
     private function setFileUseDownload(string $iiifId, $iiif): void
     {
-        $fileUseDownload = $this->getUseGroups('fileGrpDownload');
+        $fileUseDownload = $this->getUseGroup('fileGrpDownload');
 
         if (!empty($fileUseDownload)) {
             $docPdfRendering = $iiif->getRenderingUrlsForFormat('application/pdf');
@@ -986,7 +930,7 @@ final class IiifManifest extends AbstractDocument
      */
     private function setFileUseFulltext(string $iiifId, $iiif): void
     {
-        $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
+        $fileUseFulltext = $this->getUseGroup('fileGrpFulltext');
 
         if (!empty($fileUseFulltext)) {
             $alto = $iiif->getSeeAlsoUrlsForFormat('application/alto+xml');
