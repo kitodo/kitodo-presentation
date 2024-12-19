@@ -1554,12 +1554,9 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::magicGetThumbnail()
      */
-    protected function magicGetThumbnail(bool $forceReload = false): string
+    protected function magicGetThumbnail(): string
     {
-        if (
-            !$this->thumbnailLoaded
-            || $forceReload
-        ) {
+        if (!$this->thumbnailLoaded) {
             // Retain current PID.
             $cPid = $this->cPid ?: $this->pid;
             if (!$cPid) {

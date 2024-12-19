@@ -838,7 +838,7 @@ final class IiifManifest extends AbstractDocument
     /**
      * @see AbstractDocument::magicGetThumbnail()
      */
-    protected function magicGetThumbnail(bool $forceReload = false): string
+    protected function magicGetThumbnail(): string
     {
         return $this->iiif->getThumbnailUrl();
     }
