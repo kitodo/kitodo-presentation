@@ -1119,7 +1119,7 @@ final class MetsDocument extends AbstractDocument
         // ... physical structure ...
         $this->magicGetPhysicalStructure();
         // ... fileGrps and check for full text files.
-        $this->magicGetFileGrps();
+        $this->ensureHasFulltextIsSet();
 
         if ($this->hasFulltext) {
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
@@ -1201,9 +1201,12 @@ final class MetsDocument extends AbstractDocument
      */
     protected function ensureHasFulltextIsSet(): void
     {
-        // Are the fileGrps already loaded?
-        if (!$this->fileGrpsLoaded) {
-            $this->magicGetFileGrps();
+        // Are there any fulltext files available?
+        if (
+            !empty($this->getUseGroup('fileGrpFulltext'))
+            && array_intersect($this->getUseGroup('fileGrpFulltext'), $this->fileGrps) !== []
+        ) {
+            $this->hasFulltext = true;
         }
     }
 
@@ -1363,14 +1366,6 @@ final class MetsDocument extends AbstractDocument
                         }
                     }
                 }
-            }
-
-            // Are there any fulltext files available?
-            if (
-                !empty($this->getUseGroup('fileGrpFulltext'))
-                && array_intersect($this->getUseGroup('fileGrpFulltext'), $this->fileGrps) !== []
-            ) {
-                $this->hasFulltext = true;
             }
             $this->fileGrpsLoaded = true;
         }
