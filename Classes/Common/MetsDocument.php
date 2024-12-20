@@ -1881,7 +1881,7 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * Get node attribute as string.
-     * 
+     *
      * @access private
      *
      * @param mixed $attribute
