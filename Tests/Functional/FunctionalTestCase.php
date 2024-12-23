@@ -128,11 +128,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                 'requiredMetadataFields' => 'document_format'
             ],
             'files' => [
-                'fileGrpImages' => 'DEFAULT,MAX',
-                'fileGrpThumbs' => 'THUMBS',
-                'fileGrpDownload' => 'DOWNLOAD',
-                'fileGrpFulltext' => 'FULLTEXT',
-                'fileGrpAudio' => 'AUDIO'
+                'useGroupsImage' => 'DEFAULT,MAX',
+                'useGroupsThumbnail' => 'THUMBS',
+                'useGroupsDownload' => 'DOWNLOAD',
+                'useGroupsFulltext' => 'FULLTEXT',
+                'useGroupsAudio' => 'AUDIO'
             ],
             'solr' => [
                 'host' => getenv('dlfTestingSolrHost'),

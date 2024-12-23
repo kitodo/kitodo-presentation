@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Ubl\Iiif\Tools\IiifHelper;
 use Ubl\Iiif\Services\AbstractImageService;
 
 /**
@@ -480,22 +479,17 @@ final class MetsDocument extends AbstractDocument
      */
     private function getThumbnail(string $id = '')
     {
-        $fileGrpsThumb = $this->getUseGroup('fileGrpThumbs');
-
+        $useGroups = $this->useGroupsConfiguration->getThumbnail();
         $thumbnail = null;
 
         if (!empty($this->physicalStructure)) {
             // There is a physical structure (no anchor or year mets).
-            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
+            while ($useGroup = array_shift($useGroups) && $thumbnail == null) {
                 if (empty($id)) {
-                    $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb] ?? null;
+                    $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup] ?? null;
                 } else {
                     $parentId = $this->smLinks['l2p'][$id][0] ?? null;
-                    $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$fileGrpThumb] ?? null;
-                }
-
-                if (!empty($thumbnail)) {
-                    break;
+                    $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$useGroup] ?? null;
                 }
             }
         }
@@ -1125,15 +1119,13 @@ final class MetsDocument extends AbstractDocument
         $this->ensureHasFulltextIsSet();
 
         if ($this->hasFulltext) {
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-            $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
-
+            $useGroups = $this->useGroupsConfiguration->getFulltext();
             $physicalStructureNode = $this->physicalStructureInfo[$id];
-
             $fileLocations = [];
+
             if (!empty($physicalStructureNode)) {
-                while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-                    $fileLocations[$fileGrpFulltext] = $this->getFileLocation($physicalStructureNode['files'][$fileGrpFulltext]);
+                while ($useGroup = array_shift($useGroups)) {
+                    $fileLocations[$useGroup] = $this->getFileLocation($physicalStructureNode['files'][$useGroup]);
                 }
             }
 
@@ -1206,8 +1198,8 @@ final class MetsDocument extends AbstractDocument
     {
         // Are there any fulltext files available?
         if (
-            !empty($this->getUseGroup('fileGrpFulltext'))
-            && array_intersect($this->getUseGroup('fileGrpFulltext'), $this->fileGrps) !== []
+            !empty($this->useGroupsConfiguration->getFulltext())
+            && array_intersect($this->useGroupsConfiguration->getFulltext(), $this->fileGrps) !== []
         ) {
             $this->hasFulltext = true;
         }
@@ -1351,7 +1343,7 @@ final class MetsDocument extends AbstractDocument
     protected function magicGetFileGrps(): array
     {
         if (!$this->fileGrpsLoaded) {
-            foreach (array_values($this->getUseGroups()) as $useGroups) {
+            foreach (array_values($this->useGroupsConfiguration->get()) as $useGroups) {
                 foreach ($useGroups as $useGroup) {
                     // Perform XPath query for each configured USE attribute
                     $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
@@ -1564,7 +1556,7 @@ final class MetsDocument extends AbstractDocument
                 return $this->thumbnail;
             }
 
-            if (empty($this->getUseGroup('fileGrpThumbs'))) {
+            if (empty($this->useGroupsConfiguration->getThumbnail())) {
                 $this->logger->warning('No fileGrp for thumbnails specified');
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
@@ -1603,17 +1595,17 @@ final class MetsDocument extends AbstractDocument
                 // Load smLinks.
                 $this->magicGetSmLinks();
                 // Get thumbnail location.
-                $fileGrpsThumb = $this->getUseGroup('fileGrpThumbs');
-                while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
+                $useGroups = $this->useGroupsConfiguration->getThumbnail();
+                while ($useGroup = array_shift($useGroups)) {
                     if (
                         $this->magicGetPhysicalStructure()
                         && !empty($this->smLinks['l2p'][$strctId])
-                        && !empty($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$fileGrpThumb])
+                        && !empty($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$useGroup])
                     ) {
-                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$fileGrpThumb]);
+                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$useGroup]);
                         break;
-                    } elseif (!empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])) {
-                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb]);
+                    } elseif (!empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup])) {
+                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup]);
                         break;
                     }
                 }
