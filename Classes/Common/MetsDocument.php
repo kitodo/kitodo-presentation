@@ -484,16 +484,19 @@ final class MetsDocument extends AbstractDocument
 
         $thumbnail = null;
 
-        while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-            if (empty($id)) {
-                $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb] ?? null;
-            } else {
-                $parentId = $this->smLinks['l2p'][$id][0] ?? null;
-                $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$fileGrpThumb] ?? null;
-            }
+        if (!empty($this->physicalStructure)) {
+            // There is a physical structure (no anchor or year mets).
+            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
+                if (empty($id)) {
+                    $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb] ?? null;
+                } else {
+                    $parentId = $this->smLinks['l2p'][$id][0] ?? null;
+                    $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$fileGrpThumb] ?? null;
+                }
 
-            if (!empty($thumbnail)) {
-                break;
+                if (!empty($thumbnail)) {
+                    break;
+                }
             }
         }
         return $thumbnail;
