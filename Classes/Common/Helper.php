@@ -988,4 +988,28 @@ class Helper
         }
         return false;
     }
+
+    /**
+     * Get file extensions for a given MIME type
+     *
+     * @param string $mimeType
+     * @return array
+     */
+    public static function getFileExtensionsForMimeType(string $mimeType): array
+    {
+        $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
+        return $mimeTypeDetector->getFileExtensionsForMimeType($mimeType);
+    }
+
+    /**
+     * Get MIME types for a given file extension
+     *
+     * @param string $fileExtension
+     * @return array
+     */
+    public static function getMimeTypesForFileExtension(string $fileExtension): array
+    {
+        $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
+        return $mimeTypeDetector->getMimeTypesForFileExtension($fileExtension);
+    }
 }

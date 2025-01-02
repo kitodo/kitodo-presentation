@@ -139,19 +139,13 @@ class ToolboxController extends AbstractController
      *
      * @return array Array of image information's.
      */
-    public function getImage(int $page): array
+    private function getImage(int $page): array
     {
         // Get @USE value of METS fileGroup.
         $image = $this->getFile($page, GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']));
-        switch ($image['mimetype']) {
-            case 'image/jpeg':
-                $image['mimetypeLabel'] = ' (JPG)';
-                break;
-            case 'image/tiff':
-                $image['mimetypeLabel'] = ' (TIFF)';
-                break;
-            default:
-                $image['mimetypeLabel'] = '';
+        if (isset($image['mimetype'])) {
+            $fileExtension = Helper::getFileExtensionsForMimeType($image['mimetype']);
+            $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
         }
         return $image;
     }
