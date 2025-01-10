@@ -396,7 +396,7 @@ class ToolboxController extends AbstractController
     private function renderModelDownloadTool(): void
     {
         $modelUrl = $this->getModelUrl();
-        if ($modelUrl) {
+        if ($modelUrl === '') {
             $this->logger->debug("Model URL could not be determined");
             return;
         }
