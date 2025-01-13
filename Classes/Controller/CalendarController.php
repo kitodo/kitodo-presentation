@@ -286,7 +286,7 @@ class CalendarController extends AbstractController
                         $dayLinksText = [];
                         $dayLinkDiv = [];
                         $currentMonth = date('n', $currentDayTime);
-                        if (is_array($calendarIssuesByMonth[$currentMonth])) {
+                        if (array_key_exists($currentMonth, $calendarIssuesByMonth) && is_array($calendarIssuesByMonth[$currentMonth])) {
                             foreach ($calendarIssuesByMonth[$currentMonth] as $id => $day) {
                                 if ($id == date('j', $currentDayTime)) {
                                     $dayLinks = $id;
@@ -492,19 +492,21 @@ class CalendarController extends AbstractController
         $toc = $this->document->getCurrentDocument()->tableOfContents;
 
         foreach ($toc[0]['children'] as $year) {
-            foreach ($year['children'] as $month) {
-                foreach ($month['children'] as $day) {
-                    foreach ($day['children'] as $issue) {
-                        $title = $issue['label'] ?: $issue['orderlabel'];
-                        if (strtotime($title) !== false) {
-                            $title = strftime('%x', strtotime($title));
-                        }
+            if (array_key_exists('children', $year)) {
+                foreach ($year['children'] as $month) {
+                    foreach ($month['children'] as $day) {
+                        foreach ($day['children'] as $issue) {
+                            $title = $issue['label'] ?: $issue['orderlabel'];
+                            if (strtotime($title) !== false) {
+                                $title = strftime('%x', strtotime($title));
+                            }
 
-                        yield [
-                            'uid' => $issue['points'],
-                            'title' => $title,
-                            'year' => $day['orderlabel'],
-                        ];
+                            yield [
+                                'uid' => $issue['points'],
+                                'title' => $title,
+                                'year' => $day['orderlabel'],
+                            ];
+                        }
                     }
                 }
             }
