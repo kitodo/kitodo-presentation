@@ -390,7 +390,7 @@ class OaiPmhController extends AbstractController
      */
     protected function verbIdentify()
     {
-        $library = $this->libraryRepository->findByUid($this->settings['library']);
+        $library = $this->libraryRepository->findByUid($this->settings['library'] ?? 0);
 
         $oaiIdentifyInfo = [];
 
