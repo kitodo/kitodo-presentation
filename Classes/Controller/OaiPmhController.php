@@ -642,7 +642,12 @@ class OaiPmhController extends AbstractController
 
         $solrQuery .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
 
-        $solr = Solr::getInstance($this->settings['solrcore']);
+        $solrcore = $this->settings['solrcore'] ?? false;
+        if (!$solrcore) {
+            $this->logger->error('Solr core not configured');
+            return $documentSet;
+        }
+        $solr = Solr::getInstance($solrcore);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return $documentSet;
