@@ -648,8 +648,8 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
 /**
  * Search a feature collection for a feature with the given coordinates
  * @param {Array.<ol.Feature>} featureCollection
- * @param {string} coordinates
- * @return {Array.<ol.Feature>|undefined}
+ * @param {string} coordinates for highlighting
+ * @returns {Array.<ol.Feature>|undefined}
  */
 dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, coordinates) {
     var features = [];
