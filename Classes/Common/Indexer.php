@@ -455,13 +455,7 @@ class Indexer
             if (is_array($doc->metadataArray[$doc->toplevelId])) {
                 self::addFaceting($doc, $solrDoc, $physicalUnit);
             }
-            // Add collection information to physical sub-elements if applicable.
-            if (
-                in_array('collection', self::$fields['facets'])
-                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
-            ) {
-                $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
-            }
+
             try {
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
