@@ -590,11 +590,7 @@ class Indexer
 
         // write all facet values of associated metadata to the page (self & ancestors)
         foreach ($facets as $indexName => $data) {
-            if (
-                !empty($data)
-            ) {
-                $solrDoc->setField($indexName . '_faceting', $data);
-            }
+            $solrDoc->setField($indexName . '_faceting', $data);
         }
 
         // add sorting information
