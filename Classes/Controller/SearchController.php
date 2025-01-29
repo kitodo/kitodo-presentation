@@ -571,13 +571,9 @@ class SearchController extends AbstractController
 
         // Get field selector options.
         $searchFields = GeneralUtility::trimExplode(',', $this->settings['extendedFields'], true);
+        $extendedSlotCount = range(0, (int) $this->settings['extendedSlotCount'] - 1);
 
-        $slotCountArray = [];
-        for ($i = 0; $i < $this->settings['extendedSlotCount']; $i++) {
-            $slotCountArray[] = $i;
-        }
-
-        $this->view->assign('extendedSlotCount', $slotCountArray);
+        $this->view->assign('extendedSlotCount', $extendedSlotCount);
         $this->view->assign('extendedFields', $this->settings['extendedFields']);
         $this->view->assign('operators', ['AND', 'OR', 'NOT']);
         $this->view->assign('searchFields', $searchFields);
