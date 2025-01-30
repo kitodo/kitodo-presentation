@@ -113,6 +113,9 @@ class SearchController extends AbstractController
             return $this->htmlResponse();
         }
 
+        // Get additional fields for extended search.
+        $this->addExtendedSearch();
+
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
         // if search was triggered by the ListView plugin, get the parameters from GET variables
@@ -206,9 +209,6 @@ class SearchController extends AbstractController
             // Add the facets menu
             $this->addFacetsMenu();
         }
-
-        // Get additional fields for extended search.
-        $this->addExtendedSearch();
 
         // Add the current document if present to fluid. This way, we can limit further searches to this document.
         if (isset($this->requestData['id'])) {
