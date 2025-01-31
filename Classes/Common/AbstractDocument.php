@@ -275,6 +275,14 @@ abstract class AbstractDocument
     protected string $toplevelId = '';
 
     /**
+     * Holds the configured useGrps as array.
+     *
+     * @var array
+     * @access protected
+     */
+    protected array $useGroups = [];
+
+    /**
      * @access protected
      * @var \SimpleXMLElement This holds the whole XML file as \SimpleXMLElement object
      */
@@ -444,11 +452,9 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param bool $forceReload Force reloading the thumbnail instead of returning the cached value
-     *
      * @return string The document's thumbnail location
      */
-    abstract protected function magicGetThumbnail(bool $forceReload = false): string;
+    abstract protected function magicGetThumbnail(): string;
 
     /**
      * This returns the ID of the toplevel logical structure node
@@ -614,6 +620,20 @@ abstract class AbstractDocument
     }
 
     /**
+     * Get the configuration for given use group.
+     *
+     * @access protected
+     *
+     * @param string $use
+     *
+     * @return array|string
+     */
+    protected function getUseGroup(string $use)
+    {
+        return array_key_exists($use, $this->getUseGroups()) ? $this->useGroups[$use] : [];
+    }
+
+    /**
      * This determines a title for the given document
      *
      * @access public
@@ -737,6 +757,37 @@ abstract class AbstractDocument
     public function getStructureDepth(string $logId)
     {
         return $this->getTreeDepth($this->magicGetTableOfContents(), 1, $logId);
+    }
+
+    /**
+     * Get the configuration for use groups.
+     *
+     * @access protected
+     *
+     * @return array
+     */
+    protected function getUseGroups(): array
+    {
+        if (empty($this->useGroups)) {
+            // Get configured USE attributes.
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
+
+            $configKeys = [
+                'fileGrpImages',
+                'fileGrpThumbs',
+                'fileGrpDownload',
+                'fileGrpFulltext',
+                'fileGrpAudio',
+                'fileGrpScore'
+            ];
+
+            foreach ($configKeys as $key) {
+                if (!empty($extConf[$key])) {
+                    $this->useGroups[$key] = GeneralUtility::trimExplode(',', $extConf[$key]);
+                }
+            }
+        }
+        return $this->useGroups;
     }
 
     /**

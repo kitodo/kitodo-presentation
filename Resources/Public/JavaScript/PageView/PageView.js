@@ -343,8 +343,7 @@ dlfViewer.prototype.addCustomControls = function() {
     var fulltextControl = undefined,
         fulltextDownloadControl = undefined,
         annotationControl = undefined,
-        imageManipulationControl = undefined,
-        images = this.images;
+        imageManipulationControl = undefined;
 
     //
     // Annotation facsimile
