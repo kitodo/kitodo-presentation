@@ -49,7 +49,7 @@ class PageGridController extends AbstractController
         $numPages = $this->document->getCurrentDocument()->numPages;
         // Iterate through visible page set and display thumbnails.
         for ($i = 1; $i <= $numPages; $i++) {
-            $foundEntry = $this->getEntry($i, $this->extConf['files']['fileGrpThumbs']);
+            $foundEntry = $this->getEntry($i);
             $foundEntry['state'] = ($i == $this->requestData['page']) ? 'cur' : 'no';
             $entryArray[] = $foundEntry;
         }
@@ -79,19 +79,20 @@ class PageGridController extends AbstractController
      * @access protected
      *
      * @param int $number The page to render
-     * @param string $fileGrpThumbs the file group(s) of thumbs
      *
      * @return array The rendered entry ready for fluid
      */
-    protected function getEntry(int $number, string $fileGrpThumbs): array
+    protected function getEntry(int $number): array
     {
+        $entry = [];
+
         // Set pagination.
         $entry['pagination'] = htmlspecialchars($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['orderlabel']);
         $entry['page'] = $number;
         $entry['thumbnail'] = '';
 
         // Get thumbnail or placeholder.
-        $fileGrpsThumb = GeneralUtility::trimExplode(',', $fileGrpThumbs);
+        $fileGrpsThumb = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpThumbs']);
         if (is_array($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'])) {
             if (array_intersect($fileGrpsThumb, array_keys($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'])) !== []) {
                 while ($fileGrpThumb = array_shift($fileGrpsThumb)) {

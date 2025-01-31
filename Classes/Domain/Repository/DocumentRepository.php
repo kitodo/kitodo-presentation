@@ -182,7 +182,7 @@ class DocumentRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd(...array_values($constraints))
+                $query->logicalAnd(...$constraints)
             );
         }
 
@@ -216,7 +216,7 @@ class DocumentRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd(...array_values($constraints))
+                $query->logicalAnd(...$constraints)
             );
         }
 
@@ -364,7 +364,7 @@ class DocumentRepository extends Repository
                 ->fetchFirstColumn();
         }
 
-        return ['titles' => $countTitles, 'volumes' => $countVolumes];
+        return ['titles' => $countTitles[0] ?? 0, 'volumes' => $countVolumes[0] ?? 0];
     }
 
     /**

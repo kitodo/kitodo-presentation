@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Common;
 
-use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
@@ -276,6 +275,14 @@ abstract class AbstractDocument
     protected string $toplevelId = '';
 
     /**
+     * Holds the configured useGrps as array.
+     *
+     * @var array
+     * @access protected
+     */
+    protected array $useGroups = [];
+
+    /**
      * @access protected
      * @var \SimpleXMLElement This holds the whole XML file as \SimpleXMLElement object
      */
@@ -445,11 +452,9 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param bool $forceReload Force reloading the thumbnail instead of returning the cached value
-     *
      * @return string The document's thumbnail location
      */
-    abstract protected function magicGetThumbnail(bool $forceReload = false): string;
+    abstract protected function magicGetThumbnail(): string;
 
     /**
      * This returns the ID of the toplevel logical structure node
@@ -536,7 +541,7 @@ abstract class AbstractDocument
         $iiif = null;
 
         if (!$forceReload) {
-            $instance = self::getDocumentCache($location);
+            $instance = GeneralUtility::makeInstance(DocumentCacheManager::class)->get($location);
             if ($instance !== false) {
                 return $instance;
             }
@@ -546,9 +551,6 @@ abstract class AbstractDocument
 
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
-            // Load extension configuration
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-
             $content = Helper::getUrl($location);
             if ($content !== false) {
                 $xml = Helper::getXmlFileAsString($content);
@@ -561,10 +563,7 @@ abstract class AbstractDocument
                     // Try to load file as IIIF resource instead.
                     $contentAsJsonArray = json_decode($content, true);
                     if ($contentAsJsonArray !== null) {
-                        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-                        IiifHelper::setMaxThumbnailHeight($extConf['iiif']['thumbnailHeight']);
-                        IiifHelper::setMaxThumbnailWidth($extConf['iiif']['thumbnailWidth']);
-                        $iiif = IiifHelper::loadIiifResource($contentAsJsonArray);
+                        $iiif = self::loadIiifResource($contentAsJsonArray);
                         if ($iiif instanceof IiifResourceInterface) {
                             $documentFormat = 'IIIF';
                         }
@@ -584,25 +583,10 @@ abstract class AbstractDocument
         }
 
         if ($instance !== null) {
-            self::setDocumentCache($location, $instance);
+            GeneralUtility::makeInstance(DocumentCacheManager::class)->set($location, $instance);
         }
 
         return $instance;
-    }
-
-    /**
-     * Clear document cache.
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @return void
-     */
-    public static function clearDocumentCache(): void
-    {
-        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
-        $cache->flush();
     }
 
     /**
@@ -636,109 +620,17 @@ abstract class AbstractDocument
     }
 
     /**
-     * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
-     * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
-     * to be given in the Canvas' / Manifest's "seeAlso" property.
+     * Get the configuration for given use group.
      *
-     * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
-     * of the Manifest / Range (IIIF)
+     * @access protected
      *
-     * @return string The OCR full text
+     * @param string $use
+     *
+     * @return array|string
      */
-    protected function getFullTextFromXml(string $id): string
+    protected function getUseGroup(string $use)
     {
-        $fullText = '';
-        // Load available text formats, ...
-        $this->loadFormats();
-        // ... physical structure ...
-        $this->magicGetPhysicalStructure();
-        // ... and extension configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
-        $textFormat = "";
-        if (!empty($this->physicalStructureInfo[$id])) {
-            while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-                if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
-                    // Get full text file.
-                    $fileContent = GeneralUtility::getUrl($this->getFileLocation($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext]));
-                    if ($fileContent !== false) {
-                        $textFormat = $this->getTextFormat($fileContent);
-                    } else {
-                        $this->logger->warning('Couldn\'t load full text file for structure node @ID "' . $id . '"');
-                        return $fullText;
-                    }
-                    break;
-                }
-            }
-        } else {
-            $this->logger->warning('Invalid structure node @ID "' . $id . '"');
-            return $fullText;
-        }
-        // Is this text format supported?
-        // This part actually differs from previous version of indexed OCR
-        if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
-            $textMiniOcr = '';
-            if (!empty($this->formats[$textFormat]['class'])) {
-                $textMiniOcr = $this->getRawTextFromClass($id, $fileContent, $textFormat);
-            }
-            $fullText = $textMiniOcr;
-        } else {
-            $this->logger->warning('Unsupported text format "' . $textFormat . '" in physical node with @ID "' . $id . '"');
-        }
-        return $fullText;
-    }
-
-    /**
-     * Get raw text from class for given format.
-     *
-     * @access private
-     *
-     * @param $id
-     * @param $fileContent
-     * @param $textFormat
-     *
-     * @return string
-     */
-    private function getRawTextFromClass($id, $fileContent, $textFormat): string
-    {
-        $textMiniOcr = '';
-        $class = $this->formats[$textFormat]['class'];
-        // Get the raw text from class.
-        if (class_exists($class)) {
-            $obj = GeneralUtility::makeInstance($class);
-            if ($obj instanceof FulltextInterface) {
-                // Load XML from file.
-                $ocrTextXml = Helper::getXmlFileAsString($fileContent);
-                $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
-                $this->rawTextArray[$id] = $textMiniOcr;
-            } else {
-                $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
-            }
-        } else {
-            $this->logger->warning('Class "' . $class . ' does not exists for "' . $textFormat . ' text format"');
-        }
-        return $textMiniOcr;
-    }
-
-    /**
-     * Get format of the OCR full text
-     *
-     * @access private
-     *
-     * @param string $fileContent content of the XML file
-     *
-     * @return string The format of the OCR full text
-     */
-    private function getTextFormat(string $fileContent): string
-    {
-        $xml = Helper::getXmlFileAsString($fileContent);
-
-        if ($xml !== false) {
-            // Get the root element's name as text format.
-            return strtoupper($xml->getName());
-        } else {
-            return '';
-        }
+        return array_key_exists($use, $this->getUseGroups()) ? $this->useGroups[$use] : [];
     }
 
     /**
@@ -868,6 +760,37 @@ abstract class AbstractDocument
     }
 
     /**
+     * Get the configuration for use groups.
+     *
+     * @access protected
+     *
+     * @return array
+     */
+    protected function getUseGroups(): array
+    {
+        if (empty($this->useGroups)) {
+            // Get configured USE attributes.
+            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
+
+            $configKeys = [
+                'fileGrpImages',
+                'fileGrpThumbs',
+                'fileGrpDownload',
+                'fileGrpFulltext',
+                'fileGrpAudio',
+                'fileGrpScore'
+            ];
+
+            foreach ($configKeys as $key) {
+                if (!empty($extConf[$key])) {
+                    $this->useGroups[$key] = GeneralUtility::trimExplode(',', $extConf[$key]);
+                }
+            }
+        }
+        return $this->useGroups;
+    }
+
+    /**
      * Load XML file / IIIF resource from URL
      *
      * @access protected
@@ -925,6 +848,27 @@ abstract class AbstractDocument
             }
             $this->formatsLoaded = true;
         }
+    }
+
+    /**
+     * Load IIIF resource from resource.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param string|array $resource IIIF resource. Can be an IRI, the JSON document as string
+     * or a dictionary in form of a PHP associative array
+     *
+     * @return NULL|\Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity An instance of the IIIF resource 
+     */
+    protected static function loadIiifResource($resource): mixed
+    {
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
+        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
+        IiifHelper::setMaxThumbnailHeight($extConf['thumbnailHeight']);
+        IiifHelper::setMaxThumbnailWidth($extConf['thumbnailWidth']);
+        return IiifHelper::loadIiifResource($resource);
     }
 
     /**
@@ -1259,46 +1203,5 @@ abstract class AbstractDocument
         } else {
             $this->$method($value);
         }
-    }
-
-    /**
-     * Get Cache Hit for document instance
-     *
-     * @access private
-     *
-     * @static
-     *
-     * @param string $location
-     *
-     * @return AbstractDocument|false
-     */
-    private static function getDocumentCache(string $location)
-    {
-        $cacheIdentifier = hash('md5', $location);
-        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
-        $cacheHit = $cache->get($cacheIdentifier);
-
-        return $cacheHit;
-    }
-
-    /**
-     * Set Cache for document instance
-     *
-     * @access private
-     *
-     * @static
-     *
-     * @param string $location
-     * @param AbstractDocument $currentDocument
-     *
-     * @return void
-     */
-    private static function setDocumentCache(string $location, AbstractDocument $currentDocument): void
-    {
-        $cacheIdentifier = hash('md5', $location);
-        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
-
-        // Save value in cache
-        $cache->set($cacheIdentifier, $currentDocument);
     }
 }

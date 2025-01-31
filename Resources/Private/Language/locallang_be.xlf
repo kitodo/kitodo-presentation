@@ -456,7 +456,7 @@
                 <source><![CDATA[Error!]]></source>
             </trans-unit>
             <trans-unit id="flash.coreStatus" approved="yes">
-                <source><![CDATA[Start Time: %s<br />Uptime: %s<br />Last Modified: %ss<br />Number of Documents: %u]]></source>
+                <source><![CDATA[Start Time: %s<br />Uptime: %s<br />Last Modified: %s<br />Number of Documents: %u]]></source>
             </trans-unit>
             <trans-unit id="flash.days" approved="yes">
                 <source><![CDATA[days]]></source>
