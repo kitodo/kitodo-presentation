@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca463535083483333eed1bca546cbc79",
+    "content-hash": "56d60bc5001526a56b1a15089739b892",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -62,16 +62,16 @@
         },
         {
             "name": "caseyamcl/phpoaipmh",
-            "version": "v3.3.1",
+            "version": "v3.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/caseyamcl/phpoaipmh.git",
-                "reference": "17aaacafa62654b8360cfcef7db42fc6c0dc4f47"
+                "reference": "b528fd4c748ac534e9cf82e035fb4d42c9cbe346"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/caseyamcl/phpoaipmh/zipball/17aaacafa62654b8360cfcef7db42fc6c0dc4f47",
-                "reference": "17aaacafa62654b8360cfcef7db42fc6c0dc4f47",
+                "url": "https://api.github.com/repos/caseyamcl/phpoaipmh/zipball/b528fd4c748ac534e9cf82e035fb4d42c9cbe346",
+                "reference": "b528fd4c748ac534e9cf82e035fb4d42c9cbe346",
                 "shasum": ""
             },
             "require": {
@@ -120,9 +120,9 @@
             ],
             "support": {
                 "issues": "https://github.com/caseyamcl/phpoaipmh/issues",
-                "source": "https://github.com/caseyamcl/phpoaipmh/tree/v3.3.1"
+                "source": "https://github.com/caseyamcl/phpoaipmh/tree/v3.3.2"
             },
-            "time": "2023-01-27T17:40:27+00:00"
+            "time": "2024-12-20T20:04:37+00:00"
         },
         {
             "name": "christian-riesen/base32",
