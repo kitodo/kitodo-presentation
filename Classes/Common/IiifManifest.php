@@ -223,8 +223,8 @@ final class IiifManifest extends AbstractDocument
             $this->setFileUseDownload($iiifId, $this->iiif);
             $this->setFileUseFulltext($iiifId, $this->iiif);
 
-            $fileUseThumbs = $this->useGroupsConfiguration-> getThumbnail();
-            $fileUses = $this->useGroupsConfiguration-> getImage();
+            $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
+            $fileUses = $this->useGroupsConfiguration->getImage();
 
             if (!empty($this->iiif->getDefaultCanvases())) {
                 // canvases have not order property, but the context defines canveses as @list with a specific order, so we can provide an alternative
