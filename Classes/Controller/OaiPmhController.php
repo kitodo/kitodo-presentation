@@ -273,7 +273,7 @@ class OaiPmhController extends AbstractController
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
 
-        switch ($this->parameters['verb']) {
+        switch ($this->parameters['verb'] ?? null) {
             case 'GetRecord':
                 $this->verbGetRecord();
                 break;
