@@ -119,7 +119,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected function getDlfConfiguration()
     {
-        $dotenv = Dotenv::createImmutable('/home/runner/work/kitodo-presentation/kitodo-presentation/Build/Test/', 'test.env');
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../Build/Test/', 'test.env');
         $dotenv->load();
 
         return [
