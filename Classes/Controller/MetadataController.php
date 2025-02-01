@@ -464,7 +464,7 @@ class MetadataController extends AbstractController
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
             $ids = [];
-            $page = $this->currentDocument->physicalStructure[$this->requestData['page']];
+            $page = $this->currentDocument->physicalStructure[$this->requestData['page']] ?? [];
             if (!empty($page) && !empty($this->currentDocument->smLinks['p2l'][$page])) {
                 foreach ($this->currentDocument->smLinks['p2l'][$page] as $logId) {
                     $count = $this->currentDocument->getStructureDepth($logId);
