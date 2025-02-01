@@ -394,10 +394,6 @@ class OaiPmhController extends AbstractController
 
         $oaiIdentifyInfo = [];
 
-        if (!$oaiIdentifyInfo) {
-            $this->logger->notice('Incomplete plugin configuration');
-        }
-
         $oaiIdentifyInfo['oai_label'] = $library ? $library->getOaiLabel() : '';
         // Use default values for an installation with incomplete plugin configuration.
         if (empty($oaiIdentifyInfo['oai_label'])) {
