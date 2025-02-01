@@ -490,16 +490,18 @@ final class MetsDocument extends AbstractDocument
 
         $thumbnail = null;
 
-        while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-            if (empty($id)) {
-                $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb] ?? null;
-            } else {
-                $parentId = $this->smLinks['l2p'][$id][0] ?? null;
-                $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$fileGrpThumb] ?? null;
-            }
+        if (!empty($this->physicalStructure)) {
+            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
+                if (empty($id)) {
+                    $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb] ?? null;
+                } else {
+                    $parentId = $this->smLinks['l2p'][$id][0] ?? null;
+                    $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$fileGrpThumb] ?? null;
+                }
 
-            if (!empty($thumbnail)) {
-                break;
+                if (!empty($thumbnail)) {
+                    break;
+                }
             }
         }
         return $thumbnail;
@@ -1623,7 +1625,10 @@ final class MetsDocument extends AbstractDocument
                     ) {
                         $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$fileGrpThumb]);
                         break;
-                    } elseif (!empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])) {
+                    } elseif (
+                        !empty($this->physicalStructure)
+                        && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb])
+                    ) {
                         $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$fileGrpThumb]);
                         break;
                     }
