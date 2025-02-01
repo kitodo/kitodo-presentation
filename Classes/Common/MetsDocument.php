@@ -1604,7 +1604,7 @@ final class MetsDocument extends AbstractDocument
                     ) {
                         $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$useGroup]);
                         break;
-                    } elseif (!empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup])) {
+                    } elseif (isset($this->physicalStructure[1]) && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup])) {
                         $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup]);
                         break;
                     }

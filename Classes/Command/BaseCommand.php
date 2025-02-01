@@ -247,7 +247,7 @@ class BaseCommand extends Command
             $document->setRightsInfo($metadata['rights_info'][0] ?? '');
             $document->setStatus(0);
 
-            $this->setOwner($metadata['owner'][0]);
+            $this->setOwner($metadata['owner'][0] ?? '');
             $document->setOwner($this->owner);
 
             // set volume data
