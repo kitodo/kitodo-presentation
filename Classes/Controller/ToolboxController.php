@@ -139,19 +139,13 @@ class ToolboxController extends AbstractController
      *
      * @return array Array of image information's.
      */
-    public function getImage(int $page): array
+    private function getImage(int $page): array
     {
         // Get @USE value of METS fileGroup.
         $image = $this->getFile($page, $this->useGroupsConfiguration->getImage());
-        switch ($image['mimetype']) {
-            case 'image/jpeg':
-                $image['mimetypeLabel'] = ' (JPG)';
-                break;
-            case 'image/tiff':
-                $image['mimetypeLabel'] = ' (TIFF)';
-                break;
-            default:
-                $image['mimetypeLabel'] = '';
+        if (isset($image['mimetype'])) {
+            $fileExtension = Helper::getFileExtensionsForMimeType($image['mimetype']);
+            $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
         }
         return $image;
     }
@@ -315,14 +309,18 @@ class ToolboxController extends AbstractController
     private function getFile(int $page, array $fileGrps): array
     {
         $file = [];
+        $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]] ?? null;
         while ($fileGrp = @array_pop($fileGrps)) {
-            $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]];
-            $fileId = $physicalStructureInfo['files'][$fileGrp];
-            if (!empty($fileId)) {
-                $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
-                $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
+            if (isset($physicalStructureInfo['files'][$fileGrp])) {
+                $fileId = $physicalStructureInfo['files'][$fileGrp];
+                if (!empty($fileId)) {
+                    $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
+                    $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
+                } else {
+                    $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
+                }
             } else {
-                $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
+                $this->logger->warning('fileGrp "' . $fileGrp . '" not found in Document mets:fileSec');
             }
         }
         return $file;

@@ -320,7 +320,7 @@ class PageViewController extends AbstractController
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
         $measureLinks = [];
-        $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'];
+        $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'] ?? null;
         if ($doc instanceof MetsDocument) {
             if (isset($defaultFileId)) {
                 $musicalStruct = $doc->musicalStructureInfo;
