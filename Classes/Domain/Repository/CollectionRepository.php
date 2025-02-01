@@ -97,11 +97,11 @@ class CollectionRepository extends Repository
 
         $constraints = [];
 
-        if ($settings['collections']) {
+        if ($settings['collections'] ?? false) {
             $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['collections']));
         }
 
-        if ($settings['index_name']) {
+        if ($settings['index_name'] ?? false) {
             $constraints[] = $query->in('index_name', $settings['index_name']);
         }
 
