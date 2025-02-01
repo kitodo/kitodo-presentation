@@ -453,15 +453,9 @@ class Indexer
 
             $solrDoc->setField('fulltext', $fullText);
             if (is_array($doc->metadataArray[$doc->toplevelId])) {
-                self::addFaceting($doc, $solrDoc);
+                self::addFaceting($doc, $solrDoc, $physicalUnit);
             }
-            // Add collection information to physical sub-elements if applicable.
-            if (
-                in_array('collection', self::$fields['facets'])
-                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
-            ) {
-                $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
-            }
+
             try {
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
@@ -549,27 +543,52 @@ class Indexer
      *
      * @param AbstractDocument $doc
      * @param DocumentInterface &$solrDoc
+     * @param array $physicalUnit Array of the physical unit to process
      *
      * @return void
      */
-    private static function addFaceting($doc, &$solrDoc): void
+    private static function addFaceting($doc, &$solrDoc, $physicalUnit): void
     {
-        // TODO: Include also subentries if available.
-        foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
-            if (
-                !empty($data)
-                && substr($indexName, -8) !== '_sorting'
-            ) {
-
-                if (in_array($indexName, self::$fields['facets'])) {
-                    // Remove appended "valueURI" from authors' names for indexing.
-                    if ($indexName == 'author') {
-                        $data = self::removeAppendsFromAuthor($data);
+        // this variable holds all possible facet-values for the index names
+        $facets = [];
+        // use the structlink information
+        foreach ($doc->smLinks['l2p'] as $logicalId => $physicalId) {
+            // find page in structlink
+            if (in_array($physicalUnit['id'], $physicalId)) {
+                // for each associated metadata of structlink
+                foreach ($doc->metadataArray[$logicalId] as $indexName => $data) {
+                    if (
+                        !empty($data)
+                        && substr($indexName, -8) !== '_sorting'
+                    ) {
+                        if (in_array($indexName, self::$fields['facets'])) {
+                            // Remove appended "valueURI" from authors' names for indexing.
+                            if ($indexName == 'author') {
+                                $data = self::removeAppendsFromAuthor($data);
+                            }
+                            // Add facets to facet-array and flatten the values
+                            if (is_array($data)) {
+                                foreach ($data as $value) {
+                                    if (!empty($value)) {
+                                        $facets[$indexName][] = $value;
+                                    }
+                                }
+                            } else {
+                                $facets[$indexName][] = $data;
+                            }
+                        }
                     }
-                    // Add facets to index.
-                    $solrDoc->setField($indexName . '_faceting', $data);
                 }
             }
+        }
+
+        // write all facet values of associated metadata to the page (self & ancestors)
+        foreach ($facets as $indexName => $data) {
+            $solrDoc->setField($indexName . '_faceting', $data);
+        }
+
+        // add sorting information
+        foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
             // Add sorting information to physical sub-elements if applicable.
             if (
                 !empty($data)
