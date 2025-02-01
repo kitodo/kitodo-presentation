@@ -210,7 +210,7 @@ class IndexCommand extends BaseCommand
     {
         $document = null;
 
-        if ($doc->recordId) {
+        if ($doc and $doc->recordId) {
             $document = $this->documentRepository->findOneByRecordId($doc->recordId);
         } else {
             $document = $this->documentRepository->findOneByLocation($url);
