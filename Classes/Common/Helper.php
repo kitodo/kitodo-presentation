@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Resource\MimeTypeCollection;
+use TYPO3\CMS\Core\Resource\MimeTypeDetector;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -987,5 +988,29 @@ class Helper
             return in_array($file[$mimeTypeKey], $mimeTypes) || in_array($file[$mimeTypeKey], $filteredDlfMimeTypes);
         }
         return false;
+    }
+
+    /**
+     * Get file extensions for a given MIME type
+     *
+     * @param string $mimeType
+     * @return array
+     */
+    public static function getFileExtensionsForMimeType(string $mimeType): array
+    {
+        $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
+        return $mimeTypeDetector->getFileExtensionsForMimeType($mimeType);
+    }
+
+    /**
+     * Get MIME types for a given file extension
+     *
+     * @param string $fileExtension
+     * @return array
+     */
+    public static function getMimeTypesForFileExtension(string $fileExtension): array
+    {
+        $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
+        return $mimeTypeDetector->getMimeTypesForFileExtension($fileExtension);
     }
 }
