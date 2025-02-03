@@ -230,29 +230,29 @@ class BaseCommand extends Command
             }
 
             // set identifiers
-            $document->setProdId($metadata['prod_id'][0] ? : '');
-            $document->setOpacId($metadata['opac_id'][0] ? : '');
-            $document->setUnionId($metadata['union_id'][0] ? : '');
+            $document->setProdId($metadata['prod_id'][0] ?? '');
+            $document->setOpacId($metadata['opac_id'][0] ?? '');
+            $document->setUnionId($metadata['union_id'][0] ?? '');
 
             $document->setRecordId($metadata['record_id'][0]);
-            $document->setUrn($metadata['urn'][0] ? : '');
-            $document->setPurl($metadata['purl'][0] ? : '');
-            $document->setDocumentFormat($metadata['document_format'][0] ? : '');
+            $document->setUrn($metadata['urn'][0] ?? '');
+            $document->setPurl($metadata['purl'][0] ?? '');
+            $document->setDocumentFormat($metadata['document_format'][0] ?? '');
 
             // set access
-            $document->setLicense($metadata['license'][0] ? : '');
-            $document->setTerms($metadata['terms'][0] ? : '');
-            $document->setRestrictions($metadata['restrictions'][0] ? : '');
-            $document->setOutOfPrint($metadata['out_of_print'][0] ? : '');
-            $document->setRightsInfo($metadata['rights_info'][0] ? : '');
+            $document->setLicense($metadata['license'][0] ?? '');
+            $document->setTerms($metadata['terms'][0] ?? '');
+            $document->setRestrictions($metadata['restrictions'][0] ?? '');
+            $document->setOutOfPrint($metadata['out_of_print'][0] ?? '');
+            $document->setRightsInfo($metadata['rights_info'][0] ?? '');
             $document->setStatus(0);
 
-            $this->setOwner($metadata['owner'][0]);
+            $this->setOwner($metadata['owner'][0] ?? '');
             $document->setOwner($this->owner);
 
             // set volume data
-            $document->setVolume($metadata['volume'][0] ? : '');
-            $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
+            $document->setVolume($metadata['volume'][0] ?? '');
+            $document->setVolumeSorting($metadata['volume_sorting'][0] ?? $metadata['mets_order'][0] ?? '');
 
             // Get UID of parent document.
             if ($document->getDocumentFormat() === 'METS') {
@@ -294,7 +294,7 @@ class BaseCommand extends Command
             // find document object by record_id of parent
             $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid]);
 
-            if ($parent->recordId) {
+            if ($parent && $parent->recordId) {
                 $parentDocument = $this->documentRepository->findOneByRecordId($parent->recordId);
 
                 if ($parentDocument === null) {
