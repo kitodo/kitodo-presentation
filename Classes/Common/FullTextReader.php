@@ -58,13 +58,13 @@ class FullTextReader
     {
         $fullText = '';
 
-        $fileGrpsFulltext = $this->getFullTextFileGroups();
+        $useGroupsFulltext = $this->getFullTextUseGroups();
         $textFormat = "";
         if (!empty($physicalStructureNode)) {
-            while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-                if (!empty($physicalStructureNode['files'][$fileGrpFulltext])) {
+            while ($useGroupFulltext = array_shift($useGroupsFulltext)) {
+                if (!empty($physicalStructureNode['files'][$useGroupFulltext])) {
                     // Get full text file.
-                    $fileContent = GeneralUtility::getUrl($fileLocations[$fileGrpFulltext]);
+                    $fileContent = GeneralUtility::getUrl($fileLocations[$useGroupFulltext]);
                     if ($fileContent !== false) {
                         $textFormat = $this->getTextFormat($fileContent);
                     } else {
@@ -128,10 +128,10 @@ class FullTextReader
      *
      * @return array
      */
-    private function getFullTextFileGroups(): array
+    private function getFullTextUseGroups(): array
     {
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'files');
-        return GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
+        return GeneralUtility::trimExplode(',', $extConf['useGroupsFulltext']);
     }
 
     /**
