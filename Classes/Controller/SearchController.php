@@ -113,6 +113,9 @@ class SearchController extends AbstractController
             return $this->htmlResponse();
         }
 
+        // Get additional fields for extended search.
+        $this->addExtendedSearch();
+
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
 
@@ -209,9 +212,6 @@ class SearchController extends AbstractController
             // Add the facets menu
             $this->addFacetsMenu();
         }
-
-        // Get additional fields for extended search.
-        $this->addExtendedSearch();
 
         // Add the current document if present to fluid. This way, we can limit further searches to this document.
         if (isset($this->requestData['id'])) {
@@ -582,13 +582,9 @@ class SearchController extends AbstractController
 
         // Get field selector options.
         $searchFields = GeneralUtility::trimExplode(',', $this->settings['extendedFields'], true);
+        $extendedSlotCount = range(0, (int) $this->settings['extendedSlotCount'] - 1);
 
-        $slotCountArray = [];
-        for ($i = 0; $i < $this->settings['extendedSlotCount']; $i++) {
-            $slotCountArray[] = $i;
-        }
-
-        $this->view->assign('extendedSlotCount', $slotCountArray);
+        $this->view->assign('extendedSlotCount', $extendedSlotCount);
         $this->view->assign('extendedFields', $this->settings['extendedFields']);
         $this->view->assign('operators', ['AND', 'OR', 'NOT']);
         $this->view->assign('searchFields', $searchFields);

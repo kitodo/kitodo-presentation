@@ -548,6 +548,7 @@ abstract class AbstractDocument
             }
         }
 
+        GeneralUtility::makeInstance(DocumentCacheManager::class)->remove($location);
         $instance = null;
 
         // Try to load a file from the url

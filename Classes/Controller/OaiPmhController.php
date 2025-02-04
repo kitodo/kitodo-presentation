@@ -173,7 +173,7 @@ class OaiPmhController extends AbstractController
 
     /**
      * Get unqualified Dublin Core data.
-     * @see http://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
+     * @see https://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
      *
      * @access private
      *
@@ -390,13 +390,9 @@ class OaiPmhController extends AbstractController
      */
     protected function verbIdentify()
     {
-        $library = $this->libraryRepository->findByUid($this->settings['library']);
+        $library = $this->libraryRepository->findByUid($this->settings['library'] ?? 0);
 
         $oaiIdentifyInfo = [];
-
-        if (!$oaiIdentifyInfo) {
-            $this->logger->notice('Incomplete plugin configuration');
-        }
 
         $oaiIdentifyInfo['oai_label'] = $library ? $library->getOaiLabel() : '';
         // Use default values for an installation with incomplete plugin configuration.
@@ -642,7 +638,12 @@ class OaiPmhController extends AbstractController
 
         $solrQuery .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
 
-        $solr = Solr::getInstance($this->settings['solrcore']);
+        $solrcore = $this->settings['solrcore'] ?? false;
+        if (!$solrcore) {
+            $this->logger->error('Solr core not configured');
+            return $documentSet;
+        }
+        $solr = Solr::getInstance($solrcore);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return $documentSet;
@@ -844,7 +845,7 @@ class OaiPmhController extends AbstractController
     protected function generateResumptionTokenForDocumentListSet(array $documentListSet, int $numShownDocuments)
     {
         // The cursor specifies how many elements have already been returned in previous requests
-        // See http://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl
+        // See https://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl
         $currentCursor = $documentListSet['metadata']['cursor'];
 
         if (count($documentListSet['elements']) !== 0) {
