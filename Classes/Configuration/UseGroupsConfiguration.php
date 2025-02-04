@@ -16,7 +16,12 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Undocumented class
+ * Class for accessing and processing the configuration of USE groups.
+ * 
+ * @package TYPO3
+ * @subpackage dlf
+ *
+ * @access public
  */
 class UseGroupsConfiguration
 {
