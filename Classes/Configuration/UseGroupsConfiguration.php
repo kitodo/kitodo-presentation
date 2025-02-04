@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class for accessing and processing the configuration of USE groups.
- * 
+ *
  * @package TYPO3
  * @subpackage dlf
  *

@@ -383,7 +383,7 @@ class PageViewController extends AbstractController
             $doc = $this->document->getCurrentDocument();
         }
         if ($doc instanceof MetsDocument) {
-            $useGroups = $this->useGroupsConfiguration->getScore();;
+            $useGroups = $this->useGroupsConfiguration->getScore();
 
             $pageId = $doc->physicalStructure[$page];
             $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
