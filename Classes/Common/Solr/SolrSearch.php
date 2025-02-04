@@ -740,6 +740,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     {
         $collectionsQueryString = '';
         $virtualCollectionsQueryString = '';
+
+        $this->filterCollections();
+
         foreach ($this->collections as $collection) {
             // check for virtual collections query string
             if ($collection->getIndexSearch()) {
@@ -765,6 +768,18 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
         return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+    }
+
+    /**
+     * Filter collections to avoid null values.
+     *
+     * @return void
+     */
+    private function filterCollections(): void
+    {
+        if (is_array($this->collections)) {
+            array_filter($this->collections, fn($value) => $value !== null);
+        }
     }
 
     /**
