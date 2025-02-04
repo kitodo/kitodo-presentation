@@ -600,15 +600,15 @@ final class MetsDocument extends AbstractDocument
         if (!empty($this->mdSec)) {
             foreach ($mdIds as $dmdId) {
                 $mdSectionType = $this->mdSec[$dmdId]['section'];
-    
+
                 if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
                     continue;
                 }
-    
+
                 if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
                     continue;
                 }
-    
+
                 $metadataSections[] = $mdSectionType;
             }
         }
@@ -1345,8 +1345,7 @@ final class MetsDocument extends AbstractDocument
                 'fileGrpThumbs',
                 'fileGrpDownload',
                 'fileGrpFulltext',
-                'fileGrpAudio',
-                'fileGrpScore'
+                'fileGrpAudio'
             ];
 
             foreach ($configKeys as $key) {
