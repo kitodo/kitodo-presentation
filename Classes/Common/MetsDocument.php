@@ -1407,8 +1407,8 @@ final class MetsDocument extends AbstractDocument
                 // Get file groups.
                 $fileUse = $this->magicGetFileGrps();
                 // Get the physical sequence's metadata.
-                $physNode = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
-                $firstNode = $physNode[0];
+                $physicalNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
+                $firstNode = $physicalNodes[0];
                 $id = (string) $firstNode['ID'];
                 $this->physicalStructureInfo[$id]['id'] = $id;
                 $this->physicalStructureInfo[$id]['dmdId'] = $this->getAttribute($firstNode['DMDID']);
@@ -1421,7 +1421,7 @@ final class MetsDocument extends AbstractDocument
 
                 $this->getFileRepresentation($id, $firstNode);
 
-                $this->physicalStructure = $this->getPhysicalElements($elementNodes, $fileUse);
+                $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
             }
             $this->physicalStructureLoaded = true;
 
@@ -1518,8 +1518,6 @@ final class MetsDocument extends AbstractDocument
         ksort($elements);
         // Set total number of pages/tracks.
         $this->numPages = count($elements);
-        // Merge and re-index the array to get numeric indexes.
-        array_unshift($elements, $id);
 
         return $elements;
     }
