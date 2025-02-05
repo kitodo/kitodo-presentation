@@ -307,7 +307,7 @@ class OaiPmhController extends AbstractController
         $xmlOutput = $this->view->render();
 
         // Format the XML.
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         // Here we could also choose `false` for a minimized XML.
         $dom->formatOutput = true;
