@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use DOMDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Token;
@@ -302,7 +303,19 @@ class OaiPmhController extends AbstractController
         $this->view->assign('parameters', $this->parameters);
         $this->view->assign('error', $this->error);
 
-        return $this->htmlResponse();
+        // Generate the XML output.
+        $xmlOutput = $this->view->render();
+
+        // Format the XML.
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        // Here we could also choose `false` for a minimized XML.
+        $dom->formatOutput = true;
+        $dom->loadXML($xmlOutput);
+        $formattedXmlOutput = trim($dom->saveXML());
+
+        // Return the formatted XML.
+        return $this->htmlResponse($formattedXmlOutput);
     }
 
     /**
