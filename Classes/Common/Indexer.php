@@ -331,7 +331,7 @@ class Indexer
         $doc = $document->getCurrentDocument();
         $doc->cPid = $document->getPid();
         // Get metadata for logical unit.
-        $metadata = $doc->metadataArray[$logicalUnit['id']];
+        $metadata = $doc->metadataArray[$logicalUnit['id']] ?? [];
         if (!empty($metadata)) {
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'general');
             $validator = new DocumentValidator($metadata, explode(',', $extConf['requiredMetadataFields']));
@@ -356,19 +356,19 @@ class Indexer
                 // There can be only one toplevel unit per UID, independently of backend configuration
                 $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
                 $solrDoc->setField('title', $metadata['title'][0]);
-                $solrDoc->setField('volume', $metadata['volume'][0]);
+                $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
                 // verify date formatting
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
                 }
                 $solrDoc->setField('record_id', $metadata['record_id'][0]);
-                $solrDoc->setField('purl', $metadata['purl'][0]);
+                $solrDoc->setField('purl', $metadata['purl'][0] ?? '');
                 $solrDoc->setField('location', $document->getLocation());
                 $solrDoc->setField('urn', $metadata['urn']);
                 $solrDoc->setField('license', $metadata['license']);
                 $solrDoc->setField('terms', $metadata['terms']);
                 $solrDoc->setField('restrictions', $metadata['restrictions']);
-                $coordinates = json_decode($metadata['coordinates'][0]);
+                $coordinates = json_decode($metadata['coordinates'][0] ?? '');
                 if (is_object($coordinates)) {
                     $feature = (array) $coordinates->features[0];
                     $geometry = (array) $feature['geometry'];
@@ -518,7 +518,8 @@ class Indexer
                 && substr($indexName, -8) !== '_sorting'
             ) {
                 $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data);
-                if (in_array($indexName, self::$fields['sortables'])) {
+                if (in_array($indexName, self::$fields['sortables']) &&
+                    in_array($indexName . '_sorting', $metadata)) {
                     // Add sortable fields to index.
                     $solrDoc->setField($indexName . '_sorting', $metadata[$indexName . '_sorting'][0]);
                 }
