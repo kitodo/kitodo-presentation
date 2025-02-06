@@ -2,7 +2,13 @@ name: Documentation
 # Build and test documentation on pull_request and push event
 # If the git reference is the main branch, additionally build the documentation artifact and deploy it to GitHub Pages
 
-on: [ push, pull_request ]
+on:
+  push:
+    paths:
+      - 'Documentation/**'
+  pull_request:
+    paths:
+      - 'Documentation/**'
 
 jobs:
     build:
