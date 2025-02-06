@@ -2,7 +2,14 @@ name: Documentation
 # Build and test documentation on pull_request and push event
 # If the git reference is the main branch, additionally build the documentation artifact and deploy it to GitHub Pages
 
-on: [ push, pull_request ]
+on:
+  push:
+    paths:
+      - 'Documentation/**'
+  pull_request:
+    paths:
+      - 'Documentation/**'
+  workflow_dispatch:
 
 jobs:
     build:
@@ -33,7 +40,7 @@ jobs:
       # Add a dependency to the build job
       needs: build
 
-      if: github.repository_owner == 'kitodo' && github.ref == 'refs/heads/main'
+      if: github.repository_owner == 'kitodo' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
 
       # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
       permissions:

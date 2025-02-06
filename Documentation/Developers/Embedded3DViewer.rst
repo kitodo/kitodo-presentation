@@ -2,7 +2,9 @@
 Embedded 3D Viewer
 ========
 
-The `model-viewer <https://modelviewer.dev>`_ is installed as the build-in standard viewer and supports ‘glTF/GLB 3D models’ as the model file format. Alternatively you can use one or multiple custom viewer implementations or our reference implementations from the GitHub repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_. On this page, you will find all the information needed to configure and embed any 3D Viewer implementation for Kitodo.Presentation.
+The `model-viewer <https://modelviewer.dev>`_ is installed as the built-in standard viewer and supports ‘glTF/GLB 3D models’ as the model file format.
+Alternatively you can use one or multiple custom viewer implementations or our reference implementations from the GitHub repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
+On this page, you will find all the information needed to configure and embed any 3D Viewer implementation for Kitodo.Presentation.
 
 .. contents::
     :local:
