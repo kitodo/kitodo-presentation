@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Kitodo\Dlf\Configuration\UseGroupsConfiguration;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
@@ -275,12 +276,12 @@ abstract class AbstractDocument
     protected string $toplevelId = '';
 
     /**
-     * Holds the configured useGrps as array.
+     * Holds the configured useGroups as array.
      *
-     * @var array
      * @access protected
+     * @var \Kitodo\Dlf\Configuration\UseGroupsConfiguration
      */
-    protected array $useGroups = [];
+    protected UseGroupsConfiguration $useGroupsConfiguration;
 
     /**
      * @access protected
@@ -547,6 +548,7 @@ abstract class AbstractDocument
             }
         }
 
+        GeneralUtility::makeInstance(DocumentCacheManager::class)->remove($location);
         $instance = null;
 
         // Try to load a file from the url
@@ -617,20 +619,6 @@ abstract class AbstractDocument
             }
         }
         return 1;
-    }
-
-    /**
-     * Get the configuration for given use group.
-     *
-     * @access protected
-     *
-     * @param string $use
-     *
-     * @return array|string
-     */
-    protected function getUseGroup(string $use)
-    {
-        return array_key_exists($use, $this->getUseGroups()) ? $this->useGroups[$use] : [];
     }
 
     /**
@@ -757,37 +745,6 @@ abstract class AbstractDocument
     public function getStructureDepth(string $logId)
     {
         return $this->getTreeDepth($this->magicGetTableOfContents(), 1, $logId);
-    }
-
-    /**
-     * Get the configuration for use groups.
-     *
-     * @access protected
-     *
-     * @return array
-     */
-    protected function getUseGroups(): array
-    {
-        if (empty($this->useGroups)) {
-            // Get configured USE attributes.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-
-            $configKeys = [
-                'fileGrpImages',
-                'fileGrpThumbs',
-                'fileGrpDownload',
-                'fileGrpFulltext',
-                'fileGrpAudio',
-                'fileGrpScore'
-            ];
-
-            foreach ($configKeys as $key) {
-                if (!empty($extConf[$key])) {
-                    $this->useGroups[$key] = GeneralUtility::trimExplode(',', $extConf[$key]);
-                }
-            }
-        }
-        return $this->useGroups;
     }
 
     /**
@@ -1140,6 +1097,7 @@ abstract class AbstractDocument
     protected function __construct(int $pid, string $location, $preloadedDocument, array $settings = [])
     {
         $this->pid = $pid;
+        $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location, $settings);
         $this->establishRecordId($pid);

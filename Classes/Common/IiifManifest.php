@@ -223,8 +223,8 @@ final class IiifManifest extends AbstractDocument
             $this->setFileUseDownload($iiifId, $this->iiif);
             $this->setFileUseFulltext($iiifId, $this->iiif);
 
-            $fileUseThumbs = $this->getUseGroup('fileGrpThumbs');
-            $fileUses = $this->getUseGroup('fileGrpImages');
+            $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
+            $fileUses = $this->useGroupsConfiguration->getImage();
 
             if (!empty($this->iiif->getDefaultCanvases())) {
                 // canvases have not order property, but the context defines canveses as @list with a specific order, so we can provide an alternative
@@ -697,16 +697,15 @@ final class IiifManifest extends AbstractDocument
             // Load physical structure ...
             $this->magicGetPhysicalStructure();
             // ... and extension configuration.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            $fileGrpsFulltext = $this->getUseGroup('fileGrpFulltext');
+            $useGroups = $this->useGroupsConfiguration->getFulltext();
 
             $physicalStructureNode = $this->physicalStructureInfo[$id];
             if (!empty($physicalStructureNode)) {
-                while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-                    if (!empty($physicalStructureNode['files'][$fileGrpFulltext])) {
+                while ($useGroup = array_shift($useGroups)) {
+                    if (!empty($physicalStructureNode['files'][$useGroup])) {
                         $rawText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml(
                             $id,
-                            [$fileGrpFulltext => $this->getFileLocation($physicalStructureNode['files'][$fileGrpFulltext])],
+                            [$useGroup => $this->getFileLocation($physicalStructureNode['files'][$useGroup])],
                             $physicalStructureNode
                         );
                         break;
@@ -908,12 +907,12 @@ final class IiifManifest extends AbstractDocument
      */
     private function setFileUseDownload(string $iiifId, $iiif): void
     {
-        $fileUseDownload = $this->getUseGroup('fileGrpDownload');
+        $useGroups = $this->useGroupsConfiguration->getDownload();
 
-        if (!empty($fileUseDownload)) {
+        if (!empty($useGroups)) {
             $docPdfRendering = $iiif->getRenderingUrlsForFormat('application/pdf');
             if (!empty($docPdfRendering)) {
-                $this->physicalStructureInfo[$iiifId]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
+                $this->physicalStructureInfo[$iiifId]['files'][$useGroups[0]] = $docPdfRendering[0];
             }
         }
     }
@@ -930,16 +929,16 @@ final class IiifManifest extends AbstractDocument
      */
     private function setFileUseFulltext(string $iiifId, $iiif): void
     {
-        $fileUseFulltext = $this->getUseGroup('fileGrpFulltext');
+        $useGroups = $this->useGroupsConfiguration->getFulltext();
 
-        if (!empty($fileUseFulltext)) {
+        if (!empty($useGroups)) {
             $alto = $iiif->getSeeAlsoUrlsForFormat('application/alto+xml');
             if (empty($alto)) {
                 $alto = $iiif->getSeeAlsoUrlsForProfile('http://www.loc.gov/standards/alto/', true);
             }
             if (!empty($alto)) {
                 $this->mimeTypes[$alto[0]] = 'application/alto+xml';
-                $this->physicalStructureInfo[$iiifId]['files'][$fileUseFulltext[0]] = $alto[0];
+                $this->physicalStructureInfo[$iiifId]['files'][$useGroups[0]] = $alto[0];
                 $this->hasFulltext = true;
                 $this->hasFulltextSet = true;
             }

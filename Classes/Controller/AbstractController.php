@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Configuration\UseGroupsConfiguration;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Http\Message\ResponseInterface;
@@ -96,6 +97,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @var int
      */
     protected int $pageUid;
+
+    /**
+     * Holds the configured useGroups as array.
+     *
+     * @access protected
+     * @var \Kitodo\Dlf\Configuration\UseGroupsConfiguration
+     */
+    protected UseGroupsConfiguration $useGroupsConfiguration;
 
     /**
      * Initialize the plugin controller
@@ -201,6 +210,18 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 ]
             )
             ->build();
+    }
+
+    /**
+     * Checks if doc of its fulltext is missing or is empty (no pages)
+     *
+     * @access protected
+     *
+     * @return bool
+     */
+    protected function isDocOrFulltextMissingOrEmpty(): bool
+    {
+        return $this->isDocMissingOrEmpty() || empty($this->useGroupsConfiguration->getFulltext());
     }
 
     /**

@@ -974,12 +974,6 @@ Toolbox
        :ref:`t3tsref:data-type-integer`
    :Default:
 
- - :Property:
-       fileGrpsImageDownload
-   :Data Type:
-       `t3tsref:data-type-list`
-   :Default:
-       MIN,DEFAULT,MAX
 
 Fulltext Tool
 ^^^^^^^^^^^^^
