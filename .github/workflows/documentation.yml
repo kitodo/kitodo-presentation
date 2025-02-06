@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'Documentation/**'
+  workflow_dispatch:
 
 jobs:
     build:
@@ -39,7 +40,7 @@ jobs:
       # Add a dependency to the build job
       needs: build
 
-      if: github.repository_owner == 'kitodo' && github.ref == 'refs/heads/main'
+      if: github.repository_owner == 'kitodo' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
 
       # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
       permissions:
