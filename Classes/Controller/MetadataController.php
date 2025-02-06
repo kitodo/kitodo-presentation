@@ -517,10 +517,12 @@ class MetadataController extends AbstractController
     }
 
     /**
+     * Recursively remove empty entries.
+     *
      * @param $metadata
      * @return array
      */
-    public function removeEmptyEntries($metadata): array
+    private function removeEmptyEntries($metadata): array
     {
         foreach ($metadata as $key => $value) {
             if (is_array($value)) {
@@ -532,16 +534,5 @@ class MetadataController extends AbstractController
             }
         }
         return $metadata;
-    }
-
-    /**
-     * @param mixed $metadataValue
-     * @return bool
-     */
-    public function hasSubentries($metadataValue): bool
-    {
-        return is_array($metadataValue)
-            && !empty($metadataValue)
-            && is_array($metadataValue[0]);
     }
 }
