@@ -413,6 +413,9 @@
 			<trans-unit id="tx_dlf_mail.name">
 				<source>Name</source>
 			</trans-unit>
+			<trans-unit id="tx_dlf_tokens">
+				<source>Tokens</source>
+			</trans-unit>
 			<trans-unit id="tx_dlf_toolbox.fulltexttool">
 				<source>Fulltext</source>
 			</trans-unit>
