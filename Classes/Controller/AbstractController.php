@@ -128,6 +128,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
+        $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
+
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
         $this->viewData = [
