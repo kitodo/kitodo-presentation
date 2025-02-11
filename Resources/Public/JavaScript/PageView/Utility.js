@@ -123,7 +123,7 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
                     url,
                     size: [imageSourceObj.width, imageSourceObj.height],
                     crossOrigin: origin,
-                    extent,
+                    extent: extent,
                     zDirection: -1
                 })
             });
@@ -132,10 +132,10 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
                 projection: new ol.proj.Projection({
                     code: 'kitodo-image',
                     units: 'pixels',
-                    extent
+                    extent: extent
                 }),
                 crossOrigin: origin,
-                extent,
+                extent: extent,
                 zDirection: -1
             }, imageSourceObj.iiifSourceOptions);
 
@@ -151,7 +151,7 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
                     projection: new ol.proj.Projection({
                         code: 'kitodo-image',
                         units: 'pixels',
-                        extent
+                        extent: extent
                     }),
                     imageExtent: extent,
                     crossOrigin: origin
@@ -191,7 +191,7 @@ dlfUtils.createOlView = function (images) {
     var proj = new ol.proj.Projection({
         code: 'kitodo-image',
         units: 'pixels',
-        extent
+        extent: extent
     });
 
     // Define view
@@ -201,7 +201,7 @@ dlfUtils.createOlView = function (images) {
         zoom: 1,
         maxZoom: window.DLF_MAX_ZOOM,
         minZoom: 1,
-        extent,
+        extent: extent,
         constrainOnlyCenter: true,
         constrainRotation: false
     };
