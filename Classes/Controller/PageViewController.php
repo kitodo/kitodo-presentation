@@ -501,7 +501,7 @@ class PageViewController extends AbstractController
 
                     $viewer = [
                         'controls' => $this->controls,
-                        'div' => "tx-dfgviewer-map-' . $i . '",
+                        'div' => 'tx-dfgviewer-map-' . $i,
                         'progressElementId' => $this->settings['progressElementId'],
                         'counter' => $i,
                         'images' => $docImage,

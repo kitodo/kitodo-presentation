@@ -339,9 +339,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
       return;
     }
 
-    var pdfFormat = "A4";
-    var pdfOrientation = "portrait";
-
     var pdfFormat = $("#pdfFormat").val();
     var pdfSize = [2100, 2970];
     if (pdfFormat === "letter") pdfSize = [2159, 2794];
