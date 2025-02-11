@@ -44,9 +44,9 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
 
   $.ajax({url}).done(function (data, status, jqXHR) {
     try {
-      let score = tk.renderData(jqXHR.responseText, verovioSettings);
+      tk.renderData(jqXHR.responseText, verovioSettings);
       const pageToShow = tk.getPageWithElement(pagebeginning);
-      score = tk.renderToSVG(pageToShow);
+      let score = tk.renderToSVG(pageToShow);
 
       $("#player").midiPlayer({
         onStop: function () { $('body').removeClass('midi-active') }
@@ -54,24 +54,16 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
 
       $("#tx-dlf-tools-midi").click(
         function () {
-          var base64midi = tk.renderToMIDI();
-          var song = 'data:audio/midi;base64,' + base64midi;
-
-          $("#player").midiPlayer.play(song);
-
+          $("#player").midiPlayer.play('data:audio/midi;base64,' + tk.renderToMIDI());
           $('body').addClass('midi-active');
         });
 
-
-      const midi = tk.renderToMIDI();
-      const str2blob = new Blob([midi]);
-
-      $("#tx_dlf_mididownload").attr({
-        "href": window.URL.createObjectURL(str2blob, {type: "text/plain"}),
-        "download": "demo.midi"
+      $("#tx_dlf_mididownload").click(function () {
+        $(this).attr({
+          "href": 'data:audio/midi;base64,' + tk.renderToMIDI(),
+          "download": get_mei_title(tk) + ".midi"
+        })
       });
-
-      $("#tx_dlf_mididownload").click();
 
       if (score === undefined) {
         result.reject();
@@ -259,12 +251,11 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
   this.changeActiveBehaviour();
 };
 
-function get_pdf_title(tk) {
-  var parser = new DOMParser();
-  var xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
-  var work = xmlDoc.getElementsByTagName("work");
-  var pdfTitle = work[0].getElementsByTagName("title")[0].textContent;
-  return pdfTitle;
+function get_mei_title(tk) {
+  let parser = new DOMParser();
+  let xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
+  let meiHead = xmlDoc.getElementsByTagName("meiHead");
+  return meiHead[0].getElementsByTagName("title")[0].textContent;
 }
 
 /**
@@ -343,7 +334,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
   $("#tx_dlf_scoredownload").click(function () {
     if (typeof pdf_blob !== 'undefined') {
-      saveAs(pdf_blob, get_pdf_title(tk));
+      saveAs(pdf_blob, get_mei_title(tk));
 
       return;
     }
@@ -390,7 +381,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
     stream.on('finish', function () {
       pdf_blob = stream.toBlob('application/pdf');
-      saveAs(pdf_blob, get_pdf_title(tk));
+      saveAs(pdf_blob, get_mei_title(tk));
     });
 
 
@@ -407,10 +398,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
     const pdf_tk = new verovio.toolkit();
     pdf_tk.renderData(tk.getMEI(), pdfOptions);
-    var parser = new DOMParser();
-    var xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
-    var work = xmlDoc.getElementsByTagName("work");
-    var pdfTitle = work[0].getElementsByTagName("title")[0].textContent;
 
     for (let i = 0; i < pdf_tk.getPageCount(); i++) {
       doc.addPage({size: pdfFormat, layout: pdfOrientation});
@@ -418,7 +405,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     }
 
     doc.end();
-
   });
 
 
