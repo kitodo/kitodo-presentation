@@ -101,10 +101,15 @@ class ToolboxController extends AbstractController
                     case 'pdfdownloadtool':
                         $this->renderToolByName('renderPdfDownloadTool');
                         break;
+                    case 'tx_dlf_scoredownloadtool':
+                    case 'scoredownloadtool':
+                        $this->renderToolByName('renderScoreDownloadTool');
+                        break;
                     case 'tx_dlf_searchindocumenttool':
                     case 'searchindocumenttool':
                         $this->renderToolByName('renderSearchInDocumentTool');
                         break;
+                    case 'plugin.tx_dlf_scoretool':
                     case 'scoretool':
                         $this->renderToolByName('renderScoreTool');
                         break;
@@ -128,6 +133,29 @@ class ToolboxController extends AbstractController
     {
         $this->$tool();
         $this->view->assign($tool, true);
+    }
+
+    /**
+     * Get the score file.
+     *
+     * @return string
+     */
+    private function getScoreFile(): string
+    {
+        $scoreFile = '';
+        if ($this->requestData['page']) {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
+        } else {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
+        }
+
+        $useGroups = $this->useGroupsConfiguration->getScore();
+        foreach ($useGroups as $useGroup) {
+            if ($this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$useGroup]) {
+                $scoreFile = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$useGroup];
+            }
+        }
+        return $scoreFile;
     }
 
     /**
@@ -239,19 +267,7 @@ class ToolboxController extends AbstractController
             return;
         }
 
-        if ($this->requestData['page']) {
-            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
-        } else {
-            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
-        }
-
-        $useGroups = $this->useGroupsConfiguration->getScore();
-        foreach ($useGroups as $useGroup) {
-            if ($this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$useGroup]) {
-                $scoreFile = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$useGroup];
-            }
-        }
-        if (!empty($scoreFile)) {
+        if (!empty($this->getScoreFile())) {
             $this->view->assign('score', true);
             $this->view->assign('activateScoreInitially', MathUtility::forceIntegerInRange($this->settings['activateScoreInitially'], 0, 1, 0));
         } else {
@@ -394,6 +410,8 @@ class ToolboxController extends AbstractController
         $this->view->assign('pageLinks', $this->getPageLink());
         // Get work download.
         $this->view->assign('workLink', $this->getWorkLink());
+
+        $this->view->assign('scoreLinks', !empty($this->getScoreFile()));
     }
 
     /**
