@@ -494,13 +494,11 @@ class PageViewController extends AbstractController
             'maxPage' => $this->requestData['page'] + $this->requestData['double']
         ];
 
-        $initDoc = $this->document->getCurrentDocument()->toArray($this->uriBuilder, $config);
-
         if (is_array($this->documentArray) && count($this->documentArray) > 1) {
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
             foreach ($this->documentArray as $document) {
-                if ($document !== null && array_key_exists($i, $this->requestData['docPage']))
+                if ($document !== null && array_key_exists($i, $this->requestData['docPage'])) {
                     $docPage = $this->requestData['docPage'][$i];
                     $docImage = [];
                     $docFulltext = [];
@@ -545,15 +543,6 @@ class PageViewController extends AbstractController
                     $i++;
                 }
             }
-
-            // Viewer configuration.
-            $viewerConfiguration = '
-                $(document).ready(function() {
-                    if (dlfUtils.exists(dlfViewer)) {
-                        ' . $jsViewer . '
-                        viewerCount = ' . ($i - 1) . ';
-                    }
-                });';
         } else {
             $currentMeasureId = '';
             $docPage = $this->requestData['page'] ?? 0;
@@ -580,27 +569,30 @@ class PageViewController extends AbstractController
             ];
 
             // Viewer configuration.
-            $viewerConfiguration = '
-                (function () {
-                    let docController = null;
-
-                    window.addEventListener("tx-dlf-documentLoaded", e => {
-                        docController = e.detail.docController;
-                        if (typeof tx_dlf_viewer !== "undefined") {
-                            tx_dlf_viewer.setDocController(docController);
-                        }
-                    });
-                    
-                    $(document).ready(function() {
-
-                        if (dlfUtils.exists(dlfViewer)) {
-                            tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
-                        }
-                        tx_dlf_viewer.setDocController(docController);
-                        }
-                    });
-                })();';
+            $jsViewer = 'tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');';
         }
+
+        // Viewer configuration.
+        $viewerConfiguration = '
+        (function () {
+            let docController = null;
+
+            window.addEventListener("tx-dlf-documentLoaded", e => {
+                docController = e.detail.docController;
+                if (typeof tx_dlf_viewer !== "undefined") {
+                    tx_dlf_viewer.setDocController(docController);
+                }
+            });
+                
+            $(document).ready(function() {
+                if (dlfUtils.exists(dlfViewer)) {
+                    ' . $jsViewer . '
+                }
+                tx_dlf_viewer.setDocController(docController);
+                }
+            });
+        })();';
+
         $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
 
