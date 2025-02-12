@@ -19,11 +19,6 @@
 let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
 const verovioSettings = {
-  //scale: 25,
-  //AdjustPageWidth: true,
-  //SpacingLinear: .15,
-  //AdjustPageHeight: true,
-  //scaleToPageSize: true,
   breaks: 'encoded',
   mdivAll: true
 };
@@ -31,7 +26,7 @@ const verovioSettings = {
 /**
  * Method fetches the score data from the server
  * @param {string} url
- * @return {svg}
+ * @returns {svg}
  * @static
  */
 dlfScoreUtils.get_play_midi = function (toolkit) {
@@ -49,7 +44,7 @@ dlfScoreUtils.get_play_midi = function (toolkit) {
 /**
  * Parse from an alto element a OpenLayers geometry object
  * @param {Element} node
- * @return {ol.geom.Polygon|undefined}
+ * @returns {ol.geom.Polygon|undefined}
  * @private
  */
 dlfScoreUtil.parseGeometry_ = function(node) {
@@ -86,7 +81,7 @@ dlfScoreUtil.parseGeometry_ = function(node) {
 /**
  * Parse from an alto element a OpenLayers feature object ulx, uly, lrx, lry
  * @param {Element} node
- * @return {ol.Feature}
+ * @returns {ol.Feature}
  * @private
  */
 dlfScoreUtil.parseFeatureWithGeometry_ = function(node) {

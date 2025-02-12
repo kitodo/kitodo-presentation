@@ -15,23 +15,11 @@ var format = 'mei';
 var customOptions = undefined;
 var tk = {};
 var ids = [];
-var pdfTitle = "";
 
-let pdf_blob;
+let pdfBlob;
 
 let dlfScoreUtil;
 dlfScoreUtil = dlfScoreUtil || {};
-const verovioSetting = {
-  pageWidth: 300,
-  scale: 25,
-  //AdjustPageWidth: true,
-  spacingLinear: .15,
-  pageHeight: 300,
-  //AdjustPageHeight: true,
-  scaleToPageSize: true,
-  breaks: 'encoded',
-  mdivAll: true
-};
 
 dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
   const result = new $.Deferred();
@@ -46,7 +34,7 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
     try {
       tk.renderData(jqXHR.responseText, verovioSettings);
       const pageToShow = tk.getPageWithElement(pagebeginning);
-      let score = tk.renderToSVG(pageToShow);
+      const score = tk.renderToSVG(pageToShow);
 
       $("#player").midiPlayer({
         onStop: function () { $('body').removeClass('midi-active') }
@@ -333,8 +321,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
   );
 
   $("#tx_dlf_scoredownload").click(function () {
-    if (typeof pdf_blob !== 'undefined') {
-      saveAs(pdf_blob, get_mei_title(tk));
+    if (typeof pdfBlob !== 'undefined') {
+      saveAs(pdfBlob, get_mei_title(tk));
 
       return;
     }
@@ -377,8 +365,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     var stream = doc.pipe(blobStream());
 
     stream.on('finish', function () {
-      pdf_blob = stream.toBlob('application/pdf');
-      saveAs(pdf_blob, get_mei_title(tk));
+      pdfBlob = stream.toBlob('application/pdf');
+      saveAs(pdfBlob, get_mei_title(tk));
     });
 
 
