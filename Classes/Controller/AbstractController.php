@@ -161,13 +161,13 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param AbstractDocument $doc
      * @return void
      */
-    protected function buildMultiView(AbstractDocument $doc): void
+    protected function buildMultiView(AbstractDocument $doc, int $pageId): void
     {
         if (isset($this->settings['multiViewType']) && $doc->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
             $childDocuments = $doc->tableOfContents[0]['children'];
             $i = 0;
             foreach ($childDocuments as $document) {
-                $this->documentArray[] = AbstractDocument::getInstance($document['points'], 1, $this->settings);
+                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $pageId, $this->settings);
                 if (isset(explode('#', $document['points'])[1])) {
                     $initPage = explode('#', $document['points'])[1];
                     $this->requestData['docPage'][$i] = $initPage;
@@ -180,7 +180,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
             $i = 0;
             foreach ($this->requestData['multipleSource'] as $location) {
-                $document = AbstractDocument::getInstance($location, 1, $this->settings);
+                $document = AbstractDocument::getInstance($location, $pageId, $this->settings);
                 if ($document !== null) {
                     $this->documentArray['extra_' . $i] = $document;
                 }
@@ -208,7 +208,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $documentId = $this->requestData['id'];
         }
 
-        $pageId = $this->getRequest()->getAttribute('routing')->getPageId();
+        $pageId = $this->request->getAttribute('routing')->getPageId();
 
         // Try to get document format from database
         if (!empty($documentId)) {
@@ -255,7 +255,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function configureProxyUrl(string &$url): void
     {
         $this->uriBuilder->reset()
-            ->setTargetPageUid($this->getRequest()->getAttribute('routing')->getPageId())
+            ->setTargetPageUid($this->request->getAttribute('routing')->getPageId())
             ->setCreateAbsoluteUri(!empty($this->settings['general']['forceAbsoluteUrl']))
             ->setArguments(
                 [
@@ -701,7 +701,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $doc = AbstractDocument::getInstance($this->document->getLocation(), $pageId, $this->settings);
             if ($doc !== null) {
                 $doc->configPid = $this->document->getPid();
-                $this->buildMultiView($doc);
+                $this->buildMultiView($doc, $pageId);
                 // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
                 $this->documentArray[] = $doc;
             }
@@ -729,7 +729,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $doc = AbstractDocument::getInstance($documentUrl, $pageId, $this->settings);
 
         if ($doc !== null) {
-            $this->buildMultiView($doc);
+            $this->buildMultiView($doc, $pageId);
 
             $this->document = GeneralUtility::makeInstance(Document::class);
 
