@@ -463,22 +463,6 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
-        // TODO(client-side): Avoid redundancy to DocumentController
-        $filesConfiguration = $this->extConf['files'];
-        $imageFileGroups = array_reverse(GeneralUtility::trimExplode(',', $filesConfiguration['fileGrpImages']));
-        $fulltextFileGroups = GeneralUtility::trimExplode(',', $filesConfiguration['fileGrpFulltext']);
-        $config = [
-            'forceAbsoluteUrl' => !empty($this->settings['forceAbsoluteUrl']),
-            'proxyFileGroups' => !empty($this->settings['useInternalProxy'])
-                ? array_merge($imageFileGroups, $fulltextFileGroups)
-                : [],
-            // toArray uses closed interval [minPage, maxPage]
-            'minPage' => $this->requestData['page'],
-            'maxPage' => $this->requestData['page'] + $this->requestData['double']
-        ];
-
-        $initDoc = $this->document->getCurrentDocument()->toArray($this->uriBuilder, $config);
-
         if (!empty($this->settings['multiViewType']) && is_array($this->documentArray) && count($this->documentArray) > 1) {
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
@@ -528,15 +512,6 @@ class PageViewController extends AbstractController
                     $i++;
                 }
             }
-
-            // Viewer configuration.
-            $viewerConfiguration = '
-                $(document).ready(function() {
-                    if (dlfUtils.exists(dlfViewer)) {
-                        ' . $jsViewer . '
-                        viewerCount = ' . ($i - 1) . ';
-                    }
-                });';
         } else {
             $currentMeasureId = '';
             $docPage = 0;
@@ -567,27 +542,30 @@ class PageViewController extends AbstractController
             ];
 
             // Viewer configuration.
-            $viewerConfiguration = '
-                (function () {
-                    let docController = null;
-
-                    window.addEventListener("tx-dlf-documentLoaded", e => {
-                        docController = e.detail.docController;
-                        if (typeof tx_dlf_viewer !== "undefined") {
-                            tx_dlf_viewer.setDocController(docController);
-                        }
-                    });
-                    
-                    $(document).ready(function() {
-
-                        if (dlfUtils.exists(dlfViewer)) {
-                            tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
-                        }
-                        tx_dlf_viewer.setDocController(docController);
-                        }
-                    });
-                })();';
+            $jsViewer = 'tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');';
         }
+
+        // Viewer configuration.
+        $viewerConfiguration = '
+        (function () {
+            let docController = null;
+
+            window.addEventListener("tx-dlf-documentLoaded", e => {
+                docController = e.detail.docController;
+                if (typeof tx_dlf_viewer !== "undefined") {
+                    tx_dlf_viewer.setDocController(docController);
+                }
+            });
+
+            $(document).ready(function() {
+                if (dlfUtils.exists(dlfViewer)) {
+                    ' . $jsViewer . '
+                }
+                tx_dlf_viewer.setDocController(docController);
+                }
+            });
+        })();';
+
         $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
 
