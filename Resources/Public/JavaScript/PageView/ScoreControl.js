@@ -113,20 +113,6 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
       'score-scroll-element': 'html, body'
     };
 
-  /**
-   * @type {number}
-   * @private
-   */
-  this.activateScoreInitially = this.dic['activate-score-initially'] === "1" ? 1 : 0;
-
-  /**
-   * @type {string}
-   * @private
-   */
-  this.scoreScrollElement = this.dic['score-scroll-element'];
-
-  $('#tx-dlf-score-' + this.dlfViewer.counter).text(this.dic['score-loading']);
-
   this.measuresLoaded = false;
 
   function makeSVG(tag, attrs) {
@@ -230,7 +216,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
           }
         });
         this.measuresLoaded = true;
-      }, 1000);
+      }, 2000);
     }
   };
 
@@ -409,7 +395,6 @@ function set_options(tk) {
   height = calc_page_height();
   width = calc_page_width();
 
-
   if (customOptions !== undefined) {
     localStorage['customOptions'] = JSON.stringify(customOptions);
     var mergedOptions = {};
@@ -417,7 +402,6 @@ function set_options(tk) {
     for (var key in options) mergedOptions[key] = options[key];
     options = mergedOptions;
   }
-
 
   options = {
     pageWidth: $('#tx-dlf-score-' + this.dlfViewer.counter).width(),
@@ -452,8 +436,6 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function () {
     const toggleScore = $.proxy(function (event) {
       event.preventDefault();
 
-      this.activateScoreInitially = 0;
-
       if ($(event.target).hasClass('active')) {
         this.deactivate();
         return;
@@ -468,7 +450,6 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function () {
 
   // set initial title of score element
   $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
-    .text(this.dic['score'])
     .attr('title', this.dic['score']);
 
   this.activate();
@@ -491,11 +472,6 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function () {
     anchorEl.on('click', toggleScore);
     anchorEl.on('touchstart', toggleScore);
   }
-
-  // set initial title of score element
-  $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
-    .text(this.dic['score-on'])
-    .attr('title', this.dic['score-on']);
 
   // if score is activated via cookie than run activation method
   if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled') {
@@ -547,21 +523,16 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 
   // Remove sync button from the view functions in the upper right corner
   $('.view-functions ul li.sync-view').hide();
-  // this.dlfViewer.syncControl.unsetSync();
 
   $('#tx-dlf-tools-score-' + this.dlfViewer.counter).removeClass(className);
 
-  if (this.activateFullTextInitially === 0) {
-    $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
-      .text(this.dic['score-on'])
-      .attr('title', this.dic['score-on']);
-  }
+  $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
+    .attr('title', this.dic['score-on']);
 
   $('#tx-dlf-score-' + this.dlfViewer.counter).removeClass(className).hide();
   $('#tx-dfgviewer-map-' + this.dlfViewer.counter + ' .ol-overlaycontainer-stopevent').hide();
   $('#tx-dfgviewer-map-' + this.dlfViewer.counter + ' ~ .score-tool #tx-dlf-tools-midi').hide();
   $('.document-view:not(.multiview) .document-functions #tx-dlf-tools-midi').hide();
-
 
   $('body').removeClass(className);
 
@@ -588,15 +559,15 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
   // show score container
   $('#tx-dlf-tools-score-' + this.dlfViewer.counter).addClass(className);
 
-  if (this.activateFullTextInitially === 0) {
-    $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
-      .text(this.dic['score-off'])
-      .attr('title', this.dic['score-off']);
-  }
+  $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
+    .attr('title', this.dic['score-off']);
 
   $('#tx-dlf-score-' + this.dlfViewer.counter).addClass(className).show();
 
   $('body').addClass(className);
+
+  $('.document-view:not(.multiview) .document-functions #tx-dlf-tools-midi').show();
+
   this.scrollToPagebeginning();
 
   if (this.dlfViewer.measureLayer) {

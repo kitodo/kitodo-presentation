@@ -267,12 +267,7 @@ class ToolboxController extends AbstractController
             return;
         }
 
-        if (!empty($this->getScoreFile())) {
-            $this->view->assign('score', true);
-            $this->view->assign('activateScoreInitially', MathUtility::forceIntegerInRange($this->settings['activateScoreInitially'], 0, 1, 0));
-        } else {
-            $this->view->assign('score', false);
-        }
+        $this->view->assign('score', !empty($this->getScoreFile()));
     }
 
     /**

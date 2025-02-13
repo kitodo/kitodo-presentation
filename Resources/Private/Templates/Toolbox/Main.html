@@ -133,16 +133,16 @@
 
     <f:if condition="{renderScoreTool} && {score}">
         <f:then>
-            <a class="select switchoff" id="tx-dlf-tools-score-0" title=""
-               data-dic="fulltext:{f:translate(key: 'tools.score')}
-                    ;fulltext-on:{f:translate(key: 'tools.score.on')}
-                    ;fulltext-off:{f:translate(key: 'tools.score.off')}
-                    ;activate-score-initially:{activateScoreInitially}
-                    ;score-scroll-element:{settings.scoreScrollElement}
-                    ;search-hl-parameters:{settings.searchHlParameters}">
-                &nbsp;
-            </a>
-            <a class="select switchoff" id="tx-dlf-tools-midi" title="" data-dic=""> &nbsp;</a>
+            <li class="score">
+                <a class="select switchoff" id="tx-dlf-tools-score-0" title="">
+                    <f:translate key="tools.score"/>
+                </a>
+            </li>
+            <li class="score">
+                <a id="tx-dlf-tools-midi" >
+                    <f:translate key="tools.score.player"/>
+                </a>
+            </li>
         </f:then>
     </f:if>
 
