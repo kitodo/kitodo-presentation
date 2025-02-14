@@ -23,9 +23,9 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
+use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
@@ -137,6 +137,40 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             'uniqueId' => uniqid(),
             'requestData' => $this->requestData
         ];
+    }
+
+    /**
+     * Build the multi view.
+     *
+     * @param AbstractDocument $doc
+     * @return void
+     */
+    protected function buildMultiView(AbstractDocument $doc): void
+    {
+        if (isset($this->settings['multiViewType']) && $doc->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
+            $childDocuments = $doc->tableOfContents[0]['children'];
+            $i = 0;
+            foreach ($childDocuments as $document) {
+                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings, true);
+                if (!isset($this->requestData['docPage'][$i]) && isset(explode('#', $document['points'])[1])) {
+                    $initPage = explode('#', $document['points'])[1];
+                    $this->requestData['docPage'][$i] = $initPage;
+                }
+                $i++;
+            }
+        } else {
+            $this->documentArray[] = $doc;
+        }
+        if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
+            $i = 0;
+            foreach ($this->requestData['multipleSource'] as $location) {
+                $document = AbstractDocument::getInstance($location, $this->settings, true);
+                if ($document !== null) {
+                    $this->documentArray['extra_' . $i] = $document;
+                }
+                $i++;
+            }
+        }
     }
 
     /**
@@ -566,15 +600,19 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     private function getDocumentByUid(int $documentId)
     {
-        // TODO: implement multiView as it is in getDocumentByUrl
         $doc = null;
         $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
 
         if ($this->document) {
-            $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, false);
-            // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
-            $this->documentArray[] = $doc;
-        } else {
+            $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
+            if ($doc !== null) {
+                $this->buildMultiView($doc);
+                // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
+                $this->documentArray[] = $doc;
+            }
+        }
+
+        if ($this->document || $doc === null) {
             $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
 
@@ -594,32 +632,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
 
-        if (isset($this->settings['multiViewType']) && $doc->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
-            $childDocuments = $doc->tableOfContents[0]['children'];
-            $i = 0;
-            foreach ($childDocuments as $document) {
-                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings, true);
-                if (!isset($this->requestData['docPage'][$i]) && isset(explode('#', $document['points'])[1])) {
-                    $initPage = explode('#', $document['points'])[1];
-                    $this->requestData['docPage'][$i] = $initPage;
-                }
-                $i++;
-            }
-        } else {
-            $this->documentArray[] = $doc;
-        }
-        if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
-            $i = 0;
-            foreach ($this->requestData['multipleSource'] as $location) {
-                $document = AbstractDocument::getInstance($location, $this->settings, true);
-                if ($document !== null) {
-                    $this->documentArray['extra_' . $i] = $document;
-                }
-                $i++;
-            }
-        }
-
         if ($doc !== null) {
+            $this->buildMultiView($doc);
+
             $this->document = GeneralUtility::makeInstance(Document::class);
 
             if ($doc->recordId) {
