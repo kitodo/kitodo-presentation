@@ -427,27 +427,24 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function setDefaultPage(): void
     {
         // Set default values if not set.
-        // $this->requestData['page'] may be integer or string (physical structure @ID)
-        if (
-            isset($this->requestData['page'])
-            && (
-                (int) $this->requestData['page'] > 0
-                || empty($this->requestData['page'])
-                || is_array($this->requestData['docPage'])
-            )
-        ) {
-            if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
-                $i = 0;
-                foreach ($this->documentArray as $document) {
-                    if ($document !== null) {
-                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
-                        $i++;
-                    }
-                }
-            } else {
-                $this->requestData['page'] = MathUtility::forceIntegerInRange((int) $this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
-            }
+        $this->requestData['page'] = intval($this->requestData['page'] ?? 1);
+        if ($this->requestData['page'] <= 0) {
+            $this->requestData['page'] = 1;
         }
+
+        if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
+            $i = 0;
+            $this->requestData['docPage'] = $this->requestData['docPage'] ?? [];
+            foreach ($this->documentArray as $document) {
+                if ($document !== null) {
+                    $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int)$this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                    $i++;
+                }
+            }
+        } else {
+            $this->requestData['page'] = MathUtility::forceIntegerInRange($this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
+        }
+
         // reassign viewData to get correct page
         $this->viewData['requestData'] = $this->requestData;
     }
