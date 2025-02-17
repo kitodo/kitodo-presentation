@@ -339,7 +339,26 @@ class BaseCommand extends Command
                 $documentCollection = GeneralUtility::makeInstance(Collection::class);
                 $documentCollection->setIndexName($collection);
                 $documentCollection->setLabel($collection);
-                $documentCollection->setOaiName((!empty($this->extConf['general']['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
+                $setSpec = '';
+                if (!empty($this->extConf['general']['publishNewCollections'])) {
+                    // setSpec only allows unreserved characters (rfc2396).
+                    // alnum | "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
+                    // Here we are a little bit more restrictive because
+                    // some more unreserved characters are not allowed.
+                    // Convert whitespaces to dash.
+                    $setSpec = $collection;
+                    $setSpec = preg_replace('/[\s]/', '-', $setSpec);
+                    // Remove multiple dashes.
+                    $setSpec = preg_replace('/[-]{2,}/', '-', $setSpec);
+                    // Remove undesired characters.
+                    $setSpec = preg_replace('/[^\w:-]/', '', $setSpec);
+                    // A hierarchical setSpec consists of two or more
+                    // normal setSpec which are separated by colons.
+                    // Remove colons which don't separate hierarchical setSpec entries.
+                    $setSpec = trim($setSpec, ':');
+                    $setSpec = preg_replace('/:{2,}/', ':', $setSpec);
+                }
+                $documentCollection->setOaiName($setSpec);
                 $documentCollection->setIndexSearch('');
                 $documentCollection->setDescription('');
                 // add to CollectionRepository
