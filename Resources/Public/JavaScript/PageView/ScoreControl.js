@@ -404,40 +404,11 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
 };
 
-function set_options(tk) {
-
-  if (customOptions !== undefined) {
-    localStorage.customOptions = JSON.stringify(customOptions);
-    const mergedOptions = {};
-    for (const customOptionsKey in customOptions) {
-      mergedOptions[customOptionsKey] = customOptions[customOptionsKey];
-    }
-    for (const optionsKey in options) {
-      mergedOptions[optionsKey] = options[optionsKey];
-    }
-    options = mergedOptions;
-  }
-
-  options = {
-    pageWidth: $('#tx-dlf-score-' + this.dlfViewer.counter).width(),
-    scale: 25,
-    //adjustPageWidth: true,
-    spacingLinear: .15,
-    pageHeight: $('#tx-dlf-score-' + this.dlfViewer.counter).height(),
-    //adjustPageHeight: true,
-    scaleToPageSize: true,
-    breaks: 'encoded',
-    mdivAll: true
-  };
-
-  tk.setOptions(options);
-}
-
 /**
  * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.
  */
 dlfViewerScoreControl.prototype.changeActiveBehaviour = function () {
-  if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled' && this.pagecount == 1) {
+  if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled' && this.pagecount === 1) {
     this.addActiveBehaviourForSwitchOn();
   } else {
     this.addActiveBehaviourForSwitchOff();
