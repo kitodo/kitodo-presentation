@@ -488,10 +488,9 @@ class PageViewController extends AbstractController
                     $docImage = [];
                     $docFulltext = [];
                     $docAnnotationContainers = [];
-
                     if ($this->document->getCurrentDocument() instanceof MetsDocument) {
                         // check if page or measure is set
-                        if ($this->requestData['docMeasure'][$i]) {
+                        if (array_key_exists('docMeasure', $this->requestData)) {
                             // convert document page information to measure count information
                             $measure2Page = array_column($document->musicalStructure, 'page');
                             $docPage = $measure2Page[$this->requestData['docMeasure'][$i]];
@@ -506,14 +505,14 @@ class PageViewController extends AbstractController
                     $docScore = $this->getScore($docPage, $document);
                     $docMeasures = $this->getMeasures($docPage, $document);
 
-                    if ($this->requestData['docMeasure'][$i]) {
+                    if (array_key_exists('docMeasure', $this->requestData) && $this->requestData['docMeasure'][$i]) {
                         $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
                     }
 
                     $viewer = [
                         'controls' => $this->controls,
                         'div' => 'tx-dfgviewer-map-' . $i,
-                        'progressElementId' => $this->settings['progressElementId'],
+                        'progressElementId' => $this->settings['progressElementId'] ?? '',
                         'counter' => $i,
                         'images' => $docImage,
                         'fulltexts' => $docFulltext,

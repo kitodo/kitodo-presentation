@@ -159,7 +159,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $i = 0;
             foreach ($childDocuments as $document) {
                 $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings, true);
-                if (!isset($this->requestData['docPage'][$i]) && isset(explode('#', $document['points'])[1])) {
+                if (isset(explode('#', $document['points'])[1])) {
                     $initPage = explode('#', $document['points'])[1];
                     $this->requestData['docPage'][$i] = $initPage;
                 }
@@ -443,8 +443,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $i = 0;
             $this->requestData['docPage'] = $this->requestData['docPage'] ?? [];
             foreach ($this->documentArray as $document) {
-                if ($document !== null && array_key_exists($i, $this->requestData['docPage'])) {
-                    $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                if ($document !== null) {
+                    if (!array_key_exists($i, $this->requestData['docPage'])) {
+                        $this->requestData['docPage'][$i] = 1;
+                    } else {
+                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int)$this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                    }
                     $i++;
                 }
             }
