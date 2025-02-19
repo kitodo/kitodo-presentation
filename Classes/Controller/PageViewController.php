@@ -402,27 +402,27 @@ class PageViewController extends AbstractController
                         break;
                     }
                 }
-            }
 
-            if (!empty($loc)) {
-                $score['mimetype'] = $doc->getFileMimeType($loc);
-                $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
-                $score['url'] = $doc->getFileLocation($loc);
-                if ($this->settings['useInternalProxy']) {
-                    // Configure @action URL for form.
-                    $uri = $this->uriBuilder->reset()
-                        ->setTargetPageUid($this->pageUid)
-                        ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
-                        ->setArguments(
-                            [
-                                'eID' => 'tx_dlf_pageview_proxy',
-                                'url' => $score['url'],
-                                'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
-                            ]
-                        )
-                        ->build();
+                if (!empty($loc)) {
+                    $score['mimetype'] = $doc->getFileMimeType($loc);
+                    $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
+                    $score['url'] = $doc->getFileLocation($loc);
+                    if ($this->settings['useInternalProxy']) {
+                        // Configure @action URL for form.
+                        $uri = $this->uriBuilder->reset()
+                            ->setTargetPageUid($this->pageUid)
+                            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+                            ->setArguments(
+                                [
+                                    'eID' => 'tx_dlf_pageview_proxy',
+                                    'url' => $score['url'],
+                                    'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
+                                ]
+                            )
+                            ->build();
 
-                    $score['url'] = $uri;
+                        $score['url'] = $uri;
+                    }
                 }
             }
         }
