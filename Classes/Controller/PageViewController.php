@@ -391,7 +391,7 @@ class PageViewController extends AbstractController
         if ($doc instanceof MetsDocument) {
             $useGroups = $this->useGroupsConfiguration->getScore();
 
-            if(array_key_exists($page, $doc->physicalStructure)) {
+            if (array_key_exists($page, $doc->physicalStructure)) {
                 $pageId = $doc->physicalStructure[$page];
                 $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
 

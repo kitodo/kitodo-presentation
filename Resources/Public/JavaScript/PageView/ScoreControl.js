@@ -7,7 +7,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-/*global ol */
+/*global ol, verovioSettings */
 const className = 'score-visible';
 const scrollOffset = 100;
 var zoom = 40;
@@ -202,7 +202,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
           }
 
           dlfViewer.verovioMeasureHover = $(this);
-          // set measure as active
+          // Set measure as active
           dlfViewer.verovioMeasureHover.addClass('hover');
           var measureId = $(this).parent().attr('id');
 
@@ -246,17 +246,17 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
   var proj = new ol.proj.Projection({
     code: 'score-projection',
     units: 'pixels',
-    extent: extent
+    extent
   });
 
   var map = new ol.Map({
-    target: target,
+    target,
     // View: tx_dlf_viewer.view,
     view: new ol.View({
       projection: proj,
       //Center: [0, 0],            center: ol.extent.getCenter(extent),
       center: [0, 0],
-      extent: extent,
+      extent,
       zoom: 1,
       minZoom: 1,
     }),

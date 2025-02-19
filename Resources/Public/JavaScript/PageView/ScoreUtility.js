@@ -15,7 +15,7 @@
  *
  * @const
  */
-
+/*global verovioSettings */
 let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
 const verovioSettings = {
