@@ -397,18 +397,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
 };
 
-function calc_page_height() {
-  return ($(document).height() - $("#navbar").height() - 4) * 100 / zoom;
-}
-
-function calc_page_width() {
-  return ($(".row-offcanvas").width()) * 100 / zoom;
-}
-
 function set_options(tk) {
-
-  let height = calc_page_height();
-  let width = calc_page_width();
 
   if (customOptions !== undefined) {
     localStorage.customOptions = JSON.stringify(customOptions);
