@@ -7,7 +7,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-/*global ol, verovioSettings, saveAs */
+/*global ol, saveAs */
 
 /**
  * Retrieve the title from the MEI head.
@@ -22,6 +22,10 @@ function getMeiTitle(tk) {
   return meiHead[0].getElementsByTagName("title")[0].textContent;
 }
 
+const verovioSettings = {
+  breaks: 'encoded',
+  mdivAll: true
+};
 const className = 'score-visible';
 const scrollOffset = 100;
 var zoom = 40;
@@ -34,6 +38,8 @@ let pdfBlob;
 
 let dlfScoreUtil;
 dlfScoreUtil = dlfScoreUtil || {};
+
+
 
 dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
   const result = new $.Deferred();

@@ -15,13 +15,8 @@
  *
  * @const
  */
-/*global verovioSettings */
 let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
-const verovioSettings = {
-  breaks: 'encoded',
-  mdivAll: true
-};
 
 /**
  * Parse from an alto element a OpenLayers geometry object
