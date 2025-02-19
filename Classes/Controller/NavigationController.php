@@ -135,7 +135,7 @@ class NavigationController extends AbstractController
                 $musicalStructure = $this->document->getCurrentDocument()->musicalStructure;
                 $musicalStructureInfo = $this->document->getCurrentDocument()->musicalStructureInfo;
                 for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
-                    if(array_key_exists($i, $musicalStructure) && array_key_exists($i, $musicalStructureInfo)) {
+                    if (array_key_exists($i, $musicalStructure) && array_key_exists($i, $musicalStructureInfo)) {
                         $measureOptions[$i] = '[' . $i . ']' . ($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($musicalStructureInfo[$musicalStructureInfo[$i]]['orderlabel']) : '');
                         $measurePages[$i] = $musicalStructure[$i]['page'];
                     }

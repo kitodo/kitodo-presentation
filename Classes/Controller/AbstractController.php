@@ -434,7 +434,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function setDefaultPage(): void
     {
         // Set default values if not set.
-        $this->requestData['page'] = intval($this->requestData['page'] ?? 1);
+        $this->requestData['page'] = (int) $this->requestData['page'] ?? 1;
         if ($this->requestData['page'] <= 0) {
             $this->requestData['page'] = 1;
         }
@@ -444,7 +444,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->requestData['docPage'] = $this->requestData['docPage'] ?? [];
             foreach ($this->documentArray as $document) {
                 if ($document !== null && array_key_exists($i, $this->requestData['docPage'])) {
-                    $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int)$this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                    $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
                     $i++;
                 }
             }
