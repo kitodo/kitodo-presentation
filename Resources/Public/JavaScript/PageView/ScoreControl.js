@@ -401,9 +401,13 @@ function set_options(tk) {
 
   if (customOptions !== undefined) {
     localStorage.customOptions = JSON.stringify(customOptions);
-    var mergedOptions = {};
-    for (var key in customOptions) mergedOptions[key] = customOptions[key];
-    for (var key in options) mergedOptions[key] = options[key];
+    let mergedOptions = {};
+    for (let customOptionsKey in customOptions) {
+      mergedOptions[customOptionsKey] = customOptions[customOptionsKey];
+    }
+    for (let optionsKey in options) {
+      mergedOptions[optionsKey] = options[optionsKey];
+    }
     options = mergedOptions;
   }
 
