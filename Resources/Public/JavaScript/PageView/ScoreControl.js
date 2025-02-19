@@ -338,6 +338,13 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     var pdfHeight = pdfLandscape ? pdfSize[0] : pdfSize[1];
     var pdfWidth = pdfLandscape ? pdfSize[1] : pdfSize[0];
 
+    /**
+     * Get the font name
+     * @param {string} family
+     * @param {string} bold
+     * @param {string} italic
+     * @returns {string} The font name
+     */
     function fontCallback(family, bold, italic) {
       if (family === "VerovioText") {
         return family;
@@ -401,11 +408,11 @@ function set_options(tk) {
 
   if (customOptions !== undefined) {
     localStorage.customOptions = JSON.stringify(customOptions);
-    let mergedOptions = {};
-    for (let customOptionsKey in customOptions) {
+    const mergedOptions = {};
+    for (const customOptionsKey in customOptions) {
       mergedOptions[customOptionsKey] = customOptions[customOptionsKey];
     }
-    for (let optionsKey in options) {
+    for (const optionsKey in options) {
       mergedOptions[optionsKey] = options[optionsKey];
     }
     options = mergedOptions;
