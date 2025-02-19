@@ -8,6 +8,20 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 /*global ol, verovioSettings, saveAs */
+
+/**
+ * Retrieve the title from the MEI head.
+ *
+ * @param {object} tk The Verovio toolkit
+ * @returns {string} The title
+ */
+function getMeiTitle(tk) {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
+  const meiHead = xmlDoc.getElementsByTagName("meiHead");
+  return meiHead[0].getElementsByTagName("title")[0].textContent;
+}
+
 const className = 'score-visible';
 const scrollOffset = 100;
 var zoom = 40;
@@ -230,20 +244,6 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
   this.changeActiveBehaviour();
 };
 
-
-/**
- * Retrieve the title from the MEI head.
- *
- * @param {Object} tk The Verovio toolkit
- * @returns {string} The title
- */
-function getMeiTitle(tk) {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
-  const meiHead = xmlDoc.getElementsByTagName("meiHead");
-  return meiHead[0].getElementsByTagName("title")[0].textContent;
-}
-
 /**
  * @param {ScoreFeature} scoreData
  */
@@ -286,8 +286,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
   var svgContainer = document.createElement('div');
   svgContainer.innerHTML = scoreData;
 
-  let width = 2100;
-  let height = 2970;
+  const width = 2100;
+  const height = 2970;
   svgContainer.style.width = width + 'px';
   svgContainer.style.height = height + 'px';
   svgContainer.style.transformOrigin = 'top left';
@@ -407,8 +407,8 @@ function calc_page_width() {
 
 function set_options(tk) {
 
-  height = calc_page_height();
-  width = calc_page_width();
+  let height = calc_page_height();
+  let width = calc_page_width();
 
   if (customOptions !== undefined) {
     localStorage.customOptions = JSON.stringify(customOptions);
