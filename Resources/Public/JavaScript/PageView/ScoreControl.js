@@ -440,9 +440,9 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function () {
     anchorEl.on('touchstart', toggleScore);
   }
 
-  // set initial title of score element
+  // Set initial title of score element
   $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
-    .attr('title', this.dic['score']);
+    .attr('title', this.dic.score);
 
   this.activate();
 };
@@ -465,9 +465,9 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function () {
     anchorEl.on('touchstart', toggleScore);
   }
 
-  // if score is activated via cookie than run activation method
+  // If score is activated via cookie than run activation method
   if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled') {
-    // activate the score behavior
+    // Activate the score behavior
     this.activate();
   }
 };
@@ -478,12 +478,12 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function () {
 dlfViewerScoreControl.prototype.activate = function () {
   const controlEl = $('#tx-dlf-tools-score-' + this.dlfViewer.counter);
 
-  // now activate the score overlay and map behavior
+  // Now activate the score overlay and map behavior
   this.enableScoreSelect();
   dlfUtils.setCookie("tx-dlf-pageview-score-select", 'enabled');
   $(controlEl).addClass('active');
 
-  // trigger event
+  // Trigger event
   $(this).trigger("activate-fulltext", this);
 };
 
@@ -493,12 +493,12 @@ dlfViewerScoreControl.prototype.activate = function () {
 dlfViewerScoreControl.prototype.deactivate = function () {
   const controlEl = $('#tx-dlf-tools-score-' + this.dlfViewer.counter);
 
-  // deactivate fulltext
+  // Deactivate fulltext
   this.disableScoreSelect();
   dlfUtils.setCookie("tx-dlf-pageview-score-select", 'disabled');
   $(controlEl).removeClass('active');
 
-  // trigger event
+  // Trigger event
   $(this).trigger("deactivate-fulltext", this);
 };
 
@@ -572,12 +572,12 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
  * Scroll to Element with given ID
  */
 dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
-  // get current position of pb element
+  // Get current position of pb element
   if (this.pagebeginning) {
     const currentPosition = $('#tx-dlf-score-' + this.dlfViewer.counter + ' svg g#' + this.pagebeginning)?.parent()?.position()?.top ?? 0;
-    // set target position if zero
+    // Set target position if zero
     this.position = this.position == 0 ? currentPosition : this.position;
-    // trigger scroll
+    // Trigger scroll
     $('#tx-dlf-score-' + this.dlfViewer.counter).scrollTop(this.position - scrollOffset);
   } else {
     $('#tx-dlf-tools-score').hide();
