@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Resource\MimeTypeDetector;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
@@ -947,21 +946,6 @@ class Helper
     }
 
     /**
-     * Extracts the file extension from a file path or URL
-     *
-     * @param string $path File path or URL
-     * @return string|null File extension in lowercase or null if not found
-     */
-    private static function getFileExtension(string $path): ?string
-    {
-        $pathInfo = GeneralUtility::makeInstance(PathUtility::class)->pathinfo($path);
-
-        return isset($pathInfo['extension'])
-            ? strtolower($pathInfo['extension'])
-            : null;
-    }
-
-    /**
      * Filters a file based on its mimetype.
      *
      * This method checks if the provided file array contains a specified mimetype key and
@@ -1004,11 +988,7 @@ class Helper
 
         // Filter file based on its MIME type
         if (!empty($fileUrl)) {
-            $fileExtension = self::getFileExtension($fileUrl);
-            if ($fileExtension === null) {
-                self::log('No file extension found in File URL for MIME type check', LOG_SEVERITY_WARNING);
-                return false;
-            }
+            $fileExtension = pathinfo($fileUrl, PATHINFO_EXTENSION);
             $assumedMimeTypesOfFile = GeneralUtility::makeInstance(MimeTypeDetector::class)->getMimeTypesForFileExtension($fileExtension);
             $mergedMimeTypes = array_merge($filteredDlfMimeTypes, $allowedMimeTypes);
 
