@@ -7,7 +7,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-/*global ol, saveAs */
+/*global ol, saveAs, dlfUtils */
 
 /**
  * Retrieve the title from the MEI head.
@@ -548,7 +548,7 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
   const syncZoomTitle = $('html[lang^="en"]')[0] ? 'Syncronize zoom function' : 'Zoom-Funktion synchronisieren';
   $('.view-functions ul').append('<li class="sync-view"><a class="sync-view-toggle" title="' + syncZoomTitle + '" onclick="dlfViewerCustomViewSync(this)">' + syncZoomTitle + '</></li>');
 
-  // show score container
+  // Show score container
   $('#tx-dlf-tools-score-' + this.dlfViewer.counter).addClass(className);
 
   $('#tx-dlf-tools-score-' + this.dlfViewer.counter)
@@ -576,7 +576,7 @@ dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
   if (this.pagebeginning) {
     const currentPosition = $('#tx-dlf-score-' + this.dlfViewer.counter + ' svg g#' + this.pagebeginning)?.parent()?.position()?.top ?? 0;
     // Set target position if zero
-    this.position = this.position == 0 ? currentPosition : this.position;
+    this.position = this.position === 0 ? currentPosition : this.position;
     // Trigger scroll
     $('#tx-dlf-score-' + this.dlfViewer.counter).scrollTop(this.position - scrollOffset);
   } else {
