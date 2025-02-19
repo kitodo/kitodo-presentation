@@ -226,9 +226,15 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
   this.changeActiveBehaviour();
 };
 
+
+/**
+ * Retrieve the title from the MEI head.
+ *
+ * @param {{}} tk The Verovio toolkit
+ */
 function get_mei_title(tk) {
-  let parser = new DOMParser();
-  let xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
   let meiHead = xmlDoc.getElementsByTagName("meiHead");
   return meiHead[0].getElementsByTagName("title")[0].textContent;
 }
