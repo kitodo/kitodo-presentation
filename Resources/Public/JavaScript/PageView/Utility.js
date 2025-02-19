@@ -151,7 +151,7 @@ dlfUtils.createOlLayers = function (imageSourceObjs, origin) {
                     projection: new ol.proj.Projection({
                         code: 'kitodo-image',
                         units: 'pixels',
-                        extent: extent
+                        extent
                     }),
                     imageExtent: extent,
                     crossOrigin: origin

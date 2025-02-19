@@ -35,9 +35,9 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       tk.renderData(jqXHR.responseText, verovioSettings);
       const pageToShow = tk.getPageWithElement(pagebeginning);
       const score = tk.renderToSVG(pageToShow);
-
+      const onStop = function () { $('body').removeClass('midi-active') };
       $("#player").midiPlayer({
-        onStop: function () { $('body').removeClass('midi-active') }
+        onStop
       });
 
       $("#tx-dlf-tools-midi").click(
