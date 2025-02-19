@@ -7,7 +7,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-/*global ol, verovioSettings */
+/*global ol, verovioSettings, saveAs */
 const className = 'score-visible';
 const scrollOffset = 100;
 var zoom = 40;
@@ -49,7 +49,7 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       $("#tx_dlf_mididownload").click(function () {
         $(this).attr({
           "href": 'data:audio/midi;base64,' + tk.renderToMIDI(),
-          "download": get_mei_title(tk) + ".midi"
+          "download": getMeiTitle(tk) + ".midi"
         })
       });
 
@@ -230,12 +230,13 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
 /**
  * Retrieve the title from the MEI head.
  *
- * @param {{}} tk The Verovio toolkit
+ * @param tk The Verovio toolkit
+ * @returns string
  */
-function get_mei_title(tk) {
+function getMeiTitle(tk) {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(tk.getMEI(), "text/xml");
-  let meiHead = xmlDoc.getElementsByTagName("meiHead");
+  const meiHead = xmlDoc.getElementsByTagName("meiHead");
   return meiHead[0].getElementsByTagName("title")[0].textContent;
 }
 
@@ -315,7 +316,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
   $("#tx_dlf_scoredownload").click(function () {
     if (typeof pdfBlob !== 'undefined') {
-      saveAs(pdfBlob, get_mei_title(tk));
+      saveAs(pdfBlob, getMeiTitle(tk));
 
       return;
     }
@@ -362,7 +363,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
     stream.on('finish', function () {
       pdfBlob = stream.toBlob('application/pdf');
-      saveAs(pdfBlob, get_mei_title(tk));
+      saveAs(pdfBlob, getMeiTitle(tk));
     });
 
 
