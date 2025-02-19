@@ -174,7 +174,7 @@ class PageViewController extends AbstractController
         $docNumPages = [];
         $i = 0;
         foreach ($this->documentArray as $document) {
-            if (!array_key_exists($i, $this->requestData['docPage']) ){
+            if (!array_key_exists($i, $this->requestData['docPage']) ) {
                 continue;
             }
 

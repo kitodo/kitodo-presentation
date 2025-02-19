@@ -443,7 +443,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                     if (!array_key_exists($i, $this->requestData['docPage'])) {
                         $this->requestData['docPage'][$i] = 1;
                     } else {
-                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int)$this->requestData['docPage'][$i], 1, $document->numPages, 1);
+                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
                     }
                     $i++;
                 }
