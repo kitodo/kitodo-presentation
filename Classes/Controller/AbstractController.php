@@ -22,10 +22,12 @@ use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\MetaTag\MetaTagManagerRegistry;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
@@ -127,6 +129,11 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $registry = GeneralUtility::makeInstance(MetaTagManagerRegistry::class);
+        $metaTagManager = $registry->getManagerForProperty('dlf:resourcePath');
+        if (empty($metaTagManager->getProperty('dlf:resourcePath'))) {
+            $metaTagManager->addProperty('dlf:resourcePath', PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public'));
+        }
 
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
 
@@ -436,7 +443,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $i = 0;
             $this->requestData['docPage'] = $this->requestData['docPage'] ?? [];
             foreach ($this->documentArray as $document) {
-                if ($document !== null) {
+                if ($document !== null && array_key_exists($i, $this->requestData['docPage'])) {
                     $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int)$this->requestData['docPage'][$i], 1, $document->numPages, 1);
                     $i++;
                 }

@@ -151,8 +151,9 @@ class ToolboxController extends AbstractController
 
         $useGroups = $this->useGroupsConfiguration->getScore();
         foreach ($useGroups as $useGroup) {
-            if ($this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$useGroup]) {
-                $scoreFile = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$useGroup];
+            $files = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'];
+            if (array_key_exists($useGroup, $files)) {
+                $scoreFile = $files[$useGroup];
             }
         }
         return $scoreFile;
@@ -429,7 +430,11 @@ class ToolboxController extends AbstractController
             if (!empty($firstFileGroupDownload)) {
                 $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
                 // Get second page, too, if double page view is activated.
-                $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber + 1]]['files'][$useGroup];
+                $nextPage = $pageNumber + 1;
+                $secondFileGroupDownload = '';
+                if( array_key_exists($nextPage,$this->currentDocument->physicalStructure) ) {
+                    $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$nextPage]]['files'][$useGroup];
+                }
                 if (
                     $this->requestData['double']
                     && $pageNumber < $this->currentDocument->numPages

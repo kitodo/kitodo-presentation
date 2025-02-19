@@ -11,12 +11,10 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\DocumentAnnotation;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Common\MetsDocument;
-use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -176,6 +174,11 @@ class PageViewController extends AbstractController
         $docNumPages = [];
         $i = 0;
         foreach ($this->documentArray as $document) {
+
+            if(!array_key_exists($i, $this->requestData['docPage'])) {
+                continue;
+            }
+
             // convert either page or measure if requestData exists
             if ($this->requestData['docPage'][$i] && empty($this->requestData['docMeasure'][$i])) {
                 // convert document page information to measure count information
@@ -316,43 +319,47 @@ class PageViewController extends AbstractController
         } else {
             $doc = $this->document->getCurrentDocument();
         }
-        $currentPhysId = $doc->physicalStructure[$page];
+
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
         $measureLinks = [];
-        $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'] ?? null;
-        if ($doc instanceof MetsDocument) {
-            if (isset($defaultFileId)) {
-                $musicalStruct = $doc->musicalStructureInfo;
+        if(array_key_exists($page, $doc->physicalStructure)) {
+            $currentPhysId = $doc->physicalStructure[$page];
+            $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'] ?? null;
+            if ($doc instanceof MetsDocument) {
+                if (isset($defaultFileId)) {
+                    $musicalStruct = $doc->musicalStructureInfo;
 
-                $i = 0;
-                foreach ($musicalStruct as $measureData) {
-                    if ($defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
-                        $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
-                        $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
+                    $i = 0;
+                    foreach ($musicalStruct as $measureData) {
+                        if (isset($measureData['files'])
+                            && $defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
+                            $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
+                            $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
 
-                        if ($specificDoc) {
-                            // build link for each measure
-                            $params = [
-                                'tx_dlf' => $this->requestData,
-                                'tx_dlf[docMeasure][' . $docNumber . ']' => $i
-                            ];
-                        } else {
-                            // build link for each measure
-                            $params = [
-                                'tx_dlf' => $this->requestData,
-                                'tx_dlf[measure]' => $i
-                            ];
+                            if ($specificDoc) {
+                                // build link for each measure
+                                $params = [
+                                    'tx_dlf' => $this->requestData,
+                                    'tx_dlf[docMeasure][' . $docNumber . ']' => $i
+                                ];
+                            } else {
+                                // build link for each measure
+                                $params = [
+                                    'tx_dlf' => $this->requestData,
+                                    'tx_dlf[measure]' => $i
+                                ];
+                            }
+                            $uriBuilder = $this->uriBuilder;
+                            $uri = $uriBuilder
+                                ->setArguments($params)
+                                ->setArgumentPrefix('tx_dlf')
+                                ->uriFor('main');
+                            $measureLinks[$measureData['files']['SCORE']['begin']] = $uri;
+
                         }
-                        $uriBuilder = $this->uriBuilder;
-                        $uri = $uriBuilder
-                            ->setArguments($params)
-                            ->setArgumentPrefix('tx_dlf')
-                            ->uriFor('main');
-                        $measureLinks[$measureData['files']['SCORE']['begin']] = $uri;
-
+                        $i++;
                     }
-                    $i++;
                 }
             }
         }
@@ -385,13 +392,15 @@ class PageViewController extends AbstractController
         if ($doc instanceof MetsDocument) {
             $useGroups = $this->useGroupsConfiguration->getScore();
 
-            $pageId = $doc->physicalStructure[$page];
-            $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
+            if(array_key_exists($page, $doc->physicalStructure)) {
+                $pageId = $doc->physicalStructure[$page];
+                $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
 
-            foreach ($useGroups as $useGroup) {
-                if (isset($files[$useGroup])) {
-                    $loc = $files[$useGroup];
-                    break;
+                foreach ($useGroups as $useGroup) {
+                    if (isset($files[$useGroup])) {
+                        $loc = $files[$useGroup];
+                        break;
+                    }
                 }
             }
 
@@ -438,21 +447,24 @@ class PageViewController extends AbstractController
         $fulltext = [];
         // Get fulltext link.
         $useGroups = $this->useGroupsConfiguration->getFulltext();
-        while ($useGroup = array_shift($useGroups)) {
+        if (array_key_exists($page, $this->document->getCurrentDocument()->physicalStructure)) {
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
             $files = $physicalStructureInfo['files'];
-            if (!empty($files[$useGroup])) {
-                $file = $this->document->getCurrentDocument()->getFileInfo($files[$useGroup]);
-                $fulltext['url'] = $file['location'];
-                if ($this->settings['useInternalProxy']) {
-                    $this->configureProxyUrl($fulltext['url']);
+            while ($useGroup = array_shift($useGroups)) {
+                if (!empty($files[$useGroup])) {
+                    $file = $this->document->getCurrentDocument()->getFileInfo($files[$useGroup]);
+                    $fulltext['url'] = $file['location'];
+                    if ($this->settings['useInternalProxy']) {
+                        $this->configureProxyUrl($fulltext['url']);
+                    }
+                    $fulltext['mimetype'] = $file['mimeType'];
+                    break;
+                } else {
+                    $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '"');
                 }
-                $fulltext['mimetype'] = $file['mimeType'];
-                break;
-            } else {
-                $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '"');
             }
         }
+
         if (empty($fulltext)) {
             $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['useGroupsFulltext'] ?? '') . '"');
         }
@@ -472,7 +484,7 @@ class PageViewController extends AbstractController
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
             foreach ($this->documentArray as $document) {
-                if ($document !== null) {
+                if ($document !== null && array_key_exists($i,$this->requestData['docPage'])) {
                     $docPage = $this->requestData['docPage'][$i];
                     $docImage = [];
                     $docFulltext = [];
@@ -674,7 +686,9 @@ class PageViewController extends AbstractController
         if ($specificDoc) {
             $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
         } else {
-            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            if (array_key_exists($page, $this->document->getCurrentDocument()->physicalStructure)) {
+                $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            }
         }
 
         // Get the files for the specified file group
