@@ -24,24 +24,6 @@ const verovioSettings = {
 };
 
 /**
- * Method fetches the score data from the server
- * @param {string} url
- * @returns {svg}
- * @static
- */
-dlfScoreUtils.get_play_midi = function (toolkit) {
-  $("#tx-dlf-tools-midi").click(
-    function () {
-      var base64midi = toolkit.renderToMIDI();
-      var song = 'data:audio/midi;base64,' + base64midi;
-      $("#player").midiPlayer.play(song);
-    }
-  );
-  return dlfScoreUtils;
-}
-
-
-/**
  * Parse from an alto element a OpenLayers geometry object
  * @param {Element} node
  * @returns {ol.geom.Polygon|undefined}

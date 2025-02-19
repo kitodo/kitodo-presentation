@@ -117,8 +117,9 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
 
   function makeSVG(tag, attrs) {
     var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-    for (var k in attrs)
+    for (var k in attrs) {
       el.setAttribute(k, attrs[k]);
+    }
     return el;
   }
 
@@ -135,10 +136,10 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
           var bbox = $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].getBBox();
 
           var measureRect = makeSVG('rect', {
-            x: bbox['x'],
-            y: bbox['y'],
-            width:bbox['width'],
-            height:bbox['height'],
+            x: bbox.x,
+            y: bbox.y,
+            width: bbox.width,
+            height: bbox.height,
             stroke: 'none',
             'stroke-width': 20,
             fill: 'red',
@@ -315,16 +316,19 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
 
     var pdfFormat = $("#pdfFormat").val();
     var pdfSize = [2100, 2970];
-    if (pdfFormat === "letter") pdfSize = [2159, 2794];
-    else if (pdfFormat === "B4") pdfSize = [2500, 3530];
+    if (pdfFormat === "letter") {
+      pdfSize = [2159, 2794];
+    } else if (pdfFormat === "B4") {
+      pdfSize = [2500, 3530];
+    }
 
     var pdfOrientation = $("#pdfOrientation").val();
     var pdfLandscape = pdfOrientation === 'landscape';
     var pdfHeight = pdfLandscape ? pdfSize[0] : pdfSize[1];
     var pdfWidth = pdfLandscape ? pdfSize[1] : pdfSize[0];
 
-    var fontCallback = function (family, bold, italic, fontOptions) {
-      if (family == "VerovioText") {
+    var fontCallback = function (family, bold, italic) {
+      if (family === "VerovioText") {
         return family;
       }
       if (family.match(/(?:^|,)\s*sans-serif\s*$/) || true) {

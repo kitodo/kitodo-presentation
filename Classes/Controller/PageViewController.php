@@ -322,7 +322,7 @@ class PageViewController extends AbstractController
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
         $measureLinks = [];
-        if(array_key_exists($page, $doc->physicalStructure)) {
+        if (array_key_exists($page, $doc->physicalStructure)) {
             $currentPhysId = $doc->physicalStructure[$page];
             $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'] ?? null;
             if ($doc instanceof MetsDocument) {
