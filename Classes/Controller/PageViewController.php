@@ -484,7 +484,7 @@ class PageViewController extends AbstractController
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
             foreach ($this->documentArray as $document) {
-                if ($document !== null && array_key_exists($i,$this->requestData['docPage'])) {
+                if ($document !== null && array_key_exists($i, $this->requestData['docPage'])) {
                     $docPage = $this->requestData['docPage'][$i];
                     $docImage = [];
                     $docFulltext = [];

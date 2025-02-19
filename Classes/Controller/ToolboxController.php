@@ -432,7 +432,7 @@ class ToolboxController extends AbstractController
                 // Get second page, too, if double page view is activated.
                 $nextPage = $pageNumber + 1;
                 $secondFileGroupDownload = '';
-                if( array_key_exists($nextPage,$this->currentDocument->physicalStructure) ) {
+                if ( array_key_exists($nextPage, $this->currentDocument->physicalStructure) ) {
                     $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$nextPage]]['files'][$useGroup];
                 }
                 if (
