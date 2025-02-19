@@ -231,7 +231,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
  * Retrieve the title from the MEI head.
  *
  * @param tk The Verovio toolkit
- * @returns string
+ * @returns {string} The title
  */
 function getMeiTitle(tk) {
   const parser = new DOMParser();
@@ -334,7 +334,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     var pdfHeight = pdfLandscape ? pdfSize[0] : pdfSize[1];
     var pdfWidth = pdfLandscape ? pdfSize[1] : pdfSize[0];
 
-    var fontCallback = function (family, bold, italic) {
+    function fontCallback(family, bold, italic) {
       if (family === "VerovioText") {
         return family;
       }
@@ -352,7 +352,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
           return 'Times-Roman';
         }
       }
-    };
+      return ''
+    }
 
     var options = {};
     options.fontCallback = fontCallback;
