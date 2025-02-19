@@ -35,7 +35,11 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       tk.renderData(jqXHR.responseText, verovioSettings);
       const pageToShow = tk.getPageWithElement(pagebeginning);
       const score = tk.renderToSVG(pageToShow);
-      const onStop = function () { $('body').removeClass('midi-active') };
+
+      function onStop() {
+        $('body').removeClass('midi-active')
+      }
+
       $("#player").midiPlayer({
         onStop
       });
@@ -230,7 +234,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
 /**
  * Retrieve the title from the MEI head.
  *
- * @param tk The Verovio toolkit
+ * @param {Object} tk The Verovio toolkit
  * @returns {string} The title
  */
 function getMeiTitle(tk) {
@@ -282,8 +286,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
   var svgContainer = document.createElement('div');
   svgContainer.innerHTML = scoreData;
 
-  const width = 2100;
-  const height = 2970;
+  let width = 2100;
+  let height = 2970;
   svgContainer.style.width = width + 'px';
   svgContainer.style.height = height + 'px';
   svgContainer.style.transformOrigin = 'top left';
@@ -401,14 +405,13 @@ function calc_page_width() {
   return ($(".row-offcanvas").width()) * 100 / zoom;
 }
 
-
 function set_options(tk) {
 
   height = calc_page_height();
   width = calc_page_width();
 
   if (customOptions !== undefined) {
-    localStorage['customOptions'] = JSON.stringify(customOptions);
+    localStorage.customOptions = JSON.stringify(customOptions);
     var mergedOptions = {};
     for (var key in customOptions) mergedOptions[key] = customOptions[key];
     for (var key in options) mergedOptions[key] = options[key];
