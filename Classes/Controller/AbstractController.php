@@ -129,11 +129,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-        $registry = GeneralUtility::makeInstance(MetaTagManagerRegistry::class);
-        $metaTagManager = $registry->getManagerForProperty('dlf:resourcePath');
-        if (empty($metaTagManager->getProperty('dlf:resourcePath'))) {
-            $metaTagManager->addProperty('dlf:resourcePath', PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public'));
-        }
 
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
 
@@ -434,8 +429,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function setDefaultPage(): void
     {
         // Set default values if not set.
-        $this->requestData['page'] = (int) $this->requestData['page'] ?? 1;
-        if ($this->requestData['page'] <= 0) {
+        if (!isset($this->requestData['page'])
+            || empty($this->requestData['page'])
+            || (int) $this->requestData['page'] <= 0) {
             $this->requestData['page'] = 1;
         }
 
