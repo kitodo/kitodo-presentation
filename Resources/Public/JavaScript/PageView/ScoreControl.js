@@ -543,12 +543,14 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 dlfViewerScoreControl.prototype.enableScoreSelect = function () {
 
   // Resize viewer to 50% width and add custom zoom control
+  // eslint-disable-line
   const customZoomHtml = '<div class="custom-zoom">' + $('.view-functions ul li.zoom').html() + '</div>';
-  $('#tx-dfgviewer-map-' + this.dlfViewer.counter).width('50%').append();
+  $('#tx-dfgviewer-map-' + this.dlfViewer.counter).width('50%').append(customZoomHtml);
   this.dlfViewer.updateLayerSize();
 
   // Add button to sync views to the view functions in the upper right corner
   const syncZoomTitle = $('html[lang^="en"]')[0] ? 'Syncronize zoom function' : 'Zoom-Funktion synchronisieren';
+  // eslint-disable-line
   const syncViewHtml = '<li class="sync-view"><a class="sync-view-toggle" title="' + syncZoomTitle + '" onclick="dlfViewerCustomViewSync(this)">' + syncZoomTitle + '</></li>';
   $('.view-functions ul').append(syncViewHtml);
 
@@ -594,10 +596,8 @@ dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
 dlfViewerCustomViewSync = function (element) {
   const isActive = $(element).toggleClass('active').hasClass('active');
   if (isActive) {
-    /*jshint camelcase: false */
-    tx_dlf_viewer.syncControl.setSync()
+    tx_dlf_viewer.syncControl.setSync() // eslint-disable-line camelcase
   } else {
-    /*jshint camelcase: false */
-    tx_dlf_viewer.syncControl.unsetSync()
+    tx_dlf_viewer.syncControl.unsetSync() // eslint-disable-line camelcase
   }
 };
