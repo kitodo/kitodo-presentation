@@ -26,7 +26,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Resource\MimeTypeCollection;
-use TYPO3\CMS\Core\Resource\MimeTypeDetector;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -951,13 +950,16 @@ class Helper
      * This method checks if the provided file array contains a specified mimetype key and
      * verifies if the mimetype belongs to any of the allowed mimetypes or matches any of the additional custom mimetypes.
      *
-     * @param string $fileUrl Url to the file
+     * @param mixed $file The file array to filter
      * @param array $allowedCategories The allowed MIME type categories to filter by (e.g., ['audio'], ['video'] or ['image', 'application'])
-     * @param array $dlfMimeTypes The custom DLF mimetype keys IIIF, IIP or ZOOMIFY to check against (default is an empty array)
+     * @param array|null $dlfMimeTypes Optional array of custom DLF mimetype keys to filter by. Default is null.
+     *                   Pass null to use all available custom DLF mimetype keys
+     *                   Pass array of keys to use only specific types - Accepted values: 'IIIF', 'IIP', 'ZOOMIFY', 'JPG'
+     * @param string $mimeTypeKey The key used to access the mimetype in the file array (default is 'mimetype')
      *
      * @return bool True if the file mimetype belongs to any of the allowed mimetypes or matches any custom dlf mimetypes, false otherwise
      */
-    public static function filterFilesByMimeType(string $fileUrl, array $allowedCategories, array $dlfMimeTypes = []): bool
+    public static function filterFilesByMimeType($file, array $allowedCategories, ?array $dlfMimeTypes = null, string $mimeTypeKey = 'mimetype'): bool
     {
         if (empty($allowedCategories) && empty($dlfMimeTypes)) {
             return false;
@@ -981,22 +983,19 @@ class Helper
         $dlfMimeTypeArray = [
             'IIIF' => 'application/vnd.kitodo.iiif',
             'IIP' => 'application/vnd.netfpx',
-            'ZOOMIFY' => 'application/vnd.kitodo.zoomify'
+            'ZOOMIFY' => 'application/vnd.kitodo.zoomify',
+            'JPG' => 'image/jpg' // Wrong declared JPG MIME type in falsy METS Files for JPEG files
         ];
-        // Filter custom dlf MIME types based on provided keys
-        $filteredDlfMimeTypes = array_intersect_key($dlfMimeTypeArray, array_flip($dlfMimeTypes));
 
-        // Filter file based on its MIME type
-        if (!empty($fileUrl)) {
-            $fileExtension = pathinfo($fileUrl, PATHINFO_EXTENSION);
-            $assumedMimeTypesOfFile = GeneralUtility::makeInstance(MimeTypeDetector::class)->getMimeTypesForFileExtension($fileExtension);
-            $mergedMimeTypes = array_merge($filteredDlfMimeTypes, $allowedMimeTypes);
+        // Apply filtering to the custom dlf MIME type array
+        $filteredDlfMimeTypes = $dlfMimeTypes === null
+            ? $dlfMimeTypeArray
+            : array_intersect_key($dlfMimeTypeArray, array_flip($dlfMimeTypes));
 
-            foreach ($assumedMimeTypesOfFile as $mimeType) {
-                if (in_array($mimeType, $mergedMimeTypes, true)) {
-                    return true;
-                }
-            }
+        // Actual filtering to check if the file's MIME type is allowed
+        if (is_array($file) && isset($file[$mimeTypeKey])) {
+            return in_array($file[$mimeTypeKey], $allowedMimeTypes) ||
+                   in_array($file[$mimeTypeKey], $filteredDlfMimeTypes);
         }
 
         return false;

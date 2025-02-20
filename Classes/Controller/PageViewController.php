@@ -637,13 +637,13 @@ class PageViewController extends AbstractController
             // Get file info for the specific page and file group
             $file = $this->fetchFileInfo($page, $fileGrpImages, $specificDoc);
 
-            if ($file && Helper::filterFilesByMimeType($file['location'], ['image'], ['IIIF', 'IIP', 'ZOOMIFY'])) {
+            if ($file && Helper::filterFilesByMimeType($file, ['image'], null, 'mimeType')) {
                 $image['url'] = $file['location'];
                 $image['mimetype'] = $file['mimeType'];
 
                 // Only deliver static images via the internal PageViewProxy.
                 // (For IIP and IIIF, the viewer needs to build and access a separate metadata URL, see `getMetadataURL` in `OLSources.js`.)
-                if ($this->settings['useInternalProxy'] && !Helper::filterFilesByMimeType($file['location'], ['application'], ['IIIF', 'IIP', 'ZOOMIFY'])) {
+                if ($this->settings['useInternalProxy'] && !Helper::filterFilesByMimeType($image, ['application'], ['IIIF', 'IIP', 'ZOOMIFY'])) {
                     $this->configureProxyUrl($image['url']);
                 }
                 break;
