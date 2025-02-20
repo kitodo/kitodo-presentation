@@ -543,16 +543,14 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 dlfViewerScoreControl.prototype.enableScoreSelect = function () {
 
   // Resize viewer to 50% width and add custom zoom control
-  // eslint-disable-line
-  const customZoomHtml = '<div class="custom-zoom">' + $('.view-functions ul li.zoom').html() + '</div>';
-  $('#tx-dfgviewer-map-' + this.dlfViewer.counter).width('50%').append(customZoomHtml);
+  // eslint-disable-next-line
+  $('#tx-dfgviewer-map-' + this.dlfViewer.counter).width('50%').append('<div class="custom-zoom">' + $('.view-functions ul li.zoom').html() + '</div>');
   this.dlfViewer.updateLayerSize();
 
   // Add button to sync views to the view functions in the upper right corner
   const syncZoomTitle = $('html[lang^="en"]')[0] ? 'Syncronize zoom function' : 'Zoom-Funktion synchronisieren';
-  // eslint-disable-line
-  const syncViewHtml = '<li class="sync-view"><a class="sync-view-toggle" title="' + syncZoomTitle + '" onclick="dlfViewerCustomViewSync(this)">' + syncZoomTitle + '</></li>';
-  $('.view-functions ul').append(syncViewHtml);
+  // eslint-disable-next-line
+  $('.view-functions ul').append('<li class="sync-view"><a class="sync-view-toggle" title="' + syncZoomTitle + '" onclick="dlfViewerCustomViewSync(this)">' + syncZoomTitle + '</></li>');
 
   // Show score container
   $('#tx-dlf-tools-score-' + this.dlfViewer.counter).addClass(className);
