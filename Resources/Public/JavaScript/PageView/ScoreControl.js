@@ -7,7 +7,8 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-/*global ol, saveAs, dlfUtils */
+
+/*global ol, saveAs, dlfUtils, tx_dlf_viewer */
 
 /**
  * Retrieve the title from the MEI head.
@@ -56,6 +57,9 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       const pageToShow = tk.getPageWithElement(pagebeginning);
       const score = tk.renderToSVG(pageToShow);
 
+      /**
+       * Callback when player is stopped.
+       */
       function onStop() {
         $('body').removeClass('midi-active')
       }
@@ -589,5 +593,9 @@ dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
  */
 dlfViewerCustomViewSync = function (element) {
   const isActive = $(element).toggleClass('active').hasClass('active');
-  isActive ? tx_dlf_viewer.syncControl.setSync() : tx_dlf_viewer.syncControl.unsetSync();
+  if (isActive) {
+    tx_dlf_viewer.syncControl.setSync()
+  } else {
+    tx_dlf_viewer.syncControl.unsetSync()
+  }
 };
