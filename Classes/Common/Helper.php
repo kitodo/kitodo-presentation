@@ -952,14 +952,15 @@ class Helper
      *
      * @param mixed $file The file array to filter
      * @param array $allowedCategories The allowed MIME type categories to filter by (e.g., ['audio'], ['video'] or ['image', 'application'])
-     * @param array|null $dlfMimeTypes Optional array of custom DLF mimetype keys to filter by. Default is null.
-     *                   Pass null to use all available custom DLF mimetype keys
-     *                   Pass array of keys to use only specific types - Accepted values: 'IIIF', 'IIP', 'ZOOMIFY', 'JPG'
+     * @param null|bool|array $dlfMimeTypes Optional array of custom dlf mimetype keys to filter by. Default is null.
+     *                      - null: use no custom dlf mimetypes
+     *                      - true: use all custom dlf mimetypes
+     *                      - array: use only specific types - Accepted values: 'IIIF', 'IIP', 'ZOOMIFY', 'JPG'
      * @param string $mimeTypeKey The key used to access the mimetype in the file array (default is 'mimetype')
      *
      * @return bool True if the file mimetype belongs to any of the allowed mimetypes or matches any custom dlf mimetypes, false otherwise
      */
-    public static function filterFilesByMimeType($file, array $allowedCategories, ?array $dlfMimeTypes = null, string $mimeTypeKey = 'mimetype'): bool
+    public static function filterFilesByMimeType($file, array $allowedCategories, null|bool|array $dlfMimeTypes = null, string $mimeTypeKey = 'mimetype'): bool
     {
         if (empty($allowedCategories) && empty($dlfMimeTypes)) {
             return false;
@@ -988,9 +989,12 @@ class Helper
         ];
 
         // Apply filtering to the custom dlf MIME type array
-        $filteredDlfMimeTypes = $dlfMimeTypes === null
-            ? $dlfMimeTypeArray
-            : array_intersect_key($dlfMimeTypeArray, array_flip($dlfMimeTypes));
+        $filteredDlfMimeTypes = match(true) {
+            $dlfMimeTypes === null => [],
+            $dlfMimeTypes === true => $dlfMimeTypeArray,
+            is_array($dlfMimeTypes) => array_intersect_key($dlfMimeTypeArray, array_flip($dlfMimeTypes)),
+            default => []
+        };
 
         // Actual filtering to check if the file's MIME type is allowed
         if (is_array($file) && isset($file[$mimeTypeKey])) {
