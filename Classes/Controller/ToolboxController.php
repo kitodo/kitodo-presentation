@@ -145,7 +145,11 @@ class ToolboxController extends AbstractController
         $image = $this->getFile($page, $this->useGroupsConfiguration->getImage());
         if (isset($image['mimetype'])) {
             $fileExtension = Helper::getFileExtensionsForMimeType($image['mimetype']);
-            $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
+            if ($image['mimetype'] == 'image/jpg') {
+                $image['mimetypeLabel'] = ' (JPG)'; // "image/jpg" is not a valid MIME type, so we need to handle it separately.
+            } else {
+                $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
+            }
         }
         return $image;
     }
