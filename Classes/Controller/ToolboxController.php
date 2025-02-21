@@ -387,7 +387,6 @@ class ToolboxController extends AbstractController
      */
     private function renderModelDownloadTool(): void
     {
-<<<<<<< HEAD
         $modelUrl = $this->getModelUrl();
         if ($modelUrl === '') {
             $this->logger->debug("Model URL could not be determined");
@@ -412,14 +411,6 @@ class ToolboxController extends AbstractController
         $model = $this->getModelUrl();
         if (!$model) {
             $this->logger->debug("Model URL could not be determined");
-=======
-        // TODO: missing fileGrpsModelDownload, should be added to ext config as useGroupsModelDownload
-        if (
-            $this->isDocMissingOrEmpty()
-            || empty($this->settings['fileGrpsModelDownload'])
-        ) {
-            // Quit without doing anything if required variables are not set.
->>>>>>> main
             return;
         }
 
