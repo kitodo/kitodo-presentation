@@ -549,6 +549,10 @@
 				<source>Name</source>
 				<target>Name</target>
 			</trans-unit>
+			<trans-unit id="tx_dlf_tokens">
+				<source>Tokens</source>
+				<target>Token</target>
+			</trans-unit>
 			<trans-unit id="tx_dlf_toolbox.fulltexttool">
 				<source>Fulltext</source>
 				<target>Volltext</target>
