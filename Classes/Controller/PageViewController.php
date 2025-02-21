@@ -635,7 +635,7 @@ class PageViewController extends AbstractController
 
         foreach ($useGroups as $useGroup) {
             // Get file info for the specific page and file group
-            $file = $this->fetchFileInfo($page, $fileGrpImages, $specificDoc);
+            $file = $this->fetchFileInfo($page, $useGroup, $specificDoc);
 
             if ($file && Helper::filterFilesByMimeType($file, ['image'], true, 'mimeType')) {
                 $image['url'] = $file['location'];
