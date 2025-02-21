@@ -331,7 +331,7 @@ class Indexer
         $doc = $document->getCurrentDocument();
         $doc->cPid = $document->getPid();
         // Get metadata for logical unit.
-        $metadata = $doc->metadataArray[$logicalUnit['id']];
+        $metadata = $doc->metadataArray[$logicalUnit['id']] ?? [];
         if (!empty($metadata)) {
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'general');
             $validator = new DocumentValidator($metadata, explode(',', $extConf['requiredMetadataFields']));
@@ -356,19 +356,19 @@ class Indexer
                 // There can be only one toplevel unit per UID, independently of backend configuration
                 $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
                 $solrDoc->setField('title', $metadata['title'][0]);
-                $solrDoc->setField('volume', $metadata['volume'][0]);
+                $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
                 // verify date formatting
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
                 }
                 $solrDoc->setField('record_id', $metadata['record_id'][0]);
-                $solrDoc->setField('purl', $metadata['purl'][0]);
+                $solrDoc->setField('purl', $metadata['purl'][0] ?? '');
                 $solrDoc->setField('location', $document->getLocation());
                 $solrDoc->setField('urn', $metadata['urn']);
                 $solrDoc->setField('license', $metadata['license']);
                 $solrDoc->setField('terms', $metadata['terms']);
                 $solrDoc->setField('restrictions', $metadata['restrictions']);
-                $coordinates = json_decode($metadata['coordinates'][0]);
+                $coordinates = json_decode($metadata['coordinates'][0] ?? '');
                 if (is_object($coordinates)) {
                     $feature = (array) $coordinates->features[0];
                     $geometry = (array) $feature['geometry'];
@@ -439,10 +439,10 @@ class Indexer
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);
             $solrDoc->setField('page', $page);
-            $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-                if (!empty($physicalUnit['files'][$fileGrpThumb])) {
-                    $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$fileGrpThumb]));
+            $useGroupsThumbnail = GeneralUtility::trimExplode(',', $extConf['Thumbnail']);
+            while ($useGroupThumbnail = array_shift($useGroupsThumbnail)) {
+                if (!empty($physicalUnit['files'][$useGroupThumbnail])) {
+                    $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$useGroupThumbnail]));
                     break;
                 }
             }
@@ -453,15 +453,9 @@ class Indexer
 
             $solrDoc->setField('fulltext', $fullText);
             if (is_array($doc->metadataArray[$doc->toplevelId])) {
-                self::addFaceting($doc, $solrDoc);
+                self::addFaceting($doc, $solrDoc, $physicalUnit);
             }
-            // Add collection information to physical sub-elements if applicable.
-            if (
-                in_array('collection', self::$fields['facets'])
-                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
-            ) {
-                $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
-            }
+
             try {
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
@@ -524,7 +518,8 @@ class Indexer
                 && substr($indexName, -8) !== '_sorting'
             ) {
                 $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data);
-                if (in_array($indexName, self::$fields['sortables'])) {
+                if (in_array($indexName, self::$fields['sortables']) &&
+                    in_array($indexName . '_sorting', $metadata)) {
                     // Add sortable fields to index.
                     $solrDoc->setField($indexName . '_sorting', $metadata[$indexName . '_sorting'][0]);
                 }
@@ -549,27 +544,52 @@ class Indexer
      *
      * @param AbstractDocument $doc
      * @param DocumentInterface &$solrDoc
+     * @param array $physicalUnit Array of the physical unit to process
      *
      * @return void
      */
-    private static function addFaceting($doc, &$solrDoc): void
+    private static function addFaceting($doc, &$solrDoc, $physicalUnit): void
     {
-        // TODO: Include also subentries if available.
-        foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
-            if (
-                !empty($data)
-                && substr($indexName, -8) !== '_sorting'
-            ) {
-
-                if (in_array($indexName, self::$fields['facets'])) {
-                    // Remove appended "valueURI" from authors' names for indexing.
-                    if ($indexName == 'author') {
-                        $data = self::removeAppendsFromAuthor($data);
+        // this variable holds all possible facet-values for the index names
+        $facets = [];
+        // use the structlink information
+        foreach ($doc->smLinks['l2p'] as $logicalId => $physicalId) {
+            // find page in structlink
+            if (in_array($physicalUnit['id'], $physicalId)) {
+                // for each associated metadata of structlink
+                foreach ($doc->metadataArray[$logicalId] as $indexName => $data) {
+                    if (
+                        !empty($data)
+                        && substr($indexName, -8) !== '_sorting'
+                    ) {
+                        if (in_array($indexName, self::$fields['facets'])) {
+                            // Remove appended "valueURI" from authors' names for indexing.
+                            if ($indexName == 'author') {
+                                $data = self::removeAppendsFromAuthor($data);
+                            }
+                            // Add facets to facet-array and flatten the values
+                            if (is_array($data)) {
+                                foreach ($data as $value) {
+                                    if (!empty($value)) {
+                                        $facets[$indexName][] = $value;
+                                    }
+                                }
+                            } else {
+                                $facets[$indexName][] = $data;
+                            }
+                        }
                     }
-                    // Add facets to index.
-                    $solrDoc->setField($indexName . '_faceting', $data);
                 }
             }
+        }
+
+        // write all facet values of associated metadata to the page (self & ancestors)
+        foreach ($facets as $indexName => $data) {
+            $solrDoc->setField($indexName . '_faceting', $data);
+        }
+
+        // add sorting information
+        foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
             // Add sorting information to physical sub-elements if applicable.
             if (
                 !empty($data)

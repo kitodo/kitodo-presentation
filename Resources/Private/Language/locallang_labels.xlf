@@ -509,20 +509,20 @@
 			<trans-unit id="config.general.requiredMetadataFields">
 				<source>Metadata fields required for indexing documents</source>
 			</trans-unit>
-			<trans-unit id="config.files.fileGrpImages">
-				<source>Page fileGrps: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+			<trans-unit id="config.files.useGroupsImage">
+				<source>Page file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
 			</trans-unit>
-			<trans-unit id="config.files.fileGrpThumbs">
-				<source>Thumbnail fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</source>
+			<trans-unit id="config.files.useGroupsThumbnail">
+				<source>Thumbnail file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</source>
 			</trans-unit>
-			<trans-unit id="config.files.fileGrpDownload">
-				<source>Download fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
+			<trans-unit id="config.files.useGroupsDownload">
+				<source>Download file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
 			</trans-unit>
-			<trans-unit id="config.files.fileGrpFulltext">
-				<source>Fulltext fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "FULLTEXT")</source>
+			<trans-unit id="config.files.useGroupsFulltext">
+				<source>Fulltext file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "FULLTEXT")</source>
 			</trans-unit>
-			<trans-unit id="config.files.fileGrpAudio">
-				<source>Audio fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
+			<trans-unit id="config.files.useGroupsAudio">
+				<source>Audio file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
 			</trans-unit>
 			<trans-unit id="config.iiif.indexAnnotations">
 				<source>Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are ided (default is "FALSE")</source>

@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use DOMDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Token;
@@ -173,7 +174,7 @@ class OaiPmhController extends AbstractController
 
     /**
      * Get unqualified Dublin Core data.
-     * @see http://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
+     * @see https://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
      *
      * @access private
      *
@@ -302,7 +303,19 @@ class OaiPmhController extends AbstractController
         $this->view->assign('parameters', $this->parameters);
         $this->view->assign('error', $this->error);
 
-        return $this->htmlResponse();
+        // Generate the XML output.
+        $xmlOutput = $this->view->render();
+
+        // Format the XML.
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        // Here we could also choose `false` for a minimized XML.
+        $dom->formatOutput = true;
+        $dom->loadXML($xmlOutput);
+        $formattedXmlOutput = trim($dom->saveXML());
+
+        // Return the formatted XML.
+        return $this->htmlResponse($formattedXmlOutput);
     }
 
     /**
@@ -390,13 +403,9 @@ class OaiPmhController extends AbstractController
      */
     protected function verbIdentify()
     {
-        $library = $this->libraryRepository->findByUid($this->settings['library']);
+        $library = $this->libraryRepository->findByUid($this->settings['library'] ?? 0);
 
         $oaiIdentifyInfo = [];
-
-        if (!$oaiIdentifyInfo) {
-            $this->logger->notice('Incomplete plugin configuration');
-        }
 
         $oaiIdentifyInfo['oai_label'] = $library ? $library->getOaiLabel() : '';
         // Use default values for an installation with incomplete plugin configuration.
@@ -584,7 +593,7 @@ class OaiPmhController extends AbstractController
      */
     protected function verbListSets()
     {
-        // It is required to set a oai_name inside the collection record to be shown in oai-pmh plugin.
+        // It is required to set oai_name inside the collection record to be shown in oai-pmh plugin.
         $this->settings['hideEmptyOaiNames'] = true;
 
         $oaiSets = $this->collectionRepository->findCollectionsBySettings($this->settings);
@@ -642,7 +651,12 @@ class OaiPmhController extends AbstractController
 
         $solrQuery .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
 
-        $solr = Solr::getInstance($this->settings['solrcore']);
+        $solrcore = $this->settings['solrcore'] ?? false;
+        if (!$solrcore) {
+            $this->logger->error('Solr core not configured');
+            return $documentSet;
+        }
+        $solr = Solr::getInstance($solrcore);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return $documentSet;
@@ -844,7 +858,7 @@ class OaiPmhController extends AbstractController
     protected function generateResumptionTokenForDocumentListSet(array $documentListSet, int $numShownDocuments)
     {
         // The cursor specifies how many elements have already been returned in previous requests
-        // See http://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl
+        // See https://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl
         $currentCursor = $documentListSet['metadata']['cursor'];
 
         if (count($documentListSet['elements']) !== 0) {

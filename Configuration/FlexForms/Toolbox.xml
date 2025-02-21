@@ -52,18 +52,6 @@
                             </config>
                         </TCEforms>
                     </settings.solrcore>
-                    <settings.fileGrpsImageDownload>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.fileGrps</label>
-                            <config>
-                                <type>input</type>
-                                <size>30</size>
-                                <max>30</max>
-                                <default>DEFAULT,MAX</default>
-                            </config>
-                        </TCEforms>
-                    </settings.fileGrpsImageDownload>
                 </el>
             </ROOT>
         </sDEF>
