@@ -206,7 +206,7 @@ XML;
      * @test
      * @group filterFilesByMimeType
      */
-    public function filterFilesByMimeTypeHandlesWrongJPG(): void
+    public function filterFilesByMimeTypeHandlesWrongJpg(): void
     {
         $wrongJpg = ['mimetype' => 'image/jpg'];
 
@@ -248,38 +248,44 @@ XML;
             $imageFile,
             ['image'],
             null
-        ), 'Standard image type should be accepted when DLF types are null');
+            ), 'Standard image type should be accepted when DLF types are null'
+        );
 
         self::assertFalse(Helper::filterFilesByMimeType(
             $iiifFile,
             ['image'],
             null
-        ), 'DLF type should be rejected when DLF types are null');
+            ), 'DLF type should be rejected when DLF types are null'
+        );
 
         // Test: All DLF MIME Types
         self::assertTrue(Helper::filterFilesByMimeType(
             $iiifFile,
             ['image'],
             true
-        ), 'IIIF should be accepted when all DLF types are enabled');
+            ), 'IIIF should be accepted when all DLF types are enabled'
+        );
 
         self::assertTrue(Helper::filterFilesByMimeType(
             $iipFile,
             ['image'],
             true
-        ), 'IIP should be accepted when all DLF types are enabled');
+            ), 'IIP should be accepted when all DLF types are enabled'
+        );
 
         // Test: Spezific DLF MIME Types
         self::assertTrue(Helper::filterFilesByMimeType(
             $iiifFile,
             ['image'],
             ['IIIF']
-        ), 'IIIF should be accepted when specifically allowed');
+            ), 'IIIF should be accepted when specifically allowed'
+        );
 
         self::assertFalse(Helper::filterFilesByMimeType(
             $iipFile,
             ['image'],
             ['IIIF']
-        ), 'IIP should be rejected when not in allowed DLF types');
+            ), 'IIP should be rejected when not in allowed DLF types'
+        );
     }
 }

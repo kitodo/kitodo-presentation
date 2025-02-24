@@ -990,7 +990,7 @@ class Helper
         ];
 
         // Apply filtering to the custom dlf MIME type array
-        $filteredDlfMimeTypes = match(true) {
+        $filteredDlfMimeTypes = match (true) {
             $dlfMimeTypes === null => [],
             $dlfMimeTypes === true => $dlfMimeTypeArray,
             is_array($dlfMimeTypes) => array_intersect_key($dlfMimeTypeArray, array_flip($dlfMimeTypes)),
@@ -1001,9 +1001,10 @@ class Helper
         if (is_array($file) && isset($file[$mimeTypeKey])) {
             return in_array($file[$mimeTypeKey], $allowedMimeTypes) ||
                    in_array($file[$mimeTypeKey], $filteredDlfMimeTypes);
+        } else {
+            self::log('MIME type validation failed: File array is invalid or MIME type key is not set. File array: ' . json_encode($file) . ', mimeTypeKey: ' . $mimeTypeKey, LOG_SEVERITY_WARNING);
+            return false;
         }
-
-        return false;
     }
 
     /**
