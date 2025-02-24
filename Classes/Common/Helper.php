@@ -1002,7 +1002,7 @@ class Helper
             return in_array($file[$mimeTypeKey], $allowedMimeTypes) ||
                    in_array($file[$mimeTypeKey], $filteredDlfMimeTypes);
         } else {
-            self::log('MIME type validation failed: File array is invalid or MIME type key is not set. File array: ' . json_encode($file) . ', mimeTypeKey: ' . $mimeTypeKey, LOG_SEVERITY_WARNING);
+            self::log('MIME type validation failed: File array is invalid or MIME type key is not set. File array: ' . json_encode($file) . ', mimeTypeKey: ' . $mimeTypeKey, 2);
             return false;
         }
     }

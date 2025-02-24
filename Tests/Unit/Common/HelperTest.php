@@ -13,10 +13,49 @@
 namespace Kitodo\Dlf\Tests\Unit\Common;
 
 use Kitodo\Dlf\Common\Helper;
+use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class HelperTest extends UnitTestCase
 {
+    /**
+     * @var bool
+    */
+    protected bool $resetSingletonInstances = true;
+
+    /**
+     * @var LogManager|MockObject
+    */
+    protected $logManagerMock;
+
+    /**
+     * @var Logger|MockObject
+    */
+    protected $loggerMock;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Logger Mock erstellen
+        $this->loggerMock = $this->createMock(Logger::class);
+
+        // LogManager Mock erstellen
+        $this->logManagerMock = $this->createMock(LogManager::class);
+        $this->logManagerMock->method('getLogger')->willReturn($this->loggerMock);
+
+        GeneralUtility::setSingletonInstance(LogManager::class, $this->logManagerMock);
+    }
+
+    protected function tearDown(): void
+    {
+        GeneralUtility::purgeInstances();
+        parent::tearDown();
+    }
+
     public function assertInvalidXml($xml)
     {
         $result = Helper::getXmlFileAsString($xml);
@@ -55,7 +94,6 @@ XML;
         self::assertIsObject($node);
         self::assertEquals('root', $node->getName());
     }
-
 
     /**
      * @test
