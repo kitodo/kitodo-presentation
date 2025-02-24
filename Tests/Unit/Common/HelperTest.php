@@ -23,27 +23,27 @@ class HelperTest extends UnitTestCase
 {
     /**
      * @var bool
-    */
+     */
     protected bool $resetSingletonInstances = true;
 
     /**
      * @var LogManager|MockObject
-    */
+     */
     protected $logManagerMock;
 
     /**
      * @var Logger|MockObject
-    */
+     */
     protected $loggerMock;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Logger Mock erstellen
+        // create Logger Mock
         $this->loggerMock = $this->createMock(Logger::class);
 
-        // LogManager Mock erstellen
+        // create LogManager Mock
         $this->logManagerMock = $this->createMock(LogManager::class);
         $this->logManagerMock->method('getLogger')->willReturn($this->loggerMock);
 
@@ -286,14 +286,14 @@ XML;
             $imageFile,
             ['image'],
             null
-            ), 'Standard image type should be accepted when DLF types are null'
+        ), 'Standard image type should be accepted when DLF types are null'
         );
 
         self::assertFalse(Helper::filterFilesByMimeType(
             $iiifFile,
             ['image'],
             null
-            ), 'DLF type should be rejected when DLF types are null'
+        ), 'DLF type should be rejected when DLF types are null'
         );
 
         // Test: All DLF MIME Types
@@ -301,14 +301,14 @@ XML;
             $iiifFile,
             ['image'],
             true
-            ), 'IIIF should be accepted when all DLF types are enabled'
+        ), 'IIIF should be accepted when all DLF types are enabled'
         );
 
         self::assertTrue(Helper::filterFilesByMimeType(
             $iipFile,
             ['image'],
             true
-            ), 'IIP should be accepted when all DLF types are enabled'
+        ), 'IIP should be accepted when all DLF types are enabled'
         );
 
         // Test: Spezific DLF MIME Types
@@ -316,14 +316,14 @@ XML;
             $iiifFile,
             ['image'],
             ['IIIF']
-            ), 'IIIF should be accepted when specifically allowed'
+        ), 'IIIF should be accepted when specifically allowed'
         );
 
         self::assertFalse(Helper::filterFilesByMimeType(
             $iipFile,
             ['image'],
             ['IIIF']
-            ), 'IIP should be rejected when not in allowed DLF types'
+        ), 'IIP should be rejected when not in allowed DLF types'
         );
     }
 }
