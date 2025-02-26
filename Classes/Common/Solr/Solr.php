@@ -331,11 +331,11 @@ class Solr implements LoggerAwareInterface
         $number = max($number, 0);
         // Check if core already exists.
         $solr = self::getInstance('dlfCore' . $number);
-        if (!$solr->ready) {
-            return $number;
-        } else {
-            return self::getNextCoreNumber($number + 1);
+        while ($solr->ready) {
+            $number++;
+            $solr = self::getInstance('dlfCore' . $number);
         }
+        return $number;
     }
 
     /**

@@ -320,7 +320,7 @@ class PageViewController extends AbstractController
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
         $measureLinks = [];
-        $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'];
+        $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'] ?? null;
         if ($doc instanceof MetsDocument) {
             if (isset($defaultFileId)) {
                 $musicalStruct = $doc->musicalStructureInfo;
@@ -383,14 +383,14 @@ class PageViewController extends AbstractController
             $doc = $this->document->getCurrentDocument();
         }
         if ($doc instanceof MetsDocument) {
-            $fileGrpsScores = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpScore']);
+            $useGroups = $this->useGroupsConfiguration->getScore();
 
             $pageId = $doc->physicalStructure[$page];
             $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
 
-            foreach ($fileGrpsScores as $fileGrpScore) {
-                if (isset($files[$fileGrpScore])) {
-                    $loc = $files[$fileGrpScore];
+            foreach ($useGroups as $useGroup) {
+                if (isset($files[$useGroup])) {
+                    $loc = $files[$useGroup];
                     break;
                 }
             }
@@ -419,7 +419,7 @@ class PageViewController extends AbstractController
         }
 
         if (empty($score)) {
-            $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['fileGrpScore'] ?? '') . '"');
+            $this->logger->notice('No score file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['useGroupsScore'] ?? '') . '"');
         }
         return $score;
     }
@@ -437,12 +437,12 @@ class PageViewController extends AbstractController
     {
         $fulltext = [];
         // Get fulltext link.
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpFulltext']);
-        while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
+        $useGroups = $this->useGroupsConfiguration->getFulltext();
+        while ($useGroup = array_shift($useGroups)) {
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
             $files = $physicalStructureInfo['files'];
-            if (!empty($files[$fileGrpFulltext])) {
-                $file = $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpFulltext]);
+            if (!empty($files[$useGroup])) {
+                $file = $this->document->getCurrentDocument()->getFileInfo($files[$useGroup]);
                 $fulltext['url'] = $file['location'];
                 if ($this->settings['useInternalProxy']) {
                     $this->configureProxyUrl($fulltext['url']);
@@ -450,11 +450,11 @@ class PageViewController extends AbstractController
                 $fulltext['mimetype'] = $file['mimeType'];
                 break;
             } else {
-                $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $fileGrpFulltext . '"');
+                $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '"');
             }
         }
         if (empty($fulltext)) {
-            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . $this->extConf['files']['fileGrpFulltext'] . '"');
+            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['useGroupsFulltext'] ?? '') . '"');
         }
         return $fulltext;
     }
@@ -631,11 +631,11 @@ class PageViewController extends AbstractController
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $fileGrpsImages = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpImages']);
+        $useGroups = $this->useGroupsConfiguration->getImage();
 
-        foreach ($fileGrpsImages as $fileGrpImages) {
+        foreach ($useGroups as $useGroup) {
             // Get file info for the specific page and file group
-            $file = $this->fetchFileInfo($page, $fileGrpImages, $specificDoc);
+            $file = $this->fetchFileInfo($page, $useGroup, $specificDoc);
             if ($file && Helper::filterFilesByMimeType($file, ['image', 'application'], ['IIIF', 'IIP', 'ZOOMIFY'], 'mimeType')) {
                 $image['url'] = $file['location'];
                 $image['mimetype'] = $file['mimeType'];
@@ -647,12 +647,12 @@ class PageViewController extends AbstractController
                 }
                 break;
             } else {
-                $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $fileGrpImages . '"');
+                $this->logger->notice('No image file found for page "' . $page . '" in fileGrp "' . $useGroup . '"');
             }
         }
 
         if (empty($image)) {
-            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . $this->extConf['files']['fileGrpImages'] . '"');
+            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['useGroupsImage'] ?? '') . '"');
         }
 
         return $image;

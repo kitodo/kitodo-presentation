@@ -212,6 +212,12 @@
 			<trans-unit id="plugins.navigation.flexform.features.measureBack">
 				<source><![CDATA[One measureBack back]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.documentBack">
+				<source><![CDATA[Show previous document]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.navigation.flexform.features.documentForward">
+				<source><![CDATA[Show next document]]></source>
+			</trans-unit>
 			<trans-unit id="plugins.navigation.title">
 				<source><![CDATA[Kitodo: Navigation]]></source>
 			</trans-unit>
@@ -450,7 +456,7 @@
                 <source><![CDATA[Error!]]></source>
             </trans-unit>
             <trans-unit id="flash.coreStatus" approved="yes">
-                <source><![CDATA[Start Time: %s<br />Uptime: %s<br />Last Modified: %ss<br />Number of Documents: %u]]></source>
+                <source><![CDATA[Start Time: %s<br />Uptime: %s<br />Last Modified: %s<br />Number of Documents: %u]]></source>
             </trans-unit>
             <trans-unit id="flash.days" approved="yes">
                 <source><![CDATA[days]]></source>

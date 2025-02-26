@@ -39,7 +39,7 @@ class PageGridController extends AbstractController
         $this->loadDocument();
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->extConf['files']['fileGrpThumbs'])
+            || empty($this->useGroupsConfiguration->getThumbnail())
         ) {
             // Quit without doing anything if required variables are not set.
             return $this->htmlResponse();
@@ -56,13 +56,12 @@ class PageGridController extends AbstractController
             $entryArray = $cachedData; // Load from cache
         } else {
             $numPages = $this->document->getCurrentDocument()->numPages;
-
+            // Iterate through visible page set and display thumbnails.
             for ($i = 1; $i <= $numPages; $i++) {
-                $foundEntry = $this->getEntry($i, $this->extConf['files']['fileGrpThumbs']);
-                $foundEntry['state'] = 'no';
+                $foundEntry = $this->getEntry($i);
+                $foundEntry['state'] = ($i == $this->requestData['page']) ? 'cur' : 'no';
                 $entryArray[] = $foundEntry;
             }
-
             $cache->set($cacheKey, $entryArray);
         }
 
@@ -94,11 +93,10 @@ class PageGridController extends AbstractController
      * @access protected
      *
      * @param int $number The page to render
-     * @param string $fileGrpThumbs the file group(s) of thumbs
      *
      * @return array The rendered entry ready for fluid
      */
-    protected function getEntry(int $number, string $fileGrpThumbs): array
+    protected function getEntry(int $number): array
     {
         $entry = [];
 
@@ -108,12 +106,12 @@ class PageGridController extends AbstractController
         $entry['thumbnail'] = '';
 
         // Get thumbnail or placeholder.
-        $fileGrpsThumb = GeneralUtility::trimExplode(',', $fileGrpThumbs);
+        $useGroups = $this->useGroupsConfiguration->getThumbnail();
         if (is_array($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'])) {
-            if (array_intersect($fileGrpsThumb, array_keys($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'])) !== []) {
-                while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-                    if (!empty($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$fileGrpThumb])) {
-                        $entry['thumbnail'] = $this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$fileGrpThumb]);
+            if (array_intersect($useGroups, array_keys($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'])) !== []) {
+                while ($useGroup = array_shift($useGroups)) {
+                    if (!empty($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$useGroup])) {
+                        $entry['thumbnail'] = $this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$useGroup]);
                         break;
                     }
                 }

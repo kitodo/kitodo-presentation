@@ -163,33 +163,13 @@ class MetadataController extends AbstractController
                 ]
             );
 
-            foreach ($metadata as $i => $section) {
-
-                foreach ($section as $name => $value) {
-                    // NOTE: Labels are to be escaped in Fluid template
-
-                    $metadata[$i][$name] = is_array($value)
-                        ? $value
-                        : explode($this->settings['separator'], $value);
-
-                    // PHPStan error
-                    // I don't understand what this code does, so I take it away until author can fix it
-                    /*if ($metadata[$i][$name][0] === 'Array') {
-                        $metadata[$i][$name] = [];
-                        foreach ($value as $subKey => $subValue) {
-                            $metadata[$i][$name][$subKey] = $subValue;
-                        }
-                    }*/
-
-                    $this->parseMetadata($i, $name, $value, $metadata);
-
-                    if (is_array($metadata[$i][$name])) {
-                        $metadata[$i][$name] = array_values(array_filter($metadata[$i][$name], function ($metadataValue) {
-                            return !empty($metadataValue);
-                        }));
-                    }
+            foreach ($metadata as $sectionKey => $sectionValue) {
+                foreach ($sectionValue as $metadataName => $metadataValue) {
+                    $this->replaceMetadataOfSection($sectionKey, $metadataName, $metadataValue, $metadata);
                 }
             }
+
+            $metadata = $this->removeEmptyEntries($metadata);
 
             $this->view->assign('buildUrl', $this->buildUrlFromMetadata($metadata));
             $this->view->assign('externalUrl', $this->buildExternalUrlFromMetadata($metadata));
@@ -352,7 +332,7 @@ class MetadataController extends AbstractController
     }
 
     /**
-     * Parses metadata.
+     * Replace metadata of section.
      *
      * @access private
      *
@@ -363,8 +343,13 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseMetadata(int $i, string $name, $value, array &$metadata) : void
+    private function replaceMetadataOfSection(int $i, string $name, $value, array &$metadata): void
     {
+        // if the value has subentries, do not replace the values
+        if (is_array($value) && !empty($value) && is_array($value[0])) {
+            return;
+        }
+
         if ($name == 'title') {
             // Get title of parent document if needed.
             $this->parseParentTitle($i, $value, $metadata);
@@ -478,7 +463,7 @@ class MetadataController extends AbstractController
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
             $ids = [];
-            if (isset($this->requestData['page'])) {
+            if (!empty($this->currentDocument->physicalStructure) && isset($this->requestData['page'])) {
                 $page = $this->currentDocument->physicalStructure[$this->requestData['page']];
                 if (!empty($page) && !empty($this->currentDocument->smLinks['p2l'][$page])) {
                     foreach ($this->currentDocument->smLinks['p2l'][$page] as $logId) {
@@ -526,6 +511,26 @@ class MetadataController extends AbstractController
             if (!empty($data)) {
                 $data['_id'] = $sid;
                 $metadata[] = $data;
+            }
+        }
+        return $metadata;
+    }
+
+    /**
+     * Recursively remove empty entries.
+     *
+     * @param $metadata
+     * @return array
+     */
+    private function removeEmptyEntries($metadata): array
+    {
+        foreach ($metadata as $key => $value) {
+            if (is_array($value)) {
+                $metadata[$key] = $this->removeEmptyEntries($value);
+            }
+
+            if (empty($metadata[$key])) {
+                unset($metadata[$key]);
             }
         }
         return $metadata;

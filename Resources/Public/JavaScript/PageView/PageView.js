@@ -343,8 +343,7 @@ dlfViewer.prototype.addCustomControls = function() {
     var fulltextControl = undefined,
         fulltextDownloadControl = undefined,
         annotationControl = undefined,
-        imageManipulationControl = undefined,
-        images = this.images;
+        imageManipulationControl = undefined;
 
     //
     // Annotation facsimile
@@ -736,6 +735,18 @@ dlfViewer.prototype.createControl = function(controlName, layers) {
 };
 
 /**
+ * Forwards the search to dlfUtils.searchFeatureCollectionForWords
+ *
+ * @param {Array.<ol.Feature>} stringFeatures - Array of features containing text information
+ * @param {string} value - Search term
+ * @returns {Array.<ol.Feature>|undefined} Array of OpenLayers features containing found words
+ * @see dlfUtils.searchFeatureCollectionForWords
+ */
+dlfViewer.prototype.searchFeatures = function(stringFeatures, value) {
+  return dlfUtils.searchFeatureCollectionForWords(stringFeatures, value);
+};
+
+/**
  * Displays highlight words
  */
 dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
@@ -787,23 +798,23 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
     }
 
     if (this.highlightWords !== null) {
-        var self = this;
-        var values = decodeURIComponent(this.highlightWords).split(';');
+        const self = this;
+        const values = decodeURIComponent(this.highlightWords).split(';');
 
         $.when.apply($, this.fulltextsLoaded_)
-            .done(function (fulltextData, fulltextDataImageTwo) {
-                var stringFeatures = [];
+            .done((fulltextData, fulltextDataImageTwo) => {
+                const stringFeatures = [];
 
-                [fulltextData, fulltextDataImageTwo].forEach(function (data) {
+                [fulltextData, fulltextDataImageTwo].forEach(data => {
                     if (data !== undefined) {
                         Array.prototype.push.apply(stringFeatures, data.getStringFeatures());
                     }
                 });
 
-                values.forEach(function(value) {
-                    var features = dlfUtils.searchFeatureCollectionForCoordinates(stringFeatures, value);
+                values.forEach((value) => {
+                    const features = this.searchFeatures(stringFeatures, value);
                     if (features !== undefined) {
-                        for (var i = 0; i < features.length; i++) {
+                        for (let i = 0; i < features.length; i++) {
                             self.highlightLayer.getSource().addFeatures([features[i]]);
                         }
                     }

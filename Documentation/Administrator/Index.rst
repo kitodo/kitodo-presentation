@@ -23,9 +23,12 @@ Installation
 
 Make sure you have TYPO3 and Apache Solr already running.
 
-a. Get the latest release ("jar"-file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.9.1 is the minimum version number. Make sure to pick the right file for Solr 8 or 9 respectively.
-b. Copy the jar-file (e.g. "solr-ocrhighlighting-0.9.1.jar") to the modules/ocrsearch/lib/ directory of your Apache Solr.
-c. Copy the schema.xml and solrconfig.xml from Configuration/ApacheSolr/configsets/dlf/conf/ to $SOLR_HOME/configsets/dlf/
+a. Get the latest release ("jar" file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.9.1 is the minimum version number. Make sure to pick the right file for Solr 8 or 9 respectively.
+
+b. Copy the jar file (e.g. `solr-ocrhighlighting-0.9.1.jar`) to the `modules/ocrsearch/lib/` directory of your Apache Solr.
+
+c. Copy the `schema.xml` and `solrconfig.xml` from `Configuration/ApacheSolr/configsets/dlf/conf/` to `$SOLR_HOME/configsets/dlf/`.
+
 d. Restart Solr.
 
 
@@ -60,7 +63,7 @@ This section contains version specific instructions on upgrading an existing Kit
 Version 3.3 -> 4.0
 ==================
 
-Upgrade-Wizards
+Upgrade Wizards
 ---------------
 
 There are two upgrade wizards available. If you upgrade an existing installation, you should use them. Without, you have to
@@ -76,7 +79,7 @@ Set the Storage Pid
 -------------------
 
 The Kitodo.Presentation configuration folder must be set by TypoScript constant `plugin.tx_dlf.persistence.storagePid` now.
-This setting is available for all plugins in the page tree. The plugin specific `pages` has been removed.
+This setting is available for all plugins in the page tree. The plugin specific constant `pages` has been removed.
 
 Migrate Plugin Settings
 -----------------------
