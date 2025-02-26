@@ -174,7 +174,11 @@ class ToolboxController extends AbstractController
         $image = $this->getFile($page, $this->useGroupsConfiguration->getImage());
         if (isset($image['mimetype'])) {
             $fileExtension = Helper::getFileExtensionsForMimeType($image['mimetype']);
-            $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
+            if ($image['mimetype'] == 'image/jpg') {
+                $image['mimetypeLabel'] = ' (JPG)'; // "image/jpg" is not a valid MIME type, so we need to handle it separately.
+            } else {
+                $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
+            }
         }
         return $image;
     }
@@ -295,13 +299,13 @@ class ToolboxController extends AbstractController
         $imageArray = [];
         // Get left or single page download.
         $image = $this->getImage($page);
-        if (Helper::filterFilesByMimeType($image, ['image'])) {
+        if (Helper::filterFilesByMimeType($image, ['image'], true)) {
             $imageArray[0] = $image;
         }
 
         if ($this->requestData['double'] == 1) {
             $image = $this->getImage($page + 1);
-            if (Helper::filterFilesByMimeType($image, ['image'])) {
+            if (Helper::filterFilesByMimeType($image, ['image'], true)) {
                 $imageArray[1] = $image;
             }
         }
