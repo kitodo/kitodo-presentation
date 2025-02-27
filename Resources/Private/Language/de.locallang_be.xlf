@@ -49,6 +49,10 @@
 				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "DLF: Warenkorb")]]></target>
 			</trans-unit>
+            <trans-unit id="flexform.targetPidCollection" approved="yes">
+                <source><![CDATA[Target page (with "Kitodo: Collection" plugin)]]></source>
+                <target><![CDATA[Zielseite (mit Plugin "Kitodo: Kollektion")]]></target>
+            </trans-unit>
 			<trans-unit id="flexform.targetPidFeed" approved="yes">
 				<source><![CDATA[Target page (with "Kitodo: Feeds" plugin)]]></source>
 				<target><![CDATA[Zielseite (mit Plugin "Kitodo: Feeds")]]></target>
@@ -141,7 +145,7 @@
 				<source><![CDATA[Show only these collections]]></source>
 				<target><![CDATA[Nur diese Kollektionen anzeigen]]></target>
 			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.dont_show_single" approved="yes">
+            <trans-unit id="plugins.collection.flexform.showSingle" approved="yes">
 				<source><![CDATA[Show single collection in overview?]]></source>
 				<target><![CDATA[Einzelne Kollektion in Übersicht anzeigen?]]></target>
 			</trans-unit>

@@ -86,17 +86,21 @@ class CollectionController extends AbstractController
 
         // Sort collections according to order in plugin flexform configuration
         if ($this->settings['collections']) {
-            $sortedCollections = [];
             foreach (GeneralUtility::intExplode(',', $this->settings['collections']) as $uid) {
-                $sortedCollections[$uid] = $this->collectionRepository->findByUid($uid);
+                $collections[$uid] = $this->collectionRepository->findByUid($uid);
             }
-            $collections = $sortedCollections;
         } else {
             $collections = $this->collectionRepository->findAll();
         }
 
-        if (count($collections) == 1 && empty($this->settings['dont_show_single']) && is_array($collections)) {
-            $this->forward('show', null, null, ['collection' => array_pop($collections)]);
+        if ($this->settings['showSingle'] == 1) {
+            if (count($collections) == 1 && is_array($collections)) {
+                $this->forward('show', null, null, ['collection' => array_pop($collections)]);
+            } else {
+                $searchParams = $this->getParametersSafely('searchParameter');
+                $collection = $this->collectionRepository->findByUid($searchParams['collection']);
+                $this->forward('show', null, null, ['collection' => $collection]);
+            }
         }
 
         $processedCollections = $this->processCollections($collections, $solr);
