@@ -54,7 +54,7 @@ In this example, you place the customized fluid template into this file::
 Audioplayer
 -----------
 
-The audioplayer plugin is only active if the selected document has a valid audio filegroup (fileGrpAudio).
+The audioplayer plugin is only active if the selected document has valid audio file use groups (useGroupsAudio).
 
 Properties
 ^^^^^^^^^^
@@ -460,7 +460,7 @@ List View
 Media Player
 ------------
 
-The mediaplayer plugin is only active if the selected document has a valid video filegroup (fileGrpVideo).
+The mediaplayer plugin is only active if the selected document has valid video file use groups (useGroupsVideo).
 
 :typoscript:`plugin.tx_dlf_mediaplayer.`
 
