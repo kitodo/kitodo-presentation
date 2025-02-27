@@ -32,6 +32,9 @@
 			<trans-unit id="flexform.targetBasket">
 				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
 			</trans-unit>
+            <trans-unit id="flexform.targetPidCollection">
+                <source><![CDATA[Target page (with "Kitodo: Collection" plugin)]]></source>
+            </trans-unit>
 			<trans-unit id="flexform.targetPidPageView">
 				<source><![CDATA[Target page (with "Kitodo: Page View" plugin)]]></source>
 			</trans-unit>
@@ -365,7 +368,7 @@
 			<trans-unit id="plugins.collection.flexform.show_userdefined.exclusive">
 				<source><![CDATA[exclusively]]></source>
 			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.dont_show_single">
+            <trans-unit id="plugins.collection.flexform.showSingle">
 				<source><![CDATA[Show single collection in overview?]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.collection.flexform.randomize">

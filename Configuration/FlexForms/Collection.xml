@@ -82,16 +82,16 @@
                             </config>
                         </TCEforms>
                     </settings.show_userdefined>
-                    <settings.dont_show_single>
+                    <settings.showSingle>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.dont_show_single</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.showSingle</label>
                             <config>
                                 <type>check</type>
                                 <default>0</default>
                             </config>
                         </TCEforms>
-                    </settings.dont_show_single>
+                    </settings.showSingle>
                     <settings.randomize>
                         <TCEforms>
                             <exclude>1</exclude>
@@ -105,7 +105,7 @@
                     <settings.targetPid>
                         <TCEforms>
                             <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
+                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidCollection</label>
                             <config>
                                 <type>group</type>
                                 <internal_type>db</internal_type>
