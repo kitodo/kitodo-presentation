@@ -23,7 +23,7 @@ Fractional timecodes (e.g., ``00:06:04.5``) may be used.
 Waveform
 ========
 
-To link preprocessed audio waveform data, use the ``WAVEFORM`` file group (configurable in ``fileGrpWaveform``).
+To link preprocessed audio waveform data, use the ``WAVEFORM`` use groups (configurable in ``useGroupsWaveform``).
 See :ref:`the section on the waveform component <audiowaveform>` for information on how to generate the data.
 
 .. code-block:: xml
