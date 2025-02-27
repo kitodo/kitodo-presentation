@@ -705,13 +705,13 @@
 				<target>Audio Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Audiodateien nach absteigender Priorität sortiert (Standard ist "AUDIO")</target>
 				<source>Audio file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
 			</trans-unit>
-			<trans-unit id="config.files.fileGrpVideo">
-				<target>Video fileGrp: Komma-getrennte Liste der @USE Attributwerte der Videodateien nach absteigender Priorität sortiert (Standard ist "VIDEO,DEFAULT")</target>
-				<source>Video fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "VIDEO,DEFAULT")</source>
+			<trans-unit id="config.files.useGroupsVideo">
+				<target>Video Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Videodateien nach absteigender Priorität sortiert (Standard ist "VIDEO,DEFAULT")</target>
+				<source>Video file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "VIDEO,DEFAULT")</source>
 			</trans-unit>
-			<trans-unit id="config.files.fileGrpWaveform">
-				<target>Waveform fileGrp: Komma-getrennte Liste der @USE Attributwerte der Waveform-Daten nach absteigender Priorität sortiert (Standard ist "WAVEFORM")</target>
-				<source>Waveform fileGrp: comma-separated list of @USE attribute values ordered by decreasing priority (default is "WAVEFORM")</source>
+			<trans-unit id="config.files.useGroupsWaveform">
+				<target>Waveform Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Waveform-Daten nach absteigender Priorität sortiert (Standard ist "WAVEFORM")</target>
+				<source>Waveform file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "WAVEFORM")</source>
 			</trans-unit>
 			<trans-unit id="config.files.useGroupsModel">
 				<target>Modell Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Modelldateien nach absteigender Priorität sortiert (Standard ist "DEFAULT")</target>
