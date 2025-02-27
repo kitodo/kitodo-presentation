@@ -167,8 +167,8 @@ class ToolboxController extends AbstractController
         }
         return $modelUrl;
     }
-      
-    /**  
+
+    /**
      * Get the score file.
      *
      * @return string
