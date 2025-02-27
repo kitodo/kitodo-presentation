@@ -158,7 +158,7 @@ class TableOfContentsController extends AbstractController
             // 2. Current menu node points to another file
             // 3. Current menu node has no corresponding images
             if (
-                $this->settings['showFull']
+                $this->settings['showFull'] ?? false
                 || $entryArray['ITEM_STATE'] == 'CUR'
                 || (array_key_exists('points', $entry) && is_string($entry['points']))
                 || empty($this->document->getCurrentDocument()->smLinks['l2p'][$entry['id']])

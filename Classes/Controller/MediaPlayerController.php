@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use Kitodo\Dlf\Common\AbstractDocument;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,15 +33,15 @@ class MediaPlayerController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         } else {
             $this->setPage();
             $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
@@ -50,12 +51,14 @@ class MediaPlayerController extends AbstractController
         $pageNo = $this->requestData['page'];
         $video = $this->getVideoInfo($doc, $pageNo);
         if ($video === null) {
-            return;
+            return $this->htmlResponse();
         }
 
         $this->addPlayerAssets();
 
         $this->view->assign('video', $video);
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -107,13 +110,13 @@ class MediaPlayerController extends AbstractController
     private function collectVideoSources(AbstractDocument $doc, int $pageNo, array $videoFileGrps): array
     {
         $videoSources = [];
-        /** @var array{fileGrp: string, fileId: string, url: string, mimeType: string}[] $videoFiles */
         $videoFiles = $this->findFiles($doc, $pageNo, $videoFileGrps);
         foreach ($videoFiles as $videoFile) {
             if ($this->isMediaMime($videoFile['mimeType'])) {
                 $fileMetadata = $doc->getMetadata($videoFile['fileId'], $this->settings['storagePid']);
 
                 $videoSources[] = [
+                    'fileGrp' => $videoFile['fileGrp'],
                     'mimeType' => $videoFile['mimeType'],
                     'url' => $videoFile['url'],
                     'fileId' => $videoFile['fileId'],
