@@ -158,10 +158,10 @@ class ToolboxController extends AbstractController
         $modelUrl = '';
         if (!empty($this->requestData['model'])) {
             $modelUrl = $this->requestData['model'];
-        } elseif (!($this->isDocMissingOrEmpty() || empty($this->extConf['files']['useGroupsModel']))) {
+        } elseif (!($this->isDocMissingOrEmpty() || empty($this->useGroupsConfiguration->getModel()))) {
             $this->setPage();
             if (isset($this->requestData['page'])) {
-                $file = $this->getFile($this->requestData['page'], GeneralUtility::trimExplode(',', $this->extConf['files']['useGroupsModel']));
+                $file = $this->getFile($this->requestData['page'], $this->useGroupsConfiguration->getModel());
                 $modelUrl = $file['url'] ?? '';
             }
         }
