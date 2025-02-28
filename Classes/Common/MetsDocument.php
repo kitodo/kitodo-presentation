@@ -447,7 +447,6 @@ final class MetsDocument extends AbstractDocument
      */
     private function getPage(array &$details, ?SimpleXMLElement $metsPointers): void
     {
-        // Is there a mptr node?
         if (count($metsPointers)) {
             // Yes. Get the file reference.
             $details['points'] = (string) $metsPointers[0]->attributes('http://www.w3.org/1999/xlink')->href;
@@ -486,16 +485,15 @@ final class MetsDocument extends AbstractDocument
     protected function getTimecode(array $logInfo): ?array
     {
         // Load plugin configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-        $fileGrpsVideo = GeneralUtility::trimExplode(',', $extConf['fileGrpVideo']);
+        $useGroupsVideo = $this->useGroupsConfiguration->getVideo();
 
-        foreach ($fileGrpsVideo as $fileGrpVideo) {
+        foreach ($useGroupsVideo as $useGroupVideo) {
             if (!isset($this->smLinks['l2p'][$logInfo['id']][0])) {
                 continue;
             }
 
             $physInfo = $this->physicalStructureInfo[$this->smLinks['l2p'][$logInfo['id']][0]];
-            $fileIds = $physInfo['all_files'][$fileGrpVideo] ?? [];
+            $fileIds = $physInfo['all_files'][$useGroupVideo] ?? [];
 
             $chapter = null;
 
@@ -1471,15 +1469,6 @@ final class MetsDocument extends AbstractDocument
                 $this->physicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($firstNode['ORDERLABEL']);
                 $this->physicalStructureInfo[$id]['type'] = (string) $firstNode['TYPE'];
                 $this->physicalStructureInfo[$id]['contentIds'] = $this->getAttribute($firstNode['CONTENTIDS']);
-                // @fschoelzel: needs review
-                // Get the file representations from fileSec node.
-                foreach ($physNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                    // Check if file has valid @USE attribute.
-                    if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                        $this->physicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = (string) $fptr->attributes()->FILEID;
-                        $this->physicalStructureInfo[$id]['all_files'][$fileUse[(string) $fptr->attributes()->FILEID]][] = (string) $fptr->attributes()->FILEID;
-                    }
-                }
 
                 $this->getFileRepresentation($id, $firstNode);
 
