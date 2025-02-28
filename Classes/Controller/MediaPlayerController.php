@@ -70,15 +70,19 @@ class MediaPlayerController extends AbstractController
      */
     protected function getVideoInfo(AbstractDocument $doc, int $pageNo): ?array
     {
-        $videoFileGrps = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpVideo']);
-        $mainVideoFileGrp = $videoFileGrps[0] ?? '';
+        // Get video file use groups
+        $videoUseGroups = $this->useGroupsConfiguration->getVideo();
+        $mainVideoUseGroup = $videoUseGroups[0] ?? '';
 
-        $thumbFileGroups = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpThumbs']);
-        $waveformFileGroups = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpWaveform']);
+        // Get thumbnail file use groups
+        $thumbnailUseGroups = $this->useGroupsConfiguration->getThumbnail();
+
+        // Get waveform file use groups
+        $waveformUseGroups = $this->useGroupsConfiguration->getWaveform();
 
         // Collect video file source URLs
         // TODO: This is for multiple sources (MPD, HLS, MP3, ...) - revisit, make sure it's ordered by preference!
-        $videoSources = $this->collectVideoSources($doc, $pageNo, $videoFileGrps);
+        $videoSources = $this->collectVideoSources($doc, $pageNo, $videoUseGroups);
         if (empty($videoSources)) {
             return null;
         }
@@ -87,11 +91,11 @@ class MediaPlayerController extends AbstractController
         $videoChapters = $this->collectVideoChapters($doc);
 
         // Get additional video URLs
-        $videoUrl = $this->collectAdditionalVideoUrls($doc, $pageNo, $thumbFileGroups, $waveformFileGroups);
+        $videoUrl = $this->collectAdditionalVideoUrls($doc, $pageNo, $thumbnailUseGroups, $waveformUseGroups);
 
         return [
             'start' => $videoChapters[$pageNo - 1]['timecode'] ?? '',
-            'mode' => $this->determineInitialMode($videoSources, $mainVideoFileGrp),
+            'mode' => $this->determineInitialMode($videoSources, $mainVideoUseGroup),
             'chapters' => $videoChapters,
             'metadata' => $doc->getToplevelMetadata($this->settings['storagePid']),
             'sources' => $videoSources,
@@ -104,13 +108,13 @@ class MediaPlayerController extends AbstractController
      *
      * @param AbstractDocument $doc The document object to collect video sources from
      * @param int $pageNo The page number to collect video sources for
-     * @param array $videoFileGrps The array of video file groups to search for video sources
+     * @param array $videoUseGroups The array of video use groups to search for video sources
      * @return array An array of video sources with details like MIME type, URL, file ID, and frame rate
      */
-    private function collectVideoSources(AbstractDocument $doc, int $pageNo, array $videoFileGrps): array
+    private function collectVideoSources(AbstractDocument $doc, int $pageNo, array $videoUseGroups): array
     {
         $videoSources = [];
-        $videoFiles = $this->findFiles($doc, $pageNo, $videoFileGrps);
+        $videoFiles = $this->findFiles($doc, $pageNo, $videoUseGroups);
         foreach ($videoFiles as $videoFile) {
             if ($this->isMediaMime($videoFile['mimeType'])) {
                 $fileMetadata = $doc->getMetadata($videoFile['fileId'], $this->settings['storagePid']);
@@ -128,18 +132,18 @@ class MediaPlayerController extends AbstractController
     }
 
     /**
-     * Determine the initial mode (video or audio) based on the provided video sources and the main video file group.
+     * Determine the initial mode (video or audio) based on the provided video sources and the main video use group.
      *
      * @param array $videoSources An array of video sources with details like MIME type, URL, file ID, and frame rate
-     * @param string $mainVideoFileGrp The main video file group to prioritize
+     * @param string $mainVideoUseGroup The main video use group to prioritize
      * @return string The initial mode ('video' or 'audio')
      */
-    private function determineInitialMode(array $videoSources, string $mainVideoFileGrp): string
+    private function determineInitialMode(array $videoSources, string $mainVideoUseGroup): string
     {
         foreach ($videoSources as $videoSource) {
             // TODO: Better guess of initial mode?
             //       Perhaps we could look for VIDEOMD/AUDIOMD in METS
-            if ($videoSource['fileGrp'] === $mainVideoFileGrp || strpos($videoSource['mimeType'], 'video/') === 0) {
+            if ($videoSource['fileGrp'] === $mainVideoUseGroup || strpos($videoSource['mimeType'], 'video/') === 0) {
                 return 'video';
             }
         }
@@ -162,29 +166,29 @@ class MediaPlayerController extends AbstractController
     }
 
     /**
-     * Collects additional video URLs like poster and waveform for a given document, page number, thumb file groups, and waveform file groups.
+     * Collects additional video URLs like poster and waveform for a given document, page number, thumb file use groups, and waveform file use groups.
      *
      * @param AbstractDocument $doc The document object
      * @param int $pageNo The page number
-     * @param array $thumbFileGroups An array of thumb file groups
-     * @param array $waveformFileGroups An array of waveform file groups
+     * @param array $thumbnailUseGroups An array of thumb file use groups
+     * @param array $waveformUseGroups An array of waveform file use groups
      * @return array An array containing additional video URLs like poster and waveform
      */
-    private function collectAdditionalVideoUrls(AbstractDocument $doc, int $pageNo, array $thumbFileGroups, array $waveformFileGroups): array
+    private function collectAdditionalVideoUrls(AbstractDocument $doc, int $pageNo, array $thumbnailUseGroups, array $waveformUseGroups): array
     {
         $videoUrl = [];
-        if (!empty($thumbFiles = $this->findFiles($doc, 0, $thumbFileGroups)) // 0 = for whole video (not just chapter)
+        if (!empty($thumbFiles = $this->findFiles($doc, 0, $thumbnailUseGroups)) // 0 = for whole video (not just chapter)
             && $this->settings['constants']['showPoster'] == 1) {
             $videoUrl['poster'] = $thumbFiles[0];
         }
-        if (!empty($waveformFiles = $this->findFiles($doc, $pageNo, $waveformFileGroups))) {
+        if (!empty($waveformFiles = $this->findFiles($doc, $pageNo, $waveformUseGroups))) {
             $videoUrl['waveform'] = $waveformFiles[0];
         }
         return $videoUrl;
     }
 
     /**
-     * Find files of the given file groups that are referenced on a page.
+     * Find files of the given file use groups that are referenced on a page.
      *
      * @param AbstractDocument $doc
      * @param int $pageNo
