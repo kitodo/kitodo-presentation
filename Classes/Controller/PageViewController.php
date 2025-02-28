@@ -17,8 +17,10 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Resource\Exception\InvalidFileException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
 use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 
@@ -138,6 +140,7 @@ class PageViewController extends AbstractController
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
 
+        $this->view->assign('viewData', $this->viewData);
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl']);
 
         $this->addViewerJS();
