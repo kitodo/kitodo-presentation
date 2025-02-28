@@ -1470,7 +1470,6 @@ final class MetsDocument extends AbstractDocument
 
         foreach ($elementNodes as $elementNode) {
             $id = (string) $elementNode['ID'];
-            $order = (int) $elementNode['ORDER'];
             $this->physicalStructureInfo[$id]['id'] = $id;
             $this->physicalStructureInfo[$id]['dmdId'] = $this->getAttribute($elementNode['DMDID']);
             $this->physicalStructureInfo[$id]['admId'] = $this->getAttribute($elementNode['ADMID']);
@@ -1768,7 +1767,6 @@ final class MetsDocument extends AbstractDocument
                 // Build the physical elements' array from the physical structMap node.
                 foreach ($elementNodes as $elementNode) {
                     $id = (string) $elementNode['ID'];
-                    $order = (int) $elementNode['ORDER'];
                     $this->musicalStructureInfo[$id]['id'] = $id;
                     $this->musicalStructureInfo[$id]['dmdId'] = $this->getAttribute($elementNode['DMDID']);
                     $this->musicalStructureInfo[$id]['order'] = $this->getAttribute($elementNode['ORDER']);
