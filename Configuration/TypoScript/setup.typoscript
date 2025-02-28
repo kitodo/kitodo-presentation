@@ -69,16 +69,6 @@ page {
   }
 }
 
-[typo3.branch=="11.5"]
-  page.inlineSettings {
-    dlfAssets = /typo3conf/ext/dlf/Resources/Public/
-  }
-[else]
-  page.inlineSettings {
-    dlfAssets = /_assets/007831ab53eafe3f6be2b9b1baf2a8d6/
-  }
-[end]
-
 [request && like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
 page.includeJSFooter {
     # Gridstack

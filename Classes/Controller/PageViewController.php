@@ -138,6 +138,7 @@ class PageViewController extends AbstractController
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features']);
 
+        $this->view->assign('viewData', $this->viewData);
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl']);
 
         $this->addViewerJS();
