@@ -312,7 +312,7 @@ class PageViewController extends AbstractController
      * @param int|null $docNumber
      * @return array
      */
-    protected function getMeasures(int $page, MetsDocument $specificDoc = null, $docNumber = null): array
+    protected function getMeasures(int $page, ?MetsDocument $specificDoc = null, $docNumber = null): array
     {
         if ($specificDoc) {
             $doc = $specificDoc;
@@ -380,7 +380,7 @@ class PageViewController extends AbstractController
      *
      * @return array URL and MIME type of fulltext file
      */
-    protected function getScore(int $page, MetsDocument $specificDoc = null)
+    protected function getScore(int $page, ?MetsDocument $specificDoc = null)
     {
         $score = [];
         $loc = '';
@@ -638,7 +638,7 @@ class PageViewController extends AbstractController
      *
      * @return array URL and MIME type of image file
      */
-    protected function getImage(int $page, MetsDocument $specificDoc = null): array
+    protected function getImage(int $page, ?MetsDocument $specificDoc = null): array
     {
         $image = [];
         // Get @USE value of METS fileGrp.
