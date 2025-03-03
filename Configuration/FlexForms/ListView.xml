@@ -22,7 +22,6 @@
                 <el>
                     <settings.solrcore>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
@@ -37,7 +36,6 @@
                     </settings.solrcore>
                     <settings.limit>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.listview.flexform.limit</label>
                             <config>
                                 <type>input</type>
@@ -48,7 +46,6 @@
                     </settings.limit>
                     <settings.targetPidPageView>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>
@@ -68,7 +65,6 @@
                     </settings.targetPidPageView>
                     <settings.getTitle>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.getTitle</label>
                             <config>
                                 <type>check</type>
@@ -79,7 +75,6 @@
                     <settings.basketButton>
                         <TCEforms>
                             <onChange>reload</onChange>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
                             <config>
                                 <type>check</type>
@@ -90,7 +85,6 @@
                     <settings.targetBasket>
                         <TCEforms>
                             <displayCond>FIELD:settings.basketButton:REQ:true</displayCond>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
                             <config>
                                 <type>group</type>
