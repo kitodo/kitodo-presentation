@@ -22,7 +22,6 @@
                 <el>
                     <settings.library>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.library</label>
                             <config>
                                 <type>select</type>
@@ -39,7 +38,6 @@
                     </settings.library>
                     <settings.limit>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.limit</label>
                             <config>
                                 <type>input</type>
@@ -50,7 +48,6 @@
                     </settings.limit>
                     <settings.expired>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.expired</label>
                             <config>
                                 <type>input</type>
@@ -61,7 +58,6 @@
                     </settings.expired>
                     <settings.show_userdefined>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.show_userdefined</label>
                             <config>
                                 <type>check</type>
@@ -71,7 +67,6 @@
                     </settings.show_userdefined>
                     <settings.solrcore>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
@@ -86,7 +81,6 @@
                     </settings.solrcore>
                     <settings.solr_limit>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.solr_limit</label>
                             <config>
                                 <type>input</type>
@@ -97,7 +91,6 @@
                     </settings.solr_limit>
                     <settings.stylesheet>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.stylesheet</label>
                             <config>
                                 <type>inline</type>

@@ -22,7 +22,6 @@
                 <el>
                     <settings.excludeOther>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
                             <config>
                                 <type>check</type>
@@ -33,7 +32,6 @@
                     <settings.linkTitle>
                         <TCEforms>
                             <onChange>reload</onChange>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.linkTitle</label>
                             <config>
                                 <type>check</type>
@@ -44,7 +42,6 @@
                     <settings.targetPid>
                         <TCEforms>
                             <displayCond>FIELD:settings.linkTitle:REQ:true</displayCond>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>
@@ -64,7 +61,6 @@
                     </settings.targetPid>
                     <settings.getTitle>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.getTitle</label>
                             <config>
                                 <type>check</type>
@@ -74,7 +70,6 @@
                     </settings.getTitle>
                     <settings.showFull>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.showFull</label>
                             <config>
                                 <type>check</type>
@@ -84,7 +79,6 @@
                     </settings.showFull>
                     <settings.rootline>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.rootline</label>
                             <config>
                                 <type>select</type>
@@ -112,7 +106,6 @@
                     </settings.rootline>
                     <settings.originalIiifMetadata>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.originalIiifMetadata</label>
                             <onChange>reload</onChange>
                             <config>
@@ -123,7 +116,6 @@
                     </settings.originalIiifMetadata>
                     <settings.iiifMetadataWrap>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.iiifMetadataWrap</label>
                             <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
@@ -134,7 +126,6 @@
                     </settings.iiifMetadataWrap>
                     <settings.displayIiifDescription>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifDescription</label>
                             <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
@@ -145,7 +136,6 @@
                     </settings.displayIiifDescription>
                     <settings.displayIiifRights>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifRights</label>
                             <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
@@ -156,7 +146,6 @@
                     </settings.displayIiifRights>
                     <settings.displayIiifLinks>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifLinks</label>
                             <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                             <config>
@@ -167,7 +156,6 @@
                     </settings.displayIiifLinks>
                     <settings.separator>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.separator</label>
                             <config>
                                 <type>input</type>

@@ -22,7 +22,6 @@
                 <el>
                     <settings.features>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features</label>
                             <config>
                                 <type>select</type>
@@ -96,7 +95,6 @@
                     </settings.features>
                     <settings.pageStep>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.pageStep</label>
                             <config>
                                 <type>input</type>
@@ -107,7 +105,6 @@
                     </settings.pageStep>
                     <settings.targetPid>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <displayCond>FIELD:settings.features:IN:listView</displayCond>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
                             <config>

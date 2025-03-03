@@ -22,7 +22,6 @@
                 <el>
                     <settings.fulltext>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.fulltext</label>
                             <config>
                                 <type>radio</type>
@@ -43,7 +42,6 @@
                     </settings.fulltext>
                     <settings.fulltextPreselect>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.fulltextPreselect</label>
                             <config>
                                 <type>check</type>
@@ -53,7 +51,6 @@
                     </settings.fulltextPreselect>
                     <settings.datesearch>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.datesearch</label>
                             <config>
                                 <type>check</type>
@@ -63,7 +60,6 @@
                     </settings.datesearch>
                     <settings.solrcore>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
@@ -78,7 +74,6 @@
                     </settings.solrcore>
                     <settings.extendedSlotCount>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.slotCount</label>
                             <config>
                                 <type>input</type>
@@ -93,7 +88,6 @@
                     </settings.extendedSlotCount>
                     <settings.extendedFields>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.fields</label>
                             <config>
                                 <type>select</type>
@@ -109,7 +103,6 @@
                     </settings.extendedFields>
                     <settings.searchIn>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn</label>
                             <config>
                                 <type>select</type>
@@ -140,7 +133,6 @@
                     </settings.searchIn>
                     <settings.collections>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.collections</label>
                             <config>
                                 <type>select</type>
@@ -160,7 +152,6 @@
                     </settings.collections>
                     <settings.facets>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets</label>
                             <config>
                                 <type>select</type>
@@ -176,7 +167,6 @@
                     </settings.facets>
                     <settings.facetCollections>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.collections</label>
                             <config>
                                 <type>select</type>
@@ -194,7 +184,6 @@
                     </settings.facetCollections>
                     <settings.limitFacets>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.limit</label>
                             <config>
                                 <type>input</type>
@@ -209,7 +198,6 @@
                     </settings.limitFacets>
                     <settings.resetFacets>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.reset</label>
                             <config>
                                 <type>check</type>
@@ -219,7 +207,6 @@
                     </settings.resetFacets>
                     <settings.sortingFacets>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting</label>
                             <config>
                                 <type>select</type>
@@ -242,7 +229,6 @@
                     </settings.sortingFacets>
                     <settings.suggest>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.suggest</label>
                             <config>
                                 <type>check</type>
@@ -252,7 +238,6 @@
                     </settings.suggest>
                     <settings.showLogicalPageField>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.showLogicalPageField</label>
                             <config>
                                 <type>check</type>
@@ -263,7 +248,6 @@
                     <settings.showSingleResult>
                         <TCEforms>
                             <onChange>reload</onChange>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.showSingleResult</label>
                             <config>
                                 <type>check</type>
@@ -273,7 +257,6 @@
                     </settings.showSingleResult>
                     <settings.targetPid>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
                             <config>
                                 <type>group</type>
@@ -293,7 +276,6 @@
                     </settings.targetPid>
                     <settings.targetPidPageView>
                         <TCEforms>0
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>

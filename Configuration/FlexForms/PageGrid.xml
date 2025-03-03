@@ -22,7 +22,6 @@
                 <el>
                     <settings.paginate.itemsPerPage>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.limit</label>
                             <config>
                                 <type>input</type>
@@ -33,7 +32,6 @@
                     </settings.paginate.itemsPerPage>
                     <settings.placeholder>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.placeholder</label>
                             <config>
                                 <type>inline</type>
@@ -107,7 +105,6 @@
                     </settings.placeholder>
                     <settings.targetPid>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>

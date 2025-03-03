@@ -22,7 +22,6 @@
                 <el>
                     <settings.collections>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.collections</label>
                             <config>
                                 <type>select</type>
@@ -40,7 +39,6 @@
                     </settings.collections>
                     <settings.solrcore>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
@@ -57,7 +55,6 @@
                     </settings.solrcore>
                     <settings.show_userdefined>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.show_userdefined</label>
                             <config>
                                 <type>select</type>
@@ -84,7 +81,6 @@
                     </settings.show_userdefined>
                     <settings.showSingle>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.showSingle</label>
                             <config>
                                 <type>check</type>
@@ -94,7 +90,6 @@
                     </settings.showSingle>
                     <settings.randomize>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.flexform.randomize</label>
                             <config>
                                 <type>check</type>
@@ -104,7 +99,6 @@
                     </settings.randomize>
                     <settings.targetPid>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidCollection</label>
                             <config>
                                 <type>group</type>
@@ -124,7 +118,6 @@
                     </settings.targetPid>
                     <settings.targetPidPageView>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>
@@ -138,7 +131,6 @@
                     </settings.targetPidPageView>
                     <settings.targetFeed>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidFeed</label>
                             <config>
                                 <type>group</type>
