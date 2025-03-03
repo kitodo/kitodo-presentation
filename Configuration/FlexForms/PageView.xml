@@ -22,7 +22,6 @@
                 <el>
                     <settings.excludeOther>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
                             <config>
                                 <type>check</type>
@@ -32,7 +31,6 @@
                     </settings.excludeOther>
                     <settings.features>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.features</label>
                             <config>
                                 <type>select</type>
@@ -56,7 +54,6 @@
                     </settings.features>
                     <settings.elementId>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.elementId</label>
                             <config>
                                 <type>input</type>
@@ -67,7 +64,6 @@
                     </settings.elementId>
                     <settings.progressElementId>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.progressElementId</label>
                             <config>
                                 <type>input</type>
@@ -78,7 +74,6 @@
                     </settings.progressElementId>
                     <settings.useInternalProxy>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.useInternalProxy</label>
                             <config>
                                 <type>check</type>
@@ -88,7 +83,6 @@
                     </settings.useInternalProxy>
                     <settings.basketButton>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
                             <onChange>reload</onChange>
                             <config>
@@ -99,7 +93,6 @@
                     </settings.basketButton>
                     <settings.basket.crop>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.crop</label>
                             <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                             <config>
@@ -110,7 +103,6 @@
                     </settings.basket.crop>
                     <settings.basket.magnifier>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.magnifier</label>
                             <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                             <config>
@@ -121,7 +113,6 @@
                     </settings.basket.magnifier>
                     <settings.targetBasket>
                         <TCEforms>
-                            <exclude>1</exclude>
                                 <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
                                 <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                                 <config>

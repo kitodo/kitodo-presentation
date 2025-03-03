@@ -22,7 +22,6 @@
                 <el>
                     <settings.tools>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.tools</label>
                             <config>
                                 <type>select</type>
@@ -39,7 +38,6 @@
                     </settings.tools>
                     <settings.solrcore>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
                             <config>
                                 <type>select</type>
@@ -54,7 +52,6 @@
                     </settings.solrcore>
                     <settings.fileGrpsImageDownload>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.fileGrps</label>
                             <config>
                                 <type>input</type>

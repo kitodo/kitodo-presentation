@@ -22,7 +22,6 @@
                 <el>
                     <settings.excludeOther>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
                             <config>
                                 <type>check</type>
@@ -32,7 +31,6 @@
                     </settings.excludeOther>
                     <settings.basketButton>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
                             <config>
                                 <type>check</type>
@@ -42,7 +40,6 @@
                     </settings.basketButton>
                     <settings.targetBasket>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
                             <config>
                                 <type>group</type>
@@ -62,7 +59,6 @@
                     </settings.targetBasket>
                     <settings.targetPid>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>

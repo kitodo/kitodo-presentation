@@ -22,7 +22,6 @@
                 <el>
                     <settings.targetPid>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>
@@ -42,7 +41,6 @@
                     </settings.targetPid>
                     <settings.initialDocument>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.initialDocument</label>
                             <config>
                                 <type>group</type>
@@ -62,7 +60,6 @@
                     </settings.initialDocument>
                     <settings.showEmptyYears>
                       <TCEforms>
-                        <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.showEmptyYears</label>
                         <config>
                           <type>check</type>
@@ -72,7 +69,6 @@
                     </settings.showEmptyYears>
                     <settings.showEmptyMonths>
                       <TCEforms>
-                        <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.showEmptyMonths</label>
                         <config>
                           <type>check</type>

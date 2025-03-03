@@ -22,7 +22,6 @@
                 <el>
                     <settings.collections>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.collections</label>
                             <config>
                                 <type>select</type>
@@ -40,7 +39,6 @@
                     </settings.collections>
                     <settings.description>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.flexform.description</label>
                             <config>
                                 <type>text</type>

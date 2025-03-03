@@ -22,7 +22,6 @@
                 <el>
                     <settings.collections>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.collections</label>
                             <config>
                                 <type>select</type>
@@ -40,7 +39,6 @@
                     </settings.collections>
                     <settings.excludeOther>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOtherCollections</label>
                             <config>
                                 <type>check</type>
@@ -50,7 +48,6 @@
                     </settings.excludeOther>
                     <settings.library>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.library</label>
                             <config>
                                 <type>select</type>
@@ -67,7 +64,6 @@
                     </settings.library>
                     <settings.limit>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.limit</label>
                             <config>
                                 <type>input</type>
@@ -78,7 +74,6 @@
                     </settings.limit>
                     <settings.prependSuperiorTitle>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.prependSuperiorTitle</label>
                             <config>
                                 <type>check</type>
@@ -88,7 +83,6 @@
                     </settings.prependSuperiorTitle>
                     <settings.targetPid>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
                             <config>
                                 <type>group</type>
@@ -108,7 +102,6 @@
                     </settings.targetPid>
                     <settings.title>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.flexform.title</label>
                             <config>
                                 <type>input</type>
@@ -118,7 +111,6 @@
                     </settings.title>
                     <settings.description>
                         <TCEforms>
-                            <exclude>1</exclude>
                             <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.flexform.description</label>
                             <config>
                                 <type>input</type>
