@@ -113,8 +113,8 @@ class SearchController extends AbstractController
             return $this->htmlResponse();
         }
 
-        // Get additional fields for extended search.
-        $this->addExtendedSearch();
+        $this->addFieldsForExtendedSearch();
+
         $this->enableSuggester();
 
         // if search was triggered, get search parameters from POST variables
@@ -560,13 +560,13 @@ class SearchController extends AbstractController
     }
 
     /**
-     * Returns the extended search form and adds the JS files necessary for extended search.
+     * Adds the fields necessary for extended search.
      *
      * @access private
      *
      * @return void
      */
-    private function addExtendedSearch(): void
+    private function addFieldsForExtendedSearch(): void
     {
         // Quit without doing anything if no fields for extended search are selected.
         if (
@@ -581,7 +581,6 @@ class SearchController extends AbstractController
         $extendedSlotCount = range(0, (int) $this->settings['extendedSlotCount'] - 1);
 
         $this->view->assign('extendedSlotCount', $extendedSlotCount);
-        $this->view->assign('extendedFields', $this->settings['extendedFields']);
         $this->view->assign('operators', ['AND', 'OR', 'NOT']);
         $this->view->assign('searchFields', $searchFields);
     }
