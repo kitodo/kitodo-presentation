@@ -113,8 +113,9 @@ class SearchController extends AbstractController
             return $this->htmlResponse();
         }
 
-        // Get additional fields for extended search.
-        $this->addExtendedSearch();
+        $this->addFieldsForExtendedSearch();
+
+        $this->enableSuggester();
 
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
@@ -217,11 +218,6 @@ class SearchController extends AbstractController
         if (isset($this->requestData['id'])) {
             $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
             $this->view->assign('currentDocument', $currentDocument);
-        }
-
-        // Add uHash parameter to suggest parameter to make a basic protection of this form.
-        if ($this->settings['suggest']) {
-            $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
 
         $this->view->assign('viewData', $this->viewData);
@@ -564,13 +560,13 @@ class SearchController extends AbstractController
     }
 
     /**
-     * Returns the extended search form and adds the JS files necessary for extended search.
+     * Adds the fields necessary for extended search.
      *
      * @access private
      *
      * @return void
      */
-    private function addExtendedSearch(): void
+    private function addFieldsForExtendedSearch(): void
     {
         // Quit without doing anything if no fields for extended search are selected.
         if (
@@ -585,8 +581,22 @@ class SearchController extends AbstractController
         $extendedSlotCount = range(0, (int) $this->settings['extendedSlotCount'] - 1);
 
         $this->view->assign('extendedSlotCount', $extendedSlotCount);
-        $this->view->assign('extendedFields', $this->settings['extendedFields']);
         $this->view->assign('operators', ['AND', 'OR', 'NOT']);
         $this->view->assign('searchFields', $searchFields);
+    }
+
+    /**
+     * Enables suggester if setting is set.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function enableSuggester(): void
+    {
+        // Add uHash parameter to suggest parameter to make a basic protection of this form.
+        if ($this->settings['suggest']) {
+            $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
+        }
     }
 }
