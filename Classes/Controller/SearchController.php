@@ -574,7 +574,6 @@ class SearchController extends AbstractController
         $extendedSlotCount = range(0, (int) $this->settings['extendedSlotCount'] - 1);
 
         $this->view->assign('extendedSlotCount', $extendedSlotCount);
-        $this->view->assign('extendedFields', $this->settings['extendedFields']);
         $this->view->assign('operators', ['AND', 'OR', 'NOT']);
         $this->view->assign('searchFields', $searchFields);
     }
