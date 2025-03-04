@@ -84,7 +84,7 @@ class DbDocsCommand extends Command
         $tables = $this->generator->collectTables();
         $page = $this->generator->generatePage($tables);
 
-        file_put_contents($outputPath, $page->render());
+        GeneralUtility::writeFile($outputPath, $page->render());
 
         $io->write("Database documentation written to output file:\n" . $outputPath . "\n");
         return Command::SUCCESS;
