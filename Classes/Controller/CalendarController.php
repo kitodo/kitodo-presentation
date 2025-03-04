@@ -16,6 +16,7 @@ use Generator;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -83,9 +84,9 @@ class CalendarController extends AbstractController
         switch ($type) {
             case 'newspaper':
             case 'ephemera':
-                return $this->redirect('years', null, null, $this->requestData);
+                return new ForwardResponse('years');
             case 'year':
-                return $this->redirect('calendar', null, null, $this->requestData);
+                return new ForwardResponse('calendar');
             case 'issue':
             default:
                 break;
