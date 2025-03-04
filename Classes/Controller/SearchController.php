@@ -115,6 +115,7 @@ class SearchController extends AbstractController
 
         // Get additional fields for extended search.
         $this->addExtendedSearch();
+        $this->enableSuggester();
 
         // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
@@ -217,11 +218,6 @@ class SearchController extends AbstractController
         if (isset($this->requestData['id'])) {
             $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
             $this->view->assign('currentDocument', $currentDocument);
-        }
-
-        // Add uHash parameter to suggest parameter to make a basic protection of this form.
-        if ($this->settings['suggest']) {
-            $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
 
         $this->view->assign('viewData', $this->viewData);
@@ -588,5 +584,20 @@ class SearchController extends AbstractController
         $this->view->assign('extendedFields', $this->settings['extendedFields']);
         $this->view->assign('operators', ['AND', 'OR', 'NOT']);
         $this->view->assign('searchFields', $searchFields);
+    }
+
+    /**
+     * Enables suggester if setting is set.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function enableSuggester(): void
+    {
+        // Add uHash parameter to suggest parameter to make a basic protection of this form.
+        if ($this->settings['suggest']) {
+            $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
+        }
     }
 }
