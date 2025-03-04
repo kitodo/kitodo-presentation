@@ -15,10 +15,10 @@ namespace Kitodo\Dlf\Command\DbDocs;
 use Doctrine\DBAL\Schema\Table;
 use Kitodo\Dlf\Common\Helper;
 use ReflectionClass;
+use ReflectionProperty;
 use TYPO3\CMS\Core\Database\Schema\Parser\Parser;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -83,8 +83,7 @@ class Generator
 
     public function __construct()
     {
-        $this->languageService = GeneralUtility::makeInstance(LanguageServiceFactory::class)
-            ->createFromUserPreferences($GLOBALS['BE_USER']);
+        $this->languageService = GeneralUtility::makeInstance(LanguageService::class);
     }
 
     /**
@@ -123,12 +122,12 @@ class Generator
     public function getTableClassMap(): array
     {
         $dataMapFactory = GeneralUtility::makeInstance(DataMapFactory::class);
-        
+
         // access classes configuration through reflection, which is otherwise not available?
-        $reflectionProperty = new \ReflectionProperty(DataMapFactory::class, 'classesConfiguration');
+        $reflectionProperty = new ReflectionProperty(DataMapFactory::class, 'classesConfiguration');
         $reflectionProperty->setAccessible(true);
         $classesConfiguration = $reflectionProperty->getValue($dataMapFactory);
-        $reflectionProperty = new \ReflectionProperty(ClassesConfiguration::class, 'configuration');
+        $reflectionProperty = new ReflectionProperty(ClassesConfiguration::class, 'configuration');
         $reflectionProperty->setAccessible(true);
         $configuration = $reflectionProperty->getValue($classesConfiguration);
 
@@ -217,8 +216,7 @@ class Generator
                 $text = preg_replace('#\\s*/?[*/]*\\s?(.*)$#', '$1', $line) . "\n";
                 $text = preg_replace('/@var [^ ]+ ?/', '', $text);
                 return trim($text);
-                break;
-            }            
+            }
         }
         return '';
     }

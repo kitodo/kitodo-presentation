@@ -39,7 +39,7 @@ class DbDocsCommand extends Command
 
     protected Generator $generator;
 
-    public function __construct(Generator $generator) 
+    public function __construct(Generator $generator)
     {
         parent::__construct();
 
