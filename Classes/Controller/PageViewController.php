@@ -312,7 +312,7 @@ class PageViewController extends AbstractController
      * @param int|null $docNumber
      * @return array
      */
-    protected function getMeasures(int $page, ?MetsDocument $specificDoc = null, $docNumber = null): array
+    protected function getMeasures(int $page, ?MetsDocument $specificDoc = null, ?int $docNumber = null): array
     {
         if ($specificDoc) {
             $doc = $specificDoc;
