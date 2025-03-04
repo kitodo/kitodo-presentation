@@ -20,10 +20,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\ActionLog``
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    crdate  *integer*
      :description:              
@@ -63,10 +63,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Basket``
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -115,10 +115,10 @@ Domain model of the 'Collection'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -173,6 +173,8 @@ Domain model of the 'Collection'.
 
    - :field:                    thumbnail  *string*
      :description:              *Thumbnail*
+                                
+                                thumbnail
 
    - :field:                    priority  *smallint*
      :description:              *Priority*
@@ -203,10 +205,10 @@ Domain model of the 'Document'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              *Last Modified*
@@ -342,10 +344,10 @@ For more information, see the documentation page on metadata.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -361,15 +363,23 @@ For more information, see the documentation page on metadata.
 
    - :field:                    type  *string*
      :description:              *Format Name (e.g. in METS)*
+                                
+                                Name of the type that is used to reference it.
 
    - :field:                    root  *string*
      :description:              *Root Element*
+                                
+                                The XML root element used by this format.
 
    - :field:                    namespace  *string*
      :description:              *Namespace URI*
+                                
+                                The XML namespace URI used by this format.
 
    - :field:                    class  *string*
      :description:              *Class Name*
+                                
+                                Fully qualified name of the PHP class that handles the format, or the empty string if no such class is configured.
 
 
 
@@ -395,10 +405,10 @@ A library institution with the following use cases:
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -435,15 +445,23 @@ A library institution with the following use cases:
 
    - :field:                    contact  *string*
      :description:              *Contact*
+                                
+                                Contact email address of the library (used as ``adminEmail`` in responses to OAI ``Identify`` requests).
 
    - :field:                    image  *string*
      :description:              *Logo*
+                                
+                                image
 
    - :field:                    oai_label  *string*
      :description:              *Open Archives Interface (OAI) Label*
+                                
+                                The label that is used as ``repositoryName`` in responses to OAI ``Identify`` requests
 
    - :field:                    oai_base  *string*
      :description:              *Open Archives Interface (OAI) Base URL*
+                                
+                                OAI base URL used when harvesting the library via ``kitodo:harvest``.
 
    - :field:                    opac_label  *string*
      :description:              *Online Public Access Catalog (OPAC) Label*
@@ -474,10 +492,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Mail``
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    deleted  *smallint*
      :description:              
@@ -511,10 +529,10 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -544,7 +562,7 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
      :description:              *Hide*
 
    - :field:                    sorting  *integer*
-     :description:              
+     :description:              Order (relative position) of this entry in metadata plugin and backend list.
 
    - :field:                    label  *string*
      :description:              *Display Label*
@@ -554,6 +572,8 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
 
    - :field:                    format  *integer*
      :description:              *Data Format*
+                                
+                                The formats that encode this metadata (local IRRE field to ``tx_dlf_metadataformat``).
 
    - :field:                    default_value  *string*
      :description:              *Default Value*
@@ -611,10 +631,10 @@ This contains the xpath expressions on the model 'Metadata'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -632,24 +652,28 @@ This contains the xpath expressions on the model 'Metadata'.
      :description:              
 
    - :field:                    parent_id  *integer*
-     :description:              
+     :description:              UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
 
    - :field:                    encoded  *integer*
      :description:              *Encoding*
+                                
+                                UID of the ``tx_dlf_format`` in which this metadata entry is encoded.
 
    - :field:                    xpath  *string*
      :description:              *XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object)*
+                                
+                                XPath/JSONPath expression to extract the metadata (relative to the data format root).
 
    - :field:                    xpath_sorting  *string*
      :description:              *XPath / JSONPath for sorting (optional)*
+                                
+                                XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadata.
 
    - :field:                    subentries  *integer*
-     :description:              Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry.
+     :description:              
 
    - :field:                    mandatory  *smallint*
      :description:              *Mandatory field?*
-                                
-                                Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
 
 
 
@@ -674,10 +698,10 @@ This contains the xpath expressions on the model 'Metadata'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    parent_id  *integer*
      :description:              
@@ -711,9 +735,6 @@ This contains the xpath expressions on the model 'Metadata'.
 
    - :field:                    xpath  *string*
      :description:              *XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object)*
-                                
-                                XPath/JSONPath expression to extract the metadatum (relative to the data format root).
-                                TODO
 
    - :field:                    default_value  *string*
      :description:              *Default Value*
@@ -738,10 +759,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Printer``
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    deleted  *smallint*
      :description:              
@@ -806,7 +827,7 @@ In particular, this holds the index name of the used Solr core.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
      :description:              
@@ -825,9 +846,13 @@ In particular, this holds the index name of the used Solr core.
 
    - :field:                    label  *string*
      :description:              *Display Label*
+                                
+                                Label of the core that is displayed in the backend.
 
    - :field:                    index_name  *string*
      :description:              *Solr Core*
+                                
+                                The actual name of the Solr core.
 
 
 
@@ -846,10 +871,10 @@ Domain model of 'Structure'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -913,22 +938,22 @@ Resumption tokens for OAI-PMH interface.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              Timestamp of the token used to determine if it has expired.
 
    - :field:                    token  *string*
-     :description:              
+     :description:              The resumption token string.
 
    - :field:                    options  *text*
-     :description:              
+     :description:              Data that is used to resume the previous request.
 
    - :field:                    ident  *string*
-     :description:              
+     :description:              Originally an identifier for the kind of token ('oai'). Not used at the moment.
 
 
 

@@ -18,6 +18,7 @@ use ReflectionClass;
 use TYPO3\CMS\Core\Database\Schema\Parser\Parser;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -57,14 +58,6 @@ class Generator
     protected $configurationManager;
 
     /**
-     * @param LanguageService $languageService
-     */
-    public function injectLanguageService(LanguageService $languageService)
-    {
-        $this->languageService = $languageService;
-    }
-
-    /**
      * @param DataMapper $dataMapper
      */
     public function injectDataMapper(DataMapper $dataMapper)
@@ -90,6 +83,8 @@ class Generator
 
     public function __construct()
     {
+        $this->languageService = GeneralUtility::makeInstance(LanguageServiceFactory::class)
+            ->createFromUserPreferences($GLOBALS['BE_USER']);
     }
 
     /**
@@ -202,7 +197,7 @@ class Generator
                     : $column->getColumnName();
 
                 if (isset($result->columns[$columnName])) {
-                    $result->columns[$columnName]->fieldComment = $this->parseDocComment($property->getDocComment());
+                    $result->columns[$columnName]->fieldComment = $this->parsePropertyDocComment($property->getDocComment());
                 }
             }
 
@@ -211,6 +206,21 @@ class Generator
         }
 
         return $result;
+    }
+
+    protected function parsePropertyDocComment($docComment)
+    {
+        $lines = explode("\n", $docComment);
+        foreach ($lines as $line) {
+            // extract text from @var line
+            if ($line !== '' && strpos($line, '@var') !== false) {
+                $text = preg_replace('#\\s*/?[*/]*\\s?(.*)$#', '$1', $line) . "\n";
+                $text = preg_replace('/@var [^ ]+ ?/', '', $text);
+                return trim($text);
+                break;
+            }            
+        }
+        return '';
     }
 
     protected function parseDocComment($docComment)
