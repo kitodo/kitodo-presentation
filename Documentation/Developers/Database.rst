@@ -9,6 +9,10 @@ This is a reference of all database tables defined by Kitodo.Presentation.
 tx_dlf_actionlog: Action protocol
 =================================
 
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\ActionLog``
+
+(Basket Plugin) Action log for mails and printouts.
+
 .. t3-field-list-table::
    :header-rows: 1
 
@@ -47,6 +51,10 @@ tx_dlf_actionlog: Action protocol
 
 tx_dlf_basket: Basket
 =====================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Basket``
+
+(Basket Plugin) A basket that is bound to a frontend session.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -95,6 +103,10 @@ tx_dlf_basket: Basket
 
 tx_dlf_collections: Collections
 ===============================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Collection``
+
+Domain model of the 'Collection'.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -179,6 +191,10 @@ tx_dlf_collections: Collections
 
 tx_dlf_documents: Documents
 ===========================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Document``
+
+Domain model of the 'Document'.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -309,6 +325,16 @@ tx_dlf_documents: Documents
 tx_dlf_formats: Data Formats
 ============================
 
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Format``
+
+Configured data formats and namespaces like MODS, ALTO, IIIF etc.
+They are referenced by ``tx_dlf_metadataformat.encoded``.
+The formats OAI, METS and XLINK are pre-defined.
+
+Data formats are modeled after XML, though JSON may be used with a pseudo root and namespace.
+
+For more information, see the documentation page on metadata.
+
 .. t3-field-list-table::
    :header-rows: 1
 
@@ -350,6 +376,17 @@ tx_dlf_formats: Data Formats
 
 tx_dlf_libraries: Libraries
 ===========================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Library``
+
+A library institution with the following use cases:
+
+- Each ``tx_dlf_document`` is *owned* by exactly one ``tx_dlf_library``. The
+  owner is set on indexing, and it is shown in the metadata plugin. If no
+  library is configured, the fallback library is named 'default'.
+
+- The OAI-PMH plugin has a configuration option ``library`` that is used to
+  identify the OAI repository.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -426,6 +463,10 @@ tx_dlf_libraries: Libraries
 tx_dlf_mail: Email
 ==================
 
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Mail``
+
+(Basket Plugin) Recipient mail addresses for sending documents.
+
 .. t3-field-list-table::
    :header-rows: 1
 
@@ -458,6 +499,10 @@ tx_dlf_mail: Email
 
 tx_dlf_metadata: Metadata
 =========================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Metadata``
+
+A metadata kind (title, year, ...) and its configuration for display and indexing.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -549,6 +594,16 @@ tx_dlf_metadata: Metadata
 tx_dlf_metadataformat: Metadata Format
 ======================================
 
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\MetadataFormat``
+
+This specifies a way how a metadata (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
+
+For instance, the title of a document may be obtained from either the MODS
+title field, or from the TEIHDR caption. This is modeled as two ``tx_dlf_metadaformat``
+that refer to the same ``tx_dlf_metadata`` but different ``tx_dlf_format``.
+
+This contains the xpath expressions on the model 'Metadata'.
+
 .. t3-field-list-table::
    :header-rows: 1
 
@@ -589,16 +644,28 @@ tx_dlf_metadataformat: Metadata Format
      :description:              *XPath / JSONPath for sorting (optional)*
 
    - :field:                    subentries  *integer*
-     :description:              
+     :description:              Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry.
 
    - :field:                    mandatory  *smallint*
      :description:              *Mandatory field?*
+                                
+                                Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
 
 
 
 
 tx_dlf_metadatasubentries: Metadata
 ===================================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\MetadataSubentry``
+
+This specifies a way how a metadatum (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
+
+For instance, the title of a document may be obtained from either the MODS
+title field, or from the TEIHDR caption. This is modeled as two ``tx_dlf_metadaformat``
+that refer to the same ``tx_dlf_metadata`` but different ``tx_dlf_format``.
+
+This contains the xpath expressions on the model 'Metadata'.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -644,6 +711,9 @@ tx_dlf_metadatasubentries: Metadata
 
    - :field:                    xpath  *string*
      :description:              *XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object)*
+                                
+                                XPath/JSONPath expression to extract the metadatum (relative to the data format root).
+                                TODO
 
    - :field:                    default_value  *string*
      :description:              *Default Value*
@@ -656,6 +726,10 @@ tx_dlf_metadatasubentries: Metadata
 
 tx_dlf_printer: Printer
 =======================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Printer``
+
+(Basket Plugin) External printers for sending documents.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -719,6 +793,12 @@ Pivot table for many-to-many relations between tables. In particular, this is us
 tx_dlf_solrcores: Solr Cores
 ============================
 
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\SolrCore``
+
+Cores on the application-wide Solr instance that are available for indexing.
+They may be used, for example, as a parameter to the CLI indexing commands, and are referenced by ``tx_dlf_document.solrcore``.
+In particular, this holds the index name of the used Solr core.
+
 .. t3-field-list-table::
    :header-rows: 1
 
@@ -754,6 +834,10 @@ tx_dlf_solrcores: Solr Cores
 
 tx_dlf_structures: Structures
 =============================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Structure``
+
+Domain model of 'Structure'.
 
 .. t3-field-list-table::
    :header-rows: 1
@@ -817,6 +901,10 @@ tx_dlf_structures: Structures
 
 tx_dlf_tokens: Tokens
 =====================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\Token``
+
+Resumption tokens for OAI-PMH interface.
 
 .. t3-field-list-table::
    :header-rows: 1

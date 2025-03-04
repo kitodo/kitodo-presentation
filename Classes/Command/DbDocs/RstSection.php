@@ -55,7 +55,7 @@ class RstSection
 
     public function subsection()
     {
-        $section = new static();
+        $section = new self();
         $this->subsections[] = $section;
         return $section;
     }

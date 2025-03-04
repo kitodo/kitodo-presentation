@@ -21,6 +21,9 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
+use TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 
 /**
@@ -87,7 +90,6 @@ class Generator
 
     public function __construct()
     {
-
     }
 
     /**
@@ -125,12 +127,19 @@ class Generator
      */
     public function getTableClassMap(): array
     {
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $dataMapFactory = GeneralUtility::makeInstance(DataMapFactory::class);
+        
+        // access classes configuration through reflection, which is otherwise not available?
+        $reflectionProperty = new \ReflectionProperty(DataMapFactory::class, 'classesConfiguration');
+        $reflectionProperty->setAccessible(true);
+        $classesConfiguration = $reflectionProperty->getValue($dataMapFactory);
+        $reflectionProperty = new \ReflectionProperty(ClassesConfiguration::class, 'configuration');
+        $reflectionProperty->setAccessible(true);
+        $configuration = $reflectionProperty->getValue($classesConfiguration);
 
         $result = [];
-
-        foreach ($frameworkConfiguration['persistence']['classes'] as $className => $tableConf) {
-            $tableName = $tableConf['mapping']['tableName'];
+        foreach ($configuration as $className => $tableConf) {
+            $tableName = $tableConf['tableName'];
             $result[$tableName] = $className;
         }
 

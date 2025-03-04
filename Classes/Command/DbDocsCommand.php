@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
- * CLI Command for generating the reStructuredText file containing documentation 
+ * CLI Command for generating the reStructuredText file containing documentation
  * about the database schema.
  *
  * @package TYPO3
@@ -39,12 +39,11 @@ class DbDocsCommand extends Command
 
     protected Generator $generator;
 
-    public function __construct(
-        Generator $generator
-    ) {
+    public function __construct(Generator $generator) 
+    {
         parent::__construct();
 
-       $this->generator = $generator;
+        $this->generator = $generator;
     }
 
     /**
@@ -82,15 +81,12 @@ class DbDocsCommand extends Command
             $outputPath = $input->getArgument('outputPath');
         }
 
-        // $generator = GeneralUtility::makeInstance(\Kitodo\Dlf\Command\DbDocs\Generator::class);
         $tables = $this->generator->collectTables();
         $page = $this->generator->generatePage($tables);
-        // file_put_contents($outputPath, $page->render());
 
         file_put_contents($outputPath, $page->render());
-    
+
         $io->write("Database documentation written to output file:\n" . $outputPath . "\n");
         return Command::SUCCESS;
     }
-    
 }
