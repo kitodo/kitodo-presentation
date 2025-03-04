@@ -249,13 +249,13 @@ class SearchController extends AbstractController
     /**
      * This builds a menu array for HMENU
      *
-     * @access public
+     * @access private
      *
      * @param array $facets
      *
      * @return array HMENU array
      */
-    public function makeFacetsMenuArray(array $facets): array
+    private function makeFacetsMenuArray(array $facets): array
     {
         // Set default value for facet search.
         $search = [
