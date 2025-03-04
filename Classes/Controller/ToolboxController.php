@@ -13,9 +13,14 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Middleware\Embedded3dViewer;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Controller class for plugin 'Toolbox'.
@@ -101,12 +106,21 @@ class ToolboxController extends AbstractController
                     case 'pdfdownloadtool':
                         $this->renderToolByName('renderPdfDownloadTool');
                         break;
+                    case 'tx_dlf_scoredownloadtool':
+                    case 'scoredownloadtool':
+                        $this->renderToolByName('renderScoreDownloadTool');
+                        break;
                     case 'tx_dlf_searchindocumenttool':
                     case 'searchindocumenttool':
                         $this->renderToolByName('renderSearchInDocumentTool');
                         break;
+                    case 'plugin.tx_dlf_scoretool':
                     case 'scoretool':
                         $this->renderToolByName('renderScoreTool');
+                        break;
+                    case 'tx_dlf_viewerselectiontool':
+                    case 'viewerselectiontool':
+                        $this->renderToolByName('renderViewerSelectionTool');
                         break;
                     default:
                         $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
@@ -131,6 +145,54 @@ class ToolboxController extends AbstractController
     }
 
     /**
+     * Get the URL of the model.
+     *
+     * Gets the URL of the model by parameter or from the configured file group of the document.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function getModelUrl(): string
+    {
+        $modelUrl = '';
+        if (!empty($this->requestData['model'])) {
+            $modelUrl = $this->requestData['model'];
+        } elseif (!($this->isDocMissingOrEmpty() || empty($this->useGroupsConfiguration->getModel()))) {
+            $this->setPage();
+            if (isset($this->requestData['page'])) {
+                $file = $this->getFile($this->requestData['page'], $this->useGroupsConfiguration->getModel());
+                $modelUrl = $file['url'] ?? '';
+            }
+        }
+        return $modelUrl;
+    }
+
+    /**
+     * Get the score file.
+     *
+     * @return string
+     */
+    private function getScoreFile(): string
+    {
+        $scoreFile = '';
+        if ($this->requestData['page']) {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
+        } else {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
+        }
+
+        $useGroups = $this->useGroupsConfiguration->getScore();
+        foreach ($useGroups as $useGroup) {
+            $files = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'];
+            if (array_key_exists($useGroup, $files)) {
+                $scoreFile = $files[$useGroup];
+            }
+        }
+        return $scoreFile;
+    }
+
+    /**
      * Get image's URL and MIME type information's.
      *
      * @access private
@@ -145,7 +207,11 @@ class ToolboxController extends AbstractController
         $image = $this->getFile($page, $this->useGroupsConfiguration->getImage());
         if (isset($image['mimetype'])) {
             $fileExtension = Helper::getFileExtensionsForMimeType($image['mimetype']);
-            $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
+            if ($image['mimetype'] == 'image/jpg') {
+                $image['mimetypeLabel'] = ' (JPG)'; // "image/jpg" is not a valid MIME type, so we need to handle it separately.
+            } else {
+                $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
+            }
         }
         return $image;
     }
@@ -239,24 +305,7 @@ class ToolboxController extends AbstractController
             return;
         }
 
-        if ($this->requestData['page']) {
-            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
-        } else {
-            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
-        }
-
-        $useGroups = $this->useGroupsConfiguration->getScore();
-        foreach ($useGroups as $useGroup) {
-            if ($this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$useGroup]) {
-                $scoreFile = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'][$useGroup];
-            }
-        }
-        if (!empty($scoreFile)) {
-            $this->view->assign('score', true);
-            $this->view->assign('activateScoreInitially', MathUtility::forceIntegerInRange($this->settings['activateScoreInitially'], 0, 1, 0));
-        } else {
-            $this->view->assign('score', false);
-        }
+        $this->view->assign('score', !empty($this->getScoreFile()));
     }
 
     /**
@@ -283,13 +332,13 @@ class ToolboxController extends AbstractController
         $imageArray = [];
         // Get left or single page download.
         $image = $this->getImage($page);
-        if (Helper::filterFilesByMimeType($image, ['image'])) {
+        if (Helper::filterFilesByMimeType($image, ['image'], true)) {
             $imageArray[0] = $image;
         }
 
         if ($this->requestData['double'] == 1) {
             $image = $this->getImage($page + 1);
-            if (Helper::filterFilesByMimeType($image, ['image'])) {
+            if (Helper::filterFilesByMimeType($image, ['image'], true)) {
                 $imageArray[1] = $image;
             }
         }
@@ -354,19 +403,55 @@ class ToolboxController extends AbstractController
      */
     private function renderModelDownloadTool(): void
     {
-        // TODO: missing fileGrpsModelDownload, should be added to ext config as useGroupsModelDownload
-        if (
-            $this->isDocMissingOrEmpty()
-            || empty($this->settings['fileGrpsModelDownload'])
-        ) {
-            // Quit without doing anything if required variables are not set.
+        $modelUrl = $this->getModelUrl();
+        if ($modelUrl === '') {
+            $this->logger->debug("Model URL could not be determined");
+            return;
+        }
+        $this->view->assign('modelUrl', $modelUrl);
+    }
+
+
+    /**
+     * Renders the viewer selection tool
+     * Renders the viewer selection tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     * @throws InsufficientFolderAccessPermissionsException
+     */
+    private function renderViewerSelectionTool(): void
+    {
+        $model = $this->getModelUrl();
+        if (!$model) {
+            $this->logger->debug("Model URL could not be determined");
             return;
         }
 
-        $this->setPage();
-
-        if (isset($this->requestData['page'])) {
-            $this->view->assign('modelDownload', $this->getFile($this->requestData['page'], GeneralUtility::trimExplode(',', $this->settings['fileGrpsModelDownload'])));
+        $pathInfo = PathUtility::pathinfo($model);
+        $modelFormat = strtolower($pathInfo["extension"]);
+        $viewers = [];
+        /** @var StorageRepository $storageRepository */
+        $storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
+        $defaultStorage = $storageRepository->getDefaultStorage();
+        if ($defaultStorage->hasFolder(Embedded3dViewer::VIEWER_FOLDER)) {
+            $viewerFolders = $defaultStorage->getFoldersInFolder($defaultStorage->getFolder(Embedded3dViewer::VIEWER_FOLDER));
+            if (count($viewerFolders) > 0) {
+                /** @var YamlFileLoader $yamlFileLoader */
+                $yamlFileLoader = GeneralUtility::makeInstance(YamlFileLoader::class);
+                foreach ($viewerFolders as $viewerFolder) {
+                    if ($viewerFolder->hasFile(Embedded3dViewer::VIEWER_CONFIG_YML)) {
+                        $fileIdentifier = $viewerFolder->getFile(Embedded3dViewer::VIEWER_CONFIG_YML)->getIdentifier();
+                        $viewerConfig = $yamlFileLoader->load($defaultStorage->getName() . $fileIdentifier)["viewer"];
+                        if (!empty($viewerConfig["supportedModelFormats"]) && in_array($modelFormat, array_map('strtolower', $viewerConfig["supportedModelFormats"]))) {
+                            $viewers[] = (object) ['id' => $viewerFolder->getName(), 'name' => $viewerConfig["name"] ?? $viewerFolder->getName()];
+                        }
+                    }
+                }
+                $this->view->assign('viewers', $viewers);
+            }
         }
     }
 
@@ -394,6 +479,8 @@ class ToolboxController extends AbstractController
         $this->view->assign('pageLinks', $this->getPageLink());
         // Get work download.
         $this->view->assign('workLink', $this->getWorkLink());
+
+        $this->view->assign('scoreLinks', !empty($this->getScoreFile()));
     }
 
     /**
@@ -416,7 +503,11 @@ class ToolboxController extends AbstractController
             if (!empty($firstFileGroupDownload)) {
                 $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
                 // Get second page, too, if double page view is activated.
-                $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber + 1]]['files'][$useGroup];
+                $nextPage = $pageNumber + 1;
+                $secondFileGroupDownload = '';
+                if ( array_key_exists($nextPage, $this->currentDocument->physicalStructure) ) {
+                    $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$nextPage]]['files'][$useGroup];
+                }
                 if (
                     $this->requestData['double']
                     && $pageNumber < $this->currentDocument->numPages

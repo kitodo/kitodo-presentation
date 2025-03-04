@@ -445,6 +445,14 @@
 				<source><![CDATA[Saturation]]></source>
 				<target><![CDATA[Sättigung]]></target>
 			</trans-unit>
+			<trans-unit id="tools.score" approved="yes">
+				<source><![CDATA[Score]]></source>
+				<target><![CDATA[Partitur]]></target>
+			</trans-unit>
+			<trans-unit id="tools.score.player" approved="yes">
+				<source><![CDATA[MIDI player]]></source>
+				<target><![CDATA[MIDI-Player ]]></target>
+			</trans-unit>
 			<trans-unit id="tools.searchindocument.deleteSearch" approved="yes">
 				<source><![CDATA[Delete Search]]></source>
 				<target><![CDATA[Suche löschen]]></target>
@@ -468,6 +476,10 @@
 			<trans-unit id="tools.searchindocument.searchInDocument" approved="yes">
 				<source><![CDATA[Search in document]]></source>
 				<target><![CDATA[Im Dokument suchen]]></target>
+			</trans-unit>
+			<trans-unit id="tools.viewerselection.default" approved="yes">
+				<source><![CDATA[Default]]></source>
+				<target><![CDATA[Standard]]></target>
 			</trans-unit>
 			<trans-unit id="volume" approved="yes">
 				<source><![CDATA[volume]]></source>

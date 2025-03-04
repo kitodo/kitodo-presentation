@@ -701,6 +701,10 @@
 				<target>Audio Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Audiodateien nach absteigender Priorität sortiert (Standard ist "AUDIO")</target>
 				<source>Audio file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
 			</trans-unit>
+			<trans-unit id="config.files.useGroupsModel">
+				<target>Modell Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Modelldateien nach absteigender Priorität sortiert (Standard ist "DEFAULT")</target>
+				<source>Model file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DEFAULT")</source>
+			</trans-unit>
 			<trans-unit id="config.iiif.indexAnnotations">
 				<target>IIIF-Annotationen mit Motivation "painting" als Volltext behandeln?: Als Volltext behandelte Annotationen werden im Suchid idiert (Standard ist "FALSE")</target>
 				<source>Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are ided (default is "FALSE")</source>

@@ -56,7 +56,8 @@ class UseGroupsConfiguration
             'useGroupsDownload',
             'useGroupsFulltext',
             'useGroupsAudio',
-            'useGroupsScore'
+            'useGroupsScore',
+            'useGroupsModel'
         ];
 
         foreach ($configKeys as $key) {
@@ -128,6 +129,18 @@ class UseGroupsConfiguration
     public function getImage(): array
     {
         return $this->getByType('Image');
+    }
+
+    /**
+     * Get the configuration for 'Model' use groups type.
+     *
+     * @access public
+     *
+     * @return array
+     */
+    public function getModel(): array
+    {
+        return $this->getByType('Model');
     }
 
     /**
