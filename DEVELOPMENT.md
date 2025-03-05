@@ -119,7 +119,7 @@ Generate the database reference table:
 
 ```bash
 composer install
-composer docs:db
+typo3 kitodo:dbdocs
 ```
 
 ### Troubleshooting

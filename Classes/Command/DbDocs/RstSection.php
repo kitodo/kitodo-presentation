@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\DbDocs;
+namespace Kitodo\Dlf\Command\DbDocs;
 
 /**
  * Simple utility to write .rst (reStructuredText).
@@ -55,7 +55,7 @@ class RstSection
 
     public function subsection()
     {
-        $section = new static();
+        $section = new self();
         $this->subsections[] = $section;
         return $section;
     }

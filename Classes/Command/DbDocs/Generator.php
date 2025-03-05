@@ -10,17 +10,21 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\DbDocs;
+namespace Kitodo\Dlf\Command\DbDocs;
 
 use Doctrine\DBAL\Schema\Table;
 use Kitodo\Dlf\Common\Helper;
 use ReflectionClass;
+use ReflectionProperty;
 use TYPO3\CMS\Core\Database\Schema\Parser\Parser;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
+use TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 
 /**
@@ -54,14 +58,6 @@ class Generator
     protected $configurationManager;
 
     /**
-     * @param LanguageService $languageService
-     */
-    public function injectLanguageService(LanguageService $languageService)
-    {
-        $this->languageService = $languageService;
-    }
-
-    /**
      * @param DataMapper $dataMapper
      */
     public function injectDataMapper(DataMapper $dataMapper)
@@ -72,7 +68,7 @@ class Generator
     /**
      * @param SqlReader $sqlReader
      */
-    public function injectSqlReader(DataMapper $sqlReader)
+    public function injectSqlReader(SqlReader $sqlReader)
     {
         $this->sqlReader = $sqlReader;
     }
@@ -87,7 +83,7 @@ class Generator
 
     public function __construct()
     {
-
+        $this->languageService = GeneralUtility::makeInstance(LanguageService::class);
     }
 
     /**
@@ -125,12 +121,19 @@ class Generator
      */
     public function getTableClassMap(): array
     {
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $dataMapFactory = GeneralUtility::makeInstance(DataMapFactory::class);
+
+        // access classes configuration through reflection, which is otherwise not available?
+        $reflectionProperty = new ReflectionProperty(DataMapFactory::class, 'classesConfiguration');
+        $reflectionProperty->setAccessible(true);
+        $classesConfiguration = $reflectionProperty->getValue($dataMapFactory);
+        $reflectionProperty = new ReflectionProperty(ClassesConfiguration::class, 'configuration');
+        $reflectionProperty->setAccessible(true);
+        $configuration = $reflectionProperty->getValue($classesConfiguration);
 
         $result = [];
-
-        foreach ($frameworkConfiguration['persistence']['classes'] as $className => $tableConf) {
-            $tableName = $tableConf['mapping']['tableName'];
+        foreach ($configuration as $className => $tableConf) {
+            $tableName = $tableConf['tableName'];
             $result[$tableName] = $className;
         }
 
@@ -193,7 +196,7 @@ class Generator
                     : $column->getColumnName();
 
                 if (isset($result->columns[$columnName])) {
-                    $result->columns[$columnName]->fieldComment = $this->parseDocComment($property->getDocComment());
+                    $result->columns[$columnName]->fieldComment = $this->parsePropertyDocComment($property->getDocComment());
                 }
             }
 
@@ -202,6 +205,20 @@ class Generator
         }
 
         return $result;
+    }
+
+    protected function parsePropertyDocComment($docComment)
+    {
+        $lines = explode("\n", $docComment);
+        foreach ($lines as $line) {
+            // extract text from @var line
+            if ($line !== '' && strpos($line, '@var') !== false) {
+                $text = preg_replace('#\\s*/?[*/]*\\s?(.*)$#', '$1', $line) . "\n";
+                $text = preg_replace('/@var [^ ]+ ?/', '', $text);
+                return trim($text);
+            }
+        }
+        return '';
     }
 
     protected function parseDocComment($docComment)
@@ -237,7 +254,7 @@ class Generator
         $page->addText(<<<RST
 This is a reference of all database tables defined by Kitodo.Presentation.
 
-.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``composer docs:db`` inside the Kitodo.Presentation base folder.
+.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``typo3 kitodo:dbdocs`` inside the Kitodo.Presentation base folder.
 RST);
 
         // Sort tables alphabetically
