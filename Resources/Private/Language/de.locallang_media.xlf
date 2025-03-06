@@ -321,9 +321,9 @@
 				<source><![CDATA[{key}]]></source>
 				<target><![CDATA[{key}]]></target>
 			</trans-unit>
-			<trans-unit id="key. " approved="yes">
+			<trans-unit id="key.Space" approved="yes">
 				<source><![CDATA[Space Bar]]></source>
-				<target><![CDATA[     ]]></target>
+				<target><![CDATA[Leertaste]]></target>
 			</trans-unit>
 			<trans-unit id="key.ArrowDown" approved="yes">
 				<source><![CDATA[▼]]></source>

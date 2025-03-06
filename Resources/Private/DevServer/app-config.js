@@ -82,7 +82,7 @@ var lang = {
       "error.mastodon.invalid_link": "Invalid Link URL.",
       "error.mastodon.enter_url": "Please enter a Mastodon instance URL.",
       "key.generic": "{key}",
-      "key. ": "Space Bar",
+      "key.Space": "Space Bar",
       "key.ArrowDown": "\u25bc",
       "key.ArrowLeft": "\u25c0",
       "key.ArrowRight": "\u25b6",

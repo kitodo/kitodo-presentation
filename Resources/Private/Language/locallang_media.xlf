@@ -242,7 +242,7 @@
 			<trans-unit id="key.generic">
 				<source><![CDATA[{key}]]></source>
 			</trans-unit>
-			<trans-unit id="key. ">
+			<trans-unit id="key.Space">
 				<source><![CDATA[Space Bar]]></source>
 			</trans-unit>
 			<trans-unit id="key.ArrowDown">

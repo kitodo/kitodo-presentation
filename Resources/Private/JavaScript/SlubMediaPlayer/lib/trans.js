@@ -12,6 +12,11 @@ import { Keybinding$splitKeyRanges } from 'lib/Keyboard';
  * @returns {string}
  */
 export function getKeyText(env, key, mod) {
+  // Space Bar is a special case
+  if (key === ' ') {
+    key = 'Space';
+  }
+
   const app = mod ? '.mod' : '';
   return env.t(`key.${key}${app}`, {},
     () => env.t(`key.${key}`, {},
