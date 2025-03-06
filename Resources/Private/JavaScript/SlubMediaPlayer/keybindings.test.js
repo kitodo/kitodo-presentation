@@ -16,6 +16,7 @@ describe('format translated key description', () => {
     locale: 'en_US',
     twoLetterIsoCode: 'en',
     phrases: {
+      'key.Space': 'Space Bar',
       'key.ArrowRight': "Arrow Right",
       'key.generic': "Key {key}",
       'key.generic.mod': "{key}",
@@ -24,6 +25,15 @@ describe('format translated key description', () => {
       'key.unto': " to ",
       'key.unto.mod': "-",
     },
+  });
+
+  test('space bar translation', () => {
+    const kb = keybindings.find(kb =>
+      kb.action === 'playback.toggle' &&
+      kb.keys.includes(' ')
+    );
+    const text = getKeybindingText(env, /** @type {any} */(kb));
+    expect(text.innerHTML).toBe('<kbd>Space Bar</kbd>');
   });
 
   test('key S for opening screenshot modal', () => {
