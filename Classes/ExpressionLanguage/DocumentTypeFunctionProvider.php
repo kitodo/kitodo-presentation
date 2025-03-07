@@ -106,7 +106,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             {
                 /** @var RequestWrapper $requestWrapper */
                 $requestWrapper = $arguments['request'];
-                $queryParams = $requestWrapper->getQueryParams();
+                $queryParams = $requestWrapper ? $requestWrapper->getQueryParams() : [];
 
                 $type = 'undefined';
 
