@@ -970,7 +970,7 @@ class Helper
         // Retrieves MIME types from the TYPO3 Core MimeTypeCollection
         $mimeTypeCollection = GeneralUtility::makeInstance(MimeTypeCollection::class);
         $allowedMimeTypes = array_filter(
-            (array) $mimeTypeCollection->getMimeTypes(),
+            $mimeTypeCollection->getMimeTypes(),
             function ($mimeType) use ($allowedCategories) {
                 foreach ($allowedCategories as $category) {
                     if (strpos($mimeType, $category . '/') === 0) {
