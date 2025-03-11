@@ -120,14 +120,14 @@ class BasketController extends AbstractController
         $basket = $this->getBasketData();
 
         // action remove from basket
-        if ($this->requestData['basket_action'] === 'remove') {
+        if (($this->requestData['basket_action'] ?? '') === 'remove') {
             // remove entry from list
             if (isset($this->requestData['selected'])) {
                 $basket = $this->removeFromBasket($this->requestData, $basket);
             }
         }
         // action remove from basket
-        if ($this->requestData['basket_action'] == 'download') {
+        if (($this->requestData['basket_action'] ?? '') == 'download') {
             // open selected documents
             if (isset($this->requestData['selected'])) {
                 $pdfUrl = $this->settings['pdfgenerate'];
@@ -141,14 +141,14 @@ class BasketController extends AbstractController
             }
         }
         // action print from basket
-        if ($this->requestData['print_action']) {
+        if ($this->requestData['print_action'] ?? false) {
             // open selected documents
             if (isset($this->requestData['selected'])) {
                 $this->printDocument();
             }
         }
         // action send mail
-        if ($this->requestData['mail_action']) {
+        if ($this->requestData['mail_action'] ?? false) {
             if (isset($this->requestData['selected'])) {
                 $this->sendMail();
             }
@@ -337,7 +337,7 @@ class BasketController extends AbstractController
             // replace url param placeholder
             // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
             // @phpstan-ignore-next-line
-            $urlParams = str_replace("##page##", (int) $data['page'], $this->settings['pdfparams']);
+            $urlParams = str_replace("##page##", (int)($data['page'] ?? ''), $this->settings['pdfparams']);
             $urlParams = str_replace("##docId##", $this->document->getRecordId(), $urlParams);
             // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
             // @phpstan-ignore-next-line
