@@ -370,11 +370,11 @@ export default class WaveForm extends DlfMediaPlugin {
       return;
     }
 
-    const { sample_rate, seconds_per_pixel, duration } = this.waveformdata;
+    const { sampleRate, secondsPerPixel, duration } = this.waveformdata;
 
-    this.minSamplesPerPixel = seconds_per_pixel * sample_rate;
+    this.minSamplesPerPixel = secondsPerPixel * sampleRate;
     this.maxSamplesPerPixel = clamp(
-      duration * sample_rate / this.$waveOverview.offsetWidth,
+      duration * sampleRate / this.$waveOverview.offsetWidth,
       [this.minSamplesPerPixel, Number.POSITIVE_INFINITY]
     );
 
