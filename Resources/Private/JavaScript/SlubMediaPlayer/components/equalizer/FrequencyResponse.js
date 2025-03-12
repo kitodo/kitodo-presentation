@@ -56,7 +56,7 @@ export default class FrequencyResponse {
         // Manual IIR filter
         // https://www.earlevel.com/main/2016/12/01/evaluating-filter-frequency-response/
         for (let i = 0; i < this.frequencies_.length; i++) {
-          const f = /** @type {number} */(this.frequencies_[i])
+          const f = /** @type {number} */(this.frequencies_[i]);
           const w = 2 * Math.PI * f / node.sampleRate;
 
           const [nom_real, nom_imag] = this.fft(node.feedforward, w);
