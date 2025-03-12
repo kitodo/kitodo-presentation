@@ -1,8 +1,37 @@
-@import "../../../../slub_digitalcollections/Resources/Private/Less/Helper/Variables.less";
+/*
+ *
+ * Variables
+ * taken from slub_digitalcollections
+ * ================================================
+ * Value settings for type, breakpoints and
+ * base settings for calculations
+ *
+ * Author: Thomas Jung <thomas@jung.digital>
+ *
+ */
 
+// Base value
+@base-calc: 16px;
+
+// Media queries
+@phoneLandscapeViewportWidth: 480px;
+@tabletViewportWidth: 768px;
+@tabletLandscapeViewportWidth: 1024px;
+@desktopViewportWidth: 1200px;
+
+
+/*
+ * Dlf Mediaplayer Variables
+ *
+ */
+
+// Colors
 @base-color: #4e6666;
 @light-color: lighten(@base-color, 50%);
+
+// Labels
 @label-padding: 2pt;
 
+// Import the styles for the DlfMediaPlayer and SlubMediaPlayer
 @import "DlfMediaPlayer/index.less";
 @import "SlubMediaPlayer/index.less";
