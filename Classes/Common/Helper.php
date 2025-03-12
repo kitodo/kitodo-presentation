@@ -364,7 +364,7 @@ class Helper
     }
 
     /**
-     * Clean up a string to use in an URL.
+     * Clean up a string to use in a URL.
      *
      * @access public
      *
@@ -409,7 +409,7 @@ class Helper
     }
 
     /**
-     * Get the "index_name" for an UID
+     * Get the "index_name" for a UID
      *
      * @access public
      *
@@ -671,7 +671,7 @@ class Helper
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
         $languageContentId = $languageAspect->getContentId();
 
-        // Check if "index_name" is an UID.
+        // Check if "index_name" is a UID.
         if (MathUtility::canBeInterpretedAsInteger($indexName)) {
             $indexName = self::getIndexNameFromUid((int) $indexName, $table, $pid);
         }
@@ -716,7 +716,7 @@ class Helper
             $row = $result->fetchAssociative();
 
             if ($row) {
-                // If there is an translated content element, overwrite the received $indexName.
+                // If there is a translated content element, overwrite the received $indexName.
                 $indexName = $row['index_name'];
             }
         }
