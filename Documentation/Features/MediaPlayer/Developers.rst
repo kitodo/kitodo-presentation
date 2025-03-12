@@ -132,7 +132,7 @@ The Dev Server is intended for developing and testing the media player in a well
 
 *  The server is configured in the ``devServer`` key in ``/Build/webpack.config.js``.
 
-*  Resources to be served are located in ``/Resources/Private/DevServer``.
+*  Resources to be served are located in ``Build/Webpack/DevServer/``.
    This contains a symlink to ``/Resources``, so that all resources can be accessed from a served page via a repository-relative path.
 
 Command Reference
