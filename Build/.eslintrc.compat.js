@@ -13,7 +13,7 @@ module.exports = {
   },
   "ignorePatterns": [
     // avoid Error: ELOOP: too many symbolic links encountered
-    "../Resources/Private/DevServer/Resources",
+    "Webpack/DevServer/Resources",
     // ignore public webpack javascript build
     "../Resources/Public/JavaScript"
   ],
