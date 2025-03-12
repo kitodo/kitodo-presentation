@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Common\SolrPaginator;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -22,7 +21,6 @@ use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Solarium\Component\Result\FacetSet;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -104,10 +102,9 @@ class SearchController extends AbstractController
      */
     public function mainAction(): void
     {
-        $listViewSearch = false;
         // Quit without doing anything if required variables are not set.
         if (empty($this->settings['solrcore'])) {
-            $this->logger->warning('Incomplete plugin configuration');
+            $this->logger->warning('Incomplete plugin configuration for SOLR. Please check the plugin settings for UID of SOLR core.');
             return;
         }
 
@@ -117,94 +114,17 @@ class SearchController extends AbstractController
 
         $this->enableSuggester();
 
-        // if search was triggered, get search parameters from POST variables
         $this->searchParams = $this->getParametersSafely('searchParameter');
-        // if search was triggered by the ListView plugin, get the parameters from GET variables
-        $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
-        // Quit without doing anything if no search parameters.
-        if (empty($this->searchParams) && empty($listRequestData)) {
-            $this->logger->warning('Missing search parameters');
+
+        if (empty($this->searchParams)) {
+            $this->processEmptySearchParams();
             return;
         }
 
-        if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
-            $this->searchParams = array_merge($this->searchParams ?: [], $listRequestData['searchParameter']);
-            $listViewSearch = true;
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
-        }
+        $this->sanitizeDates();
 
-        // sanitize date search input
-        if (!empty($this->searchParams['dateFrom']) || !empty($this->searchParams['dateTo'])) {
-            if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
-                $this->searchParams['dateFrom'] = '*';
-            }
-
-            if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
-                $this->searchParams['dateTo'] = 'NOW';
-            }
-
-            if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
-                $tmpDate = $this->searchParams['dateFrom'];
-                $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
-                $this->searchParams['dateTo'] = $tmpDate;
-            }
-        }
-
-        // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
-        $currentPage = $this->getParametersSafely('page');
-        if (empty($currentPage)) {
-            $currentPage = 1;
-        }
-
-        // If a targetPid is given, the results will be shown by ListView on the target page.
-        if (!empty($this->settings['targetPid']) && !empty($this->searchParams) && !$listViewSearch) {
-            $this->redirect(
-                'main',
-                'ListView',
-                null,
-                [
-                    'searchParameter' => $this->searchParams,
-                    'page' => $currentPage
-                ], $this->settings['targetPid']
-            );
-        }
-
-        // If no search has been executed, no variables have to be prepared.
-        // An empty form will be shown.
         if (is_array($this->searchParams) && !empty($this->searchParams)) {
-            // get all sortable metadata records
-            $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
-
-            // get all metadata records to be shown in results
-            $listedMetadata = $this->metadataRepository->findByIsListed(true);
-
-            $solrResults = null;
-            $numResults = 0;
-            // Do not execute the Solr search if used together with ListView plugin.
-            if (!$listViewSearch) {
-                $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->searchParams, $listedMetadata);
-                $numResults = $solrResults->getNumFound();
-
-                $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
-                if (empty($itemsPerPage)) {
-                    $itemsPerPage = 25;
-                }
-                $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
-                $simplePagination = new SimplePagination($solrPaginator);
-
-                $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
-                $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
-            }
-
-            $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
-            $this->view->assign('numResults', $numResults);
-            $this->view->assign('page', $currentPage);
-            $this->view->assign('lastSearch', $this->searchParams);
-            $this->view->assign('listedMetadata', $listedMetadata);
-            $this->view->assign('sortableMetadata', $sortableMetadata);
-
-            // Add the facets menu
-            $this->addFacetsMenu();
+            $this->processNonemptySearchParams();
         }
 
         $this->view->assign('viewData', $this->viewData);
@@ -213,9 +133,11 @@ class SearchController extends AbstractController
     /**
      * Adds the facets menu to the search form
      *
-     * @access protected
+     * @access private
+     *
+     * @return void
      */
-    protected function addFacetsMenu(): void
+    private function addFacetsMenu(): void
     {
         // Quit without doing anything if no facets are configured.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
@@ -234,13 +156,13 @@ class SearchController extends AbstractController
     /**
      * This builds a menu array for HMENU
      *
-     * @access public
+     * @access private
      *
      * @param array $facets
      *
      * @return array HMENU array
      */
-    public function makeFacetsMenuArray(array $facets): array
+    private function makeFacetsMenuArray(array $facets): array
     {
         // Set default value for facet search.
         $search = [
@@ -598,6 +520,123 @@ class SearchController extends AbstractController
         // Add uHash parameter to suggest parameter to make a basic protection of this form.
         if ($this->settings['suggest']) {
             $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
+        }
+    }
+
+    /**
+     * Process empty search parameters. Check if collection or list view plugin triggered the search.
+     * If yes, pass their search parameters into this plugin, then add facets menu.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function processEmptySearchParams(): void
+    {
+        // if search was triggered by the Collection plugin, get the parameters from GET variables
+        $collectionRequestData = GeneralUtility::_GPmerged('tx_dlf_collection');
+        // if search was triggered by the ListView plugin, get the parameters from GET variables
+        $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
+
+        if (!empty($collectionRequestData)) {
+            $this->searchParams = $collectionRequestData['searchParameter'];
+            if (empty($this->searchParams['collection'])) {
+                $this->searchParams['collection'] = $collectionRequestData['collection'];
+
+            }
+            $this->addFacetsMenu();
+            $this->view->assign('lastSearch', $this->searchParams);
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
+        }
+
+        if (!empty($listRequestData)) {
+            $this->searchParams = $listRequestData['searchParameter'];
+            $this->addFacetsMenu();
+            $this->view->assign('lastSearch', $this->searchParams);
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
+        }
+
+        if (empty($collectionRequestData) && empty($listRequestData)) {
+            $this->logger->warning('Missing search parameters');
+        }
+    }
+
+    /**
+     * Process non empty search parameters. Perform necessary searches,
+     * assign variables in the view, then redirect to the correct plugin page.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function processNonemptySearchParams(): void
+    {
+        // Get current page from request data because the parameter is shared between plugins
+        $currentPage = $this->requestData['page'] ?? 1;
+
+        // get all sortable metadata records
+        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+
+        // get all metadata records to be shown in results
+        $listedMetadata = $this->metadataRepository->findByIsListed(true);
+
+        $this->view->assign('page', $currentPage);
+        $this->view->assign('lastSearch', $this->searchParams);
+        $this->view->assign('listedMetadata', $listedMetadata);
+        $this->view->assign('sortableMetadata', $sortableMetadata);
+
+        // Add the facets menu
+        $this->addFacetsMenu();
+
+        // If a targetPid is given, the results will be shown by Collection or ListView on the target page.
+        if (!empty($this->settings['targetPid']) && (int) $this->settings['targetPid'] !== $this->pageUid) {
+            if ($this->settings['searchIn'] == 'collection') {
+                $this->redirect(
+                    'show',
+                    'Collection',
+                    null,
+                    [
+                        'searchParameter' => $this->searchParams
+                    ],
+                    $this->settings['targetPid']
+                );
+            } else {
+                $this->redirect(
+                    'main',
+                    'ListView',
+                    null,
+                    [
+                        'searchParameter' => $this->searchParams
+                    ],
+                    $this->settings['targetPid']
+                );
+            }
+        }
+    }
+
+    /**
+     * Sanitize dates in search parameters.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function sanitizeDates() : void
+    {
+        if (!empty($this->searchParams['dateFrom']) || !empty($this->searchParams['dateTo'])) {
+            if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+                $this->searchParams['dateFrom'] = '*';
+            }
+
+            if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
+                $this->searchParams['dateTo'] = 'NOW';
+            }
+
+            if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
+                $tmpDate = $this->searchParams['dateFrom'];
+                $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
+                $this->searchParams['dateTo'] = $tmpDate;
+            }
         }
     }
 }
