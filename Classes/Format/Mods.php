@@ -345,20 +345,20 @@ class Mods implements MetadataInterface
     {
         $relatedItems = $this->modsReader->getRelatedItems('[@type="original"]');
         foreach ($relatedItems as $relatedItem) {
-                $originInfos = $relatedItem->getOriginInfos('[@eventType="production"]');
-                foreach ($originInfos as $originInfo) {
-                        foreach ($originInfo->getPlaces() as $prodPlaces) {
-                            foreach ($prodPlaces->getPlaceTerms() as $prodPlaceTerm) {
-                                $prodPlaceMd = $prodPlaceTerm->getValue();
+            $originInfos = $relatedItem->getOriginInfos('[@eventType="production"]');
+            foreach ($originInfos as $originInfo) {
+                foreach ($originInfo->getPlaces() as $prodPlaces) {
+                    foreach ($prodPlaces->getPlaceTerms() as $prodPlaceTerm) {
+                        $prodPlaceMd = $prodPlaceTerm->getValue();
 
-                                if (!empty($prodPlaceTerm->getValueURI())) {
-                                    $prodPlaceMd .= pack('C', 31) . $prodPlaceTerm->getValueURI();
-                                }
-
-                                $this->metadata['production_place'][] = $prodPlaceMd;
-                            }
+                        if (!empty($prodPlaceTerm->getValueURI())) {
+                            $prodPlaceMd .= pack('C', 31) . $prodPlaceTerm->getValueURI();
                         }
+
+                        $this->metadata['production_place'][] = $prodPlaceMd;
+                    }
                 }
+            }
         }
     }
 
