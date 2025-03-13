@@ -45,7 +45,7 @@ export function createShareButton(env, info, config) {
 
     case "image":
       iconElement = e("img", {
-        className: "dlf-share-button",
+        className: "dlf-share-button dlf-share-button-image",
         src: info.src,
       });
       break;
