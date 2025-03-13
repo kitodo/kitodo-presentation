@@ -94,15 +94,8 @@ For information on equalizer configuration, see :ref:`the equalizer subpage <eq_
          }
 
          2 {
-           type = image
-           // For icons based on images, specify the image source
-           src = EXT:dlf/Resources/Public/Images/Twitter_Logo_blue.svg
-           titleTranslationKey = share.tweet.tooltip
-           hrefTemplate = https://twitter.com/intent/tweet?url={url}
-         }
-
-         3 {
             type = image
+            // For icons based on images, specify the image source
             src = EXT:dlf/Resources/Public/Images/mastodon-logo-purple.svg
             titleTranslationKey = share.mastodon.tooltip
             hrefTemplate = dlf:mastodon_share

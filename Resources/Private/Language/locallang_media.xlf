@@ -347,9 +347,6 @@
 			<trans-unit id="share.qr_code.tooltip">
 				<source><![CDATA[Show QR-Code]]></source>
 			</trans-unit>
-			<trans-unit id="share.tweet.tooltip">
-				<source><![CDATA[Tweet]]></source>
-			</trans-unit>
 			<trans-unit id="share.mastodon.tooltip">
 				<source><![CDATA[Share on Mastodon]]></source>
 			</trans-unit>
