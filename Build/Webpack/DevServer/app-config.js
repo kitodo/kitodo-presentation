@@ -140,7 +140,7 @@ var shareButtons = [
   },
   {
     type: "image",
-    src: "EXT:slub_digitalcollections/Resources/Public/Images/mastodon-logo-purple.svg",
+    src: "EXT:dlf/Resources/Public/Images/mastodon-logo-purple.svg",
     titleTranslationKey: "share.mastodon.tooltip",
     hrefTemplate: "dlf:mastodon_share",
   },
