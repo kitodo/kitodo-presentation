@@ -17,7 +17,8 @@
     <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
     <ol class="tx-dlf-abstracts">
         <f:for each="{paginator.paginatedItems}" as="document" iteration="docIterator">
-        <f:variable name="docTitle" value="{f:if(condition:'{document.title}', then:'{document.title}', else:'{document.metsOrderlabel}')}" />
+            <f:variable name="metadataTitle" value="{f:if(condition:'{document.title}', then:'{document.title}', else:'{document.metsOrderlabel}')}" />
+            <f:variable name="docTitle" value="{f:if(condition:'{metadataTitle}', then:'{metadataTitle}', else:'{f:translate(key: \'noTitle\')}')}" />
             <li value="{settings.list.paginate.itemsPerPage * pageOffset + docIterator.index}">
             <f:link.page
             pageUid="{settings.targetPidPageView}"
