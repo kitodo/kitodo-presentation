@@ -52,12 +52,6 @@ describe('BookmarkModal', () => {
           src: '../Resources/Public/Images/mastodon-logo-purple.svg',
           hrefTemplate: 'dlf:mastodon_share',
         },
-        {
-          type: 'image',
-          titleTranslationKey: 'share.twitter.tooltip',
-          src: '../Resources/Public/Images/Twitter_Logo_blue.svg',
-          hrefTemplate: 'https://twitter.com/intent/tweet?url={url}',
-        },
       ],
     };
     bookmarkModal = new BookmarkModal(
