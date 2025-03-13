@@ -134,7 +134,6 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                 'useGroupsFulltext' => 'FULLTEXT',
                 'useGroupsAudio' => 'AUDIO',
                 'useGroupsVideo' => 'VIDEO,DEFAULT',
-                'useGroupsVideo' => 'VIDEO,DEFAULT,VIDEO_ALT1',
                 'useGroupsWaveform' => 'WAVEFORM'
             ],
             'solr' => [
