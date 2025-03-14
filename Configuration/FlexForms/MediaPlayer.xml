@@ -41,17 +41,6 @@
                             </config>
                         </TCEforms>
                     </settings.elementId>
-                    <settings.playerTranslations.baseFile>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.playerTranslations.baseFile</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required</eval>
-                                <default>EXT:dlf/Resources/Private/Language/locallang_media.xlf</default>
-                            </config>
-                        </TCEforms>
-                    </settings.playerTranslations.baseFile>
                     <settings.shareButtons>
                         <title>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.title</title>
                         <type>array</type>
