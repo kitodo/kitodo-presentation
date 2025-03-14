@@ -57,7 +57,7 @@ Localization
 The player can be localized via TYPO3/XLIFF language files.
 
 *  There is a separate language file for the media player related translation strings.
-   The file to be used is configured in the TypoScript setting ``playerTranslations.baseFile`` of the player plugin, which defaults to ``locallang_media.xlf``.
+   The file is located at ``dlf/Resources/Private/Language/locallang_media.xlf``.
 
 *  Translation strings use the `ICU MessageFormat <https://unicode-org.github.io/icu/userguide/format_parse/>`__ syntax,
    which in particular supports pluralization, enumerations (via ``select``), number formatting (e.g., percentages), and named placeholders.

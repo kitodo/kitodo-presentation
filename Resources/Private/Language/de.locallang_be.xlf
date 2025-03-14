@@ -209,10 +209,6 @@
 				<source><![CDATA[@ID value of the HTML element that should host the player]]></source>
 				<target><![CDATA[@ID-Wert des HTML-Elements, das den Player enthalten soll]]></target>
 			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.playerTranslations.baseFile">
-				<source><![CDATA[Language file of player localization strings without language prefix]]></source>
-				<source><![CDATA[Pfad zur XLIFF-Lokalisierungsdatei (ohne Sprachkürzel)]]></source>
-			</trans-unit>
 			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.title" approved="yes">
 				<source><![CDATA[Share Buttons]]></source>
 				<target><![CDATA[Share-Buttons]]></target>
