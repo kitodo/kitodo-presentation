@@ -337,7 +337,7 @@ class BasketController extends AbstractController
             // replace url param placeholder
             // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
             // @phpstan-ignore-next-line
-            $urlParams = str_replace("##page##", (int)($data['page'] ?? ''), $this->settings['pdfparams']);
+            $urlParams = str_replace("##page##", (int) ($data['page'] ?? ''), $this->settings['pdfparams']);
             $urlParams = str_replace("##docId##", $this->document->getRecordId(), $urlParams);
             // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
             // @phpstan-ignore-next-line
