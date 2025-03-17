@@ -66,7 +66,7 @@ mod.wizards.newContentElement.wizardItems {
         }
       }
       tx_dlf_mediaplayer {
-        iconIdentifier = tx-dlf-audioplayer
+        iconIdentifier = tx-dlf-mediaplayer
         title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.title
         description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.description
         tt_content_defValues {
