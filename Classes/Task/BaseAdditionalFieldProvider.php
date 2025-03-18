@@ -212,7 +212,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @return array additional field solr dropdown
      */
-    protected function getSolrField(int $solr, int $pid = null): array
+    protected function getSolrField(int $solr, ?int $pid = null): array
     {
         $fieldName = 'solr';
         $fieldId = 'task_' . $fieldName;
@@ -296,7 +296,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @return array Array of valid Solr cores
      */
-    private function getSolrCores(int $pid = null): array
+    private function getSolrCores(?int $pid = null): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
 
