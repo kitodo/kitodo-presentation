@@ -80,7 +80,7 @@ class FeedsController extends AbstractController
         }
 
         if (
-            !$this->settings['excludeOtherCollections']
+            !($this->settings['excludeOtherCollections'] ?? false)
             || empty($requestData['collection'])
             || GeneralUtility::inList($this->settings['collections'], $requestData['collection'])
         ) {
