@@ -667,7 +667,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // Instantiate search object.
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
-            Helper::log('Apache Solr not available', LOG_SEVERITY_ERROR);
+            Helper::error('Apache Solr not available');
             return [
                 'documents' => [],
                 'numberOfToplevels' => 0,

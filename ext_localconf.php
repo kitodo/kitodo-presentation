@@ -13,22 +13,6 @@
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
-// Define constants.
-if (!defined('LOG_SEVERITY_OK')) {
-    define('LOG_SEVERITY_OK', -1);
-}
-if (!defined('LOG_SEVERITY_INFO')) {
-    define('LOG_SEVERITY_INFO', 0);
-}
-if (!defined('LOG_SEVERITY_NOTICE')) {
-    define('LOG_SEVERITY_NOTICE', 1);
-}
-if (!defined('LOG_SEVERITY_WARNING')) {
-    define('LOG_SEVERITY_WARNING', 2);
-}
-if (!defined('LOG_SEVERITY_ERROR')) {
-    define('LOG_SEVERITY_ERROR', 3);
-}
 
 // Register plugin icons.
 $iconArray = [
