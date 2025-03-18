@@ -6,7 +6,7 @@
                 <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': 1, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="1">1</f:link.action>
             </li>
             <li class="previous">
-                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.previousPageNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'pagination.previous')}">{f:translate(key: 'listview.prevPage')}</f:link.action>
+                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.previousPageNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'pagination.previous')}">{f:translate(key: 'listview.prevPage') -> f:format.raw()}</f:link.action>
             </li>
         </f:then>
         <f:else>
@@ -14,7 +14,7 @@
                 <span>1</span>
             </li>
             <li class="previous disabled">
-                <span>{f:translate(key: 'listview.prevPage')}</span>
+                <span>{f:translate(key: 'listview.prevPage') -> f:format.raw()}</span>
             </li>
         </f:else>
     </f:if>
@@ -53,7 +53,7 @@
     <f:if condition="{pagination.nextPageNumberG} && {pagination.nextPageNumberG} <= {pagination.lastPageNumber}">
         <f:then>
             <li class="next">
-                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.nextPageNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'nextPage')}">{f:translate(key: 'listview.nextPage')}</f:link.action>
+                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.nextPageNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'nextPage')}">{f:translate(key: 'listview.nextPage') -> f:format.raw()}</f:link.action>
             </li>
             <li class="last">
                 <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.lastPageNumberG, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{pagination.lastPageNumber}">{pagination.lastPageNumber}</f:link.action>
@@ -61,7 +61,7 @@
         </f:then>
         <f:else>
             <li class="next disabled">
-                <span>{f:translate(key: 'listview.nextPage')}</span>
+                <span>{f:translate(key: 'listview.nextPage') -> f:format.raw()}</span>
             </li>
             <li class="last disabled">
                 <span>{pagination.lastPageNumber}</span>
