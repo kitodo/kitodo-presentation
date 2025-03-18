@@ -1096,6 +1096,9 @@ abstract class AbstractDocument
      */
     protected function __construct(int $pid, string $location, $preloadedDocument, array $settings = [])
     {
+        // Note: Any change here might require an update in function __sleep
+        // of class MetsDocument and class IiifManifest, too.
+
         $this->pid = $pid;
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->setPreloadedDocument($preloadedDocument);

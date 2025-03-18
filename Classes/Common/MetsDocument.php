@@ -1672,7 +1672,7 @@ final class MetsDocument extends AbstractDocument
     {
         // SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
         $this->asXML = $this->xml->asXML();
-        return ['pid', 'recordId', 'parentId', 'asXML'];
+        return ['pid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asXML'];
     }
 
     /**

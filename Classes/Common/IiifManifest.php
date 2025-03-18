@@ -976,6 +976,6 @@ final class IiifManifest extends AbstractDocument
         // TODO implement serialization in IIIF library
         $jsonArray = $this->iiif->getOriginalJsonArray();
         $this->asJson = json_encode($jsonArray);
-        return ['pid', 'recordId', 'parentId', 'asJson'];
+        return ['pid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asJson'];
     }
 }
