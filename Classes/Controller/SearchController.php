@@ -111,7 +111,8 @@ class SearchController extends AbstractController
             return;
         }
 
-        // Get additional fields for extended search.
+        $this->addCurrentDocument();
+
         $this->addExtendedSearch();
 
         $this->enableSuggester();
@@ -207,12 +208,6 @@ class SearchController extends AbstractController
 
             // Add the facets menu
             $this->addFacetsMenu();
-        }
-
-        // Add the current document if present to fluid. This way, we can limit further searches to this document.
-        if (isset($this->requestData['id'])) {
-            $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
-            $this->view->assign('currentDocument', $currentDocument);
         }
 
         $this->view->assign('viewData', $this->viewData);
@@ -549,6 +544,22 @@ class SearchController extends AbstractController
                 return htmlspecialchars(Helper::getLanguageName($value));
             default:
                 return htmlspecialchars($value);
+        }
+    }
+
+    /**
+     * Add the current document if present to fluid.
+     * This way, we can limit further searches to this document.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function addCurrentDocument(): void
+    {
+        if (isset($this->requestData['id'])) {
+            $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
+            $this->view->assign('currentDocument', $currentDocument);
         }
     }
 
