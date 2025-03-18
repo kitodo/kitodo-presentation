@@ -69,7 +69,16 @@ class DOMDocumentValidationStackTest extends UnitTestCase
 
     public function testBreakOnError(): void
     {
-        $xmlSchemesValidatorConfig = ["className" => XmlSchemesValidator::class, "configuration" => [["namespace" => "http://www.openarchives.org/OAI/2.0/", "schemaLocation" => "https://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"]]];
+        $xsdFile = __DIR__ . '/../../Fixtures/OaiPmh/OAI-PMH.xsd';
+        $xmlSchemesValidatorConfig = [
+            'className' => XmlSchemesValidator::class,
+            'configuration' => [
+                [
+                    'namespace' => 'http://www.openarchives.org/OAI/2.0/',
+                    'schemaLocation' => $xsdFile
+                ]
+            ]
+        ];
         $domDocumentValidationStack = new DOMDocumentValidationStack([$xmlSchemesValidatorConfig, $xmlSchemesValidatorConfig]);
         $result = $domDocumentValidationStack->validate(new DOMDocument());
         self::assertCount(1, $result->getErrors());

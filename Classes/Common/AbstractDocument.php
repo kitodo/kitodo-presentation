@@ -417,7 +417,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @return \SimpleXMLElement|IiifResourceInterface An PHP object representation of
+     * @return \SimpleXMLElement|IiifResourceInterface A PHP object representation of
      * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
      */
     abstract protected function getDocument();

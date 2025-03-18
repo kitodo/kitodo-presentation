@@ -592,7 +592,7 @@ class Solr implements LoggerAwareInterface
             $eventDispatcher = null;
         } else {
             // When updating to TYPO3 >=10.x and Solarium >=6.x
-            // we have to provide an PSR-14 Event Dispatcher instead of
+            // we have to provide a PSR-14 Event Dispatcher instead of
             // "null".
             $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
         }

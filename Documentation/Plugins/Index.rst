@@ -1036,7 +1036,7 @@ The model URL is extracted from the METS file or taken from the provided model p
 
 Search in Document Tool
 ^^^^^^^^^^^^^^^^^^^^^^^
-This plugin adds an possibility to search all appearances of the phrase in currently displayed document
+This plugin adds a possibility to search all appearances of the phrase in currently displayed document.
 
 :typoscript:`plugin.tx_dlf_searchindocumenttool.`
 

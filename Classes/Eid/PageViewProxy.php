@@ -132,7 +132,7 @@ class PageViewProxy
     }
 
     /**
-     * Handle an HEAD request.
+     * Handle a HEAD request.
      *
      * @access protected
      *
