@@ -6,7 +6,7 @@
                 <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': 1, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="1">1</f:link.action>
             </li>
             <li class="previous">
-                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.previousPageNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'pagination.previous')}">{f:translate(key: 'listview.prevPage')} -> f:format.raw()</f:link.action>
+                <f:link.action action="{action}" addQueryString="true" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.previousPageNumber, 'tx_dlf[id]': docUid}" arguments="{searchParameter: lastSearch}" title="{f:translate(key: 'pagination.previous')}">{f:translate(key: 'listview.prevPage') -> f:format.raw()}</f:link.action>
             </li>
         </f:then>
         <f:else>
