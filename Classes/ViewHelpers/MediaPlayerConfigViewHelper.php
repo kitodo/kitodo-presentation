@@ -39,12 +39,12 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         $id = $arguments['id'];
         $inputSettings = $arguments['settings'];
 
-        // Whitelist keys to keep out keys from settings array
+        // Whitelist keys to keep out stuff such as playerTranslationsFile
         $allowedKeys = ['shareButtons', 'screenshotCaptions', 'constants', 'equalizer'];
         $result = array_intersect_key($inputSettings, array_flip($allowedKeys));
 
         // Add translations
-        $result['lang'] = self::getTranslations('EXT:dlf/Resources/Private/Language/locallang_media.xlf');
+        $result['lang'] = self::getTranslations($inputSettings['playerTranslations']['baseFile'] ?? 'EXT:dlf/Resources/Private/Language/locallang_media.xlf');
 
         // Resolve paths
         foreach ($result['shareButtons'] ?? [] as $key => $button) {
