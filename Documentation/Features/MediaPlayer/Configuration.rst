@@ -61,6 +61,11 @@ For information on equalizer configuration, see :ref:`the equalizer subpage <eq_
 .. code-block:: typoscript
 
    plugin.tx_dlf_mediaplayer {
+     settings {
+       playerTranslations {
+         // Language file of player localization strings without language prefix
+         baseFile = EXT:dlf/Resources/Private/Language/locallang_media.xlf
+       }
 
        // Share buttons to be shown in bookmark modal
        // Both numeric and non-numeric keys may be used
