@@ -19,6 +19,7 @@ use ReflectionProperty;
 use TYPO3\CMS\Core\Database\Schema\Parser\Parser;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -83,7 +84,7 @@ class Generator
 
     public function __construct()
     {
-        $this->languageService = GeneralUtility::makeInstance(LanguageService::class);
+        $this->languageService = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create("default");
     }
 
     /**
