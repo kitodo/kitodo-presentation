@@ -140,7 +140,7 @@ class CollectionController extends AbstractController
 
         if (isset($searchRequestData['searchParameter']) && is_array($searchRequestData['searchParameter'])) {
             $this->searchParams = array_merge($this->searchParams ?: [], $searchRequestData['searchParameter']);
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
+            $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->searchParams);
         }
 
         // Get current page from request data because the parameter is shared between plugins

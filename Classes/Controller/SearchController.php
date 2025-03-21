@@ -131,14 +131,14 @@ class SearchController extends AbstractController
                 }
                 $this->addFacetsMenu();
                 $this->view->assign('lastSearch', $this->searchParams);
-                $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
+                $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->searchParams);
             }
 
             if (!empty($listRequestData)) {
                 $this->searchParams = $listRequestData['searchParameter'];
                 $this->addFacetsMenu();
                 $this->view->assign('lastSearch', $this->searchParams);
-                $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
+                $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->searchParams);
             }
 
             if (empty($collectionRequestData) && empty($listRequestData)) {
