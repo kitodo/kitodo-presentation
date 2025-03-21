@@ -213,6 +213,7 @@ class SearchController extends AbstractController
         if (
             !empty($searchParams['extQuery'])
             && is_array($searchParams['extQuery'])
+            && strlen(implode($searchParams['extQuery'])) > 0
         ) {
             // If the search query is already set by the simple search field, we have to reset it.
             $search['query'] = '';
