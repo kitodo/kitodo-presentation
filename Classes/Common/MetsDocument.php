@@ -1492,13 +1492,13 @@ final class MetsDocument extends AbstractDocument
             }
 
             // Get track info with begin and extent time for later assignment with musical
-            if ((string) $elementNode['TYPE'] === 'track') {
+            if ($this->physicalStructureInfo[$id]['type'] === 'track') {
                 foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
                     if (isset($fptr->area) &&  ((string) $fptr->area->attributes()->BETYPE === 'TIME')) {
                         // Check if file has valid @USE attribute.
                         $fileId = (string) $fptr->area->attributes()->FILEID;
                         if (!empty($fileUse[$fileId])) {
-                            $this->physicalStructureInfo[$id]['tracks'][$fileUse[(string) $fptr->area->attributes()->FILEID]] = [
+                            $this->physicalStructureInfo[$id]['tracks'][$fileUse[$fileId]] = [
                                 'fileid'  => $fileId,
                                 'begin'   => (string) $fptr->area->attributes()->BEGIN,
                                 'betype'  => (string) $fptr->area->attributes()->BETYPE,
