@@ -215,22 +215,7 @@ class SearchController extends AbstractController
             && is_array($searchParams['extQuery'])
             && strlen(implode($searchParams['extQuery'])) > 0
         ) {
-            // If the search query is already set by the simple search field, we have to reset it.
-            $search['query'] = '';
-            $allowedOperators = ['AND', 'OR', 'NOT'];
-            $numberOfExtQueries = count($searchParams['extQuery']);
-            for ($i = 0; $i < $numberOfExtQueries; $i++) {
-                if (!empty($searchParams['extQuery'][$i])) {
-                    if (
-                        in_array($searchParams['extOperator'][$i], $allowedOperators)
-                    ) {
-                        if (!empty($search['query'])) {
-                            $search['query'] .= ' ' . $searchParams['extOperator'][$i] . ' ';
-                        }
-                        $search['query'] .= Indexer::getIndexFieldName($searchParams['extField'][$i], $this->settings['storagePid']) . ':(' . Solr::escapeQuery($searchParams['extQuery'][$i]) . ')';
-                    }
-                }
-            }
+            $search['query'] = $this->addExtendedSearchQuery();
         }
 
         if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
@@ -342,6 +327,35 @@ class SearchController extends AbstractController
             return implode(" OR ", array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
         }
         return "";
+    }
+
+    /**
+     * Add the extended search query string, if the extended fields are given.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function addExtendedSearchQuery(): string
+    {
+        // If the search query is already set by the simple search field, we have to reset it.
+        $query = '';
+        $allowedOperators = ['AND', 'OR', 'NOT'];
+        $numberOfExtQueries = count($this->searchParams['extQuery']);
+        for ($i = 0; $i < $numberOfExtQueries; $i++) {
+            if (!empty($this->searchParams['extQuery'][$i])) {
+                if (
+                    in_array($this->searchParams['extOperator'][$i], $allowedOperators)
+                ) {
+                    if (!empty($query)) {
+                        $query .= ' ' . $this->searchParams['extOperator'][$i] . ' ';
+                    }
+                    $query .= Indexer::getIndexFieldName($this->searchParams['extField'][$i], $this->settings['storagePid']) . ':(' . Solr::escapeQuery($this->searchParams['extQuery'][$i]) . ')';
+                }
+            }
+        }
+
+        return $query;
     }
 
     /**
