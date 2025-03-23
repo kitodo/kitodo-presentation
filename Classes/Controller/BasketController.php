@@ -133,7 +133,7 @@ class BasketController extends AbstractController
                 $pdfUrl = $this->settings['pdfgenerate'];
                 foreach ($this->requestData['selected'] as $docValue) {
                     if ($docValue['id']) {
-                        $docData = $this->getDocumentData((int) $docValue['id'], $docValue);
+                        $docData = $this->getDocumentData($docValue['id'], $docValue);
                         $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                         $this->redirectToUri($pdfUrl);
                     }
@@ -288,7 +288,7 @@ class BasketController extends AbstractController
         $endY = $data['endY'];
         $rotation = $data['rotation'];
 
-        $docData = $this->getDocumentData((int) $id, $data);
+        $docData = $this->getDocumentData($id, $data);
 
         $entryKey = $id . '_' . $startPage;
         if (!empty($startX)) {
@@ -324,15 +324,15 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param int $id Document id
+     * @param string $id Document id
      * @param array $data DocumentData
      *
      * @return array|false download url or false
      */
-    protected function getDocumentData(int $id, array $data)
+    protected function getDocumentData(string $id, array $data)
     {
         // get document instance to load further information
-        $this->loadDocument((int) $id);
+        $this->loadDocument($id);
         if (isset($this->document)) {
             // replace url param placeholder
             // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
@@ -413,7 +413,7 @@ class BasketController extends AbstractController
         }
         if ($page != null || $piVars['addToBasket'] == 'list') {
             $documentItem = [
-                'id' => (int) $piVars['id'],
+                'id' => $piVars['id'],
                 'startpage' => (int) $piVars['startpage'],
                 'endpage' => !isset($piVars['endpage']) || $piVars['endpage'] === "" ? "" : (int) $piVars['endpage'],
                 'startX' => !isset($piVars['startX']) || $piVars['startX'] === "" ? "" : (int) $piVars['startX'],
@@ -431,7 +431,7 @@ class BasketController extends AbstractController
                 $items = [];
             }
             // get document instance to load further information
-            $this->loadDocument((int) $documentItem['id']);
+            $this->loadDocument($documentItem['id']);
             if ($this->isDocMissing()) {
                 // Quit without doing anything if required variables are not set.
                 return null;
@@ -562,7 +562,7 @@ class BasketController extends AbstractController
         foreach ($this->requestData['selected'] as $docValue) {
             if ($docValue['id']) {
                 $explodeId = explode("_", $docValue['id']);
-                $docData = $this->getDocumentData((int) $explodeId[0], $docValue);
+                $docData = $this->getDocumentData($explodeId[0], $docValue);
                 $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                 $pages = (abs(intval($docValue['startpage']) - intval($docValue['endpage'])));
                 if ($pages === 0) {
@@ -629,7 +629,7 @@ class BasketController extends AbstractController
         $numberOfPages = 0;
         foreach ($this->requestData['selected'] as $docId => $docValue) {
             if ($docValue['id']) {
-                $docData = $this->getDocumentData((int) $docValue['id'], $docValue);
+                $docData = $this->getDocumentData($docValue['id'], $docValue);
                 $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                 $numberOfPages += $docData['pageNums'];
             }
@@ -647,7 +647,7 @@ class BasketController extends AbstractController
             foreach ($this->requestData['selected'] as $docId => $docValue) {
                 if ($docValue['id']) {
                     $explodeId = explode("_", $docId);
-                    $docData = $this->getDocumentData((int) $explodeId[0], $docValue);
+                    $docData = $this->getDocumentData($explodeId[0], $docValue);
                     $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                     $numberOfPages += $docData['pageNums'];
                 }
