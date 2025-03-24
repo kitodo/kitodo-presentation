@@ -126,7 +126,7 @@ class TableOfContentsController extends AbstractController
         // Set "title", "volume", "type" and "pagination" from $entry array.
         $entryArray['title'] = $this->setTitle($entry);
         $entryArray['volume'] = $entry['volume'];
-        if ($entry['videoChapter'] !== null) {
+        if (isset($entry['videoChapter']) && $entry['videoChapter'] !== null) {
             // Now consumers such as `slub_digitalcollections` may intercept clicks on these links
             // and use the timecode to directly jump to that video position
             // NOTE: Remember that the URL also contains parameters such as `tx_dlf[page]` and `cHash`
