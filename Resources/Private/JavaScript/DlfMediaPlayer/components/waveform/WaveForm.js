@@ -1,13 +1,16 @@
 // @ts-check
 
-import WaveformData from 'waveform-data';
 import Peaks from 'peaks.js';
+import WaveformData from 'waveform-data';
 
-import { clamp, e } from 'lib/util';
 import { action } from 'DlfMediaPlayer/lib/action';
-import DlfMediaPlayer from 'DlfMediaPlayer/DlfMediaPlayer';
+import { clamp, e } from 'lib/util';
 import DlfMediaPlugin from 'DlfMediaPlayer/DlfMediaPlugin';
 import ShakaFrontend from 'DlfMediaPlayer/frontend/ShakaFrontend';
+
+/**
+ * @typedef {import('DlfMediaPlayer/DlfMediaPlayer').default} DlfMediaPlayer
+ */
 
 /**
  * Custom element to display and interact with a waveform.

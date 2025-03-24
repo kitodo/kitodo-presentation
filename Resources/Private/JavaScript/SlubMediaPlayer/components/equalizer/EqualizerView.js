@@ -266,9 +266,8 @@ export default class EqualizerView extends EventTarget {
 
   /**
    * @private
-   * @param {Event} e
    */
-  onChangeActivate(e) {
+  onChangeActivate() {
     this.eq_.active = this.$activateCheck.checked;
   }
 
@@ -314,9 +313,8 @@ export default class EqualizerView extends EventTarget {
 
   /**
    * @private
-   * @param {MouseEvent} e
    */
-  onCanvasMouseLeave(e) {
+  onCanvasMouseLeave() {
     this.setHovered(null);
   }
 
@@ -348,9 +346,8 @@ export default class EqualizerView extends EventTarget {
 
   /**
    * @private
-   * @param {MouseEvent} e
    */
-  onCanvasMouseUp(e) {
+  onCanvasMouseUp() {
     if (this.hovered?.grabbed != null) {
       // TODO: Should we do this?
       // Set value directly on click
@@ -368,9 +365,8 @@ export default class EqualizerView extends EventTarget {
 
   /**
    * @private
-   * @param {MouseEvent} e
    */
-  onCanvasDoubleClick(e) {
+  onCanvasDoubleClick() {
     const param = this.hovered?.param;
     if (param != null) {
       this.updateFilterGain(param, () => param.gain.initial);
@@ -447,25 +443,22 @@ export default class EqualizerView extends EventTarget {
 
   /**
    * @private
-   * @param {Event} e
    */
-  onSelectPreset(e) {
+  onSelectPreset() {
     this.selectPreset(this.$presetSelect.value);
   }
 
   /**
    * @private
-   * @param {MouseEvent} e
    */
-  onResetPreset(e) {
+  onResetPreset() {
     this.selectPreset(this.$presetSelect.value, 'original');
   }
 
   /**
    * @private
-   * @param {MouseEvent} e
    */
-  onSavePreset(e) {
+  onSavePreset() {
     // TODO: Now raw prompt?
     const label = prompt(this.env.t('control.sound_tools.equalizer.preset.save.name'));
     if (!label) {
@@ -490,9 +483,8 @@ export default class EqualizerView extends EventTarget {
 
   /**
    * @private
-   * @param {MouseEvent} e
    */
-  onDeletePreset(e) {
+  onDeletePreset() {
     const key = this.$presetSelect.value;
     const preset = this.presets.keyToPreset[key];
     if (preset === undefined || preset.original.group !== 'user') {

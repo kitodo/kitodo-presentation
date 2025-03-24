@@ -170,8 +170,14 @@ function normalize(options) {
   let a0 = /** @type {number} */(options.feedback[0]);
 
   for (let i = 0; i < 3; i++) {
-    options.feedback[i] /= a0;
-    options.feedforward[i] /= a0;
+    if (a0 !== undefined) {
+      // @ts-ignore
+      options.feedback[i] /= a0;
+    }
+    if (a0 !== undefined) {
+      // @ts-ignore
+      options.feedforward[i] /= a0;
+    }
   }
 
   return options;

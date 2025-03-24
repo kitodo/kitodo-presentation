@@ -75,8 +75,14 @@ export default class FrequencyResponse {
       }
 
       for (let i = 0; i < this.numPoints; i++) {
-        this.magnitudeResponse_[i] *= /** @type {number} */(this.bufMagnitude_[i]);
-        this.phaseResponse_[i] += /** @type {number} */(this.bufPhase_[i]);
+        if (this.bufMagnitude_[i] !== undefined) {
+          // @ts-ignore
+          this.magnitudeResponse_[i] *= /** @type {number} */(this.bufMagnitude_[i]);
+        }
+        if (this.bufPhase_[i] !== undefined) {
+          // @ts-ignore
+          this.phaseResponse_[i] += /** @type {number} */(this.bufPhase_[i]);
+        }
       }
     }
 

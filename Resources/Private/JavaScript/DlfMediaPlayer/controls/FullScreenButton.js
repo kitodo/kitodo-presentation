@@ -1,10 +1,10 @@
 // @ts-check
 
-import shaka from 'shaka-player/dist/shaka-player.ui';
 import { e } from 'lib/util';
 import ControlPanelButton from 'DlfMediaPlayer/controls/ControlPanelButton';
 
 /**
+ * @typedef {import('shaka-player/dist/shaka-player.ui').ui.Controls} ShakaControls
  * @typedef Config
  * @property {dlf.media.PlayerAction} onClickAction
  */
@@ -17,7 +17,7 @@ import ControlPanelButton from 'DlfMediaPlayer/controls/ControlPanelButton';
 export default class FullScreenButton extends ControlPanelButton {
   /**
    * @param {!HTMLElement} parent
-   * @param {!shaka.ui.Controls} controls
+   * @param {!ShakaControls} controls
    * @param {Translator} env
    * @param {Partial<Config>} config
    */

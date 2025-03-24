@@ -3,7 +3,10 @@
 import shaka from 'shaka-player/dist/shaka-player.ui';
 
 import { e } from 'lib/util';
-import VariantGroups from 'DlfMediaPlayer/VariantGroups';
+
+/**
+ * @typedef {import('DlfMediaPlayer/VariantGroups').default} VariantGroups
+ */
 
 /**
  * Control panel element to show current playback time.
@@ -13,8 +16,8 @@ import VariantGroups from 'DlfMediaPlayer/VariantGroups';
  */
 export default class VideoTrackSelection extends shaka.ui.SettingsMenu {
   /**
-   *
    * @param {Translator & Identifier} env
+   * @returns {string}
    */
   static register(env) {
     const key = env.mkid();
@@ -36,7 +39,8 @@ export default class VideoTrackSelection extends shaka.ui.SettingsMenu {
   constructor(parent, controls, env) {
     super(parent, controls, 'switch_video');
 
-    /** @private Avoid naming conflicts with parent class */
+    // Avoid naming conflicts with parent class
+    /** @private */
     this.dlf = {
       env,
       activeCheck: e("i", {

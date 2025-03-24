@@ -127,7 +127,6 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
       const value = el.getAttribute('value');
 
       if (!key || !value) {
-        console.warn('Ignoring invalid <dlf-meta>');
         return;
       }
 

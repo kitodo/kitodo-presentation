@@ -11,7 +11,6 @@ import {
 } from 'lib/util';
 import {
   buildTimeString,
-  DlfMediaPlayer,
   DlfMediaPlugin,
 } from 'DlfMediaPlayer/index';
 import { getKeybindingText } from 'SlubMediaPlayer/lib/trans';
@@ -27,6 +26,8 @@ import UrlGenerator from 'SlubMediaPlayer/lib/UrlGenerator';
  *  $startTime: HTMLTableCellElement;
  *  $endTime: HTMLTableCellElement;
  * }} Row
+ *
+ * @typedef {import('DlfMediaPlayer/DlfMediaPlayer').default} DlfMediaPlayer
  */
 
 /**

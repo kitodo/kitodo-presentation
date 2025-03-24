@@ -3,9 +3,12 @@
 import shaka from 'shaka-player/dist/shaka-player.ui';
 
 import { e } from 'lib/util';
-import Chapters from 'DlfMediaPlayer/Chapters';
 import ImageFetcher from 'DlfMediaPlayer/ImageFetcher';
 import ThumbnailPreview from 'DlfMediaPlayer/ThumbnailPreview';
+
+/**
+ * @typedef {import('DlfMediaPlayer/Chapters').default} Chapters
+ */
 
 /**
  * Seek bar that is not based on an input range element. This provides more

@@ -3,7 +3,6 @@
 import shaka from 'shaka-player/dist/shaka-player.ui';
 import 'shaka-player/ui/controls.less';
 
-import EventManager from 'lib/EventManager';
 import Gestures from 'lib/Gestures';
 import { e, setElementClass } from 'lib/util';
 import {
@@ -15,6 +14,10 @@ import {
   VideoTrackSelection
 } from 'DlfMediaPlayer/controls';
 import { action } from 'DlfMediaPlayer/lib/action';
+
+/**
+ * @typedef {import('lib/EventManager').default} EventManager
+ */
 
 /**
  * Player frontend based on Shaka UI.

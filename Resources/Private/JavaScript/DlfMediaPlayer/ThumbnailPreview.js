@@ -1,7 +1,5 @@
 // @ts-check
 
-import shaka from 'shaka-player/dist/shaka-player.ui';
-
 import {
   clamp,
   disableDragging,
