@@ -430,3 +430,32 @@ export function filterNonNull(arr) {
     /** @type {(x: T | null) => x is T} */(x => x !== null)
   );
 }
+
+/**
+ * Get the element that is currently in fullscreen mode.
+ *
+ * @protected
+ * @returns {Element | null}
+ */
+export function getFullscreenElement() {
+  return document.fullscreenElement || // eslint-disable-line compat/compat
+         document.webkitFullscreenElement ||
+         document.mozFullScreenElement ||
+         document.msFullscreenElement ||
+         null;
+}
+
+/**
+ * check if fullscreen is enabled
+ *
+ * @protected
+ * @returns {boolean}
+ */
+export function checkFullscreenEnabled() {
+    return Boolean(
+      document.fullscreenEnabled || // eslint-disable-line compat/compat
+      document.webkitFullscreenEnabled ||
+      document.mozFullScreenEnabled ||
+      document.msFullscreenEnabled
+    );
+  }

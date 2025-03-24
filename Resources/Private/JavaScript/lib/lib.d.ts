@@ -122,3 +122,14 @@ interface Translator {
 interface TypedEvents<Handlers> {
   on<T extends keyof Handlers>(event: T, callback: Handlers[T]): void;
 }
+
+interface Document {
+  // Fullscreen API
+  webkitFullscreenElement?: Element;
+  mozFullScreenElement?: Element;
+  msFullscreenElement?: Element;
+
+  webkitFullscreenEnabled?: boolean;
+  mozFullScreenEnabled?: boolean;
+  msFullscreenEnabled?: boolean;
+}

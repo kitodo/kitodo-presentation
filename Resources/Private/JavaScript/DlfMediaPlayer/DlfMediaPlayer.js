@@ -2,7 +2,7 @@
 
 import shaka from 'shaka-player/dist/shaka-player.ui';
 
-import { clamp, e } from 'lib/util';
+import { checkFullscreenEnabled, clamp, e } from 'lib/util';
 import Environment from 'lib/Environment';
 import EventManager from 'lib/EventManager';
 
@@ -293,7 +293,7 @@ export default class DlfMediaPlayer extends HTMLElement {
     return {
       'fullscreen.toggle': action({
         isAvailable: () => {
-          return document.fullscreenEnabled;
+          return checkFullscreenEnabled();
         },
         execute: () => {
           this.frontend.seekBar?.endSeek();

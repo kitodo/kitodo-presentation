@@ -2,6 +2,7 @@
 
 import EventEmitter from 'events';
 import EventManager from 'lib/EventManager';
+import { getFullscreenElement } from 'lib/util';
 
 /**
  * @template T
@@ -94,7 +95,7 @@ export default function Modals(eventMgr, modals) {
     });
 
     document.addEventListener('fullscreenchange', () => {
-      result.setFullscreen(document.fullscreenElement);
+      result.setFullscreen(getFullscreenElement());
     });
   });
 

@@ -2,7 +2,7 @@
 
 import IntlMessageFormat from 'intl-messageformat';
 
-import { dataUrlMime } from 'lib/util';
+import { dataUrlMime, getFullscreenElement } from 'lib/util';
 
 /**
  * @typedef {{
@@ -101,7 +101,7 @@ export default class Environment {
    * @returns {boolean}
    */
   isInFullScreen() {
-    return document.fullscreenElement !== null;
+    return getFullscreenElement() !== null;
   }
 
   /**
