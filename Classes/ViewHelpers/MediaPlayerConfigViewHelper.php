@@ -15,6 +15,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -39,12 +40,15 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         $id = $arguments['id'];
         $inputSettings = $arguments['settings'];
 
+        /** @var SiteLanguage $language */
+        $language = $renderingContext->getRequest()->getAttribute('language');
+
         // Whitelist keys to keep out stuff such as playerTranslationsFile
         $allowedKeys = ['shareButtons', 'screenshotCaptions', 'constants', 'equalizer'];
         $result = array_intersect_key($inputSettings, array_flip($allowedKeys));
 
         // Add translations
-        $result['lang'] = self::getTranslations($inputSettings['playerTranslations']['baseFile'] ?? 'EXT:dlf/Resources/Private/Language/locallang_media.xlf');
+        $result['lang'] = self::getTranslations($language, $inputSettings['playerTranslations']['baseFile'] ?? 'EXT:dlf/Resources/Private/Language/locallang_media.xlf');
 
         // Resolve paths
         foreach ($result['shareButtons'] ?? [] as $key => $button) {
@@ -86,14 +90,17 @@ CONFIG;
      * Collect translation keys from the XLIFF file and translate them
      * using the current language.
      *
+     * @param SiteLanguage $language The site language Object
+     * @param string $translationFile Path to the translation file
+     * @return array
+     *
      * Keys of the result array:
      * - locale: Locale identifier of current site language
      * - twoLetterIsoCode: Two-letter ISO code of current site language
      * - phrases: Map from translation keys to their translations
      */
-    private static function getTranslations(string $translationFile): array
+    private static function getTranslations(SiteLanguage $language, string $translationFile): array
     {
-        $language = $GLOBALS['TYPO3_REQUEST']->getAttribute('language');
         $languageKey = $language->getTypo3Language();
 
         // Get default language labels
@@ -118,7 +125,7 @@ CONFIG;
 
         return [
             'locale' => $language->getLocale(),
-            'twoLetterIsoCode' => $language->getTwoLetterIsoCode(),
+            'twoLetterIsoCode' => $language->getLocale()->getLanguageCode(),
             'phrases' => $phrases,
         ];
     }
