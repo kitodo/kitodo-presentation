@@ -167,7 +167,7 @@ export default function registerMultiIirProcessor() {
           const gain = this.previousGain + (this.gain - this.previousGain) * i / inputChannel.length;
           let sampleOut = /** @type {number} */(inputChannel[i]) * gain;
 
-          for (const [key, filter] of Object.entries(this.filters)) {
+          for (const [_key, filter] of Object.entries(this.filters)) {
             if (!filter.isActive) {
               continue;
             }

@@ -293,7 +293,7 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
     const pageSelect = document.querySelector('li.pages form select');
     if (pageSelect instanceof HTMLSelectElement) {
       this.pageSelect = pageSelect;
-      this.pageSelect.onchange = (e) => {
+      this.pageSelect.onchange = (_e) => {
         const pageNo = Number(pageSelect.value);
 
         const chapter = (

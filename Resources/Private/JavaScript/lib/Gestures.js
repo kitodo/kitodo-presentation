@@ -138,9 +138,9 @@ export default class Gestures {
 
   /**
    * @private
-   * @param {MouseEvent} e
+   * @param {MouseEvent} _e
    */
-  handleContextMenu(e) {
+  handleContextMenu(_e) {
     // Release if non-left mouse button is clicked
     this.release();
   }
@@ -237,17 +237,17 @@ export default class Gestures {
 
   /**
    * @private
-   * @param {PointerEvent} e
+   * @param {PointerEvent} _e
    */
-  handlePointerCancel(e) {
+  handlePointerCancel(_e) {
     this.release();
   }
 
   /**
    * @private
-   * @param {PointerEvent} e
+   * @param {PointerEvent} _e
    */
-  handlePointerLeave(e) {
+  handlePointerLeave(_e) {
     const { tapdown, tapup } = this.last;
 
     if (tapdown === null || (tapup !== null && tapdown.date > tapup.date)) {

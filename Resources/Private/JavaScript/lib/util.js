@@ -1,6 +1,58 @@
 // @ts-check
 
 /**
+ * Create a DOM tree in a declarative syntax. `e` is short for "element".
+ *
+ * Example:
+ *
+ *     this.$container = e('div', { className: 'container' }, [
+ *       this.$button = e('button', { $click: this.onResume }, ['Resume']),
+ *     ]);
+ *
+ * This is equivalent to:
+ *
+ *     this.$container = document.createElement('div');
+ *     this.$container.className = 'container';
+ *     this.$button = document.createElement('button');
+ *     button.addEventListener('click', this.onResume);
+ *     button.textContent = 'Resume';
+ *     this.$container.appendChild(button);
+ *
+ * @template {keyof HTMLElementTagNameMap} K
+ * @param {K} tag Tag name of the element to be created.
+ * @param {Partial<HTMLElementTagNameMap[K]> & Partial<EventListeners<'$'>>} attrs Key-value-map of
+ * properties to be set on the HTML element. If the key starts with a `$` sign,
+ * it is interpreted as event handler.
+ * @param {(HTMLElement | string | null | undefined | boolean)[]} children Array of children to be
+ * appended to the element. Strings are appended as text nodes. Anything other
+ * than a string or a DOMElement is skipped.
+ * @returns {HTMLElementTagNameMap[K]}
+ */
+export function e(tag, attrs = {}, children = []) {
+  const element = document.createElement(tag);
+
+  for (const [key, value] of Object.entries(attrs)) {
+    if (key[0] === '$') {
+      element.addEventListener(key.substring(1), value);
+    } else {
+      element[key] = value;
+    }
+  }
+
+  for (const child of children) {
+    if (typeof child === 'string') {
+      element.append(
+        document.createTextNode(child)
+      );
+    } else if (child instanceof HTMLElement) {
+      element.append(child);
+    }
+  }
+
+  return element;
+}
+
+/**
  * Serialize a two-dimensional array (row-major) as CSV.
  *
  * @param {string[][]} data
@@ -174,46 +226,6 @@ export function readBlob(blob, method) {
 }
 
 /**
- * Load {@link blob} (assumed to contain an image) into an `HTMLImageElement`.
- *
- * @param {Blob} blob
- * @returns {Promise<HTMLImageElement>}
- */
-export function blobToImage(blob) {
-  return withObjectUrl(blob, loadImage);
-}
-
-/**
- * Load an image from {@link src} into an `HTMLImageElement`.
- *
- * @param {string} src
- * @returns {Promise<HTMLImageElement>}
- */
-export async function loadImage(src) {
-  const image = e('img');
-  image.decoding = 'async';
-  image.src = src;
-  await image.decode();
-  return image;
-}
-
-/**
- * Download a file from a `Blob` or from a URL.
- *
- * @param {Blob | string} obj
- * @param {string} filename Name of the target file.
- */
-export function download(obj, filename) {
-  if (typeof obj === 'string') {
-    e("a", { href: obj, download: filename }).click();
-  } else {
-    withObjectUrl(obj, (objectUrl) => {
-      download(objectUrl, filename);
-    });
-  }
-}
-
-/**
  * Call {@link callback} with a temporary object URL to {@link obj}.
  *
  * The object URL is automatically revoked once the callback returns, or, if
@@ -259,6 +271,46 @@ export function withObjectUrl(obj, callback) {
   } else {
     URL.revokeObjectURL(objectUrl);
     return result;
+  }
+}
+
+/**
+ * Load an image from {@link src} into an `HTMLImageElement`.
+ *
+ * @param {string} src
+ * @returns {Promise<HTMLImageElement>}
+ */
+export async function loadImage(src) {
+  const image = e('img');
+  image.decoding = 'async';
+  image.src = src;
+  await image.decode();
+  return image;
+}
+
+/**
+ * Load {@link blob} (assumed to contain an image) into an `HTMLImageElement`.
+ *
+ * @param {Blob} blob
+ * @returns {Promise<HTMLImageElement>}
+ */
+export function blobToImage(blob) {
+  return withObjectUrl(blob, loadImage);
+}
+
+/**
+ * Download a file from a `Blob` or from a URL.
+ *
+ * @param {Blob | string} obj
+ * @param {string} filename Name of the target file.
+ */
+export function download(obj, filename) {
+  if (typeof obj === 'string') {
+    e("a", { href: obj, download: filename }).click();
+  } else {
+    withObjectUrl(obj, (objectUrl) => {
+      download(objectUrl, filename);
+    });
   }
 }
 
@@ -326,58 +378,6 @@ export function domJoin(array, elements) {
   }
 
   return result;
-}
-
-/**
- * Create a DOM tree in a declarative syntax. `e` is short for "element".
- *
- * Example:
- *
- *     this.$container = e('div', { className: 'container' }, [
- *       this.$button = e('button', { $click: this.onResume }, ['Resume']),
- *     ]);
- *
- * This is equivalent to:
- *
- *     this.$container = document.createElement('div');
- *     this.$container.className = 'container';
- *     this.$button = document.createElement('button');
- *     button.addEventListener('click', this.onResume);
- *     button.textContent = 'Resume';
- *     this.$container.appendChild(button);
- *
- * @template {keyof HTMLElementTagNameMap} K
- * @param {K} tag Tag name of the element to be created.
- * @param {Partial<HTMLElementTagNameMap[K]> & Partial<EventListeners<'$'>>} attrs Key-value-map of
- * properties to be set on the HTML element. If the key starts with a `$` sign,
- * it is interpreted as event handler.
- * @param {(HTMLElement | string | null | undefined | boolean)[]} children Array of children to be
- * appended to the element. Strings are appended as text nodes. Anything other
- * than a string or a DOMElement is skipped.
- * @returns {HTMLElementTagNameMap[K]}
- */
-export function e(tag, attrs = {}, children = []) {
-  const element = document.createElement(tag);
-
-  for (const [key, value] of Object.entries(attrs)) {
-    if (key[0] === '$') {
-      element.addEventListener(key.substring(1), value);
-    } else {
-      element[key] = value;
-    }
-  }
-
-  for (const child of children) {
-    if (typeof child === 'string') {
-      element.append(
-        document.createTextNode(child)
-      );
-    } else if (child instanceof HTMLElement) {
-      element.append(child);
-    }
-  }
-
-  return element;
 }
 
 /**

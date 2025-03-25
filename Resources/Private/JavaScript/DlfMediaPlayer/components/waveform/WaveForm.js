@@ -221,7 +221,7 @@ export default class WaveForm extends DlfMediaPlugin {
       player.ui.alwaysPrependBottomControl(this);
     }
 
-    player.media.addEventListener('loadedmetadata', (e) => {
+    player.media.addEventListener('loadedmetadata', (_e) => {
       this.updateZoom(this.maxSamplesPerPixel);
     });
     this.load(src);
