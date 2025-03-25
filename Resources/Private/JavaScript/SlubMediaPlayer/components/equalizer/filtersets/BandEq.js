@@ -159,7 +159,7 @@ export default class BandEq {
       Q: BandEq.octavesToQ(bwOct),
     };
 
-    const bwHz = frequency / options.Q;
+    // const bwHz = frequency / options.Q;
 
     const node = new BiquadFilterNode(this.audioContext_, options);
 

@@ -3,35 +3,6 @@
 import { fillPlaceholders, zeroPad } from 'lib/util';
 
 /**
- * Formats {@link totalSeconds} to a time string.
- *
- * The base format is `hh:mm:ss:ff`. Hours and frames are included depending on
- * {@link showHour} and {@link fps}. The first part is not zero-padded.
- *
- * Adopted from shaka.ui.Utils.buildTimeString.
- *
- * @param {number} totalSeconds Total number of seconds to be formatted.
- * @param {boolean} showHour Whether or not to show hours.
- * @param {number | null} fps (Optional) Number of FPS used to calculate frame
- * count.
- * @returns {string}
- */
-export default function buildTimeString(totalSeconds, showHour, fps = null) {
-  let template = showHour ? "{h}:{mm}:{ss}" : "{m}:{ss}";
-  if (fps) {
-    template += ":{ff}";
-
-    if (!showHour) {
-      template += "f";
-    }
-  } else {
-    template += ".{00}";
-  }
-
-  return fillPlaceholders(template, getTimeStringPlaceholders(totalSeconds, fps));
-}
-
-/**
  * Split total number of seconds into parts (hours, minutes, etc.), then key and
  * format them as suitable to fill timecode placeholders.
  *
@@ -69,4 +40,33 @@ export function getTimeStringParts(totalSeconds, fps = 0) {
   const frames = Math.floor(fractional * fps);
 
   return { hours, minutes, totalMinutes, seconds, fractional, frames };
+}
+
+/**
+ * Formats {@link totalSeconds} to a time string.
+ *
+ * The base format is `hh:mm:ss:ff`. Hours and frames are included depending on
+ * {@link showHour} and {@link fps}. The first part is not zero-padded.
+ *
+ * Adopted from shaka.ui.Utils.buildTimeString.
+ *
+ * @param {number} totalSeconds Total number of seconds to be formatted.
+ * @param {boolean} showHour Whether or not to show hours.
+ * @param {number | null} fps (Optional) Number of FPS used to calculate frame
+ * count.
+ * @returns {string}
+ */
+export default function buildTimeString(totalSeconds, showHour, fps = null) {
+  let template = showHour ? "{h}:{mm}:{ss}" : "{m}:{ss}";
+  if (fps) {
+    template += ":{ff}";
+
+    if (!showHour) {
+      template += "f";
+    }
+  } else {
+    template += ".{00}";
+  }
+
+  return fillPlaceholders(template, getTimeStringPlaceholders(totalSeconds, fps));
 }

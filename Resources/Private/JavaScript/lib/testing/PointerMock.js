@@ -11,6 +11,40 @@ import { setTimeout } from 'timers/promises';
  */
 
 /**
+ * Mock class for MouseEvent
+ * Used for testing purposes to simulate mouse events with specific coordinates
+ * @extends MouseEvent
+ */
+export class MouseEventMock extends MouseEvent {
+  /**
+   *
+   * @param {string} type
+   * @param {number} clientX
+   * @param {number} clientY
+   */
+  constructor(type, clientX, clientY) {
+    super(type);
+
+    this._clientX = clientX;
+    this._clientY = clientY;
+  }
+
+  /**
+   * @override
+   */
+  get clientX() {
+    return this._clientX;
+  }
+
+  /**
+   * @override
+   */
+  get clientY() {
+    return this._clientY;
+  }
+}
+
+/**
  * Mock class for unit-testing `Gestures`.
  *
  * The API is oriented at Puppeteer.
@@ -72,34 +106,5 @@ export class PointerMock {
   dispatch(name) {
     const event = new MouseEventMock(name, this.position.clientX, this.position.clientY);
     this.target.dispatchEvent(event);
-  }
-}
-
-export class MouseEventMock extends MouseEvent {
-  /**
-   *
-   * @param {string} type
-   * @param {number} clientX
-   * @param {number} clientY
-   */
-  constructor(type, clientX, clientY) {
-    super(type);
-
-    this._clientX = clientX;
-    this._clientY = clientY;
-  }
-
-  /**
-   * @override
-   */
-  get clientX() {
-    return this._clientX;
-  }
-
-  /**
-   * @override
-   */
-  get clientY() {
-    return this._clientY;
   }
 }

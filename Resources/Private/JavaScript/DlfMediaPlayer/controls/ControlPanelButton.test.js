@@ -37,6 +37,8 @@ describe('ControlPanelButton', () => {
         },
       }),
     });
+    expect(button).toBeInstanceOf(ControlPanelButton);
+    expect(button.eventManager).toBeDefined();
     const domButton = buttonContainer.querySelector('button');
     expect(domButton?.className.startsWith("material-icons-round")).toBe(true);
     expect(domButton?.textContent).toBe("info");
@@ -49,6 +51,8 @@ describe('ControlPanelButton', () => {
     const buttonContainer = document.createElement('div');
     const button = new ControlPanelButton(buttonContainer, shk.controls, env);
     const domButton = buttonContainer.querySelector('button');
+    expect(button).toBeInstanceOf(ControlPanelButton);
+    expect(button.eventManager).toBeDefined();
     expect(domButton?.ariaLabel).toBe("");
   });
 });

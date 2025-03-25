@@ -76,7 +76,7 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
     for (const preset of this.presets_) {
       this.eqView_.addPreset(preset);
     }
-    for (const [key, preset] of Object.entries(this.getLocalPresets())) {
+    for (const [_key, preset] of Object.entries(this.getLocalPresets())) {
       this.eqView_.addPreset(preset);
     }
     if (this.defaultPreset_ !== null) {

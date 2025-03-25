@@ -102,7 +102,7 @@ export default class ImageFetcher {
    * Aborts pending request that have been initiated by calling {@link get}.
    */
   abortPending() {
-    for (const [url, task] of Object.entries(this.tasks)) {
+    for (const [_url, task] of Object.entries(this.tasks)) {
       // TODO: actually abort network request?
       this.stopTask(task);
     }
@@ -219,8 +219,12 @@ export default class ImageFetcher {
         break;
       }
 
-      case LoadState.Available:
+      case LoadState.Available: {
         break;
+      }
+
+      default:
+        throw new Error(`Unhandled LoadState type: ${task.state}`);
     }
   }
 }

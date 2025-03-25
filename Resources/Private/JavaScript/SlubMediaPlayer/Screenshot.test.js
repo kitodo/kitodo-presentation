@@ -10,6 +10,41 @@ import { fillMetadata } from 'SlubMediaPlayer/lib/metadata';
 import { drawScreenshot } from 'SlubMediaPlayer/Screenshot';
 import ScreenshotModal from 'SlubMediaPlayer/modals/ScreenshotModal';
 
+class VideoMock extends HTMLVideoElement {
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
+  constructor(width, height) {
+    super();
+
+    this._mockWidth = width;
+    this._mockHeight = height;
+  }
+
+  /** @override */
+  get width() {
+    return this._mockWidth;
+  }
+
+  /** @override */
+  get videoWidth() {
+    return this._mockWidth;
+  }
+
+  /** @override */
+  get height() {
+    return this._mockHeight;
+  }
+
+  /** @override */
+  get videoHeight() {
+    return this._mockHeight;
+  }
+}
+
+customElements.define('video-mock', VideoMock, { extends: 'video' });
+
 beforeEach(() => {
   // TODO: Reset JSDOM in a more robust way
   document.body.innerHTML = '';
@@ -67,41 +102,6 @@ test('can open screenshot overlay', async () => {
   await modal.update();
   expect(overlay()).toMatchSnapshot();
 });
-
-class VideoMock extends HTMLVideoElement {
-  /**
-   * @param {number} width
-   * @param {number} height
-   */
-  constructor(width, height) {
-    super();
-
-    this._mockWidth = width;
-    this._mockHeight = height;
-  }
-
-  /** @override */
-  get width() {
-    return this._mockWidth;
-  }
-
-  /** @override */
-  get videoWidth() {
-    return this._mockWidth;
-  }
-
-  /** @override */
-  get height() {
-    return this._mockHeight;
-  }
-
-  /** @override */
-  get videoHeight() {
-    return this._mockHeight;
-  }
-}
-
-customElements.define('video-mock', VideoMock, { extends: 'video' });
 
 test('can draw to canvas', () => {
   const metadata = getTestMetadataArray();

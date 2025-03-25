@@ -1,4 +1,4 @@
-/** @preserve
+/**
 This is based upon VideoFrame (see below). Changes:
 - export default
 - Slightly refine JSDoc/typings
@@ -12,6 +12,7 @@ VideoFrame: HTML5 Video - SMTPE Time Code capturing and Frame Seeking API
 @author Allen Sarkisyan
 @copyright (c) 2013 Allen Sarkisyan
 @license Released under the Open Source MIT License
+@preserve
 
 Contributors:
 Allen Sarkisyan - Lead engineer
