@@ -121,7 +121,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         /** @var Request $request */
         $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
-        $this->pageUid = !($this instanceof OaiPmhController) ? $this->request->getAttribute('routing')->getPageId() : 0;
+        $this->pageUid = (int) GeneralUtility::_GET('id');
         $this->requestData['page'] = $this->requestData['page'] ?? 1;
 
         // Sanitize user input to prevent XSS attacks.
@@ -623,7 +623,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             }
         }
 
-        if ($this->document || $doc === null) {
+        if (!$this->document || $doc === null) {
             $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
 
