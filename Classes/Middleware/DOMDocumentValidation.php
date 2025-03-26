@@ -22,6 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Http\ResponseFactory;
 use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Error\Result;
@@ -66,9 +67,16 @@ class DOMDocumentValidation implements MiddlewareInterface
             throw new InvalidArgumentException('URL parameter is missing.', 1724334674);
         }
 
+        /** @var TypoScriptService $typoScriptService */
+
+
         /** @var ConfigurationManagerInterface $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-        $settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
+        $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+
+        $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScript['plugin.']['tx_dlf.']['settings.']);
 
         if (!array_key_exists("domDocumentValidationValidators", $settings)) {
             $this->logger->error('DOMDocumentValidation is not configured correctly.');
