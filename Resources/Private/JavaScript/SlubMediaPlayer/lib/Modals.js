@@ -1,7 +1,6 @@
 // @ts-check
 
 import EventEmitter from 'events';
-import EventManager from 'lib/EventManager';
 import { getFullscreenElement } from 'lib/util';
 
 /**
@@ -20,6 +19,10 @@ import { getFullscreenElement } from 'lib/util';
 /**
  * @template T
  * @typedef {T & ModalFuncs<T> & EventEmitter} ModalsType
+ */
+
+/**
+ * @typedef {import('lib/EventManager').default} EventManager
  */
 
 /**

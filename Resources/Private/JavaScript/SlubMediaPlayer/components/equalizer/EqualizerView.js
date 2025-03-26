@@ -2,7 +2,6 @@
 
 import { EventTarget } from 'DlfMediaPlayer/3rd-party/EventTarget';
 import { clamp, e } from 'lib/util';
-import Equalizer from 'SlubMediaPlayer/components/equalizer/Equalizer';
 import FrequencyResponse from 'SlubMediaPlayer/components/equalizer/FrequencyResponse';
 import Scale, { Linear, Logarithmic } from 'SlubMediaPlayer/components/equalizer/Scale';
 
@@ -42,6 +41,8 @@ import Scale, { Linear, Logarithmic } from 'SlubMediaPlayer/components/equalizer
  *    key: string;
  *  };
  * }} Events
+ *
+ * @typedef {import ('SlubMediaPlayer/components/equalizer/Equalizer').default} Equalizer
  */
 
 /**

@@ -1,11 +1,15 @@
 // @ts-check
 
 import { blobToDataURL, e, filterNonNull } from 'lib/util';
-import { DlfMediaPlayer, DlfMediaPlugin } from 'DlfMediaPlayer/index';
 import { parsePreset } from 'SlubMediaPlayer/components/equalizer/preset';
+import DlfMediaPlugin from 'DlfMediaPlayer/DlfMediaPlugin';
 import Equalizer from 'SlubMediaPlayer/components/equalizer/Equalizer';
 import EqualizerView from 'SlubMediaPlayer/components/equalizer/EqualizerView';
 import registerMultiIirProcessor from 'SlubMediaPlayer/components/equalizer/MultiIirProcessor.no-babel';
+
+/**
+ * @typedef {import('DlfMediaPlayer/DlfMediaPlayer').default} DlfMediaPlayer
+ */
 
 /**
  * Custom element / player plugin that can be used to attach the equalizer to

@@ -185,7 +185,7 @@ export default class ImageFetcher {
           type: LoadState.Fetching,
           abortController,
           responsePromise,
-        }
+        };
         break;
       }
 

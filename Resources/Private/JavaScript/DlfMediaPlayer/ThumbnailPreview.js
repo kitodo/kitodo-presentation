@@ -8,12 +8,13 @@ import {
   setElementClass,
 } from 'lib/util';
 
-import Chapters from 'DlfMediaPlayer/Chapters';
-import ImageFetcher from 'DlfMediaPlayer/ImageFetcher';
 import buildTimeString from 'DlfMediaPlayer/lib/buildTimeString';
 import sanitizeThumbnail from 'DlfMediaPlayer/lib/thumbnails/sanitizeThumbnail';
 
 /**
+ * @typedef {import('DlfMediaPlayer/Chapters').default} Chapters
+ * @typedef {import('DlfMediaPlayer/ImageFetcher').default} ImageFetcher
+ *
  * @typedef {{
  *  absoluteRaw: number;
  *  secondsPerPixel: number;
@@ -528,7 +529,7 @@ export default class ThumbnailPreview {
     );
 
     if (shouldRender) {
-      const { positionX, positionY, width, height } = thumb;
+      const { positionX, positionY, width } = thumb;
 
       const scale = DISPLAY_WIDTH / width;
       this.$img.replaceWith(tilesetImage);

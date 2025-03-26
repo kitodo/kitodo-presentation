@@ -2,13 +2,14 @@
 
 import BandEq from 'SlubMediaPlayer/components/equalizer/filtersets/BandEq';
 import RiaaEq from 'SlubMediaPlayer/components/equalizer/filtersets/RiaaEq';
-import FrequencyResponse from 'SlubMediaPlayer/components/equalizer/FrequencyResponse';
 
 /**
  * @typedef {{
  *  destination: AudioNode;
  *  analyzer: AnalyserNode;
  * }} Connection
+ *
+ * @typedef {import('SlubMediaPlayer/components/equalizer/FrequencyResponse').default} FrequencyResponse
  */
 
 export default class Equalizer {

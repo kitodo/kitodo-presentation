@@ -1,6 +1,6 @@
 // @ts-check
 
-import { domJoin, e, setElementClass } from 'lib/util';
+import { domJoin, e } from 'lib/util';
 import { getKeybindingText } from 'SlubMediaPlayer/lib/trans';
 import SimpleModal from 'SlubMediaPlayer/lib/SimpleModal';
 
