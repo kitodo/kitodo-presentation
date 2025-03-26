@@ -623,7 +623,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             }
         }
 
-        if ($this->document || $doc === null) {
+        if (!$this->document || $doc === null) {
             $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
 
