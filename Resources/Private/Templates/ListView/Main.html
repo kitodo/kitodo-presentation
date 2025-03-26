@@ -27,7 +27,7 @@
         <f:variable name="action" value="main" />
         <f:variable name="controller" value="ListView" />
 
-        <f:if condition="{numResults} > 0">
+        <f:if condition="{countResults} > 0">
             <f:render partial="ListView/SortingForm" arguments="{_all}" />
             <f:render partial="ListView/Results" arguments="{_all}" />
         </f:if>
