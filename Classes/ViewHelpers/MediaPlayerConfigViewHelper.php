@@ -10,6 +10,7 @@ namespace Kitodo\Dlf\ViewHelpers;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
@@ -40,8 +41,11 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         $id = $arguments['id'];
         $inputSettings = $arguments['settings'];
 
+        /** @var RenderingContext $renderingContext */
+        $request = $renderingContext->getRequest();
+
         /** @var SiteLanguage $language */
-        $language = $renderingContext->getRequest()->getAttribute('language');
+        $language = $request->getAttribute('language');
 
         // Whitelist keys to keep out stuff such as playerTranslationsFile
         $allowedKeys = ['shareButtons', 'screenshotCaptions', 'constants', 'equalizer'];
