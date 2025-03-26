@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\ViewHelpers;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Core\Localization\Locale;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -105,6 +106,8 @@ CONFIG;
      */
     private static function getTranslations(SiteLanguage $language, string $translationFile): array
     {
+        /** @var Locale $locale */
+        $locale = $language->getLocale();
         $languageKey = $language->getTypo3Language();
 
         // Get default language labels
@@ -128,8 +131,8 @@ CONFIG;
         }
 
         return [
-            'locale' => $language->getLocale(),
-            'twoLetterIsoCode' => $language->getLocale()->getLanguageCode(),
+            'locale' => $locale,
+            'twoLetterIsoCode' => $locale->getLanguageCode(),
             'phrases' => $phrases,
         ];
     }
