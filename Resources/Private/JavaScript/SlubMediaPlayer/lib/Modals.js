@@ -42,9 +42,6 @@ export default function Modals(eventMgr, modals) {
   // an open modal.
   const modalCover = document.createElement('div');
   modalCover.className = "sxnd-modal-cover";
-  modalCover.addEventListener('click', () => {
-    result.closeAll();
-  });
   document.body.append(modalCover);
 
   /** @type {ModalFuncs<T>} */
@@ -90,6 +87,10 @@ export default function Modals(eventMgr, modals) {
 
   /** @type {ModalsType<T>} */
   const result = Object.assign(new EventEmitter(), modals, resultFuncs);
+
+  modalCover.addEventListener('click', () => {
+    result.closeAll();
+  });
 
   // TODO: Performance
   eventMgr.record(() => {
