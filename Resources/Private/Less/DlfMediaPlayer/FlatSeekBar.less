@@ -26,7 +26,7 @@
         height: @seek-bar-height;
         width: 1px;
         background-color: @base-color;
-        z-index: -1; // Less than .dlf-media-chapter-marker
+        z-index: 0;
         visibility: hidden;
     }
 
@@ -36,7 +36,7 @@
         height: @seek-bar-height;
         width: 1px;
         background-color: rgba(@base-color, 0.4);
-        z-index: -2; // Less than .dlf-media-chapter-marker and .seek-marker
+        z-index: -1; // Less than .dlf-media-chapter-marker and .seek-marker
         visibility: hidden;
     }
 }
