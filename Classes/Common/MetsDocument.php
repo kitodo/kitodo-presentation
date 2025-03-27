@@ -1537,17 +1537,19 @@ final class MetsDocument extends AbstractDocument
             $this->physicalStructureInfo[$id]['contentIds'] = $this->getAttribute($elementNode['CONTENTIDS']);
             // Get the file representations from fileSec node.
             foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                // @fschoelzel: The following line is not working for the Media Player, because the elseif part is never reached.
+                // @fschoelzel: The following lines dont work for the Media Player, because the elseif part is never reached.
                 // $fileNode = $fptr->area ?? $fptr;
                 // $fileId = (string) $fileNode->attributes()->FILEID;
+
                 $fileId = (string) $fptr->attributes()->FILEID;
+                $area = $fptr->children('http://www.loc.gov/METS/')->area;
 
                 // Check if file has valid @USE attribute.
                 if (!empty($fileUse[(string) $fileId])) {
                     $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
                     // List all files of the fileGrp that are referenced on the page, not only the last one
                     $this->physicalStructureInfo[$id]['all_files'][$fileUse[$fileId]][] = $fileId;
-                } elseif ($area = $fptr->children('http://www.loc.gov/METS/')->area) {
+                } elseif ($area) {
                     $areaAttrs = $area->attributes();
                     $fileId = (string) $areaAttrs->FILEID;
                     $physInfo = &$this->physicalStructureInfo[$id];

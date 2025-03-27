@@ -133,16 +133,16 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('av_beispiel.xml');
 
-        $ch3_page = $doc->physicalStructureInfo[$doc->physicalStructure[3]];
+        $chapterThreePage = $doc->physicalStructureInfo[$doc->physicalStructure[3]];
         $this->assertArrayMatches([
             'DEFAULT' => 'FILE_0000_DEFAULT_MP4',
-        ], $ch3_page['files']);
+        ], $chapterThreePage['files']);
         $this->assertArrayMatches([
             'DEFAULT' => [
                 'FILE_0000_DEFAULT_MOV',
                 'FILE_0000_DEFAULT_MP4',
             ],
-        ], $ch3_page['all_files']);
+        ], $chapterThreePage['all_files']);
         $this->assertArrayMatches([
             'FILE_0000_DEFAULT_MP4' => [
                 'area' => [
@@ -152,7 +152,7 @@ class MetsDocumentTest extends FunctionalTestCase
                     'exttype' => 'TIME',
                 ],
             ],
-        ], $ch3_page['fileInfos']);
+        ], $chapterThreePage['fileInfos']);
     }
 
     /**

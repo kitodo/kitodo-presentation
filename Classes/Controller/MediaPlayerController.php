@@ -177,11 +177,12 @@ class MediaPlayerController extends AbstractController
     private function collectAdditionalVideoUrls(AbstractDocument $doc, int $pageNo, array $thumbnailUseGroups, array $waveformUseGroups): array
     {
         $videoUrl = [];
-        if (!empty($thumbFiles = $this->findFiles($doc, 0, $thumbnailUseGroups)) // 0 = for whole video (not just chapter)
-            && $this->settings['constants']['showPoster'] == 1) {
+        $thumbFiles = $this->findFiles($doc, 0, $thumbnailUseGroups); // 0 = for whole video (not just chapter)
+        if (!empty($thumbFiles) && $this->settings['constants']['showPoster'] == 1) {
             $videoUrl['poster'] = $thumbFiles[0];
         }
-        if (!empty($waveformFiles = $this->findFiles($doc, $pageNo, $waveformUseGroups))) {
+        $waveformFiles = $this->findFiles($doc, $pageNo, $waveformUseGroups);
+        if (!empty($waveformFiles)) {
             $videoUrl['waveform'] = $waveformFiles[0];
         }
         return $videoUrl;
