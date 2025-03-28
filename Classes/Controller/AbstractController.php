@@ -187,17 +187,17 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access protected
      *
-     * @param int $documentId The document's UID (fallback: $this->requestData[id])
+     * @param string $documentId The document's UID or URL (id), fallback: record ID (recordId)
      *
      * @return void
      */
-    protected function loadDocument(int $documentId = 0): void
+    protected function loadDocument(string $documentId = ''): void
     {
         // Sanitize FlexForm settings to avoid later casting.
         $this->sanitizeSettings();
 
         // Get document ID from request data if not passed as parameter.
-        if ($documentId === 0 && !empty($this->requestData['id'])) {
+        if (!$documentId && !empty($this->requestData['id'])) {
             $documentId = $this->requestData['id'];
         }
 
@@ -207,7 +207,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $doc = null;
 
             if (MathUtility::canBeInterpretedAsInteger($documentId)) {
-                $doc = $this->getDocumentByUid($documentId);
+                $doc = $this->getDocumentByUid((int) $documentId);
             } elseif (GeneralUtility::isValidUrl($documentId)) {
                 $doc = $this->getDocumentByUrl($documentId);
             }
