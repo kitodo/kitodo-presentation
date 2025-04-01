@@ -430,6 +430,7 @@ final class MetsDocument extends AbstractDocument
             // Check if file has valid @USE attribute.
             if (!empty($fileUse[$fileId])) {
                 $details['files'][$fileUse[$fileId]] = $fileId;
+                $details['all_files'][$fileUse[$fileId]][] = $fileId;
             }
         }
     }
@@ -458,6 +459,7 @@ final class MetsDocument extends AbstractDocument
             $details['thumbnailId'] = $this->getThumbnail();
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
+            $details['videoChapter'] = $this->getTimecode($details);
         } elseif ($details['id'] == $this->magicGetToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
@@ -466,6 +468,58 @@ final class MetsDocument extends AbstractDocument
         if ($details['thumbnailId'] === null) {
             unset($details['thumbnailId']);
         }
+    }
+
+    /**
+     * Get timecode and file IDs that link to first matching fileGrpVideo/USE.
+     *
+     * Returns either `null` or an array with the following keys:
+     * - `fileIds`: Array of linked file IDs
+     * - `fileIdsJoin`: String where all `fileIds` are joined using ','.
+     *    This is for convenience when passing `fileIds` in a Fluid template or similar.
+     * - `timecode`: Time code specified in first matching `<mets:area>`
+     *
+     * @param array $logInfo
+     * @return ?array
+     */
+    protected function getTimecode(array $logInfo): ?array
+    {
+        // Load plugin configuration.
+        $useGroupsVideo = $this->useGroupsConfiguration->getVideo();
+
+        foreach ($useGroupsVideo as $useGroupVideo) {
+            if (!isset($this->smLinks['l2p'][$logInfo['id']][0])) {
+                continue;
+            }
+
+            $physInfo = $this->physicalStructureInfo[$this->smLinks['l2p'][$logInfo['id']][0]];
+            $fileIds = $physInfo['all_files'][$useGroupVideo] ?? [];
+
+            $chapter = null;
+
+            foreach ($fileIds as $fileId) {
+                $fileArea = $physInfo['fileInfos'][$fileId]['area'] ?? '';
+                if (empty($fileArea) || $fileArea['betype'] !== 'TIME') {
+                    continue;
+                }
+
+                if ($chapter === null) {
+                    $chapter = [
+                        'fileIds' => [],
+                        'timecode' => Helper::timecodeToSeconds($fileArea['begin']),
+                    ];
+                }
+
+                $chapter['fileIds'][] = $fileId;
+            }
+
+            if ($chapter !== null) {
+                $chapter['fileIdsJoin'] = implode(',', $chapter['fileIds']);
+                return $chapter;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -1449,6 +1503,7 @@ final class MetsDocument extends AbstractDocument
             // Check if file has valid @USE attribute.
             if (!empty($fileUse[$fileId])) {
                 $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
+                $this->physicalStructureInfo[$id]['all_files'][$fileUse[$fileId]][] = $fileId;
             }
         }
     }
@@ -1482,12 +1537,32 @@ final class MetsDocument extends AbstractDocument
             $this->physicalStructureInfo[$id]['contentIds'] = $this->getAttribute($elementNode['CONTENTIDS']);
             // Get the file representations from fileSec node.
             foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                $fileNode = $fptr->area ?? $fptr;
-                $fileId = (string) $fileNode->attributes()->FILEID;
+                // @fschoelzel: The following lines dont work for the Media Player, because the elseif part is never reached.
+                // $fileNode = $fptr->area ?? $fptr;
+                // $fileId = (string) $fileNode->attributes()->FILEID;
+
+                $fileId = (string) $fptr->attributes()->FILEID;
+                $area = $fptr->children('http://www.loc.gov/METS/')->area;
 
                 // Check if file has valid @USE attribute.
                 if (!empty($fileUse[(string) $fileId])) {
                     $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
+                    // List all files of the fileGrp that are referenced on the page, not only the last one
+                    $this->physicalStructureInfo[$id]['all_files'][$fileUse[$fileId]][] = $fileId;
+                } elseif ($area) {
+                    $areaAttrs = $area->attributes();
+                    $fileId = (string) $areaAttrs->FILEID;
+                    $physInfo = &$this->physicalStructureInfo[$id];
+
+                    $physInfo['files'][$fileUse[$fileId]] = $fileId;
+                    $physInfo['all_files'][$fileUse[$fileId]][] = $fileId;
+                    // Info about how the file is referenced/used on the page
+                    $physInfo['fileInfos'][$fileId]['area'] = [
+                        'begin' => (string) $areaAttrs->BEGIN,
+                        'betype' => (string) $areaAttrs->BETYPE,
+                        'extent' => (string) $areaAttrs->EXTENT,
+                        'exttype' => (string) $areaAttrs->EXTTYPE,
+                    ];
                 }
             }
 
