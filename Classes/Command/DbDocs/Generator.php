@@ -255,7 +255,7 @@ class Generator
         $page->addText(<<<RST
 This is a reference of all database tables defined by Kitodo.Presentation.
 
-.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``typo3 kitodo:dbdocs`` inside the Kitodo.Presentation base folder.
+.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``vendor/bin/typo3 kitodo:dbdocs``.
 RST);
 
         // Sort tables alphabetically
