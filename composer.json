@@ -40,6 +40,7 @@
     "slub/php-mods-reader": "^0.4",
     "ubl/php-iiif-prezi-reader": "0.3",
     "solarium/solarium": "^6.3",
+    "softcreatr/jsonpath": "^0.10.0",
     "symfony/process": "^6.4"
   },
   "require-dev": {
