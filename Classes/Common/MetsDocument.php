@@ -850,7 +850,9 @@ final class MetsDocument extends AbstractDocument
                     }
                 }
             } elseif (!($values instanceof DOMNodeList)) {
-                $metadata[$resArray['index_name']] = [trim((string) $values)];
+                if (!empty($values)) {
+                    $metadata[$resArray['index_name']] = [trim((string) $values)];
+                }
             }
         }
     }
