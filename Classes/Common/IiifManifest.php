@@ -581,9 +581,9 @@ final class IiifManifest extends AbstractDocument
                 $values = $iiifResource->jsonPath($resArray['xpath']);
                 if (is_string($values)) {
                     $metadata[$resArray['index_name']] = [trim((string) $values)];
-                } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
+                } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
                     $metadata[$resArray['index_name']] = [];
-                    foreach ($values->data() as $value) {
+                    foreach ($values->getData() as $value) {
                         $metadata[$resArray['index_name']][] = trim((string) $value);
                     }
                 }
@@ -598,9 +598,9 @@ final class IiifManifest extends AbstractDocument
                     $values = $iiifResource->jsonPath($resArray['xpath_sorting']);
                     if (is_string($values)) {
                         $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
-                    } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
+                    } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
                         $metadata[$resArray['index_name']] = [];
-                        foreach ($values->data() as $value) {
+                        foreach ($values->getData() as $value) {
                             $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $value);
                         }
                     }
