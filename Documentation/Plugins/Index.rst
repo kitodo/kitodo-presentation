@@ -54,7 +54,7 @@ In this example, you place the customized fluid template into this file::
 Audioplayer
 -----------
 
-The audioplayer plugin is only active if the selected document has a valid audio filegroup (fileGrpAudio).
+The audioplayer plugin is only active if the selected document has valid audio file use groups (useGroupsAudio).
 
 Properties
 ^^^^^^^^^^
@@ -455,6 +455,38 @@ List View
    :Data Type:
        `t3tsref:data-type-page-id`
    :Default:
+
+
+Media Player
+------------
+
+The mediaplayer plugin is only active if the selected document has valid video file use groups (useGroupsVideo).
+
+:typoscript:`plugin.tx_dlf_mediaplayer.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Default:
+        Default
+
+ - :Property:
+        excludeOther_
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+        1
+
+ - :Property:
+       elementId_
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+        tx-dlf-video
 
 
 Metadata
@@ -903,6 +935,13 @@ Table Of Contents
        basketButton
    :Data Type:
        :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
+        showFull
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
    :Default:
        0
 
