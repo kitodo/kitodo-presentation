@@ -285,6 +285,7 @@ class SearchController extends AbstractController
                 $search['query'] = $fields['fulltext'] . ':(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
             }
         } else {
+            $search['params']['filterquery'][]['query'] = "-type:page";
             // Retain given search field if valid.
             if (!empty($searchParams['query'])) {
                 $search['query'] = Solr::escapeQueryKeepField(trim($searchParams['query']), $this->settings['storagePid']);
