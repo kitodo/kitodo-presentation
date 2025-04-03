@@ -19,6 +19,7 @@
 <f:variable name="wrappedValues"><f:spaceless>
     <f:for each="{documentMetadataSection.{configObject.indexName}}" as="value" iteration="iterator">
         <f:variable name="buildUrlVariable" value="{buildUrl.{sectionIterator.index}}" />
+        <f:variable name="externalUrlVariable" value="{externalUrl.{sectionIterator.index}}" />
         <f:if condition="{buildUrlVariable.{configObject.indexName}}">
             <f:then>
                 <f:render partial="Metadata/LinkEntry" arguments="{_all}"/>
