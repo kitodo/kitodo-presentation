@@ -30,9 +30,8 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
 {
     use LoggerAwareTrait;
 
-    const ITEM_KEY_TITLE = "title";
-    const ITEM_KEY_BREAK_ON_ERROR = "breakOnError";
-    const ITEM_KEY_VALIDATOR = "validator";
+    const CLASSNAME = "className";
+    const VALIDATOR = "validator";
 
     protected array $validatorStack = [];
 
@@ -57,8 +56,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
                 $this->logger->error('Unable to load class ' . $configurationItem["className"] . '.');
                 throw new InvalidArgumentException('Unable to load validator class.', 1723200537037);
             }
-            $breakOnError = !isset($configurationItem["breakOnError"]) || $configurationItem["breakOnError"] !== "false";
-            $this->addValidator($configurationItem["className"], $configurationItem["title"] ?? "", $breakOnError, $configurationItem["configuration"] ?? []);
+            $this->addValidator($configurationItem["className"], $configurationItem["configuration"] ?? []);
         }
     }
 
@@ -66,15 +64,13 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
      * Add validator to the internal validator stack.
      *
      * @param string $className Class name of the validator which was derived from Kitodo\Dlf\Validation\AbstractDlfValidator
-     * @param string $title The title of the validator
-     * @param bool $breakOnError True if the execution of validator stack is interrupted when validator throws an error
      * @param array|null $configuration The configuration of validator
      *
      * @throws InvalidArgumentException
      *
      * @return void
      */
-    protected function addValidator(string $className, string $title, bool $breakOnError = true, ?array $configuration = null): void
+    protected function addValidator(string $className, ?array $configuration = null): void
     {
         if ($configuration === null) {
             $validator = GeneralUtility::makeInstance($className);
@@ -87,9 +83,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
             throw new InvalidArgumentException('Class must be an instance of AbstractDlfValidator.', 1723121212747);
         }
 
-        $title = empty($title) ? $className : $title;
-
-        $this->validatorStack[] = [self::ITEM_KEY_TITLE => $title, self::ITEM_KEY_VALIDATOR => $validator, self::ITEM_KEY_BREAK_ON_ERROR => $breakOnError];
+        $this->validatorStack[] = [self::CLASSNAME => $className, self::VALIDATOR => $validator];
     }
 
     /**
@@ -114,15 +108,16 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
         }
 
         foreach ($this->validatorStack as $validationStackItem) {
-            $validator = $validationStackItem[self::ITEM_KEY_VALIDATOR];
+            $validator = $validationStackItem[self::VALIDATOR];
             $result = $validator->validate($value);
-
             foreach ($result->getErrors() as $error) {
-                $this->addError($error->getMessage(), $error->getCode(), [], $validationStackItem[self::ITEM_KEY_TITLE]);
+                $this->addErrorForValidator($validationStackItem[self::CLASSNAME], $error->getMessage(), $error->getCode());
             }
-
-            if ($validationStackItem[self::ITEM_KEY_BREAK_ON_ERROR] && $result->hasErrors()) {
-                break;
+            foreach ($result->getWarnings() as $warning) {
+                $this->addWarningForValidator($validationStackItem[self::CLASSNAME], $warning->getMessage(), $warning->getCode());
+            }
+            foreach ($result->getWarnings() as $notice) {
+                $this->addNoticeForValidator($validationStackItem[self::CLASSNAME], $notice->getMessage(), $notice->getCode());
             }
         }
     }

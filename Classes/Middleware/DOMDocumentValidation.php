@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Error\Message;
 use TYPO3\CMS\Extbase\Error\Result;
 
 /**
@@ -102,23 +103,78 @@ class DOMDocumentValidation implements MiddlewareInterface
             throw new InvalidArgumentException('Error converting content to xml.', 1724420648);
         }
 
-        $result = $validation->validate($document);
-        return $this->getJsonResponse($result);
+       // $validation->validate($document)
+        return $this->getJsonResponse($settings['domDocumentValidationValidators'],null);
     }
 
-    protected function getJsonResponse(Result $result): ResponseInterface
+    protected function getJsonResponse(array $configurations, ?Result $result): ResponseInterface
     {
-        $resultContent = ["valid" => !$result->hasErrors()];
-
-        foreach ($result->getErrors() as $error) {
-            $resultContent["results"][$error->getTitle()][] = $error->getMessage();
+        /*
+        $validationResults = [];
+        foreach ($configurations as $configuration) {
+            $validationResult = [];
+            $validationResult['validator']['title'] = $configuration['title'];
+           $validatorResult = $result->forProperty($configuration['className']);
+            if ($validatorResult->hasErrors()) {
+                $validationResult['results']['errors'] = array_map(function(Message $message): string {
+                    return $message->getMessage();
+                }, $validatorResult->getErrors());
+            }
+            if ($validatorResult->hasErrors()) {
+                $validationResult['results']['warnings'] = array_map(function(Message $message): string {
+                    return $message->getMessage();
+                }, $validatorResult->getErrors());
+            }
+            if ($validatorResult->hasErrors()) {
+                $validationResult['results']['notices'] = array_map(function(Message $message): string {
+                    return $message->getMessage();
+                }, $validatorResult->getErrors());
+            }
+            $validationResults[] = $validationResult;
         }
-
+*/
         /** @var ResponseFactory $responseFactory */
         $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
         $response = $responseFactory->createResponse()
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
-        $response->getBody()->write(json_encode($resultContent));
+
+        $data = [
+            [
+                "validator" => [
+                    "title" => "Application Profile Validation"
+                ]
+            ],
+            [
+                "validator" => [
+                    "title" => "URL Existence Validator"
+                ],
+                "results" => [
+                    "errors" => [
+                        'URL "https://3drepo.eu/modelupload/b5df7cd550f64e818943ad96fff7e902.jpg" could not be found.',
+                        'URL "https://3d-repository.hs-mainz.de/contact" could not be found.'
+                    ],
+                    "warnings" => [
+                        'URL "https://3drepo.eu/modelupload/b5df7cd550f64e818943ad96fff7e902.jpg" could not be found.',
+                        'URL "https://3d-repository.hs-mainz.de/contact" could not be found.'
+                    ],
+                    "notices" => [
+                        'URL "https://3drepo.eu/modelupload/b5df7cd550f64e818943ad96fff7e902.jpg" could not be found.',
+                        'URL "https://3d-repository.hs-mainz.de/contact" could not be found.'
+                    ]
+                ]
+            ]
+        ];
+        //$response->getBody()->write(json_encode($validationResults));
+        $response->getBody()->write(json_encode($data));
         return $response;
+    }
+
+    /**
+     * @param Result $validatorResult
+     * @return \TYPO3\CMS\Extbase\Error\Error[]
+     */
+    public function getErrors(Result $validatorResult): array
+    {
+        return $validatorResult->getErrors();
     }
 }
