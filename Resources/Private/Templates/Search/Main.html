@@ -118,7 +118,7 @@
         <f:render partial="ListView/SearchHits" arguments="{_all}" />
         <f:variable name="action" value="search" />
         <f:variable name="controller" value="Search" />
-        <f:if condition="{numResults} > 0">
+        <f:if condition="{countResults} > 0">
             <f:render partial="ListView/SortingForm" arguments="{_all}" />
             <f:render partial="ListView/Results" arguments="{_all}" />
         </f:if>
