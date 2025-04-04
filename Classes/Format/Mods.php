@@ -177,11 +177,16 @@ class Mods implements MetadataInterface
                 $k++;
             }
             ksort($name);
+
             $this->metadata['author'][$i] = trim(implode(', ', $name));
         }
-        // Append "valueURI" to name using Unicode unit separator.
+
         if (!empty($authors[$i]->getValueURI())) {
-            $this->metadata['author'][$i] .= pack('C', 31) . $authors[$i]->getValueURI();
+            $displayName = $this->metadata['author'][$i];
+            $this->metadata['author'][$i] = [
+                'name' => $displayName,
+                'url' => (string) $authors[$i]->getValueURI()
+            ];
         }
     }
 
@@ -265,9 +270,13 @@ class Mods implements MetadataInterface
     private function getHolderFromXml(array $holders, int $i): void
     {
         $this->getHolderFromXmlDisplayForm($holders, $i);
-        // Append "valueURI" to name using Unicode unit separator.
+        
+        $displayName = $this->metadata['holder'][$i];
         if (!empty($holders[$i]->getValueURI())) {
-            $this->metadata['holder'][$i] .= pack('C', 31) . $holders[$i]->getValueURI();
+            $this->metadata['author'][$i] = [
+                'name' => $displayName,
+                'url' => (string) $holders[$i]->getValueURI()
+            ];
         }
     }
 
