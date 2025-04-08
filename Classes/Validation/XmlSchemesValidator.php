@@ -15,6 +15,9 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Validation;
 
 use DOMDocument;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * The validator combines the configured schemes into one schema and validates the provided DOMDocument against this.
@@ -45,8 +48,12 @@ class XmlSchemesValidator extends AbstractDlfValidator
     protected function isSchemeValid(DOMDocument $value): bool
     {
         $xsd = '<?xml version="1.0" encoding="utf-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">';
-        foreach ($this->schemes as $scheme) {
-            $xsd .= '<xs:import namespace="' . $scheme["namespace"] . '" schemaLocation="' . $scheme["schemaLocation"] . '"/>';
+        foreach ($this->schemes as $schema) {
+            $schemaLocation = $schema["schemaLocation"];
+            if( str_starts_with($schemaLocation, 'EXT:') ) {
+                $schemaLocation = GeneralUtility::locationHeaderUrl(PathUtility::getPublicResourceWebPath($schema["schemaLocation"]));
+            }
+            $xsd .= '<xs:import namespace="' . $schema["namespace"] . '" schemaLocation="' . $schemaLocation . '"/>';
         }
         $xsd .= '</xs:schema>';
         return $value->schemaValidateSource($xsd);
