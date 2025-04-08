@@ -21,6 +21,8 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Http\ResponseFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -39,6 +41,8 @@ class DOMDocumentValidation implements MiddlewareInterface
 {
     use LoggerAwareTrait;
 
+    private ServerRequestInterface $request;
+
     /**
      * The main method of the middleware.
      *
@@ -53,6 +57,7 @@ class DOMDocumentValidation implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $this->request = $request;
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $response = $handler->handle($request);
         // parameters are sent by POST --> use getParsedBody() instead of getQueryParams()
@@ -103,41 +108,42 @@ class DOMDocumentValidation implements MiddlewareInterface
             throw new InvalidArgumentException('Error converting content to xml.', 1724420648);
         }
 
-       // $validation->validate($document)
-        return $this->getJsonResponse($settings['domDocumentValidationValidators'],null);
+        return $this->getJsonResponse($settings['domDocumentValidationValidators'],$validation->validate($document));
     }
 
     protected function getJsonResponse(array $configurations, ?Result $result): ResponseInterface
     {
-        /*
         $validationResults = [];
+        $index = 0;
         foreach ($configurations as $configuration) {
             $validationResult = [];
-            $validationResult['validator']['title'] = $configuration['title'];
-           $validatorResult = $result->forProperty($configuration['className']);
-            if ($validatorResult->hasErrors()) {
+            $validationResult['validator']['title'] = $this->getTranslation($configuration['title']);
+            $validationResult['validator']['description'] = $this->getTranslation($configuration['description']);
+            $stackResult = $result->forProperty(strval($index));
+            if ($stackResult->hasErrors()) {
                 $validationResult['results']['errors'] = array_map(function(Message $message): string {
                     return $message->getMessage();
-                }, $validatorResult->getErrors());
+                }, $stackResult->getErrors());
             }
-            if ($validatorResult->hasErrors()) {
+            if ($stackResult->hasWarnings()) {
                 $validationResult['results']['warnings'] = array_map(function(Message $message): string {
                     return $message->getMessage();
-                }, $validatorResult->getErrors());
+                }, $stackResult->getWarnings());
             }
-            if ($validatorResult->hasErrors()) {
+            if ($stackResult->hasNotices()) {
                 $validationResult['results']['notices'] = array_map(function(Message $message): string {
                     return $message->getMessage();
-                }, $validatorResult->getErrors());
+                }, $stackResult->getNotices());
             }
             $validationResults[] = $validationResult;
+            $index++;
         }
-*/
+
         /** @var ResponseFactory $responseFactory */
         $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
         $response = $responseFactory->createResponse()
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
-
+/*
         $data = [
             [
                 "validator" => [
@@ -164,8 +170,9 @@ class DOMDocumentValidation implements MiddlewareInterface
                 ]
             ]
         ];
-        //$response->getBody()->write(json_encode($validationResults));
-        $response->getBody()->write(json_encode($data));
+*/
+        $response->getBody()->write(json_encode($validationResults));
+ //       $response->getBody()->write(json_encode($data));
         return $response;
     }
 
@@ -176,5 +183,22 @@ class DOMDocumentValidation implements MiddlewareInterface
     public function getErrors(Result $validatorResult): array
     {
         return $validatorResult->getErrors();
+    }
+
+    private function getTranslation(string $key): string
+    {
+        $language =
+            $this->request->getAttribute('language')
+            ?? $this->request->getAttribute('site')->getDefaultLanguage();
+
+        /** @var LanguageServiceFactory $languageServiceFactory */
+        $languageServiceFactory = GeneralUtility::makeInstance(
+            LanguageServiceFactory::class,
+        );
+
+        /** @var LanguageService $languageService */
+        $languageService = $languageServiceFactory
+            ->createFromSiteLanguage($language);
+        return $languageService->sL($key);
     }
 }

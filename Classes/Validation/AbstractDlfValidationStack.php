@@ -17,6 +17,9 @@ namespace Kitodo\Dlf\Validation;
 use InvalidArgumentException;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Error\Notice;
+use TYPO3\CMS\Extbase\Error\Warning;
+use TYPO3\CMS\Extbase\Validation\Error;
 
 /**
  * Abstract class provides functions for implementing a validation stack.
@@ -30,10 +33,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
 {
     use LoggerAwareTrait;
 
-    const CLASSNAME = "className";
-    const VALIDATOR = "validator";
-
-    protected array $validatorStack = [];
+    protected array $validators = [];
 
     public function __construct(string $valueClassName)
     {
@@ -79,11 +79,11 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
         }
 
         if (!$validator instanceof AbstractDlfValidator) {
-            $this->logger->error($className . ' must be an instance of AbstractDlfValidator.');
-            throw new InvalidArgumentException('Class must be an instance of AbstractDlfValidator.', 1723121212747);
+            $this->logger->error($validator . ' must be an instance of AbstractDlfValidator.');
+            throw new InvalidArgumentException($validator . 'must be an instance of AbstractDlfValidator.', 1723121212747);
         }
 
-        $this->validatorStack[] = [self::CLASSNAME => $className, self::VALIDATOR => $validator];
+        $this->validators[] = $validator;
     }
 
     /**
@@ -102,23 +102,79 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
             throw new InvalidArgumentException('Type of value is not valid.', 1723127564821);
         }
 
-        if (empty($this->validatorStack)) {
+        if (!$this->hasValidators()) {
             $this->logger->error('The validation stack has no validator.');
             throw new InvalidArgumentException('The validation stack has no validator.', 1724662426);
         }
 
-        foreach ($this->validatorStack as $validationStackItem) {
-            $validator = $validationStackItem[self::VALIDATOR];
-            $result = $validator->validate($value);
-            foreach ($result->getErrors() as $error) {
-                $this->addErrorForValidator($validationStackItem[self::CLASSNAME], $error->getMessage(), $error->getCode());
+        foreach ($this->validators as $index => $validator) {
+            $validatorResult = $validator->validate($value);
+            $stackResult = $this->result->forProperty(strval($index));
+            if ($validatorResult->hasErrors()) {
+                foreach ($validatorResult->getErrors() as $error) {
+                    $stackResult->addError($error);
+                }
             }
-            foreach ($result->getWarnings() as $warning) {
-                $this->addWarningForValidator($validationStackItem[self::CLASSNAME], $warning->getMessage(), $warning->getCode());
+            if ($validatorResult->hasWarnings()) {
+                foreach ($validatorResult->getWarnings() as $warning) {
+                    $stackResult->addWarning($warning);
+                }
             }
-            foreach ($result->getWarnings() as $notice) {
-                $this->addNoticeForValidator($validationStackItem[self::CLASSNAME], $notice->getMessage(), $notice->getCode());
+            if ($validatorResult->hasNotices()) {
+                foreach ($validatorResult->getNotices() as $notice) {
+                    $stackResult->addNotice($notice);
+                }
             }
         }
     }
+
+    public function hasValidators(): bool
+    {
+        return !empty($this->validators);
+    }
+
+    public function getValidators(): array
+    {
+        return $this->validators;
+    }
+
+    /**
+     * @param $className
+     * @param $message
+     * @param $code
+     * @param array $arguments
+     * @param $title
+     * @return void
+     */
+    protected function addErrorForValidator($className, $message, $code, array $arguments = [], $title = '')
+    {
+        $this->result->forProperty($className)->addError(new Error((string)$message, (int)$code, $arguments, (string)$title));
+    }
+
+    /**
+     * @param $className
+     * @param $message
+     * @param $code
+     * @param array $arguments
+     * @param $title
+     * @return void
+     */
+    protected function addWarningForValidator($className, $message, $code, array $arguments = [], $title = '')
+    {
+        $this->result->forProperty($className)->addWarning(new Warning((string)$message, (int)$code, $arguments, (string)$title));
+    }
+
+    /**
+     * @param $className
+     * @param $message
+     * @param $code
+     * @param array $arguments
+     * @param $title
+     * @return void
+     */
+    protected function addNoticeForValidator($className, $message, $code, array $arguments = [], $title = '')
+    {
+        $this->result->forProperty($className)->addNotice(new Notice((string)$message, (int)$code, $arguments, (string)$title));
+    }
+
 }

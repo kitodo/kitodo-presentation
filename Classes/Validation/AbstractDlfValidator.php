@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Error\Notice;
 use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Extbase\Error\Warning;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Error;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
@@ -54,44 +55,5 @@ abstract class AbstractDlfValidator extends AbstractValidator
             throw new InvalidArgumentException('Type of value is not valid.', 1723126505626);
         }
         return parent::validate($value);
-    }
-
-    /**
-     * @param $className
-     * @param $message
-     * @param $code
-     * @param array $arguments
-     * @param $title
-     * @return void
-     */
-    protected function addErrorForValidator($className, $message, $code, array $arguments = [], $title = '')
-    {
-        $this->result->forProperty($className)->addError(new Error((string)$message, (int)$code, $arguments, (string)$title));
-    }
-
-    /**
-     * @param $className
-     * @param $message
-     * @param $code
-     * @param array $arguments
-     * @param $title
-     * @return void
-     */
-    protected function addWarningForValidator($className, $message, $code, array $arguments = [], $title = '')
-    {
-        $this->result->forProperty($className)->addWarning(new Warning((string)$message, (int)$code, $arguments, (string)$title));
-    }
-
-    /**
-     * @param $className
-     * @param $message
-     * @param $code
-     * @param array $arguments
-     * @param $title
-     * @return void
-     */
-    protected function addNoticeForValidator($className, $message, $code, array $arguments = [], $title = '')
-    {
-        $this->result->forProperty($className)->addNotice(new Notice((string)$message, (int)$code, $arguments, (string)$title));
     }
 }
