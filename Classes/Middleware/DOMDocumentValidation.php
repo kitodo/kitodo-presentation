@@ -73,15 +73,12 @@ class DOMDocumentValidation implements MiddlewareInterface
             throw new InvalidArgumentException('URL parameter is missing.', 1724334674);
         }
 
-        /** @var TypoScriptService $typoScriptService */
-
-
         /** @var ConfigurationManagerInterface $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
         $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 
+        /** @var TypoScriptService $typoScriptService */
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-
         $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScript['plugin.']['tx_dlf.']['settings.']);
 
         if (!array_key_exists("domDocumentValidationValidators", $settings)) {
@@ -115,6 +112,7 @@ class DOMDocumentValidation implements MiddlewareInterface
     {
         $validationResults = [];
         $index = 0;
+
         foreach ($configurations as $configuration) {
             $validationResult = [];
             $validationResult['validator']['title'] = $this->getTranslation($configuration['title']);
@@ -139,40 +137,32 @@ class DOMDocumentValidation implements MiddlewareInterface
             $index++;
         }
 
+        $validationResults[] = [
+            "validator" => [
+                "title" => "Lorem ipsum",
+                "description" => "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+            ],
+            "results" => [
+                "errors" => [
+                    'Lorem ipsum dolor sit ...',
+                    'Lorem ipsum dolor sit amet'
+                ],
+                "warnings" => [
+                    'Lorem ipsum dolor sit amet, consetetur sadipscing elitr ...',
+                    'Lorem ipsum dolor sit amet'
+                ],
+                "notices" => [
+                    'Lorem ipsum dolor sit ...',
+                    'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ...'
+                ]
+            ]
+        ];
+
         /** @var ResponseFactory $responseFactory */
         $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
         $response = $responseFactory->createResponse()
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
-/*
-        $data = [
-            [
-                "validator" => [
-                    "title" => "Application Profile Validation"
-                ]
-            ],
-            [
-                "validator" => [
-                    "title" => "URL Existence Validator"
-                ],
-                "results" => [
-                    "errors" => [
-                        'URL "https://3drepo.eu/modelupload/b5df7cd550f64e818943ad96fff7e902.jpg" could not be found.',
-                        'URL "https://3d-repository.hs-mainz.de/contact" could not be found.'
-                    ],
-                    "warnings" => [
-                        'URL "https://3drepo.eu/modelupload/b5df7cd550f64e818943ad96fff7e902.jpg" could not be found.',
-                        'URL "https://3d-repository.hs-mainz.de/contact" could not be found.'
-                    ],
-                    "notices" => [
-                        'URL "https://3drepo.eu/modelupload/b5df7cd550f64e818943ad96fff7e902.jpg" could not be found.',
-                        'URL "https://3d-repository.hs-mainz.de/contact" could not be found.'
-                    ]
-                ]
-            ]
-        ];
-*/
         $response->getBody()->write(json_encode($validationResults));
- //       $response->getBody()->write(json_encode($data));
         return $response;
     }
 
