@@ -614,6 +614,14 @@
         		<source><![CDATA[Kitodo: Annotations]]></source>
         		<target><![CDATA[Kitodo: Annotationen]]></target>
         	</trans-unit>
+			<trans-unit id="plugins.validation.title" approved="yes">
+				<source><![CDATA[Kitodo: Validation]]></source>
+				<target><![CDATA[Kitodo: Validierung]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.validation.description" approved="yes">
+				<source><![CDATA[Validation form for Kitodo.Presentation]]></source>
+				<target><![CDATA[Validierungsformular für Kitodo.Presentation]]></target>
+			</trans-unit>
 			<trans-unit id="text.all" approved="yes">
 				<source><![CDATA[all]]></source>
 				<target><![CDATA[alle]]></target>

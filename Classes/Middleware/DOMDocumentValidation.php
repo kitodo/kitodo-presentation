@@ -81,12 +81,12 @@ class DOMDocumentValidation implements MiddlewareInterface
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
         $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScript['plugin.']['tx_dlf.']['settings.']);
 
-        if (!array_key_exists("domDocumentValidationValidators", $settings)) {
+        if (!array_key_exists("domDocumentValidation", $settings)) {
             $this->logger->error('DOMDocumentValidation is not configured correctly.');
             throw new InvalidArgumentException('DOMDocumentValidation is not configured correctly.', 1724335601);
         }
 
-        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $settings['domDocumentValidationValidators']);
+        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $settings['domDocumentValidation']);
 
         if (!GeneralUtility::isValidUrl($urlParam)) {
             $this->logger->debug('Parameter "' . $urlParam . '" is not a valid url.');
@@ -105,7 +105,8 @@ class DOMDocumentValidation implements MiddlewareInterface
             throw new InvalidArgumentException('Error converting content to xml.', 1724420648);
         }
 
-        return $this->getJsonResponse($settings['domDocumentValidationValidators'],$validation->validate($document));
+        //$validation->validate($document)
+        return $this->getJsonResponse($settings['domDocumentValidation'], null);
     }
 
     protected function getJsonResponse(array $configurations, ?Result $result): ResponseInterface
@@ -113,28 +114,30 @@ class DOMDocumentValidation implements MiddlewareInterface
         $validationResults = [];
         $index = 0;
 
-        foreach ($configurations as $configuration) {
-            $validationResult = [];
-            $validationResult['validator']['title'] = $this->getTranslation($configuration['title']);
-            $validationResult['validator']['description'] = $this->getTranslation($configuration['description']);
-            $stackResult = $result->forProperty(strval($index));
-            if ($stackResult->hasErrors()) {
-                $validationResult['results']['errors'] = array_map(function(Message $message): string {
-                    return $message->getMessage();
-                }, $stackResult->getErrors());
+        if( $result != null) {
+            foreach ($configurations as $configuration) {
+                $validationResult = [];
+                $validationResult['validator']['title'] = $this->getTranslation($configuration['title']);
+                $validationResult['validator']['description'] = $this->getTranslation($configuration['description']);
+                $stackResult = $result->forProperty(strval($index));
+                if ($stackResult->hasErrors()) {
+                    $validationResult['results']['errors'] = array_map(function (Message $message): string {
+                        return $message->getMessage();
+                    }, $stackResult->getErrors());
+                }
+                if ($stackResult->hasWarnings()) {
+                    $validationResult['results']['warnings'] = array_map(function (Message $message): string {
+                        return $message->getMessage();
+                    }, $stackResult->getWarnings());
+                }
+                if ($stackResult->hasNotices()) {
+                    $validationResult['results']['notices'] = array_map(function (Message $message): string {
+                        return $message->getMessage();
+                    }, $stackResult->getNotices());
+                }
+                $validationResults[] = $validationResult;
+                $index++;
             }
-            if ($stackResult->hasWarnings()) {
-                $validationResult['results']['warnings'] = array_map(function(Message $message): string {
-                    return $message->getMessage();
-                }, $stackResult->getWarnings());
-            }
-            if ($stackResult->hasNotices()) {
-                $validationResult['results']['notices'] = array_map(function(Message $message): string {
-                    return $message->getMessage();
-                }, $stackResult->getNotices());
-            }
-            $validationResults[] = $validationResult;
-            $index++;
         }
 
         $validationResults[] = [

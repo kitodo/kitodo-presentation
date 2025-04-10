@@ -1,0 +1,20 @@
+<html data-namespace-typo3-fluid="true"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:dv="http://typo3.org/ns/Slub/Dfgviewer/ViewHelpers"
+        >
+    <div class="dfgviewer-validation" >
+        <form action="{url}"
+            data-i18n-headline-error="<f:translate key='LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validation.error'/>"
+            data-i18n-headline-notice="<f:translate key='LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validation.notice'/>"
+            data-i18n-headline-success="<f:translate key='LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validation.success'/>"
+            data-i18n-headline-warning="<f:translate key='LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validation.warning'/>"
+            >
+            <label for="mets">Fügen Sie hier den Link zu Ihrer <acronym
+                title="(engl.) metadata encoding and transmission standard; (dt.) Metadatenkodierungs- und -übertragungsstandard">METS</acronym>-Datei
+                bzw. <acronym title="(engl.) open archives initiative; (dt.) Initiative für freien Datenaustausch">OAI</acronym>-Schnittstelle
+                ein:</label>
+            <input type="text" class="url" id="url" value="" required>
+            <input type="submit" class="submit" value="Validieren">
+        </form>
+    </div>
+</html>
