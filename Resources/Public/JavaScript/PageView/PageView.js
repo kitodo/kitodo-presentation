@@ -121,6 +121,12 @@ var dlfViewer = function(settings){
      * @type {string|undefined}
      * @private
      */
+    this.highlightCoordinates = null;
+
+    /**
+     * @type {string|undefined}
+     * @private
+     */
      this.highlightWords = null;
 
     /**
@@ -448,19 +454,25 @@ dlfViewer.prototype.createControl = function(controlName, layers) {
  * @see dlfUtils.searchFeatureCollectionForWords
  */
 dlfViewer.prototype.searchFeatures = function(stringFeatures, value) {
-  return dlfUtils.searchFeatureCollectionForWords(stringFeatures, value);
+    if (this.highlightWords !== null) {
+        return dlfUtils.searchFeatureCollectionForWords(stringFeatures, value);
+    }
+
+    if (this.highlightCoordinates !== null) {
+        return dlfUtils.searchFeatureCollectionForCoordinates(stringFeatures, value);
+    }
 };
 
 /**
  * Displays highlight words
  */
-dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
-    if(highlightWords != null) {
-        this.highlightWords = highlightWords;
+dlfViewer.prototype.displayHighlightWord = function(highlightCoordinates = null) {
+    if (highlightCoordinates != null) {
+        this.highlightCoordinates = highlightCoordinates;
     }
 
-    // extract highlighWords from URL
-    if (this.highlightWords === null) {
+    // extract highlight words from URL
+    if (this.highlightCoordinates === null) {
         this.highlightWords = dlfUtils.getUrlParam('tx_dlf[highlight_word]');
     }
 
@@ -502,9 +514,9 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         }
     }
 
-    if (this.highlightWords !== null) {
+    if (this.highlightWords !== null || this.highlightCoordinates !== null) {
         const self = this;
-        const values = decodeURIComponent(this.highlightWords).split(';');
+        const values = this.getHighlightValues();
 
         $.when.apply($, this.fulltextsLoaded_)
             .done((fulltextData, fulltextDataImageTwo) => {
@@ -526,6 +538,17 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
                 });
             });
     };
+};
+
+dlfViewer.prototype.getHighlightValues = function() {
+
+    if (this.highlightWords !== null) {
+        return decodeURIComponent(this.highlightWords).split(';');
+    }
+
+    if (this.highlightCoordinates !== null) {
+        return decodeURIComponent(this.highlighCoordinates).split(';');
+    }
 };
 
 /**
