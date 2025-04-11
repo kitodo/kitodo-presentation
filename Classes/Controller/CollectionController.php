@@ -143,6 +143,11 @@ class CollectionController extends AbstractController
             $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->searchParams);
         }
 
+        if (!isset($this->searchParams['collection']) && !isset($collection)) {
+            $this->logger->warning('Collection is not set.');
+            return;
+        }
+
         // Get current page from request data because the parameter is shared between plugins
         $currentPage = $this->requestData['page'] ?? 1;
 
