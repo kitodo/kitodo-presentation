@@ -167,6 +167,24 @@
 			<trans-unit id="plugins.feeds.update">
 				<source><![CDATA[UPDATE:]]></source>
 			</trans-unit>
+			<trans-unit id="plugins.validationform.headline.success">
+				<source><![CDATA[Successful]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.headline.error">
+				<source><![CDATA[Error]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.headline.warning">
+				<source><![CDATA[Warning]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.headline.notice">
+				<source><![CDATA[Notice]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.label">
+				<source><![CDATA[Insert the link to your <acronym title="metadata encoding and transmission standard">METS</acronym> file or <acronym title="open archives initiative">OAI</acronym> interface here:]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.validate">
+				<source><![CDATA[validate]]></source>
+			</trans-unit>
 			<trans-unit id="prevPage">
 				<source><![CDATA[Previous Page]]></source>
 			</trans-unit>

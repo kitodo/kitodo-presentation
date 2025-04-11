@@ -269,6 +269,30 @@
 				<source><![CDATA[UPDATE:]]></source>
 				<target><![CDATA[UPDATE:]]></target>
 			</trans-unit>
+			<trans-unit id="plugins.validationform.headline.success" approved="yes">
+				<source><![CDATA[Successful]]></source>
+				<target><![CDATA[Erfolgreich]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.headline.error" approved="yes">
+				<source><![CDATA[Error]]></source>
+				<target><![CDATA[Fehler]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.headline.warning" approved="yes">
+				<source><![CDATA[Warning]]></source>
+				<target><![CDATA[Warnung]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.headline.notice" approved="yes">
+				<source><![CDATA[Notice]]></source>
+				<target><![CDATA[Info]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.label" approved="yes">
+				<source><![CDATA[Insert the link to your <acronym href="" title="metadata encoding and transmission standard">METS</acronym> file or <acronym title="open archives initiative">OAI</a> interface here:]]></source>
+				<target><![CDATA[Fügen Sie hier den Link zu Ihrer <acronym title="Metadatenkodierungs- und -übertragungsstandard">METS</acronym>-Datei bzw. <acronym title="Initiative für freien Datenaustausch">OAI</acronym>-Schnittstelle ein:]]></target>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.validate" approved="yes">
+				<source><![CDATA[validate]]></source>
+				<target><![CDATA[Validieren]]></target>
+			</trans-unit>
 			<trans-unit id="prevPage" approved="yes">
 				<source><![CDATA[Previous Page]]></source>
 				<target><![CDATA[Vorherige Seite]]></target>
@@ -605,7 +629,6 @@
 				<source><![CDATA[Modified:]]></source>
 				<target><![CDATA[Geändert:]]></target>
 			</trans-unit>
-
 		</body>
 	</file>
 </xliff>
