@@ -498,7 +498,7 @@
 				<source><![CDATA[Type]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.validationform.flexform.type.description">
-				<source><![CDATA[Validation configuration type of the DOMDocumentValidation]]></source>
+				<source><![CDATA[Validation configuration type of the validation from DOMDocuments]]></source>
 			</trans-unit>
             <trans-unit id="flash.attention" approved="yes">
                 <source><![CDATA[Attention!]]></source>

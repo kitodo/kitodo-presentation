@@ -627,8 +627,8 @@
 				<target><![CDATA[Typ]]></target>
 			</trans-unit>
 			<trans-unit id="plugins.validationform.flexform.type.description">
-				<source><![CDATA[Validation configuration type of the DOMDocumentValidation]]></source>
-				<target><![CDATA[Validierungskonfigurationstyp der DOMDocumentValidation]]></target>
+				<source><![CDATA[Validation configuration type of the validation from DOMDocuments]]></source>
+				<target><![CDATA[Typ der Validierungskonfiguration für die DOMDocument-Validierung]]></target>
 			</trans-unit>
 			<trans-unit id="text.all" approved="yes">
 				<source><![CDATA[all]]></source>

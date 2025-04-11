@@ -39,6 +39,9 @@ page {
     # AudioPlayer plugin
     kitodo-audioPlayer = EXT:dlf/Resources/Public/JavaScript/AudioPlayer/AudioPlayer.js
 
+    # ValidationForm plugin
+    kitodo-validationForm = EXT:dlf/Resources/Public/JavaScript/ValidationForm/ValidationForm.js
+
     # Verovio plugin
     kitodo-verovio = EXT:dlf/Resources/Public/JavaScript/Verovio/verovio-toolkit.js
     kitodo-svgtopdfkit = EXT:dlf/Resources/Public/JavaScript/Verovio/svgtopdfkit.js
