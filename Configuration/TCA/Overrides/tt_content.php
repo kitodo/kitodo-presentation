@@ -124,6 +124,11 @@ $plugin = 'dlf_validationform';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
 
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'dlf_validationform',
+    $flexFormsPathPrefix . 'ValidationForm.xml'
+);
+
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'ValidationForm',

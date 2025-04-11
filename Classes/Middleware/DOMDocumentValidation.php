@@ -60,7 +60,6 @@ class DOMDocumentValidation implements MiddlewareInterface
         $this->request = $request;
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $response = $handler->handle($request);
-        // parameters are sent by POST --> use getParsedBody() instead of getQueryParams()
         $parameters = $request->getQueryParams();
 
         // Return if not this middleware
@@ -68,26 +67,18 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $response;
         }
 
+        // check required parameters
         $urlParam = $parameters['url'];
         if (!isset($urlParam)) {
             throw new InvalidArgumentException('URL parameter is missing.', 1724334674);
         }
 
-        /** @var ConfigurationManagerInterface $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-        $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-
-        /** @var TypoScriptService $typoScriptService */
-        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScript['plugin.']['tx_dlf.']['settings.']);
-
-        if (!array_key_exists("domDocumentValidation", $settings)) {
-            $this->logger->error('DOMDocumentValidation is not configured correctly.');
-            throw new InvalidArgumentException('DOMDocumentValidation is not configured correctly.', 1724335601);
+        $typeParam = $parameters['type'];
+        if (!isset($typeParam)) {
+            throw new InvalidArgumentException('Type parameter is missing.', 1744373423);
         }
 
-        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $settings['domDocumentValidation']);
-
+        // load dom document from url
         if (!GeneralUtility::isValidUrl($urlParam)) {
             $this->logger->debug('Parameter "' . $urlParam . '" is not a valid url.');
             throw new InvalidArgumentException('Value of url parameter is not a valid url.', 1724852611);
@@ -105,8 +96,30 @@ class DOMDocumentValidation implements MiddlewareInterface
             throw new InvalidArgumentException('Error converting content to xml.', 1724420648);
         }
 
-        //$validation->validate($document)
-        return $this->getJsonResponse($settings['domDocumentValidation'], null);
+        // retrieve validation configuration from plugin.tx_dlf typoscript
+        /** @var ConfigurationManagerInterface $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+
+        /** @var TypoScriptService $typoScriptService */
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+        $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScript['plugin.']['tx_dlf.']['settings.']);
+
+        if (!array_key_exists("domDocumentValidation", $settings)) {
+            $this->logger->error('DOMDocumentValidation is not configured.');
+            throw new InvalidArgumentException('DOMDocumentValidation is not correctly.', 1724335601);
+        }
+
+        if (!array_key_exists($typeParam, $settings["domDocumentValidation"])) {
+            $this->logger->error('Type of DOMDocumentValidation does not exist.');
+            throw new InvalidArgumentException('Type of DOMDocumentValidation does not exist.', 1744373532);
+        }
+
+        $validationConfiguration = $settings['domDocumentValidation'][$typeParam];
+        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
+
+        // validate and return json response
+        return $this->getJsonResponse($validationConfiguration,  $validation->validate($document));
     }
 
     protected function getJsonResponse(array $configurations, ?Result $result): ResponseInterface
@@ -167,15 +180,6 @@ class DOMDocumentValidation implements MiddlewareInterface
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
         $response->getBody()->write(json_encode($validationResults));
         return $response;
-    }
-
-    /**
-     * @param Result $validatorResult
-     * @return \TYPO3\CMS\Extbase\Error\Error[]
-     */
-    public function getErrors(Result $validatorResult): array
-    {
-        return $validatorResult->getErrors();
     }
 
     private function getTranslation(string $key): string

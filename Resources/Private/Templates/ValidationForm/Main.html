@@ -7,6 +7,7 @@
             data-i18n-headline-success="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.success'/>"
             data-i18n-headline-warning="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.warning'/>"
             >
+            <input type="hidden" name="type" value="{settings.type}">
             <label>
                 <f:format.raw><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.label' /></f:format.raw>
                 <input type="text" name="url" class="url" value="" required>
@@ -20,6 +21,9 @@
             dfgviewerValidationForms.forEach((validationForm) => {
                 validationForm.addEventListener("submit", function (event) {
                     event.preventDefault();
+
+                    // convert submitted values to data
+                    const data = Object.fromEntries(new FormData(event.target).entries());
 
                     // Function to create a list of messages
                     function createMessagesList(messages) {
@@ -87,7 +91,7 @@
                     let loader = buildLoader(event.target);
                     let form = event.target.parentElement;
 
-                    getData(this.action + '&url=' + encodeURI(document.getElementsByName("url")[0].value)).then(data => {
+                    getData(this.action + '&type=' + encodeURI(data.type) + '&url=' + encodeURI(data.url)).then(data => {
                         let validation = form.querySelector('.validation');
                         if (validation) {
                             form.removeChild(validation);
