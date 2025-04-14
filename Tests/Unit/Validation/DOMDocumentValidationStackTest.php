@@ -17,7 +17,7 @@ namespace Kitodo\Dlf\Tests\Unit\Validation;
 use DOMDocument;
 use InvalidArgumentException;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
-use Kitodo\Dlf\Validation\XmlSchemesValidator;
+use Kitodo\Dlf\Validation\XmlSchemasValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\UrlValidator;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -71,7 +71,7 @@ class DOMDocumentValidationStackTest extends UnitTestCase
     {
         $xsdFile = __DIR__ . '/../../Fixtures/OaiPmh/OAI-PMH.xsd';
         $xmlSchemesValidatorConfig = [
-            'className' => XmlSchemesValidator::class,
+            'className' => XmlSchemasValidator::class,
             'configuration' => [
                 [
                     'namespace' => 'http://www.openarchives.org/OAI/2.0/',

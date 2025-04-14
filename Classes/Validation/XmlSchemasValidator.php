@@ -27,16 +27,16 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  *
  * @access public
  */
-class XmlSchemesValidator extends AbstractDlfValidator
+class XmlSchemasValidator extends AbstractDlfValidator
 {
     use LibXmlTrait;
 
-    private array $schemes;
+    private array $schemas;
 
     public function __construct(array $configuration)
     {
         parent::__construct(DOMDocument::class);
-        $this->schemes = $configuration;
+        $this->schemas = $configuration;
     }
 
     /**
@@ -48,7 +48,7 @@ class XmlSchemesValidator extends AbstractDlfValidator
     protected function isSchemeValid(DOMDocument $value): bool
     {
         $xsd = '<?xml version="1.0" encoding="utf-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">';
-        foreach ($this->schemes as $schema) {
+        foreach ($this->schemas as $schema) {
             $schemaLocation = $schema["schemaLocation"];
             if( str_starts_with($schemaLocation, 'EXT:') ) {
                 $schemaLocation = GeneralUtility::locationHeaderUrl(PathUtility::getPublicResourceWebPath($schema["schemaLocation"]));

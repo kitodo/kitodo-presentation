@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Error\Message;
 use TYPO3\CMS\Extbase\Error\Result;
@@ -117,7 +118,6 @@ class DOMDocumentValidation implements MiddlewareInterface
 
         $validationConfiguration = $settings['domDocumentValidation'][$typeParam];
         $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
-
         // validate and return json response
         return $this->getJsonResponse($validationConfiguration,  $validation->validate($document));
     }
@@ -131,7 +131,11 @@ class DOMDocumentValidation implements MiddlewareInterface
             foreach ($configurations as $configuration) {
                 $validationResult = [];
                 $validationResult['validator']['title'] = $this->getTranslation($configuration['title']);
-                $validationResult['validator']['description'] = $this->getTranslation($configuration['description']);
+                if (is_array($configuration['description'])) {
+                    $validationResult['validator']['description'] = $this->getTranslation($configuration['description']['key'], $configuration['description']['arguments']);
+                } else {
+                    $validationResult['validator']['description'] = $this->getTranslation($configuration['description']);
+                }
                 $stackResult = $result->forProperty(strval($index));
                 if ($stackResult->hasErrors()) {
                     $validationResult['results']['errors'] = array_map(function (Message $message): string {
@@ -182,7 +186,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         return $response;
     }
 
-    private function getTranslation(string $key): string
+    private function getTranslation(string $key, ?array $arguments = null): string
     {
         $language =
             $this->request->getAttribute('language')
@@ -196,6 +200,13 @@ class DOMDocumentValidation implements MiddlewareInterface
         /** @var LanguageService $languageService */
         $languageService = $languageServiceFactory
             ->createFromSiteLanguage($language);
+
+        if (isset($arguments) && count($arguments) > 0) {
+            return vsprintf(
+                $languageService->sL($key),
+                array_map(fn($value) => str_starts_with($value, 'EXT:') ? PathUtility::getPublicResourceWebPath($value) : $value, $arguments)
+            );
+        }
         return $languageService->sL($key);
     }
 }
