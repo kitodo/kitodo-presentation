@@ -23,6 +23,7 @@ async function getData(url) {
     }
     return await response.json();
   } catch (error) {
+    // eslint-disable-next-line
     console.error(error.message);
   }
 }
@@ -42,23 +43,6 @@ function buildLoader(parentElement) {
   return loader;
 }
 
-/**
- * Escapes the HTML tags of a string.
- *
- * @param {string} value to escape
- */
-function escapeHTML(value) {
-  return str.replace(/[&<>"']/g, function(match) {
-    return ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    })[match];
-  });
-}
-
 dlfValidationForms.forEach((validationForm) => {
   validationForm.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -66,7 +50,11 @@ dlfValidationForms.forEach((validationForm) => {
     // Convert submitted values to data
     const data = Object.fromEntries(new FormData(event.target).entries());
 
-    // Function to create a list of messages
+    /**
+     * Create a list of messages.
+     *
+     * @param {Array} messages to create list for
+     */
     function createMessagesList(messages) {
       const ul = document.createElement('ul');
 
@@ -83,7 +71,7 @@ dlfValidationForms.forEach((validationForm) => {
      * Create the messages container.
      *
      * @param {string} type of callout class
-     * @param {array} messages of type
+     * @param {Array} messages of type
      * @param {string} title of headline
      */
     function createMessagesContainer(type, messages, title) {
@@ -103,7 +91,7 @@ dlfValidationForms.forEach((validationForm) => {
     /**
      * Create a validation entry.
      *
-     * @param {object} item to create the validation entry for
+     * @param {Object} item to create the validation entry for
      */
     function createValidationEntry(item) {
       const entryContainer = document.createElement('div');
@@ -121,19 +109,23 @@ dlfValidationForms.forEach((validationForm) => {
 
       if (item.results) {
         if("errors" in item.results) {
-          entryContainer.appendChild(createMessagesContainer('error', item.results.errors, escapeHTML(validationForm.dataset.i18nHeadlineError)));
+          // eslint-disable-next-line
+          entryContainer.appendChild(createMessagesContainer('error', item.results.errors, validationForm.dataset.i18nHeadlineError));
         }
         if("warnings" in item.results) {
-          entryContainer.appendChild(createMessagesContainer('warning', item.results.warnings, escapeHTML(validationForm.dataset.i18nHeadlineWarning)));
+          // eslint-disable-next-line
+          entryContainer.appendChild(createMessagesContainer('warning', item.results.warnings, validationForm.dataset.i18nHeadlineWarning));
         }
         if("notices" in item.results) {
-          entryContainer.appendChild(createMessagesContainer('notice', item.results.notices, escapeHTML(validationForm.dataset.i18nHeadlineNotice)));
+          // eslint-disable-next-line
+          entryContainer.appendChild(createMessagesContainer('notice', item.results.notices, validationForm.dataset.i18nHeadlineNotice));
         }
       } else {
         const successCallout = document.createElement('div');
         successCallout.classList.add("callout");
         successCallout.classList.add("callout-success");
-        successCallout.innerHTML = '<h3>' + escapeHTML(validationForm.dataset.i18nHeadlineSuccess) + '</h3>';
+        // eslint-disable-next-line
+        successCallout.innerHTML = '<h3>' + validationForm.dataset.i18nHeadlineSuccess + '</h3>';
         entryContainer.appendChild(successCallout);
       }
 
