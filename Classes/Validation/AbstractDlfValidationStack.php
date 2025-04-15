@@ -51,7 +51,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
         foreach ($configuration as $configurationItem) {
             if (!class_exists($configurationItem["className"])) {
                 $this->logger->error('Unable to load class ' . $configurationItem["className"] . '.');
-                throw new InvalidArgumentException(sprintf("Unable to load validator class %s.", $configurationItem["className"]), 1723200537037);
+                throw new InvalidArgumentException(sprintf('Unable to load validator class "%s".', $configurationItem["className"]), 1723200537037);
             }
             $this->addValidator($configurationItem["className"], $configurationItem["configuration"] ?? []);
         }
