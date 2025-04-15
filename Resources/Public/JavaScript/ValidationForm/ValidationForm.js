@@ -10,6 +10,11 @@
 
 const dlfValidationForms = document.querySelectorAll('.tx-dlf-validationform form');
 
+/**
+ * Get the data from an URL.
+ *
+ * @param {string} url to get data for
+ */
 async function getData(url) {
   try {
     const response = await fetch(  url);
@@ -22,6 +27,11 @@ async function getData(url) {
   }
 }
 
+/**
+ * Build a loader container and append this to a element.
+ *
+ * @param {EventTarget} parentElement for appending the loader
+ */
 function buildLoader(parentElement) {
   const loader = document.createElement('div');
   loader.classList.add("loader");
@@ -30,6 +40,23 @@ function buildLoader(parentElement) {
   loader.appendChild(spinner);
   parentElement.appendChild(loader);
   return loader;
+}
+
+/**
+ * Escapes the HTML tags of a string.
+ *
+ * @param {string} value to escape
+ */
+function escapeHTML(value) {
+  return str.replace(/[&<>"']/g, function(match) {
+    return ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[match];
+  });
 }
 
 dlfValidationForms.forEach((validationForm) => {
@@ -52,6 +79,13 @@ dlfValidationForms.forEach((validationForm) => {
       return ul;
     }
 
+    /**
+     * Create the messages container.
+     *
+     * @param {string} type of callout class
+     * @param {array} messages of type
+     * @param {string} title of headline
+     */
     function createMessagesContainer(type, messages, title) {
       if (messages && messages.length > 0) {
         const messageDiv = document.createElement('div');
@@ -66,7 +100,11 @@ dlfValidationForms.forEach((validationForm) => {
       }
     }
 
-    // Function to create a full validation entry
+    /**
+     * Create a validation entry.
+     *
+     * @param {object} item to create the validation entry for
+     */
     function createValidationEntry(item) {
       const entryContainer = document.createElement('div');
       entryContainer.classList.add("validation-entry");
@@ -83,19 +121,19 @@ dlfValidationForms.forEach((validationForm) => {
 
       if (item.results) {
         if("errors" in item.results) {
-          entryContainer.appendChild(createMessagesContainer('error', item.results.errors, validationForm.dataset.i18nHeadlineError));
+          entryContainer.appendChild(createMessagesContainer('error', item.results.errors, escapeHTML(validationForm.dataset.i18nHeadlineError)));
         }
         if("warnings" in item.results) {
-          entryContainer.appendChild(createMessagesContainer('warning', item.results.warnings, validationForm.dataset.i18nHeadlineWarning));
+          entryContainer.appendChild(createMessagesContainer('warning', item.results.warnings, escapeHTML(validationForm.dataset.i18nHeadlineWarning)));
         }
         if("notices" in item.results) {
-          entryContainer.appendChild(createMessagesContainer('notice', item.results.notices, validationForm.dataset.i18nHeadlineNotice));
+          entryContainer.appendChild(createMessagesContainer('notice', item.results.notices, escapeHTML(validationForm.dataset.i18nHeadlineNotice)));
         }
       } else {
         const successCallout = document.createElement('div');
         successCallout.classList.add("callout");
         successCallout.classList.add("callout-success");
-        successCallout.innerHTML = '<h3>' + validationForm.dataset.i18nHeadlineSuccess + '</h3>';
+        successCallout.innerHTML = '<h3>' + escapeHTML(validationForm.dataset.i18nHeadlineSuccess) + '</h3>';
         entryContainer.appendChild(successCallout);
       }
 
