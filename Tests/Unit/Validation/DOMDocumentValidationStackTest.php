@@ -62,7 +62,7 @@ class DOMDocumentValidationStackTest extends UnitTestCase
     public function testValidatorDerivation(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Validator of class ". UrlValidator::class ." must be an instance of AbstractDlfValidator.");
+        $this->expectExceptionMessage("Validator of class \"". UrlValidator::class ."\" must be an instance of AbstractDlfValidator.");
         new DOMDocumentValidationStack([["className" => UrlValidator::class]]);
     }
 }
