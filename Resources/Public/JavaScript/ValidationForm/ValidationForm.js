@@ -26,6 +26,7 @@ async function getData(url) {
     // eslint-disable-next-line
     console.error(error.message);
   }
+  return Promise.resolve();
 }
 
 /**
@@ -73,25 +74,24 @@ dlfValidationForms.forEach((validationForm) => {
      * @param {string} type of callout class
      * @param {Array} messages of type
      * @param {string} title of headline
+     *
      */
     function createMessagesContainer(type, messages, title) {
+      const messageDiv = document.createElement('div');
       if (messages && messages.length > 0) {
-        const messageDiv = document.createElement('div');
         messageDiv.classList.add("callout", `callout-${type}`);
-
         const headline = document.createElement('h3');
         headline.textContent = title;
-
         messageDiv.appendChild(headline);
         messageDiv.appendChild(createMessagesList(messages));
-        return messageDiv;
       }
+      return messageDiv;
     }
 
     /**
      * Create a validation entry.
      *
-     * @param {Object} item to create the validation entry for
+     * @param {object} item to create the validation entry for
      */
     function createValidationEntry(item) {
       const entryContainer = document.createElement('div');
@@ -104,6 +104,7 @@ dlfValidationForms.forEach((validationForm) => {
 
       // Description
       const description = document.createElement('p');
+      // eslint-disable-next-line
       description.innerHTML = item.validator.description;
       entryContainer.appendChild(description);
 
