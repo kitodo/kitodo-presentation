@@ -106,7 +106,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
 
         foreach ($this->validators as $index => $validator) {
             $validatorResult = $validator->validate($value);
-            $stackResult = $this->result->forProperty(strval($index));
+            $stackResult = $this->result->forProperty((string) $index);
             if ($validatorResult->hasErrors()) {
                 foreach ($validatorResult->getErrors() as $error) {
                     $stackResult->addError($error);

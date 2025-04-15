@@ -23,7 +23,7 @@ async function getData(url) {
 }
 
 function buildLoader(parentElement) {
-  let loader = document.createElement('div');
+  const loader = document.createElement('div');
   loader.classList.add("loader");
   const spinner = document.createElement('span');
   spinner.classList.add("spinner");
@@ -102,7 +102,7 @@ dlfValidationForms.forEach((validationForm) => {
       return entryContainer;
     }
 
-    let loader = buildLoader(event.target);
+    const loader = buildLoader(event.target);
     const form = event.target.parentElement;
 
     getData(this.action + '&type=' + encodeURI(data.type) + '&url=' + encodeURI(data.url)).then(data => {

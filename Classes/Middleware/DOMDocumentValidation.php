@@ -144,7 +144,7 @@ class DOMDocumentValidation implements MiddlewareInterface
                     $validationResult['results']['warnings'] = array_map($this->getMessageText(), $stackResult->getWarnings());
                 }
                 if ($stackResult->hasNotices()) {
-                    $validationResult['results']['notices'] = array_map($this->getMessageText(),$stackResult->getNotices());
+                    $validationResult['results']['notices'] = array_map($this->getMessageText(), $stackResult->getNotices());
                 }
                 $validationResults[] = $validationResult;
                 $index++;
