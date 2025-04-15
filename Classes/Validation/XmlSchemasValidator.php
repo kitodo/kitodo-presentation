@@ -15,12 +15,11 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Validation;
 
 use DOMDocument;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
- * The validator combines the configured schemes into one schema and validates the provided DOMDocument against this.
+ * The validator combines the configured XML schemas into one schema and validates the provided DOMDocument against this.
  *
  * @package TYPO3
  * @subpackage dlf
@@ -33,7 +32,7 @@ class XmlSchemasValidator extends AbstractDlfValidator
 
     private array $schemas;
 
-    public function __construct(array $configuration)
+    public function __construct(array $configuration=[])
     {
         parent::__construct(DOMDocument::class);
         $this->schemas = $configuration;
