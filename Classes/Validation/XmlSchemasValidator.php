@@ -32,7 +32,7 @@ class XmlSchemasValidator extends AbstractDlfValidator
 
     private array $schemas;
 
-    public function __construct(array $configuration=[])
+    public function __construct(array $configuration = [])
     {
         parent::__construct(DOMDocument::class);
         $this->schemas = $configuration;
@@ -49,7 +49,7 @@ class XmlSchemasValidator extends AbstractDlfValidator
         $xsd = '<?xml version="1.0" encoding="utf-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">';
         foreach ($this->schemas as $schema) {
             $schemaLocation = $schema["schemaLocation"];
-            if( str_starts_with($schemaLocation, 'EXT:') ) {
+            if (str_starts_with($schemaLocation, 'EXT:')) {
                 $schemaLocation = GeneralUtility::locationHeaderUrl(PathUtility::getPublicResourceWebPath($schema["schemaLocation"]));
             }
             $xsd .= '<xs:import namespace="' . $schema["namespace"] . '" schemaLocation="' . $schemaLocation . '"/>';

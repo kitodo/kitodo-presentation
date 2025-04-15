@@ -10,11 +10,33 @@
 
 const dlfValidationForms = document.querySelectorAll('.tx-dlf-validationform form');
 
+async function getData(url) {
+  try {
+    const response = await fetch(  url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+function buildLoader(parentElement) {
+  let loader = document.createElement('div');
+  loader.classList.add("loader");
+  const spinner = document.createElement('span');
+  spinner.classList.add("spinner");
+  loader.appendChild(spinner);
+  parentElement.appendChild(loader);
+  return loader;
+}
+
 dlfValidationForms.forEach((validationForm) => {
   validationForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
-    // convert submitted values to data
+    // Convert submitted values to data
     const data = Object.fromEntries(new FormData(event.target).entries());
 
     // Function to create a list of messages
@@ -81,7 +103,7 @@ dlfValidationForms.forEach((validationForm) => {
     }
 
     let loader = buildLoader(event.target);
-    let form = event.target.parentElement;
+    const form = event.target.parentElement;
 
     getData(this.action + '&type=' + encodeURI(data.type) + '&url=' + encodeURI(data.url)).then(data => {
       let validation = form.querySelector('.validation');
@@ -97,26 +119,4 @@ dlfValidationForms.forEach((validationForm) => {
       loader.remove();
     })
   });
-
-  async function getData(url) {
-    try {
-      const response = await fetch(  url);
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
-  function buildLoader(parentElement) {
-    let loader = document.createElement('div');
-    loader.classList.add("loader");
-    let spinner = document.createElement('span');
-    spinner.classList.add("spinner");
-    loader.appendChild(spinner);
-    parentElement.appendChild(loader);
-    return loader;
-  }
 });

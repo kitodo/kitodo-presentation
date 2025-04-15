@@ -136,7 +136,7 @@ class DOMDocumentValidation implements MiddlewareInterface
                 } else {
                     $validationResult['validator']['description'] = $this->getTranslation($configuration['description']);
                 }
-                $stackResult = $result->forProperty((string)$index);
+                $stackResult = $result->forProperty((string) $index);
                 if ($stackResult->hasErrors()) {
                     $validationResult['results']['errors'] = array_map($this->getMessageText(), $stackResult->getErrors());
                 }
