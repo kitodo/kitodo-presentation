@@ -119,7 +119,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         $validationConfiguration = $settings['domDocumentValidation'][$typeParam];
         $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
         // validate and return json response
-        return $this->getJsonResponse($validationConfiguration,  $validation->validate($document));
+        return $this->getJsonResponse($validationConfiguration, $validation->validate($document));
     }
 
     protected function getJsonResponse(array $configurations, ?Result $result): ResponseInterface
@@ -127,7 +127,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         $validationResults = [];
         $index = 0;
 
-        if( $result != null) {
+        if ($result != null) {
             foreach ($configurations as $configuration) {
                 $validationResult = [];
                 $validationResult['validator']['title'] = $this->getTranslation($configuration['title']);
@@ -136,47 +136,20 @@ class DOMDocumentValidation implements MiddlewareInterface
                 } else {
                     $validationResult['validator']['description'] = $this->getTranslation($configuration['description']);
                 }
-                $stackResult = $result->forProperty(strval($index));
+                $stackResult = $result->forProperty((string)$index);
                 if ($stackResult->hasErrors()) {
-                    $validationResult['results']['errors'] = array_map(function (Message $message): string {
-                        return $message->getMessage();
-                    }, $stackResult->getErrors());
+                    $validationResult['results']['errors'] = array_map($this->getMessageText(), $stackResult->getErrors());
                 }
                 if ($stackResult->hasWarnings()) {
-                    $validationResult['results']['warnings'] = array_map(function (Message $message): string {
-                        return $message->getMessage();
-                    }, $stackResult->getWarnings());
+                    $validationResult['results']['warnings'] = array_map($this->getMessageText(), $stackResult->getWarnings());
                 }
                 if ($stackResult->hasNotices()) {
-                    $validationResult['results']['notices'] = array_map(function (Message $message): string {
-                        return $message->getMessage();
-                    }, $stackResult->getNotices());
+                    $validationResult['results']['notices'] = array_map($this->getMessageText(),$stackResult->getNotices());
                 }
                 $validationResults[] = $validationResult;
                 $index++;
             }
         }
-
-        $validationResults[] = [
-            "validator" => [
-                "title" => "Lorem ipsum",
-                "description" => "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
-            ],
-            "results" => [
-                "errors" => [
-                    'Lorem ipsum dolor sit ...',
-                    'Lorem ipsum dolor sit amet'
-                ],
-                "warnings" => [
-                    'Lorem ipsum dolor sit amet, consetetur sadipscing elitr ...',
-                    'Lorem ipsum dolor sit amet'
-                ],
-                "notices" => [
-                    'Lorem ipsum dolor sit ...',
-                    'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ...'
-                ]
-            ]
-        ];
 
         /** @var ResponseFactory $responseFactory */
         $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
@@ -208,5 +181,17 @@ class DOMDocumentValidation implements MiddlewareInterface
             );
         }
         return $languageService->sL($key);
+    }
+
+    /**
+     * Get the message.
+     *
+     * @return \Closure
+     */
+    private function getMessageText(): \Closure
+    {
+        return function (Message $message): string {
+            return $message->getMessage();
+        };
     }
 }

@@ -11,10 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Middleware\DOMDocumentValidation;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'ValidationForm' for the 'dlf' extension
@@ -34,13 +31,8 @@ class ValidationFormController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
-        /** @var SiteLanguage $language */
-        $language = $GLOBALS['TYPO3_REQUEST']->getAttribute('language');
-
-        // Get slug of the language
-        $languageSlug = $language->getBase()->getPath();
-
-        $this->view->assign("url", $languageSlug . '?middleware=dlf/domDocumentValidation');
+        $language = $this->request->getAttribute('language');
+        $this->view->assign("url", $language->getBase()->getPath() . '?middleware=dlf/domDocumentValidation');
         return $this->htmlResponse();
     }
 }

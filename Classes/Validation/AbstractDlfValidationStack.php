@@ -17,9 +17,6 @@ namespace Kitodo\Dlf\Validation;
 use InvalidArgumentException;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Error\Notice;
-use TYPO3\CMS\Extbase\Error\Warning;
-use TYPO3\CMS\Extbase\Validation\Error;
 
 /**
  * Abstract class provides functions for implementing a validation stack.
@@ -54,7 +51,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
         foreach ($configuration as $configurationItem) {
             if (!class_exists($configurationItem["className"])) {
                 $this->logger->error('Unable to load class ' . $configurationItem["className"] . '.');
-                throw new InvalidArgumentException('Unable to load validator class ' . $configurationItem["className"] . '.', 1723200537037);
+                throw new InvalidArgumentException(sprintf("Unable to load validator class %s.", $configurationItem["className"]), 1723200537037);
             }
             $this->addValidator($configurationItem["className"], $configurationItem["configuration"] ?? []);
         }
@@ -79,8 +76,8 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
         }
 
         if (!$validator instanceof AbstractDlfValidator) {
-            $this->logger->error($validator . ' must be an instance of AbstractDlfValidator.');
-            throw new InvalidArgumentException($validator . 'must be an instance of AbstractDlfValidator.', 1723121212747);
+            $this->logger->error('Validator of class "' . $className . '" must be an instance of AbstractDlfValidator.');
+            throw new InvalidArgumentException(sprintf('Validator of class "%s" must be an instance of AbstractDlfValidator.', $className), 1723121212747);
         }
 
         $this->validators[] = $validator;
@@ -102,7 +99,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
             throw new InvalidArgumentException('Type of value is not valid.', 1723127564821);
         }
 
-        if (!$this->hasValidators()) {
+        if (empty($this->validators)) {
             $this->logger->error('The validation stack has no validator.');
             throw new InvalidArgumentException('The validation stack has no validator.', 1724662426);
         }
@@ -127,54 +124,4 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
             }
         }
     }
-
-    public function hasValidators(): bool
-    {
-        return !empty($this->validators);
-    }
-
-    public function getValidators(): array
-    {
-        return $this->validators;
-    }
-
-    /**
-     * @param $className
-     * @param $message
-     * @param $code
-     * @param array $arguments
-     * @param $title
-     * @return void
-     */
-    protected function addErrorForValidator($className, $message, $code, array $arguments = [], $title = '')
-    {
-        $this->result->forProperty($className)->addError(new Error((string)$message, (int)$code, $arguments, (string)$title));
-    }
-
-    /**
-     * @param $className
-     * @param $message
-     * @param $code
-     * @param array $arguments
-     * @param $title
-     * @return void
-     */
-    protected function addWarningForValidator($className, $message, $code, array $arguments = [], $title = '')
-    {
-        $this->result->forProperty($className)->addWarning(new Warning((string)$message, (int)$code, $arguments, (string)$title));
-    }
-
-    /**
-     * @param $className
-     * @param $message
-     * @param $code
-     * @param array $arguments
-     * @param $title
-     * @return void
-     */
-    protected function addNoticeForValidator($className, $message, $code, array $arguments = [], $title = '')
-    {
-        $this->result->forProperty($className)->addNotice(new Notice((string)$message, (int)$code, $arguments, (string)$title));
-    }
-
 }
