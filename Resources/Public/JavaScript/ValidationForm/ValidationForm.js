@@ -14,6 +14,7 @@ const dlfValidationForms = document.querySelectorAll('.tx-dlf-validationform for
  * Get the data from an URL.
  *
  * @param {string} url to get data for
+ * @returns {Promise} The response as json
  */
 async function getData(url) {
   try {
