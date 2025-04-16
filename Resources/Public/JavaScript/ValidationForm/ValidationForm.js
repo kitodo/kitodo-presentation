@@ -34,6 +34,7 @@ async function getData(url) {
  * Build a loader container and append this to a element.
  *
  * @param {EventTarget} parentElement for appending the loader
+ * @returns Loader element within the parentElement
  */
 function buildLoader(parentElement) {
   const loader = document.createElement('div');
