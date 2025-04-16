@@ -14,7 +14,7 @@ const dlfValidationForms = document.querySelectorAll('.tx-dlf-validationform for
  * Get the data from an URL.
  *
  * @param {string} url to get data for
- * @returns {Promise} The response as json
+ * @returns {Promise} the response as json
  */
 async function getData(url) {
   try {
@@ -34,7 +34,7 @@ async function getData(url) {
  * Build a loader container and append this to a element.
  *
  * @param {EventTarget} parentElement for appending the loader
- * @returns {HTMLDivElement} Loader element within the parentElement
+ * @returns {HTMLDivElement} loader element within the parentElement
  */
 function buildLoader(parentElement) {
   const loader = document.createElement('div');
@@ -57,7 +57,7 @@ dlfValidationForms.forEach((validationForm) => {
      * Create a list of messages.
      *
      * @param {Array} messages to create list for
-     * @returns {HTMLUListElement} List element
+     * @returns {HTMLUListElement} list element
      */
     function createMessagesList(messages) {
       const ul = document.createElement('ul');
@@ -77,7 +77,7 @@ dlfValidationForms.forEach((validationForm) => {
      * @param {string} type of callout class
      * @param {Array} messages of type
      * @param {string} title of headline
-     *
+     * @returns {HTMLDivElement} messages container element
      */
     function createMessagesContainer(type, messages, title) {
       const messageDiv = document.createElement('div');
@@ -95,6 +95,7 @@ dlfValidationForms.forEach((validationForm) => {
      * Create a validation entry.
      *
      * @param {object} item to create the validation entry for
+     * @returns {HTMLDivElement} validation entry container element
      */
     function createValidationEntry(item) {
       const entryContainer = document.createElement('div');
