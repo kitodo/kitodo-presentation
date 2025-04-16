@@ -34,7 +34,7 @@ async function getData(url) {
  * Build a loader container and append this to a element.
  *
  * @param {EventTarget} parentElement for appending the loader
- * @returns Loader element within the parentElement
+ * @returns {HTMLDivElement} Loader element within the parentElement
  */
 function buildLoader(parentElement) {
   const loader = document.createElement('div');
@@ -57,6 +57,7 @@ dlfValidationForms.forEach((validationForm) => {
      * Create a list of messages.
      *
      * @param {Array} messages to create list for
+     * @returns {HTMLUListElement} List element
      */
     function createMessagesList(messages) {
       const ul = document.createElement('ul');
