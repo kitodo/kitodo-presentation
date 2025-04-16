@@ -55,14 +55,14 @@ class DOMDocumentValidationStackTest extends UnitTestCase
     public function testValidatorClassNotExists(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Unable to load validator class \"Kitodo\Tests\TestValidator\".");
+        $this->expectExceptionMessage("Unable to load validator class.");
         new DOMDocumentValidationStack([["className" => "Kitodo\Tests\TestValidator"]]);
     }
 
     public function testValidatorDerivation(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Validator of class \"" . UrlValidator::class . "\" must be an instance of AbstractDlfValidator.");
+        $this->expectExceptionMessage("Validator must be an instance of AbstractDlfValidator.");
         new DOMDocumentValidationStack([["className" => UrlValidator::class]]);
     }
 }
