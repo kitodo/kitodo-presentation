@@ -180,7 +180,7 @@
 				<source><![CDATA[Notice]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.validationform.label">
-				<source><![CDATA[Insert the link to your <acronym title="metadata encoding and transmission standard">METS</acronym> file or <acronym title="open archives initiative">OAI</acronym> interface here:]]></source>
+				<source><![CDATA[Insert the link to your <acronym title="metadata encoding and transmission standard">METS</acronym> file here:]]></source>
 			</trans-unit>
 			<trans-unit id="plugins.validationform.validate">
 				<source><![CDATA[validate]]></source>
