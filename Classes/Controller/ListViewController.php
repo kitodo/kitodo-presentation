@@ -101,10 +101,8 @@ class ListViewController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-        $numResults = 0;
         if (!empty($this->searchParams)) {
             $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->searchParams, $listedMetadata);
-            $numResults = $solrResults->getNumFound();
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'] ?? 25;
 
@@ -116,8 +114,8 @@ class ListViewController extends AbstractController
         }
 
         $this->view->assign('viewData', $this->viewData);
-        $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
-        $this->view->assign('numResults', $numResults);
+        $this->view->assign('countDocuments', !empty($solrResults) ? $solrResults->count() : 0);
+        $this->view->assign('countResults', !empty($solrResults) ? $solrResults->getNumFound() : 0);
         $this->view->assign('page', $currentPage);
         $this->view->assign('lastSearch', $this->searchParams);
         $this->view->assign('sortableMetadata', $sortableMetadata);
