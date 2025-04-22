@@ -177,7 +177,6 @@ class CollectionController extends AbstractController
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $this->searchParams, $listedMetadata);
-        $numResults = $solrResults->getNumFound();
 
         $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'] ?? 25;
 
@@ -188,8 +187,8 @@ class CollectionController extends AbstractController
         $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
 
         $this->view->assign('viewData', $this->viewData);
-        $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
-        $this->view->assign('numResults', $numResults);
+        $this->view->assign('countDocuments', $solrResults->count());
+        $this->view->assign('countResults', $solrResults->getNumFound());
         $this->view->assign('collection', $collection);
         $this->view->assign('page', $currentPage);
         $this->view->assign('lastSearch', $this->searchParams);
