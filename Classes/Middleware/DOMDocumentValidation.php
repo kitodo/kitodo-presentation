@@ -112,8 +112,8 @@ class DOMDocumentValidation implements MiddlewareInterface
         }
 
         if (!array_key_exists($typeParam, $settings["domDocumentValidation"])) {
-            $this->logger->error('Type of DOMDocumentValidation does not exist.');
-            throw new InvalidArgumentException('Type of DOMDocumentValidation does not exist.', 1744373532);
+            $this->logger->error('Validation configuration type in type parameter "' . $typeParam . '" does not exist.');
+            throw new InvalidArgumentException('Validation configuration type does not exist.', 1744373532);
         }
 
         $validationConfiguration = $settings['domDocumentValidation'][$typeParam];
