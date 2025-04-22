@@ -402,7 +402,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
             $params['fulltext'] = true;
         } else {
-            $params['filterquery'][]['query'] = "-type:page";
+            $params['filterquery'][]['query'] = '-type:page';
             // Retain given search field if valid.
             if (!empty($this->searchParams['query'])) {
                 $query = Solr::escapeQueryKeepField(trim($this->searchParams['query']), $this->settings['storagePid']);
