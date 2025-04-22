@@ -57,6 +57,8 @@ class UseGroupsConfiguration
             'useGroupsFulltext',
             'useGroupsAudio',
             'useGroupsScore',
+            'useGroupsVideo',
+            'useGroupsWaveform',
             'useGroupsModel'
         ];
 
@@ -168,6 +170,30 @@ class UseGroupsConfiguration
     }
 
     /**
+     * Get the configuration for 'Video' use groups type.
+     *
+     * @access public
+     *
+     * @return array
+     */
+    public function getVideo(): array
+    {
+        return $this->getByType('Video');
+    }
+
+    /**
+     * Get the configuration for 'Waveform' use groups type.
+     *
+     * @access public
+     *
+     * @return array
+     */
+    public function getWaveform(): array
+    {
+        return $this->getByType('Waveform');
+    }
+
+    /**
      * Get the configuration for use groups.
      *
      * @access public
@@ -184,7 +210,7 @@ class UseGroupsConfiguration
      *
      * @access private
      *
-     * @param string $useType possible values: 'Audio', 'Download', 'Fulltext', 'Image', 'Score', 'Thumbnail'
+     * @param string $useType possible values: 'Audio', 'Download', 'Fulltext', 'Image', 'Score', 'Thumbnail', 'Video', 'Waveform', 'Model'
      *
      * @return array
      */

@@ -30,11 +30,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
 {
     use LoggerAwareTrait;
 
-    const ITEM_KEY_TITLE = "title";
-    const ITEM_KEY_BREAK_ON_ERROR = "breakOnError";
-    const ITEM_KEY_VALIDATOR = "validator";
-
-    protected array $validatorStack = [];
+    protected array $validators = [];
 
     public function __construct(string $valueClassName)
     {
@@ -57,8 +53,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
                 $this->logger->error('Unable to load class ' . $configurationItem["className"] . '.');
                 throw new InvalidArgumentException('Unable to load validator class.', 1723200537037);
             }
-            $breakOnError = !isset($configurationItem["breakOnError"]) || $configurationItem["breakOnError"] !== "false";
-            $this->addValidator($configurationItem["className"], $configurationItem["title"] ?? "", $breakOnError, $configurationItem["configuration"] ?? []);
+            $this->addValidator($configurationItem["className"], $configurationItem["configuration"] ?? []);
         }
     }
 
@@ -66,15 +61,13 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
      * Add validator to the internal validator stack.
      *
      * @param string $className Class name of the validator which was derived from Kitodo\Dlf\Validation\AbstractDlfValidator
-     * @param string $title The title of the validator
-     * @param bool $breakOnError True if the execution of validator stack is interrupted when validator throws an error
      * @param array|null $configuration The configuration of validator
      *
      * @throws InvalidArgumentException
      *
      * @return void
      */
-    protected function addValidator(string $className, string $title, bool $breakOnError = true, array $configuration = null): void
+    protected function addValidator(string $className, ?array $configuration = null): void
     {
         if ($configuration === null) {
             $validator = GeneralUtility::makeInstance($className);
@@ -83,13 +76,11 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
         }
 
         if (!$validator instanceof AbstractDlfValidator) {
-            $this->logger->error($className . ' must be an instance of AbstractDlfValidator.');
-            throw new InvalidArgumentException('Class must be an instance of AbstractDlfValidator.', 1723121212747);
+            $this->logger->error('Validator of class "' . $className . '" must be an instance of AbstractDlfValidator.');
+            throw new InvalidArgumentException('Validator must be an instance of AbstractDlfValidator.', 1723121212747);
         }
 
-        $title = empty($title) ? $className : $title;
-
-        $this->validatorStack[] = [self::ITEM_KEY_TITLE => $title, self::ITEM_KEY_VALIDATOR => $validator, self::ITEM_KEY_BREAK_ON_ERROR => $breakOnError];
+        $this->validators[] = $validator;
     }
 
     /**
@@ -108,21 +99,28 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
             throw new InvalidArgumentException('Type of value is not valid.', 1723127564821);
         }
 
-        if (empty($this->validatorStack)) {
+        if (empty($this->validators)) {
             $this->logger->error('The validation stack has no validator.');
             throw new InvalidArgumentException('The validation stack has no validator.', 1724662426);
         }
 
-        foreach ($this->validatorStack as $validationStackItem) {
-            $validator = $validationStackItem[self::ITEM_KEY_VALIDATOR];
-            $result = $validator->validate($value);
-
-            foreach ($result->getErrors() as $error) {
-                $this->addError($error->getMessage(), $error->getCode(), [], $validationStackItem[self::ITEM_KEY_TITLE]);
+        foreach ($this->validators as $index => $validator) {
+            $validatorResult = $validator->validate($value);
+            $stackResult = $this->result->forProperty((string) $index);
+            if ($validatorResult->hasErrors()) {
+                foreach ($validatorResult->getErrors() as $error) {
+                    $stackResult->addError($error);
+                }
             }
-
-            if ($validationStackItem[self::ITEM_KEY_BREAK_ON_ERROR] && $result->hasErrors()) {
-                break;
+            if ($validatorResult->hasWarnings()) {
+                foreach ($validatorResult->getWarnings() as $warning) {
+                    $stackResult->addWarning($warning);
+                }
+            }
+            if ($validatorResult->hasNotices()) {
+                foreach ($validatorResult->getNotices() as $notice) {
+                    $stackResult->addNotice($notice);
+                }
             }
         }
     }

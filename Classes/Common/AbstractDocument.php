@@ -817,7 +817,7 @@ abstract class AbstractDocument
      * @param string|array $resource IIIF resource. Can be an IRI, the JSON document as string
      * or a dictionary in form of a PHP associative array
      *
-     * @return NULL|\Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity An instance of the IIIF resource 
+     * @return NULL|\Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity An instance of the IIIF resource
      */
     protected static function loadIiifResource($resource): mixed
     {
@@ -1096,6 +1096,9 @@ abstract class AbstractDocument
      */
     protected function __construct(int $pid, string $location, $preloadedDocument, array $settings = [])
     {
+        // Note: Any change here might require an update in function __sleep
+        // of class MetsDocument and class IiifManifest, too.
+
         $this->pid = $pid;
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->setPreloadedDocument($preloadedDocument);

@@ -65,6 +65,15 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_listview
         }
       }
+      tx_dlf_mediaplayer {
+        iconIdentifier = tx-dlf-mediaplayer
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_mediaplayer
+        }
+      }
       tx_dlf_metadata {
         iconIdentifier = tx-dlf-metadata
         title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.title
@@ -144,6 +153,15 @@ mod.wizards.newContentElement.wizardItems {
         tt_content_defValues {
           CType = list
           list_type = dlf_toolbox
+        }
+      }
+      tx_dlf_validationform {
+        iconIdentifier = tx-dlf-validationform
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validation.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validation.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_validationform
         }
       }
     }

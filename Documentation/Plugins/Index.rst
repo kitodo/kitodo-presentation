@@ -54,7 +54,7 @@ In this example, you place the customized fluid template into this file::
 Audioplayer
 -----------
 
-The audioplayer plugin is only active if the selected document has a valid audio filegroup (fileGrpAudio).
+The audioplayer plugin is only active if the selected document has valid audio file use groups (useGroupsAudio).
 
 Properties
 ^^^^^^^^^^
@@ -455,6 +455,38 @@ List View
    :Data Type:
        `t3tsref:data-type-page-id`
    :Default:
+
+
+Media Player
+------------
+
+The mediaplayer plugin is only active if the selected document has valid video file use groups (useGroupsVideo).
+
+:typoscript:`plugin.tx_dlf_mediaplayer.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Default:
+        Default
+
+ - :Property:
+        excludeOther_
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+        1
+
+ - :Property:
+       elementId_
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+        tx-dlf-video
 
 
 Metadata
@@ -907,6 +939,13 @@ Table Of Contents
        0
 
  - :Property:
+        showFull
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
        targetBasket
    :Data Type:
        `t3tsref:data-type-page-id`
@@ -1108,3 +1147,29 @@ This plugin adds a possibility to search all appearances of the phrase in curren
        :ref:`t3tsref:data-type-string`
    :Default:
        tx_dlf[encrypted]
+
+.. _Plugin Validation Form:
+
+Validation Form
+-----------
+
+The plugin renders an input field where a METS URL can be entered. After submission, the document is loaded and validated against the :ref:`DOMDocumentValidation Middleware`. For the validation to work, a corresponding configuration (see :ref:`DOMDocumentValidation Middleware Configuration`) must be present in TypoScript, and the type of this configuration must be provided to the plugin as a required parameter.
+
+:typoscript:`plugin.tx_dlf_validationform.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Description:
+       Description
+
+ - :Property:
+        type
+   :Data Type:
+        :ref:`t3tsref:data-type-string`
+   :Description:
+        Validation configuration type for DOMDocument validation

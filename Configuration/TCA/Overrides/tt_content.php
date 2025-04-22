@@ -118,6 +118,30 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     $iconsDirectory . 'tx-dlf-embedded3dviewer.svg'
 );
 
+// Plugin "validationform".
+$plugin = 'dlf_validationform';
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'dlf_validationform',
+    $flexFormsPathPrefix . 'ValidationForm.xml'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Dlf',
+    'ValidationForm',
+    $pluginsLabel . 'validation.title',
+    $iconsDirectory . 'tx-dlf-validationform.svg'
+);
+
+// Plugin "feeds".
+$plugin = 'dlf_feeds';
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
+
 // Plugin "feeds".
 $plugin = 'dlf_feeds';
 
@@ -154,11 +178,30 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     $iconsDirectory . 'tx-dlf-listview.svg'
 );
 
+// Plugin "mediaplayer".
+$plugin = 'dlf_mediaplayer';
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    $plugin,
+    $flexFormsPathPrefix . 'MediaPlayer.xml'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Dlf',
+    'MediaPlayer',
+    $pluginsLabel . 'mediaplayer.title',
+    $iconsDirectory . 'tx-dlf-mediaplayer.svg'
+);
+
 // Plugin "metadata".
 $plugin = 'dlf_metadata';
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     $plugin,
     $flexFormsPathPrefix . 'Metadata.xml'

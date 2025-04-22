@@ -99,7 +99,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return void
      */
-    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, QueryResult $listedMetadata = null, QueryResult $indexedMetadata = null)
+    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null)
     {
         $this->documentRepository = $documentRepository;
         $this->collections = $collections;
@@ -402,9 +402,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
             $params['fulltext'] = true;
         } else {
+            $params['filterquery'][]['query'] = '-type:page';
             // Retain given search field if valid.
             if (!empty($this->searchParams['query'])) {
                 $query = Solr::escapeQueryKeepField(trim($this->searchParams['query']), $this->settings['storagePid']);
+            } else {
+                $query = '*';
             }
         }
 

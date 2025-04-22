@@ -2,5 +2,7 @@ plugin.tx_dlf {
     persistence {
         # cat=plugin.tx_dlf/100/a; type=int+; label=Default storage PID
         storagePid =
+        # cat=plugin.tx_dlf/200/a; type=int+; label=Default SOLR core UID
+        solrCoreUid = 
     }
 }
