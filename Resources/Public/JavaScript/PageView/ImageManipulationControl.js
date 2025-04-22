@@ -93,7 +93,7 @@ dlfViewerImageManipulationControl = function(options) {
         'resetFilter': $.proxy(function() {
             // reset the checked filters
             if (this.filters_['invert']) {
-                $('#invert-filter').click();
+                $(this.sliderContainer_).find('#invert-filter').click();
             }
 
             // reset the slider filters
@@ -217,7 +217,7 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
     var elFilterId = 'invert-filter';
     $(this.sliderContainer_).append($('<div class="checkbox"><label><input type="checkbox" id="' + elFilterId + '">' +
          this.dic['invert'] + '</label></div>'));
-    $('#' + elFilterId).on('click', $.proxy(function(event) {
+    $(this.sliderContainer_).find('#' + elFilterId).on('click', $.proxy(function(event) {
         var invert = event.target.checked;
 
         // update filter chain
