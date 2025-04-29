@@ -364,10 +364,11 @@ class BaseCommand extends Command
      */
     private function getAuthors(array $metadataAuthor): string
     {
-        // Remove appended "valueURI" from authors' names for storing in database.
+        // Get only authors' names for storing in database.
         foreach ($metadataAuthor as $i => $author) {
-            $splitName = explode(pack('C', 31), $author);
-            $metadataAuthor[$i] = $splitName[0];
+            if (is_array($author)) {
+                $metadata['author'][$i] = $author['name'];
+            }
         }
 
         $authors = '';
