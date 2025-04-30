@@ -212,10 +212,11 @@ class BaseCommand extends Command
         $document->setPlace(implode('; ', $metadata['place']));
         $document->setYear(implode('; ', $metadata['year']));
 
-        // Remove appended "valueURI" from authors' names for storing in database.
+        // Get only authors' names for storing in database.
         foreach ($metadata['author'] as $i => $author) {
-            $splitName = explode(pack('C', 31), $author);
-            $metadata['author'][$i] = $splitName[0];
+            if (is_array($author)) {
+                $metadata['author'][$i] = $author['name'];
+            }
         }
         $document->setAuthor($this->getAuthors($metadata['author']));
         $document->setThumbnail($doc->thumbnail ? : '');
