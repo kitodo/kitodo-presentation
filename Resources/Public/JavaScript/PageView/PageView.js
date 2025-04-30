@@ -620,8 +620,9 @@ dlfViewer.prototype.addCustomControls = function() {
 
         // Should be called if CORS is enabled
         imageManipulationControl = new dlfViewerImageManipulationControl({
-            controlTarget: $('.tx-dlf-tools-imagetools')[0],
+            controlTarget: $('.tx-dlf-tools-imagetools')[this.counter],
             map: this.map,
+            counter: this.counter,
         });
 
         // Bind behavior of both together
