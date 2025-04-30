@@ -143,6 +143,11 @@ class CollectionController extends AbstractController
             $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->searchParams);
         }
 
+        if (!isset($this->searchParams['collection']) && !isset($collection)) {
+            $this->logger->warning('Collection is not set.');
+            return;
+        }
+
         // Get current page from request data because the parameter is shared between plugins
         $currentPage = $this->requestData['page'] ?? 1;
 
@@ -204,8 +209,8 @@ class CollectionController extends AbstractController
         $searchParams = $this->getParametersSafely('searchParameter');
 
         $collection = null;
-        if ($searchParams['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($searchParams['collection']['__identity'])) {
-            $collection = $this->collectionRepository->findByUid($searchParams['collection']['__identity']);
+        if ($searchParams['collection'] && MathUtility::canBeInterpretedAsInteger($searchParams['collection'])) {
+            $collection = $this->collectionRepository->findByUid($searchParams['collection']);
         }
 
         // output is done by show action
