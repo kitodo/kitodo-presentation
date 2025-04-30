@@ -21,9 +21,14 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Http\ResponseFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Error\Message;
 use TYPO3\CMS\Extbase\Error\Result;
 
 /**
@@ -36,6 +41,8 @@ use TYPO3\CMS\Extbase\Error\Result;
 class DOMDocumentValidation implements MiddlewareInterface
 {
     use LoggerAwareTrait;
+
+    private ServerRequestInterface $request;
 
     /**
      * The main method of the middleware.
@@ -51,9 +58,9 @@ class DOMDocumentValidation implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $this->request = $request;
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $response = $handler->handle($request);
-        // parameters are sent by POST --> use getParsedBody() instead of getQueryParams()
         $parameters = $request->getQueryParams();
 
         // Return if not this middleware
@@ -61,22 +68,18 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $response;
         }
 
+        // check required parameters
         $urlParam = $parameters['url'];
         if (!isset($urlParam)) {
             throw new InvalidArgumentException('URL parameter is missing.', 1724334674);
         }
 
-        /** @var ConfigurationManagerInterface $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-        $settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
-
-        if (!array_key_exists("domDocumentValidationValidators", $settings)) {
-            $this->logger->error('DOMDocumentValidation is not configured correctly.');
-            throw new InvalidArgumentException('DOMDocumentValidation is not configured correctly.', 1724335601);
+        $typeParam = $parameters['type'];
+        if (!isset($typeParam)) {
+            throw new InvalidArgumentException('Type parameter is missing.', 1744373423);
         }
 
-        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $settings['domDocumentValidationValidators']);
-
+        // load dom document from url
         if (!GeneralUtility::isValidUrl($urlParam)) {
             $this->logger->debug('Parameter "' . $urlParam . '" is not a valid url.');
             throw new InvalidArgumentException('Value of url parameter is not a valid url.', 1724852611);
@@ -94,23 +97,101 @@ class DOMDocumentValidation implements MiddlewareInterface
             throw new InvalidArgumentException('Error converting content to xml.', 1724420648);
         }
 
-        $result = $validation->validate($document);
-        return $this->getJsonResponse($result);
+        // retrieve validation configuration from plugin.tx_dlf typoscript
+        /** @var ConfigurationManagerInterface $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+
+        /** @var TypoScriptService $typoScriptService */
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+        $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScript['plugin.']['tx_dlf.']['settings.']);
+
+        if (!array_key_exists("domDocumentValidation", $settings)) {
+            $this->logger->error('DOMDocumentValidation is not configured.');
+            throw new InvalidArgumentException('DOMDocumentValidation is not correctly.', 1724335601);
+        }
+
+        if (!array_key_exists($typeParam, $settings["domDocumentValidation"])) {
+            $this->logger->error('Validation configuration type in type parameter "' . $typeParam . '" does not exist.');
+            throw new InvalidArgumentException('Validation configuration type does not exist.', 1744373532);
+        }
+
+        $validationConfiguration = $settings['domDocumentValidation'][$typeParam];
+        $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
+        // validate and return json response
+        return $this->getJsonResponse($validationConfiguration, $validation->validate($document));
     }
 
-    protected function getJsonResponse(Result $result): ResponseInterface
+    protected function getJsonResponse(array $configurations, ?Result $result): ResponseInterface
     {
-        $resultContent = ["valid" => !$result->hasErrors()];
+        $validationResults = [];
+        $index = 0;
 
-        foreach ($result->getErrors() as $error) {
-            $resultContent["results"][$error->getTitle()][] = $error->getMessage();
+        if ($result != null) {
+            foreach ($configurations as $configuration) {
+                $validationResult = [];
+                $validationResult['validator']['title'] = $this->getTranslation($configuration['title']);
+                if (is_array($configuration['description'])) {
+                    $validationResult['validator']['description'] = $this->getTranslation($configuration['description']['key'], $configuration['description']['arguments']);
+                } else {
+                    $validationResult['validator']['description'] = $this->getTranslation($configuration['description']);
+                }
+                $stackResult = $result->forProperty((string) $index);
+                if ($stackResult->hasErrors()) {
+                    $validationResult['results']['errors'] = array_map($this->getMessageText(), $stackResult->getErrors());
+                }
+                if ($stackResult->hasWarnings()) {
+                    $validationResult['results']['warnings'] = array_map($this->getMessageText(), $stackResult->getWarnings());
+                }
+                if ($stackResult->hasNotices()) {
+                    $validationResult['results']['notices'] = array_map($this->getMessageText(), $stackResult->getNotices());
+                }
+                $validationResults[] = $validationResult;
+                $index++;
+            }
         }
 
         /** @var ResponseFactory $responseFactory */
         $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
         $response = $responseFactory->createResponse()
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
-        $response->getBody()->write(json_encode($resultContent));
+        $response->getBody()->write(json_encode($validationResults));
         return $response;
+    }
+
+    private function getTranslation(string $key, ?array $arguments = null): string
+    {
+        $language =
+            $this->request->getAttribute('language')
+            ?? $this->request->getAttribute('site')->getDefaultLanguage();
+
+        /** @var LanguageServiceFactory $languageServiceFactory */
+        $languageServiceFactory = GeneralUtility::makeInstance(
+            LanguageServiceFactory::class,
+        );
+
+        /** @var LanguageService $languageService */
+        $languageService = $languageServiceFactory
+            ->createFromSiteLanguage($language);
+
+        if (isset($arguments) && count($arguments) > 0) {
+            return vsprintf(
+                $languageService->sL($key),
+                array_map(fn($value) => str_starts_with($value, 'EXT:') ? PathUtility::getPublicResourceWebPath($value) : $value, $arguments)
+            );
+        }
+        return $languageService->sL($key);
+    }
+
+    /**
+     * Get the message.
+     *
+     * @return \Closure
+     */
+    private function getMessageText(): \Closure
+    {
+        return function (Message $message): string {
+            return $message->getMessage();
+        };
     }
 }

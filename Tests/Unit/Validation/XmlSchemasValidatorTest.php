@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Kitodo\Dlf\Tests\Unit\Validation;
 
 use DOMDocument;
-use Kitodo\Dlf\Validation\XmlSchemesValidator;
+use Kitodo\Dlf\Validation\XmlSchemasValidator;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -26,7 +26,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  *
  * @access public
  */
-class XmlSchemesValidatorTest extends UnitTestCase
+class XmlSchemasValidatorTest extends UnitTestCase
 {
     const METS = <<<METS
         <mets:mets
@@ -75,7 +75,7 @@ class XmlSchemesValidatorTest extends UnitTestCase
 
     public function testValidation(): void
     {
-        $xmlSchemesValidator = new XmlSchemesValidator(
+        $xmlSchemesValidator = new XmlSchemasValidator(
             [["namespace" => "http://www.loc.gov/METS/", "schemaLocation" => "http://www.loc.gov/standards/mets/mets.xsd"], ["namespace" => "http://www.loc.gov/mods/v3", "schemaLocation" => "http://www.loc.gov/standards/mods/mods.xsd"]]
         );
 

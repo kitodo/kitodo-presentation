@@ -154,6 +154,8 @@ class NavigationController extends AbstractController
             }
         }
 
+        $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
+
         return $this->htmlResponse();
     }
 }

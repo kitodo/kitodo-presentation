@@ -1,0 +1,22 @@
+<html data-namespace-typo3-fluid="true"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+    <div class="tx-dlf-validationform" >
+        <form action="{url}"
+            data-i18n-headline-error="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.error'/>"
+            data-i18n-headline-notice="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.notice'/>"
+            data-i18n-headline-success="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.success'/>"
+            data-i18n-headline-warning="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.warning'/>"
+            >
+            <input type="hidden" name="type" value="{settings.type}">
+            <label>
+                <f:format.raw><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.label' /></f:format.raw>
+                <input type="text" name="url" class="url" value="" required>
+            </label>
+            <input type="submit" class="submit" value="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.validate'/>">
+        </form>
+
+        <script>
+
+        </script>
+    </div>
+</html>
