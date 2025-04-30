@@ -488,6 +488,18 @@
 			<trans-unit id="plugins.annotation.title">
         		<source><![CDATA[Kitodo: Annotations]]></source>
         	</trans-unit>
+			<trans-unit id="plugins.validationform.title">
+				<source><![CDATA[Kitodo: Validation Form]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.description">
+				<source><![CDATA[Validation form for Kitodo.Presentation]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.flexform.type.label">
+				<source><![CDATA[Type]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.validationform.flexform.type.description">
+				<source><![CDATA[Validation configuration type for DOMDocument validation]]></source>
+			</trans-unit>
             <trans-unit id="flash.attention" approved="yes">
                 <source><![CDATA[Attention!]]></source>
             </trans-unit>

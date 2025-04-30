@@ -155,6 +155,15 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_toolbox
         }
       }
+      tx_dlf_validationform {
+        iconIdentifier = tx-dlf-validationform
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validation.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validation.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_validationform
+        }
+      }
     }
     show = *
   }
