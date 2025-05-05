@@ -172,7 +172,7 @@ class MetadataController extends AbstractController
             $metadata = $this->removeEmptyEntries($metadata);
 
             $this->view->assign('buildUrl', $this->buildUrlFromMetadata($metadata));
-            $this->view->assign('externalUrl', $this->buildExternalUrlFromMetadata($metadata));
+            $this->view->assign('hasExternalUrl', $this->hasExternalUrlForMetadata($metadata));
             $this->view->assign('documentMetadataSections', $metadata);
             $this->view->assign('configMetadata', $metadataResult);
             $this->view->assign('separator', $this->settings['separator']);
@@ -303,36 +303,33 @@ class MetadataController extends AbstractController
     }
 
     /**
-     * Builds external URLs array for given metadata array.
+     * Checks and marks metadata with external URLs array for given metadata array.
      *
      * @access private
      *
      * @param array $metadata The metadata array
      *
-     * @return array external URLs
+     * @return array of true values for metadata sections with external URLs
      */
-    private function buildExternalUrlFromMetadata(array $metadata): array
+    private function hasExternalUrlForMetadata(array $metadata): array
     {
-        $externalUrl = [];
+        $hasExternalUrl = [];
 
         foreach ($metadata as $i => $section) {
             foreach ($section as $name => $value) {
                 if (($name == 'author' || $name == 'holder') && !empty($value)) {
                     foreach ($value as $entry) {
                         if (!empty($entry['url'])) {
-                            $externalUrl[$i][$name][] = $entry;
+                            $hasExternalUrl[$i][$name][] = true;
                         }
                     }
                 } elseif (($name == 'geonames' || $name == 'wikidata' || $name == 'wikipedia') && !empty($value)) {
-                    $externalUrl[$i][$name]['externalUrl'][] = [
-                        'name' => $value[0],
-                        'url' => $value[0]
-                    ];
+                    $hasExternalUrl[$i][$name][] = true;
                 }
             }
         }
 
-        return $externalUrl;
+        return $hasExternalUrl;
     }
 
     /**
