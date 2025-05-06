@@ -101,6 +101,10 @@
 				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
 				<target><![CDATA[Abonnieren Sie den RSS-Feed dieser Kollektion!]]></target>
 			</trans-unit>
+            <trans-unit id="collection.missing" approved="yes">
+                <source><![CDATA[The collection id is missing!]]></source>
+                <target><![CDATA[Die ID der Sammlung fehlt!]]></target>
+            </trans-unit>
 			<trans-unit id="doublePage+1" approved="yes">
 				<source><![CDATA[Adjust recto/verso]]></source>
 				<target><![CDATA[Recto/Verso korrigieren]]></target>
