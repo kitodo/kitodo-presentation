@@ -13,27 +13,34 @@
       data-namespace-typo3-fluid="true">
 
       <div class="tx-dlf-listview">
-        <h2 class="tx-dlf-listview-label">{collection.label}</h2>
+        <f:if condition="{collection}">
+            <f:then>
+                <h2 class="tx-dlf-listview-label">{collection.label}</h2>
 
-        <f:if condition="{collection.thumbnail}">
-            <div class="tx-dlf-collection-thumbnail">
                 <f:if condition="{collection.thumbnail}">
-                    <f:image image="{collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {collection.label}" title="{collection.label}" maxWidth="250" />
-                 </f:if>
-            </div>
+                    <div class="tx-dlf-collection-thumbnail">
+                        <f:if condition="{collection.thumbnail}">
+                            <f:image image="{collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {collection.label}" title="{collection.label}" maxWidth="250" />
+                        </f:if>
+                    </div>
+                </f:if>
+
+                <f:if condition="{collection.description}">
+                    <div class="tx-dlf-collection-description">
+                        <f:format.html>{collection.description}</f:format.html>
+                    </div>
+                </f:if>
+
+                <f:variable name="action" value="showSorted" />
+                <f:variable name="controller" value="Collection" />
+                <f:render partial="ListView/SortingForm" arguments="{_all}" />
+                <f:render partial="ListView/Results" arguments="{_all}" />
+            </f:then>
+            <f:else>
+                <h2 class="tx-dlf-listview-label">{f:translate(key: 'collection.missing')}</h1>
+            </f:else>
+
         </f:if>
-
-        <f:if condition="{collection.description}">
-            <div class="tx-dlf-collection-description">
-                <f:format.html>{collection.description}</f:format.html>
-            </div>
-        </f:if>
-
-        <f:variable name="action" value="showSorted" />
-        <f:variable name="controller" value="Collection" />
-        <f:render partial="ListView/SortingForm" arguments="{_all}" />
-        <f:render partial="ListView/Results" arguments="{_all}" />
-
     </div>
 
 </html>
