@@ -350,6 +350,9 @@
 			<trans-unit id="collection.feed.title">
 				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
 			</trans-unit>
+            <trans-unit id="collection.missing">
+                <source><![CDATA[The collection id is missing!]]></source>
+            </trans-unit>
 			<trans-unit id="newTenant.module">
 				<source><![CDATA[New Tenant Module]]></source>
 			</trans-unit>
