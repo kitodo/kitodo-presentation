@@ -566,9 +566,6 @@ abstract class AbstractDocument
                     $contentAsJsonArray = json_decode($content, true);
                     if ($contentAsJsonArray !== null) {
                         $iiif = self::loadIiifResource($contentAsJsonArray);
-                        if ($iiif instanceof IiifResourceInterface) {
-                            $documentFormat = 'IIIF';
-                        }
                     }
                 }
             }
@@ -578,9 +575,7 @@ abstract class AbstractDocument
         $pid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
         if ($documentFormat == 'METS') {
             $instance = new MetsDocument($pid, $location, $xml, $settings);
-        } elseif ($documentFormat == 'IIIF') {
-            // TODO: Parameter $preloadedDocument of class Kitodo\Dlf\Common\IiifManifest constructor expects SimpleXMLElement|Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface, Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity|null given.
-            // @phpstan-ignore-next-line
+        } elseif ($iiif instanceof IiifResourceInterface) {
             $instance = new IiifManifest($pid, $location, $iiif);
         }
 
@@ -670,10 +665,10 @@ abstract class AbstractDocument
                     $title = self::getTitle($partof, true);
                 }
             } else {
-                Helper::log('No document with UID ' . $uid . ' found or document not accessible', LOG_SEVERITY_WARNING);
+                Helper::warning('No document with UID ' . $uid . ' found or document not accessible');
             }
         } else {
-            Helper::log('Invalid UID ' . $uid . ' for document', LOG_SEVERITY_ERROR);
+            Helper::error('Invalid UID ' . $uid . ' for document');
         }
         return $title;
     }
@@ -1039,9 +1034,7 @@ abstract class AbstractDocument
     {
         if (!$this->rootIdLoaded) {
             if ($this->parentId) {
-                // TODO: Parameter $location of static method AbstractDocument::getInstance() expects string, int<min, -1>|int<1, max> given.
-                // @phpstan-ignore-next-line
-                $parent = self::getInstance($this->parentId, ['storagePid' => $this->pid]);
+                $parent = self::getInstance((string) $this->parentId, ['storagePid' => $this->pid]);
                 $this->rootId = $parent->rootId;
             }
             $this->rootIdLoaded = true;
