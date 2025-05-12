@@ -13,15 +13,11 @@
       xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:variable name="externalUrls" value="{externalUrlVariable.{configObject.indexName}}" />
-
-<f:if condition="{configObject.indexName} == 'author'">
+<f:if condition="{configObject.indexName} == 'author' || {configObject.indexName} == 'holder'">
     <f:then>
         <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionConfigObject}"><f:link.external uri="{value.url}">{value.name}</f:link.external></kitodo:stdWrap>
     </f:then>
     <f:else>
-        <f:for each="{externalUrls}" as="entry">
-            <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionConfigObject}"><f:link.external uri="{entry.url}">{entry.name}</f:link.external></kitodo:stdWrap>
-        </f:for>
+        <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionConfigObject}"><f:link.external uri="{value}">{value}</f:link.external></kitodo:stdWrap>
     </f:else>
 </f:if>
