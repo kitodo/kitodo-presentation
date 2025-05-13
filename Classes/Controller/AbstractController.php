@@ -232,14 +232,57 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      *
      * @param string $parameterName
+     * @param array $pluginNames
      *
      * @return null|string|array
      */
-    protected function getParametersSafely(string $parameterName)
+    protected function getParametersSafely(string $parameterName, array $pluginNames = [])
     {
         if ($this->request->hasArgument($parameterName)) {
             return $this->request->getArgument($parameterName);
+        } elseif (!empty($pluginNames)) {
+            foreach ($pluginNames as $pluginName) {
+                if ($this->request->hasArgument($pluginName)) {
+                    $pluginRequest = $this->request->getArgument($pluginName);
+                    if (array_key_exists($parameterName, $pluginRequest)) {
+                        return $pluginRequest[$parameterName];
+                    }
+                }
+            }
         }
+
+        if ($this->request->getParsedBody()) {
+            $requestData = $this->request->getParsedBody();
+            if (array_key_exists($parameterName, $requestData)) {
+                return $requestData[$parameterName];
+            } elseif (!empty($pluginNames)) {
+                foreach ($pluginNames as $pluginName) {
+                    if (array_key_exists($pluginName, $requestData)) {
+                        $pluginRequest = $requestData[$pluginName];
+                        if (array_key_exists($parameterName, $pluginRequest)) {
+                            return $pluginRequest[$parameterName];
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($this->request->getQueryParams()) {
+            $requestData = $this->request->getQueryParams();
+            if (array_key_exists($parameterName, $requestData)) {
+                return $requestData[$parameterName];
+            } elseif (!empty($pluginNames)) {
+                foreach ($pluginNames as $pluginName) {
+                    if (array_key_exists($pluginName, $requestData)) {
+                        $pluginRequest = $requestData[$pluginName];
+                        if (array_key_exists($parameterName, $pluginRequest)) {
+                            return $pluginRequest[$parameterName];
+                        }
+                    }
+                }
+            }
+        }
+
         return null;
     }
 
