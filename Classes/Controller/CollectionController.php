@@ -206,15 +206,15 @@ class CollectionController extends AbstractController
     public function showSortedAction(): void
     {
         // if search was triggered, get search parameters from POST variables
-        $searchParams = $this->getParametersSafely('searchParameter');
+        $searchParameter = $this->getParametersSafely('searchParameter');
 
         $collection = null;
-        if ($searchParams['collection'] && MathUtility::canBeInterpretedAsInteger($searchParams['collection'])) {
-            $collection = $this->collectionRepository->findByUid($searchParams['collection']);
+        if ($searchParameter['collection'] && MathUtility::canBeInterpretedAsInteger($searchParameter['collection'])) {
+            $collection = $this->collectionRepository->findByUid($searchParameter['collection']);
         }
 
         // output is done by show action
-        $this->forward('show', null, null, ['collection' => $collection, 'searchParams' => $searchParams]);
+        $this->forward('show', null, null, ['collection' => $collection, 'searchParameter' => $searchParameter]);
 
     }
 
