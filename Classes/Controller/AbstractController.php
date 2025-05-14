@@ -227,19 +227,91 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * Safely gets Parameters from request if they exist
+     * Safely gets parameters from request if they exist
      *
      * @access protected
      *
      * @param string $parameterName
+     * @param array $pluginNames
      *
      * @return null|string|array
      */
-    protected function getParametersSafely(string $parameterName)
+    protected function getParametersSafely(string $parameterName, array $pluginNames = [])
     {
         if ($this->request->hasArgument($parameterName)) {
             return $this->request->getArgument($parameterName);
         }
+
+        if (!empty($pluginNames)) {
+            $pluginParameter = $this->getPluginParameterFromArgument($parameterName, $pluginNames);
+            if ($pluginParameter !== null) {
+                return $pluginParameter;
+            }
+        }
+
+        $parsedBody = $this->request->getParsedBody();
+        if ($parsedBody) {
+            $bodyParameter = $this->getParameterFromRequestData($parameterName, $parsedBody, $pluginNames);
+            if ($bodyParameter !== null) {
+                return $bodyParameter;
+            }
+        }
+
+        $queryParams = $this->request->getQueryParams();
+        if ($queryParams) {
+            $queryParameter = $this->getParameterFromRequestData($parameterName, $queryParams, $pluginNames);
+            if ($queryParameter !== null) {
+                return $queryParameter;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Safely gets plugin parameters from argument if they exist
+     *
+     * @param string $parameterName
+     * @param array $pluginNames
+     *
+     * @return null|string|array
+     */
+    private function getPluginParameterFromArgument(string $parameterName, array $pluginNames)
+    {
+        foreach ($pluginNames as $pluginName) {
+            if ($this->request->hasArgument($pluginName)) {
+                $pluginRequest = $this->request->getArgument($pluginName);
+                if (array_key_exists($parameterName, $pluginRequest)) {
+                    return $pluginRequest[$parameterName];
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Safely gets parameters from request if they exist
+     *
+     * @param string $parameterName
+     * @param array $pluginNames
+     *
+     * @return null|string|array
+     */
+    private function getParameterFromRequestData(string $parameterName, array $requestData, array $pluginNames)
+    {
+        if (array_key_exists($parameterName, $requestData)) {
+            return $requestData[$parameterName];
+        }
+
+        foreach ($pluginNames as $pluginName) {
+            if (array_key_exists($pluginName, $requestData)) {
+                $pluginRequest = $requestData[$pluginName];
+                if (array_key_exists($parameterName, $pluginRequest)) {
+                    return $pluginRequest[$parameterName];
+                }
+            }
+        }
+
         return null;
     }
 
