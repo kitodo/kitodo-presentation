@@ -42,9 +42,7 @@ class SolrPaginator extends AbstractPaginator
     protected function updatePaginatedItems(int $itemsPerPage, int $offset): void
     {
         $this->solrSearch->submit($offset, $itemsPerPage);
-        foreach ($this->solrSearch as $item) {
-            $this->paginatedItems[] = $item;
-        }
+        $this->paginatedItems = $this->solrSearch->toArray();
     }
 
     protected function getTotalAmountOfItems(): int
