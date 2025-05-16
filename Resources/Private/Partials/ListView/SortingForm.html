@@ -26,7 +26,7 @@
             </p>
         </f:if>
 
-        <f:form section="showResults" action="search" controller="Search" name="searchParameter" method="get" class="tx-dlf-search-form">
+        <f:form section="showResults" action="search" controller="Search" name="search" method="get" class="tx-dlf-search-form">
             <div>
                 <label for="form-orderBy-{viewData.uniqueId}">
                     <f:translate key="listview.form.orderBy"/>
@@ -61,7 +61,7 @@
                     <f:form.hidden property="dateTo" value="{lastSearch.dateTo}" />
                 </f:if>
                 <f:for each="{lastSearch.fq}" as="filter" iteration="iter">
-                    <f:form.hidden name="searchParameter[fq][{iter.index}]" value="{filter}"/>
+                    <f:form.hidden name="search[fq][{iter.index}]" value="{filter}"/>
                 </f:for>
             </div>
         </f:form>
