@@ -101,7 +101,7 @@ class NavigationController extends AbstractController
             $widgetPage = $GLOBALS['TSFE']->fe_user->getKey('ses', 'widgetPage');
             $lastSearchArguments = [
                 'tx_dlf_listview' => [
-                    'searchParameter' => $searchSessionParameters
+                    'search' => $searchSessionParameters
                 ]
             ];
 
@@ -110,7 +110,7 @@ class NavigationController extends AbstractController
             }
 
             // save last search parameter to generate a link back to the search list
-            $this->view->assign('lastSearchParams', $lastSearchArguments);
+            $this->view->assign('lastSearch', $lastSearchArguments);
         }
 
         $pageOptions = [];
