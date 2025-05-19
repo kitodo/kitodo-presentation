@@ -89,7 +89,7 @@ class SearchController extends AbstractController
     public function searchAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
-        $this->search = $this->getParametersSafely('search');
+        $this->search = $this->getParametersSafely('search', ['tx_dlf_collection', 'tx_dlf_listview']);
 
         // output is done by main action
         return $this->redirect('main', null, null, ['search' => $this->search]);
