@@ -64,12 +64,6 @@ class ListViewController extends AbstractController
     }
 
     /**
-     * @access protected
-     * @var array The current search parameter
-     */
-    protected $searchParams = [];
-
-    /**
      * The main method of the plugin
      *
      * @access public
@@ -84,12 +78,12 @@ class ListViewController extends AbstractController
             return;
         }
 
-        $this->searchParams = $this->getParametersSafely('searchParameter');
+        $search = $this->getParametersSafely('searchParameter');
         $searchRequestData = GeneralUtility::_GPmerged('tx_dlf_search');
 
         if (isset($searchRequestData['searchParameter']) && is_array($searchRequestData['searchParameter'])) {
-            $this->searchParams = array_merge($this->searchParams ?: [], $searchRequestData['searchParameter']);
-            $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->searchParams);
+            $search = array_merge($search ?: [], $searchRequestData['searchParameter']);
+            $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $search);
         }
 
         // Get current page from request data because the parameter is shared between plugins
@@ -101,8 +95,8 @@ class ListViewController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
-        if (!empty($this->searchParams)) {
-            $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->searchParams, $listedMetadata);
+        if (!empty($search)) {
+            $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $search, $listedMetadata);
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'] ?? 25;
 
@@ -117,7 +111,7 @@ class ListViewController extends AbstractController
         $this->view->assign('countDocuments', !empty($solrResults) ? $solrResults->count() : 0);
         $this->view->assign('countResults', !empty($solrResults) ? $solrResults->getNumFound() : 0);
         $this->view->assign('page', $currentPage);
-        $this->view->assign('lastSearch', $this->searchParams);
+        $this->view->assign('lastSearch', $search);
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);
     }
