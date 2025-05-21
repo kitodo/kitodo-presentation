@@ -17,7 +17,8 @@
     <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
     <ol class="tx-dlf-abstracts">
         <f:for each="{paginator.paginatedItems}" as="document" iteration="docIterator">
-        <f:variable name="docTitle" value="{f:if(condition:'{document.title}', then:'{document.title}', else:'{document.metsOrderlabel}')}" />
+            <f:variable name="metadataTitle" value="{f:if(condition:'{document.title}', then:'{document.title}', else:'{document.metsOrderlabel}')}" />
+            <f:variable name="docTitle" value="{f:if(condition:'{metadataTitle}', then:'{metadataTitle}', else:'{f:translate(key: \'noTitle\')}')}" />
             <li value="{settings.list.paginate.itemsPerPage * pageOffset + docIterator.index}">
             <f:link.page
             pageUid="{settings.targetPidPageView}"
@@ -30,7 +31,7 @@
                 </f:comment>
                 <div class="tx-dlf-listview-thumbnail"><!--
                     --><f:if condition="{document.thumbnail}">
-                        <img src="{document.thumbnail}" loading="lazy" alt="Vorschaubild von {docTitle}" />
+                        <img src="{document.thumbnail}" loading="lazy" alt="{f:translate(key:'thumbnail.alt', arguments:{0: '{docTitle}'})}" />
                     </f:if><!--
                 --></div>
                 <dl>
@@ -74,20 +75,21 @@
                             </li>
                         </f:then>
                         <f:else>
+                            <f:variable name="childTitle" value="{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}" />
                             <li value="{childIterator.cycle}" class="pageresult">
                                 <f:link.page
                                 pageUid="{settings.targetPidPageView}"
                                 additionalParams="{tx_dlf:{page:'1', double:'0', id:'{child.uid}', pagegrid:'0'}}"
                                 class=""
-                                title="{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}">
+                                title="{childTitle}">
                                     <div class="tx-dlf-listview-thumbnail"><!--
                                     --><f:if condition="{child.thumbnail}">
-                                        <img src="{child.thumbnail}" loading="lazy" alt="Vorschaubild von {f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}" />
+                                        <img src="{child.thumbnail}" loading="lazy" alt="{f:translate(key:'thumbnail.alt', arguments:{0: '{childTitle}'})}" />
                                     </f:if><!--
                                     --></div>
                                     <dl>
                                         <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
-                                        <dd class="tx-dlf-title">{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}</dd>
+                                        <dd class="tx-dlf-title">{childTitle}</dd>
                                         <f:render partial="ListView/ResultsMetadata" arguments="{listedMetadata: listedMetadata, resultMetadata: child.metadata}" />
                                         <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
                                         <dd class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{child.structure}' /></dd>
@@ -106,15 +108,16 @@
             <f:if condition="{document.searchResults}">
                 <ol class="tx-dlf-volume">
                     <f:for each="{document.searchResults}" as="result" iteration="resultIterator">
+                        <f:variable name="docTitle" value="{f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
                         <li value="{resultIterator.cycle}" class="pageresult">
                             <f:link.page
                                 pageUid="{settings.targetPidPageView}"
                                 additionalParams="{tx_dlf:{page:'{result.page}', double:'0', id:'{document.uid}', pagegrid:'0', highlight_word: '{result.highlight_word}'}}"
                                 class=""
-                                title="{f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}, Seite {result.page}">
+                                title="{docTitle}, Seite {result.page}">
                                 <div class="tx-dlf-listview-thumbnail"><!--
                                     --><f:if condition="{result.thumbnail}">
-                                        <img src="{result.thumbnail}" loading="lazy" alt="Vorschaubild von {f:if(condition:'{result.title}', then:'{result.title}', else:'[{document.title}]')}" />
+                                        <img src="{result.thumbnail}" loading="lazy" alt="{f:translate(key:'thumbnail.alt', arguments:{0: '{docTitle}'})}" />
                                     </f:if><!--
                                 --></div>
                                 <dl>

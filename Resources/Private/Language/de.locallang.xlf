@@ -389,6 +389,10 @@
 				<source><![CDATA[Thumbnail]]></source>
 				<target><![CDATA[Vorschaubild]]></target>
 			</trans-unit>
+            <trans-unit id="thumbnail.alt" approved="yes">
+                <source><![CDATA[Thumbnail for %s]]></source>
+                <target><![CDATA[Vorschaubild von %s]]></target>
+            </trans-unit>
 			<trans-unit id="title" approved="yes">
 				<source><![CDATA[title]]></source>
 				<target><![CDATA[Titel]]></target>
