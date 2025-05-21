@@ -1,378 +1,378 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-12-29T14:02:58Z">
-		<header>
-			<generator>LFEditor</generator>
-		</header>
-		<body>
-			<trans-unit id="structure.act" approved="yes">
-				<source><![CDATA[Act]]></source>
-				<target><![CDATA[Urkunde]]></target>
-			</trans-unit>
-			<trans-unit id="structure.additional" approved="yes">
-				<source><![CDATA[Additional]]></source>
-				<target><![CDATA[Beilage]]></target>
-			</trans-unit>
-			<trans-unit id="structure.address" approved="yes">
-				<source><![CDATA[Address]]></source>
-				<target><![CDATA[Anrede]]></target>
-			</trans-unit>
-			<trans-unit id="structure.album" approved="yes">
-				<source><![CDATA[Album]]></source>
-				<target><![CDATA[Album]]></target>
-			</trans-unit>
-			<trans-unit id="structure.annotation" approved="yes">
-				<source><![CDATA[Annotation]]></source>
-				<target><![CDATA[Annotation]]></target>
-			</trans-unit>
-			<trans-unit id="structure.article" approved="yes">
-				<source><![CDATA[Article]]></source>
-				<target><![CDATA[Artikel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.atlas" approved="yes">
-				<source><![CDATA[Atlas]]></source>
-				<target><![CDATA[Atlas]]></target>
-			</trans-unit>
-			<trans-unit id="structure.bachelor_thesis" approved="yes">
-				<source><![CDATA[Bachelor Thesis]]></source>
-				<target><![CDATA[Bachelorarbeit]]></target>
-			</trans-unit>
-			<trans-unit id="structure.binding" approved="yes">
-				<source><![CDATA[Binding]]></source>
-				<target><![CDATA[Einband]]></target>
-			</trans-unit>
-			<trans-unit id="structure.bookplate" approved="yes">
-				<source><![CDATA[Bookplate]]></source>
-				<target><![CDATA[Exlibris]]></target>
-			</trans-unit>
-			<trans-unit id="structure.cartulary" approved="yes">
-				<source><![CDATA[Cartulary]]></source>
-				<target><![CDATA[Kartular]]></target>
-			</trans-unit>
-			<trans-unit id="structure.chapter" approved="yes">
-				<source><![CDATA[Chapter]]></source>
-				<target><![CDATA[Kapitel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.collation" approved="yes">
-				<source><![CDATA[Collation]]></source>
-				<target><![CDATA[Bogensignatur]]></target>
-			</trans-unit>
-			<trans-unit id="structure.colophon" approved="yes">
-				<source><![CDATA[Colophon]]></source>
-				<target><![CDATA[Kolophon]]></target>
-			</trans-unit>
-			<trans-unit id="structure.contained_work" approved="yes">
-				<source><![CDATA[Contained Work]]></source>
-				<target><![CDATA[Enthaltenes Werk]]></target>
-			</trans-unit>
-			<trans-unit id="structure.contents" approved="yes">
-				<source><![CDATA[Table of Contents]]></source>
-				<target><![CDATA[Inhaltsverzeichnis]]></target>
-			</trans-unit>
-			<trans-unit id="structure.corrigenda" approved="yes">
-				<source><![CDATA[Corrigenda]]></source>
-				<target><![CDATA[Errata]]></target>
-			</trans-unit>
-			<trans-unit id="structure.cover" approved="yes">
-				<source><![CDATA[Cover]]></source>
-				<target><![CDATA[Deckel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.cover_back" approved="yes">
-				<source><![CDATA[Back Cover]]></source>
-				<target><![CDATA[Vorderdeckel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.cover_front" approved="yes">
-				<source><![CDATA[Front Cover]]></source>
-				<target><![CDATA[Rückdeckel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.day" approved="yes">
-				<source><![CDATA[Day]]></source>
-				<target><![CDATA[Tag]]></target>
-			</trans-unit>
-			<trans-unit id="structure.dedication" approved="yes">
-				<source><![CDATA[Dedication]]></source>
-				<target><![CDATA[Widmung]]></target>
-			</trans-unit>
-			<trans-unit id="structure.diploma_thesis" approved="yes">
-				<source><![CDATA[Diploma Thesis]]></source>
-				<target><![CDATA[Diplomarbeit]]></target>
-			</trans-unit>
-			<trans-unit id="structure.doctoral_thesis" approved="yes">
-				<source><![CDATA[Doctoral Thesis]]></source>
-				<target><![CDATA[Dissertation]]></target>
-			</trans-unit>
-			<trans-unit id="structure.document" approved="yes">
-				<source><![CDATA[Document]]></source>
-				<target><![CDATA[Dokument]]></target>
-			</trans-unit>
-			<trans-unit id="structure.dossier" approved="yes">
-				<source><![CDATA[Dossier]]></source>
-				<target><![CDATA[Vorgang]]></target>
-			</trans-unit>
-			<trans-unit id="structure.edge" approved="yes">
-				<source><![CDATA[Edge]]></source>
-				<target><![CDATA[Schnitt]]></target>
-			</trans-unit>
-			<trans-unit id="structure.endsheet" approved="yes">
-				<source><![CDATA[Endsheet]]></source>
-				<target><![CDATA[Vorsatz]]></target>
-			</trans-unit>
-			<trans-unit id="structure.engraved_titlepage" approved="yes">
-				<source><![CDATA[Engraved Titlepage]]></source>
-				<target><![CDATA[Kupfertitel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.entry" approved="yes">
-				<source><![CDATA[Entry]]></source>
-				<target><![CDATA[Eintrag]]></target>
-			</trans-unit>
-			<trans-unit id="structure.ephemera" approved="yes">
-				<source><![CDATA[Ephemera]]></source>
-				<target><![CDATA[Konzertprogramm]]></target>
-			</trans-unit>
-			<trans-unit id="structure.fascicle" approved="yes">
-				<source><![CDATA[Fascicle]]></source>
-				<target><![CDATA[Faszikel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.figure" approved="yes">
-				<source><![CDATA[Figure]]></source>
-				<target><![CDATA[Abbildung]]></target>
-			</trans-unit>
-			<trans-unit id="structure.file" approved="yes">
-				<source><![CDATA[File]]></source>
-				<target><![CDATA[Akte]]></target>
-			</trans-unit>
-			<trans-unit id="structure.folder" approved="yes">
-				<source><![CDATA[Folder]]></source>
-				<target><![CDATA[Mappe]]></target>
-			</trans-unit>
-			<trans-unit id="structure.fragment" approved="yes">
-				<source><![CDATA[Fragment]]></source>
-				<target><![CDATA[Fragment]]></target>
-			</trans-unit>
-			<trans-unit id="structure.ground_plan" approved="yes">
-				<source><![CDATA[Ground Plan]]></source>
-				<target><![CDATA[Grundriss]]></target>
-			</trans-unit>
-			<trans-unit id="structure.habilitation_thesis" approved="yes">
-				<source><![CDATA[Habilitation Thesis]]></source>
-				<target><![CDATA[Habilitation]]></target>
-			</trans-unit>
-			<trans-unit id="structure.illustration" approved="yes">
-				<source><![CDATA[Illustration]]></source>
-				<target><![CDATA[Illustration]]></target>
-			</trans-unit>
-			<trans-unit id="structure.image" approved="yes">
-				<source><![CDATA[Image]]></source>
-				<target><![CDATA[Bild]]></target>
-			</trans-unit>
-			<trans-unit id="structure.imprint" approved="yes">
-				<source><![CDATA[Imprint]]></source>
-				<target><![CDATA[Impressum]]></target>
-			</trans-unit>
-			<trans-unit id="structure.index" approved="yes">
-				<source><![CDATA[Index]]></source>
-				<target><![CDATA[Register]]></target>
-			</trans-unit>
-			<trans-unit id="structure.initial_decoration" approved="yes">
-				<source><![CDATA[Initial Decoration]]></source>
-				<target><![CDATA[Initialschmuck]]></target>
-			</trans-unit>
-			<trans-unit id="structure.inventory" approved="yes">
-				<source><![CDATA[Inventory]]></source>
-				<target><![CDATA[Bestand]]></target>
-			</trans-unit>
-			<trans-unit id="structure.issue" approved="yes">
-				<source><![CDATA[Issue]]></source>
-				<target><![CDATA[Ausgabe]]></target>
-			</trans-unit>
-			<trans-unit id="structure.judgement" approved="yes">
-				<source><![CDATA[Judgement]]></source>
-				<target><![CDATA[Urteil]]></target>
-			</trans-unit>
-			<trans-unit id="structure.land_register" approved="yes">
-				<source><![CDATA[Land Register]]></source>
-				<target><![CDATA[Grundbuch]]></target>
-			</trans-unit>
-			<trans-unit id="structure.leaflet" approved="yes">
-				<source><![CDATA[Leaflet]]></source>
-				<target><![CDATA[Flugblatt]]></target>
-			</trans-unit>
-			<trans-unit id="structure.lecture" approved="yes">
-				<source><![CDATA[Lecture]]></source>
-				<target><![CDATA[Vorlesung]]></target>
-			</trans-unit>
-			<trans-unit id="structure.letter" approved="yes">
-				<source><![CDATA[Letter]]></source>
-				<target><![CDATA[Brief]]></target>
-			</trans-unit>
-			<trans-unit id="structure.magister_thesis" approved="yes">
-				<source><![CDATA[Magister Thesis]]></source>
-				<target><![CDATA[Magisterarbeit]]></target>
-			</trans-unit>
-			<trans-unit id="structure.manuscript" approved="yes">
-				<source><![CDATA[Manuscript]]></source>
-				<target><![CDATA[Handschrift]]></target>
-			</trans-unit>
-			<trans-unit id="structure.map" approved="yes">
-				<source><![CDATA[Map]]></source>
-				<target><![CDATA[Karte]]></target>
-			</trans-unit>
-			<trans-unit id="structure.master_thesis" approved="yes">
-				<source><![CDATA[Master Thesis]]></source>
-				<target><![CDATA[Masterarbeit]]></target>
-			</trans-unit>
-			<trans-unit id="structure.monograph" approved="yes">
-				<source><![CDATA[Monograph]]></source>
-				<target><![CDATA[Monographie]]></target>
-			</trans-unit>
-			<trans-unit id="structure.month" approved="yes">
-				<source><![CDATA[Month]]></source>
-				<target><![CDATA[Monat]]></target>
-			</trans-unit>
-			<trans-unit id="structure.multivolume_work" approved="yes">
-				<source><![CDATA[Multivolume Work]]></source>
-				<target><![CDATA[Mehrbändiges Werk]]></target>
-			</trans-unit>
-			<trans-unit id="structure.musical_notation" approved="yes">
-				<source><![CDATA[Musical Notation]]></source>
-				<target><![CDATA[Musiknotation]]></target>
-			</trans-unit>
-			<trans-unit id="structure.newspaper" approved="yes">
-				<source><![CDATA[Newspaper]]></source>
-				<target><![CDATA[Zeitung]]></target>
-			</trans-unit>
-			<trans-unit id="structure.note" approved="yes">
-				<source><![CDATA[Note]]></source>
-				<target><![CDATA[Vermerk]]></target>
-			</trans-unit>
-			<trans-unit id="structure.official_notification" approved="yes">
-				<source><![CDATA[Official Notification]]></source>
-				<target><![CDATA[Bescheid]]></target>
-			</trans-unit>
-			<trans-unit id="structure.ornament" approved="yes">
-				<source><![CDATA[Ornament]]></source>
-				<target><![CDATA[Buchschmuck]]></target>
-			</trans-unit>
-			<trans-unit id="structure.page" approved="yes">
-				<source><![CDATA[Page]]></source>
-				<target><![CDATA[Seite]]></target>
-			</trans-unit>
-			<trans-unit id="structure.paper" approved="yes">
-				<source><![CDATA[Paper]]></source>
-				<target><![CDATA[Vortrag]]></target>
-			</trans-unit>
-			<trans-unit id="structure.paste_down" approved="yes">
-				<source><![CDATA[Paste Down]]></source>
-				<target><![CDATA[Spiegel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.periodical" approved="yes">
-				<source><![CDATA[Periodical]]></source>
-				<target><![CDATA[Zeitschrift]]></target>
-			</trans-unit>
-			<trans-unit id="structure.photograph" approved="yes">
-				<source><![CDATA[Photograph]]></source>
-				<target><![CDATA[Fotografie]]></target>
-			</trans-unit>
-			<trans-unit id="structure.plan" approved="yes">
-				<source><![CDATA[Plan]]></source>
-				<target><![CDATA[Plan]]></target>
-			</trans-unit>
-			<trans-unit id="structure.poster" approved="yes">
-				<source><![CDATA[Poster]]></source>
-				<target><![CDATA[Plakat]]></target>
-			</trans-unit>
-			<trans-unit id="structure.preface" approved="yes">
-				<source><![CDATA[Preface]]></source>
-				<target><![CDATA[Vorwort]]></target>
-			</trans-unit>
-			<trans-unit id="structure.preprint" approved="yes">
-				<source><![CDATA[Preprint]]></source>
-				<target><![CDATA[Vorabdruck]]></target>
-			</trans-unit>
-			<trans-unit id="structure.printed_archives" approved="yes">
-				<source><![CDATA[Printed Archives]]></source>
-				<target><![CDATA[Druckerzeugnis]]></target>
-			</trans-unit>
-			<trans-unit id="structure.printers_mark" approved="yes">
-				<source><![CDATA[Printers Mark]]></source>
-				<target><![CDATA[Druckermarke]]></target>
-			</trans-unit>
-			<trans-unit id="structure.privileges" approved="yes">
-				<source><![CDATA[Privileges]]></source>
-				<target><![CDATA[Privilegien]]></target>
-			</trans-unit>
-			<trans-unit id="structure.proceeding" approved="yes">
-				<source><![CDATA[Proceeding]]></source>
-				<target><![CDATA[Tagungsband]]></target>
-			</trans-unit>
-			<trans-unit id="structure.provenance" approved="yes">
-				<source><![CDATA[Provenance]]></source>
-				<target><![CDATA[Besitznachweis]]></target>
-			</trans-unit>
-			<trans-unit id="structure.register" approved="yes">
-				<source><![CDATA[Register]]></source>
-				<target><![CDATA[Amtsbuch]]></target>
-			</trans-unit>
-			<trans-unit id="structure.report" approved="yes">
-				<source><![CDATA[Report]]></source>
-				<target><![CDATA[Bericht]]></target>
-			</trans-unit>
-			<trans-unit id="structure.research_paper" approved="yes">
-				<source><![CDATA[Research Paper]]></source>
-				<target><![CDATA[Forschungsbericht]]></target>
-			</trans-unit>
-			<trans-unit id="structure.scheme" approved="yes">
-				<source><![CDATA[Scheme]]></source>
-				<target><![CDATA[Schema]]></target>
-			</trans-unit>
-			<trans-unit id="structure.seal" approved="yes">
-				<source><![CDATA[Seal]]></source>
-				<target><![CDATA[Siegel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.section" approved="yes">
-				<source><![CDATA[Section]]></source>
-				<target><![CDATA[Abschnitt]]></target>
-			</trans-unit>
-			<trans-unit id="structure.spine" approved="yes">
-				<source><![CDATA[Spine]]></source>
-				<target><![CDATA[Rücken]]></target>
-			</trans-unit>
-			<trans-unit id="structure.stamp" approved="yes">
-				<source><![CDATA[Stamp]]></source>
-				<target><![CDATA[Stempel]]></target>
-			</trans-unit>
-			<trans-unit id="structure.study" approved="yes">
-				<source><![CDATA[Study]]></source>
-				<target><![CDATA[Studie]]></target>
-			</trans-unit>
-			<trans-unit id="structure.subinventory" approved="yes">
-				<source><![CDATA[Subinventory]]></source>
-				<target><![CDATA[Unterbestand]]></target>
-			</trans-unit>
-			<trans-unit id="structure.table" approved="yes">
-				<source><![CDATA[Table]]></source>
-				<target><![CDATA[Tabelle]]></target>
-			</trans-unit>
-			<trans-unit id="structure.text" approved="yes">
-				<source><![CDATA[Text]]></source>
-				<target><![CDATA[Text]]></target>
-			</trans-unit>
-			<trans-unit id="structure.title_page" approved="yes">
-				<source><![CDATA[Titlepage]]></source>
-				<target><![CDATA[Titelseite]]></target>
-			</trans-unit>
-			<trans-unit id="structure.verse" approved="yes">
-				<source><![CDATA[Verse]]></source>
-				<target><![CDATA[Vers]]></target>
-			</trans-unit>
-			<trans-unit id="structure.volume" approved="yes">
-				<source><![CDATA[Volume]]></source>
-				<target><![CDATA[Band]]></target>
-			</trans-unit>
-			<trans-unit id="structure.year" approved="yes">
-				<source><![CDATA[Year]]></source>
-				<target><![CDATA[Jahr]]></target>
-			</trans-unit>
-		</body>
-	</file>
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-12-29T14:02:58Z">
+        <header>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="structure.act" approved="yes">
+                <source><![CDATA[Act]]></source>
+                <target><![CDATA[Urkunde]]></target>
+            </trans-unit>
+            <trans-unit id="structure.additional" approved="yes">
+                <source><![CDATA[Additional]]></source>
+                <target><![CDATA[Beilage]]></target>
+            </trans-unit>
+            <trans-unit id="structure.address" approved="yes">
+                <source><![CDATA[Address]]></source>
+                <target><![CDATA[Anrede]]></target>
+            </trans-unit>
+            <trans-unit id="structure.album" approved="yes">
+                <source><![CDATA[Album]]></source>
+                <target><![CDATA[Album]]></target>
+            </trans-unit>
+            <trans-unit id="structure.annotation" approved="yes">
+                <source><![CDATA[Annotation]]></source>
+                <target><![CDATA[Annotation]]></target>
+            </trans-unit>
+            <trans-unit id="structure.article" approved="yes">
+                <source><![CDATA[Article]]></source>
+                <target><![CDATA[Artikel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.atlas" approved="yes">
+                <source><![CDATA[Atlas]]></source>
+                <target><![CDATA[Atlas]]></target>
+            </trans-unit>
+            <trans-unit id="structure.bachelor_thesis" approved="yes">
+                <source><![CDATA[Bachelor Thesis]]></source>
+                <target><![CDATA[Bachelorarbeit]]></target>
+            </trans-unit>
+            <trans-unit id="structure.binding" approved="yes">
+                <source><![CDATA[Binding]]></source>
+                <target><![CDATA[Einband]]></target>
+            </trans-unit>
+            <trans-unit id="structure.bookplate" approved="yes">
+                <source><![CDATA[Bookplate]]></source>
+                <target><![CDATA[Exlibris]]></target>
+            </trans-unit>
+            <trans-unit id="structure.cartulary" approved="yes">
+                <source><![CDATA[Cartulary]]></source>
+                <target><![CDATA[Kartular]]></target>
+            </trans-unit>
+            <trans-unit id="structure.chapter" approved="yes">
+                <source><![CDATA[Chapter]]></source>
+                <target><![CDATA[Kapitel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.collation" approved="yes">
+                <source><![CDATA[Collation]]></source>
+                <target><![CDATA[Bogensignatur]]></target>
+            </trans-unit>
+            <trans-unit id="structure.colophon" approved="yes">
+                <source><![CDATA[Colophon]]></source>
+                <target><![CDATA[Kolophon]]></target>
+            </trans-unit>
+            <trans-unit id="structure.contained_work" approved="yes">
+                <source><![CDATA[Contained Work]]></source>
+                <target><![CDATA[Enthaltenes Werk]]></target>
+            </trans-unit>
+            <trans-unit id="structure.contents" approved="yes">
+                <source><![CDATA[Table of Contents]]></source>
+                <target><![CDATA[Inhaltsverzeichnis]]></target>
+            </trans-unit>
+            <trans-unit id="structure.corrigenda" approved="yes">
+                <source><![CDATA[Corrigenda]]></source>
+                <target><![CDATA[Errata]]></target>
+            </trans-unit>
+            <trans-unit id="structure.cover" approved="yes">
+                <source><![CDATA[Cover]]></source>
+                <target><![CDATA[Deckel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.cover_back" approved="yes">
+                <source><![CDATA[Back Cover]]></source>
+                <target><![CDATA[Vorderdeckel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.cover_front" approved="yes">
+                <source><![CDATA[Front Cover]]></source>
+                <target><![CDATA[Rückdeckel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.day" approved="yes">
+                <source><![CDATA[Day]]></source>
+                <target><![CDATA[Tag]]></target>
+            </trans-unit>
+            <trans-unit id="structure.dedication" approved="yes">
+                <source><![CDATA[Dedication]]></source>
+                <target><![CDATA[Widmung]]></target>
+            </trans-unit>
+            <trans-unit id="structure.diploma_thesis" approved="yes">
+                <source><![CDATA[Diploma Thesis]]></source>
+                <target><![CDATA[Diplomarbeit]]></target>
+            </trans-unit>
+            <trans-unit id="structure.doctoral_thesis" approved="yes">
+                <source><![CDATA[Doctoral Thesis]]></source>
+                <target><![CDATA[Dissertation]]></target>
+            </trans-unit>
+            <trans-unit id="structure.document" approved="yes">
+                <source><![CDATA[Document]]></source>
+                <target><![CDATA[Dokument]]></target>
+            </trans-unit>
+            <trans-unit id="structure.dossier" approved="yes">
+                <source><![CDATA[Dossier]]></source>
+                <target><![CDATA[Vorgang]]></target>
+            </trans-unit>
+            <trans-unit id="structure.edge" approved="yes">
+                <source><![CDATA[Edge]]></source>
+                <target><![CDATA[Schnitt]]></target>
+            </trans-unit>
+            <trans-unit id="structure.endsheet" approved="yes">
+                <source><![CDATA[Endsheet]]></source>
+                <target><![CDATA[Vorsatz]]></target>
+            </trans-unit>
+            <trans-unit id="structure.engraved_titlepage" approved="yes">
+                <source><![CDATA[Engraved Titlepage]]></source>
+                <target><![CDATA[Kupfertitel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.entry" approved="yes">
+                <source><![CDATA[Entry]]></source>
+                <target><![CDATA[Eintrag]]></target>
+            </trans-unit>
+            <trans-unit id="structure.ephemera" approved="yes">
+                <source><![CDATA[Ephemera]]></source>
+                <target><![CDATA[Konzertprogramm]]></target>
+            </trans-unit>
+            <trans-unit id="structure.fascicle" approved="yes">
+                <source><![CDATA[Fascicle]]></source>
+                <target><![CDATA[Faszikel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.figure" approved="yes">
+                <source><![CDATA[Figure]]></source>
+                <target><![CDATA[Abbildung]]></target>
+            </trans-unit>
+            <trans-unit id="structure.file" approved="yes">
+                <source><![CDATA[File]]></source>
+                <target><![CDATA[Akte]]></target>
+            </trans-unit>
+            <trans-unit id="structure.folder" approved="yes">
+                <source><![CDATA[Folder]]></source>
+                <target><![CDATA[Mappe]]></target>
+            </trans-unit>
+            <trans-unit id="structure.fragment" approved="yes">
+                <source><![CDATA[Fragment]]></source>
+                <target><![CDATA[Fragment]]></target>
+            </trans-unit>
+            <trans-unit id="structure.ground_plan" approved="yes">
+                <source><![CDATA[Ground Plan]]></source>
+                <target><![CDATA[Grundriss]]></target>
+            </trans-unit>
+            <trans-unit id="structure.habilitation_thesis" approved="yes">
+                <source><![CDATA[Habilitation Thesis]]></source>
+                <target><![CDATA[Habilitation]]></target>
+            </trans-unit>
+            <trans-unit id="structure.illustration" approved="yes">
+                <source><![CDATA[Illustration]]></source>
+                <target><![CDATA[Illustration]]></target>
+            </trans-unit>
+            <trans-unit id="structure.image" approved="yes">
+                <source><![CDATA[Image]]></source>
+                <target><![CDATA[Bild]]></target>
+            </trans-unit>
+            <trans-unit id="structure.imprint" approved="yes">
+                <source><![CDATA[Imprint]]></source>
+                <target><![CDATA[Impressum]]></target>
+            </trans-unit>
+            <trans-unit id="structure.index" approved="yes">
+                <source><![CDATA[Index]]></source>
+                <target><![CDATA[Register]]></target>
+            </trans-unit>
+            <trans-unit id="structure.initial_decoration" approved="yes">
+                <source><![CDATA[Initial Decoration]]></source>
+                <target><![CDATA[Initialschmuck]]></target>
+            </trans-unit>
+            <trans-unit id="structure.inventory" approved="yes">
+                <source><![CDATA[Inventory]]></source>
+                <target><![CDATA[Bestand]]></target>
+            </trans-unit>
+            <trans-unit id="structure.issue" approved="yes">
+                <source><![CDATA[Issue]]></source>
+                <target><![CDATA[Ausgabe]]></target>
+            </trans-unit>
+            <trans-unit id="structure.judgement" approved="yes">
+                <source><![CDATA[Judgement]]></source>
+                <target><![CDATA[Urteil]]></target>
+            </trans-unit>
+            <trans-unit id="structure.land_register" approved="yes">
+                <source><![CDATA[Land Register]]></source>
+                <target><![CDATA[Grundbuch]]></target>
+            </trans-unit>
+            <trans-unit id="structure.leaflet" approved="yes">
+                <source><![CDATA[Leaflet]]></source>
+                <target><![CDATA[Flugblatt]]></target>
+            </trans-unit>
+            <trans-unit id="structure.lecture" approved="yes">
+                <source><![CDATA[Lecture]]></source>
+                <target><![CDATA[Vorlesung]]></target>
+            </trans-unit>
+            <trans-unit id="structure.letter" approved="yes">
+                <source><![CDATA[Letter]]></source>
+                <target><![CDATA[Brief]]></target>
+            </trans-unit>
+            <trans-unit id="structure.magister_thesis" approved="yes">
+                <source><![CDATA[Magister Thesis]]></source>
+                <target><![CDATA[Magisterarbeit]]></target>
+            </trans-unit>
+            <trans-unit id="structure.manuscript" approved="yes">
+                <source><![CDATA[Manuscript]]></source>
+                <target><![CDATA[Handschrift]]></target>
+            </trans-unit>
+            <trans-unit id="structure.map" approved="yes">
+                <source><![CDATA[Map]]></source>
+                <target><![CDATA[Karte]]></target>
+            </trans-unit>
+            <trans-unit id="structure.master_thesis" approved="yes">
+                <source><![CDATA[Master Thesis]]></source>
+                <target><![CDATA[Masterarbeit]]></target>
+            </trans-unit>
+            <trans-unit id="structure.monograph" approved="yes">
+                <source><![CDATA[Monograph]]></source>
+                <target><![CDATA[Monographie]]></target>
+            </trans-unit>
+            <trans-unit id="structure.month" approved="yes">
+                <source><![CDATA[Month]]></source>
+                <target><![CDATA[Monat]]></target>
+            </trans-unit>
+            <trans-unit id="structure.multivolume_work" approved="yes">
+                <source><![CDATA[Multivolume Work]]></source>
+                <target><![CDATA[Mehrbändiges Werk]]></target>
+            </trans-unit>
+            <trans-unit id="structure.musical_notation" approved="yes">
+                <source><![CDATA[Musical Notation]]></source>
+                <target><![CDATA[Musiknotation]]></target>
+            </trans-unit>
+            <trans-unit id="structure.newspaper" approved="yes">
+                <source><![CDATA[Newspaper]]></source>
+                <target><![CDATA[Zeitung]]></target>
+            </trans-unit>
+            <trans-unit id="structure.note" approved="yes">
+                <source><![CDATA[Note]]></source>
+                <target><![CDATA[Vermerk]]></target>
+            </trans-unit>
+            <trans-unit id="structure.official_notification" approved="yes">
+                <source><![CDATA[Official Notification]]></source>
+                <target><![CDATA[Bescheid]]></target>
+            </trans-unit>
+            <trans-unit id="structure.ornament" approved="yes">
+                <source><![CDATA[Ornament]]></source>
+                <target><![CDATA[Buchschmuck]]></target>
+            </trans-unit>
+            <trans-unit id="structure.page" approved="yes">
+                <source><![CDATA[Page]]></source>
+                <target><![CDATA[Seite]]></target>
+            </trans-unit>
+            <trans-unit id="structure.paper" approved="yes">
+                <source><![CDATA[Paper]]></source>
+                <target><![CDATA[Vortrag]]></target>
+            </trans-unit>
+            <trans-unit id="structure.paste_down" approved="yes">
+                <source><![CDATA[Paste Down]]></source>
+                <target><![CDATA[Spiegel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.periodical" approved="yes">
+                <source><![CDATA[Periodical]]></source>
+                <target><![CDATA[Zeitschrift]]></target>
+            </trans-unit>
+            <trans-unit id="structure.photograph" approved="yes">
+                <source><![CDATA[Photograph]]></source>
+                <target><![CDATA[Fotografie]]></target>
+            </trans-unit>
+            <trans-unit id="structure.plan" approved="yes">
+                <source><![CDATA[Plan]]></source>
+                <target><![CDATA[Plan]]></target>
+            </trans-unit>
+            <trans-unit id="structure.poster" approved="yes">
+                <source><![CDATA[Poster]]></source>
+                <target><![CDATA[Plakat]]></target>
+            </trans-unit>
+            <trans-unit id="structure.preface" approved="yes">
+                <source><![CDATA[Preface]]></source>
+                <target><![CDATA[Vorwort]]></target>
+            </trans-unit>
+            <trans-unit id="structure.preprint" approved="yes">
+                <source><![CDATA[Preprint]]></source>
+                <target><![CDATA[Vorabdruck]]></target>
+            </trans-unit>
+            <trans-unit id="structure.printed_archives" approved="yes">
+                <source><![CDATA[Printed Archives]]></source>
+                <target><![CDATA[Druckerzeugnis]]></target>
+            </trans-unit>
+            <trans-unit id="structure.printers_mark" approved="yes">
+                <source><![CDATA[Printers Mark]]></source>
+                <target><![CDATA[Druckermarke]]></target>
+            </trans-unit>
+            <trans-unit id="structure.privileges" approved="yes">
+                <source><![CDATA[Privileges]]></source>
+                <target><![CDATA[Privilegien]]></target>
+            </trans-unit>
+            <trans-unit id="structure.proceeding" approved="yes">
+                <source><![CDATA[Proceeding]]></source>
+                <target><![CDATA[Tagungsband]]></target>
+            </trans-unit>
+            <trans-unit id="structure.provenance" approved="yes">
+                <source><![CDATA[Provenance]]></source>
+                <target><![CDATA[Besitznachweis]]></target>
+            </trans-unit>
+            <trans-unit id="structure.register" approved="yes">
+                <source><![CDATA[Register]]></source>
+                <target><![CDATA[Amtsbuch]]></target>
+            </trans-unit>
+            <trans-unit id="structure.report" approved="yes">
+                <source><![CDATA[Report]]></source>
+                <target><![CDATA[Bericht]]></target>
+            </trans-unit>
+            <trans-unit id="structure.research_paper" approved="yes">
+                <source><![CDATA[Research Paper]]></source>
+                <target><![CDATA[Forschungsbericht]]></target>
+            </trans-unit>
+            <trans-unit id="structure.scheme" approved="yes">
+                <source><![CDATA[Scheme]]></source>
+                <target><![CDATA[Schema]]></target>
+            </trans-unit>
+            <trans-unit id="structure.seal" approved="yes">
+                <source><![CDATA[Seal]]></source>
+                <target><![CDATA[Siegel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.section" approved="yes">
+                <source><![CDATA[Section]]></source>
+                <target><![CDATA[Abschnitt]]></target>
+            </trans-unit>
+            <trans-unit id="structure.spine" approved="yes">
+                <source><![CDATA[Spine]]></source>
+                <target><![CDATA[Rücken]]></target>
+            </trans-unit>
+            <trans-unit id="structure.stamp" approved="yes">
+                <source><![CDATA[Stamp]]></source>
+                <target><![CDATA[Stempel]]></target>
+            </trans-unit>
+            <trans-unit id="structure.study" approved="yes">
+                <source><![CDATA[Study]]></source>
+                <target><![CDATA[Studie]]></target>
+            </trans-unit>
+            <trans-unit id="structure.subinventory" approved="yes">
+                <source><![CDATA[Subinventory]]></source>
+                <target><![CDATA[Unterbestand]]></target>
+            </trans-unit>
+            <trans-unit id="structure.table" approved="yes">
+                <source><![CDATA[Table]]></source>
+                <target><![CDATA[Tabelle]]></target>
+            </trans-unit>
+            <trans-unit id="structure.text" approved="yes">
+                <source><![CDATA[Text]]></source>
+                <target><![CDATA[Text]]></target>
+            </trans-unit>
+            <trans-unit id="structure.title_page" approved="yes">
+                <source><![CDATA[Titlepage]]></source>
+                <target><![CDATA[Titelseite]]></target>
+            </trans-unit>
+            <trans-unit id="structure.verse" approved="yes">
+                <source><![CDATA[Verse]]></source>
+                <target><![CDATA[Vers]]></target>
+            </trans-unit>
+            <trans-unit id="structure.volume" approved="yes">
+                <source><![CDATA[Volume]]></source>
+                <target><![CDATA[Band]]></target>
+            </trans-unit>
+            <trans-unit id="structure.year" approved="yes">
+                <source><![CDATA[Year]]></source>
+                <target><![CDATA[Jahr]]></target>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>
