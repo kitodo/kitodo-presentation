@@ -38,17 +38,10 @@
                     <dd class="tx-dlf-title">{docTitle}</dd>
                     <f:if condition="{document.metadata}">
                         <f:then>
-                            <f:for each="{listedMetadata}" as="metadata">
-                                <f:if condition="{document.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
-                                    <dt class="tx-dlf-metadata-{metadata.indexName}">{metadata.label}</dt>
-                                    <f:for each="{document.metadata.{metadata.indexName}}" as="metadataentry">
-                                        <dd class="tx-dlf-metadata-{metadata.indexName}">{metadataentry}</dd>
-                                    </f:for>
-                                </f:if>
-                            </f:for>
+                            <f:render partial="ListView/ResultsMetadata" arguments="{listedMetadata: listedMetadata, resultMetadata: document.metadata}" />
                             <f:if condition="{document.structure} == 'year'">
                                 <dt class="tx-dlf-metadata-year"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.year' /></dt>
-                                <dd class="tx-dlf-metadata-year">{document.metsOrderlabel} </dd>
+                                <dd class="tx-dlf-metadata-year">{document.metsOrderlabel}</dd>
                             </f:if>
                         </f:then>
                         <f:else>
@@ -56,9 +49,7 @@
                         </f:else>
                     </f:if>
                     <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
-                    <dd class="tx-dlf-type">
-                        <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{document.structure}' />
-                    </dd>
+                    <dd class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{document.structure}' /></dd>
                 </dl>
             </f:link.page>
 
@@ -95,24 +86,11 @@
                                     </f:if><!--
                                     --></div>
                                     <dl>
-                                    <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
-                                    <dd class="tx-dlf-title">{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}</dd>
-                                    <f:for each="{listedMetadata}" as="metadata">
-                                        <f:if condition="{child.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
-                                            <dt class="tx-dlf-metadata-{metadata.indexName}">
-                                                {metadata.label}
-                                            </dt>
-                                            <f:for each="{child.metadata.{metadata.indexName}}" as="metadataentry">
-                                                <dd class="tx-dlf-metadata-{metadata.indexName}">
-                                                        {metadataentry}
-                                                </dd>
-                                            </f:for>
-                                        </f:if>
-                                    </f:for>
-                                    <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
-                                    <dd class="tx-dlf-type">
-                                        <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{child.structure}' />
-                                    </dd>
+                                        <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
+                                        <dd class="tx-dlf-title">{f:if(condition:'{child.title}', then:'{child.title}', else:'[{document.title}]')}</dd>
+                                        <f:render partial="ListView/ResultsMetadata" arguments="{listedMetadata: listedMetadata, resultMetadata: child.metadata}" />
+                                        <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
+                                        <dd class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{child.structure}' /></dd>
                                     </dl>
                                 </f:link.page>
 
@@ -148,22 +126,11 @@
                                     </f:if>
                                     <f:if condition="{result.structure} != 'page'">
                                         <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
-                                        <dd class="tx-dlf-type">
-                                            <f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{result.structure}' />
-                                        </dd>
+                                        <dd class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{result.structure}' /></dd>
                                     </f:if>
                                     <dt class="tx-dlf-page"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /></dt>
                                     <dd class="tx-dlf-page">{result.page}</dd>
-                                    <f:for each="{listedMetadata}" as="metadata">
-                                        <f:if condition="{result.metadata.{metadata.indexName}.0} && {metadata.indexName} != 'type' && {metadata.indexName} != 'title'">
-                                            <dt class="tx-dlf-metadata-{metadata.indexName}">{metadata.label}</dt>
-                                            <f:for each="{result.metadata.{metadata.indexName}}" as="metadataentry">
-                                                <dd class="tx-dlf-metadata-{metadata.indexName}">
-                                                        {metadataentry}
-                                                </dd>
-                                            </f:for>
-                                        </f:if>
-                                    </f:for>
+                                    <f:render partial="ListView/ResultsMetadata" arguments="{listedMetadata: listedMetadata, resultMetadata: result.metadata}" />
                                 </dl>
                                 <div class="tx-dlf-listview-preview">
                                     <f:if condition="{result.snippet}">
