@@ -25,18 +25,9 @@
             additionalParams="{tx_dlf:{page:'{document.page}', double:'0', id:'{document.uid}', pagegrid:'0'}}"
             class=""
             title="{docTitle}">
-                <f:comment>
-                    slub_digitalcollections uses the :empty CSS selector to check for missing thumbnail.
-                    The HTML comments make sure there is no whitespace in that case.
-                </f:comment>
-                <div class="tx-dlf-listview-thumbnail"><!--
-                    --><f:if condition="{document.thumbnail}">
-                        <img src="{document.thumbnail}" loading="lazy" alt="{f:translate(key:'thumbnail.alt', arguments:{0: '{docTitle}'})}" />
-                    </f:if><!--
-                --></div>
+                <f:render partial="ListView/ResultsThumbnailMetadata" arguments="{title: docTitle, thumbnail: document.thumbnail}" />
                 <dl>
-                    <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
-                    <dd class="tx-dlf-title">{docTitle}</dd>
+                    <f:render partial="ListView/ResultsTitleMetadata" arguments="{title: docTitle}" />
                     <f:if condition="{document.metadata}">
                         <f:then>
                             <f:render partial="ListView/ResultsMetadata" arguments="{listedMetadata: listedMetadata, resultMetadata: document.metadata}" />
@@ -49,8 +40,7 @@
                             <p class="error">No metadata for document with uid={document.uid}</p>
                         </f:else>
                     </f:if>
-                    <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
-                    <dd class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{document.structure}' /></dd>
+                    <f:render partial="ListView/ResultsTypeMetadata" arguments="{type: document.structure}" />
                 </dl>
             </f:link.page>
 
@@ -82,17 +72,11 @@
                                 additionalParams="{tx_dlf:{page:'1', double:'0', id:'{child.uid}', pagegrid:'0'}}"
                                 class=""
                                 title="{childTitle}">
-                                    <div class="tx-dlf-listview-thumbnail"><!--
-                                    --><f:if condition="{child.thumbnail}">
-                                        <img src="{child.thumbnail}" loading="lazy" alt="{f:translate(key:'thumbnail.alt', arguments:{0: '{childTitle}'})}" />
-                                    </f:if><!--
-                                    --></div>
+                                    <f:render partial="ListView/ResultsThumbnailMetadata" arguments="{title: childTitle, thumbnail: child.thumbnail}" />
                                     <dl>
-                                        <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
-                                        <dd class="tx-dlf-title">{childTitle}</dd>
+                                        <f:render partial="ListView/ResultsTitleMetadata" arguments="{title: childTitle}" />
                                         <f:render partial="ListView/ResultsMetadata" arguments="{listedMetadata: listedMetadata, resultMetadata: child.metadata}" />
-                                        <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
-                                        <dd class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{child.structure}' /></dd>
+                                        <f:render partial="ListView/ResultsTypeMetadata" arguments="{type: child.structure}" />
                                     </dl>
                                 </f:link.page>
 
@@ -115,21 +99,13 @@
                                 additionalParams="{tx_dlf:{page:'{result.page}', double:'0', id:'{document.uid}', pagegrid:'0', highlight_word: '{result.highlight_word}'}}"
                                 class=""
                                 title="{docTitle}, Seite {result.page}">
-                                <div class="tx-dlf-listview-thumbnail"><!--
-                                    --><f:if condition="{result.thumbnail}">
-                                        <img src="{result.thumbnail}" loading="lazy" alt="{f:translate(key:'thumbnail.alt', arguments:{0: '{docTitle}'})}" />
-                                    </f:if><!--
-                                --></div>
+                                <f:render partial="ListView/ResultsThumbnailMetadata" arguments="{title: docTitle, thumbnail: result.thumbnail}" />
                                 <dl>
                                     <f:if condition="{result.title}">
-                                        <f:then>
-                                            <dt class="tx-dlf-title"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.title' /></dt>
-                                            <dd class="tx-dlf-title">{result.title}</dd>
-                                        </f:then>
+                                        <f:render partial="ListView/ResultsTitleMetadata" arguments="{title: result.title}" />
                                     </f:if>
                                     <f:if condition="{result.structure} != 'page'">
-                                        <dt class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.type' /></dt>
-                                        <dd class="tx-dlf-type"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{result.structure}' /></dd>
+                                        <f:render partial="ListView/ResultsTypeMetadata" arguments="{type: result.structure}" />
                                     </f:if>
                                     <dt class="tx-dlf-page"><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.page' /></dt>
                                     <dd class="tx-dlf-page">{result.page}</dd>
