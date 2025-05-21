@@ -15,18 +15,17 @@
     <f:if condition="{sortableMetadata}">
         <f:variable name="currentPage" value="{pagination.currentPageNumber - 1}" />
         <f:variable name="pageOffset" value="{settings.list.paginate.itemsPerPage * currentPage}" />
-        <f:variable name="allDocuments" value="{documents->f:count()}" />
         <f:variable name="numDocuments" value="{pageOffset + settings.list.paginate.itemsPerPage}" />
 
-        <f:if condition="{allDocuments} > 0">
+        <f:if condition="{countDocuments} > 0">
             <p class="tx-dlf-sortinfo">
                 <f:translate
                     key="listview.count"
-                    arguments="{0:'{pageOffset + 1}', 1:'{f:if(condition: \'{numDocuments} > {allDocuments}\', then: \'{allDocuments}\', else: \'{numDocuments}\')}', 2:'{allDocuments}'}" />
+                    arguments="{0:'{pageOffset + 1}', 1:'{f:if(condition: \'{numDocuments} > {countDocuments}\', then: \'{countDocuments}\', else: \'{numDocuments}\')}', 2:'{countDocuments}'}" />
             </p>
         </f:if>
 
-        <f:form section="showResults" action="search" controller="Search" name="searchParameter" method="get" class="tx-dlf-search-form">
+        <f:form section="showResults" action="search" controller="Search" name="searchParameter" method="post" class="tx-dlf-search-form">
             <div>
                 <label for="form-orderBy-{viewData.uniqueId}">
                     <f:translate key="listview.form.orderBy"/>
