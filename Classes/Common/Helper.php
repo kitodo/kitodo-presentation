@@ -890,7 +890,7 @@ class Helper
         $configuration = [
             'timeout' => 30,
             'headers' => [
-                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
+                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation',
             ],
         ];
         try {
