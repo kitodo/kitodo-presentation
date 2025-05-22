@@ -64,12 +64,12 @@ class PageViewProxy
     /**
      * Return a response that is derived from $response and contains CORS
      * headers to be sent to the client.
-     * 
+     *
      * @access protected
      *
      * @param ResponseInterface $response
      * @param ServerRequestInterface $request The incoming request.
-     * 
+     *
      * @return ResponseInterface
      */
     protected function withCorsResponseHeaders(
@@ -148,7 +148,7 @@ class PageViewProxy
         try {
             $targetResponse = $this->requestFactory->request($url, 'HEAD', [
                 'headers' => [
-                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
+                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation',
                 ]
             ]);
         } catch (\Exception $e) {
@@ -193,7 +193,7 @@ class PageViewProxy
         try {
             $targetResponse = $this->requestFactory->request($url, 'GET', [
                 'headers' => [
-                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
+                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation',
                 ],
 
                 // For performance, don't download content up-front. Rather, we'll
