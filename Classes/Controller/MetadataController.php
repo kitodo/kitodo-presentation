@@ -115,7 +115,7 @@ class MetadataController extends AbstractController
         $this->useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
 
         $metadata = $this->getMetadata();
-        $topLevelId = $this->currentDocument->toplevelId;
+        $topLevelId = $this->currentDocument->getToplevelId();
         // Get toplevel metadata?
         if (!$metadata || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $topLevelId)) {
             $data = [];
