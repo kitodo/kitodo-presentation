@@ -432,7 +432,7 @@ class ToolboxController extends AbstractController
                 $workLink = $this->currentDocument->getFileLocation($fileGroupDownload);
                 break;
             } else {
-                $details = $this->currentDocument->getLogicalStructure($this->currentDocument->toplevelId);
+                $details = $this->currentDocument->getLogicalStructure($this->currentDocument->getToplevelId());
                 if (!empty($details['files'][$fileGrpDownload])) {
                     $workLink = $this->currentDocument->getFileLocation($details['files'][$fileGrpDownload]);
                     break;
