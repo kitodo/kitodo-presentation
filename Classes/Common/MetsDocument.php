@@ -55,7 +55,6 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
- * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @property SimpleXMLElement $xml this holds the whole XML file as SimpleXMLElement object
  * @property-read array $mdSec associative array of METS metadata sections indexed by their IDs.
  * @property bool $mdSecLoaded flag with information if the array of METS metadata sections is loaded
@@ -408,7 +407,7 @@ final class MetsDocument extends AbstractDocument
             $details['thumbnailId'] = $this->getThumbnail();
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
-        } elseif ($details['id'] == $this->magicGetToplevelId()) {
+        } elseif ($details['id'] == $this->getToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
             $details['thumbnailId'] = $this->getThumbnail();
@@ -545,15 +544,15 @@ final class MetsDocument extends AbstractDocument
         if (!empty($this->mdSec)) {
             foreach ($mdIds as $dmdId) {
                 $mdSectionType = $this->mdSec[$dmdId]['section'];
-    
+
                 if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
                     continue;
                 }
-    
+
                 if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
                     continue;
                 }
-    
+
                 $metadataSections[] = $mdSectionType;
             }
         }
@@ -1373,7 +1372,7 @@ final class MetsDocument extends AbstractDocument
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
-            $strctId = $this->magicGetToplevelId();
+            $strctId = $this->getToplevelId();
             $metadata = $this->getToplevelMetadata($cPid);
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -1433,9 +1432,9 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::magicGetToplevelId()
+     * @see AbstractDocument::getToplevelId()
      */
-    protected function magicGetToplevelId(): string
+    public function getToplevelId(): string
     {
         if (empty($this->toplevelId)) {
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
