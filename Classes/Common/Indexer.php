@@ -348,13 +348,13 @@ class Indexer
                 if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                     $solrDoc->setField('page', $logicalUnit['points']);
                 }
-                if ($logicalUnit['id'] == $doc->toplevelId) {
+                if ($logicalUnit['id'] == $doc->getToplevelId()) {
                     $solrDoc->setField('thumbnail', $doc->thumbnail);
                 } elseif (!empty($logicalUnit['thumbnailId'])) {
                     $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
                 }
                 // There can be only one toplevel unit per UID, independently of backend configuration
-                $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
+                $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->getToplevelId());
                 $solrDoc->setField('title', $metadata['title'][0]);
                 $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
                 // verify date formatting
@@ -385,9 +385,9 @@ class Indexer
                 if (
                     in_array('collection', self::$fields['facets'])
                     && empty($metadata['collection'])
-                    && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
+                    && !empty($doc->metadataArray[$doc->getToplevelId()]['collection'])
                 ) {
-                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
+                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->getToplevelId()]['collection']);
                 }
                 try {
                     $updateQuery->addDocument($solrDoc);
@@ -448,11 +448,11 @@ class Indexer
             }
             $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type']);
-            $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
+            $solrDoc->setField('collection', $doc->metadataArray[$doc->getToplevelId()]['collection']);
             $solrDoc->setField('location', $document->getLocation());
 
             $solrDoc->setField('fulltext', $fullText);
-            if (is_array($doc->metadataArray[$doc->toplevelId])) {
+            if (is_array($doc->metadataArray[$doc->getToplevelId()])) {
                 self::addFaceting($doc, $solrDoc, $physicalUnit);
             }
 
@@ -589,13 +589,13 @@ class Indexer
         }
 
         // add sorting information
-        foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
+        foreach ($doc->metadataArray[$doc->getToplevelId()] as $indexName => $data) {
             // Add sorting information to physical sub-elements if applicable.
             if (
                 !empty($data)
                 && substr($indexName, -8) == '_sorting'
             ) {
-                $solrDoc->setField($indexName, $doc->metadataArray[$doc->toplevelId][$indexName]);
+                $solrDoc->setField($indexName, $doc->metadataArray[$doc->getToplevelId()][$indexName]);
             }
         }
     }
@@ -652,7 +652,7 @@ class Indexer
         $solrDoc->setField('root', $document->getCurrentDocument()->rootId);
         $solrDoc->setField('sid', $unit['id']);
         $solrDoc->setField('type', $unit['type']);
-        $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->toplevelId]['collection']);
+        $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->getToplevelId()]['collection']);
         $solrDoc->setField('fulltext', $fullText);
         return $solrDoc;
     }
