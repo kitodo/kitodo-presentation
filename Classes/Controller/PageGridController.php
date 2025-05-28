@@ -108,7 +108,7 @@ class PageGridController extends AbstractController
             if (array_intersect($useGroups, array_keys($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'])) !== []) {
                 while ($useGroup = array_shift($useGroups)) {
                     if (!empty($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$useGroup])) {
-                        $entry['thumbnail'] = $this->document->getCurrentDocument()->getFileLocation($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$useGroup]);
+                        $entry['thumbnail'] = $this->document->getCurrentDocument()->getFileLocationInUsegroup($this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$number]]['files'][$useGroup], $useGroup);
                         break;
                     }
                 }

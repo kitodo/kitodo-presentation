@@ -342,6 +342,15 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
+     * @see AbstractDocument::getFileLocationInUsegroup()
+     */
+    public function getFileLocationInUsegroup(string $id, string $useGroup): string
+    {
+        $fileLocation = $this->getFileLocation($id);
+        return $fileLocation;
+    }
+
+    /**
      * @see AbstractDocument::getFileMimeType()
      */
     public function getFileMimeType(string $id): string
