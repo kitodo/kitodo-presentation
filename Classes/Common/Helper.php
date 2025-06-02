@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use GuzzleHttp\Cookie\CookieJar;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -861,11 +862,28 @@ class Helper
 
         /** @var RequestFactory $requestFactory */
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+
+        $headers = [
+            'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation'
+        ];
+
+        if ($extConf['useAllCookies'] ?? false) {
+            // If the user agent should use all cookies, we need to set the cookie header.
+            $cookieJar = GeneralUtility::makeInstance(CookieJar::class);
+            $cookies = $cookieJar->toArray();
+            if (!empty($cookies)) {
+                $headers['Cookie'] = implode(
+                    '; ', array_map(
+                        fn($cookie) => $cookie['name'] . '=' . $cookie['value'],
+                        $cookies
+                    )
+                );
+            }
+        }
+
         $configuration = [
             'timeout' => 30,
-            'headers' => [
-                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
-            ],
+            'headers' => $headers,
         ];
         try {
             $response = $requestFactory->request($url, 'GET', $configuration);

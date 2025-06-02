@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Eid;
 
+use GuzzleHttp\Cookie\CookieJar;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\StdOutStream;
 use Psr\Http\Message\ResponseInterface;
@@ -145,11 +146,17 @@ class PageViewProxy
         $queryParams = $request->getQueryParams();
 
         $url = (string) ($queryParams['url'] ?? '');
+        $headers = [
+            'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation'
+        ];
+
+        if ($this->extConf['useAllCookies'] ?? false) {
+            $headers['Cookie'] = $this->getCookies();
+        }
+
         try {
             $targetResponse = $this->requestFactory->request($url, 'HEAD', [
-                'headers' => [
-                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
-                ]
+                'headers' => $headers
             ]);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => 'Could not fetch resource of given URL.'], 500);
@@ -190,11 +197,18 @@ class PageViewProxy
         if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
             return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
         }
+
+        $headers = [
+            'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation'
+        ];
+
+        if ($this->extConf['useAllCookies'] ?? false) {
+            $headers['Cookie'] = $this->getCookies();
+        }
+
         try {
             $targetResponse = $this->requestFactory->request($url, 'GET', [
-                'headers' => [
-                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
-                ],
+                'headers' => $headers,
 
                 // For performance, don't download content up-front. Rather, we'll
                 // download and upload simultaneously.
@@ -250,5 +264,28 @@ class PageViewProxy
                 return GeneralUtility::makeInstance(Response::class)
                     ->withStatus(405);
         }
+    }
+
+    /**
+     * Get cookies so they can be added to the request headers
+     * or empty string if no cookies found.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function getCookies(): string
+    {
+        $cookieJar = GeneralUtility::makeInstance(CookieJar::class);
+        $cookies = $cookieJar->toArray();
+        if (!empty($cookies)) {
+            return implode(
+                '; ', array_map(
+                    fn($cookie) => $cookie['name'] . '=' . $cookie['value'],
+                    $cookies
+                )
+            );
+        }
+        return '';
     }
 }

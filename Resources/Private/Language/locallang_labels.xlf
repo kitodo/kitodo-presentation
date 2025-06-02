@@ -479,7 +479,10 @@
 			<trans-unit id="config.general.enableInternalProxy">
 				<source>Enable internal page view proxy?: (default is "FALSE")</source>
 			</trans-unit>
-			<trans-unit id="config.general.forceAbsoluteUrl">
+            <trans-unit id="config.general.useAllCookies">
+                <source>Allow usage of all cookies? (default is "FALSE")</source>
+            </trans-unit>
+            <trans-unit id="config.general.forceAbsoluteUrl">
 				<source>Force all links to pages and resources to be absolute?: Only needed for some multi-domain environments; requires a fully qualified Entry Point in Site Configuration (default is "FALSE")</source>
 			</trans-unit>
 			<trans-unit id="config.general.userAgent">
