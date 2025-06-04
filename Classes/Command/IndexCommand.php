@@ -211,7 +211,7 @@ class IndexCommand extends BaseCommand
                 return BaseCommand::SUCCESS;
             }
 
-            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . '. There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
+            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . '. Check TYPO3 log for more details.');
             $io->info('INFO: Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
             return BaseCommand::FAILURE;
         }
