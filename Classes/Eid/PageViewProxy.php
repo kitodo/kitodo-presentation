@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Eid;
 
-use GuzzleHttp\Cookie\CookieJar;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\StdOutStream;
 use Psr\Http\Message\ResponseInterface;
@@ -151,7 +150,7 @@ class PageViewProxy
         ];
 
         if ($this->extConf['useAllCookies'] ?? false) {
-            $headers['Cookie'] = $this->getCookies();
+            $headers['Cookie'] = $_SERVER["HTTP_COOKIE"];
         }
 
         try {
@@ -203,7 +202,7 @@ class PageViewProxy
         ];
 
         if ($this->extConf['useAllCookies'] ?? false) {
-            $headers['Cookie'] = $this->getCookies();
+            $headers['Cookie'] = $_SERVER["HTTP_COOKIE"];
         }
 
         try {
@@ -264,28 +263,5 @@ class PageViewProxy
                 return GeneralUtility::makeInstance(Response::class)
                     ->withStatus(405);
         }
-    }
-
-    /**
-     * Get cookies so they can be added to the request headers
-     * or empty string if no cookies found.
-     *
-     * @access private
-     *
-     * @return string
-     */
-    private function getCookies(): string
-    {
-        $cookieJar = GeneralUtility::makeInstance(CookieJar::class);
-        $cookies = $cookieJar->toArray();
-        if (!empty($cookies)) {
-            return implode(
-                '; ', array_map(
-                    fn($cookie) => $cookie['name'] . '=' . $cookie['value'],
-                    $cookies
-                )
-            );
-        }
-        return '';
     }
 }
