@@ -861,11 +861,18 @@ class Helper
 
         /** @var RequestFactory $requestFactory */
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+
+        $headers = [
+            'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation'
+        ];
+
+        if ($extConf['useAllCookies'] ?? false) {
+            $headers['Cookie'] = $_SERVER["HTTP_COOKIE"];
+        }
+
         $configuration = [
             'timeout' => 30,
-            'headers' => [
-                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
-            ],
+            'headers' => $headers,
         ];
         try {
             $response = $requestFactory->request($url, 'GET', $configuration);
