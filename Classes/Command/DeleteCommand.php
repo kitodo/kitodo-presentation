@@ -13,9 +13,9 @@
 namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -91,7 +91,7 @@ class DeleteCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         if (
@@ -109,15 +109,15 @@ class DeleteCommand extends BaseCommand
                 }
                 if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return BaseCommand::FAILURE;
+                    return Command::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return BaseCommand::FAILURE;
+                    return Command::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         if (
@@ -129,13 +129,13 @@ class DeleteCommand extends BaseCommand
             )
         ) {
             $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         $this->deleteFromDatabase($input, $io);
         $this->deleteFromSolr($input, $io, $solrCoreUid);
 
-        return BaseCommand::SUCCESS;
+        return Command::SUCCESS;
     }
 
     /**
