@@ -79,12 +79,12 @@ class OptimizeCommand extends Command
 
         if (empty($input->getOption('solr')) || is_array($input->getOption('solr'))) {
                 $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-                return BaseCommand::FAILURE;
+                return Command::FAILURE;
         }
 
         if (empty($input->getOption('commit')) && empty($input->getOption('optimize'))) {
             $io->error('ERROR: Parameter --commit or --optimize is missing.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         // Get Solr instance.
@@ -92,14 +92,14 @@ class OptimizeCommand extends Command
         // Connect to Solr server.
         if (!$solr->ready) {
             $io->error('ERROR: Connection to Solr core ("' . $input->getOption('solr') . '") not possible \n');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         if (!$solr->optimize($input->getOption('commit'), $input->getOption('optimize'))) {
             $io->error('ERROR: Optimizing the Solr core ("' . $input->getOption('solr') . '") not possible \n');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
-        return BaseCommand::SUCCESS;
+        return Command::SUCCESS;
     }
 }

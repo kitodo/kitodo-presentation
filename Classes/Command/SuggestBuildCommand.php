@@ -67,7 +67,7 @@ class SuggestBuildCommand extends Command
 
         if (empty($input->getOption('solr')) || is_array($input->getOption('solr'))) {
                 $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-                return BaseCommand::FAILURE;
+                return Command::FAILURE;
         }
 
         // Get Solr instance.
@@ -75,14 +75,14 @@ class SuggestBuildCommand extends Command
         // Connect to Solr server.
         if (!$solr->ready) {
             $io->error('ERROR: Connection to Solr core ("' . $input->getOption('solr') . '") not possible \n');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         if (!$solr->suggestBuild()) {
             $io->error('ERROR: Sending the command suggest.build=true to Solr core ("' . $input->getOption('solr') . '") not possible \n');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
-        return BaseCommand::SUCCESS;
+        return Command::SUCCESS;
     }
 }
