@@ -361,7 +361,7 @@ class Indexer
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
                 }
-                $solrDoc->setField('record_id', $metadata['record_id'][0]);
+                $solrDoc->setField('record_id', $metadata['record_id'][0] ?? '');
                 $solrDoc->setField('purl', $metadata['purl'][0] ?? '');
                 $solrDoc->setField('location', $document->getLocation());
                 $solrDoc->setField('urn', $metadata['urn']);
@@ -703,8 +703,9 @@ class Indexer
     {
         if (is_array($authors)) {
             foreach ($authors as $i => $author) {
-                $splitName = explode(pack('C', 31), $author);
-                $authors[$i] = $splitName[0];
+                if (is_array($author)) {
+                    $authors[$i] = $author['name'];
+                }
             }
         }
         return $authors;
