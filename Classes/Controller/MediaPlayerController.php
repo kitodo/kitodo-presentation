@@ -97,7 +97,7 @@ class MediaPlayerController extends AbstractController
             'start' => $videoChapters[$pageNo - 1]['timecode'] ?? '',
             'mode' => $this->determineInitialMode($videoSources, $mainVideoUseGroup),
             'chapters' => $videoChapters,
-            'metadata' => $doc->getToplevelMetadata($this->settings['storagePid']),
+            'metadata' => $doc->getToplevelMetadata(),
             'sources' => $videoSources,
             'url' => $videoUrl,
         ];
@@ -117,7 +117,7 @@ class MediaPlayerController extends AbstractController
         $videoFiles = $this->findFiles($doc, $pageNo, $videoUseGroups);
         foreach ($videoFiles as $videoFile) {
             if ($this->isMediaMime($videoFile['mimeType'])) {
-                $fileMetadata = $doc->getMetadata($videoFile['fileId'], $this->settings['storagePid']);
+                $fileMetadata = $doc->getMetadata($videoFile['fileId']);
 
                 $videoSources[] = [
                     'fileGrp' => $videoFile['fileGrp'],

@@ -329,7 +329,7 @@ class Indexer
     {
         $success = true;
         $doc = $document->getCurrentDocument();
-        $doc->cPid = $document->getPid();
+        $doc->configPid = $document->getPid();
         // Get metadata for logical unit.
         $metadata = $doc->metadataArray[$logicalUnit['id']] ?? [];
         if (!empty($metadata)) {
@@ -431,7 +431,7 @@ class Indexer
     protected static function processPhysical(Document $document, int $page, array $physicalUnit): bool
     {
         $doc = $document->getCurrentDocument();
-        $doc->cPid = $document->getPid();
+        $doc->configPid = $document->getPid();
         if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
