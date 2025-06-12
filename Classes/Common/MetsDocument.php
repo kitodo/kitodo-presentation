@@ -278,6 +278,23 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * @see AbstractDocument::getFileLocationInUsegroup()
+     */
+    public function getFileLocationInUsegroup(string $id, string $useGroup): string
+    {
+        $location = $this->mets->xpath('./mets:fileSec/mets:fileGrp[@USE="' . $useGroup . '"]/mets:file[@ID="' . $id . '"]/mets:FLocat[@LOCTYPE="URL"]');
+        if (
+            !empty($id)
+            && !empty($location)
+        ) {
+            return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
+        } else {
+            $this->logger->warning('There is no file node with @ID "' . $id . '"');
+            return '';
+        }
+    }
+
+    /**
      * This gets the measure beginning of a page
      */
     public function getPageBeginning($pageId, $fileId)
