@@ -33,6 +33,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      * @var array The message severity class names
      */
     protected static array $classes = [
+        // Todo: FlashMessage constants deprecated in v12, remove when dropping v11 support
         FlashMessage::NOTICE => 'notice',
         FlashMessage::INFO => 'info',
         FlashMessage::OK => 'success',
@@ -44,6 +45,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      * @var array The message severity icon names
      */
     protected static array $icons = [
+        // Todo: FlashMessage constants deprecated in v12, remove when dropping v11 support
         FlashMessage::NOTICE => 'lightbulb-o',
         FlashMessage::INFO => 'info',
         FlashMessage::OK => 'check',
