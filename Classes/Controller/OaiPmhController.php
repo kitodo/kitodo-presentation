@@ -331,14 +331,14 @@ class OaiPmhController extends AbstractController
 
         if ($token) {
             $options = $token->getOptions();
+            if (is_array($options)) {
+                return $options;
+            }
         }
-        if (is_array($options)) {
-            return $options;
-        } else {
-            // No resumption token found or resumption token expired.
-            $this->error = 'badResumptionToken';
-            return null;
-        }
+
+        // No resumption token found or resumption token expired.
+        $this->error = 'badResumptionToken';
+        return null;
     }
 
     /**
