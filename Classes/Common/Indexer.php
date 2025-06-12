@@ -114,7 +114,7 @@ class Indexer
                         $parent->setCurrentDocument($doc);
                         $success = self::add($parent, $documentRepository);
                     } else {
-                        Helper::log('Could not load parent document with UID ' . $document->getCurrentDocument()->parentId, LOG_SEVERITY_ERROR);
+                        Helper::error('Could not load parent document with UID ' . $document->getCurrentDocument()->parentId);
                         return false;
                     }
                 }
@@ -172,7 +172,7 @@ class Indexer
                     FlashMessage::WARNING
                 );
             }
-            Helper::log('Could not connect to Apache Solr server', LOG_SEVERITY_ERROR);
+            Helper::error('Could not connect to Apache Solr server');
             return false;
         }
     }
@@ -207,12 +207,12 @@ class Indexer
                         'core.template.flashMessages'
                     );
                 }
-                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
+                Helper::error('Apache Solr threw exception: "' . $e->getMessage() . '"');
                 return false;
             }
         }
 
-        Helper::log('Document not deleted from SOLR - problem with the connection to the SOLR core ' . $solrCoreUid, LOG_SEVERITY_ERROR);
+        Helper::error('Document not deleted from SOLR - problem with the connection to the SOLR core ' . $solrCoreUid);
         return false;
     }
 
@@ -233,7 +233,7 @@ class Indexer
         // Sanitize input.
         $pid = max((int) $pid, 0);
         if (!$pid) {
-            Helper::log('Invalid PID ' . $pid . ' for metadata configuration', LOG_SEVERITY_ERROR);
+            Helper::error('Invalid PID ' . $pid . ' for metadata configuration');
             return '';
         }
         // Load metadata configuration.
@@ -348,13 +348,13 @@ class Indexer
                 if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                     $solrDoc->setField('page', $logicalUnit['points']);
                 }
-                if ($logicalUnit['id'] == $doc->toplevelId) {
+                if ($logicalUnit['id'] == $doc->getToplevelId()) {
                     $solrDoc->setField('thumbnail', $doc->thumbnail);
                 } elseif (!empty($logicalUnit['thumbnailId'])) {
                     $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
                 }
                 // There can be only one toplevel unit per UID, independently of backend configuration
-                $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
+                $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->getToplevelId());
                 $solrDoc->setField('title', $metadata['title'][0]);
                 $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
                 // verify date formatting
@@ -385,9 +385,9 @@ class Indexer
                 if (
                     in_array('collection', self::$fields['facets'])
                     && empty($metadata['collection'])
-                    && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
+                    && !empty($doc->metadataArray[$doc->getToplevelId()]['collection'])
                 ) {
-                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
+                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->getToplevelId()]['collection']);
                 }
                 try {
                     $updateQuery->addDocument($solrDoc);
@@ -397,7 +397,7 @@ class Indexer
                     return false;
                 }
             } else {
-                Helper::log('Tip: If "record_id" field is missing then there is possibility that METS file still contains it but with the wrong source type attribute in "recordIdentifier" element', LOG_SEVERITY_NOTICE);
+                Helper::notice('Tip: If "record_id" field is missing then there is possibility that METS file still contains it but with the wrong source type attribute in "recordIdentifier" element');
                 return false;
             }
         }
@@ -448,11 +448,11 @@ class Indexer
             }
             $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type']);
-            $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
+            $solrDoc->setField('collection', $doc->metadataArray[$doc->getToplevelId()]['collection']);
             $solrDoc->setField('location', $document->getLocation());
 
             $solrDoc->setField('fulltext', $fullText);
-            if (is_array($doc->metadataArray[$doc->toplevelId])) {
+            if (is_array($doc->metadataArray[$doc->getToplevelId()])) {
                 self::addFaceting($doc, $solrDoc, $physicalUnit);
             }
 
@@ -589,13 +589,13 @@ class Indexer
         }
 
         // add sorting information
-        foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
+        foreach ($doc->metadataArray[$doc->getToplevelId()] as $indexName => $data) {
             // Add sorting information to physical sub-elements if applicable.
             if (
                 !empty($data)
                 && substr($indexName, -8) == '_sorting'
             ) {
-                $solrDoc->setField($indexName, $doc->metadataArray[$doc->toplevelId][$indexName]);
+                $solrDoc->setField($indexName, $doc->metadataArray[$doc->getToplevelId()][$indexName]);
             }
         }
     }
@@ -652,7 +652,7 @@ class Indexer
         $solrDoc->setField('root', $document->getCurrentDocument()->rootId);
         $solrDoc->setField('sid', $unit['id']);
         $solrDoc->setField('type', $unit['type']);
-        $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->toplevelId]['collection']);
+        $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->getToplevelId()]['collection']);
         $solrDoc->setField('fulltext', $fullText);
         return $solrDoc;
     }
@@ -703,8 +703,9 @@ class Indexer
     {
         if (is_array($authors)) {
             foreach ($authors as $i => $author) {
-                $splitName = explode(pack('C', 31), $author);
-                $authors[$i] = $splitName[0];
+                if (is_array($author)) {
+                    $authors[$i] = $author['name'];
+                }
             }
         }
         return $authors;
@@ -726,7 +727,7 @@ class Indexer
         if (!(Environment::isCli())) {
             self::addErrorMessage(Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
         }
-        Helper::log('Apache Solr threw exception: "' . $errorMessage . '"', LOG_SEVERITY_ERROR);
+        Helper::error('Apache Solr threw exception: "' . $errorMessage . '"');
     }
 
     /**
