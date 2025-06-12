@@ -1,505 +1,505 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-25T09:43:48Z">
-		<header>
-			<generator>LFEditor</generator>
-		</header>
-		<body>
-			<trans-unit id="flexform.collections">
-				<source><![CDATA[Collections]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.excludeOther">
-				<source><![CDATA[Show only documents from the selected page]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.excludeOtherCollections">
-				<source><![CDATA[Show only documents from the selected collection(s)]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.library">
-				<source><![CDATA[Providing library]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.limit">
-				<source><![CDATA[Number of documents]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.prependSuperiorTitle">
-				<source><![CDATA[Prepend title of superior work to title?]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.sheet_general">
-				<source><![CDATA[Options]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.showBasketButton">
-				<source><![CDATA[Show basket button]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.targetBasket">
-				<source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.targetPidPageView">
-				<source><![CDATA[Target page (with "Kitodo: Page View" plugin)]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.targetPidListView">
-				<source><![CDATA[Target page (with "Kitodo: List View" plugin)]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.templateFile">
-				<source><![CDATA[Template file]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.audioplayer.description">
-				<source><![CDATA[Audio Player Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.audioplayer.flexform.elementId">
-				<source><![CDATA[@ID value of the HTML element for the audio player]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.audioplayer.title">
-				<source><![CDATA[Kitodo: Audio Player]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.calendar.description">
-				<source><![CDATA[Calendar Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.calendar.flexform.initialDocument">
-				<source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.calendar.flexform.showEmptyYears">
-				<source><![CDATA[Show years without issues in calendar?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.calendar.flexform.showEmptyMonths">
-				<source><![CDATA[Show months without issues in calendar?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.calendar.title">
-				<source><![CDATA[Kitodo: Calendar]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.feeds.description">
-				<source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.feeds.flexform.description">
-				<source><![CDATA[Feed's description]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.feeds.flexform.title">
-				<source><![CDATA[Feed's title]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.feeds.title">
-				<source><![CDATA[Kitodo: Feeds]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.title">
-				<source><![CDATA[Kitodo: Search]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.description">
-				<source><![CDATA[Search Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.facets.collections">
-				<source><![CDATA[Use only these collections as facet]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.fulltext">
-				<source><![CDATA[Enable full text search?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.fulltextPreselect">
-				<source><![CDATA[Preselect full text search?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.datesearch">
+    <file source-language="en" datatype="plaintext" original="messages" date="2021-10-25T09:43:48Z">
+        <header>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="flexform.collections">
+                <source><![CDATA[Collections]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.excludeOther">
+                <source><![CDATA[Show only documents from the selected page]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.excludeOtherCollections">
+                <source><![CDATA[Show only documents from the selected collection(s)]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.library">
+                <source><![CDATA[Providing library]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.limit">
+                <source><![CDATA[Number of documents]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.prependSuperiorTitle">
+                <source><![CDATA[Prepend title of superior work to title?]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.sheet_general">
+                <source><![CDATA[Options]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.showBasketButton">
+                <source><![CDATA[Show basket button]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.targetBasket">
+                <source><![CDATA[Target page (with "DLF: Basket" plugin)]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.targetPidPageView">
+                <source><![CDATA[Target page (with "Kitodo: Page View" plugin)]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.targetPidListView">
+                <source><![CDATA[Target page (with "Kitodo: List View" plugin)]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.templateFile">
+                <source><![CDATA[Template file]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.audioplayer.description">
+                <source><![CDATA[Audio Player Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.audioplayer.flexform.elementId">
+                <source><![CDATA[@ID value of the HTML element for the audio player]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.audioplayer.title">
+                <source><![CDATA[Kitodo: Audio Player]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.calendar.description">
+                <source><![CDATA[Calendar Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.calendar.flexform.initialDocument">
+                <source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.calendar.flexform.showEmptyYears">
+                <source><![CDATA[Show years without issues in calendar?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.calendar.flexform.showEmptyMonths">
+                <source><![CDATA[Show months without issues in calendar?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.calendar.title">
+                <source><![CDATA[Kitodo: Calendar]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.feeds.description">
+                <source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.feeds.flexform.description">
+                <source><![CDATA[Feed's description]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.feeds.flexform.title">
+                <source><![CDATA[Feed's title]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.feeds.title">
+                <source><![CDATA[Kitodo: Feeds]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.title">
+                <source><![CDATA[Kitodo: Search]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.description">
+                <source><![CDATA[Search Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.facets.collections">
+                <source><![CDATA[Use only these collections as facet]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.fulltext">
+                <source><![CDATA[Enable full text search?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.fulltextPreselect">
+                <source><![CDATA[Preselect full text search?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.datesearch">
                 <source><![CDATA[Enable date search?]]></source>
             </trans-unit>
-			<trans-unit id="text.yes">
-				<source><![CDATA[Yes]]></source>
-			</trans-unit>
-			<trans-unit id="text.no">
-				<source><![CDATA[No]]></source>
-			</trans-unit>
-			<trans-unit id="text.none">
-				<source><![CDATA[none]]></source>
-			</trans-unit>
-			<trans-unit id="text.all">
-				<source><![CDATA[all]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.extSearch.slotCount">
-				<source><![CDATA[Number of search slots]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.extSearch.fields">
-				<source><![CDATA[Fields for extended search]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.collections">
-				<source><![CDATA[Restrict search to these collections]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.searchIn">
-				<source><![CDATA[Restrict search to current document or collection?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.searchIn.document">
-				<source><![CDATA[document only (incl. subordinates)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.searchIn.collection">
-				<source><![CDATA[collection only]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.searchIn.all">
-				<source><![CDATA[both]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.facets">
-				<source><![CDATA[Show these facets]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.facets.limit">
-				<source><![CDATA[Maximum facet values]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.facets.reset">
-				<source><![CDATA[Allow to reset facets]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.facets.sorting">
-				<source><![CDATA[Facet sorting]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.facets.sorting.count">
-				<source><![CDATA[Count (highest count first)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.facets.sorting.index">
-				<source><![CDATA[Lexicographic by indexed term (alphabetically for terms in the ASCII range)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.suggest">
-				<source><![CDATA[Show search suggestions]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.suggest">
-				<source><![CDATA[Show search suggestions]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.separator">
-				<source><![CDATA[Separator for metadata in TS array]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.templateFile">
-				<source><![CDATA[Template file]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.showLogicalPageField">
-				<source><![CDATA[Show field for logical page?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.search.flexform.showSingleResult">
-				<source><![CDATA[Show single result in Page View?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.description">
-				<source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.pageStep">
-				<source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features">
-				<source><![CDATA[Show selected navigation features]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageStepBack">
-				<source><![CDATA[Rewind X pages]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageStepForward">
-				<source><![CDATA[Forward X pages]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageForward">
-				<source><![CDATA[One page forward]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageBack">
-				<source><![CDATA[One page back]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageFirst">
-				<source><![CDATA[First page]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageLast">
-				<source><![CDATA[Last page]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.rotation">
-				<source><![CDATA[Buttons for rotate image left, right and reset]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.zoom">
-				<source><![CDATA[Buttons for zoom-in, zoom-out and full screen]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.doublePage">
-				<source><![CDATA[Buttons for double page mode and recto/verso adjustment]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.pageSelect">
-				<source><![CDATA[Page navigation menu]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.listView">
-				<source><![CDATA[Link to page with listview plugin]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.measureForward">
-				<source><![CDATA[One measure forward]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.measureBack">
-				<source><![CDATA[One measureBack back]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.documentBack">
-				<source><![CDATA[Show previous document]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.flexform.features.documentForward">
-				<source><![CDATA[Show next document]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.navigation.title">
-				<source><![CDATA[Kitodo: Navigation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.description">
-				<source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.limit">
-				<source><![CDATA[Thumbnails per page]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.placeholder">
-				<source><![CDATA[Placeholder image for pages without thumbnail]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pagegrid.title">
-				<source><![CDATA[Kitodo: Page Grid]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.description">
-				<source><![CDATA[Pageview Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.crop">
-				<source><![CDATA[Enable cropping]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.elementId">
-				<source><![CDATA[@ID value of the HTML element for the page view]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.features">
-				<source><![CDATA[Map features]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.features.overviewmap">
-				<source><![CDATA[Overview Image]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.features.zoompanel">
-				<source><![CDATA[Zoom Panel]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.magnifier">
-				<source><![CDATA[Activate magnifier]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.progressElementId">
-				<source><![CDATA[@ID value of the <progress> element used for loading indicator]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.flexform.useInternalProxy">
-				<source><![CDATA[Use Internal Proxy]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.pageview.title">
-				<source><![CDATA[Kitodo: Pageview]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.statistics.description">
-				<source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.statistics.flexform.description">
-				<source><![CDATA[Description (Placeholders: ###TITLES### and ###VOLUMES###)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.statistics.title">
-				<source><![CDATA[Kitodo: Statistics]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.tableofcontents.description">
-				<source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.tableofcontents.flexform.showFull">
-				<source><![CDATA[Show complete TOC]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.tableofcontents.title">
-				<source><![CDATA[Kitodo: Table of Contents]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.title">
-				<source><![CDATA[Kitodo: Basket]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.description">
-				<source><![CDATA[Basket Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.flexform.basketGoToButton">
-				<source><![CDATA[Add go to basket button]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.flexform.pdfGenerate">
-				<source><![CDATA[PDF generate URL (without parameters)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.flexform.pdfDownload">
-				<source><![CDATA[PDF download URL (without parameters)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.flexform.pdfPrint">
-				<source><![CDATA[PDF print URL (without parameters)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.flexform.pdfParams">
-				<source><![CDATA[Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.flexform.pdfParamSeparator">
-				<source><![CDATA[Parameter separator (for multiple documents)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.basket.flexform.preGeneration">
-				<source><![CDATA[Send ajax request for pdf pre generation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.toolbox.title">
-				<source><![CDATA[Kitodo: Toolbox]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.toolbox.description">
-				<source><![CDATA[Toolbox Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.toolbox.flexform.tools">
-				<source><![CDATA[Tools]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.toolbox.flexform.fileGrps">
-				<source><![CDATA[Page fileGrps used by image download tool: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.solrcore">
-				<source><![CDATA[Solr Core]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.oaipmh.title">
-				<source><![CDATA[Kitodo: OAI-PMH Interface]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.oaipmh.description">
-				<source><![CDATA[OAI-PMH Interface Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.oaipmh.flexform.limit">
-				<source><![CDATA[Records per request]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.oaipmh.flexform.expired">
-				<source><![CDATA[Expiration time for resumption token (seconds)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.oaipmh.flexform.show_userdefined">
-				<source><![CDATA[Show user-defined collections?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.oaipmh.flexform.show_userdefined">
-				<source><![CDATA[Show user-defined collections?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.oaipmh.flexform.solr_limit">
-				<source><![CDATA[Maximum Solr results]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.oaipmh.flexform.stylesheet">
-				<source><![CDATA[Transformation stylesheet]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.listview.title">
-				<source><![CDATA[Kitodo: List View]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.listview.description">
-				<source><![CDATA[List View Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.listview.flexform.limit">
-				<source><![CDATA[Documents per page]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.getTitle">
-				<source><![CDATA[Show title of parent document if document has no title itself]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.title">
-				<source><![CDATA[Kitodo: Collection]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.description">
-				<source><![CDATA[Collection Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.collections">
-				<source><![CDATA[Show only these collections]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.show_userdefined">
-				<source><![CDATA[Show user-defined collections?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.show_userdefined.all">
-				<source><![CDATA[both]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.show_userdefined.none">
-				<source><![CDATA[no]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.show_userdefined.exclusive">
-				<source><![CDATA[exclusively]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.dont_show_single">
-				<source><![CDATA[Show single collection in overview?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.collection.flexform.randomize">
-				<source><![CDATA[Randomize sorting?]]></source>
-			</trans-unit>
-			<trans-unit id="flexform.targetPidFeed">
-				<source><![CDATA[Target page (with "Kitodo: Feeds" plugin)]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.description">
-				<source><![CDATA[Media Player Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.title">
-				<source><![CDATA[Kitodo: Media Player]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.elementId">
-				<source><![CDATA[@ID value of the HTML element that should host the player]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.title">
-				<source><![CDATA[Share Buttons]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.type">
-				<source><![CDATA[Type of the Button]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.type.material">
-				<source><![CDATA[Material Icon]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.type.image">
-				<source><![CDATA[Image]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.icon.label">
-				<source><![CDATA[Which Material Icon?]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.icon.description">
-				<source><![CDATA[Key of the Material Icon (e.g., 'email'), see https://material.io/icons]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.titleTranslationKey.label">
-				<source><![CDATA[Translation Key for Tooltip]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.hrefTemplate.label">
-				<source><![CDATA[Link]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.shareButtons.hrefTemplate.description">
-				<source><![CDATA[The placeholder '{url}' may be used to include the video URL. The special URL 'dlf:qr_code' shows a QR code, 'dlf:mastodon_share' shows the Mastodon Share Button]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.equalizer.enabled">
-				<source><![CDATA[Enable Equalizer]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.mediaplayer.flexform.constants.prevChapterTolerance.label">
-				<source><![CDATA[Tolerance to previous chapter in seconds]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.title">
-				<source><![CDATA[Kitodo: Metadata]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.description">
-				<source><![CDATA[Metadata Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.linkTitle">
-				<source><![CDATA[Link title to target page]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.showFull">
-				<source><![CDATA[Show all available metadata]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.rootline">
-				<source><![CDATA[Show metadata of superior structures]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.rootline.titledata">
-				<source><![CDATA[titledata only]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.originalIiifMetadata">
-				<source><![CDATA[Display metadata from IIIF manifests completely as given in the manifest]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.iiifMetadataWrap">
-				<source><![CDATA[TypoScript-Wrap for IIIF manifest metadata]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.displayIiifDescription">
-				<source><![CDATA[Display description for IIIF resources]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.displayIiifRights">
-				<source><![CDATA[Display attributions and license for IIIF resources]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.displayIiifLinks">
-				<source><![CDATA[Display external links for IIIF resources]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.separator">
-				<source><![CDATA[Separator for multi-valued fields]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.metadata.flexform.separator">
-				<source><![CDATA[Separator for multi-valued fields]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.embedded3dviewer.title">
-				<source><![CDATA[Kitodo: Embedded 3D Viewer]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.embedded3dviewer.description">
-				<source><![CDATA[Embedded 3D Viewer Plugin for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.embedded3dviewer.flexform.document">
-				<source><![CDATA[METS/MODS url containing the model]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.embedded3dviewer.flexform.model">
-				<source><![CDATA[Url of model]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.embedded3dviewer.flexform.viewer">
-				<source><![CDATA[Name of viewer]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.annotation.title">
-        		<source><![CDATA[Kitodo: Annotations]]></source>
-        	</trans-unit>
-			<trans-unit id="plugins.validationform.title">
-				<source><![CDATA[Kitodo: Validation Form]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.description">
-				<source><![CDATA[Validation form for Kitodo.Presentation]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.flexform.type.label">
-				<source><![CDATA[Type]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.flexform.type.description">
-				<source><![CDATA[Validation configuration type for DOMDocument validation]]></source>
-			</trans-unit>
+            <trans-unit id="text.yes">
+                <source><![CDATA[Yes]]></source>
+            </trans-unit>
+            <trans-unit id="text.no">
+                <source><![CDATA[No]]></source>
+            </trans-unit>
+            <trans-unit id="text.none">
+                <source><![CDATA[none]]></source>
+            </trans-unit>
+            <trans-unit id="text.all">
+                <source><![CDATA[all]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.extSearch.slotCount">
+                <source><![CDATA[Number of search slots]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.extSearch.fields">
+                <source><![CDATA[Fields for extended search]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.collections">
+                <source><![CDATA[Restrict search to these collections]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.searchIn">
+                <source><![CDATA[Restrict search to current document or collection?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.searchIn.document">
+                <source><![CDATA[document only (incl. subordinates)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.searchIn.collection">
+                <source><![CDATA[collection only]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.searchIn.all">
+                <source><![CDATA[both]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.facets">
+                <source><![CDATA[Show these facets]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.facets.limit">
+                <source><![CDATA[Maximum facet values]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.facets.reset">
+                <source><![CDATA[Allow to reset facets]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.facets.sorting">
+                <source><![CDATA[Facet sorting]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.facets.sorting.count">
+                <source><![CDATA[Count (highest count first)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.facets.sorting.index">
+                <source><![CDATA[Lexicographic by indexed term (alphabetically for terms in the ASCII range)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.suggest">
+                <source><![CDATA[Show search suggestions]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.suggest">
+                <source><![CDATA[Show search suggestions]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.separator">
+                <source><![CDATA[Separator for metadata in TS array]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.templateFile">
+                <source><![CDATA[Template file]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.showLogicalPageField">
+                <source><![CDATA[Show field for logical page?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.search.flexform.showSingleResult">
+                <source><![CDATA[Show single result in Page View?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.description">
+                <source><![CDATA[Navigation Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.pageStep">
+                <source><![CDATA[How many pages should be skipped by "fast-forward" and "rewind" buttons?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features">
+                <source><![CDATA[Show selected navigation features]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.pageStepBack">
+                <source><![CDATA[Rewind X pages]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.pageStepForward">
+                <source><![CDATA[Forward X pages]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.pageForward">
+                <source><![CDATA[One page forward]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.pageBack">
+                <source><![CDATA[One page back]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.pageFirst">
+                <source><![CDATA[First page]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.pageLast">
+                <source><![CDATA[Last page]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.rotation">
+                <source><![CDATA[Buttons for rotate image left, right and reset]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.zoom">
+                <source><![CDATA[Buttons for zoom-in, zoom-out and full screen]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.doublePage">
+                <source><![CDATA[Buttons for double page mode and recto/verso adjustment]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.pageSelect">
+                <source><![CDATA[Page navigation menu]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.listView">
+                <source><![CDATA[Link to page with listview plugin]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.measureForward">
+                <source><![CDATA[One measure forward]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.measureBack">
+                <source><![CDATA[One measureBack back]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.documentBack">
+                <source><![CDATA[Show previous document]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.flexform.features.documentForward">
+                <source><![CDATA[Show next document]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.navigation.title">
+                <source><![CDATA[Kitodo: Navigation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pagegrid.description">
+                <source><![CDATA[Page Grid Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pagegrid.limit">
+                <source><![CDATA[Thumbnails per page]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pagegrid.placeholder">
+                <source><![CDATA[Placeholder image for pages without thumbnail]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pagegrid.title">
+                <source><![CDATA[Kitodo: Page Grid]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.description">
+                <source><![CDATA[Pageview Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.flexform.crop">
+                <source><![CDATA[Enable cropping]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.flexform.elementId">
+                <source><![CDATA[@ID value of the HTML element for the page view]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.flexform.features">
+                <source><![CDATA[Map features]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.flexform.features.overviewmap">
+                <source><![CDATA[Overview Image]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.flexform.features.zoompanel">
+                <source><![CDATA[Zoom Panel]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.flexform.magnifier">
+                <source><![CDATA[Activate magnifier]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.flexform.progressElementId">
+                <source><![CDATA[@ID value of the <progress> element used for loading indicator]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.flexform.useInternalProxy">
+                <source><![CDATA[Use Internal Proxy]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.pageview.title">
+                <source><![CDATA[Kitodo: Pageview]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.statistics.description">
+                <source><![CDATA[Statistics Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.statistics.flexform.description">
+                <source><![CDATA[Description (Placeholders: ###TITLES### and ###VOLUMES###)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.statistics.title">
+                <source><![CDATA[Kitodo: Statistics]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.tableofcontents.description">
+                <source><![CDATA[Table of Contents Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.tableofcontents.flexform.showFull">
+                <source><![CDATA[Show complete TOC]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.tableofcontents.title">
+                <source><![CDATA[Kitodo: Table of Contents]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.title">
+                <source><![CDATA[Kitodo: Basket]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.description">
+                <source><![CDATA[Basket Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.flexform.basketGoToButton">
+                <source><![CDATA[Add go to basket button]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.flexform.pdfGenerate">
+                <source><![CDATA[PDF generate URL (without parameters)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.flexform.pdfDownload">
+                <source><![CDATA[PDF download URL (without parameters)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.flexform.pdfPrint">
+                <source><![CDATA[PDF print URL (without parameters)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.flexform.pdfParams">
+                <source><![CDATA[Parameters for URL (with placeholder for parameters e.g. ##startY##,##startX##)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.flexform.pdfParamSeparator">
+                <source><![CDATA[Parameter separator (for multiple documents)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.basket.flexform.preGeneration">
+                <source><![CDATA[Send ajax request for pdf pre generation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.toolbox.title">
+                <source><![CDATA[Kitodo: Toolbox]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.toolbox.description">
+                <source><![CDATA[Toolbox Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.toolbox.flexform.tools">
+                <source><![CDATA[Tools]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.toolbox.flexform.fileGrps">
+                <source><![CDATA[Page fileGrps used by image download tool: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.solrcore">
+                <source><![CDATA[Solr Core]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.oaipmh.title">
+                <source><![CDATA[Kitodo: OAI-PMH Interface]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.oaipmh.description">
+                <source><![CDATA[OAI-PMH Interface Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.oaipmh.flexform.limit">
+                <source><![CDATA[Records per request]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.oaipmh.flexform.expired">
+                <source><![CDATA[Expiration time for resumption token (seconds)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.oaipmh.flexform.show_userdefined">
+                <source><![CDATA[Show user-defined collections?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.oaipmh.flexform.show_userdefined">
+                <source><![CDATA[Show user-defined collections?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.oaipmh.flexform.solr_limit">
+                <source><![CDATA[Maximum Solr results]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.oaipmh.flexform.stylesheet">
+                <source><![CDATA[Transformation stylesheet]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.listview.title">
+                <source><![CDATA[Kitodo: List View]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.listview.description">
+                <source><![CDATA[List View Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.listview.flexform.limit">
+                <source><![CDATA[Documents per page]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.getTitle">
+                <source><![CDATA[Show title of parent document if document has no title itself]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.title">
+                <source><![CDATA[Kitodo: Collection]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.description">
+                <source><![CDATA[Collection Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.flexform.collections">
+                <source><![CDATA[Show only these collections]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.flexform.show_userdefined">
+                <source><![CDATA[Show user-defined collections?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.flexform.show_userdefined.all">
+                <source><![CDATA[both]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.flexform.show_userdefined.none">
+                <source><![CDATA[no]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.flexform.show_userdefined.exclusive">
+                <source><![CDATA[exclusively]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.flexform.dont_show_single">
+                <source><![CDATA[Show single collection in overview?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.collection.flexform.randomize">
+                <source><![CDATA[Randomize sorting?]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.targetPidFeed">
+                <source><![CDATA[Target page (with "Kitodo: Feeds" plugin)]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.description">
+                <source><![CDATA[Media Player Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.title">
+                <source><![CDATA[Kitodo: Media Player]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.elementId">
+                <source><![CDATA[@ID value of the HTML element that should host the player]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.title">
+                <source><![CDATA[Share Buttons]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.type">
+                <source><![CDATA[Type of the Button]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.type.material">
+                <source><![CDATA[Material Icon]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.type.image">
+                <source><![CDATA[Image]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.icon.label">
+                <source><![CDATA[Which Material Icon?]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.icon.description">
+                <source><![CDATA[Key of the Material Icon (e.g., 'email'), see https://material.io/icons]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.titleTranslationKey.label">
+                <source><![CDATA[Translation Key for Tooltip]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.hrefTemplate.label">
+                <source><![CDATA[Link]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.shareButtons.hrefTemplate.description">
+                <source><![CDATA[The placeholder '{url}' may be used to include the video URL. The special URL 'dlf:qr_code' shows a QR code, 'dlf:mastodon_share' shows the Mastodon Share Button]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.equalizer.enabled">
+                <source><![CDATA[Enable Equalizer]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.mediaplayer.flexform.constants.prevChapterTolerance.label">
+                <source><![CDATA[Tolerance to previous chapter in seconds]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.title">
+                <source><![CDATA[Kitodo: Metadata]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.description">
+                <source><![CDATA[Metadata Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.linkTitle">
+                <source><![CDATA[Link title to target page]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.showFull">
+                <source><![CDATA[Show all available metadata]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.rootline">
+                <source><![CDATA[Show metadata of superior structures]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.rootline.titledata">
+                <source><![CDATA[titledata only]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.originalIiifMetadata">
+                <source><![CDATA[Display metadata from IIIF manifests completely as given in the manifest]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.iiifMetadataWrap">
+                <source><![CDATA[TypoScript-Wrap for IIIF manifest metadata]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.displayIiifDescription">
+                <source><![CDATA[Display description for IIIF resources]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.displayIiifRights">
+                <source><![CDATA[Display attributions and license for IIIF resources]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.displayIiifLinks">
+                <source><![CDATA[Display external links for IIIF resources]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.separator">
+                <source><![CDATA[Separator for multi-valued fields]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.separator">
+                <source><![CDATA[Separator for multi-valued fields]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.embedded3dviewer.title">
+                <source><![CDATA[Kitodo: Embedded 3D Viewer]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.embedded3dviewer.description">
+                <source><![CDATA[Embedded 3D Viewer Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.embedded3dviewer.flexform.document">
+                <source><![CDATA[METS/MODS url containing the model]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.embedded3dviewer.flexform.model">
+                <source><![CDATA[Url of model]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.embedded3dviewer.flexform.viewer">
+                <source><![CDATA[Name of viewer]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.annotation.title">
+                <source><![CDATA[Kitodo: Annotations]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.title">
+                <source><![CDATA[Kitodo: Validation Form]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.description">
+                <source><![CDATA[Validation form for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.flexform.type.label">
+                <source><![CDATA[Type]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.flexform.type.description">
+                <source><![CDATA[Validation configuration type for DOMDocument validation]]></source>
+            </trans-unit>
             <trans-unit id="flash.attention" approved="yes">
                 <source><![CDATA[Attention!]]></source>
             </trans-unit>
@@ -617,6 +617,6 @@
             <trans-unit id="solr.error" approved="yes">
                 <source><![CDATA[Apache Solr not reachable with given configuration.]]></source>
             </trans-unit>
-		</body>
-	</file>
+        </body>
+    </file>
 </xliff>
