@@ -336,7 +336,7 @@ abstract class AbstractDocument
      * @abstract
      *
      * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
-     * 
+     *
      * @param string $useGroup The "@USE" attribute of the fileGrp node (METS)
      *
      * @return string The file's location as URL
