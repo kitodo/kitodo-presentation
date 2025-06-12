@@ -80,10 +80,13 @@ class DocumentValidator
      */
     public function hasAllMandatoryMetadataFields(): bool
     {
-        foreach ($this->requiredMetadataFields as $requiredMetadataField) {
-            if (empty($this->metadata[$requiredMetadataField][0])) {
-                $this->logger->error('Missing required metadata field "' . $requiredMetadataField . '".');
-                return false;
+        //TODO: add the list of types that do not require mandatory metadata fields
+        if ($this->metadata['type'][0] !== 'chapter' && $this->metadata['type'][0] !== 'page') {
+            foreach ($this->requiredMetadataFields as $requiredMetadataField) {
+                if (empty($this->metadata[$requiredMetadataField][0])) {
+                    $this->logger->error('Missing required metadata field "' . $requiredMetadataField . '".');
+                    return false;
+                }
             }
         }
         return true;
