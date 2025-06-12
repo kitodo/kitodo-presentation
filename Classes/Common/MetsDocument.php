@@ -60,7 +60,6 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
- * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @property SimpleXMLElement $xml this holds the whole XML file as SimpleXMLElement object
  * @property-read array $mdSec associative array of METS metadata sections indexed by their IDs.
  * @property bool $mdSecLoaded flag with information if the array of METS metadata sections is loaded
@@ -460,7 +459,7 @@ final class MetsDocument extends AbstractDocument
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
             $details['videoChapter'] = $this->getTimecode($details);
-        } elseif ($details['id'] == $this->magicGetToplevelId()) {
+        } elseif ($details['id'] == $this->getToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
             $details['thumbnailId'] = $this->getThumbnail();
@@ -1633,7 +1632,7 @@ final class MetsDocument extends AbstractDocument
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
-            $strctId = $this->magicGetToplevelId();
+            $strctId = $this->getToplevelId();
             $metadata = $this->getToplevelMetadata($cPid);
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -1690,9 +1689,9 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::magicGetToplevelId()
+     * @see AbstractDocument::getToplevelId()
      */
-    protected function magicGetToplevelId(): string
+    public function getToplevelId(): string
     {
         if (empty($this->toplevelId)) {
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
@@ -1728,7 +1727,7 @@ final class MetsDocument extends AbstractDocument
     {
         if (empty($this->parentHref)) {
             // Get the closest ancestor of the current document which has a MPTR child.
-            $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->toplevelId . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
+            $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
             if (!empty($parentMptr)) {
                 $this->parentHref = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
             }

@@ -54,7 +54,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
- * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
  */
 abstract class AbstractDocument
@@ -460,13 +459,13 @@ abstract class AbstractDocument
     /**
      * This returns the ID of the toplevel logical structure node
      *
-     * @access protected
+     * @access public
      *
      * @abstract
      *
      * @return string The logical structure node's ID
      */
-    abstract protected function magicGetToplevelId(): string;
+    abstract public function getToplevelId(): string;
 
     /**
      * This sets some basic class properties
@@ -684,10 +683,10 @@ abstract class AbstractDocument
      */
     public function getToplevelMetadata(int $cPid = 0): array
     {
-        $toplevelMetadata = $this->getMetadata($this->magicGetToplevelId(), $cPid);
+        $toplevelMetadata = $this->getMetadata($this->getToplevelId(), $cPid);
         // Add information from METS structural map to toplevel metadata array.
         if ($this instanceof MetsDocument) {
-            $this->addMetadataFromMets($toplevelMetadata, $this->magicGetToplevelId());
+            $this->addMetadataFromMets($toplevelMetadata, $this->getToplevelId());
         }
         // Set record identifier for METS file / IIIF manifest if not present.
         if (array_key_exists('record_id', $toplevelMetadata)) {
