@@ -361,7 +361,7 @@ class Indexer
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
                 }
-                $solrDoc->setField('record_id', $metadata['record_id'][0]);
+                $solrDoc->setField('record_id', $metadata['record_id'][0] ?? '');
                 $solrDoc->setField('purl', $metadata['purl'][0] ?? '');
                 $solrDoc->setField('location', $document->getLocation());
                 $solrDoc->setField('urn', $metadata['urn']);
