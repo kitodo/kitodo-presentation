@@ -65,7 +65,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
- * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
  * @property string $asJson this holds the manifest file as string for serialization purposes
  * @property ManifestInterface $iiif a PHP object representation of a IIIF manifest
@@ -73,7 +72,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $hasFulltextSet flag if document has already been analyzed for presence of the fulltext for the Solr index
  * @property array $originalMetadataArray this holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
  * @property array $mimeTypes this holds the mime types of linked resources in the manifest (extracted during parsing) for later us
- * 
+ *
  */
 final class IiifManifest extends AbstractDocument
 {
@@ -428,7 +427,7 @@ final class IiifManifest extends AbstractDocument
         $details['volume'] = '';
         $details['pagination'] = '';
         $cPid = ($this->cPid ? $this->cPid : $this->pid);
-        if ($details['id'] == $this->magicGetToplevelId()) {
+        if ($details['id'] == $this->getToplevelId()) {
             $metadata = $this->getMetadata($details['id'], $cPid);
             if (!empty($metadata['type'][0])) {
                 $details['type'] = $metadata['type'][0];
@@ -653,7 +652,7 @@ final class IiifManifest extends AbstractDocument
      * @access private
      *
      * @param RangeInterface $range Current range whose canvases shall be linked
-     * 
+     *
      * @return void
      */
     private function smLinkRangeCanvasesRecursively(RangeInterface $range): void
@@ -679,7 +678,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @param CanvasInterface $canvas
      * @param IiifResourceInterface $resource
-     * 
+     *
      * @return void
      */
     private function smLinkCanvasToResource(CanvasInterface $canvas, IiifResourceInterface $resource): void
@@ -852,9 +851,9 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::magicGetToplevelId()
+     * @see AbstractDocument::getToplevelId()
      */
-    protected function magicGetToplevelId(): string
+    public function getToplevelId(): string
     {
         if (empty($this->toplevelId)) {
             if (isset($this->iiif)) {

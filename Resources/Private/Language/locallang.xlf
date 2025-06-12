@@ -1,418 +1,421 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-27T08:32:27Z">
-		<header>
-			<generator>LFEditor</generator>
-		</header>
-		<body>
-			<trans-unit id="search.dateFrom">
-				<source><![CDATA[From]]></source>
-			</trans-unit>
-			<trans-unit id="search.dateTo">
-				<source><![CDATA[To]]></source>
-			</trans-unit>
-			<trans-unit id="search.inFulltext">
-				<source><![CDATA[in fulltext]]></source>
-			</trans-unit>
-			<trans-unit id="search.inMetadata">
-				<source><![CDATA[in metadata]]></source>
-			</trans-unit>
-			<trans-unit id="search.search">
-				<source><![CDATA[Search]]></source>
-			</trans-unit>
-			<trans-unit id="search.search">
-				<source><![CDATA[Search]]></source>
-			</trans-unit>
-			<trans-unit id="search.for">
-				<source><![CDATA[for "%s"]]></source>
-			</trans-unit>
-			<trans-unit id="search.in">
-				<source><![CDATA[in "%s"]]></source>
-			</trans-unit>
-			<trans-unit id="search.operator.AND">
-				<source><![CDATA[and]]></source>
-			</trans-unit>
-			<trans-unit id="search.operator.OR">
-				<source><![CDATA[or]]></source>
-			</trans-unit>
-			<trans-unit id="search.operator.NOT">
-				<source><![CDATA[not]]></source>
-			</trans-unit>
-			<trans-unit id="search.resetFacet">
-				<source><![CDATA[Reset selection (%s)]]></source>
-			</trans-unit>
-			<trans-unit id="backXPages">
-				<source><![CDATA[Back %s Pages]]></source>
-			</trans-unit>
-			<trans-unit id="basket.addBasket">
-				<source><![CDATA[Add to basket]]></source>
-			</trans-unit>
-			<trans-unit id="basket.chooseAction">
-				<source><![CDATA[Choose an action]]></source>
-			</trans-unit>
-			<trans-unit id="basket.chooseMail">
-				<source><![CDATA[Choose a mail]]></source>
-			</trans-unit>
-			<trans-unit id="basket.choosePrinter">
-				<source><![CDATA[Choose a printer]]></source>
-			</trans-unit>
-			<trans-unit id="basket.count">
-				<source><![CDATA[%d Entries]]></source>
-			</trans-unit>
-			<trans-unit id="basket.no_entries">
-				<source><![CDATA[No entries]]></source>
-			</trans-unit>
-			<trans-unit id="basket.one_entry">
-				<source><![CDATA[One entry]]></source>
-			</trans-unit>
-			<trans-unit id="basket.cutout">
-				<source><![CDATA[Cutout]]></source>
-			</trans-unit>
-			<trans-unit id="basket.download">
-				<source><![CDATA[Download]]></source>
-			</trans-unit>
-			<trans-unit id="basket.editMode">
-				<source><![CDATA[Set cutout]]></source>
-			</trans-unit>
-			<trans-unit id="basket.editRemove">
-				<source><![CDATA[Remove cutout]]></source>
-			</trans-unit>
-			<trans-unit id="basket.goBasket">
-				<source><![CDATA[Go to basket]]></source>
-			</trans-unit>
-			<trans-unit id="basket.magnifier">
-				<source><![CDATA[Magnifier]]></source>
-			</trans-unit>
-			<trans-unit id="basket.mailBody">
-				<source><![CDATA[The following documents are sent to you by Kitodo.Presentation:]]></source>
-			</trans-unit>
-			<trans-unit id="basket.mailSubject">
-				<source><![CDATA[Kitodo.Presentation - Document]]></source>
-			</trans-unit>
-			<trans-unit id="basket.noTitle">
-				<source><![CDATA[No title]]></source>
-			</trans-unit>
-			<trans-unit id="basket.remove">
-				<source><![CDATA[Remove]]></source>
-			</trans-unit>
-			<trans-unit id="calendar.allYears">
-				<source><![CDATA[All years overview - ]]></source>
-			</trans-unit>
-			<trans-unit id="calendar.please_choose_year">
-				<source><![CDATA[Please choose a year first.]]></source>
-			</trans-unit>
-			<trans-unit id="calendar.view_calendar">
-				<source><![CDATA[Calendar]]></source>
-			</trans-unit>
-			<trans-unit id="calendar.view_list">
-				<source><![CDATA[List View]]></source>
-			</trans-unit>
-			<trans-unit id="doublePage+1">
-				<source><![CDATA[Adjust recto/verso]]></source>
-			</trans-unit>
-			<trans-unit id="doublePageOff">
-				<source><![CDATA[Show single page]]></source>
-			</trans-unit>
-			<trans-unit id="downloadModel">
-				<source><![CDATA[Download model]]></source>
-			</trans-unit>
-			<trans-unit id="doublePageOn">
-				<source><![CDATA[Show double pages]]></source>
-			</trans-unit>
-			<trans-unit id="downloadLeftPage">
-				<source><![CDATA[Download left page]]></source>
-			</trans-unit>
-			<trans-unit id="downloadRightPage">
-				<source><![CDATA[Download right page]]></source>
-			</trans-unit>
-			<trans-unit id="downloadSinglePage">
-				<source><![CDATA[Download single page]]></source>
-			</trans-unit>
-			<trans-unit id="downloadWork">
-				<source><![CDATA[Download whole work]]></source>
-			</trans-unit>
-			<trans-unit id="mididownload">
-				<source><![CDATA[Download midi file]]></source>
-			</trans-unit>
-			<trans-unit id="scoredownload">
-				<source><![CDATA[Download score pdf file]]></source>
-			</trans-unit>
-			<trans-unit id="firstPage">
-				<source><![CDATA[First Page]]></source>
-			</trans-unit>
-			<trans-unit id="forwardXPages">
-				<source><![CDATA[Forward %s Pages]]></source>
-			</trans-unit>
-			<trans-unit id="lastPage">
-				<source><![CDATA[Last Page]]></source>
-			</trans-unit>
-			<trans-unit id="linkToList">
-				<source><![CDATA[Return to list view]]></source>
-			</trans-unit>
-			<trans-unit id="nextPage">
-				<source><![CDATA[Next Page]]></source>
-			</trans-unit>
-			<trans-unit id="noTitle">
-				<source><![CDATA[[no title]]]></source>
-			</trans-unit>
-			<trans-unit id="page">
-				<source><![CDATA[Page]]></source>
-			</trans-unit>
-			<trans-unit id="pageview.overview-map">
-				<source><![CDATA[Overview Map]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.feeds.new">
-				<source><![CDATA[NEW:]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.feeds.update">
-				<source><![CDATA[UPDATE:]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.headline.success">
-				<source><![CDATA[Successful]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.headline.error">
-				<source><![CDATA[Error]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.headline.warning">
-				<source><![CDATA[Warning]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.headline.notice">
-				<source><![CDATA[Notice]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.label">
-				<source><![CDATA[Insert the link to your <acronym title="metadata encoding and transmission standard">METS</acronym> file here:]]></source>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.validate">
-				<source><![CDATA[validate]]></source>
-			</trans-unit>
-			<trans-unit id="prevPage">
-				<source><![CDATA[Previous Page]]></source>
-			</trans-unit>
-			<trans-unit id="rotateLeft">
-				<source><![CDATA[Rotate Left]]></source>
-			</trans-unit>
-			<trans-unit id="rotateReset">
-				<source><![CDATA[Reset Rotation]]></source>
-			</trans-unit>
-			<trans-unit id="rotateRight">
-				<source><![CDATA[Rotate Right]]></source>
-			</trans-unit>
-			<trans-unit id="prevMeasure">
-				<source><![CDATA[Previus Measure]]></source>
-			</trans-unit>
-			<trans-unit id="nextMeasure">
-				<source><![CDATA[Next Measure]]></source>
-			</trans-unit>
-			<trans-unit id="navigation.documentBack">
-				<source><![CDATA[Previous document]]></source>
-			</trans-unit>
-			<trans-unit id="navigation.documentForward">
-				<source><![CDATA[Next document]]></source>
-			</trans-unit>
-			<trans-unit id="selectPage">
-				<source><![CDATA[Page]]></source>
-			</trans-unit>
-			<trans-unit id="thumbnail">
-				<source><![CDATA[Thumbnail]]></source>
-			</trans-unit>
-			<trans-unit id="title">
-				<source><![CDATA[title]]></source>
-			</trans-unit>
-			<trans-unit id="titles">
-				<source><![CDATA[titles]]></source>
-			</trans-unit>
-			<trans-unit id="tools.annotation.not-available">
-				<source><![CDATA[No Annotations available]]></source>
-			</trans-unit>
-			<trans-unit id="tools.annotation.off">
-				<source><![CDATA[Hide Annotations]]></source>
-			</trans-unit>
-			<trans-unit id="tools.annotation.on">
-				<source><![CDATA[Display Annotations]]></source>
-			</trans-unit>
-			<trans-unit id="tools.fulltext">
-				<source><![CDATA[Full text]]></source>
-			</trans-unit>
-			<trans-unit id="tools.fulltext.loading">
-				<source><![CDATA[Loading full text...]]></source>
-			</trans-unit>
-			<trans-unit id="tools.fulltext.not-available">
-				<source><![CDATA[No full text available]]></source>
-			</trans-unit>
-			<trans-unit id="tools.fulltext.off">
-				<source><![CDATA[Deactivate full text]]></source>
-			</trans-unit>
-			<trans-unit id="tools.fulltext.on">
-				<source><![CDATA[Activate full text]]></source>
-			</trans-unit>
-			<trans-unit id="tools.fulltextdownload.download-current-page">
-				<source><![CDATA[Current page (TXT)]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.brightness">
-				<source><![CDATA[Brightness]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.contrast">
-				<source><![CDATA[Contrast]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.hue">
-				<source><![CDATA[Hue]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.invert">
-				<source><![CDATA[Color inverting]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.no-support">
-				<source><![CDATA[Image manipulation is not supported]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.off">
-				<source><![CDATA[Deactivate image manipulation]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.on">
-				<source><![CDATA[Activate image manipulation]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.reset">
-				<source><![CDATA[Reset]]></source>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.saturation">
-				<source><![CDATA[Saturation]]></source>
-			</trans-unit>
-			<trans-unit id="tools.score" approved="yes">
-				<source><![CDATA[Score]]></source>
-			</trans-unit>
-			<trans-unit id="tools.score.player" approved="yes">
-				<source><![CDATA[MIDI player]]></source>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.deleteSearch">
-				<source><![CDATA[Delete Search]]></source>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.loading">
-				<source><![CDATA[Loading...]]></source>
-			</trans-unit>
-			<trans-unit id="tools.viewerselection.default">
-				<source><![CDATA[Default]]></source>
-			</trans-unit>
-			<trans-unit id="search.logicalPage">
-				<source><![CDATA[Page]]></source>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.next">
-				<source><![CDATA[next]]></source>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.noresult">
-				<source><![CDATA[No result found in current document.]]></source>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.previous">
-				<source><![CDATA[previous]]></source>
-			</trans-unit>
-			<trans-unit id="search.query">
-				<source><![CDATA[Search for:]]></source>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.searchInDocument">
-				<source><![CDATA[Search in document]]></source>
-			</trans-unit>
-			<trans-unit id="search.submit">
-				<source><![CDATA[Search]]></source>
-			</trans-unit>
-			<trans-unit id="volume">
-				<source><![CDATA[volume]]></source>
-			</trans-unit>
-			<trans-unit id="volumes">
-				<source><![CDATA[volumes]]></source>
-			</trans-unit>
-			<trans-unit id="zoomFullscreen">
-				<source><![CDATA[Fullscreen Mode]]></source>
-			</trans-unit>
-			<trans-unit id="zoomIn">
-				<source><![CDATA[Zoom In]]></source>
-			</trans-unit>
-			<trans-unit id="zoomOut">
-				<source><![CDATA[Zoom Out]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.badVerb">
-				<source><![CDATA[Value of the verb argument is not a legal OAI-PMH verb or the verb argument is missing.]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.badArgument">
-				<source><![CDATA[The request includes illegal arguments, is missing required arguments, or values for arguments have an illegal syntax.]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.badResumptionToken">
-				<source><![CDATA[The value of the resumptionToken argument is invalid or expired.]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.cannotDisseminateFormat">
-				<source><![CDATA[The metadata format identified by the value given for the metadataPrefix argument is not supported by the item or by the repository.]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.idDoesNotExist">
-				<source><![CDATA[The value of the identifier argument is unknown or illegal in this repository.]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.noRecordsMatch">
-				<source><![CDATA[The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.noMetadataFormats">
-				<source><![CDATA[There are no metadata formats available for the specified item.]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.noSetHierarchy">
-				<source><![CDATA[The repository does not support sets or the value of the set argument is invalid.]]></source>
-			</trans-unit>
-			<trans-unit id="oaipmh.error">
-				<source><![CDATA[An error occurred, please try again later. If this happens consistently, please contact the administrator.]]></source>
-			</trans-unit>
-			<trans-unit id="listview.hits">
-				<source><![CDATA[%d hits found in %d documents.]]></source>
-			</trans-unit>
-			<trans-unit id="listview.nohits">
-				<source><![CDATA[Nothing found.]]></source>
-			</trans-unit>
-			<trans-unit id="listview.count">
-				<source><![CDATA[Entries %d to %d of %d.]]></source>
-			</trans-unit>
-			<trans-unit id="listview.prevPage">
-				<source><![CDATA[&lt;]]></source>
-			</trans-unit>
-			<trans-unit id="listview.nextPage">
-				<source><![CDATA[&gt;]]></source>
-			</trans-unit>
-			<trans-unit id="listview.page">
-				<source><![CDATA[%d]]></source>
-			</trans-unit>
-			<trans-unit id="listview.separator">
-				<source><![CDATA[ - ]]></source>
-			</trans-unit>
-			<trans-unit id="listview.skip">
-				<source><![CDATA[...]]></source>
-			</trans-unit>
-			<trans-unit id="listview.form.orderBy">
-				<source><![CDATA[Order by:]]></source>
-			</trans-unit>
-			<trans-unit id="listview.form.relevance">
-				<source><![CDATA[relevance]]></source>
-			</trans-unit>
-			<trans-unit id="listview.form.order">
-				<source><![CDATA[Direction:]]></source>
-			</trans-unit>
-			<trans-unit id="listview.form.order.asc">
-				<source><![CDATA[ascending]]></source>
-			</trans-unit>
-			<trans-unit id="listview.form.order.desc">
-				<source><![CDATA[descending]]></source>
-			</trans-unit>
-			<trans-unit id="collection.feed.alt">
-				<source><![CDATA[RSS feed]]></source>
-			</trans-unit>
-			<trans-unit id="collection.feed.title">
-				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
-			</trans-unit>
-			<trans-unit id="newTenant.module">
-				<source><![CDATA[New Tenant Module]]></source>
-			</trans-unit>
-			<trans-unit id="newTenant.createSolrCore">
-				<source><![CDATA[Create solr core]]></source>
-			</trans-unit>
-			<trans-unit id="newTenant.createStructure">
-				<source><![CDATA[Create structures]]></source>
-			</trans-unit>
-			<trans-unit id="newTenant.createMetadata">
-				<source><![CDATA[Create metadata]]></source>
-			</trans-unit>
-			<trans-unit id="newTenant.createFormat">
-				<source><![CDATA[Create default namespaces]]></source>
-			</trans-unit>
+    <file source-language="en" datatype="plaintext" original="messages" date="2021-10-27T08:32:27Z">
+        <header>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="search.dateFrom">
+                <source><![CDATA[From]]></source>
+            </trans-unit>
+            <trans-unit id="search.dateTo">
+                <source><![CDATA[To]]></source>
+            </trans-unit>
+            <trans-unit id="search.inFulltext">
+                <source><![CDATA[in fulltext]]></source>
+            </trans-unit>
+            <trans-unit id="search.inMetadata">
+                <source><![CDATA[in metadata]]></source>
+            </trans-unit>
+            <trans-unit id="search.search">
+                <source><![CDATA[Search]]></source>
+            </trans-unit>
+            <trans-unit id="search.search">
+                <source><![CDATA[Search]]></source>
+            </trans-unit>
+            <trans-unit id="search.for">
+                <source><![CDATA[for "%s"]]></source>
+            </trans-unit>
+            <trans-unit id="search.in">
+                <source><![CDATA[in "%s"]]></source>
+            </trans-unit>
+            <trans-unit id="search.operator.AND">
+                <source><![CDATA[and]]></source>
+            </trans-unit>
+            <trans-unit id="search.operator.OR">
+                <source><![CDATA[or]]></source>
+            </trans-unit>
+            <trans-unit id="search.operator.NOT">
+                <source><![CDATA[not]]></source>
+            </trans-unit>
+            <trans-unit id="search.resetFacet">
+                <source><![CDATA[Reset selection (%s)]]></source>
+            </trans-unit>
+            <trans-unit id="backXPages">
+                <source><![CDATA[Back %s Pages]]></source>
+            </trans-unit>
+            <trans-unit id="basket.addBasket">
+                <source><![CDATA[Add to basket]]></source>
+            </trans-unit>
+            <trans-unit id="basket.chooseAction">
+                <source><![CDATA[Choose an action]]></source>
+            </trans-unit>
+            <trans-unit id="basket.chooseMail">
+                <source><![CDATA[Choose a mail]]></source>
+            </trans-unit>
+            <trans-unit id="basket.choosePrinter">
+                <source><![CDATA[Choose a printer]]></source>
+            </trans-unit>
+            <trans-unit id="basket.count">
+                <source><![CDATA[%d Entries]]></source>
+            </trans-unit>
+            <trans-unit id="basket.no_entries">
+                <source><![CDATA[No entries]]></source>
+            </trans-unit>
+            <trans-unit id="basket.one_entry">
+                <source><![CDATA[One entry]]></source>
+            </trans-unit>
+            <trans-unit id="basket.cutout">
+                <source><![CDATA[Cutout]]></source>
+            </trans-unit>
+            <trans-unit id="basket.download">
+                <source><![CDATA[Download]]></source>
+            </trans-unit>
+            <trans-unit id="basket.editMode">
+                <source><![CDATA[Set cutout]]></source>
+            </trans-unit>
+            <trans-unit id="basket.editRemove">
+                <source><![CDATA[Remove cutout]]></source>
+            </trans-unit>
+            <trans-unit id="basket.goBasket">
+                <source><![CDATA[Go to basket]]></source>
+            </trans-unit>
+            <trans-unit id="basket.magnifier">
+                <source><![CDATA[Magnifier]]></source>
+            </trans-unit>
+            <trans-unit id="basket.mailBody">
+                <source><![CDATA[The following documents are sent to you by Kitodo.Presentation:]]></source>
+            </trans-unit>
+            <trans-unit id="basket.mailSubject">
+                <source><![CDATA[Kitodo.Presentation - Document]]></source>
+            </trans-unit>
+            <trans-unit id="basket.noTitle">
+                <source><![CDATA[No title]]></source>
+            </trans-unit>
+            <trans-unit id="basket.remove">
+                <source><![CDATA[Remove]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.allYears">
+                <source><![CDATA[All years overview - ]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.please_choose_year">
+                <source><![CDATA[Please choose a year first.]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.view_calendar">
+                <source><![CDATA[Calendar]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.view_list">
+                <source><![CDATA[List View]]></source>
+            </trans-unit>
+            <trans-unit id="doublePage+1">
+                <source><![CDATA[Adjust recto/verso]]></source>
+            </trans-unit>
+            <trans-unit id="doublePageOff">
+                <source><![CDATA[Show single page]]></source>
+            </trans-unit>
+            <trans-unit id="downloadModel">
+                <source><![CDATA[Download model]]></source>
+            </trans-unit>
+            <trans-unit id="doublePageOn">
+                <source><![CDATA[Show double pages]]></source>
+            </trans-unit>
+            <trans-unit id="downloadLeftPage">
+                <source><![CDATA[Download left page]]></source>
+            </trans-unit>
+            <trans-unit id="downloadRightPage">
+                <source><![CDATA[Download right page]]></source>
+            </trans-unit>
+            <trans-unit id="downloadSinglePage">
+                <source><![CDATA[Download single page]]></source>
+            </trans-unit>
+            <trans-unit id="downloadWork">
+                <source><![CDATA[Download whole work]]></source>
+            </trans-unit>
+            <trans-unit id="mididownload">
+                <source><![CDATA[Download midi file]]></source>
+            </trans-unit>
+            <trans-unit id="scoredownload">
+                <source><![CDATA[Download score pdf file]]></source>
+            </trans-unit>
+            <trans-unit id="firstPage">
+                <source><![CDATA[First Page]]></source>
+            </trans-unit>
+            <trans-unit id="forwardXPages">
+                <source><![CDATA[Forward %s Pages]]></source>
+            </trans-unit>
+            <trans-unit id="lastPage">
+                <source><![CDATA[Last Page]]></source>
+            </trans-unit>
+            <trans-unit id="linkToList">
+                <source><![CDATA[Return to list view]]></source>
+            </trans-unit>
+            <trans-unit id="nextPage">
+                <source><![CDATA[Next Page]]></source>
+            </trans-unit>
+            <trans-unit id="noTitle">
+                <source><![CDATA[[no title]]]></source>
+            </trans-unit>
+            <trans-unit id="page">
+                <source><![CDATA[Page]]></source>
+            </trans-unit>
+            <trans-unit id="pageview.overview-map">
+                <source><![CDATA[Overview Map]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.feeds.new">
+                <source><![CDATA[NEW:]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.feeds.update">
+                <source><![CDATA[UPDATE:]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.headline.success">
+                <source><![CDATA[Successful]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.headline.error">
+                <source><![CDATA[Error]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.headline.warning">
+                <source><![CDATA[Warning]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.headline.notice">
+                <source><![CDATA[Notice]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.label">
+                <source><![CDATA[Insert the link to your <acronym title="metadata encoding and transmission standard">METS</acronym> file here:]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.validate">
+                <source><![CDATA[validate]]></source>
+            </trans-unit>
+            <trans-unit id="prevPage">
+                <source><![CDATA[Previous Page]]></source>
+            </trans-unit>
+            <trans-unit id="rotateLeft">
+                <source><![CDATA[Rotate Left]]></source>
+            </trans-unit>
+            <trans-unit id="rotateReset">
+                <source><![CDATA[Reset Rotation]]></source>
+            </trans-unit>
+            <trans-unit id="rotateRight">
+                <source><![CDATA[Rotate Right]]></source>
+            </trans-unit>
+            <trans-unit id="prevMeasure">
+                <source><![CDATA[Previus Measure]]></source>
+            </trans-unit>
+            <trans-unit id="nextMeasure">
+                <source><![CDATA[Next Measure]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.documentBack">
+                <source><![CDATA[Previous document]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.documentForward">
+                <source><![CDATA[Next document]]></source>
+            </trans-unit>
+            <trans-unit id="selectPage">
+                <source><![CDATA[Page]]></source>
+            </trans-unit>
+            <trans-unit id="thumbnail">
+                <source><![CDATA[Thumbnail]]></source>
+            </trans-unit>
+            <trans-unit id="thumbnail.alt">
+                <source><![CDATA[Thumbnail for %s]]></source>
+            </trans-unit>
+            <trans-unit id="title">
+                <source><![CDATA[title]]></source>
+            </trans-unit>
+            <trans-unit id="titles">
+                <source><![CDATA[titles]]></source>
+            </trans-unit>
+            <trans-unit id="tools.annotation.not-available">
+                <source><![CDATA[No Annotations available]]></source>
+            </trans-unit>
+            <trans-unit id="tools.annotation.off">
+                <source><![CDATA[Hide Annotations]]></source>
+            </trans-unit>
+            <trans-unit id="tools.annotation.on">
+                <source><![CDATA[Display Annotations]]></source>
+            </trans-unit>
+            <trans-unit id="tools.fulltext">
+                <source><![CDATA[Full text]]></source>
+            </trans-unit>
+            <trans-unit id="tools.fulltext.loading">
+                <source><![CDATA[Loading full text...]]></source>
+            </trans-unit>
+            <trans-unit id="tools.fulltext.not-available">
+                <source><![CDATA[No full text available]]></source>
+            </trans-unit>
+            <trans-unit id="tools.fulltext.off">
+                <source><![CDATA[Deactivate full text]]></source>
+            </trans-unit>
+            <trans-unit id="tools.fulltext.on">
+                <source><![CDATA[Activate full text]]></source>
+            </trans-unit>
+            <trans-unit id="tools.fulltextdownload.download-current-page">
+                <source><![CDATA[Current page (TXT)]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.brightness">
+                <source><![CDATA[Brightness]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.contrast">
+                <source><![CDATA[Contrast]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.hue">
+                <source><![CDATA[Hue]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.invert">
+                <source><![CDATA[Color inverting]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.no-support">
+                <source><![CDATA[Image manipulation is not supported]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.off">
+                <source><![CDATA[Deactivate image manipulation]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.on">
+                <source><![CDATA[Activate image manipulation]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.reset">
+                <source><![CDATA[Reset]]></source>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.saturation">
+                <source><![CDATA[Saturation]]></source>
+            </trans-unit>
+            <trans-unit id="tools.score" approved="yes">
+                <source><![CDATA[Score]]></source>
+            </trans-unit>
+            <trans-unit id="tools.score.player" approved="yes">
+                <source><![CDATA[MIDI player]]></source>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.deleteSearch">
+                <source><![CDATA[Delete Search]]></source>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.loading">
+                <source><![CDATA[Loading...]]></source>
+            </trans-unit>
+            <trans-unit id="tools.viewerselection.default">
+                <source><![CDATA[Default]]></source>
+            </trans-unit>
+            <trans-unit id="search.logicalPage">
+                <source><![CDATA[Page]]></source>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.next">
+                <source><![CDATA[next]]></source>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.noresult">
+                <source><![CDATA[No result found in current document.]]></source>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.previous">
+                <source><![CDATA[previous]]></source>
+            </trans-unit>
+            <trans-unit id="search.query">
+                <source><![CDATA[Search for:]]></source>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.searchInDocument">
+                <source><![CDATA[Search in document]]></source>
+            </trans-unit>
+            <trans-unit id="search.submit">
+                <source><![CDATA[Search]]></source>
+            </trans-unit>
+            <trans-unit id="volume">
+                <source><![CDATA[volume]]></source>
+            </trans-unit>
+            <trans-unit id="volumes">
+                <source><![CDATA[volumes]]></source>
+            </trans-unit>
+            <trans-unit id="zoomFullscreen">
+                <source><![CDATA[Fullscreen Mode]]></source>
+            </trans-unit>
+            <trans-unit id="zoomIn">
+                <source><![CDATA[Zoom In]]></source>
+            </trans-unit>
+            <trans-unit id="zoomOut">
+                <source><![CDATA[Zoom Out]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.badVerb">
+                <source><![CDATA[Value of the verb argument is not a legal OAI-PMH verb or the verb argument is missing.]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.badArgument">
+                <source><![CDATA[The request includes illegal arguments, is missing required arguments, or values for arguments have an illegal syntax.]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.badResumptionToken">
+                <source><![CDATA[The value of the resumptionToken argument is invalid or expired.]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.cannotDisseminateFormat">
+                <source><![CDATA[The metadata format identified by the value given for the metadataPrefix argument is not supported by the item or by the repository.]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.idDoesNotExist">
+                <source><![CDATA[The value of the identifier argument is unknown or illegal in this repository.]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.noRecordsMatch">
+                <source><![CDATA[The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.noMetadataFormats">
+                <source><![CDATA[There are no metadata formats available for the specified item.]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.noSetHierarchy">
+                <source><![CDATA[The repository does not support sets or the value of the set argument is invalid.]]></source>
+            </trans-unit>
+            <trans-unit id="oaipmh.error">
+                <source><![CDATA[An error occurred, please try again later. If this happens consistently, please contact the administrator.]]></source>
+            </trans-unit>
+            <trans-unit id="listview.hits">
+                <source><![CDATA[%d hits found in %d documents.]]></source>
+            </trans-unit>
+            <trans-unit id="listview.nohits">
+                <source><![CDATA[Nothing found.]]></source>
+            </trans-unit>
+            <trans-unit id="listview.count">
+                <source><![CDATA[Entries %d to %d of %d.]]></source>
+            </trans-unit>
+            <trans-unit id="listview.prevPage">
+                <source><![CDATA[&lt;]]></source>
+            </trans-unit>
+            <trans-unit id="listview.nextPage">
+                <source><![CDATA[&gt;]]></source>
+            </trans-unit>
+            <trans-unit id="listview.page">
+                <source><![CDATA[%d]]></source>
+            </trans-unit>
+            <trans-unit id="listview.separator">
+                <source><![CDATA[ - ]]></source>
+            </trans-unit>
+            <trans-unit id="listview.skip">
+                <source><![CDATA[...]]></source>
+            </trans-unit>
+            <trans-unit id="listview.form.orderBy">
+                <source><![CDATA[Order by:]]></source>
+            </trans-unit>
+            <trans-unit id="listview.form.relevance">
+                <source><![CDATA[relevance]]></source>
+            </trans-unit>
+            <trans-unit id="listview.form.order">
+                <source><![CDATA[Direction:]]></source>
+            </trans-unit>
+            <trans-unit id="listview.form.order.asc">
+                <source><![CDATA[ascending]]></source>
+            </trans-unit>
+            <trans-unit id="listview.form.order.desc">
+                <source><![CDATA[descending]]></source>
+            </trans-unit>
+            <trans-unit id="collection.feed.alt">
+                <source><![CDATA[RSS feed]]></source>
+            </trans-unit>
+            <trans-unit id="collection.feed.title">
+                <source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.module">
+                <source><![CDATA[New Tenant Module]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.createSolrCore">
+                <source><![CDATA[Create solr core]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.createStructure">
+                <source><![CDATA[Create structures]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.createMetadata">
+                <source><![CDATA[Create metadata]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.createFormat">
+                <source><![CDATA[Create default namespaces]]></source>
+            </trans-unit>
             <trans-unit id="newTenant.formatOkay" approved="yes">
                 <source><![CDATA[Default namespaces found!]]></source>
             </trans-unit>
@@ -467,16 +470,16 @@
             <trans-unit id="newTenant.wrongPageTypeMsg" approved="yes">
                 <source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
             </trans-unit>
-			<trans-unit id="annotation.creator.label" approved="yes">
-				<source><![CDATA[Annotation created by:]]></source>
-			</trans-unit>
-			<trans-unit id="annotation.created.label" approved="yes">
-				<source><![CDATA[Created:]]></source>
-			</trans-unit>
-			<trans-unit id="annotation.modified.label" approved="yes">
-				<source><![CDATA[Modified:]]></source>
-			</trans-unit>
+            <trans-unit id="annotation.creator.label" approved="yes">
+                <source><![CDATA[Annotation created by:]]></source>
+            </trans-unit>
+            <trans-unit id="annotation.created.label" approved="yes">
+                <source><![CDATA[Created:]]></source>
+            </trans-unit>
+            <trans-unit id="annotation.modified.label" approved="yes">
+                <source><![CDATA[Modified:]]></source>
+            </trans-unit>
 
-		</body>
-	</file>
+        </body>
+    </file>
 </xliff>
