@@ -386,7 +386,7 @@ class BaseCommand extends Command
         // Get only authors' names for storing in database.
         foreach ($metadataAuthor as $i => $author) {
             if (is_array($author)) {
-                $metadata['author'][$i] = $author['name'];
+                $metadataAuthor[$i] = $author['name'];
             }
         }
 

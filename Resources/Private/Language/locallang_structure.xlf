@@ -1,286 +1,286 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2021-11-27T12:07:34Z">
-		<header>
-			<generator>LFEditor</generator>
-		</header>
-		<body>
-			<trans-unit id="structure.act">
-				<source><![CDATA[Act]]></source>
-			</trans-unit>
-			<trans-unit id="structure.additional">
-				<source><![CDATA[Additional]]></source>
-			</trans-unit>
-			<trans-unit id="structure.address">
-				<source><![CDATA[Address]]></source>
-			</trans-unit>
-			<trans-unit id="structure.album">
-				<source><![CDATA[Album]]></source>
-			</trans-unit>
-			<trans-unit id="structure.annotation">
-				<source><![CDATA[Annotation]]></source>
-			</trans-unit>
-			<trans-unit id="structure.article">
-				<source><![CDATA[Article]]></source>
-			</trans-unit>
-			<trans-unit id="structure.atlas">
-				<source><![CDATA[Atlas]]></source>
-			</trans-unit>
-			<trans-unit id="structure.bachelor_thesis">
-				<source><![CDATA[Bachelor Thesis]]></source>
-			</trans-unit>
-			<trans-unit id="structure.binding">
-				<source><![CDATA[Binding]]></source>
-			</trans-unit>
-			<trans-unit id="structure.bookplate">
-				<source><![CDATA[Bookplate]]></source>
-			</trans-unit>
-			<trans-unit id="structure.cartulary">
-				<source><![CDATA[Cartulary]]></source>
-			</trans-unit>
-			<trans-unit id="structure.chapter">
-				<source><![CDATA[Chapter]]></source>
-			</trans-unit>
-			<trans-unit id="structure.collation">
-				<source><![CDATA[Collation]]></source>
-			</trans-unit>
-			<trans-unit id="structure.colophon">
-				<source><![CDATA[Colophon]]></source>
-			</trans-unit>
-			<trans-unit id="structure.contained_work">
-				<source><![CDATA[Contained Work]]></source>
-			</trans-unit>
-			<trans-unit id="structure.contents">
-				<source><![CDATA[Table of Contents]]></source>
-			</trans-unit>
-			<trans-unit id="structure.corrigenda">
-				<source><![CDATA[Corrigenda]]></source>
-			</trans-unit>
-			<trans-unit id="structure.cover">
-				<source><![CDATA[Cover]]></source>
-			</trans-unit>
-			<trans-unit id="structure.cover_back">
-				<source><![CDATA[Back Cover]]></source>
-			</trans-unit>
-			<trans-unit id="structure.cover_front">
-				<source><![CDATA[Front Cover]]></source>
-			</trans-unit>
-			<trans-unit id="structure.day">
-				<source><![CDATA[Day]]></source>
-			</trans-unit>
-			<trans-unit id="structure.dedication">
-				<source><![CDATA[Dedication]]></source>
-			</trans-unit>
-			<trans-unit id="structure.diploma_thesis">
-				<source><![CDATA[Diploma Thesis]]></source>
-			</trans-unit>
-			<trans-unit id="structure.doctoral_thesis">
-				<source><![CDATA[Doctoral Thesis]]></source>
-			</trans-unit>
-			<trans-unit id="structure.document">
-				<source><![CDATA[Document]]></source>
-			</trans-unit>
-			<trans-unit id="structure.dossier">
-				<source><![CDATA[Dossier]]></source>
-			</trans-unit>
-			<trans-unit id="structure.edge">
-				<source><![CDATA[Edge]]></source>
-			</trans-unit>
-			<trans-unit id="structure.endsheet">
-				<source><![CDATA[Endsheet]]></source>
-			</trans-unit>
-			<trans-unit id="structure.engraved_titlepage">
-				<source><![CDATA[Engraved Titlepage]]></source>
-			</trans-unit>
-			<trans-unit id="structure.entry">
-				<source><![CDATA[Entry]]></source>
-			</trans-unit>
-			<trans-unit id="structure.ephemera">
-				<source><![CDATA[Ephemera]]></source>
-			</trans-unit>
-			<trans-unit id="structure.fascicle">
-				<source><![CDATA[Fascicle]]></source>
-			</trans-unit>
-			<trans-unit id="structure.file">
-				<source><![CDATA[File]]></source>
-			</trans-unit>
-			<trans-unit id="structure.figure">
-				<source><![CDATA[Figure]]></source>
-			</trans-unit>
-			<trans-unit id="structure.folder">
-				<source><![CDATA[Folder]]></source>
-			</trans-unit>
-			<trans-unit id="structure.fragment">
-				<source><![CDATA[Fragment]]></source>
-			</trans-unit>
-			<trans-unit id="structure.ground_plan">
-				<source><![CDATA[Ground Plan]]></source>
-			</trans-unit>
-			<trans-unit id="structure.habilitation_thesis">
-				<source><![CDATA[Habilitation Thesis]]></source>
-			</trans-unit>
-			<trans-unit id="structure.illustration">
-				<source><![CDATA[Illustration]]></source>
-			</trans-unit>
-			<trans-unit id="structure.image">
-				<source><![CDATA[Image]]></source>
-			</trans-unit>
-			<trans-unit id="structure.imprint">
-				<source><![CDATA[Imprint]]></source>
-			</trans-unit>
-			<trans-unit id="structure.index">
-				<source><![CDATA[Index]]></source>
-			</trans-unit>
-			<trans-unit id="structure.initial_decoration">
-				<source><![CDATA[Initial Decoration]]></source>
-			</trans-unit>
-			<trans-unit id="structure.inventory">
-				<source><![CDATA[Inventory]]></source>
-			</trans-unit>
-			<trans-unit id="structure.issue">
-				<source><![CDATA[Issue]]></source>
-			</trans-unit>
-			<trans-unit id="structure.judgement">
-				<source><![CDATA[Judgement]]></source>
-			</trans-unit>
-			<trans-unit id="structure.land_register">
-				<source><![CDATA[Land Register]]></source>
-			</trans-unit>
-			<trans-unit id="structure.leaflet">
-				<source><![CDATA[Leaflet]]></source>
-			</trans-unit>
-			<trans-unit id="structure.lecture">
-				<source><![CDATA[Lecture]]></source>
-			</trans-unit>
-			<trans-unit id="structure.letter">
-				<source><![CDATA[Letter]]></source>
-			</trans-unit>
-			<trans-unit id="structure.magister_thesis">
-				<source><![CDATA[Magister Thesis]]></source>
-			</trans-unit>
-			<trans-unit id="structure.manuscript">
-				<source><![CDATA[Manuscript]]></source>
-			</trans-unit>
-			<trans-unit id="structure.map">
-				<source><![CDATA[Map]]></source>
-			</trans-unit>
-			<trans-unit id="structure.master_thesis">
-				<source><![CDATA[Master Thesis]]></source>
-			</trans-unit>
-			<trans-unit id="structure.monograph">
-				<source><![CDATA[Monograph]]></source>
-			</trans-unit>
-			<trans-unit id="structure.month">
-				<source><![CDATA[Month]]></source>
-			</trans-unit>
-			<trans-unit id="structure.multivolume_work">
-				<source><![CDATA[Multivolume Work]]></source>
-			</trans-unit>
-			<trans-unit id="structure.musical_notation">
-				<source><![CDATA[Musical Notation]]></source>
-			</trans-unit>
-			<trans-unit id="structure.newspaper">
-				<source><![CDATA[Newspaper]]></source>
-			</trans-unit>
-			<trans-unit id="structure.note">
-				<source><![CDATA[Note]]></source>
-			</trans-unit>
-			<trans-unit id="structure.official_notification">
-				<source><![CDATA[Official Notification]]></source>
-			</trans-unit>
-			<trans-unit id="structure.ornament">
-				<source><![CDATA[Ornament]]></source>
-			</trans-unit>
-			<trans-unit id="structure.page">
-				<source><![CDATA[Page]]></source>
-			</trans-unit>
-			<trans-unit id="structure.paper">
-				<source><![CDATA[Paper]]></source>
-			</trans-unit>
-			<trans-unit id="structure.paste_down">
-				<source><![CDATA[Paste Down]]></source>
-			</trans-unit>
-			<trans-unit id="structure.periodical">
-				<source><![CDATA[Periodical]]></source>
-			</trans-unit>
-			<trans-unit id="structure.photograph">
-				<source><![CDATA[Photograph]]></source>
-			</trans-unit>
-			<trans-unit id="structure.plan">
-				<source><![CDATA[Plan]]></source>
-			</trans-unit>
-			<trans-unit id="structure.poster">
-				<source><![CDATA[Poster]]></source>
-			</trans-unit>
-			<trans-unit id="structure.preface">
-				<source><![CDATA[Preface]]></source>
-			</trans-unit>
-			<trans-unit id="structure.preprint">
-				<source><![CDATA[Preprint]]></source>
-			</trans-unit>
-			<trans-unit id="structure.printed_archives">
-				<source><![CDATA[Printed Archives]]></source>
-			</trans-unit>
-			<trans-unit id="structure.printers_mark">
-				<source><![CDATA[Printers Mark]]></source>
-			</trans-unit>
-			<trans-unit id="structure.privileges">
-				<source><![CDATA[Privileges]]></source>
-			</trans-unit>
-			<trans-unit id="structure.proceeding">
-				<source><![CDATA[Proceeding]]></source>
-			</trans-unit>
-			<trans-unit id="structure.provenance">
-				<source><![CDATA[Provenance]]></source>
-			</trans-unit>
-			<trans-unit id="structure.register">
-				<source><![CDATA[Register]]></source>
-			</trans-unit>
-			<trans-unit id="structure.report">
-				<source><![CDATA[Report]]></source>
-			</trans-unit>
-			<trans-unit id="structure.research_paper">
-				<source><![CDATA[Research Paper]]></source>
-			</trans-unit>
-			<trans-unit id="structure.scheme">
-				<source><![CDATA[Scheme]]></source>
-			</trans-unit>
-			<trans-unit id="structure.seal">
-				<source><![CDATA[Seal]]></source>
-			</trans-unit>
-			<trans-unit id="structure.section">
-				<source><![CDATA[Section]]></source>
-			</trans-unit>
-			<trans-unit id="structure.spine">
-				<source><![CDATA[Spine]]></source>
-			</trans-unit>
-			<trans-unit id="structure.stamp">
-				<source><![CDATA[Stamp]]></source>
-			</trans-unit>
-			<trans-unit id="structure.study">
-				<source><![CDATA[Study]]></source>
-			</trans-unit>
-			<trans-unit id="structure.subinventory">
-				<source><![CDATA[Subinventory]]></source>
-			</trans-unit>
-			<trans-unit id="structure.table">
-				<source><![CDATA[Table]]></source>
-			</trans-unit>
-			<trans-unit id="structure.text">
-				<source><![CDATA[Text]]></source>
-			</trans-unit>
-			<trans-unit id="structure.title_page">
-				<source><![CDATA[Titlepage]]></source>
-			</trans-unit>
-			<trans-unit id="structure.verse">
-				<source><![CDATA[Verse]]></source>
-			</trans-unit>
-			<trans-unit id="structure.volume">
-				<source><![CDATA[Volume]]></source>
-			</trans-unit>
-			<trans-unit id="structure.year">
-				<source><![CDATA[Year]]></source>
-			</trans-unit>
-		</body>
-	</file>
+    <file source-language="en" datatype="plaintext" original="messages" date="2021-11-27T12:07:34Z">
+        <header>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="structure.act">
+                <source><![CDATA[Act]]></source>
+            </trans-unit>
+            <trans-unit id="structure.additional">
+                <source><![CDATA[Additional]]></source>
+            </trans-unit>
+            <trans-unit id="structure.address">
+                <source><![CDATA[Address]]></source>
+            </trans-unit>
+            <trans-unit id="structure.album">
+                <source><![CDATA[Album]]></source>
+            </trans-unit>
+            <trans-unit id="structure.annotation">
+                <source><![CDATA[Annotation]]></source>
+            </trans-unit>
+            <trans-unit id="structure.article">
+                <source><![CDATA[Article]]></source>
+            </trans-unit>
+            <trans-unit id="structure.atlas">
+                <source><![CDATA[Atlas]]></source>
+            </trans-unit>
+            <trans-unit id="structure.bachelor_thesis">
+                <source><![CDATA[Bachelor Thesis]]></source>
+            </trans-unit>
+            <trans-unit id="structure.binding">
+                <source><![CDATA[Binding]]></source>
+            </trans-unit>
+            <trans-unit id="structure.bookplate">
+                <source><![CDATA[Bookplate]]></source>
+            </trans-unit>
+            <trans-unit id="structure.cartulary">
+                <source><![CDATA[Cartulary]]></source>
+            </trans-unit>
+            <trans-unit id="structure.chapter">
+                <source><![CDATA[Chapter]]></source>
+            </trans-unit>
+            <trans-unit id="structure.collation">
+                <source><![CDATA[Collation]]></source>
+            </trans-unit>
+            <trans-unit id="structure.colophon">
+                <source><![CDATA[Colophon]]></source>
+            </trans-unit>
+            <trans-unit id="structure.contained_work">
+                <source><![CDATA[Contained Work]]></source>
+            </trans-unit>
+            <trans-unit id="structure.contents">
+                <source><![CDATA[Table of Contents]]></source>
+            </trans-unit>
+            <trans-unit id="structure.corrigenda">
+                <source><![CDATA[Corrigenda]]></source>
+            </trans-unit>
+            <trans-unit id="structure.cover">
+                <source><![CDATA[Cover]]></source>
+            </trans-unit>
+            <trans-unit id="structure.cover_back">
+                <source><![CDATA[Back Cover]]></source>
+            </trans-unit>
+            <trans-unit id="structure.cover_front">
+                <source><![CDATA[Front Cover]]></source>
+            </trans-unit>
+            <trans-unit id="structure.day">
+                <source><![CDATA[Day]]></source>
+            </trans-unit>
+            <trans-unit id="structure.dedication">
+                <source><![CDATA[Dedication]]></source>
+            </trans-unit>
+            <trans-unit id="structure.diploma_thesis">
+                <source><![CDATA[Diploma Thesis]]></source>
+            </trans-unit>
+            <trans-unit id="structure.doctoral_thesis">
+                <source><![CDATA[Doctoral Thesis]]></source>
+            </trans-unit>
+            <trans-unit id="structure.document">
+                <source><![CDATA[Document]]></source>
+            </trans-unit>
+            <trans-unit id="structure.dossier">
+                <source><![CDATA[Dossier]]></source>
+            </trans-unit>
+            <trans-unit id="structure.edge">
+                <source><![CDATA[Edge]]></source>
+            </trans-unit>
+            <trans-unit id="structure.endsheet">
+                <source><![CDATA[Endsheet]]></source>
+            </trans-unit>
+            <trans-unit id="structure.engraved_titlepage">
+                <source><![CDATA[Engraved Titlepage]]></source>
+            </trans-unit>
+            <trans-unit id="structure.entry">
+                <source><![CDATA[Entry]]></source>
+            </trans-unit>
+            <trans-unit id="structure.ephemera">
+                <source><![CDATA[Ephemera]]></source>
+            </trans-unit>
+            <trans-unit id="structure.fascicle">
+                <source><![CDATA[Fascicle]]></source>
+            </trans-unit>
+            <trans-unit id="structure.file">
+                <source><![CDATA[File]]></source>
+            </trans-unit>
+            <trans-unit id="structure.figure">
+                <source><![CDATA[Figure]]></source>
+            </trans-unit>
+            <trans-unit id="structure.folder">
+                <source><![CDATA[Folder]]></source>
+            </trans-unit>
+            <trans-unit id="structure.fragment">
+                <source><![CDATA[Fragment]]></source>
+            </trans-unit>
+            <trans-unit id="structure.ground_plan">
+                <source><![CDATA[Ground Plan]]></source>
+            </trans-unit>
+            <trans-unit id="structure.habilitation_thesis">
+                <source><![CDATA[Habilitation Thesis]]></source>
+            </trans-unit>
+            <trans-unit id="structure.illustration">
+                <source><![CDATA[Illustration]]></source>
+            </trans-unit>
+            <trans-unit id="structure.image">
+                <source><![CDATA[Image]]></source>
+            </trans-unit>
+            <trans-unit id="structure.imprint">
+                <source><![CDATA[Imprint]]></source>
+            </trans-unit>
+            <trans-unit id="structure.index">
+                <source><![CDATA[Index]]></source>
+            </trans-unit>
+            <trans-unit id="structure.initial_decoration">
+                <source><![CDATA[Initial Decoration]]></source>
+            </trans-unit>
+            <trans-unit id="structure.inventory">
+                <source><![CDATA[Inventory]]></source>
+            </trans-unit>
+            <trans-unit id="structure.issue">
+                <source><![CDATA[Issue]]></source>
+            </trans-unit>
+            <trans-unit id="structure.judgement">
+                <source><![CDATA[Judgement]]></source>
+            </trans-unit>
+            <trans-unit id="structure.land_register">
+                <source><![CDATA[Land Register]]></source>
+            </trans-unit>
+            <trans-unit id="structure.leaflet">
+                <source><![CDATA[Leaflet]]></source>
+            </trans-unit>
+            <trans-unit id="structure.lecture">
+                <source><![CDATA[Lecture]]></source>
+            </trans-unit>
+            <trans-unit id="structure.letter">
+                <source><![CDATA[Letter]]></source>
+            </trans-unit>
+            <trans-unit id="structure.magister_thesis">
+                <source><![CDATA[Magister Thesis]]></source>
+            </trans-unit>
+            <trans-unit id="structure.manuscript">
+                <source><![CDATA[Manuscript]]></source>
+            </trans-unit>
+            <trans-unit id="structure.map">
+                <source><![CDATA[Map]]></source>
+            </trans-unit>
+            <trans-unit id="structure.master_thesis">
+                <source><![CDATA[Master Thesis]]></source>
+            </trans-unit>
+            <trans-unit id="structure.monograph">
+                <source><![CDATA[Monograph]]></source>
+            </trans-unit>
+            <trans-unit id="structure.month">
+                <source><![CDATA[Month]]></source>
+            </trans-unit>
+            <trans-unit id="structure.multivolume_work">
+                <source><![CDATA[Multivolume Work]]></source>
+            </trans-unit>
+            <trans-unit id="structure.musical_notation">
+                <source><![CDATA[Musical Notation]]></source>
+            </trans-unit>
+            <trans-unit id="structure.newspaper">
+                <source><![CDATA[Newspaper]]></source>
+            </trans-unit>
+            <trans-unit id="structure.note">
+                <source><![CDATA[Note]]></source>
+            </trans-unit>
+            <trans-unit id="structure.official_notification">
+                <source><![CDATA[Official Notification]]></source>
+            </trans-unit>
+            <trans-unit id="structure.ornament">
+                <source><![CDATA[Ornament]]></source>
+            </trans-unit>
+            <trans-unit id="structure.page">
+                <source><![CDATA[Page]]></source>
+            </trans-unit>
+            <trans-unit id="structure.paper">
+                <source><![CDATA[Paper]]></source>
+            </trans-unit>
+            <trans-unit id="structure.paste_down">
+                <source><![CDATA[Paste Down]]></source>
+            </trans-unit>
+            <trans-unit id="structure.periodical">
+                <source><![CDATA[Periodical]]></source>
+            </trans-unit>
+            <trans-unit id="structure.photograph">
+                <source><![CDATA[Photograph]]></source>
+            </trans-unit>
+            <trans-unit id="structure.plan">
+                <source><![CDATA[Plan]]></source>
+            </trans-unit>
+            <trans-unit id="structure.poster">
+                <source><![CDATA[Poster]]></source>
+            </trans-unit>
+            <trans-unit id="structure.preface">
+                <source><![CDATA[Preface]]></source>
+            </trans-unit>
+            <trans-unit id="structure.preprint">
+                <source><![CDATA[Preprint]]></source>
+            </trans-unit>
+            <trans-unit id="structure.printed_archives">
+                <source><![CDATA[Printed Archives]]></source>
+            </trans-unit>
+            <trans-unit id="structure.printers_mark">
+                <source><![CDATA[Printers Mark]]></source>
+            </trans-unit>
+            <trans-unit id="structure.privileges">
+                <source><![CDATA[Privileges]]></source>
+            </trans-unit>
+            <trans-unit id="structure.proceeding">
+                <source><![CDATA[Proceeding]]></source>
+            </trans-unit>
+            <trans-unit id="structure.provenance">
+                <source><![CDATA[Provenance]]></source>
+            </trans-unit>
+            <trans-unit id="structure.register">
+                <source><![CDATA[Register]]></source>
+            </trans-unit>
+            <trans-unit id="structure.report">
+                <source><![CDATA[Report]]></source>
+            </trans-unit>
+            <trans-unit id="structure.research_paper">
+                <source><![CDATA[Research Paper]]></source>
+            </trans-unit>
+            <trans-unit id="structure.scheme">
+                <source><![CDATA[Scheme]]></source>
+            </trans-unit>
+            <trans-unit id="structure.seal">
+                <source><![CDATA[Seal]]></source>
+            </trans-unit>
+            <trans-unit id="structure.section">
+                <source><![CDATA[Section]]></source>
+            </trans-unit>
+            <trans-unit id="structure.spine">
+                <source><![CDATA[Spine]]></source>
+            </trans-unit>
+            <trans-unit id="structure.stamp">
+                <source><![CDATA[Stamp]]></source>
+            </trans-unit>
+            <trans-unit id="structure.study">
+                <source><![CDATA[Study]]></source>
+            </trans-unit>
+            <trans-unit id="structure.subinventory">
+                <source><![CDATA[Subinventory]]></source>
+            </trans-unit>
+            <trans-unit id="structure.table">
+                <source><![CDATA[Table]]></source>
+            </trans-unit>
+            <trans-unit id="structure.text">
+                <source><![CDATA[Text]]></source>
+            </trans-unit>
+            <trans-unit id="structure.title_page">
+                <source><![CDATA[Titlepage]]></source>
+            </trans-unit>
+            <trans-unit id="structure.verse">
+                <source><![CDATA[Verse]]></source>
+            </trans-unit>
+            <trans-unit id="structure.volume">
+                <source><![CDATA[Volume]]></source>
+            </trans-unit>
+            <trans-unit id="structure.year">
+                <source><![CDATA[Year]]></source>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>

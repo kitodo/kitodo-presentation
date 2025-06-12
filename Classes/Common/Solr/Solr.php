@@ -156,7 +156,7 @@ class Solr implements LoggerAwareInterface
                     // Nothing to do here.
                 }
             } else {
-                Helper::log('Apache Solr not available', LOG_SEVERITY_ERROR);
+                Helper::error('Apache Solr not available');
             }
         }
         return '';
@@ -296,7 +296,7 @@ class Solr implements LoggerAwareInterface
             empty($core)
             && $core !== null
         ) {
-            Helper::log('Invalid core UID or name given for Apache Solr', LOG_SEVERITY_ERROR);
+            Helper::error('Invalid core UID or name given for Apache Solr');
         }
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
