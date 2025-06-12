@@ -197,6 +197,9 @@
 			<trans-unit id="thumbnail">
 				<source><![CDATA[Thumbnail]]></source>
 			</trans-unit>
+            <trans-unit id="thumbnail.alt">
+                <source><![CDATA[Thumbnail for %s]]></source>
+            </trans-unit>
 			<trans-unit id="title">
 				<source><![CDATA[title]]></source>
 			</trans-unit>
