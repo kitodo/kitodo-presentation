@@ -121,7 +121,7 @@ class PageViewProxyTest extends FunctionalTestCase
         ]);
 
         self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('Kitodo.Presentation Proxy', (string) $response->getBody());
+        self::assertEquals('Kitodo.Presentation', (string) $response->getBody());
     }
 
     /**
