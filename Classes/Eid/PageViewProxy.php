@@ -64,12 +64,12 @@ class PageViewProxy
     /**
      * Return a response that is derived from $response and contains CORS
      * headers to be sent to the client.
-     * 
+     *
      * @access protected
      *
      * @param ResponseInterface $response
      * @param ServerRequestInterface $request The incoming request.
-     * 
+     *
      * @return ResponseInterface
      */
     protected function withCorsResponseHeaders(

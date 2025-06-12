@@ -622,7 +622,7 @@ class Helper
      * Fetches and renders all available flash messages from the queue.
      *
      * @access public
-     * 
+     *
      * @static
      *
      * @param string $queue The queue's unique identifier
@@ -934,7 +934,7 @@ class Helper
      * @access private
      *
      * @static
-     * 
+     *
      * @param string $path
      *
      * @return mixed
