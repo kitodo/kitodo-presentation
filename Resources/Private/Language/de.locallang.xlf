@@ -1,550 +1,554 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2022-03-08T16:25:36Z">
-		<header>
-			<generator>LFEditor</generator>
-		</header>
-		<body>
-			<trans-unit id="backXPages" approved="yes">
-				<source><![CDATA[Back %s Pages]]></source>
-				<target><![CDATA[%s Seiten zurück]]></target>
-			</trans-unit>
-			<trans-unit id="basket.addBasket" approved="yes">
-				<source><![CDATA[Add to basket]]></source>
-				<target><![CDATA[Zum Warenkorb hinzufügen]]></target>
-			</trans-unit>
-			<trans-unit id="basket.chooseAction" approved="yes">
-				<source><![CDATA[Choose an action]]></source>
-				<target><![CDATA[Aktion auswählen]]></target>
-			</trans-unit>
-			<trans-unit id="basket.chooseMail" approved="yes">
-				<source><![CDATA[Choose a mail]]></source>
-				<target><![CDATA[E-Mail Empfänger auswählen]]></target>
-			</trans-unit>
-			<trans-unit id="basket.choosePrinter" approved="yes">
-				<source><![CDATA[Choose a printer]]></source>
-				<target><![CDATA[Drucker auswählen]]></target>
-			</trans-unit>
-			<trans-unit id="basket.count" approved="yes">
-				<source><![CDATA[%d Entries]]></source>
-				<target><![CDATA[%d Einträge]]></target>
-			</trans-unit>
-			<trans-unit id="basket.cutout" approved="yes">
-				<source><![CDATA[Cutout]]></source>
-				<target><![CDATA[Ausschnitt]]></target>
-			</trans-unit>
-			<trans-unit id="basket.download" approved="yes">
-				<source><![CDATA[Download]]></source>
-				<target><![CDATA[Herunterladen]]></target>
-			</trans-unit>
-			<trans-unit id="basket.editMode" approved="yes">
-				<source><![CDATA[Set cutout]]></source>
-				<target><![CDATA[Ausschnitt auswählen]]></target>
-			</trans-unit>
-			<trans-unit id="basket.editRemove" approved="yes">
-				<source><![CDATA[Remove cutout]]></source>
-				<target><![CDATA[Ausschnitt entfernen]]></target>
-			</trans-unit>
-			<trans-unit id="basket.goBasket" approved="yes">
-				<source><![CDATA[Go to basket]]></source>
-				<target><![CDATA[Zum Warenkorb]]></target>
-			</trans-unit>
-			<trans-unit id="basket.magnifier" approved="yes">
-				<source><![CDATA[Magnifier]]></source>
-				<target><![CDATA[Lupe]]></target>
-			</trans-unit>
-			<trans-unit id="basket.mailBody" approved="yes">
-				<source><![CDATA[The following documents are sent to you by Kitodo.Presentation:]]></source>
-				<target><![CDATA[Folgende Dokumente wurden über die Kitodo.Presentation Extension an Sie verschickt:]]></target>
-			</trans-unit>
-			<trans-unit id="basket.mailSubject" approved="yes">
-				<source><![CDATA[Kitodo.Presentation - Document]]></source>
-				<target><![CDATA[Kitodo.Presentation - Dokument]]></target>
-			</trans-unit>
-			<trans-unit id="basket.noTitle" approved="yes">
-				<source><![CDATA[No title]]></source>
-				<target><![CDATA[Kein Titel vorhanden]]></target>
-			</trans-unit>
-			<trans-unit id="basket.no_entries" approved="yes">
-				<source><![CDATA[No entries]]></source>
-				<target><![CDATA[Keine Einträge]]></target>
-			</trans-unit>
-			<trans-unit id="basket.one_entry" approved="yes">
-				<source><![CDATA[One entry]]></source>
-				<target><![CDATA[Ein Eintrag]]></target>
-			</trans-unit>
-			<trans-unit id="basket.remove" approved="yes">
-				<source><![CDATA[Remove]]></source>
-				<target><![CDATA[Entfernen]]></target>
-			</trans-unit>
-			<trans-unit id="calendar.allYears" approved="yes">
-				<source><![CDATA[All years overview - ]]></source>
-				<target><![CDATA[Jahrgangsübersicht - ]]></target>
-			</trans-unit>
-			<trans-unit id="calendar.please_choose_year" approved="yes">
-				<source><![CDATA[Please choose a year first.]]></source>
-				<target><![CDATA[Bitte wählen Sie zunächst einen Jahrgang aus.]]></target>
-			</trans-unit>
-			<trans-unit id="calendar.view_calendar" approved="yes">
-				<source><![CDATA[Calendar]]></source>
-				<target><![CDATA[Kalender]]></target>
-			</trans-unit>
-			<trans-unit id="calendar.view_list" approved="yes">
-				<source><![CDATA[List View]]></source>
-				<target><![CDATA[Listenansicht]]></target>
-			</trans-unit>
-			<trans-unit id="collection.feed.alt" approved="yes">
-				<source><![CDATA[RSS feed]]></source>
-				<target><![CDATA[RSS-Feed]]></target>
-			</trans-unit>
-			<trans-unit id="collection.feed.title" approved="yes">
-				<source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
-				<target><![CDATA[Abonnieren Sie den RSS-Feed dieser Kollektion!]]></target>
-			</trans-unit>
-			<trans-unit id="doublePage+1" approved="yes">
-				<source><![CDATA[Adjust recto/verso]]></source>
-				<target><![CDATA[Recto/Verso korrigieren]]></target>
-			</trans-unit>
-			<trans-unit id="doublePageOff" approved="yes">
-				<source><![CDATA[Show single page]]></source>
-				<target><![CDATA[Einzelseitenansicht]]></target>
-			</trans-unit>
-			<trans-unit id="doublePageOn" approved="yes">
-				<source><![CDATA[Show double pages]]></source>
-				<target><![CDATA[Doppelseitenansicht]]></target>
-			</trans-unit>
-			<trans-unit id="downloadModel" approved="yes">
-				<source><![CDATA[Download model]]></source>
-				<target><![CDATA[Model herunterladen]]></target>
-			</trans-unit>
-			<trans-unit id="downloadLeftPage" approved="yes">
-				<source><![CDATA[Download left page]]></source>
-				<target><![CDATA[Linke Seite herunterladen]]></target>
-			</trans-unit>
-			<trans-unit id="downloadRightPage" approved="yes">
-				<source><![CDATA[Download right page]]></source>
-				<target><![CDATA[Rechte Seite herunterladen]]></target>
-			</trans-unit>
-			<trans-unit id="downloadSinglePage" approved="yes">
-				<source><![CDATA[Download single page]]></source>
-				<target><![CDATA[Einzelseite herunterladen]]></target>
-			</trans-unit>
-			<trans-unit id="downloadWork" approved="yes">
-				<source><![CDATA[Download whole work]]></source>
-				<target><![CDATA[Ganzes Werk herunterladen]]></target>
-			</trans-unit>
-			<trans-unit id="mididownload" approved="yes">
-				<source><![CDATA[Download midi file]]></source>
-				<target><![CDATA[Midi Werk herunterladen]]></target>
-			</trans-unit>
-			<trans-unit id="scoredownload" approved="yes">
-				<source><![CDATA[Download score pdf file]]></source>
-				<target><![CDATA[Notentext herunterladen]]></target>
-			</trans-unit>
-			<trans-unit id="firstPage" approved="yes">
-				<source><![CDATA[First Page]]></source>
-				<target><![CDATA[Erste Seite]]></target>
-			</trans-unit>
-			<trans-unit id="forwardXPages" approved="yes">
-				<source><![CDATA[Forward %s Pages]]></source>
-				<target><![CDATA[%s Seiten weiter]]></target>
-			</trans-unit>
-			<trans-unit id="lastPage" approved="yes">
-				<source><![CDATA[Last Page]]></source>
-				<target><![CDATA[Letzte Seite]]></target>
-			</trans-unit>
-			<trans-unit id="linkToList" approved="yes">
-				<source><![CDATA[Return to list view]]></source>
-				<target><![CDATA[Zurück zur Listenansicht]]></target>
-			</trans-unit>
-			<trans-unit id="listview.count" approved="yes">
-				<source><![CDATA[Entries %d to %d of %d.]]></source>
-				<target><![CDATA[Einträge %d bis %d von %d.]]></target>
-			</trans-unit>
-			<trans-unit id="listview.form.order" approved="yes">
-				<source><![CDATA[Direction:]]></source>
-				<target><![CDATA[Richtung:]]></target>
-			</trans-unit>
-			<trans-unit id="listview.form.order.asc" approved="yes">
-				<source><![CDATA[ascending]]></source>
-				<target><![CDATA[aufsteigend]]></target>
-			</trans-unit>
-			<trans-unit id="listview.form.order.desc" approved="yes">
-				<source><![CDATA[descending]]></source>
-				<target><![CDATA[absteigend]]></target>
-			</trans-unit>
-			<trans-unit id="listview.form.orderBy" approved="yes">
-				<source><![CDATA[Order by:]]></source>
-				<target><![CDATA[Sortieren nach:]]></target>
-			</trans-unit>
-			<trans-unit id="listview.form.relevance" approved="yes">
-				<source><![CDATA[relevance]]></source>
-				<target><![CDATA[Relevanz]]></target>
-			</trans-unit>
-			<trans-unit id="listview.hits" approved="yes">
-				<source><![CDATA[%d hits found in %d documents.]]></source>
-				<target><![CDATA[Die Suche ergab %d Treffer in %d Dokumenten.]]></target>
-			</trans-unit>
-			<trans-unit id="listview.nextPage" approved="yes">
-				<source><![CDATA[&gt;]]></source>
-				<target><![CDATA[&gt;]]></target>
-			</trans-unit>
-			<trans-unit id="listview.nohits" approved="yes">
-				<source><![CDATA[Nothing found.]]></source>
-				<target><![CDATA[Keine Treffer.]]></target>
-			</trans-unit>
-			<trans-unit id="listview.page" approved="yes">
-				<source><![CDATA[%d]]></source>
-				<target><![CDATA[%d]]></target>
-			</trans-unit>
-			<trans-unit id="listview.prevPage" approved="yes">
-				<source><![CDATA[&lt;]]></source>
-				<target><![CDATA[&lt;]]></target>
-			</trans-unit>
-			<trans-unit id="listview.separator" approved="yes">
-				<source><![CDATA[ - ]]></source>
-				<target><![CDATA[ - ]]></target>
-			</trans-unit>
-			<trans-unit id="listview.skip" approved="yes">
-				<source><![CDATA[...]]></source>
-				<target><![CDATA[...]]></target>
-			</trans-unit>
-			<trans-unit id="nextPage" approved="yes">
-				<source><![CDATA[Next Page]]></source>
-				<target><![CDATA[Nächste Seite]]></target>
-			</trans-unit>
-			<trans-unit id="noTitle" approved="yes">
-				<source><![CDATA[[no title]]]></source>
-				<target><![CDATA[[kein Titel]]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.badArgument" approved="yes">
-				<source><![CDATA[The request includes illegal arguments, is missing required arguments, or values for arguments have an illegal syntax.]]></source>
-				<target><![CDATA[Die Anfrage enthält ungültige Parameter, es fehlen benötigte Parameter oder Parameter haben ungültige Werte.]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.badResumptionToken" approved="yes">
-				<source><![CDATA[The value of the resumptionToken argument is invalid or expired.]]></source>
-				<target><![CDATA[Das "resumptionToken" ist ungültig oder abgelaufen.]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.badVerb" approved="yes">
-				<source><![CDATA[Value of the verb argument is not a legal OAI-PMH verb or the verb argument is missing.]]></source>
-				<target><![CDATA[Der Parameter "verb" fehlt oder hat keinen gültigen OAI-PMH-Wert.]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.cannotDisseminateFormat" approved="yes">
-				<source><![CDATA[The metadata format identified by the value given for the metadataPrefix argument is not supported by the item or by the repository.]]></source>
-				<target><![CDATA[Das im Parameter "metadataPrefix" angegebene Format wird vom gewünschten Datensatz oder dem Repository nicht unterstützt.]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.error" approved="yes">
-				<source><![CDATA[An error occurred, please try again later. If this happens consistently, please contact the administrator.]]></source>
-				<target><![CDATA[Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal. Sollte der Fehler dauerhaft auftreten, kontaktieren Sie bitte den Administrator.]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.idDoesNotExist" approved="yes">
-				<source><![CDATA[The value of the identifier argument is unknown or illegal in this repository.]]></source>
-				<target><![CDATA[Der im Parameter "identifier" angegebene Wert existiert nicht im Repository.]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.noMetadataFormats" approved="yes">
-				<source><![CDATA[There are no metadata formats available for the specified item.]]></source>
-				<target><![CDATA[Für den gewünschten Datensatz werden keine Datenformate unterstützt.]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.noRecordsMatch" approved="yes">
-				<source><![CDATA[The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.]]></source>
-				<target><![CDATA[Die Anfrage ergab eine leere Treffermenge.]]></target>
-			</trans-unit>
-			<trans-unit id="oaipmh.noSetHierarchy" approved="yes">
-				<source><![CDATA[The repository does not support sets or the value of the set argument is invalid.]]></source>
-				<target><![CDATA[Das Repository unterstützt keine Sets oder der Wert des Parameters "set" ist ungültig.]]></target>
-			</trans-unit>
-			<trans-unit id="page" approved="yes">
-				<source><![CDATA[Page]]></source>
-				<target><![CDATA[Seite]]></target>
-			</trans-unit>
-			<trans-unit id="pageview.overview-map" approved="yes">
-				<source><![CDATA[Overview Map]]></source>
-				<target><![CDATA[Miniaturansicht]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.feeds.new" approved="yes">
-				<source><![CDATA[NEW:]]></source>
-				<target><![CDATA[NEU:]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.feeds.update" approved="yes">
-				<source><![CDATA[UPDATE:]]></source>
-				<target><![CDATA[UPDATE:]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.headline.success" approved="yes">
-				<source><![CDATA[Successful]]></source>
-				<target><![CDATA[Erfolgreich]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.headline.error" approved="yes">
-				<source><![CDATA[Error]]></source>
-				<target><![CDATA[Fehler]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.headline.warning" approved="yes">
-				<source><![CDATA[Warning]]></source>
-				<target><![CDATA[Warnung]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.headline.notice" approved="yes">
-				<source><![CDATA[Notice]]></source>
-				<target><![CDATA[Info]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.label" approved="yes">
-				<source><![CDATA[Insert the link to your <acronym href="" title="metadata encoding and transmission standard">METS</acronym> file here:]]></source>
-				<target><![CDATA[Fügen Sie hier den Link zu Ihrer <acronym title="Metadatenkodierungs- und -übertragungsstandard">METS</acronym>-Datei ein:]]></target>
-			</trans-unit>
-			<trans-unit id="plugins.validationform.validate" approved="yes">
-				<source><![CDATA[validate]]></source>
-				<target><![CDATA[Validieren]]></target>
-			</trans-unit>
-			<trans-unit id="prevPage" approved="yes">
-				<source><![CDATA[Previous Page]]></source>
-				<target><![CDATA[Vorherige Seite]]></target>
-			</trans-unit>
-			<trans-unit id="rotateLeft" approved="yes">
-				<source><![CDATA[Rotate Left]]></source>
-				<target><![CDATA[Ansicht nach links drehen]]></target>
-			</trans-unit>
-			<trans-unit id="rotateReset" approved="yes">
-				<source><![CDATA[Reset Rotation]]></source>
-				<target><![CDATA[Drehung zurücksetzen]]></target>
-			</trans-unit>
-			<trans-unit id="rotateRight" approved="yes">
-				<source><![CDATA[Rotate Right]]></source>
-				<target><![CDATA[Ansicht nach rechts drehen]]></target>
-			</trans-unit>
-			<trans-unit id="prevMeasure">
-				<source><![CDATA[Previus Measure]]></source>
-				<target><![CDATA[Vorheriger Takt]]></target>
-			</trans-unit>
-			<trans-unit id="nextMeasure">
-				<source><![CDATA[Next Measure]]></source>
-				<target><![CDATA[Nächster Takt]]></target>
-			</trans-unit>
-			<trans-unit id="navigation.documentBack" approved="yes">
-				<source><![CDATA[Previous document]]></source>
-				<target><![CDATA[Vorheriges Dokument]]></target>
-			</trans-unit>
-			<trans-unit id="navigation.documentForward" approved="yes">
-				<source><![CDATA[Next document]]></source>
-				<target><![CDATA[Nächstes Dokument]]></target>
-			</trans-unit>
-			<trans-unit id="search.dateFrom" approved="yes">
-				<source><![CDATA[From]]></source>
-				<target><![CDATA[Von]]></target>
-			</trans-unit>
-			<trans-unit id="search.dateTo" approved="yes">
-				<source><![CDATA[To]]></source>
-				<target><![CDATA[Bis]]></target>
-			</trans-unit>
-			<trans-unit id="search.for" approved="yes">
-				<source><![CDATA[for "%s"]]></source>
-				<target><![CDATA[nach "%s"]]></target>
-			</trans-unit>
-			<trans-unit id="search.in" approved="yes">
-				<source><![CDATA[in "%s"]]></source>
-				<target><![CDATA[in "%s"]]></target>
-			</trans-unit>
-			<trans-unit id="search.inFulltext" approved="yes">
-				<source><![CDATA[in fulltext]]></source>
-				<target><![CDATA[im Volltext]]></target>
-			</trans-unit>
-			<trans-unit id="search.inMetadata" approved="yes">
-				<source><![CDATA[in metadata]]></source>
-				<target><![CDATA[in Metadaten]]></target>
-			</trans-unit>
-			<trans-unit id="search.logicalPage" approved="yes">
-				<source><![CDATA[Page]]></source>
-				<target><![CDATA[Seite]]></target>
-			</trans-unit>
-			<trans-unit id="search.operator.AND" approved="yes">
-				<source><![CDATA[and]]></source>
-				<target><![CDATA[und]]></target>
-			</trans-unit>
-			<trans-unit id="search.operator.NOT" approved="yes">
-				<source><![CDATA[not]]></source>
-				<target><![CDATA[nicht]]></target>
-			</trans-unit>
-			<trans-unit id="search.operator.OR" approved="yes">
-				<source><![CDATA[or]]></source>
-				<target><![CDATA[oder]]></target>
-			</trans-unit>
-			<trans-unit id="search.query" approved="yes">
-				<source><![CDATA[Search for:]]></source>
-				<target><![CDATA[Suchen nach:]]></target>
-			</trans-unit>
-			<trans-unit id="search.resetFacet" approved="yes">
-				<source><![CDATA[Reset selection (%s)]]></source>
-				<target><![CDATA[Auswahl entfernen (%s)]]></target>
-			</trans-unit>
-			<trans-unit id="search.search" approved="yes">
-				<source><![CDATA[Search]]></source>
-				<target><![CDATA[Suche]]></target>
-			</trans-unit>
-			<trans-unit id="search.submit" approved="yes">
-				<source><![CDATA[Search]]></source>
-				<target><![CDATA[Suchen]]></target>
-			</trans-unit>
-			<trans-unit id="selectPage" approved="yes">
-				<source><![CDATA[Page]]></source>
-				<target><![CDATA[Seite]]></target>
-			</trans-unit>
-			<trans-unit id="thumbnail" approved="yes">
-				<source><![CDATA[Thumbnail]]></source>
-				<target><![CDATA[Vorschaubild]]></target>
-			</trans-unit>
-			<trans-unit id="title" approved="yes">
-				<source><![CDATA[title]]></source>
-				<target><![CDATA[Titel]]></target>
-			</trans-unit>
-			<trans-unit id="titles" approved="yes">
-				<source><![CDATA[titles]]></source>
-				<target><![CDATA[Titel]]></target>
-			</trans-unit>
-			<trans-unit id="tools.annotation.not-available" approved="yes">
-				<source><![CDATA[No Annotations available]]></source>
-				<target><![CDATA[Keine Annotationen vorhanden]]></target>
-			</trans-unit>
-			<trans-unit id="tools.annotation.off" approved="yes">
-				<source><![CDATA[Hide Annotations]]></source>
-				<target><![CDATA[Annotationen verbergen]]></target>
-			</trans-unit>
-			<trans-unit id="tools.annotation.on" approved="yes">
-				<source><![CDATA[Display Annotations]]></source>
-				<target><![CDATA[Annotationen anzeigen]]></target>
-			</trans-unit>
-			<trans-unit id="tools.fulltext" approved="yes">
-				<source><![CDATA[Full text]]></source>
-				<target><![CDATA[Volltext]]></target>
-			</trans-unit>
-			<trans-unit id="tools.fulltext.loading" approved="yes">
-				<source><![CDATA[Loading full text...]]></source>
-				<target><![CDATA[Volltext wird geladen...]]></target>
-			</trans-unit>
-			<trans-unit id="tools.fulltext.not-available" approved="yes">
-				<source><![CDATA[No full text available]]></source>
-				<target><![CDATA[Keine Volltexte vorhanden]]></target>
-			</trans-unit>
-			<trans-unit id="tools.fulltext.off" approved="yes">
-				<source><![CDATA[Deactivate full text]]></source>
-				<target><![CDATA[Volltext aus]]></target>
-			</trans-unit>
-			<trans-unit id="tools.fulltext.on" approved="yes">
-				<source><![CDATA[Activate full text]]></source>
-				<target><![CDATA[Volltext an]]></target>
-			</trans-unit>
-			<trans-unit id="tools.fulltextdownload.download-current-page" approved="yes">
-				<source><![CDATA[Current page (TXT)]]></source>
-				<target><![CDATA[Aktuelle Seite (TXT)]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.brightness" approved="yes">
-				<source><![CDATA[Brightness]]></source>
-				<target><![CDATA[Helligkeit]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.contrast" approved="yes">
-				<source><![CDATA[Contrast]]></source>
-				<target><![CDATA[Kontrast]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.hue" approved="yes">
-				<source><![CDATA[Hue]]></source>
-				<target><![CDATA[Färbung]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.invert" approved="yes">
-				<source><![CDATA[Color inverting]]></source>
-				<target><![CDATA[Farbinvertierung]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.no-support" approved="yes">
-				<source><![CDATA[Image manipulation is not supported]]></source>
-				<target><![CDATA[Bildbearbeitung wird nicht unterstützt]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.off" approved="yes">
-				<source><![CDATA[Deactivate image manipulation]]></source>
-				<target><![CDATA[Bildbearbeitung aus]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.on" approved="yes">
-				<source><![CDATA[Activate image manipulation]]></source>
-				<target><![CDATA[Bildbearbeitung an]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.reset" approved="yes">
-				<source><![CDATA[Reset]]></source>
-				<target><![CDATA[Zurücksetzen]]></target>
-			</trans-unit>
-			<trans-unit id="tools.imagemanipulation.saturation" approved="yes">
-				<source><![CDATA[Saturation]]></source>
-				<target><![CDATA[Sättigung]]></target>
-			</trans-unit>
-			<trans-unit id="tools.score" approved="yes">
-				<source><![CDATA[Score]]></source>
-				<target><![CDATA[Partitur]]></target>
-			</trans-unit>
-			<trans-unit id="tools.score.player" approved="yes">
-				<source><![CDATA[MIDI player]]></source>
-				<target><![CDATA[MIDI-Player ]]></target>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.deleteSearch" approved="yes">
-				<source><![CDATA[Delete Search]]></source>
-				<target><![CDATA[Suche löschen]]></target>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.loading" approved="yes">
-				<source><![CDATA[Loading...]]></source>
-				<target><![CDATA[Laden...]]></target>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.next" approved="yes">
-				<source><![CDATA[next]]></source>
-				<target><![CDATA[weiter]]></target>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.noresult" approved="yes">
-				<source><![CDATA[No result found in current document.]]></source>
-				<target><![CDATA[Kein Ergebnis im aktuellen Dokument gefunden.]]></target>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.previous" approved="yes">
-				<source><![CDATA[previous]]></source>
-				<target><![CDATA[zurück]]></target>
-			</trans-unit>
-			<trans-unit id="tools.searchindocument.searchInDocument" approved="yes">
-				<source><![CDATA[Search in document]]></source>
-				<target><![CDATA[Im Dokument suchen]]></target>
-			</trans-unit>
-			<trans-unit id="tools.viewerselection.default" approved="yes">
-				<source><![CDATA[Default]]></source>
-				<target><![CDATA[Standard]]></target>
-			</trans-unit>
-			<trans-unit id="volume" approved="yes">
-				<source><![CDATA[volume]]></source>
-				<target><![CDATA[Band]]></target>
-			</trans-unit>
-			<trans-unit id="volumes" approved="yes">
-				<source><![CDATA[volumes]]></source>
-				<target><![CDATA[Bände]]></target>
-			</trans-unit>
-			<trans-unit id="zoomFullscreen" approved="yes">
-				<source><![CDATA[Fullscreen Mode]]></source>
-				<target><![CDATA[Vollansicht]]></target>
-			</trans-unit>
-			<trans-unit id="zoomIn" approved="yes">
-				<source><![CDATA[Zoom In]]></source>
-				<target><![CDATA[Ansicht vergrößern]]></target>
-			</trans-unit>
-			<trans-unit id="zoomOut" approved="yes">
-				<source><![CDATA[Zoom Out]]></source>
-				<target><![CDATA[Ansicht verkleinern]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.module" approved="yes">
-				<source><![CDATA[New Tenant Module]]></source>
-				<target><![CDATA[Modul Neuer Mandant]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createFormat" approved="yes">
-				<source><![CDATA[Create default namespaces]]></source>
-				<target><![CDATA[Standard-Namensräume anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createMetadata" approved="yes">
-				<source><![CDATA[Create metadata]]></source>
-				<target><![CDATA[Metadaten Konfiguration anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createSolrCore" approved="yes">
-				<source><![CDATA[Create solr core]]></source>
-				<target><![CDATA[Solr Kern anlegen]]></target>
-			</trans-unit>
-			<trans-unit id="newTenant.createStructure" approved="yes">
-				<source><![CDATA[Create structures]]></source>
-				<target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
-			</trans-unit>
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2022-03-08T16:25:36Z">
+        <header>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="backXPages" approved="yes">
+                <source><![CDATA[Back %s Pages]]></source>
+                <target><![CDATA[%s Seiten zurück]]></target>
+            </trans-unit>
+            <trans-unit id="basket.addBasket" approved="yes">
+                <source><![CDATA[Add to basket]]></source>
+                <target><![CDATA[Zum Warenkorb hinzufügen]]></target>
+            </trans-unit>
+            <trans-unit id="basket.chooseAction" approved="yes">
+                <source><![CDATA[Choose an action]]></source>
+                <target><![CDATA[Aktion auswählen]]></target>
+            </trans-unit>
+            <trans-unit id="basket.chooseMail" approved="yes">
+                <source><![CDATA[Choose a mail]]></source>
+                <target><![CDATA[E-Mail Empfänger auswählen]]></target>
+            </trans-unit>
+            <trans-unit id="basket.choosePrinter" approved="yes">
+                <source><![CDATA[Choose a printer]]></source>
+                <target><![CDATA[Drucker auswählen]]></target>
+            </trans-unit>
+            <trans-unit id="basket.count" approved="yes">
+                <source><![CDATA[%d Entries]]></source>
+                <target><![CDATA[%d Einträge]]></target>
+            </trans-unit>
+            <trans-unit id="basket.cutout" approved="yes">
+                <source><![CDATA[Cutout]]></source>
+                <target><![CDATA[Ausschnitt]]></target>
+            </trans-unit>
+            <trans-unit id="basket.download" approved="yes">
+                <source><![CDATA[Download]]></source>
+                <target><![CDATA[Herunterladen]]></target>
+            </trans-unit>
+            <trans-unit id="basket.editMode" approved="yes">
+                <source><![CDATA[Set cutout]]></source>
+                <target><![CDATA[Ausschnitt auswählen]]></target>
+            </trans-unit>
+            <trans-unit id="basket.editRemove" approved="yes">
+                <source><![CDATA[Remove cutout]]></source>
+                <target><![CDATA[Ausschnitt entfernen]]></target>
+            </trans-unit>
+            <trans-unit id="basket.goBasket" approved="yes">
+                <source><![CDATA[Go to basket]]></source>
+                <target><![CDATA[Zum Warenkorb]]></target>
+            </trans-unit>
+            <trans-unit id="basket.magnifier" approved="yes">
+                <source><![CDATA[Magnifier]]></source>
+                <target><![CDATA[Lupe]]></target>
+            </trans-unit>
+            <trans-unit id="basket.mailBody" approved="yes">
+                <source><![CDATA[The following documents are sent to you by Kitodo.Presentation:]]></source>
+                <target><![CDATA[Folgende Dokumente wurden über die Kitodo.Presentation Extension an Sie verschickt:]]></target>
+            </trans-unit>
+            <trans-unit id="basket.mailSubject" approved="yes">
+                <source><![CDATA[Kitodo.Presentation - Document]]></source>
+                <target><![CDATA[Kitodo.Presentation - Dokument]]></target>
+            </trans-unit>
+            <trans-unit id="basket.noTitle" approved="yes">
+                <source><![CDATA[No title]]></source>
+                <target><![CDATA[Kein Titel vorhanden]]></target>
+            </trans-unit>
+            <trans-unit id="basket.no_entries" approved="yes">
+                <source><![CDATA[No entries]]></source>
+                <target><![CDATA[Keine Einträge]]></target>
+            </trans-unit>
+            <trans-unit id="basket.one_entry" approved="yes">
+                <source><![CDATA[One entry]]></source>
+                <target><![CDATA[Ein Eintrag]]></target>
+            </trans-unit>
+            <trans-unit id="basket.remove" approved="yes">
+                <source><![CDATA[Remove]]></source>
+                <target><![CDATA[Entfernen]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.allYears" approved="yes">
+                <source><![CDATA[All years overview - ]]></source>
+                <target><![CDATA[Jahrgangsübersicht - ]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.please_choose_year" approved="yes">
+                <source><![CDATA[Please choose a year first.]]></source>
+                <target><![CDATA[Bitte wählen Sie zunächst einen Jahrgang aus.]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.view_calendar" approved="yes">
+                <source><![CDATA[Calendar]]></source>
+                <target><![CDATA[Kalender]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.view_list" approved="yes">
+                <source><![CDATA[List View]]></source>
+                <target><![CDATA[Listenansicht]]></target>
+            </trans-unit>
+            <trans-unit id="collection.feed.alt" approved="yes">
+                <source><![CDATA[RSS feed]]></source>
+                <target><![CDATA[RSS-Feed]]></target>
+            </trans-unit>
+            <trans-unit id="collection.feed.title" approved="yes">
+                <source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
+                <target><![CDATA[Abonnieren Sie den RSS-Feed dieser Kollektion!]]></target>
+            </trans-unit>
+            <trans-unit id="doublePage+1" approved="yes">
+                <source><![CDATA[Adjust recto/verso]]></source>
+                <target><![CDATA[Recto/Verso korrigieren]]></target>
+            </trans-unit>
+            <trans-unit id="doublePageOff" approved="yes">
+                <source><![CDATA[Show single page]]></source>
+                <target><![CDATA[Einzelseitenansicht]]></target>
+            </trans-unit>
+            <trans-unit id="doublePageOn" approved="yes">
+                <source><![CDATA[Show double pages]]></source>
+                <target><![CDATA[Doppelseitenansicht]]></target>
+            </trans-unit>
+            <trans-unit id="downloadModel" approved="yes">
+                <source><![CDATA[Download model]]></source>
+                <target><![CDATA[Model herunterladen]]></target>
+            </trans-unit>
+            <trans-unit id="downloadLeftPage" approved="yes">
+                <source><![CDATA[Download left page]]></source>
+                <target><![CDATA[Linke Seite herunterladen]]></target>
+            </trans-unit>
+            <trans-unit id="downloadRightPage" approved="yes">
+                <source><![CDATA[Download right page]]></source>
+                <target><![CDATA[Rechte Seite herunterladen]]></target>
+            </trans-unit>
+            <trans-unit id="downloadSinglePage" approved="yes">
+                <source><![CDATA[Download single page]]></source>
+                <target><![CDATA[Einzelseite herunterladen]]></target>
+            </trans-unit>
+            <trans-unit id="downloadWork" approved="yes">
+                <source><![CDATA[Download whole work]]></source>
+                <target><![CDATA[Ganzes Werk herunterladen]]></target>
+            </trans-unit>
+            <trans-unit id="mididownload" approved="yes">
+                <source><![CDATA[Download midi file]]></source>
+                <target><![CDATA[Midi Werk herunterladen]]></target>
+            </trans-unit>
+            <trans-unit id="scoredownload" approved="yes">
+                <source><![CDATA[Download score pdf file]]></source>
+                <target><![CDATA[Notentext herunterladen]]></target>
+            </trans-unit>
+            <trans-unit id="firstPage" approved="yes">
+                <source><![CDATA[First Page]]></source>
+                <target><![CDATA[Erste Seite]]></target>
+            </trans-unit>
+            <trans-unit id="forwardXPages" approved="yes">
+                <source><![CDATA[Forward %s Pages]]></source>
+                <target><![CDATA[%s Seiten weiter]]></target>
+            </trans-unit>
+            <trans-unit id="lastPage" approved="yes">
+                <source><![CDATA[Last Page]]></source>
+                <target><![CDATA[Letzte Seite]]></target>
+            </trans-unit>
+            <trans-unit id="linkToList" approved="yes">
+                <source><![CDATA[Return to list view]]></source>
+                <target><![CDATA[Zurück zur Listenansicht]]></target>
+            </trans-unit>
+            <trans-unit id="listview.count" approved="yes">
+                <source><![CDATA[Entries %d to %d of %d.]]></source>
+                <target><![CDATA[Einträge %d bis %d von %d.]]></target>
+            </trans-unit>
+            <trans-unit id="listview.form.order" approved="yes">
+                <source><![CDATA[Direction:]]></source>
+                <target><![CDATA[Richtung:]]></target>
+            </trans-unit>
+            <trans-unit id="listview.form.order.asc" approved="yes">
+                <source><![CDATA[ascending]]></source>
+                <target><![CDATA[aufsteigend]]></target>
+            </trans-unit>
+            <trans-unit id="listview.form.order.desc" approved="yes">
+                <source><![CDATA[descending]]></source>
+                <target><![CDATA[absteigend]]></target>
+            </trans-unit>
+            <trans-unit id="listview.form.orderBy" approved="yes">
+                <source><![CDATA[Order by:]]></source>
+                <target><![CDATA[Sortieren nach:]]></target>
+            </trans-unit>
+            <trans-unit id="listview.form.relevance" approved="yes">
+                <source><![CDATA[relevance]]></source>
+                <target><![CDATA[Relevanz]]></target>
+            </trans-unit>
+            <trans-unit id="listview.hits" approved="yes">
+                <source><![CDATA[%d hits found in %d documents.]]></source>
+                <target><![CDATA[Die Suche ergab %d Treffer in %d Dokumenten.]]></target>
+            </trans-unit>
+            <trans-unit id="listview.nextPage" approved="yes">
+                <source><![CDATA[&gt;]]></source>
+                <target><![CDATA[&gt;]]></target>
+            </trans-unit>
+            <trans-unit id="listview.nohits" approved="yes">
+                <source><![CDATA[Nothing found.]]></source>
+                <target><![CDATA[Keine Treffer.]]></target>
+            </trans-unit>
+            <trans-unit id="listview.page" approved="yes">
+                <source><![CDATA[%d]]></source>
+                <target><![CDATA[%d]]></target>
+            </trans-unit>
+            <trans-unit id="listview.prevPage" approved="yes">
+                <source><![CDATA[&lt;]]></source>
+                <target><![CDATA[&lt;]]></target>
+            </trans-unit>
+            <trans-unit id="listview.separator" approved="yes">
+                <source><![CDATA[ - ]]></source>
+                <target><![CDATA[ - ]]></target>
+            </trans-unit>
+            <trans-unit id="listview.skip" approved="yes">
+                <source><![CDATA[...]]></source>
+                <target><![CDATA[...]]></target>
+            </trans-unit>
+            <trans-unit id="nextPage" approved="yes">
+                <source><![CDATA[Next Page]]></source>
+                <target><![CDATA[Nächste Seite]]></target>
+            </trans-unit>
+            <trans-unit id="noTitle" approved="yes">
+                <source><![CDATA[[no title]]]></source>
+                <target><![CDATA[[kein Titel]]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.badArgument" approved="yes">
+                <source><![CDATA[The request includes illegal arguments, is missing required arguments, or values for arguments have an illegal syntax.]]></source>
+                <target><![CDATA[Die Anfrage enthält ungültige Parameter, es fehlen benötigte Parameter oder Parameter haben ungültige Werte.]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.badResumptionToken" approved="yes">
+                <source><![CDATA[The value of the resumptionToken argument is invalid or expired.]]></source>
+                <target><![CDATA[Das "resumptionToken" ist ungültig oder abgelaufen.]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.badVerb" approved="yes">
+                <source><![CDATA[Value of the verb argument is not a legal OAI-PMH verb or the verb argument is missing.]]></source>
+                <target><![CDATA[Der Parameter "verb" fehlt oder hat keinen gültigen OAI-PMH-Wert.]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.cannotDisseminateFormat" approved="yes">
+                <source><![CDATA[The metadata format identified by the value given for the metadataPrefix argument is not supported by the item or by the repository.]]></source>
+                <target><![CDATA[Das im Parameter "metadataPrefix" angegebene Format wird vom gewünschten Datensatz oder dem Repository nicht unterstützt.]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.error" approved="yes">
+                <source><![CDATA[An error occurred, please try again later. If this happens consistently, please contact the administrator.]]></source>
+                <target><![CDATA[Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal. Sollte der Fehler dauerhaft auftreten, kontaktieren Sie bitte den Administrator.]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.idDoesNotExist" approved="yes">
+                <source><![CDATA[The value of the identifier argument is unknown or illegal in this repository.]]></source>
+                <target><![CDATA[Der im Parameter "identifier" angegebene Wert existiert nicht im Repository.]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.noMetadataFormats" approved="yes">
+                <source><![CDATA[There are no metadata formats available for the specified item.]]></source>
+                <target><![CDATA[Für den gewünschten Datensatz werden keine Datenformate unterstützt.]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.noRecordsMatch" approved="yes">
+                <source><![CDATA[The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list.]]></source>
+                <target><![CDATA[Die Anfrage ergab eine leere Treffermenge.]]></target>
+            </trans-unit>
+            <trans-unit id="oaipmh.noSetHierarchy" approved="yes">
+                <source><![CDATA[The repository does not support sets or the value of the set argument is invalid.]]></source>
+                <target><![CDATA[Das Repository unterstützt keine Sets oder der Wert des Parameters "set" ist ungültig.]]></target>
+            </trans-unit>
+            <trans-unit id="page" approved="yes">
+                <source><![CDATA[Page]]></source>
+                <target><![CDATA[Seite]]></target>
+            </trans-unit>
+            <trans-unit id="pageview.overview-map" approved="yes">
+                <source><![CDATA[Overview Map]]></source>
+                <target><![CDATA[Miniaturansicht]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.feeds.new" approved="yes">
+                <source><![CDATA[NEW:]]></source>
+                <target><![CDATA[NEU:]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.feeds.update" approved="yes">
+                <source><![CDATA[UPDATE:]]></source>
+                <target><![CDATA[UPDATE:]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.headline.success" approved="yes">
+                <source><![CDATA[Successful]]></source>
+                <target><![CDATA[Erfolgreich]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.headline.error" approved="yes">
+                <source><![CDATA[Error]]></source>
+                <target><![CDATA[Fehler]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.headline.warning" approved="yes">
+                <source><![CDATA[Warning]]></source>
+                <target><![CDATA[Warnung]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.headline.notice" approved="yes">
+                <source><![CDATA[Notice]]></source>
+                <target><![CDATA[Info]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.label" approved="yes">
+                <source><![CDATA[Insert the link to your <acronym href="" title="metadata encoding and transmission standard">METS</acronym> file here:]]></source>
+                <target><![CDATA[Fügen Sie hier den Link zu Ihrer <acronym title="Metadatenkodierungs- und -übertragungsstandard">METS</acronym>-Datei ein:]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.validationform.validate" approved="yes">
+                <source><![CDATA[validate]]></source>
+                <target><![CDATA[Validieren]]></target>
+            </trans-unit>
+            <trans-unit id="prevPage" approved="yes">
+                <source><![CDATA[Previous Page]]></source>
+                <target><![CDATA[Vorherige Seite]]></target>
+            </trans-unit>
+            <trans-unit id="rotateLeft" approved="yes">
+                <source><![CDATA[Rotate Left]]></source>
+                <target><![CDATA[Ansicht nach links drehen]]></target>
+            </trans-unit>
+            <trans-unit id="rotateReset" approved="yes">
+                <source><![CDATA[Reset Rotation]]></source>
+                <target><![CDATA[Drehung zurücksetzen]]></target>
+            </trans-unit>
+            <trans-unit id="rotateRight" approved="yes">
+                <source><![CDATA[Rotate Right]]></source>
+                <target><![CDATA[Ansicht nach rechts drehen]]></target>
+            </trans-unit>
+            <trans-unit id="prevMeasure">
+                <source><![CDATA[Previus Measure]]></source>
+                <target><![CDATA[Vorheriger Takt]]></target>
+            </trans-unit>
+            <trans-unit id="nextMeasure">
+                <source><![CDATA[Next Measure]]></source>
+                <target><![CDATA[Nächster Takt]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.documentBack" approved="yes">
+                <source><![CDATA[Previous document]]></source>
+                <target><![CDATA[Vorheriges Dokument]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.documentForward" approved="yes">
+                <source><![CDATA[Next document]]></source>
+                <target><![CDATA[Nächstes Dokument]]></target>
+            </trans-unit>
+            <trans-unit id="search.dateFrom" approved="yes">
+                <source><![CDATA[From]]></source>
+                <target><![CDATA[Von]]></target>
+            </trans-unit>
+            <trans-unit id="search.dateTo" approved="yes">
+                <source><![CDATA[To]]></source>
+                <target><![CDATA[Bis]]></target>
+            </trans-unit>
+            <trans-unit id="search.for" approved="yes">
+                <source><![CDATA[for "%s"]]></source>
+                <target><![CDATA[nach "%s"]]></target>
+            </trans-unit>
+            <trans-unit id="search.in" approved="yes">
+                <source><![CDATA[in "%s"]]></source>
+                <target><![CDATA[in "%s"]]></target>
+            </trans-unit>
+            <trans-unit id="search.inFulltext" approved="yes">
+                <source><![CDATA[in fulltext]]></source>
+                <target><![CDATA[im Volltext]]></target>
+            </trans-unit>
+            <trans-unit id="search.inMetadata" approved="yes">
+                <source><![CDATA[in metadata]]></source>
+                <target><![CDATA[in Metadaten]]></target>
+            </trans-unit>
+            <trans-unit id="search.logicalPage" approved="yes">
+                <source><![CDATA[Page]]></source>
+                <target><![CDATA[Seite]]></target>
+            </trans-unit>
+            <trans-unit id="search.operator.AND" approved="yes">
+                <source><![CDATA[and]]></source>
+                <target><![CDATA[und]]></target>
+            </trans-unit>
+            <trans-unit id="search.operator.NOT" approved="yes">
+                <source><![CDATA[not]]></source>
+                <target><![CDATA[nicht]]></target>
+            </trans-unit>
+            <trans-unit id="search.operator.OR" approved="yes">
+                <source><![CDATA[or]]></source>
+                <target><![CDATA[oder]]></target>
+            </trans-unit>
+            <trans-unit id="search.query" approved="yes">
+                <source><![CDATA[Search for:]]></source>
+                <target><![CDATA[Suchen nach:]]></target>
+            </trans-unit>
+            <trans-unit id="search.resetFacet" approved="yes">
+                <source><![CDATA[Reset selection (%s)]]></source>
+                <target><![CDATA[Auswahl entfernen (%s)]]></target>
+            </trans-unit>
+            <trans-unit id="search.search" approved="yes">
+                <source><![CDATA[Search]]></source>
+                <target><![CDATA[Suche]]></target>
+            </trans-unit>
+            <trans-unit id="search.submit" approved="yes">
+                <source><![CDATA[Search]]></source>
+                <target><![CDATA[Suchen]]></target>
+            </trans-unit>
+            <trans-unit id="selectPage" approved="yes">
+                <source><![CDATA[Page]]></source>
+                <target><![CDATA[Seite]]></target>
+            </trans-unit>
+            <trans-unit id="thumbnail" approved="yes">
+                <source><![CDATA[Thumbnail]]></source>
+                <target><![CDATA[Vorschaubild]]></target>
+            </trans-unit>
+            <trans-unit id="thumbnail.alt" approved="yes">
+                <source><![CDATA[Thumbnail for %s]]></source>
+                <target><![CDATA[Vorschaubild von %s]]></target>
+            </trans-unit>
+            <trans-unit id="title" approved="yes">
+                <source><![CDATA[title]]></source>
+                <target><![CDATA[Titel]]></target>
+            </trans-unit>
+            <trans-unit id="titles" approved="yes">
+                <source><![CDATA[titles]]></source>
+                <target><![CDATA[Titel]]></target>
+            </trans-unit>
+            <trans-unit id="tools.annotation.not-available" approved="yes">
+                <source><![CDATA[No Annotations available]]></source>
+                <target><![CDATA[Keine Annotationen vorhanden]]></target>
+            </trans-unit>
+            <trans-unit id="tools.annotation.off" approved="yes">
+                <source><![CDATA[Hide Annotations]]></source>
+                <target><![CDATA[Annotationen verbergen]]></target>
+            </trans-unit>
+            <trans-unit id="tools.annotation.on" approved="yes">
+                <source><![CDATA[Display Annotations]]></source>
+                <target><![CDATA[Annotationen anzeigen]]></target>
+            </trans-unit>
+            <trans-unit id="tools.fulltext" approved="yes">
+                <source><![CDATA[Full text]]></source>
+                <target><![CDATA[Volltext]]></target>
+            </trans-unit>
+            <trans-unit id="tools.fulltext.loading" approved="yes">
+                <source><![CDATA[Loading full text...]]></source>
+                <target><![CDATA[Volltext wird geladen...]]></target>
+            </trans-unit>
+            <trans-unit id="tools.fulltext.not-available" approved="yes">
+                <source><![CDATA[No full text available]]></source>
+                <target><![CDATA[Keine Volltexte vorhanden]]></target>
+            </trans-unit>
+            <trans-unit id="tools.fulltext.off" approved="yes">
+                <source><![CDATA[Deactivate full text]]></source>
+                <target><![CDATA[Volltext aus]]></target>
+            </trans-unit>
+            <trans-unit id="tools.fulltext.on" approved="yes">
+                <source><![CDATA[Activate full text]]></source>
+                <target><![CDATA[Volltext an]]></target>
+            </trans-unit>
+            <trans-unit id="tools.fulltextdownload.download-current-page" approved="yes">
+                <source><![CDATA[Current page (TXT)]]></source>
+                <target><![CDATA[Aktuelle Seite (TXT)]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.brightness" approved="yes">
+                <source><![CDATA[Brightness]]></source>
+                <target><![CDATA[Helligkeit]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.contrast" approved="yes">
+                <source><![CDATA[Contrast]]></source>
+                <target><![CDATA[Kontrast]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.hue" approved="yes">
+                <source><![CDATA[Hue]]></source>
+                <target><![CDATA[Färbung]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.invert" approved="yes">
+                <source><![CDATA[Color inverting]]></source>
+                <target><![CDATA[Farbinvertierung]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.no-support" approved="yes">
+                <source><![CDATA[Image manipulation is not supported]]></source>
+                <target><![CDATA[Bildbearbeitung wird nicht unterstützt]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.off" approved="yes">
+                <source><![CDATA[Deactivate image manipulation]]></source>
+                <target><![CDATA[Bildbearbeitung aus]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.on" approved="yes">
+                <source><![CDATA[Activate image manipulation]]></source>
+                <target><![CDATA[Bildbearbeitung an]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.reset" approved="yes">
+                <source><![CDATA[Reset]]></source>
+                <target><![CDATA[Zurücksetzen]]></target>
+            </trans-unit>
+            <trans-unit id="tools.imagemanipulation.saturation" approved="yes">
+                <source><![CDATA[Saturation]]></source>
+                <target><![CDATA[Sättigung]]></target>
+            </trans-unit>
+            <trans-unit id="tools.score" approved="yes">
+                <source><![CDATA[Score]]></source>
+                <target><![CDATA[Partitur]]></target>
+            </trans-unit>
+            <trans-unit id="tools.score.player" approved="yes">
+                <source><![CDATA[MIDI player]]></source>
+                <target><![CDATA[MIDI-Player ]]></target>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.deleteSearch" approved="yes">
+                <source><![CDATA[Delete Search]]></source>
+                <target><![CDATA[Suche löschen]]></target>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.loading" approved="yes">
+                <source><![CDATA[Loading...]]></source>
+                <target><![CDATA[Laden...]]></target>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.next" approved="yes">
+                <source><![CDATA[next]]></source>
+                <target><![CDATA[weiter]]></target>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.noresult" approved="yes">
+                <source><![CDATA[No result found in current document.]]></source>
+                <target><![CDATA[Kein Ergebnis im aktuellen Dokument gefunden.]]></target>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.previous" approved="yes">
+                <source><![CDATA[previous]]></source>
+                <target><![CDATA[zurück]]></target>
+            </trans-unit>
+            <trans-unit id="tools.searchindocument.searchInDocument" approved="yes">
+                <source><![CDATA[Search in document]]></source>
+                <target><![CDATA[Im Dokument suchen]]></target>
+            </trans-unit>
+            <trans-unit id="tools.viewerselection.default" approved="yes">
+                <source><![CDATA[Default]]></source>
+                <target><![CDATA[Standard]]></target>
+            </trans-unit>
+            <trans-unit id="volume" approved="yes">
+                <source><![CDATA[volume]]></source>
+                <target><![CDATA[Band]]></target>
+            </trans-unit>
+            <trans-unit id="volumes" approved="yes">
+                <source><![CDATA[volumes]]></source>
+                <target><![CDATA[Bände]]></target>
+            </trans-unit>
+            <trans-unit id="zoomFullscreen" approved="yes">
+                <source><![CDATA[Fullscreen Mode]]></source>
+                <target><![CDATA[Vollansicht]]></target>
+            </trans-unit>
+            <trans-unit id="zoomIn" approved="yes">
+                <source><![CDATA[Zoom In]]></source>
+                <target><![CDATA[Ansicht vergrößern]]></target>
+            </trans-unit>
+            <trans-unit id="zoomOut" approved="yes">
+                <source><![CDATA[Zoom Out]]></source>
+                <target><![CDATA[Ansicht verkleinern]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.module" approved="yes">
+                <source><![CDATA[New Tenant Module]]></source>
+                <target><![CDATA[Modul Neuer Mandant]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.createFormat" approved="yes">
+                <source><![CDATA[Create default namespaces]]></source>
+                <target><![CDATA[Standard-Namensräume anlegen]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.createMetadata" approved="yes">
+                <source><![CDATA[Create metadata]]></source>
+                <target><![CDATA[Metadaten Konfiguration anlegen]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.createSolrCore" approved="yes">
+                <source><![CDATA[Create solr core]]></source>
+                <target><![CDATA[Solr Kern anlegen]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.createStructure" approved="yes">
+                <source><![CDATA[Create structures]]></source>
+                <target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
+            </trans-unit>
             <trans-unit id="newTenant.formatOkay" approved="yes">
                 <source><![CDATA[Default namespaces found!]]></source>
                 <target><![CDATA[Standard-Namensräume gefunden!]]></target>
@@ -617,18 +621,18 @@
                 <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
                 <target><![CDATA[Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
             </trans-unit>
-			<trans-unit id="annotation.creator.label" approved="yes">
-				<source><![CDATA[Annotation created by:]]></source>
-				<target><![CDATA[Annotation erstellt von:]]></target>
-			</trans-unit>
-			<trans-unit id="annotation.created.label" approved="yes">
-				<source><![CDATA[Created:]]></source>
-				<target><![CDATA[Erstellt:]]></target>
-			</trans-unit>
-			<trans-unit id="annotation.modified.label" approved="yes">
-				<source><![CDATA[Modified:]]></source>
-				<target><![CDATA[Geändert:]]></target>
-			</trans-unit>
-		</body>
-	</file>
+            <trans-unit id="annotation.creator.label" approved="yes">
+                <source><![CDATA[Annotation created by:]]></source>
+                <target><![CDATA[Annotation erstellt von:]]></target>
+            </trans-unit>
+            <trans-unit id="annotation.created.label" approved="yes">
+                <source><![CDATA[Created:]]></source>
+                <target><![CDATA[Erstellt:]]></target>
+            </trans-unit>
+            <trans-unit id="annotation.modified.label" approved="yes">
+                <source><![CDATA[Modified:]]></source>
+                <target><![CDATA[Geändert:]]></target>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>
