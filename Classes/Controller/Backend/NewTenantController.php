@@ -203,11 +203,6 @@ class NewTenantController extends AbstractController
         // Include formats definition file.
         $formatsDefaults = $this->getRecords('Format');
 
-        $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
-        // tx_dlf_formats are stored on PID = 0
-        $frameworkConfiguration['persistence']['storagePid'] = 0;
-        $this->configurationManager->setConfiguration($frameworkConfiguration);
-
         $doPersist = false;
 
         foreach ($formatsDefaults as $type => $values) {
