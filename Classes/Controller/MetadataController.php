@@ -122,9 +122,9 @@ class MetadataController extends AbstractController
             $data = [];
             if ($this->useOriginalIiifManifestMetadata) {
                 // @phpstan-ignore-next-line
-                $data = $this->currentDocument->getManifestMetadata($topLevelId, $this->settings['storagePid']);
+                $data = $this->currentDocument->getManifestMetadata($topLevelId);
             } else {
-                $data = $this->currentDocument->getToplevelMetadata($this->settings['storagePid']);
+                $data = $this->currentDocument->getToplevelMetadata();
             }
             $data['_id'] = $topLevelId;
             array_unshift($metadata, $data);
@@ -505,9 +505,9 @@ class MetadataController extends AbstractController
         foreach ($id as $sid) {
             if ($this->useOriginalIiifManifestMetadata) {
                 // @phpstan-ignore-next-line
-                $data = $this->currentDocument->getManifestMetadata($sid, $this->settings['storagePid']);
+                $data = $this->currentDocument->getManifestMetadata($sid);
             } else {
-                $data = $this->currentDocument->getMetadata($sid, $this->settings['storagePid']);
+                $data = $this->currentDocument->getMetadata($sid);
             }
             if (!empty($data)) {
                 $data['_id'] = $sid;

@@ -689,6 +689,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         if ($this->document) {
             $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
             if ($doc !== null) {
+                $doc->pid = $this->document->getPid();
                 $this->buildMultiView($doc);
                 // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
                 $this->documentArray[] = $doc;
@@ -726,11 +727,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 if ($docFromRepository !== null) {
                     $this->document = $docFromRepository;
                 }
-            }
-
-            // Make sure configuration PID is set when applicable
-            if ($doc->cPid == 0) {
-                $doc->cPid = max($this->settings['storagePid'], 0);
             }
 
             $this->document->setLocation($documentId);

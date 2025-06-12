@@ -30,7 +30,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  *
  * @abstract
  *
- * @property int $cPid this holds the PID for the configuration
+ * @property int $configPid this holds the PID for the configuration
  * @property-read array $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
@@ -68,7 +68,7 @@ abstract class AbstractDocument
      * @access protected
      * @var int This holds the PID for the configuration
      */
-    protected int $cPid = 0;
+    protected int $configPid = 0;
 
     /**
      * @access public
@@ -394,11 +394,10 @@ abstract class AbstractDocument
      *
      * @param string $id The "@ID" attribute of the logical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
-     * @param int $cPid The PID for the metadata definitions (defaults to $this->cPid or $this->pid)
      *
      * @return array The logical structure node's / the IIIF resource's parsed metadata array
      */
-    abstract public function getMetadata(string $id, int $cPid = 0): array;
+    abstract public function getMetadata(string $id): array;
 
     /**
      * Analyze the document if it contains any fulltext that needs to be indexed.
@@ -516,11 +515,9 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param int $cPid
-     *
      * @return void
      */
-    abstract protected function prepareMetadataArray(int $cPid): void;
+    abstract protected function prepareMetadataArray(): void;
 
     /**
      * Reuse any document object that might have been already loaded to determine whether document is METS or IIIF
@@ -571,7 +568,6 @@ abstract class AbstractDocument
             if ($content !== false) {
                 $xml = Helper::getXmlFileAsString($content);
                 if ($xml !== false) {
-                    /* @var $xml \SimpleXMLElement */
                     $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
                     $xpathResult = $xml->xpath('//mets:mets');
                     $documentFormat = !empty($xpathResult) ? 'METS' : null;
@@ -585,12 +581,10 @@ abstract class AbstractDocument
             }
         }
 
-        // Sanitize input.
-        $pid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
         if ($documentFormat == 'METS') {
-            $instance = new MetsDocument($pid, $location, $xml, $settings);
+            $instance = new MetsDocument($location, $xml, $settings);
         } elseif ($iiif instanceof IiifResourceInterface) {
-            $instance = new IiifManifest($pid, $location, $iiif);
+            $instance = new IiifManifest($location, $iiif, $settings);
         }
 
         if ($instance !== null) {
@@ -692,13 +686,11 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param int $cPid The PID for the metadata definitions
-     *
      * @return array The logical structure node's / resource's parsed metadata array
      */
-    public function getToplevelMetadata(int $cPid = 0): array
+    public function getToplevelMetadata(): array
     {
-        $toplevelMetadata = $this->getMetadata($this->getToplevelId(), $cPid);
+        $toplevelMetadata = $this->getMetadata($this->getToplevelId());
         // Add information from METS structural map to toplevel metadata array.
         if ($this instanceof MetsDocument) {
             $this->addMetadataFromMets($toplevelMetadata, $this->getToplevelId());
@@ -908,15 +900,15 @@ abstract class AbstractDocument
     }
 
     /**
-     * This returns $this->cPid via __get()
+     * This returns $this->configPid via __get()
      *
      * @access protected
      *
      * @return int The PID of the metadata definitions
      */
-    protected function magicGetCPid(): int
+    protected function magicGetConfigPid(): int
     {
-        return $this->cPid;
+        return $this->configPid;
     }
 
     /**
@@ -943,17 +935,16 @@ abstract class AbstractDocument
     protected function magicGetMetadataArray(): array
     {
         // Set metadata definitions' PID.
-        $cPid = ($this->cPid ? $this->cPid : $this->pid);
-        if (!$cPid) {
-            $this->logger->error('Invalid PID ' . $cPid . ' for metadata definitions');
+        if ($this->configPid == 0) {
+            $this->logger->error('Invalid PID for metadata definitions');
             return [];
         }
         if (
             !$this->metadataArrayLoaded
-            || $this->metadataArray[0] != $cPid
+            || $this->metadataArray[0] != $this->configPid
         ) {
-            $this->prepareMetadataArray($cPid);
-            $this->metadataArray[0] = $cPid;
+            $this->prepareMetadataArray();
+            $this->metadataArray[0] = $this->configPid;
             $this->metadataArrayLoaded = true;
         }
         return $this->metadataArray;
@@ -1075,7 +1066,7 @@ abstract class AbstractDocument
     }
 
     /**
-     * This sets $this->cPid via __set()
+     * This sets $this->configPid via __set()
      *
      * @access protected
      *
@@ -1083,9 +1074,9 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    protected function _setCPid(int $value): void
+    protected function _setConfigPid(int $value): void
     {
-        $this->cPid = max($value, 0);
+        $this->configPid = max($value, 0);
     }
 
     /**
@@ -1094,23 +1085,24 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @param int $pid If > 0, then only document with this PID gets loaded
      * @param string $location The location URL of the XML file to parse
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
      */
-    protected function __construct(int $pid, string $location, $preloadedDocument, array $settings = [])
+    protected function __construct(string $location, $preloadedDocument, array $settings = [])
     {
         // Note: Any change here might require an update in function __sleep
         // of class MetsDocument and class IiifManifest, too.
-
-        $this->pid = $pid;
+        $storagePid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
+        if ($this->configPid == 0) {
+            $this->configPid = $storagePid;
+        }
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location, $settings);
-        $this->establishRecordId($pid);
+        $this->establishRecordId($storagePid);
     }
 
     /**
