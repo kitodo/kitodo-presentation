@@ -376,10 +376,10 @@ class DataHandler implements LoggerAwareInterface
 
             $result = $queryBuilder
                 ->select(
-                    'tx_dlf_solrcores.index_name AS core'
+                    'index_name AS core'
                 )
                 ->from('tx_dlf_solrcores')
-                ->where($queryBuilder->expr()->eq('tx_dlf_solrcores.uid', (int) $id))
+                ->where($queryBuilder->expr()->eq('uid', (int) $id))
                 ->setMaxResults(1)
                 ->execute();
 
