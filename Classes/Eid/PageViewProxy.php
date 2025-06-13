@@ -145,11 +145,17 @@ class PageViewProxy
         $queryParams = $request->getQueryParams();
 
         $url = (string) ($queryParams['url'] ?? '');
+        $headers = [
+            'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation'
+        ];
+
+        if ($this->extConf['useAllCookies'] ?? false) {
+            $headers['Cookie'] = filter_input(INPUT_SERVER, 'HTTP_COOKIE');
+        }
+
         try {
             $targetResponse = $this->requestFactory->request($url, 'HEAD', [
-                'headers' => [
-                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation',
-                ]
+                'headers' => $headers
             ]);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => 'Could not fetch resource of given URL.'], 500);
@@ -190,11 +196,18 @@ class PageViewProxy
         if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
             return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
         }
+
+        $headers = [
+            'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation'
+        ];
+
+        if ($this->extConf['useAllCookies'] ?? false) {
+            $headers['Cookie'] = filter_input(INPUT_SERVER, 'HTTP_COOKIE');
+        }
+
         try {
             $targetResponse = $this->requestFactory->request($url, 'GET', [
-                'headers' => [
-                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation',
-                ],
+                'headers' => $headers,
 
                 // For performance, don't download content up-front. Rather, we'll
                 // download and upload simultaneously.

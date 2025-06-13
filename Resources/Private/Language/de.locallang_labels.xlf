@@ -634,8 +634,12 @@
 				<target>Standard-Namensräume für Metadaten</target>
 			</trans-unit>
             <trans-unit id="config.general.enableInternalProxy">
-                <source>Enable internal page view proxy?: (default is "FALSE")</source>
+                <source>Enable internal page view proxy? (default is "FALSE")</source>
                 <target>Internen Proxy für Werkansicht aktivieren? (Standard ist "FALSE")</target>
+            </trans-unit>
+            <trans-unit id="config.general.useAllCookies">
+                <source>Allow usage of all cookies? (default is "FALSE")</source>
+                <target>Nutzung aller Cookies zulassen? (Standard ist "FALSE")</target>
             </trans-unit>
             <trans-unit id="config.general.userAgent">
                 <target>DLF User-Agent: (Standard ist "Kitodo.Presentation")</target>
