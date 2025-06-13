@@ -150,7 +150,7 @@ class PageViewProxy
         ];
 
         if ($this->extConf['useAllCookies'] ?? false) {
-            $headers['Cookie'] = $_SERVER["HTTP_COOKIE"];
+            $headers['Cookie'] = filter_input(INPUT_SERVER, 'HTTP_COOKIE');
         }
 
         try {
@@ -202,7 +202,7 @@ class PageViewProxy
         ];
 
         if ($this->extConf['useAllCookies'] ?? false) {
-            $headers['Cookie'] = $_SERVER["HTTP_COOKIE"];
+            $headers['Cookie'] = filter_input(INPUT_SERVER, 'HTTP_COOKIE');
         }
 
         try {
