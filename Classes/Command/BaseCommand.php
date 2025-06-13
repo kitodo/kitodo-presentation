@@ -206,9 +206,9 @@ class BaseCommand extends Command
             return false;
         }
 
-        $doc->cPid = $this->storagePid;
+        $doc->configPid = $this->storagePid;
 
-        $metadata = $doc->getToplevelMetadata($this->storagePid);
+        $metadata = $doc->getToplevelMetadata();
         $validator = new DocumentValidator($metadata, explode(',', $this->extConf['general']['requiredMetadataFields']));
 
         if ($validator->hasAllMandatoryMetadataFields()) {
@@ -386,7 +386,7 @@ class BaseCommand extends Command
         // Get only authors' names for storing in database.
         foreach ($metadataAuthor as $i => $author) {
             if (is_array($author)) {
-                $metadata['author'][$i] = $author['name'];
+                $metadataAuthor[$i] = $author['name'];
             }
         }
 

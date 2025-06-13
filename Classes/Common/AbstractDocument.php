@@ -30,7 +30,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  *
  * @abstract
  *
- * @property int $cPid this holds the PID for the configuration
+ * @property int $configPid this holds the PID for the configuration
  * @property-read array $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
@@ -54,7 +54,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
- * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
  */
 abstract class AbstractDocument
@@ -69,7 +68,7 @@ abstract class AbstractDocument
      * @access protected
      * @var int This holds the PID for the configuration
      */
-    protected int $cPid = 0;
+    protected int $configPid = 0;
 
     /**
      * @access public
@@ -329,6 +328,21 @@ abstract class AbstractDocument
     abstract public function getFileLocation(string $id): string;
 
     /**
+     * This gets the location of a file representing a physical page or track
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
+     *
+     * @param string $useGroup The "@USE" attribute of the fileGrp node (METS)
+     *
+     * @return string The file's location as URL
+     */
+    abstract public function getFileLocationInUsegroup(string $id, string $useGroup): string;
+
+    /**
      * This gets the MIME type of a file representing a physical page or track
      *
      * @access public
@@ -380,11 +394,10 @@ abstract class AbstractDocument
      *
      * @param string $id The "@ID" attribute of the logical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
-     * @param int $cPid The PID for the metadata definitions (defaults to $this->cPid or $this->pid)
      *
      * @return array The logical structure node's / the IIIF resource's parsed metadata array
      */
-    abstract public function getMetadata(string $id, int $cPid = 0): array;
+    abstract public function getMetadata(string $id): array;
 
     /**
      * Analyze the document if it contains any fulltext that needs to be indexed.
@@ -460,13 +473,13 @@ abstract class AbstractDocument
     /**
      * This returns the ID of the toplevel logical structure node
      *
-     * @access protected
+     * @access public
      *
      * @abstract
      *
      * @return string The logical structure node's ID
      */
-    abstract protected function magicGetToplevelId(): string;
+    abstract public function getToplevelId(): string;
 
     /**
      * This sets some basic class properties
@@ -502,11 +515,9 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @param int $cPid
-     *
      * @return void
      */
-    abstract protected function prepareMetadataArray(int $cPid): void;
+    abstract protected function prepareMetadataArray(): void;
 
     /**
      * Reuse any document object that might have been already loaded to determine whether document is METS or IIIF
@@ -557,7 +568,6 @@ abstract class AbstractDocument
             if ($content !== false) {
                 $xml = Helper::getXmlFileAsString($content);
                 if ($xml !== false) {
-                    /* @var $xml \SimpleXMLElement */
                     $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
                     $xpathResult = $xml->xpath('//mets:mets');
                     $documentFormat = !empty($xpathResult) ? 'METS' : null;
@@ -566,22 +576,15 @@ abstract class AbstractDocument
                     $contentAsJsonArray = json_decode($content, true);
                     if ($contentAsJsonArray !== null) {
                         $iiif = self::loadIiifResource($contentAsJsonArray);
-                        if ($iiif instanceof IiifResourceInterface) {
-                            $documentFormat = 'IIIF';
-                        }
                     }
                 }
             }
         }
 
-        // Sanitize input.
-        $pid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
         if ($documentFormat == 'METS') {
-            $instance = new MetsDocument($pid, $location, $xml, $settings);
-        } elseif ($documentFormat == 'IIIF') {
-            // TODO: Parameter $preloadedDocument of class Kitodo\Dlf\Common\IiifManifest constructor expects SimpleXMLElement|Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface, Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity|null given.
-            // @phpstan-ignore-next-line
-            $instance = new IiifManifest($pid, $location, $iiif);
+            $instance = new MetsDocument($location, $xml, $settings);
+        } elseif ($iiif instanceof IiifResourceInterface) {
+            $instance = new IiifManifest($location, $iiif, $settings);
         }
 
         if ($instance !== null) {
@@ -670,10 +673,10 @@ abstract class AbstractDocument
                     $title = self::getTitle($partof, true);
                 }
             } else {
-                Helper::log('No document with UID ' . $uid . ' found or document not accessible', LOG_SEVERITY_WARNING);
+                Helper::warning('No document with UID ' . $uid . ' found or document not accessible');
             }
         } else {
-            Helper::log('Invalid UID ' . $uid . ' for document', LOG_SEVERITY_ERROR);
+            Helper::error('Invalid UID ' . $uid . ' for document');
         }
         return $title;
     }
@@ -683,16 +686,14 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @param int $cPid The PID for the metadata definitions
-     *
      * @return array The logical structure node's / resource's parsed metadata array
      */
-    public function getToplevelMetadata(int $cPid = 0): array
+    public function getToplevelMetadata(): array
     {
-        $toplevelMetadata = $this->getMetadata($this->magicGetToplevelId(), $cPid);
+        $toplevelMetadata = $this->getMetadata($this->getToplevelId());
         // Add information from METS structural map to toplevel metadata array.
         if ($this instanceof MetsDocument) {
-            $this->addMetadataFromMets($toplevelMetadata, $this->magicGetToplevelId());
+            $this->addMetadataFromMets($toplevelMetadata, $this->getToplevelId());
         }
         // Set record identifier for METS file / IIIF manifest if not present.
         if (array_key_exists('record_id', $toplevelMetadata)) {
@@ -899,15 +900,15 @@ abstract class AbstractDocument
     }
 
     /**
-     * This returns $this->cPid via __get()
+     * This returns $this->configPid via __get()
      *
      * @access protected
      *
      * @return int The PID of the metadata definitions
      */
-    protected function magicGetCPid(): int
+    protected function magicGetConfigPid(): int
     {
-        return $this->cPid;
+        return $this->configPid;
     }
 
     /**
@@ -934,17 +935,16 @@ abstract class AbstractDocument
     protected function magicGetMetadataArray(): array
     {
         // Set metadata definitions' PID.
-        $cPid = ($this->cPid ? $this->cPid : $this->pid);
-        if (!$cPid) {
-            $this->logger->error('Invalid PID ' . $cPid . ' for metadata definitions');
+        if ($this->configPid == 0) {
+            $this->logger->error('Invalid PID for metadata definitions');
             return [];
         }
         if (
             !$this->metadataArrayLoaded
-            || $this->metadataArray[0] != $cPid
+            || $this->metadataArray[0] != $this->configPid
         ) {
-            $this->prepareMetadataArray($cPid);
-            $this->metadataArray[0] = $cPid;
+            $this->prepareMetadataArray();
+            $this->metadataArray[0] = $this->configPid;
             $this->metadataArrayLoaded = true;
         }
         return $this->metadataArray;
@@ -1039,9 +1039,7 @@ abstract class AbstractDocument
     {
         if (!$this->rootIdLoaded) {
             if ($this->parentId) {
-                // TODO: Parameter $location of static method AbstractDocument::getInstance() expects string, int<min, -1>|int<1, max> given.
-                // @phpstan-ignore-next-line
-                $parent = self::getInstance($this->parentId, ['storagePid' => $this->pid]);
+                $parent = self::getInstance((string) $this->parentId, ['storagePid' => $this->pid]);
                 $this->rootId = $parent->rootId;
             }
             $this->rootIdLoaded = true;
@@ -1068,7 +1066,7 @@ abstract class AbstractDocument
     }
 
     /**
-     * This sets $this->cPid via __set()
+     * This sets $this->configPid via __set()
      *
      * @access protected
      *
@@ -1076,9 +1074,9 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    protected function _setCPid(int $value): void
+    protected function _setConfigPid(int $value): void
     {
-        $this->cPid = max($value, 0);
+        $this->configPid = max($value, 0);
     }
 
     /**
@@ -1087,23 +1085,24 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @param int $pid If > 0, then only document with this PID gets loaded
      * @param string $location The location URL of the XML file to parse
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
      *
      * @return void
      */
-    protected function __construct(int $pid, string $location, $preloadedDocument, array $settings = [])
+    protected function __construct(string $location, $preloadedDocument, array $settings = [])
     {
         // Note: Any change here might require an update in function __sleep
         // of class MetsDocument and class IiifManifest, too.
-
-        $this->pid = $pid;
+        $storagePid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
+        if ($this->configPid == 0) {
+            $this->configPid = $storagePid;
+        }
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location, $settings);
-        $this->establishRecordId($pid);
+        $this->establishRecordId($storagePid);
     }
 
     /**

@@ -29,7 +29,15 @@ class MetsDocumentTest extends FunctionalTestCase
     protected function doc(string $file)
     {
         $url = 'http://web:8001/Tests/Fixtures/MetsDocument/' . $file;
-        $doc = AbstractDocument::getInstance($url, ['general' => ['useExternalApisForMetadata' => 0]]);
+        $doc = AbstractDocument::getInstance(
+            $url,
+            [
+                'general' => [
+                    'useExternalApisForMetadata' => 0
+                ],
+                'storagePid' => 20000
+            ]
+        );
         self::assertNotNull($doc);
         return $doc;
     }
@@ -41,7 +49,7 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('av_beispiel.xml');
 
-        $toplevelMetadata = $doc->getToplevelMetadata(20000);
+        $toplevelMetadata = $doc->getToplevelMetadata();
 
         self::assertEquals(['Odol-Mundwasser, 3 Werbespots'], $toplevelMetadata['title']);
         self::assertEquals(['24'], $toplevelMetadata['frame_rate']);
@@ -60,10 +68,10 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('av_beispiel.xml');
 
-        $thumbsMeta = $doc->getMetadata('FILE_0000_THUMBS', 20000);
+        $thumbsMeta = $doc->getMetadata('FILE_0000_THUMBS');
         self::assertEquals($thumbsMeta, []);
 
-        $videoMeta = $doc->getMetadata('FILE_0000_DEFAULT_MOV', 20000);
+        $videoMeta = $doc->getMetadata('FILE_0000_DEFAULT_MOV');
         self::assertArrayMatches([
             'frame_rate' => ['24'],
         ], $videoMeta);
@@ -162,7 +170,7 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('two_dmdsec.xml');
 
-        $toplevelMetadata = $doc->getToplevelMetadata(20000);
+        $toplevelMetadata = $doc->getToplevelMetadata();
         $toc = $doc->tableOfContents[0] ?? [];
 
         self::assertEquals('DMDLOG_0000 DMDLOG_0000b', $toc['dmdId']); // TODO: Do we want the raw (non-split) value here?
@@ -177,15 +185,15 @@ class MetsDocumentTest extends FunctionalTestCase
         $doc = $this->doc('two_dmdsec.xml');
 
         // DMD and AMD works
-        $metadata = $doc->getMetadata('LOG_0000', 20000);
+        $metadata = $doc->getMetadata('LOG_0000');
         self::assertEquals('Test Value in DMDLOG_0000', $metadata['test_value'][0]);
 
         // DMD only works
-        $metadata = $doc->getMetadata('LOG_0001', 20000);
+        $metadata = $doc->getMetadata('LOG_0001');
         self::assertEquals(['Test Value in DMDLOG_0000b'], $metadata['test_value']);
 
         // AMD only does not work
-        $metadata = $doc->getMetadata('LOG_0002', 20000);
+        $metadata = $doc->getMetadata('LOG_0002');
         self::assertEquals([], $metadata);
     }
 

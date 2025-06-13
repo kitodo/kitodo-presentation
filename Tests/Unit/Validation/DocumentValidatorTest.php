@@ -30,8 +30,25 @@ class DocumentValidatorTest extends UnitTestCase
     public function passesHasAllMandatoryMetadataFields()
     {
         $metadata = [
+            'type' => [
+                'newspaper'
+            ],
             'record_id' => [
                 'xyz'
+            ]
+        ];
+        $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
+        self::assertTrue($documentValidator->hasAllMandatoryMetadataFields());
+    }
+
+    /**
+     * @test
+     */
+    public function passesHasNotMandatoryMetadataFieldsButType()
+    {
+        $metadata = [
+            'type' => [
+                'chapter'
             ]
         ];
         $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
@@ -46,6 +63,9 @@ class DocumentValidatorTest extends UnitTestCase
         $metadata = [
             'document_format' => [
                 'METS'
+            ],
+            'type' => [
+                'newspaper'
             ]
         ];
         $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
