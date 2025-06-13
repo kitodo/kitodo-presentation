@@ -234,7 +234,7 @@ final class MetsDocument extends AbstractDocument
                 return $service->getImageUrl();
             }
         } elseif ($file['mimeType'] === 'application/vnd.netfpx') {
-            $baseURL = $file['location'] . (strpos($file['location'], '?') === false ? '?' : '');
+            $baseURL = $file['location'] . (str_contains($file['location'], '?') ? '' : '?');
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
             return $baseURL . '&CVT=jpeg';
         }
