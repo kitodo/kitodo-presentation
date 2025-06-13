@@ -647,12 +647,12 @@ abstract class AbstractDocument
 
             $result = $queryBuilder
                 ->select(
-                    'tx_dlf_documents.title',
-                    'tx_dlf_documents.partof'
+                    'title',
+                    'partof'
                 )
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.uid', $uid),
+                    $queryBuilder->expr()->eq('uid', $uid),
                     Helper::whereExpression('tx_dlf_documents')
                 )
                 ->setMaxResults(1)
@@ -785,14 +785,14 @@ abstract class AbstractDocument
             // Get available data formats from database.
             $result = $queryBuilder
                 ->select(
-                    'tx_dlf_formats.type AS type',
-                    'tx_dlf_formats.root AS root',
-                    'tx_dlf_formats.namespace AS namespace',
-                    'tx_dlf_formats.class AS class'
+                    'type',
+                    'root',
+                    'namespace',
+                    'class'
                 )
                 ->from('tx_dlf_formats')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_formats.pid', 0)
+                    $queryBuilder->expr()->eq('pid', 0)
                 )
                 ->execute();
 

@@ -1029,17 +1029,17 @@ final class MetsDocument extends AbstractDocument
             ->removeByType(HiddenRestriction::class);
         $resultWithoutFormat = $queryBuilder
             ->select(
-                'tx_dlf_metadata.index_name AS index_name',
-                'tx_dlf_metadata.is_sortable AS is_sortable',
-                'tx_dlf_metadata.default_value AS default_value',
-                'tx_dlf_metadata.format AS format'
+                'index_name',
+                'is_sortable',
+                'default_value',
+                'format'
             )
             ->from('tx_dlf_metadata')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0),
-                $queryBuilder->expr()->neq('tx_dlf_metadata.default_value', $queryBuilder->createNamedParameter(''))
+                $queryBuilder->expr()->eq('pid', $this->configPid),
+                $queryBuilder->expr()->eq('l18n_parent', 0),
+                $queryBuilder->expr()->eq('format', 0),
+                $queryBuilder->expr()->neq('default_value', $queryBuilder->createNamedParameter(''))
             )
             ->execute();
         // Merge both result sets.
@@ -1630,11 +1630,11 @@ final class MetsDocument extends AbstractDocument
 
             // Get structure element to get thumbnail from.
             $result = $queryBuilder
-                ->select('tx_dlf_structures.thumbnail AS thumbnail')
+                ->select('thumbnail')
                 ->from('tx_dlf_structures')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', $this->configPid),
-                    $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
+                    $queryBuilder->expr()->eq('pid', $this->configPid),
+                    $queryBuilder->expr()->eq('index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
                     Helper::whereExpression('tx_dlf_structures')
                 )
                 ->setMaxResults(1)

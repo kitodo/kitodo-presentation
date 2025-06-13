@@ -200,17 +200,17 @@ class Solr implements LoggerAwareInterface
             $fields = [];
             $result = $queryBuilder
                 ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.index_tokenized AS index_tokenized',
-                    'tx_dlf_metadata.index_stored AS index_stored'
+                    'index_name',
+                    'index_tokenized',
+                    'index_stored'
                 )
                 ->from('tx_dlf_metadata')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
+                    $queryBuilder->expr()->eq('index_indexed', 1),
+                    $queryBuilder->expr()->eq('pid', (int) $pid),
                     $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
+                        $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
+                        $queryBuilder->expr()->eq('l18n_parent', 0)
                     ),
                     Helper::whereExpression('tx_dlf_metadata')
                 )
