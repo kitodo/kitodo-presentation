@@ -151,6 +151,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\U
     = \Kitodo\Dlf\Updates\MigrateSettings::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\FileLocationUpdater::class]
     = \Kitodo\Dlf\Updates\FileLocationUpdater::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\FormatUpdater::class]
+    = \Kitodo\Dlf\Updates\FormatUpdater::class;
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Kitodo\Dlf\Updates\UpdateSolrSchema::class]
 = \Kitodo\Dlf\Updates\UpdateSolrSchema::class;
 
