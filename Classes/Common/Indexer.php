@@ -397,6 +397,7 @@ class Indexer
                     return false;
                 }
             } else {
+                Helper::log('There are missing mandatory fields (at least one of those: ' . $extConf['requiredMetadataFields'] . ') in this document', LOG_SEVERITY_ERROR);
                 Helper::log('Tip: If "record_id" field is missing then there is possibility that METS file still contains it but with the wrong source type attribute in "recordIdentifier" element', LOG_SEVERITY_NOTICE);
                 return false;
             }
