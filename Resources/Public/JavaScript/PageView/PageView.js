@@ -986,7 +986,7 @@ dlfViewer.prototype.initLoadFulltexts = function () {
         var image = this.images[i];
 
         if (dlfUtils.isFulltextDescriptor(fulltext)) {
-            this.fulltextsLoaded_[i] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
+            this.fulltextsLoaded_[i] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext, image, xOffset);
         }
 
         xOffset += image.width;
