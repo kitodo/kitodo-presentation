@@ -33,7 +33,7 @@ use Ubl\Iiif\Services\AbstractImageService;
  *
  * @access public
  *
- * @property int $cPid this holds the PID for the configuration
+ * @property int $configPid this holds the PID for the configuration
  * @property-read array $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
@@ -569,22 +569,20 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getMetadata()
      */
-    public function getMetadata(string $id, int $cPid = 0): array
+    public function getMetadata(string $id): array
     {
-        $cPid = $this->ensureValidPid($cPid);
-
-        if ($cPid == 0) {
+        if ($this->configPid == 0) {
             $this->logger->warning('Invalid PID for metadata definitions');
             return [];
         }
 
-        $metadata = $this->getMetadataFromArray($id, $cPid);
+        $metadata = $this->getMetadataFromArray($id);
 
         if (empty($metadata)) {
             return [];
         }
 
-        $metadata = $this->processMetadataSections($id, $cPid, $metadata);
+        $metadata = $this->processMetadataSections($id, $metadata);
 
         if (!empty($metadata)) {
             $metadata = $this->setDefaultTitleAndDate($metadata);
@@ -594,37 +592,17 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * Ensure that pId is valid.
-     *
-     * @access private
-     *
-     * @param integer $cPid
-     *
-     * @return integer
-     */
-    private function ensureValidPid(int $cPid): int
-    {
-        $cPid = max($cPid, 0);
-        if ($cPid == 0 && ($this->cPid || $this->pid)) {
-            // Retain current PID.
-            $cPid = $this->cPid ?: $this->pid;
-        }
-        return $cPid;
-    }
-
-    /**
      * Get metadata from array.
      *
      * @access private
      *
      * @param string $id
-     * @param integer $cPid
      *
      * @return array
      */
-    private function getMetadataFromArray(string $id, int $cPid): array
+    private function getMetadataFromArray(string $id): array
     {
-        if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
+        if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $this->configPid) {
             return $this->metadataArray[$id];
         }
         return $this->initializeMetadata('METS');
@@ -636,12 +614,11 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param string $id
-     * @param integer $cPid
      * @param array $metadata
      *
      * @return array
      */
-    private function processMetadataSections(string $id, int $cPid, array $metadata): array
+    private function processMetadataSections(string $id, array $metadata): array
     {
         $mdIds = $this->getMetadataIds($id);
         if (empty($mdIds)) {
@@ -662,7 +639,7 @@ final class MetsDocument extends AbstractDocument
                 if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
                     continue;
                 }
-                if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $cPid, $metadataSections)) {
+                if (!$this->extractAndProcessMetadata($dmdId, $mdSectionType, $metadata, $metadataSections)) {
                     continue;
                 }
                 $metadataSections[] = $mdSectionType;
@@ -768,12 +745,11 @@ final class MetsDocument extends AbstractDocument
      * @param string $dmdId
      * @param string $mdSectionType
      * @param array $metadata
-     * @param integer $cPid
      * @param array $metadataSections
      *
      * @return boolean
      */
-    private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, int $cPid, array $metadataSections): bool
+    private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, array $metadataSections): bool
     {
         if ($this->hasMetadataSection($metadataSections, $mdSectionType, 'dmdSec')) {
             return true;
@@ -785,7 +761,7 @@ final class MetsDocument extends AbstractDocument
             return false;
         }
 
-        $additionalMetadata = $this->getAdditionalMetadataFromDatabase($cPid, $dmdId);
+        $additionalMetadata = $this->getAdditionalMetadataFromDatabase($dmdId);
         // We need a DOMDocument here, because SimpleXML doesn't support XPath functions properly.
         $domNode = dom_import_simplexml($this->mdSec[$dmdId]['xml']);
         $domXPath = new DOMXPath($domNode->ownerDocument);
@@ -995,12 +971,11 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param int $cPid page id
      * @param string $dmdId descriptive metadata id
      *
      * @return array additional metadata data queried from database
      */
-    private function getAdditionalMetadataFromDatabase(int $cPid, string $dmdId)
+    private function getAdditionalMetadataFromDatabase(string $dmdId): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_metadata');
@@ -1039,9 +1014,9 @@ final class MetsDocument extends AbstractDocument
                 )
             )
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
                 $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', $this->configPid),
                 $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
             )
             ->execute();
@@ -1061,7 +1036,7 @@ final class MetsDocument extends AbstractDocument
             )
             ->from('tx_dlf_metadata')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
                 $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
                 $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0),
                 $queryBuilder->expr()->neq('tx_dlf_metadata.default_value', $queryBuilder->createNamedParameter(''))
@@ -1104,10 +1079,10 @@ final class MetsDocument extends AbstractDocument
                 )
             )
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
                 $queryBuilder->expr()->gt('tx_dlf_metadataformat_joins.subentries', 0),
                 $queryBuilder->expr()->eq('tx_dlf_subentries_joins.l18n_parent', 0),
-                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', (int) $cPid)
+                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', $this->configPid)
             )
             ->orderBy('tx_dlf_subentries_joins.sorting')
             ->execute();
@@ -1439,13 +1414,13 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::prepareMetadataArray()
      */
-    protected function prepareMetadataArray(int $cPid): void
+    protected function prepareMetadataArray(): void
     {
         $ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID');
         // Get all logical structure nodes with metadata.
         if (!empty($ids)) {
             foreach ($ids as $id) {
-                $this->metadataArray[(string) $id] = $this->getMetadata((string) $id, $cPid);
+                $this->metadataArray[(string) $id] = $this->getMetadata((string) $id);
             }
         }
         // Set current PID for metadata definitions.
@@ -1636,10 +1611,8 @@ final class MetsDocument extends AbstractDocument
     protected function magicGetThumbnail(): string
     {
         if (!$this->thumbnailLoaded) {
-            // Retain current PID.
-            $cPid = $this->cPid ?: $this->pid;
-            if (!$cPid) {
-                $this->logger->error('Invalid PID ' . $cPid . ' for structure definitions');
+            if ($this->configPid == 0) {
+                $this->logger->error('Invalid PID for structure definitions');
                 $this->thumbnailLoaded = true;
                 return $this->thumbnail;
             }
@@ -1650,7 +1623,7 @@ final class MetsDocument extends AbstractDocument
                 return $this->thumbnail;
             }
             $strctId = $this->getToplevelId();
-            $metadata = $this->getToplevelMetadata($cPid);
+            $metadata = $this->getToplevelMetadata();
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_structures');
@@ -1660,7 +1633,7 @@ final class MetsDocument extends AbstractDocument
                 ->select('tx_dlf_structures.thumbnail AS thumbnail')
                 ->from('tx_dlf_structures')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', $cPid),
+                    $queryBuilder->expr()->eq('tx_dlf_structures.pid', $this->configPid),
                     $queryBuilder->expr()->eq('tx_dlf_structures.index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
                     Helper::whereExpression('tx_dlf_structures')
                 )
@@ -1673,7 +1646,7 @@ final class MetsDocument extends AbstractDocument
                 $resArray = $allResults[0];
                 // Get desired thumbnail structure if not the toplevel structure itself.
                 if (!empty($resArray['thumbnail'])) {
-                    $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $cPid);
+                    $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $this->configPid);
                     // Check if this document has a structure element of the desired type.
                     $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="' . $strctType . '"]/@ID');
                     if (!empty($strctIds)) {

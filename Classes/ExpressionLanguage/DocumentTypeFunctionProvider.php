@@ -133,9 +133,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
 
                 // Set PID for metadata definitions.
-                $this->document->getCurrentDocument()->cPid = $cPid;
+                $this->document->getCurrentDocument()->configPid = $cPid;
 
-                $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
+                $metadata = $this->document->getCurrentDocument()->getToplevelMetadata();
 
                 if (!empty($metadata['type'][0])
                     && !$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0])) {

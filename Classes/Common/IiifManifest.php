@@ -41,7 +41,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  *
  * @access public
  *
- * @property int $cPid this holds the PID for the configuration
+ * @property int $configPid this holds the PID for the configuration
  * @property-read array $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
@@ -120,13 +120,7 @@ final class IiifManifest extends AbstractDocument
     protected function establishRecordId(int $pid): void
     {
         if ($this->iiif !== null) {
-            /*
-             *  FIXME This will not consistently work because we can not be sure to have the pid at hand. It may miss
-             *  if the plugin that actually loads the manifest allows content from other pages.
-             *  Up until now the cPid is only set after the document has been initialized. We need it before to
-             *  check the configuration.
-             *  TODO Saving / indexing should still work - check!
-             */
+            // TODO: Saving / indexing should still work - check!
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_metadata');
             // Get hidden records, too.
@@ -426,9 +420,9 @@ final class IiifManifest extends AbstractDocument
         $details['contentIds'] = '';
         $details['volume'] = '';
         $details['pagination'] = '';
-        $cPid = ($this->cPid ? $this->cPid : $this->pid);
+
         if ($details['id'] == $this->getToplevelId()) {
-            $metadata = $this->getMetadata($details['id'], $cPid);
+            $metadata = $this->getMetadata($details['id']);
             if (!empty($metadata['type'][0])) {
                 $details['type'] = $metadata['type'][0];
             }
@@ -543,9 +537,9 @@ final class IiifManifest extends AbstractDocument
     /**
      * @see AbstractDocument::getMetadata()
      */
-    public function getMetadata(string $id, int $cPid = 0): array
+    public function getMetadata(string $id): array
     {
-        if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
+        if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $this->configPid) {
             return $this->metadataArray[$id];
         }
 
@@ -570,8 +564,8 @@ final class IiifManifest extends AbstractDocument
             ->from('tx_dlf_metadataformat')
             ->from('tx_dlf_formats')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $cPid),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', (int) $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', $this->configPid),
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
@@ -777,10 +771,10 @@ final class IiifManifest extends AbstractDocument
     /**
      * @see AbstractDocument::prepareMetadataArray()
      */
-    protected function prepareMetadataArray(int $cPid): void
+    protected function prepareMetadataArray(): void
     {
         $id = $this->iiif->getId();
-        $this->metadataArray[(string) $id] = $this->getMetadata((string) $id, $cPid);
+        $this->metadataArray[(string) $id] = $this->getMetadata($id);
     }
 
     /**
