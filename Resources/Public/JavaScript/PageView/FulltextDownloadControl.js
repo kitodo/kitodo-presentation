@@ -64,14 +64,31 @@ dlfViewerFullTextDownloadControl.prototype.downloadFullTextFile = function() {
  * @param {FullTextFeature} fulltextData
  */
 dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fulltextData) {
+    let fileContent = '';
+    if(dlfUtils.exists(fulltextData.type) && fulltextData.type == 'tei') {
+      fileContent = fulltextData.fulltext;
+      // Use regex to replace any whitespace (spaces or tabs) before '<'
+      fileContent = fileContent.replace(/[ \t]+</g, '<');
+
+      // Replace every tag except </p> with an empty string
+      fileContent = fileContent.replace(/<(?!\/p>)[^>]*>/g, '');
+
+      // Remove empty lines
+      fileContent = fileContent.split('\n').filter(line => line.trim() !== '').join('\n');
+
+      // Replace </p> with newlines
+      fileContent = fileContent.replace(/<\/p>/g, '\n')
+      return fileContent;
+    }
+
+
     var features = fulltextData.getTextblocks();
-    var fileContent = '';
     for (var feature of features) {
-        var textLines = feature.get('textlines');
-        for (var textLine of textLines) {
-            fileContent = fileContent.concat(this.appendTextLine(textLine));
-        }
-        fileContent = fileContent.concat('\n\n');
+      var textLines = feature.get('textlines');
+      for (var textLine of textLines) {
+        fileContent = fileContent.concat(this.appendTextLine(textLine));
+      }
+      fileContent = fileContent.concat('\n\n');
     }
 
     return fileContent;
