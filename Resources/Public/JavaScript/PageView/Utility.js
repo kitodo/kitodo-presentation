@@ -218,6 +218,22 @@ dlfUtils.exists = function (val) {
     return val !== undefined;
 };
 
+
+/**
+ * Escape html
+ *
+ * @param {string} html
+ * @returns {string} escaped html
+ */
+dlfUtils.escapeHtml = function(html) {
+  return html
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+};
+
 /**
  * Fetch image data for given image sources.
  *

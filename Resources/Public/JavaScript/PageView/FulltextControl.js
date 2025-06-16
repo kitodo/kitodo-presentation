@@ -247,10 +247,26 @@ var dlfViewerFullTextControl = function(map) {
     this.changeActiveBehaviour();
 };
 
+
+dlfViewerFullTextControl.prototype.getFullTextScrollElementId = function() {
+    // in getElementById no '#' is necessary / allowed at the beginning
+    // of the string. Therefor remove '#' if pre
+    let fullTextScrollElementId = this.fullTextScrollElement;
+    if (fullTextScrollElementId.substr(0,1) === '#') {
+      fullTextScrollElementId = fullTextScrollElementId.substr(1);
+    }
+    return fullTextScrollElementId.trim();
+};
+
 /**
  * @param {FullTextFeature} fulltextData
  */
 dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
+
+    if(dlfUtils.exists(fulltextData.type) && fulltextData.type == 'tei') {
+      document.getElementById(this.getFullTextScrollElementId()).innerHTML = fulltextData.fulltext;
+      return;
+    }
     // add features to fulltext layer
     this.textblockFeatures_ = fulltextData.getTextblocks();
     this.layers_.textblock.getSource().addFeatures(this.textblockFeatures_);
@@ -262,13 +278,13 @@ dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
 
     // add first feature of textBlockFeatures to map
     if (this.textblockFeatures_.length > 0) {
-        this.layers_.select.getSource().addFeature(this.textblockFeatures_[0]);
-        this.selectedFeature_ = this.textblockFeatures_[0];
+      this.layers_.select.getSource().addFeature(this.textblockFeatures_[0]);
+      this.selectedFeature_ = this.textblockFeatures_[0];
 
-        // If the control is *not* yet active, the fulltext is instead rendered on activation.
-        if (this.isActive) {
-            this.showFulltext(this.textblockFeatures_);
-        }
+      // If the control is *not* yet active, the fulltext is instead rendered on activation.
+      if (this.isActive) {
+        this.showFulltext(this.textblockFeatures_);
+      }
     }
 };
 
@@ -606,13 +622,7 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
         return;
     }
 
-    // in getElementById no '#' is necessary / allowed at the beginning
-    // of the string. Therefor remove '#' if present
-    let fullTextScrollElementId = this.fullTextScrollElement;
-    if (fullTextScrollElementId.substr(0,1) === '#') {
-        fullTextScrollElementId = fullTextScrollElementId.substr(1);
-    }
-    var target = document.getElementById(fullTextScrollElementId.trim());
+    var target = document.getElementById(this.getFullTextScrollElementId());
     if (target !== null) {
         target.innerHTML = "";
         for (var feature of features) {
