@@ -86,7 +86,7 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fullte
       fileContent = fileContent.replace(/[ \t]+</gu, '<');
 
       // Replace every tag except </p> with an empty string
-      // codacy-disable-next-line
+      // eslint-disable-next-line
       fileContent = fileContent.replace(/<(?!\/p>)[^>]*>/gu, '');
 
       // Remove empty lines
