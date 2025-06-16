@@ -1,17 +1,3 @@
-'use strict';
-
-/**
- * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
- *
- * This file is part of the Kitodo and TYPO3 projects.
- *
- * @license GNU General Public License version 3 or later.
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- */
-
-/* global dlfUtils */
-
 var dlfViewerFullTextDownloadControl = function(map, fulltextData) {
 
     /**
@@ -82,11 +68,11 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fullte
     if(dlfUtils.exists(fulltextData.type) && fulltextData.type === 'tei') {
       fileContent = fulltextData.fulltext;
       // Use regex to replace any whitespace (spaces or tabs) before '<'
-      // eslint-disable-next-line
+      // eslint-disable-next-line security/detect-script-injection
       fileContent = fileContent.replace(/[ \t]+</gu, '<');
 
       // Replace every tag except </p> with an empty string
-      // eslint-disable-next-line
+      // eslint-disable-next-line security/detect-script-injection
       fileContent = fileContent.replace(/<(?!\/p>)[^>]*>/gu, '');
 
       // Remove empty lines
