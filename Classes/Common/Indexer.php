@@ -268,7 +268,7 @@ class Indexer
                 ->select(
                     'index_name',
                     'index_tokenized',
-                    'tx_dlf_metadata.index_stored AS index_stored',
+                    'index_stored',
                     'index_indexed',
                     'is_sortable',
                     'is_facet',
