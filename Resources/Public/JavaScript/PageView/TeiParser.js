@@ -34,15 +34,13 @@ dlfTeiParser.prototype.parse = function(document) {
     // Remove all <script> elements
     parsedDoc.querySelectorAll('script').forEach(script => script.remove());
 
-    let contentHtml = $(parsedDoc).find('text')[0].innerHTML;
+    let content = dlfUtils.escapeHtml($(parsedDoc).find('text')[0].innerHTML);
 
     // Remove tags but keep their content
-    // eslint-disable-next-line
-    contentHtml = contentHtml.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/gu, '');
+    content = content.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/gu, '');
 
     // Replace linebreaks
-    // eslint-disable-next-line
-    contentHtml = contentHtml.replace(/<lb(?:\s[^>]*)?\/>/gu, '<br/>');
+    content = content.replace(/<lb(?:\s[^>]*)?\/>/gu, '<br/>');
 
     // Extract content between each <pb /> and the next <pb /> or end of string
     const regex = /<pb[^>]*facs="([^"]+)"[^>]*\/>([\s\S]*?)(?=<pb[^>]*\/>|$)/gu;
@@ -51,7 +49,7 @@ dlfTeiParser.prototype.parse = function(document) {
     let match;
 
    // eslint-disable-next-line
-    while ((match = regex.exec(contentHtml)) !== null) {
+    while ((match = regex.exec(content)) !== null) {
       // eslint-disable-next-line
       const facsMatch = match[1].trim();
       const facs =  facsMatch.startsWith("#") ? facsMatch.slice(1) : facsMatch;

@@ -232,7 +232,7 @@ dlfUtils.escapeHtml = function(html) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
-}
+};
 
 /**
  * Fetch image data for given image sources.
