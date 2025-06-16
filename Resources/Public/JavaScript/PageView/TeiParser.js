@@ -19,7 +19,7 @@ var dlfTeiParser = function(pageId) {
      * @type {string|undefined}
      * @private
      */
-    this.pageId = dlfUtils.exists(pageId) ? pageId : undefined;
+    this.pageId = pageId;
 };
 
 /**
@@ -31,6 +31,7 @@ dlfTeiParser.prototype.parse = function(document) {
     let contentHtml = $(parsedDoc).find('text')[0].innerHTML;
 
     // Remove tags but keep their content
+    // eslint-disable-next-line
     contentHtml = contentHtml.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/gu, '');
 
     // Replace linebreaks
@@ -43,9 +44,12 @@ dlfTeiParser.prototype.parse = function(document) {
     const facsHtml = {};
     let match;
 
+   // eslint-disable-next-line
     while ((match = regex.exec(contentHtml)) !== null) {
+      // eslint-disable-next-line
       const facsMatch = match[1].trim();
       const facs =  facsMatch.startsWith("#") ? facsMatch.slice(1) : facsMatch;
+      // eslint-disable-next-line
       facsHtml[facs] = match[2].trim(); // Everything until next <pb /> or end of string
     }
 
