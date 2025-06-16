@@ -264,7 +264,7 @@ dlfViewerFullTextControl.prototype.getFullTextScrollElementId = function() {
 dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
 
     if(dlfUtils.exists(fulltextData.type) && fulltextData.type == 'tei') {
-      document.getElementById(this.getFullTextScrollElementId()).innerHTML = fulltextData.fulltextHtml;
+      document.getElementById(this.getFullTextScrollElementId()).innerHTML = fulltextData.fulltext;
       return;
     }
     // add features to fulltext layer

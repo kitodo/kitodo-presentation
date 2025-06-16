@@ -30,6 +30,10 @@ class dlfTeiParser {y
  */
 dlfTeiParser.prototype.parse = function(document) {
     const parsedDoc = this.parseXML(document);
+
+    // Remove all <script> elements
+    parsedDoc.querySelectorAll('script').forEach(script => script.remove());
+
     let contentHtml = $(parsedDoc).find('text')[0].innerHTML;
 
     // Remove tags but keep their content
