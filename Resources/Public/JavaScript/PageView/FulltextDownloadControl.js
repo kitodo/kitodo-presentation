@@ -1,3 +1,17 @@
+'use strict';
+
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* global dlfUtils */
+
 var dlfViewerFullTextDownloadControl = function(map, fulltextData) {
 
     /**
@@ -65,7 +79,7 @@ dlfViewerFullTextDownloadControl.prototype.downloadFullTextFile = function() {
  */
 dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fulltextData) {
     let fileContent = '';
-    if(dlfUtils.exists(fulltextData.type) && fulltextData.type == 'tei') {
+    if(dlfUtils.exists(fulltextData.type) && fulltextData.type === 'tei') {
       fileContent = fulltextData.fulltext;
       // Use regex to replace any whitespace (spaces or tabs) before '<'
       fileContent = fileContent.replace(/[ \t]+</gu, '<');

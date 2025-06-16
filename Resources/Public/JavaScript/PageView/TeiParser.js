@@ -27,13 +27,13 @@ var dlfTeiParser = function(pageId) {
  * @returns {object}
  */
 dlfTeiParser.prototype.parse = function(document) {
-    const parsedDoc = this.parseXML(document),
-        content = $(parsedDoc).find('text')[0].innerHTML;
+    const parsedDoc = this.parseXML(document);
+    let content = $(parsedDoc).find('text')[0].innerHTML;
 
-    // Remove tags but keep their content
+    // remove tags but keep their content
     content = content.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/gu, '');
 
-    // Replace linebreaks
+    // replace linebreaks
     content = content.replace(/<lb(?:\s[^>]*)?\/>/gu, '<br/>');
 
     // Extract content between each <pb /> and the next <pb /> or end of string
@@ -48,8 +48,8 @@ dlfTeiParser.prototype.parse = function(document) {
       facsMap[facs] = match[2].trim(); // everything until next <pb /> or end of string
     }
 
-    let fulltext = facsMap[this.getFacsMapId()];
-    return { type: 'tei', fulltext: dlfUtils.exists(fulltext) ? fulltext + '<br/>' : '' };
+    const fulltextHtml = facsMap[this.getFacsMapId()];
+    return { type: 'tei', fulltext: dlfUtils.exists(fulltextHtml) ? fulltextHtml + '<br/>' : '' };
 };
 
 /**

@@ -101,8 +101,7 @@ dlfFullTextUtils.parseAltoData = function(image, offset, request){
  * @static
  */
 dlfFullTextUtils.parseTeiData = function(pageId, request){
-  let parser = new dlfTeiParser(pageId),
-  result = request.responseXML ? parser.parse(request.responseXML) :
+  const parser = new dlfTeiParser(pageId);
+  return request.responseXML ? parser.parse(request.responseXML) :
       request.responseText ? parser.parse(request.responseText) : [];
-  return result;
 };
