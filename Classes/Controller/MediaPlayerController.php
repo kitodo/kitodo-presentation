@@ -143,7 +143,7 @@ class MediaPlayerController extends AbstractController
         foreach ($videoSources as $videoSource) {
             // TODO: Better guess of initial mode?
             //       Perhaps we could look for VIDEOMD/AUDIOMD in METS
-            if ($videoSource['fileGrp'] === $mainVideoUseGroup || strpos($videoSource['mimeType'], 'video/') === 0) {
+            if ($videoSource['fileGrp'] === $mainVideoUseGroup || str_starts_with($videoSource['mimeType'], 'video/')) {
                 return 'video';
             }
         }
@@ -245,8 +245,8 @@ class MediaPlayerController extends AbstractController
     protected function isMediaMime(string $mimeType)
     {
         return (
-            strpos($mimeType, 'audio/') === 0
-            || strpos($mimeType, 'video/') === 0
+            str_starts_with($mimeType, 'audio/')
+            || str_starts_with($mimeType, 'video/')
             || $mimeType == 'application/dash+xml'
             || $mimeType == 'application/x-mpegurl'
             || $mimeType == 'application/vnd.apple.mpegurl'
