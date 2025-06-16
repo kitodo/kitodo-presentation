@@ -220,7 +220,7 @@ dlfUtils.exists = function (val) {
 
 
 /**
- * Excape html
+ * Escape html
  *
  * @param {string} html
  * @returns {string} escaped html

@@ -81,9 +81,11 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fullte
       fileContent = dlfUtils.escapeHtml(fulltextData.fulltext);
 
       // Use regex to replace any whitespace (spaces or tabs) before '<'
+      // eslint-disable-next-line
       fileContent = fileContent.replace(/[ \t]+&lt;/gu, '&lt;');
 
       // Replace every tag except <p> with an empty string
+      // eslint-disable-next-line
       fileContent = fileContent.replace(/&lt;(?!\/?p&gt;)[^&]*?&gt;/gu, '');
 
       // Remove empty lines
@@ -93,7 +95,7 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fullte
       fileContent = fileContent.replace(/&lt;\/?p&gt;/gu, '\n');
 
       // Remove leading empty lines
-      return fileContent.replace(/^\s*\n+/g, '');
+      return fileContent.replace(/^\s*\n+/gu, '');
     }
 
 
