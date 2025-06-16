@@ -64,26 +64,24 @@ dlfViewerFullTextDownloadControl.prototype.downloadFullTextFile = function() {
  * @param {FullTextFeature} fulltextData
  */
 dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fulltextData) {
-    let fileContent = '';
     if(dlfUtils.exists(fulltextData.type) && fulltextData.type === 'tei') {
-      fileContent = fulltextData.fulltext;
+      safeHtml = fulltextData.fulltext;
       // Use regex to replace any whitespace (spaces or tabs) before '<'
       // eslint-disable-next-line security/detect-script-injection
-      fileContent = fileContent.replace(/[ \t]+</gu, '<');
+      safeHtml = safeHtml.replace(/[ \t]+</gu, '<');
 
       // Replace every tag except </p> with an empty string
       // eslint-disable-next-line security/detect-script-injection
-      fileContent = fileContent.replace(/<(?!\/p>)[^>]*>/gu, '');
+      safeHtml = safeHtml.replace(/<(?!\/p>)[^>]*>/gu, '');
 
       // Remove empty lines
-      fileContent = fileContent.split('\n').filter(line => line.trim() !== '').join('\n');
+      safeHtml = safeHtml.split('\n').filter(line => line.trim() !== '').join('\n');
 
       // Replace </p> with newlines
-      fileContent = fileContent.replace(/<\/p>/gu, '\n');
-      return fileContent;
+      return afeHtml.replace(/<\/p>/gu, '\n');
     }
 
-
+    let fileContent = '';
     var features = fulltextData.getTextblocks();
     for (var feature of features) {
       var textLines = feature.get('textlines');
