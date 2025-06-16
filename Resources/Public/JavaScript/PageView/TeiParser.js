@@ -14,12 +14,14 @@
  * @class
  * @param {string=} pageId
  */
-var dlfTeiParser = function(pageId) {
-    /**
-     * @type {string|undefined}
-     * @private
-     */
-    this.pageId = pageId;
+class dlfTeiParser {y
+    constructor(pageId) {
+      /**
+       * @type {string|undefined}
+       * @private
+       */
+      this.pageId = dlfUtils.exists(pageId) ? pageId : undefined;
+    }
 };
 
 /**
