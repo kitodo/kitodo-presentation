@@ -34,6 +34,7 @@ dlfTeiParser.prototype.parse = function(document) {
     contentHtml = contentHtml.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/gu, '');
 
     // Replace linebreaks
+    // eslint-disable-next-line
     contentHtml = contentHtml.replace(/<lb(?:\s[^>]*)?\/>/gu, '<br/>');
 
     // Extract content between each <pb /> and the next <pb /> or end of string
@@ -48,7 +49,8 @@ dlfTeiParser.prototype.parse = function(document) {
       facsHtml[facs] = match[2].trim(); // Everything until next <pb /> or end of string
     }
 
-    const fulltextHtml = facsMap[this.getFacsMapId()];
+    const fulltextHtml = facsHtml[this.getFacsMapId()];
+    // eslint-disable-next-line
     return { type: 'tei', fulltext: dlfUtils.exists(fulltextHtml) ? fulltextHtml + '<br/>' : '' };
 };
 

@@ -82,9 +82,11 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fullte
     if(dlfUtils.exists(fulltextData.type) && fulltextData.type === 'tei') {
       fileContent = fulltextData.fulltext;
       // Use regex to replace any whitespace (spaces or tabs) before '<'
+      // eslint-disable-next-line
       fileContent = fileContent.replace(/[ \t]+</gu, '<');
 
       // Replace every tag except </p> with an empty string
+      // eslint-disable-next-line
       fileContent = fileContent.replace(/<(?!\/p>)[^>]*>/gu, '');
 
       // Remove empty lines
