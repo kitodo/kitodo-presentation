@@ -28,24 +28,24 @@ var dlfTeiParser = function(pageId) {
  */
 dlfTeiParser.prototype.parse = function(document) {
     const parsedDoc = this.parseXML(document);
-    let content = $(parsedDoc).find('text')[0].innerHTML;
+    let contentHtml = $(parsedDoc).find('text')[0].innerHTML;
 
-    // remove tags but keep their content
-    content = content.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/gu, '');
+    // Remove tags but keep their content
+    contentHtml = contentHtml.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/gu, '');
 
-    // replace linebreaks
-    content = content.replace(/<lb(?:\s[^>]*)?\/>/gu, '<br/>');
+    // Replace linebreaks
+    contentHtml = contentHtml.replace(/<lb(?:\s[^>]*)?\/>/gu, '<br/>');
 
     // Extract content between each <pb /> and the next <pb /> or end of string
     const regex = /<pb[^>]*facs="([^"]+)"[^>]*\/>([\s\S]*?)(?=<pb[^>]*\/>|$)/gu;
 
-    const facsMap = {};
+    const facsHtml = {};
     let match;
 
-    while ((match = regex.exec(content)) !== null) {
-      const facsMatch = match[1].trim(); // e.g. "#f0002"
-      const facs =  facsMatch.startsWith("#") ? facsMatch.slice(1) : facsMatch; // e.g. "f0002"
-      facsMap[facs] = match[2].trim(); // everything until next <pb /> or end of string
+    while ((match = regex.exec(contentHtml)) !== null) {
+      const facsMatch = match[1].trim();
+      const facs =  facsMatch.startsWith("#") ? facsMatch.slice(1) : facsMatch;
+      facsHtml[facs] = match[2].trim(); // Everything until next <pb /> or end of string
     }
 
     const fulltextHtml = facsMap[this.getFacsMapId()];
@@ -53,7 +53,7 @@ dlfTeiParser.prototype.parse = function(document) {
 };
 
 /**
- * @return {string}
+ * @returns {string}
  * @private
  */
 dlfTeiParser.prototype.getFacsMapId = function() {
