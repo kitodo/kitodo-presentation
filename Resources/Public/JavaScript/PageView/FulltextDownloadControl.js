@@ -68,16 +68,16 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fullte
     if(dlfUtils.exists(fulltextData.type) && fulltextData.type == 'tei') {
       fileContent = fulltextData.fulltext;
       // Use regex to replace any whitespace (spaces or tabs) before '<'
-      fileContent = fileContent.replace(/[ \t]+</g, '<');
+      fileContent = fileContent.replace(/[ \t]+</gu, '<');
 
       // Replace every tag except </p> with an empty string
-      fileContent = fileContent.replace(/<(?!\/p>)[^>]*>/g, '');
+      fileContent = fileContent.replace(/<(?!\/p>)[^>]*>/gu, '');
 
       // Remove empty lines
       fileContent = fileContent.split('\n').filter(line => line.trim() !== '').join('\n');
 
       // Replace </p> with newlines
-      fileContent = fileContent.replace(/<\/p>/g, '\n')
+      fileContent = fileContent.replace(/<\/p>/gu, '\n');
       return fileContent;
     }
 

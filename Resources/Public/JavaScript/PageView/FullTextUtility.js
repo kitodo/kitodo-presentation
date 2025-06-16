@@ -41,10 +41,10 @@ dlfFullTextUtils.isFeatureEqual = function(element, feature){
 
 /**
  * Method fetches the fulltext data from the server
- * @param {Object} fulltext
- * @param {Object} image
+ * @param {object} fulltext
+ * @param {object} image
  * @param {number=} optOffset
- * @return {FullTextFeature | undefined}
+ * @returns {FullTextFeature | undefined}
  * @static
  */
 dlfFullTextUtils.fetchFullTextDataFromServer = function(fulltext, image, optOffset) {
@@ -52,19 +52,19 @@ dlfFullTextUtils.fetchFullTextDataFromServer = function(fulltext, image, optOffs
     var url = fulltext.url;
     $.ajax({ url }).done(function (data, status, jqXHR) {
         try {
-            var data;
-            if(fulltext.mimetype == 'application/tei+xml') {
+            var fulltextResult;
+            if(fulltext.mimetype === 'application/tei+xml') {
               const params = new URLSearchParams(window.location.search);
               const pageId = params.get("tx_dlf[page]");
-              data = dlfFullTextUtils.parseTeiData(pageId, jqXHR);
+              fulltextResult = dlfFullTextUtils.parseTeiData(pageId, jqXHR);
             } else {
-              data = dlfFullTextUtils.parseAltoData(image, optOffset, jqXHR);
+              fulltextResult = dlfFullTextUtils.parseAltoData(image, optOffset, jqXHR);
             }
 
             if (data === undefined) {
                 result.reject();
             } else {
-                result.resolve(data);
+                result.resolve(fulltextResult);
             }
         } catch (e) {
             console.error(e); // eslint-disable-line no-console

@@ -17,15 +17,15 @@ var dlfTeiParser = function(pageId) {
      * @type {string|undefined}
      * @private
      */
-    this.pageId_ = dlfUtils.exists(pageId) ? pageId : undefined;
+    this.pageId = dlfUtils.exists(pageId) ? pageId : undefined;
 };
 
 /**
  * @param {XMLDocument|string} document
- * @return {Object}
+ * @returns {Object}
  */
 dlfTeiParser.prototype.parse = function(document) {
-    let parsedDoc = this.parseXML_(document),
+    let parsedDoc = this.parseXML(document),
         xml = $(parsedDoc).find('text')[0].innerHTML;
 
     // Remove tags but keep their content
@@ -56,19 +56,19 @@ dlfTeiParser.prototype.parse = function(document) {
  * @private
  */
 dlfTeiParser.prototype.getFacsMapId = function() {
-  if (!isNaN(this.pageId_) && this.pageId_ !== null && this.pageId_ !== '') {
-    return 'f' + String(this.pageId_).padStart(4, '0');
+  if (!isNaN(this.pageId) && this.pageId !== null && this.pageId !== '') {
+    return 'f' + String(this.pageId).padStart(4, '0');
   }
-  return this.pageId_;
+  return this.pageId;
 }
 
 /**
  *
- * @param {XMLDocument|string}
- * @return {XMLDocument}
+ * @param {XMLDocument|string} document
+ * @returns {XMLDocument}
  * @private
  */
-dlfTeiParser.prototype.parseXML_ = function(document) {
+dlfTeiParser.prototype.parseXML = function(document) {
     if (typeof document === 'string' || document instanceof String) {
         return $.parseXML(document);
     }
