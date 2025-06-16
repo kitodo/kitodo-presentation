@@ -119,33 +119,34 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function initialize(RequestInterface $request): void
     {
-        /** @var Request $request */
-        $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
-        $this->pageUid = (int) GeneralUtility::_GET('id');
-        $this->requestData['page'] = $this->requestData['page'] ?? 1;
-
-        // Sanitize user input to prevent XSS attacks.
-        $this->sanitizeRequestData();
-
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
-        $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
-
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
-        $this->viewData = [
-            'pageUid' => $this->pageUid,
-            'uniqueId' => uniqid(),
-            'requestData' => $this->requestData
-        ];
+        if ($request->getAttribute('applicationType') === 1) {
+            /** @var Request $request */
+            $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
+            $this->pageUid = !($this instanceof OaiPmhController) ? $request->getAttribute('routing')->getPageId() : 0;;
+            $this->requestData['page'] = $this->requestData['page'] ?? 1;
 
-        try {
-            $this->viewData['publicResourcePath'] = PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public');
-        } catch (InvalidFileException) {
-            $this->logger->warning('Public resource path of the dlf extension could not be determined');
+            // Sanitize user input to prevent XSS attacks.
+            $this->sanitizeRequestData();
+
+            $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
+
+            $this->viewData = [
+                'pageUid' => $this->pageUid,
+                'uniqueId' => uniqid(),
+                'requestData' => $this->requestData
+            ];
+
+            try {
+                $this->viewData['publicResourcePath'] = PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public');
+            } catch (InvalidFileException) {
+                $this->logger->warning('Public resource path of the dlf extension could not be determined');
+            }
         }
-
     }
 
     /**
