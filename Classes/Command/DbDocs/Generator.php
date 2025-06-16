@@ -213,7 +213,7 @@ class Generator
         $lines = explode("\n", $docComment);
         foreach ($lines as $line) {
             // extract text from @var line
-            if ($line !== '' && strpos($line, '@var') !== false) {
+            if ($line !== '' && str_contains($line, '@var')) {
                 $text = preg_replace('#\\s*/?[*/]*\\s?(.*)$#', '$1', $line) . "\n";
                 $text = preg_replace('/@var [^ ]+ ?/', '', $text);
                 return trim($text);
@@ -232,7 +232,7 @@ class Generator
         $lines = explode("\n", $docComment);
         foreach ($lines as $line) {
             // Stop parsing at first tag
-            if ($line !== '' && strpos($line, '@') !== false) {
+            if ($line !== '' && str_contains($line, '@')) {
                 break;
             }
 

@@ -1003,7 +1003,7 @@ class Helper
             $mimeTypeCollection->getMimeTypes(),
             function ($mimeType) use ($allowedCategories) {
                 foreach ($allowedCategories as $category) {
-                    if (strpos($mimeType, $category . '/') === 0) {
+                    if (str_starts_with($mimeType, $category . '/')) {
                         return true;
                     }
                 }

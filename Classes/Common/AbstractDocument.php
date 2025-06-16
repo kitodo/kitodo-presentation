@@ -613,7 +613,7 @@ abstract class AbstractDocument
         } else {
             $physicalPage = 0;
             foreach ($this->physicalStructureInfo as $page) {
-                if (strpos($page['orderlabel'], $logicalPage) !== false) {
+                if (str_contains($page['orderlabel'], $logicalPage)) {
                     $this->lastSearchedPhysicalPage['logicalPage'] = $logicalPage;
                     $this->lastSearchedPhysicalPage['physicalPage'] = $physicalPage;
                     return $physicalPage;
