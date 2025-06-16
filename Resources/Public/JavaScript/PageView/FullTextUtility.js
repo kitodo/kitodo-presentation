@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global dlfTeiParser */
+
  /**
  * Base namespace for utility functions used by the dlf module.
  *
@@ -94,12 +96,12 @@ dlfFullTextUtils.parseAltoData = function(image, offset, request){
 /**
  * Method parses TEI data
  * @param {string=} pageId
- * @param {Object} request
- * @return {Object}
+ * @param {object} request
+ * @returns {object}
  * @static
  */
 dlfFullTextUtils.parseTeiData = function(pageId, request){
-  var parser = new dlfTeiParser(pageId),
+  let parser = new dlfTeiParser(pageId),
   result = request.responseXML ? parser.parse(request.responseXML) :
       request.responseText ? parser.parse(request.responseText) : [];
   return result;

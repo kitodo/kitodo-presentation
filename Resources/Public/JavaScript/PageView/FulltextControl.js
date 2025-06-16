@@ -256,7 +256,7 @@ dlfViewerFullTextControl.prototype.getFullTextScrollElementId = function() {
       fullTextScrollElementId = fullTextScrollElementId.substr(1);
     }
     return fullTextScrollElementId.trim();
-}
+};
 
 /**
  * @param {FullTextFeature} fulltextData

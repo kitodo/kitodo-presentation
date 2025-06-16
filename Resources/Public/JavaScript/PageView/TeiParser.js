@@ -8,8 +8,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global dlfUtils */
+
 /**
- * @constructor
+ * @class
  * @param {string=} pageId
  */
 var dlfTeiParser = function(pageId) {
@@ -22,29 +24,28 @@ var dlfTeiParser = function(pageId) {
 
 /**
  * @param {XMLDocument|string} document
- * @returns {Object}
+ * @returns {object}
  */
 dlfTeiParser.prototype.parse = function(document) {
-    let parsedDoc = this.parseXML(document),
-        xml = $(parsedDoc).find('text')[0].innerHTML;
+    const parsedDoc = this.parseXML(document),
+        content = $(parsedDoc).find('text')[0].innerHTML;
 
     // Remove tags but keep their content
-    xml = xml.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/g, '');
+    content = content.replace(/<\/?(body|front|div|head|titlePage)[^>]*>/gu, '');
 
     // Replace linebreaks
-    xml = xml.replace(/<lb(?:\s[^>]*)?\/>/g, '<br/>');
+    content = content.replace(/<lb(?:\s[^>]*)?\/>/gu, '<br/>');
 
     // Extract content between each <pb /> and the next <pb /> or end of string
-    const regex = /<pb[^>]*facs="([^"]+)"[^>]*\/>([\s\S]*?)(?=<pb[^>]*\/>|$)/g;
+    const regex = /<pb[^>]*facs="([^"]+)"[^>]*\/>([\s\S]*?)(?=<pb[^>]*\/>|$)/gu;
 
     const facsMap = {};
     let match;
 
-    while ((match = regex.exec(xml)) !== null) {
+    while ((match = regex.exec(content)) !== null) {
       const facsMatch = match[1].trim(); // e.g. "#f0002"
       const facs =  facsMatch.startsWith("#") ? facsMatch.slice(1) : facsMatch; // e.g. "f0002"
-      const content = match[2].trim(); // everything until next <pb /> or end of string
-      facsMap[facs] = content;
+      facsMap[facs] = match[2].trim(); // everything until next <pb /> or end of string
     }
 
     let fulltext = facsMap[this.getFacsMapId()];
