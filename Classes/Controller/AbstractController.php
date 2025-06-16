@@ -20,6 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
@@ -119,33 +120,42 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function initialize(RequestInterface $request): void
     {
+        /** @var Request $request */
+        $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
+        $this->pageUid = (int) GeneralUtility::_GET('id');
+        $this->requestData['page'] = $this->requestData['page'] ?? 1;
+
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() >= 12) {
+            if ($request->getAttribute('applicationType') === 1) {
+                $this->pageUid = $request->getAttribute('routing')->getPageId();
+            }
+        } else {
+            // For TYPO3 11 tests in OaiPmhTest fails
+            /*if ($this->request->getAttribute('applicationType') === 1) {
+                $this->pageUid = $this->request->getAttribute('routing')->getPageId();
+            }*/
+        }
+
+        // Sanitize user input to prevent XSS attacks.
+        $this->sanitizeRequestData();
+
         // Get extension configuration.
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
 
+        $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
+
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
-        if ($request->getAttribute('applicationType') === 1) {
-            /** @var Request $request */
-            $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
-            $this->pageUid = !($this instanceof OaiPmhController) ? $request->getAttribute('routing')->getPageId() : 0;;
-            $this->requestData['page'] = $this->requestData['page'] ?? 1;
+        $this->viewData = [
+            'pageUid' => $this->pageUid,
+            'uniqueId' => uniqid(),
+            'requestData' => $this->requestData
+        ];
 
-            // Sanitize user input to prevent XSS attacks.
-            $this->sanitizeRequestData();
-
-            $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
-
-            $this->viewData = [
-                'pageUid' => $this->pageUid,
-                'uniqueId' => uniqid(),
-                'requestData' => $this->requestData
-            ];
-
-            try {
-                $this->viewData['publicResourcePath'] = PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public');
-            } catch (InvalidFileException) {
-                $this->logger->warning('Public resource path of the dlf extension could not be determined');
-            }
+        try {
+            $this->viewData['publicResourcePath'] = PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public');
+        } catch (InvalidFileException) {
+            $this->logger->warning('Public resource path of the dlf extension could not be determined');
         }
     }
 
