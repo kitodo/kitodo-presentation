@@ -531,14 +531,14 @@ class Helper
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
             $pid = max($pid, 0);
-            $where = $queryBuilder->expr()->eq('tx_dlf_structures.pid', $pid);
+            $where = $queryBuilder->expr()->eq('pid', $pid);
         }
 
         // Fetch document info for UIDs in $documentSet from DB
         $kitodoStructures = $queryBuilder
             ->select(
-                'tx_dlf_structures.uid AS uid',
-                'tx_dlf_structures.index_name AS indexName'
+                'uid',
+                'index_name AS indexName'
             )
             ->from('tx_dlf_structures')
             ->where($where)

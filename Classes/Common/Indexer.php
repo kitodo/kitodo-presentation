@@ -266,19 +266,19 @@ class Indexer
             // Get the metadata indexing options.
             $result = $queryBuilder
                 ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.index_tokenized AS index_tokenized',
-                    'tx_dlf_metadata.index_stored AS index_stored',
-                    'tx_dlf_metadata.index_indexed AS index_indexed',
-                    'tx_dlf_metadata.is_sortable AS is_sortable',
-                    'tx_dlf_metadata.is_facet AS is_facet',
-                    'tx_dlf_metadata.is_listed AS is_listed',
-                    'tx_dlf_metadata.index_autocomplete AS index_autocomplete',
-                    'tx_dlf_metadata.index_boost AS index_boost'
+                    'index_name',
+                    'index_tokenized',
+                    'index_stored',
+                    'index_indexed',
+                    'is_sortable',
+                    'is_facet',
+                    'is_listed',
+                    'index_autocomplete',
+                    'index_boost'
                 )
                 ->from('tx_dlf_metadata')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
+                    $queryBuilder->expr()->eq('pid', $pid),
                     Helper::whereExpression('tx_dlf_metadata')
                 )
                 ->execute();
