@@ -16,7 +16,6 @@ use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -72,22 +71,22 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      *
      * @var bool
      */
-    protected $disableJsonWrappedResponse = false;
+    protected bool $disableJsonWrappedResponse = false;
 
     /**
      * @var PersistenceManager
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
 
     /**
      * @var string
      */
-    protected $baseUrl;
+    protected string $baseUrl;
 
     /**
      * @var HttpClient
      */
-    protected $httpClient;
+    protected HttpClient $httpClient;
 
     public function __construct()
     {
@@ -102,6 +101,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         }
     }
 
+    /**
+     * Sets up the test case environment.
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -117,7 +121,15 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $this->addSiteConfig('dlf-testing');
     }
 
-    protected function getDlfConfiguration()
+    /**
+     * Returns the DLF configuration for the test instance.
+     *
+     * This configuration is loaded from a .env file in the test directory.
+     * It includes general settings, file groups, and Solr settings.
+     *
+     * @return array The DLF configuration
+     */
+    protected function getDlfConfiguration(): array
     {
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../../Build/Test/', 'test.env');
         $dotenv->load();
@@ -169,7 +181,19 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         ];
     }
 
-    protected function addSiteConfig($identifier)
+    /**
+     * Adds a site configuration for the given identifier.
+     *
+     * This method creates a site configuration file in the
+     * typo3conf/sites directory with the specified identifier.
+     * The configuration is loaded from a YAML file and includes
+     * the base URL and language settings.
+     *
+     * @param string $identifier The identifier for the site configuration
+     *
+     * @return void
+     */
+    protected function addSiteConfig(string $identifier): void
     {
         $siteConfig = Yaml::parseFile(__DIR__ . '/../Fixtures/siteconfig.yaml');
         $siteConfig['base'] = $this->baseUrl;
@@ -194,7 +218,18 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         return $repository;
     }
 
-    protected function importSolrDocuments(Solr $solr, string $path)
+    /**
+     * Imports Solr documents from a JSON file into the specified Solr instance.
+     *
+     * This method reads a JSON file containing an array of documents,
+     * creates Solr documents from them, and adds them to the Solr index.
+     *
+     * @param Solr $solr The Solr instance to import documents into
+     * @param string $path The path to the JSON file containing the documents
+     *
+     * @return void
+     */
+    protected function importSolrDocuments(Solr $solr, string $path): void
     {
         $jsonDocuments = json_decode(file_get_contents($path), true);
 
@@ -214,7 +249,18 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $solr->service->update($updateQuery);
     }
 
-    protected function initLanguageService(string $locale)
+    /**
+     * Initializes the language service with the given locale.
+     *
+     * This method sets up a mock backend user with the specified locale,
+     * which is then used by the LanguageServiceFactory to load the language
+     * in backend mode.
+     *
+     * @param string $locale The locale to set for the backend user
+     *
+     * @return void
+     */
+    protected function initLanguageService(string $locale): void
     {
         // create mock backend user and set language
         // which is loaded by LanguageServiceFactory as default value in backend mode
@@ -225,8 +271,14 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     /**
      * Assert that $sub is recursively contained within $super.
+     *
+     * @param array $sub
+     * @param array $super
+     * @param string $message
+     *
+     * @return void
      */
-    protected function assertArrayMatches(array $sub, array $super, string $message = '')
+    protected function assertArrayMatches(array $sub, array $super, string $message = ''): void
     {
         self::assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
     }
