@@ -1021,9 +1021,9 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @return mixed The METS file's / IIIF manifest's record identifier
+     * @return string The METS file's / IIIF manifest's record identifier
      */
-    protected function magicGetRecordId()
+    protected function magicGetRecordId(): string
     {
         return $this->recordId;
     }
