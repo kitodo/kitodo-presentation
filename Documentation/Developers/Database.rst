@@ -4,7 +4,7 @@ Database Tables
 
 This is a reference of all database tables defined by Kitodo.Presentation.
 
-.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``typo3 kitodo:dbdocs`` inside the Kitodo.Presentation base folder.
+.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``vendor/bin/typo3 kitodo:dbdocs`` from the composer-based Typo3 install directory (not the Kitodo.Presentation source directory).
 
 tx_dlf_actionlog: Action protocol
 =================================
