@@ -37,7 +37,7 @@ class MailRepository extends Repository
      * 
      * @return array|QueryResultInterface
      */
-    public function findAllWithPid(int $pid)
+    public function findAllWithPid(int $pid): array|QueryResultInterface
     {
         /** @var Typo3QuerySettings $querySettings */
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);

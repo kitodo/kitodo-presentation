@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -27,6 +28,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @method Collection|null findOneByIndexName(string $indexName) Get a collection by its index name
  */
 class CollectionRepository extends Repository
 {
