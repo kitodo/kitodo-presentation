@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Kitodo\Dlf\Domain\Model\Library;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
@@ -21,6 +22,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @method Library|null findOneByIndexName(string $indexName) Get a library by its index name
  */
 class LibraryRepository extends Repository
 {
