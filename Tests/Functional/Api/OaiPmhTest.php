@@ -23,7 +23,7 @@ use SimpleXMLElement;
 
 class OaiPmhTest extends FunctionalTestCase
 {
-    protected $disableJsonWrappedResponse = true;
+    protected bool $disableJsonWrappedResponse = true;
 
     protected array $coreExtensionsToLoad = [
         'fluid',
@@ -31,22 +31,27 @@ class OaiPmhTest extends FunctionalTestCase
     ];
 
     /** @var int */
-    protected $oaiPage = 20001;
+    protected int $oaiPage = 20001;
 
     /** @var string */
-    protected $oaiUrl;
+    protected string $oaiUrl;
 
     /** @var int */
-    protected $oaiPageNoStoragePid = 20002;
+    protected int $oaiPageNoStoragePid = 20002;
 
     /** @var string */
-    protected $oaiUrlNoStoragePid;
+    protected string $oaiUrlNoStoragePid;
 
     /**
      * @var SolrCoreRepository
      */
-    protected $solrCoreRepository;
+    protected SolrCoreRepository $solrCoreRepository;
 
+    /**
+     * Sets up the test case environment.
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -66,7 +71,15 @@ class OaiPmhTest extends FunctionalTestCase
         $this->setUpOaiSolr();
     }
 
-    protected function setUpOaiSolr()
+    /**
+     * Sets up the OAI Solr core for the tests.
+     *
+     * This method initializes the Solr core and imports documents from a JSON file.
+     * It is called only once for all tests in this suite to avoid redundant setup.
+     *
+     * @return void
+     */
+    protected function setUpOaiSolr(): void
     {
         // Setup Solr only once for all tests in this suite
         static $solr = null;
@@ -256,7 +269,7 @@ class OaiPmhTest extends FunctionalTestCase
             ]);
             $xml = new SimpleXMLElement((string) $response->getBody());
 
-            self::assertEquals(1, count($xml->$verb->children()));
+            self::assertCount(1, $xml->$verb->children());
             self::assertEmpty($xml->$verb->resumptionToken);
         }
     }
@@ -278,17 +291,38 @@ class OaiPmhTest extends FunctionalTestCase
         self::assertEquals('oai:de:slub-dresden:db:id-476248086', $record->identifier);
     }
 
-    protected function parseUtc(string $dateTime)
+    /**
+     * Parses a UTC date string into a DateTime object.
+     *
+     * @param string $dateTime The date string in UTC format (e.g., '2023-10-01T12:00:00Z')
+     *
+     * @return DateTime|false Returns a DateTime object or false on failure
+     */
+    protected function parseUtc(string $dateTime): DateTime|false
     {
         return DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $dateTime);
     }
 
-    protected function assertUtcDateString(string $dateTime)
+    /**
+     * Asserts that a given date string is a valid UTC date string.
+     *
+     * @param string $dateTime The date string to check
+     *
+     * @return void
+     */
+    protected function assertUtcDateString(string $dateTime): void
     {
         self::assertInstanceOf(DateTime::class, $this->parseUtc($dateTime));
     }
 
-    protected function assertInFuture(string $dateTime)
+    /**
+     * Asserts that a given date string is in the future.
+     *
+     * @param string $dateTime The date string to check
+     *
+     * @return void
+     */
+    protected function assertInFuture(string $dateTime): void
     {
         self::assertGreaterThan(new DateTime(), $this->parseUtc($dateTime));
     }

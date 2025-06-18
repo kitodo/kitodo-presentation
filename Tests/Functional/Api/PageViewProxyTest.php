@@ -13,13 +13,22 @@
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class PageViewProxyTest extends FunctionalTestCase
 {
-    protected $disableJsonWrappedResponse = true;
+    protected bool $disableJsonWrappedResponse = true;
 
-    protected function getDlfConfiguration()
+    /**
+     * Returns the DLF configuration for the test instance.
+     *
+     * This configuration is loaded from a .env file in the test directory.
+     * It includes general settings, file groups, and Solr settings.
+     *
+     * @return array The DLF configuration
+     */
+    protected function getDlfConfiguration(): array
     {
         return array_merge(parent::getDlfConfiguration(), [
             'general' => [
@@ -28,7 +37,15 @@ class PageViewProxyTest extends FunctionalTestCase
         ]);
     }
 
-    protected function queryProxy(array $query, string $method = 'GET')
+    /**
+     * Query the page view proxy with the given parameters.
+     *
+     * @param array $query The query parameters to send
+     * @param string $method The HTTP method to use (default: 'GET')
+     *
+     * @return ResponseInterface
+     */
+    protected function queryProxy(array $query, string $method = 'GET'): ResponseInterface
     {
         $query['eID'] = 'tx_dlf_pageview_proxy';
 
@@ -133,7 +150,6 @@ class PageViewProxyTest extends FunctionalTestCase
 
         self::assertGreaterThanOrEqual(200, $response->getStatusCode());
         self::assertLessThan(300, $response->getStatusCode());
-
         self::assertNotEmpty($response->getHeader('Access-Control-Allow-Methods'));
     }
 }
