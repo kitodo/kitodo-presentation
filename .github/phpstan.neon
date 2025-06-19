@@ -1,7 +1,6 @@
 parameters:
   ignoreErrors:
     - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
-    - '#Call to an undefined method Solarium\\Core\\Query\\DocumentInterface::setField\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getHeight\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getWidth\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getPossibleTextAnnotationContainers\(\)\.#'

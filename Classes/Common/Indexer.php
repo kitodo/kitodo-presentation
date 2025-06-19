@@ -16,7 +16,7 @@ use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Validation\DocumentValidator;
-use Solarium\Core\Query\DocumentInterface;
+use Solarium\QueryType\Update\Query\Document as QueryDocument;
 use Solarium\QueryType\Update\Query\Query;
 use Symfony\Component\Console\Input\InputInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -505,11 +505,11 @@ class Indexer
      *
      * @param Document $document
      * @param array $metadata
-     * @param DocumentInterface &$solrDoc
+     * @param QueryDocument &$solrDoc
      *
      * @return array empty array or autocomplete values
      */
-    private static function processMetadata($document, $metadata, &$solrDoc): array
+    private static function processMetadata(Document $document, array $metadata, QueryDocument &$solrDoc): array
     {
         $autocomplete = [];
         foreach ($metadata as $indexName => $data) {
@@ -544,12 +544,12 @@ class Indexer
      * @access private
      *
      * @param AbstractDocument $doc
-     * @param DocumentInterface &$solrDoc
+     * @param QueryDocument &$solrDoc
      * @param array $physicalUnit Array of the physical unit to process
      *
      * @return void
      */
-    private static function addFaceting($doc, &$solrDoc, $physicalUnit): void
+    private static function addFaceting($doc, QueryDocument &$solrDoc, array $physicalUnit): void
     {
         // this variable holds all possible facet-values for the index names
         $facets = [];
@@ -640,10 +640,11 @@ class Indexer
      * @param array $unit Array of the logical or physical unit to process
      * @param string $fullText Text containing full text for indexing
      *
-     * @return DocumentInterface
+     * @return QueryDocument
      */
-    private static function getSolrDocument(Query $updateQuery, Document $document, array $unit, string $fullText = ''): DocumentInterface
+    private static function getSolrDocument(Query $updateQuery, Document $document, array $unit, string $fullText = ''): QueryDocument
     {
+        /** @var QueryDocument $solrDoc */
         $solrDoc = $updateQuery->createDocument();
         // Create unique identifier from document's UID and unit's XML ID.
         $solrDoc->setField('id', $document->getUid() . $unit['id']);
@@ -670,7 +671,7 @@ class Indexer
      *
      * @return string formatted date YYYY or YYYY-MM or YYYY-MM-DD or empty string
      */
-    private static function getFormattedDate($date): string
+    private static function getFormattedDate(string $date): string
     {
         if (
             preg_match("/^[\d]{4}$/", $date)
@@ -700,7 +701,7 @@ class Indexer
      *
      * @return array|string
      */
-    private static function removeAppendsFromAuthor($authors)
+    private static function removeAppendsFromAuthor(array|string $authors): array|string
     {
         if (is_array($authors)) {
             foreach ($authors as $i => $author) {
