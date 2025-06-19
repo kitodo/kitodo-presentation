@@ -19,6 +19,7 @@ use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
 use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 
@@ -587,7 +588,7 @@ class PageViewController extends AbstractController
             $iiif = $this->document->getCurrentDocument()->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
-                /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
+                /** @var CanvasInterface $canvas */
                 if ($canvas != null && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     $annotationContainers = [];
                     /*
@@ -613,7 +614,7 @@ class PageViewController extends AbstractController
                             }
                         }
                     }
-                    $result = [
+                    return [
                         'canvas' => [
                             'id' => $canvas->getId(),
                             'width' => $canvas->getWidth(),
@@ -621,7 +622,6 @@ class PageViewController extends AbstractController
                         ],
                         'annotationContainers' => $annotationContainers
                     ];
-                    return $result;
                 }
             }
         }
