@@ -106,7 +106,7 @@ class Client
      *
      * @return object|bool
      **/
-    public function getData()
+    public function getData(): object|bool
     {
         $url = $this->getApiEndpoint();
         try {
