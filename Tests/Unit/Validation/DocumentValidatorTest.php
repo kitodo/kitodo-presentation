@@ -35,6 +35,9 @@ class DocumentValidatorTest extends UnitTestCase
             ],
             'record_id' => [
                 'xyz'
+            ],
+            'is_administrative' => [
+                true
             ]
         ];
         $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
@@ -49,6 +52,9 @@ class DocumentValidatorTest extends UnitTestCase
         $metadata = [
             'type' => [
                 'chapter'
+            ],
+            'is_administrative' => [
+                false
             ]
         ];
         $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
@@ -66,6 +72,9 @@ class DocumentValidatorTest extends UnitTestCase
             ],
             'type' => [
                 'newspaper'
+            ],
+            'is_administrative' => [
+                true
             ]
         ];
         $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
