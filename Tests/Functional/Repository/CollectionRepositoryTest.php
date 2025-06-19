@@ -21,8 +21,15 @@ class CollectionRepositoryTest extends FunctionalTestCase
     /**
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
+    /**
+     * Sets up the test environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();

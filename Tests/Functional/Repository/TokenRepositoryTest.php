@@ -20,8 +20,15 @@ class TokenRepositoryTest extends FunctionalTestCase
     /**
      * @var TokenRepository
      */
-    protected $tokenRepository;
+    protected TokenRepository $tokenRepository;
 
+    /**
+     * Sets up the test environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -32,6 +39,13 @@ class TokenRepositoryTest extends FunctionalTestCase
         );
     }
 
+    /**
+     * Cleans up after the test by removing the temporary CSV file.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function tearDown(): void
     {
         parent::tearDown();

@@ -23,8 +23,15 @@ class DocumentRepositoryTest extends FunctionalTestCase
     /**
      * @var DocumentRepository
      */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
+    /**
+     * Sets up the test environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
