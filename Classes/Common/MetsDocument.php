@@ -522,7 +522,7 @@ final class MetsDocument extends AbstractDocument
                 if ($chapter === null) {
                     $chapter = [
                         'fileIds' => [],
-                        'timecode' => Helper::timecodeToSeconds($fileArea['begin']),
+                        'timecode' => Helper::timeCodeToSeconds($fileArea['begin']),
                     ];
                 }
 
