@@ -108,6 +108,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     /**
      * Sets up the test case environment.
      *
+     * @access public
+     *
      * @return void
      *
      * @access public
@@ -132,6 +134,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      *
      * This configuration is loaded from a .env file in the test directory.
      * It includes general settings, file groups, and Solr settings.
+     *
+     * @access protected
      *
      * @return array The DLF configuration
      *
@@ -197,6 +201,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * The configuration is loaded from a YAML file and includes
      * the base URL and language settings.
      *
+     * @access protected
+     *
      * @param string $identifier The identifier for the site configuration
      *
      * @return void
@@ -251,6 +257,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * This method reads a JSON file containing an array of documents,
      * creates Solr documents from them, and adds them to the Solr index.
      *
+     * @access protected
+     *
      * @param Solr $solr The Solr instance to import documents into
      * @param string $path The path to the JSON file containing the documents
      *
@@ -284,6 +292,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * This method sets up a mock backend user with the specified locale,
      * which is then used by the LanguageServiceFactory to load the language
      * in backend mode.
+     *
+     * @access protected
      *
      * @param string $locale The locale to set for the backend user
      *
@@ -355,6 +365,10 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     /**
      * Assert that $sub is recursively contained within $super.
+     *
+     * @access protected
+     *
+     * @static
      *
      * @param array $sub
      * @param array $super
