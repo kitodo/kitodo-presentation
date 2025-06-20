@@ -541,6 +541,7 @@ abstract class AbstractDocument
             }
         }
 
+        self::deleteDocumentCache($location);
         $instance = null;
 
         // Try to load a file from the url
@@ -1261,7 +1262,24 @@ abstract class AbstractDocument
     }
 
     /**
-     * Get Cache Hit for document instance
+     * Remove Cache Hit for document instance
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param string $location
+     *
+     * @return void
+     */
+    private static function deleteDocumentCache(string $location): void
+    {
+        $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
+        $cache->remove(self::getCacheIdentifier($location));
+    }
+
+    /**
+     * Get cache hit for document instance
      *
      * @access private
      *
@@ -1273,15 +1291,12 @@ abstract class AbstractDocument
      */
     private static function getDocumentCache(string $location)
     {
-        $cacheIdentifier = hash('md5', $location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
-        $cacheHit = $cache->get($cacheIdentifier);
-
-        return $cacheHit;
+        return $cache->get(self::getCacheIdentifier($location));
     }
 
     /**
-     * Set Cache for document instance
+     * Set cache for document instance
      *
      * @access private
      *
@@ -1294,10 +1309,23 @@ abstract class AbstractDocument
      */
     private static function setDocumentCache(string $location, AbstractDocument $currentDocument): void
     {
-        $cacheIdentifier = hash('md5', $location);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
+        $cache->set(self::getCacheIdentifier($location), $currentDocument);
+    }
 
-        // Save value in cache
-        $cache->set($cacheIdentifier, $currentDocument);
+    /**
+     * Get cache identifier for document instance
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param string $location
+     *
+     * @return string
+     */
+    private static function getCacheIdentifier(string $location): string
+    {
+        return hash('md5', $location);
     }
 }
