@@ -496,19 +496,6 @@ abstract class AbstractDocument
     abstract protected function init(string $location, array $settings): void;
 
     /**
-     * METS/IIIF specific part of loading a location
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param string $location The URL of the file to load
-     *
-     * @return bool true on success or false on failure
-     */
-    abstract protected function loadLocation(string $location): bool;
-
-    /**
      * Format specific part of building the document's metadata array
      *
      * @access protected
@@ -579,6 +566,8 @@ abstract class AbstractDocument
                     }
                 }
             }
+        } else {
+            Helper::error('Invalid file location "' . $location . '" for document loading');
         }
 
         if ($documentFormat == 'METS') {
@@ -746,27 +735,6 @@ abstract class AbstractDocument
     public function getStructureDepth(string $logId)
     {
         return $this->getTreeDepth($this->magicGetTableOfContents(), 1, $logId);
-    }
-
-    /**
-     * Load XML file / IIIF resource from URL
-     *
-     * @access protected
-     *
-     * @param string $location The URL of the file to load
-     *
-     * @return bool true on success or false on failure
-     */
-    protected function load(string $location): bool
-    {
-        // Load XML / JSON-LD file.
-        if (GeneralUtility::isValidUrl($location)) {
-            // the actual loading is format specific
-            return $this->loadLocation($location);
-        } else {
-            $this->logger->error('Invalid file location "' . $location . '" for document loading');
-        }
-        return false;
     }
 
     /**
