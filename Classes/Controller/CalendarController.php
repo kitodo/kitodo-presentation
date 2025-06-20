@@ -81,18 +81,11 @@ class CalendarController extends AbstractController
             return $this->htmlResponse();
         }
 
-        switch ($type) {
-            case 'newspaper':
-            case 'ephemera':
-                return new ForwardResponse('years');
-            case 'year':
-                return new ForwardResponse('calendar');
-            case 'issue':
-            default:
-                break;
-        }
-
-        return $this->htmlResponse();
+        return match ($type) {
+            'newspaper', 'ephemera' => new ForwardResponse('years'),
+            'year' => new ForwardResponse('calendar'),
+            default => $this->htmlResponse()
+        };
     }
 
     /**
@@ -349,29 +342,17 @@ class CalendarController extends AbstractController
      */
     private function fillCalendar(array &$calendarData, int $currentDayTime, string $dayLinks, array $dayLinkDiv, int $firstDayOfWeek, int $k): void
     {
-        switch (strftime('%w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
-            case '0':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYSUN', $dayLinks, $dayLinkDiv);
-                break;
-            case '1':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYMON', $dayLinks, $dayLinkDiv);
-                break;
-            case '2':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYTUE', $dayLinks, $dayLinkDiv);
-                break;
-            case '3':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYWED', $dayLinks, $dayLinkDiv);
-                break;
-            case '4':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYTHU', $dayLinks, $dayLinkDiv);
-                break;
-            case '5':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYFRI', $dayLinks, $dayLinkDiv);
-                break;
-            case '6':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYSAT', $dayLinks, $dayLinkDiv);
-                break;
-        }
+        $dayKey = match (date('w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
+            '0' => 'DAYSUN',
+            '1' => 'DAYMON',
+            '2' => 'DAYTUE',
+            '3' => 'DAYWED',
+            '4' => 'DAYTHU',
+            '5' => 'DAYFRI',
+            '6' => 'DAYSAT'
+        };
+
+        $this->fillDay($calendarData, $currentDayTime, $dayKey, $dayLinks, $dayLinkDiv);
     }
 
     /**

@@ -276,29 +276,17 @@ class OaiPmhController extends AbstractController
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
 
-        switch ($this->parameters['verb'] ?? null) {
-            case 'GetRecord':
-                $this->verbGetRecord();
-                break;
-            case 'Identify':
-                $this->verbIdentify();
-                break;
-            case 'ListIdentifiers':
-                $this->verbListIdentifiers();
-                break;
-            case 'ListMetadataFormats':
-                $this->verbListMetadataFormats();
-                break;
-            case 'ListRecords':
-                $this->verbListRecords();
-                break;
-            case 'ListSets':
-                $this->verbListSets();
-                break;
-            default:
-                $this->error = 'badVerb';
-                break;
-        }
+        $verb = $this->parameters['verb'] ?? null;
+
+        match ($verb) {
+            'GetRecord' => $this->verbGetRecord(),
+            'Identify' => $this->verbIdentify(),
+            'ListIdentifiers' => $this->verbListIdentifiers(),
+            'ListMetadataFormats'=> $this->verbListMetadataFormats(),
+            'ListRecords' => $this->verbListRecords(),
+            'ListSets' => $this->verbListSets(),
+            default => $this->error = 'badVerb'
+        };
 
         $this->view->assign('parameters', $this->parameters);
         $this->view->assign('error', $this->error);
@@ -379,17 +367,12 @@ class OaiPmhController extends AbstractController
         $document['collections'] = explode(' ', $document['collections']);
 
         // Add metadata
-        switch ($this->parameters['metadataPrefix']) {
-            case 'oai_dc':
-                $document['metadata'] = $this->getDublinCoreData($document);
-                break;
-            case 'epicur':
-                $document['metadata'] = $document;
-                break;
-            case 'mets':
-                $document['metadata'] = $this->getMetsData($document);
-                break;
-        }
+        $document['metadata'] = match ($this->parameters['metadataPrefix']) {
+            'oai_dc' => $this->getDublinCoreData($document),
+            'epicur' => $document,
+            'mets' => $this->getMetsData($document),
+            default => null,
+        };
 
         $this->view->assign('record', $document);
     }
@@ -824,17 +807,12 @@ class OaiPmhController extends AbstractController
                     // If we resume an action the metadataPrefix is stored with the documentSet
                     $metadataPrefix = $documentListSet['metadata']['metadataPrefix'];
                 }
-                switch ($metadataPrefix) {
-                    case 'oai_dc':
-                        $resArray['metadata'] = $this->getDublinCoreData($resArray);
-                        break;
-                    case 'epicur':
-                        $resArray['metadata'] = $resArray;
-                        break;
-                    case 'mets':
-                        $resArray['metadata'] = $this->getMetsData($resArray);
-                        break;
-                }
+                $resArray['metadata'] = match ($metadataPrefix) {
+                    'oai_dc' => $this->getDublinCoreData($resArray),
+                    'epicur' => $resArray,
+                    'mets' => $this->getMetsData($resArray),
+                    default => null,
+                };
             }
 
             $records[] = $resArray;

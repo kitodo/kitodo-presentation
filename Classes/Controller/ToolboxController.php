@@ -77,54 +77,20 @@ class ToolboxController extends AbstractController
             $tools = explode(',', $this->settings['tools']);
 
             foreach ($tools as $tool) {
-                switch ($tool) {
-                    case 'tx_dlf_annotationtool':
-                    case 'annotationtool':
-                        $this->renderToolByName('renderAnnotationTool');
-                        break;
-                    case 'tx_dlf_fulltextdownloadtool':
-                    case 'fulltextdownloadtool':
-                        $this->renderToolByName('renderFulltextDownloadTool');
-                        break;
-                    case 'tx_dlf_fulltexttool':
-                    case 'fulltexttool':
-                        $this->renderToolByName('renderFulltextTool');
-                        break;
-                    case 'tx_dlf_imagedownloadtool':
-                    case 'imagedownloadtool':
-                        $this->renderToolByName('renderImageDownloadTool');
-                        break;
-                    case 'tx_dlf_imagemanipulationtool':
-                    case 'imagemanipulationtool':
-                        $this->renderToolByName('renderImageManipulationTool');
-                        break;
-                    case 'tx_dlf_modeldownloadtool':
-                    case 'modeldownloadtool':
-                        $this->renderToolByName('renderModelDownloadTool');
-                        break;
-                    case 'tx_dlf_pdfdownloadtool':
-                    case 'pdfdownloadtool':
-                        $this->renderToolByName('renderPdfDownloadTool');
-                        break;
-                    case 'tx_dlf_scoredownloadtool':
-                    case 'scoredownloadtool':
-                        $this->renderToolByName('renderScoreDownloadTool');
-                        break;
-                    case 'tx_dlf_searchindocumenttool':
-                    case 'searchindocumenttool':
-                        $this->renderToolByName('renderSearchInDocumentTool');
-                        break;
-                    case 'plugin.tx_dlf_scoretool':
-                    case 'scoretool':
-                        $this->renderToolByName('renderScoreTool');
-                        break;
-                    case 'tx_dlf_viewerselectiontool':
-                    case 'viewerselectiontool':
-                        $this->renderToolByName('renderViewerSelectionTool');
-                        break;
-                    default:
-                        $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
-                }
+                match ($tool) {
+                    'tx_dlf_annotationtool', 'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
+                    'tx_dlf_fulltextdownloadtool', 'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
+                    'tx_dlf_fulltexttool', 'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
+                    'tx_dlf_imagedownloadtool', 'imagedownloadtool' => $this->renderToolByName('renderImageDownloadTool'),
+                    'tx_dlf_imagemanipulationtool', 'imagemanipulationtool' => $this->renderToolByName('renderImageManipulationTool'),
+                    'tx_dlf_modeldownloadtool', 'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
+                    'tx_dlf_pdfdownloadtool', 'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
+                    'tx_dlf_scoredownloadtool', 'scoredownloadtool' => $this->renderToolByName('renderScoreDownloadTool'),
+                    'tx_dlf_searchindocumenttool', 'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
+                    'plugin.tx_dlf_scoretool', 'scoretool' => $this->renderToolByName('renderScoreTool'),
+                    'tx_dlf_viewerselectiontool', 'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
+                    default => $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.')
+                };
             }
         }
     }
