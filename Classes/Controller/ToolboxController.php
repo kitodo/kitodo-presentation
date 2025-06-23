@@ -78,6 +78,10 @@ class ToolboxController extends AbstractController
 
             foreach ($tools as $tool) {
                 switch ($tool) {
+                    case 'tx_dlf_adddocumenttool':
+                    case 'adddocumenttool':
+                        $this->renderToolByName('renderAddDocumentTool');
+                        break;
                     case 'tx_dlf_annotationtool':
                     case 'annotationtool':
                         $this->renderToolByName('renderAnnotationTool');
@@ -110,13 +114,13 @@ class ToolboxController extends AbstractController
                     case 'scoredownloadtool':
                         $this->renderToolByName('renderScoreDownloadTool');
                         break;
+                    case 'tx_dlf_scoretool':
+                    case 'scoretool':
+                        $this->renderToolByName('renderScoreTool');
+                        break;
                     case 'tx_dlf_searchindocumenttool':
                     case 'searchindocumenttool':
                         $this->renderToolByName('renderSearchInDocumentTool');
-                        break;
-                    case 'plugin.tx_dlf_scoretool':
-                    case 'scoretool':
-                        $this->renderToolByName('renderScoreTool');
                         break;
                     case 'tx_dlf_viewerselectiontool':
                     case 'viewerselectiontool':
@@ -214,6 +218,19 @@ class ToolboxController extends AbstractController
             }
         }
         return $image;
+    }
+
+    /**
+     * Renders the add document tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderAddDocumentTool(): void
+    {
+        $this->view->assign('addDocumentTool', true);
     }
 
     /**

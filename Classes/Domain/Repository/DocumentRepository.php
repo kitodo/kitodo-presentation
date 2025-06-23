@@ -83,7 +83,7 @@ class DocumentRepository extends Repository
 
             $doc = AbstractDocument::getInstance($parameters['location'], [], true);
 
-            if ($doc->recordId) {
+            if ($doc != null && $doc->recordId) {
                 $document = $this->findOneByRecordId($doc->recordId);
             }
 

@@ -224,6 +224,18 @@
             <trans-unit id="titles">
                 <source><![CDATA[titles]]></source>
             </trans-unit>
+			<trans-unit id="tools.adddocument.description">
+				<source>To add another document to this view, enter the entire URL of the METS/MODS file here.</source>
+			</trans-unit>
+			<trans-unit id="tools.adddocument.label">
+				<source>Add Document</source>
+			</trans-unit>
+			<trans-unit id="tools.adddocument.placeholder">
+				<source>Document URL</source>
+			</trans-unit>
+			<trans-unit id="tools.adddocument.submit">
+				<source>Add now</source>
+			</trans-unit>
             <trans-unit id="tools.annotation.not-available">
                 <source><![CDATA[No Annotations available]]></source>
             </trans-unit>
