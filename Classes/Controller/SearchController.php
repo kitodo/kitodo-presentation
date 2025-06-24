@@ -542,22 +542,13 @@ class SearchController extends AbstractController
      */
     private function translateValue(string $field, string $value): string
     {
-        switch ($field) {
-            case 'owner_faceting':
-                // Translate name of holding library.
-                return htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
-            case 'type_faceting':
-                // Translate document type.
-                return htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
-            case 'collection_faceting':
-                // Translate name of collection.
-                return htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
-            case 'language_faceting':
-                // Translate ISO 639 language code.
-                return htmlspecialchars(Helper::getLanguageName($value));
-            default:
-                return htmlspecialchars($value);
-        }
+        return match ($field) {
+            'owner_faceting' => htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid'])),
+            'type_faceting' => htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid'])),
+            'collection_faceting' => htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid'])),
+            'language_faceting' => htmlspecialchars(Helper::getLanguageName($value)),
+            default => htmlspecialchars($value)
+        };
     }
 
     /**
