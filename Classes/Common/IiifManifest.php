@@ -752,23 +752,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::loadLocation()
-     */
-    protected function loadLocation(string $location): bool
-    {
-        $fileResource = GeneralUtility::getUrl($location);
-        if ($fileResource !== false) {
-            $resource = self::loadIiifResource($fileResource);
-            if ($resource instanceof ManifestInterface) {
-                $this->iiif = $resource;
-                return true;
-            }
-        }
-        $this->logger->error('Could not load IIIF manifest from "' . $location . '"');
-        return false;
-    }
-
-    /**
      * @see AbstractDocument::prepareMetadataArray()
      */
     protected function prepareMetadataArray(): void
@@ -786,6 +769,7 @@ final class IiifManifest extends AbstractDocument
             $this->iiif = $preloadedDocument;
             return true;
         }
+        $this->logger->error('Could not set preloaded IIIF file');
         return false;
     }
 
@@ -867,12 +851,12 @@ final class IiifManifest extends AbstractDocument
      *
      * @return array
      */
-    private function getAnnotationTexts($annotationContainerIds, $iiifId): array
+    private function getAnnotationTexts(array $annotationContainerIds, string $iiifId): array
     {
         $annotationTexts = [];
         foreach ($annotationContainerIds as $annotationListId) {
+            /** @var AnnotationContainerInterface $annotationContainer */
             $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
-            /* @var $annotationContainer \Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface */
             foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
                 if (
                     $annotation->getTargetResourceId() == $iiifId &&

@@ -522,7 +522,7 @@ final class MetsDocument extends AbstractDocument
                 if ($chapter === null) {
                     $chapter = [
                         'fileIds' => [],
-                        'timecode' => Helper::timecodeToSeconds($fileArea['begin']),
+                        'timecode' => Helper::timeCodeToSeconds($fileArea['begin']),
                     ];
                 }
 
@@ -605,6 +605,16 @@ final class MetsDocument extends AbstractDocument
         if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $this->configPid) {
             return $this->metadataArray[$id];
         }
+
+        $administrativeNode = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ADMID]/@ID');
+
+        if (!empty($administrativeNode)) {
+            $administrativeId = (string)$administrativeNode[0];
+            if ($administrativeId == $id) {
+                return $this->initializeMetadata('METS', true);
+            }
+        }
+
         return $this->initializeMetadata('METS');
     }
 
@@ -1218,24 +1228,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::loadLocation()
-     */
-    protected function loadLocation(string $location): bool
-    {
-        $fileResource = Helper::getUrl($location);
-        if ($fileResource !== false) {
-            $xml = Helper::getXmlFileAsString($fileResource);
-            // Set some basic properties.
-            if ($xml !== false) {
-                $this->xml = $xml;
-                return true;
-            }
-        }
-        $this->logger->error('Could not load XML file from "' . $location . '"');
-        return false;
-    }
-
-    /**
      * @see AbstractDocument::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet(): void
@@ -1259,6 +1251,7 @@ final class MetsDocument extends AbstractDocument
             $this->xml = $preloadedDocument;
             return true;
         }
+        $this->logger->error('Could not set preloaded METS file');
         return false;
     }
 
