@@ -21,8 +21,15 @@ class MailRepositoryTest extends FunctionalTestCase
     /**
      * @var MailRepository
      */
-    protected $mailRepository;
+    protected MailRepository $mailRepository;
 
+    /**
+     * Sets up the test environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();

@@ -851,12 +851,12 @@ final class IiifManifest extends AbstractDocument
      *
      * @return array
      */
-    private function getAnnotationTexts($annotationContainerIds, $iiifId): array
+    private function getAnnotationTexts(array $annotationContainerIds, string $iiifId): array
     {
         $annotationTexts = [];
         foreach ($annotationContainerIds as $annotationListId) {
+            /** @var AnnotationContainerInterface $annotationContainer */
             $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
-            /* @var $annotationContainer \Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface */
             foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
                 if (
                     $annotation->getTargetResourceId() == $iiifId &&
