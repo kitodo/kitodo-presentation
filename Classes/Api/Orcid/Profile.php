@@ -44,7 +44,7 @@ class Profile
      * @access private
      * @var \SimpleXmlElement|false The raw ORCID profile
      **/
-    private $raw = false;
+    private \SimpleXmlElement|false $raw = false;
 
     /**
      * Constructs client instance
@@ -68,10 +68,10 @@ class Profile
      *
      * @return array|false
      **/
-    public function getData()
+    public function getData(): array|false
     {
         $this->getRaw('person');
-        if ($this->raw !== false && !empty($this->raw)) {
+        if (!empty($this->raw)) {
             $data = [];
             $data['address'] = $this->getAddress();
             $data['email'] = $this->getEmail();
@@ -90,10 +90,10 @@ class Profile
      *
      * @return string|false
      **/
-    public function getAddress()
+    public function getAddress(): string|false
     {
         $this->getRaw('address');
-        if ($this->raw !== false && !empty($this->raw)) {
+        if (!empty($this->raw)) {
             $this->raw->registerXPathNamespace('address', 'http://www.orcid.org/ns/address');
             return (string) $this->raw->xpath('./address:address/address:country')[0];
         } else {
@@ -109,10 +109,10 @@ class Profile
      *
      * @return string|false
      **/
-    public function getEmail()
+    public function getEmail(): string|false
     {
         $this->getRaw('email');
-        if ($this->raw !== false && !empty($this->raw)) {
+        if (!empty($this->raw)) {
             $this->raw->registerXPathNamespace('email', 'http://www.orcid.org/ns/email');
             return (string) $this->raw->xpath('./email:email/email:email')[0];
         } else {
@@ -128,10 +128,10 @@ class Profile
      *
      * @return string|false
      **/
-    public function getFullName()
+    public function getFullName(): string|false
     {
         $this->getRaw('personal-details');
-        if ($this->raw !== false && !empty($this->raw)) {
+        if (!empty($this->raw)) {
             $this->raw->registerXPathNamespace('personal-details', 'http://www.orcid.org/ns/personal-details');
             $givenNames = $this->raw->xpath('./personal-details:name/personal-details:given-names');
             $familyName = $this->raw->xpath('./personal-details:name/personal-details:family-name');
