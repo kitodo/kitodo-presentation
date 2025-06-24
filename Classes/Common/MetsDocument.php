@@ -1228,24 +1228,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::loadLocation()
-     */
-    protected function loadLocation(string $location): bool
-    {
-        $fileResource = Helper::getUrl($location);
-        if ($fileResource !== false) {
-            $xml = Helper::getXmlFileAsString($fileResource);
-            // Set some basic properties.
-            if ($xml !== false) {
-                $this->xml = $xml;
-                return true;
-            }
-        }
-        $this->logger->error('Could not load XML file from "' . $location . '"');
-        return false;
-    }
-
-    /**
      * @see AbstractDocument::ensureHasFulltextIsSet()
      */
     protected function ensureHasFulltextIsSet(): void
@@ -1269,6 +1251,7 @@ final class MetsDocument extends AbstractDocument
             $this->xml = $preloadedDocument;
             return true;
         }
+        $this->logger->error('Could not set preloaded METS file');
         return false;
     }
 
