@@ -778,7 +778,7 @@ abstract class AbstractDocument
      */
     protected function loadFormats(): void
     {
-        if (!$this->formatsLoaded) {
+        if (!$this->formatsLoaded && $this->configPid > 0) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_formats');
 
@@ -792,7 +792,7 @@ abstract class AbstractDocument
                 )
                 ->from('tx_dlf_formats')
                 ->where(
-                    $queryBuilder->expr()->eq('pid', 0)
+                    $queryBuilder->expr()->eq('pid', $this->configPid)
                 )
                 ->execute();
 
@@ -934,7 +934,6 @@ abstract class AbstractDocument
      */
     protected function magicGetMetadataArray(): array
     {
-        // Set metadata definitions' PID.
         if ($this->configPid == 0) {
             $this->logger->error('Invalid PID for metadata definitions');
             return [];
