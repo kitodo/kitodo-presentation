@@ -1,10 +1,6 @@
 parameters:
   ignoreErrors:
     - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
-    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getHeight\(\)\.#'
-    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getWidth\(\)\.#'
-    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getPossibleTextAnnotationContainers\(\)\.#'
-    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\IiifResourceInterface::getTextAnnotations\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
     - '#^Parameter \#2 \$callback of function array_filter expects \(callable\(mixed\)\: bool\)\|null, ''strlen'' given\.$#'
