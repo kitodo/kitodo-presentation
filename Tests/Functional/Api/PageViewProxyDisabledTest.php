@@ -27,6 +27,8 @@ class PageViewProxyDisabledTest extends FunctionalTestCase
      * @param string $method The HTTP method to use (default: 'GET')
      *
      * @return ResponseInterface
+     *
+     * @access protected
      */
     protected function queryProxy(array $query, string $method = 'GET'): ResponseInterface
     {

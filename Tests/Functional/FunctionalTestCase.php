@@ -15,11 +15,13 @@ namespace Kitodo\Dlf\Tests\Functional;
 use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 
 /**
@@ -88,6 +90,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      */
     protected HttpClient $httpClient;
 
+    protected SolrCoreRepository $solrCoreRepository;
+
     public function __construct()
     {
         parent::__construct();
@@ -105,6 +109,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * Sets up the test case environment.
      *
      * @return void
+     *
+     * @access public
      */
     public function setUp(): void
     {
@@ -128,6 +134,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * It includes general settings, file groups, and Solr settings.
      *
      * @return array The DLF configuration
+     *
+     * @access protected
      */
     protected function getDlfConfiguration(): array
     {
@@ -192,6 +200,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * @param string $identifier The identifier for the site configuration
      *
      * @return void
+     *
+     * @access protected
      */
     protected function addSiteConfig(string $identifier): void
     {
@@ -208,8 +218,25 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $finder->getAllSites(false); // useCache = false
     }
 
-    protected function initializeRepository(string $className, int $storagePid)
+    /**
+     * Initializes a repository with the given class name and storage PID.
+     *
+     * This method creates an instance of the specified repository class,
+     * sets the default query settings to use the specified storage PID,
+     * and returns the initialized repository.
+     *
+     * @access protected
+     *
+     * @template T
+     *
+     * @param class-string<T> $className The fully qualified class name of the repository
+     * @param int $storagePid The storage PID to set in the query settings
+     *
+     * @return T The initialized repository
+     */
+    protected function initializeRepository(string $className, int $storagePid): Repository
     {
+        /* @var Repository $repository */
         $repository = GeneralUtility::makeInstance($className);
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds([$storagePid]);
@@ -228,6 +255,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * @param string $path The path to the JSON file containing the documents
      *
      * @return void
+     *
+     * @access protected
      */
     protected function importSolrDocuments(Solr $solr, string $path): void
     {
@@ -259,6 +288,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * @param string $locale The locale to set for the backend user
      *
      * @return void
+     *
+     * @access protected
      */
     protected function initLanguageService(string $locale): void
     {
@@ -270,6 +301,59 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     }
 
     /**
+     * Sets up the data for the test environment.
+     *
+     * This method imports the necessary CSV datasets for the tests.
+     *
+     * @access protected
+     *
+     * @param array $databaseFixtures An array of file paths to CSV datasets
+     *
+     * @return void
+     */
+    protected function setUpData(array $databaseFixtures): void
+    {
+        foreach ($databaseFixtures as $filePath) {
+            $this->importCSVDataSet($filePath);
+        }
+    }
+
+    /**
+     * Sets up the Solr core for the test environment.
+     *
+     * This method initializes the Solr core repository and imports the necessary Solr documents.
+     *
+     * @access protected
+     *
+     * @param int $uid The UID of the Solr core to set up
+     * @param int $storagePid The storage PID for the Solr core
+     * @param array $solrFixtures An array of file paths to Solr fixtures
+     *
+     * @return Solr|null The initialized Solr instance
+     */
+    protected function setUpSolr(int $uid, int $storagePid, array $solrFixtures): Solr|null
+    {
+        $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
+
+        // Setup Solr only once for all tests in this suite
+        static $solr = null;
+
+        if ($solr === null) {
+            $coreName = Solr::createCore();
+            $solr = Solr::getInstance($coreName);
+            foreach ($solrFixtures as $filePath) {
+                $this->importSolrDocuments($solr, $filePath);
+            }
+        }
+
+        $coreModel = $this->solrCoreRepository->findByUid($uid);
+        $coreModel->setIndexName($solr->core);
+        $this->solrCoreRepository->update($coreModel);
+        $this->persistenceManager->persistAll();
+        return $solr;
+    }
+
+    /**
      * Assert that $sub is recursively contained within $super.
      *
      * @param array $sub
@@ -277,8 +361,12 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      * @param string $message
      *
      * @return void
+     *
+     * @access protected
+     *
+     * @static
      */
-    protected function assertArrayMatches(array $sub, array $super, string $message = ''): void
+    protected static function assertArrayMatches(array $sub, array $super, string $message = ''): void
     {
         self::assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
     }

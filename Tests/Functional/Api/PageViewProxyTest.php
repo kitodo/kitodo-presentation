@@ -27,6 +27,8 @@ class PageViewProxyTest extends FunctionalTestCase
      * It includes general settings, file groups, and Solr settings.
      *
      * @return array The DLF configuration
+     *
+     * @access protected
      */
     protected function getDlfConfiguration(): array
     {
@@ -44,6 +46,8 @@ class PageViewProxyTest extends FunctionalTestCase
      * @param string $method The HTTP method to use (default: 'GET')
      *
      * @return ResponseInterface
+     *
+     * @access protected
      */
     protected function queryProxy(array $query, string $method = 'GET'): ResponseInterface
     {
