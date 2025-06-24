@@ -17,6 +17,16 @@ use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 
 class HelperTest extends FunctionalTestCase
 {
+    /**
+     * Sets up the test environment by importing necessary CSV datasets.
+     *
+     * This method is called before each test method to ensure that the
+     * required data is available for testing.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();

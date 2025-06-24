@@ -778,7 +778,7 @@ abstract class AbstractDocument
      */
     protected function loadFormats(): void
     {
-        if (!$this->formatsLoaded) {
+        if (!$this->formatsLoaded && $this->configPid > 0) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_formats');
 
@@ -792,7 +792,7 @@ abstract class AbstractDocument
                 )
                 ->from('tx_dlf_formats')
                 ->where(
-                    $queryBuilder->expr()->eq('pid', 0)
+                    $queryBuilder->expr()->eq('pid', $this->configPid)
                 )
                 ->execute();
 
@@ -863,10 +863,11 @@ abstract class AbstractDocument
      * @access protected
      *
      * @param string $format of the document eg. METS
+     * @param bool $isAdministrative If true, the metadata is for administrative purposes and needs to have record_id
      *
      * @return array
      */
-    protected function initializeMetadata(string $format): array
+    protected function initializeMetadata(string $format, bool $isAdministrative = false): array
     {
         return [
             'title' => [],
@@ -895,7 +896,8 @@ abstract class AbstractDocument
             'owner' => [],
             'mets_label' => [],
             'mets_orderlabel' => [],
-            'document_format' => [$format]
+            'document_format' => [$format],
+            'is_administrative' => $isAdministrative
         ];
     }
 
@@ -934,7 +936,6 @@ abstract class AbstractDocument
      */
     protected function magicGetMetadataArray(): array
     {
-        // Set metadata definitions' PID.
         if ($this->configPid == 0) {
             $this->logger->error('Invalid PID for metadata definitions');
             return [];

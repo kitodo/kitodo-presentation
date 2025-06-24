@@ -32,19 +32,19 @@ class Profile
      * @access private
      * @var Logger This holds the logger
      */
-    protected $logger;
+    protected Logger $logger;
 
     /**
      * @access private
      * @var Client This holds the client
      */
-    private $client;
+    private Client $client;
 
     /**
      * @access private
      * @var \SimpleXmlElement|false The raw VIAF profile or false if not found
      **/
-    private $raw = false;
+    private \SimpleXmlElement|false $raw = false;
 
     /**
      * Constructs client instance
@@ -68,10 +68,10 @@ class Profile
      *
      * @return array|false
      **/
-    public function getData()
+    public function getData(): array|false
     {
         $this->getRaw();
-        if ($this->raw !== false && !empty($this->raw)) {
+        if (!empty($this->raw)) {
             $data = [];
             $data['address'] = $this->getAddress();
             $data['fullName'] = $this->getFullName();
@@ -89,7 +89,7 @@ class Profile
      *
      * @return string|false
      **/
-    public function getAddress()
+    public function getAddress(): string|false
     {
         $this->getRaw();
         if ($this->raw !== false && !empty($this->raw->asXML())) {
@@ -107,14 +107,13 @@ class Profile
      *
      * @return string|false
      **/
-    public function getFullName()
+    public function getFullName(): string|false
     {
         $this->getRaw();
         if ($this->raw !== false && !empty($this->raw->asXML())) {
             $rawName = $this->raw->xpath('./ns1:mainHeadings/ns1:data/ns1:text');
             $name = (string) $rawName[0];
-            $name = trim(trim(trim($name), ','), '.');
-            return $name;
+            return trim(trim(trim($name), ','), '.');
         } else {
             $this->logger->warning('No name found for given VIAF URL');
             return false;
@@ -133,7 +132,7 @@ class Profile
         $data = $this->client->getData();
         if ($data != false) {
             $this->raw = Helper::getXmlFileAsString($data);
-            if ($this->raw != false && !empty($this->raw->asXML())) {
+            if ($this->raw !== false && !empty($this->raw->asXML())) {
                 $this->raw->registerXPathNamespace('ns1', 'http://viaf.org/viaf/terms#');
             }
         }

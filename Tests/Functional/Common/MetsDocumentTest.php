@@ -13,10 +13,21 @@
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 
 class MetsDocumentTest extends FunctionalTestCase
 {
+    /**
+     * Sets up the test environment.
+     *
+     * This method is called before each test method is executed.
+     * It imports the necessary CSV datasets for the tests.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -26,7 +37,16 @@ class MetsDocumentTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/MetsDocument/metadata_mets.csv');
     }
 
-    protected function doc(string $file)
+    /**
+     * Returns a MetsDocument instance for the given file.
+     *
+     * @access protected
+     *
+     * @param string $file The name of the file to load
+     *
+     * @return MetsDocument
+     */
+    protected function doc(string $file): MetsDocument
     {
         $url = 'http://web:8001/Tests/Fixtures/MetsDocument/' . $file;
         $doc = AbstractDocument::getInstance(
@@ -69,7 +89,7 @@ class MetsDocumentTest extends FunctionalTestCase
         $doc = $this->doc('av_beispiel.xml');
 
         $thumbsMeta = $doc->getMetadata('FILE_0000_THUMBS');
-        self::assertEquals($thumbsMeta, []);
+        self::assertEmpty($thumbsMeta);
 
         $videoMeta = $doc->getMetadata('FILE_0000_DEFAULT_MOV');
         self::assertArrayMatches([
@@ -142,16 +162,16 @@ class MetsDocumentTest extends FunctionalTestCase
         $doc = $this->doc('av_beispiel.xml');
 
         $chapterThreePage = $doc->physicalStructureInfo[$doc->physicalStructure[3]];
-        $this->assertArrayMatches([
+        self::assertArrayMatches([
             'DEFAULT' => 'FILE_0000_DEFAULT_MP4',
         ], $chapterThreePage['files']);
-        $this->assertArrayMatches([
+        self::assertArrayMatches([
             'DEFAULT' => [
                 'FILE_0000_DEFAULT_MOV',
                 'FILE_0000_DEFAULT_MP4',
             ],
         ], $chapterThreePage['all_files']);
-        $this->assertArrayMatches([
+        self::assertArrayMatches([
             'FILE_0000_DEFAULT_MP4' => [
                 'area' => [
                     'begin' => '00:00:40',
@@ -194,7 +214,7 @@ class MetsDocumentTest extends FunctionalTestCase
 
         // AMD only does not work
         $metadata = $doc->getMetadata('LOG_0002');
-        self::assertEquals([], $metadata);
+        self::assertEmpty($metadata);
     }
 
     /**
@@ -227,7 +247,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals('https://digital.slub-dresden.de/data/kitodo/1703800435/video.mov', $correct);
 
         $incorrect = $doc->getFileLocation('ID_DOES_NOT_EXIST');
-        self::assertEquals('', $incorrect);
+        self::assertEmpty($incorrect);
     }
 
     /**
@@ -241,7 +261,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals('video/quicktime', $correct);
 
         $incorrect = $doc->getFileMimeType('ID_DOES_NOT_EXIST');
-        self::assertEquals('', $incorrect);
+        self::assertEmpty($incorrect);
     }
 
     // FIXME: Method getPhysicalPage does not work as expected
@@ -268,7 +288,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals('10 Keyboard pieces - Go. S. 658', $correct);
 
         $incorrect = $doc->getTitle(1234);
-        self::assertEquals('', $incorrect);
+        self::assertEmpty($incorrect);
     }
 
     /**
@@ -285,7 +305,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals($expected, $fulltext);
 
         $incorrect = $doc->getFullText('ID_DOES_NOT_EXIST');
-        self::assertEquals('', $incorrect);
+        self::assertEmpty('', $incorrect);
     }
 
     /**
