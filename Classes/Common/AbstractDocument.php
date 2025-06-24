@@ -863,10 +863,11 @@ abstract class AbstractDocument
      * @access protected
      *
      * @param string $format of the document eg. METS
+     * @param bool $isAdministrative If true, the metadata is for administrative purposes and needs to have record_id
      *
      * @return array
      */
-    protected function initializeMetadata(string $format): array
+    protected function initializeMetadata(string $format, bool $isAdministrative = false): array
     {
         return [
             'title' => [],
@@ -895,7 +896,8 @@ abstract class AbstractDocument
             'owner' => [],
             'mets_label' => [],
             'mets_orderlabel' => [],
-            'document_format' => [$format]
+            'document_format' => [$format],
+            'is_administrative' => $isAdministrative
         ];
     }
 
