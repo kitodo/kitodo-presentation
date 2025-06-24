@@ -999,6 +999,7 @@ Toolbox
        `t3tsref:data-type-list`
    :Default:
    :Values:
+       * tx_dlf_adddocumenttool
        * tx_dlf_annotationtool
        * tx_dlf_fulltexttool
        * tx_dlf_imagedownloadtool
