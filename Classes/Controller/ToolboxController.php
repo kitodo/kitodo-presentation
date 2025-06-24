@@ -78,6 +78,7 @@ class ToolboxController extends AbstractController
 
             foreach ($tools as $tool) {
                 match ($tool) {
+                    'tx_dlf_adddocumenttool', 'adddocumenttool' => $this->renderToolByName('renderAddDocumentTool'),
                     'tx_dlf_annotationtool', 'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
                     'tx_dlf_fulltextdownloadtool', 'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
                     'tx_dlf_fulltexttool', 'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
@@ -86,8 +87,8 @@ class ToolboxController extends AbstractController
                     'tx_dlf_modeldownloadtool', 'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
                     'tx_dlf_pdfdownloadtool', 'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
                     'tx_dlf_scoredownloadtool', 'scoredownloadtool' => $this->renderToolByName('renderScoreDownloadTool'),
+                    'tx_dlf_scoretool', 'scoretool' => $this->renderToolByName('renderScoreTool'),
                     'tx_dlf_searchindocumenttool', 'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
-                    'plugin.tx_dlf_scoretool', 'scoretool' => $this->renderToolByName('renderScoreTool'),
                     'tx_dlf_viewerselectiontool', 'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
                     default => $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.')
                 };
@@ -180,6 +181,19 @@ class ToolboxController extends AbstractController
             }
         }
         return $image;
+    }
+
+    /**
+     * Renders the add document tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderAddDocumentTool(): void
+    {
+        $this->view->assign('addDocumentTool', true);
     }
 
     /**
