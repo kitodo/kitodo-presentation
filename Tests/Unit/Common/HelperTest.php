@@ -97,13 +97,13 @@ XML;
 
     /**
      * @test
-     * @group timecodeToSeconds
+     * @group timeCodeToSeconds
      */
-    public function canConvertTimecode()
+    public function canConvertTimeCode()
     {
-        $this->assertEquals(20, Helper::timecodeToSeconds('20'));
-        $this->assertEquals(20.5, Helper::timecodeToSeconds('20.5'));
-        $this->assertEquals(80.5, Helper::timecodeToSeconds('1:20.5'));
+        $this->assertEquals(20, Helper::timeCodeToSeconds('20'));
+        $this->assertEquals(20.5, Helper::timeCodeToSeconds('20.5'));
+        $this->assertEquals(80.5, Helper::timeCodeToSeconds('1:20.5'));
     }
 
     /**
