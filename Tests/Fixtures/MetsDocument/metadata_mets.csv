@@ -12,6 +12,6 @@
 ,569124173,20000,,,1,0,793462399,5202,"./dv:test",,0
 "tx_dlf_formats",,,,,,,,,,
 ,"uid","pid","tstamp","crdate","cruser_id","deleted","type","root","namespace","class"
-,689522348,0,,,1,0,"VIDEOMD","VIDEOMD","http://www.loc.gov/videoMD/","Kitodo\Dlf\Format\Mods"
-,142585035,0,,,1,0,"DVRIGHTS","rights","http://dfg-viewer.de/","Kitodo\Dlf\Format\Mods"
-,933594800,0,,,1,0,"DVLINKS","links","http://dfg-viewer.de/","Kitodo\Dlf\Format\Mods"
+,689522348,20000,,,1,0,"VIDEOMD","VIDEOMD","http://www.loc.gov/videoMD/","Kitodo\Dlf\Format\Mods"
+,142585035,20000,,,1,0,"DVRIGHTS","rights","http://dfg-viewer.de/","Kitodo\Dlf\Format\Mods"
+,933594800,20000,,,1,0,"DVLINKS","links","http://dfg-viewer.de/","Kitodo\Dlf\Format\Mods"
