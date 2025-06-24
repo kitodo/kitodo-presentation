@@ -21,8 +21,15 @@ class MetadataRepositoryTest extends FunctionalTestCase
     /**
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
+    /**
+     * Sets up the test environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -37,18 +44,21 @@ class MetadataRepositoryTest extends FunctionalTestCase
 
 
     /**
-     * @param $settings
+     * Finds metadata by given settings.
+     *
+     * @param array $settings
+     *
      * @return array
      */
-    protected function findBySettings($settings)
+    protected function findBySettings(array $settings): array
     {
         $metadata = $this->metadataRepository->findBySettings($settings);
         self::assertNotNull($metadata);
         self::assertInstanceOf(QueryResult::class, $metadata);
 
         $metadataByLabel = [];
-        foreach ($metadata as $mdata) {
-            $metadataByLabel[$mdata->getLabel()] = $mdata;
+        foreach ($metadata as $data) {
+            $metadataByLabel[$data->getLabel()] = $data;
         }
 
         return $metadataByLabel;
