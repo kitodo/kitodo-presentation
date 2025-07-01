@@ -44,6 +44,13 @@ class SaxonXslToSvrlValidatorTest extends UnitTestCase
 
     private string $dlfExtensionPath;
 
+    /**
+     * Sets up the test case environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();

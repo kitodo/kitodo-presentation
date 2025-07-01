@@ -23,6 +23,8 @@ class PageViewProxyDisabledTest extends FunctionalTestCase
     /**
      * Query the page view proxy with the given parameters.
      *
+     * @access protected
+     *
      * @param array $query The query parameters to send
      * @param string $method The HTTP method to use (default: 'GET')
      *

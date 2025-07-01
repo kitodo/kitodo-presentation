@@ -45,6 +45,8 @@ class OaiPmhTest extends FunctionalTestCase
     /**
      * Sets up the test case environment.
      *
+     * @access public
+     *
      * @return void
      *
      * @access public
@@ -293,6 +295,10 @@ class OaiPmhTest extends FunctionalTestCase
     /**
      * Parses a UTC date string into a DateTime object.
      *
+     * @access protected
+     *
+     * @static
+     *
      * @param string $dateTime The date string in UTC format (e.g., '2023-10-01T12:00:00Z')
      *
      * @return DateTime|false Returns a DateTime object or false on failure
@@ -309,6 +315,10 @@ class OaiPmhTest extends FunctionalTestCase
     /**
      * Asserts that a given date string is a valid UTC date string.
      *
+     * @access protected
+     *
+     * @static
+     *
      * @param string $dateTime The date string to check
      *
      * @return void
@@ -324,6 +334,10 @@ class OaiPmhTest extends FunctionalTestCase
 
     /**
      * Asserts that a given date string is in the future.
+     *
+     * @access protected
+     *
+     * @static
      *
      * @param string $dateTime The date string to check
      *

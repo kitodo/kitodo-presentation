@@ -29,13 +29,20 @@ class HelperTest extends UnitTestCase
     /**
      * @var LogManager|MockObject
      */
-    protected $logManagerMock;
+    protected LogManager|MockObject $logManagerMock;
 
     /**
      * @var Logger|MockObject
      */
-    protected $loggerMock;
+    protected Logger|MockObject $loggerMock;
 
+    /**
+     * Sets up the test environment.
+     *
+     * @access protected
+     *
+     * @return void
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -50,16 +57,32 @@ class HelperTest extends UnitTestCase
         GeneralUtility::setSingletonInstance(LogManager::class, $this->logManagerMock);
     }
 
+    /**
+     * Cleans up the test environment.
+     *
+     * @access protected
+     *
+     * @return void
+     */
     protected function tearDown(): void
     {
         GeneralUtility::purgeInstances();
         parent::tearDown();
     }
 
-    public function assertInvalidXml($xml)
+    /**
+     * Asserts that the given XML is invalid.
+     *
+     * @access private
+     *
+     * @param mixed $xml The XML to check
+     *
+     * @return void
+     */
+    private static function assertInvalidXml(mixed $xml): void
     {
         $result = Helper::getXmlFileAsString($xml);
-        self::assertEquals(false, $result);
+        self::assertFalse($result);
     }
 
     /**
@@ -115,22 +138,19 @@ XML;
         // Empty categories and types
         self::assertFalse(Helper::filterFilesByMimeType(
             ['mimetype' => 'image/jpeg'],
-            [],
-            null
+            []
         ));
 
         // Invalid file input
         self::assertFalse(Helper::filterFilesByMimeType(
             null,
-            ['image'],
-            null
+            ['image']
         ));
 
         // Missing mime type key
         self::assertFalse(Helper::filterFilesByMimeType(
             ['wrong_key' => 'image/jpeg'],
-            ['image'],
-            null
+            ['image']
         ));
     }
 
