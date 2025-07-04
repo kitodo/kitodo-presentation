@@ -140,6 +140,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             'requestData' => $this->requestData
         ];
 
+        // Workaround cause ViewHelper f:link.action / UriBuilder does not properly encode specified entities in URL parameter
+        // For more details, please see the following TYPO3 issue https://forge.typo3.org/issues/107026
         if( isset($this->requestData['id']) ) {
            $this->viewData['partlyEncodedId'] = str_replace("%2F", "%252F", $this->requestData['id']);
         }
