@@ -523,7 +523,11 @@ class PageViewController extends AbstractController
                 });';
         } else {
             $currentMeasureId = '';
-            $docPage = $this->requestData['page'] ?? 0;
+            $docPage = 0;
+
+            if (isset($this->requestData['page'])) {
+                $docPage = $this->requestData['page'];
+            }
 
             $docMeasures = $this->getMeasures($docPage);
             if (isset($docMeasures['measureCounterToMeasureId']) && count($docMeasures['measureCounterToMeasureId']) > 0 && isset($this->requestData['measure']) && $this->requestData['measure'] ?? false) {
