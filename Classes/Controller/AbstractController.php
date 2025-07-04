@@ -140,6 +140,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             'requestData' => $this->requestData
         ];
 
+        if( isset($this->requestData['id']) ) {
+           $this->viewData['partlyEncodedId'] = str_replace("%2F", "%252F", $this->requestData['id']);
+        }
+
         try {
             $this->viewData['publicResourcePath'] = PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public');
         } catch (InvalidFileException) {
