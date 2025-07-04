@@ -30,6 +30,13 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class DOMDocumentValidationStackTest extends UnitTestCase
 {
+    /**
+     * Sets up the test case environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
