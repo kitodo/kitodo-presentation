@@ -533,7 +533,7 @@ class PageViewController extends AbstractController
             if (isset($docMeasures['measureCounterToMeasureId'])
                 && count($docMeasures['measureCounterToMeasureId']) > 0
                 && isset($this->requestData['measure'])
-                && array_key_exists($this->requestData['measure'],$docMeasures['measureCounterToMeasureId'])) {
+                && array_key_exists($this->requestData['measure'], $docMeasures['measureCounterToMeasureId'])) {
                 $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
             }
 
