@@ -88,7 +88,7 @@ class AudioplayerController extends AbstractController
         $fileGrpsAudio = GeneralUtility::trimExplode(',', $this->extConf['files']['fileGrpAudio']);
         while ($fileGrpAudio = array_shift($fileGrpsAudio)) {
             $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']]];
-            $fileId = $physicalStructureInfo['files'][$fileGrpAudio];
+            $fileId = $physicalStructureInfo['files'][$fileGrpAudio] ?? [];
             if (!empty($fileId)) {
                 // Get audio data.
                 $file = $this->document->getCurrentDocument()->getFileInfo($fileId);

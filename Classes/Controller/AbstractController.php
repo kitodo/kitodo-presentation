@@ -435,6 +435,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function setDefaultPage(): void
     {
         // Set default values if not set.
+        if (!isset($this->requestData['page'])) {
+            $this->requestData['page'] = 1;
+        }
+
         // $this->requestData['page'] may be integer or string (physical structure @ID)
         if (
             (int) $this->requestData['page'] > 0
@@ -643,7 +647,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         } else {
             $this->documentArray[] = $doc;
         }
-        if ($this->requestData['multipleSource'] && is_array($this->requestData['multipleSource'])) {
+        if (is_array($this->requestData['multipleSource'] ?? false)) {
             $i = 0;
             foreach ($this->requestData['multipleSource'] as $location) {
                 $document = AbstractDocument::getInstance($location, $this->settings, true);

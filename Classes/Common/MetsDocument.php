@@ -846,9 +846,8 @@ final class MetsDocument extends AbstractDocument
     private function setSortableMetadataValue(array $resArray, DOMXPath $domXPath, DOMElement $domNode, array &$metadata): void
     {
         $indexName = $resArray['index_name'];
-        $currentMetadata = $metadata[$indexName][0];
-
         if (!empty($metadata[$indexName]) && $resArray['is_sortable']) {
+            $currentMetadata = $metadata[$indexName][0];
             if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
                 $values = $domXPath->evaluate($resArray['xpath_sorting'], $domNode);
                 if ($values instanceof DOMNodeList && $values->length > 0) {
