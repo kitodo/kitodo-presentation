@@ -267,12 +267,26 @@ class MetadataController extends AbstractController
 
             foreach ($section as $name => $value) {
                 $metaConfigObjectData[$i][$name] = is_array($value)
-                    ? implode($this->settings['separator'], $value)
+                    ? $this->mergeMetadata($this->settings['separator'], $value)
                     : $value;
             }
         }
 
         return $metaConfigObjectData;
+    }
+
+    private function mergeMetadata($separator, $items) {
+        $result = [];
+
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $result[] = $this->mergeMetadata($separator, $item);
+            } else {
+                $result[] = $item;
+            }
+        }
+
+        return implode($separator, $result);
     }
 
     /**
