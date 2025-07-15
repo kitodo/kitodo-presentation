@@ -280,7 +280,7 @@ class CalendarController extends AbstractController
                         $dayLinksText = [];
                         $dayLinkDiv = [];
                         $currentMonth = date('n', $currentDayTime);
-                        if (is_array($calendarIssuesByMonth[$currentMonth])) {
+                        if (is_array($calendarIssuesByMonth[$currentMonth] ?? false)) {
                             foreach ($calendarIssuesByMonth[$currentMonth] as $id => $day) {
                                 if ($id == date('j', $currentDayTime)) {
                                     $dayLinks = $id;
