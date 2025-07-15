@@ -995,7 +995,7 @@ abstract class AbstractDocument
             'mets_label' => [],
             'mets_orderlabel' => [],
             'document_format' => [$format],
-            'is_administrative' => $isAdministrative
+            'is_administrative' => [$isAdministrative]
         ];
     }
 
