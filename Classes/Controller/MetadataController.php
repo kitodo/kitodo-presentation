@@ -275,7 +275,8 @@ class MetadataController extends AbstractController
         return $metaConfigObjectData;
     }
 
-    private function mergeMetadata($separator, $items) {
+    private function mergeMetadata($separator, $items) 
+    {
         $result = [];
 
         foreach ($items as $item) {
