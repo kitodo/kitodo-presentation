@@ -267,12 +267,37 @@ class MetadataController extends AbstractController
 
             foreach ($section as $name => $value) {
                 $metaConfigObjectData[$i][$name] = is_array($value)
-                    ? implode($this->settings['separator'], $value)
+                    ? $this->mergeMetadata($this->settings['separator'], $value)
                     : $value;
             }
         }
 
         return $metaConfigObjectData;
+    }
+
+    /**
+     * Implode multivalued metadata into string recursively.
+     *
+     * @access private
+     *
+     * @param string $separator Glue to put between array elements
+     * @param array $items Array with items to concatenate
+     *
+     * @return string All items concatenated and linked by separator
+     */
+    private function mergeMetadata(string $separator, array $items): string
+    {
+        $result = [];
+
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $result[] = $this->mergeMetadata($separator, $item);
+            } else {
+                $result[] = $item;
+            }
+        }
+
+        return implode($separator, $result);
     }
 
     /**
