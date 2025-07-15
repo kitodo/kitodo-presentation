@@ -280,12 +280,12 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param string $separator Optional glue to put between array elements
+     * @param string $separator Glue to put between array elements
      * @param array $items Array with items to concatenate
      *
      * @return string All items concatenated and linked by separator
      */
-    private function mergeMetadata(string $separator = '', array $items): string
+    private function mergeMetadata(string $separator, array $items): string
     {
         $result = [];
 
