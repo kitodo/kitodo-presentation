@@ -567,6 +567,16 @@ final class MetsDocument extends AbstractDocument
         if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
             return $this->metadataArray[$id];
         }
+
+        $administrativeNode = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ADMID]/@ID');
+
+        if (!empty($administrativeNode)) {
+            $administrativeId = (string)$administrativeNode[0];
+            if ($administrativeId == $id) {
+                return $this->initializeMetadata('METS', true);
+            }
+        }
+
         return $this->initializeMetadata('METS');
     }
 
