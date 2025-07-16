@@ -331,7 +331,7 @@ class Indexer
         $doc = $document->getCurrentDocument();
         $doc->cPid = $document->getPid();
         // Get metadata for logical unit.
-        $metadata = $doc->metadataArray[$logicalUnit['id']];
+        $metadata = $doc->metadataArray[$logicalUnit['id']] ?? [];
         if (!empty($metadata)) {
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'general');
             $validator = new DocumentValidator($metadata, explode(',', $extConf['requiredMetadataFields']));
