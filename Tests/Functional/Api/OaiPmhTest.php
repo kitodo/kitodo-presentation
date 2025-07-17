@@ -110,6 +110,7 @@ class OaiPmhTest extends FunctionalTestCase
                 'verb' => 'nastyVerb',
             ],
         ]);
+
         $xml = new SimpleXMLElement((string) $response->getBody());
 
         self::assertEquals('badVerb', (string) $xml->error['code']);
