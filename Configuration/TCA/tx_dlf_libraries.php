@@ -109,11 +109,13 @@ return [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries.image',
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('image', [
+            'config' => [
+                'type' => 'file',
                 'appearance' => [
                     'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
                 ],
-            ], $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']),
+                'allowed' => 'common-image-types'
+            ],
         ],
         'oai_label' => [
             'exclude' => 1,

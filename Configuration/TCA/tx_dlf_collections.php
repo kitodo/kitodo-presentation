@@ -162,19 +162,17 @@ return [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.thumbnail',
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                'image',
-                [
-                    'appearance' => [
-                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
-                    ],
-                    'foreign_match_fields' => [
-                        'fieldname' => 'thumbnail',
-                        'tablenames' => 'tx_dlf_collections',
-                    ],
+            'config' => [
+                'type' => 'file',
+                'appearance' => [
+                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
                 ],
-                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            )
+                'foreign_match_fields' => [
+                    'fieldname' => 'thumbnail',
+                    'tablenames' => 'tx_dlf_collections',
+                ],
+                'allowed' => 'common-image-types'
+            ],
         ],
         'priority' => [
             'exclude' => 1,
