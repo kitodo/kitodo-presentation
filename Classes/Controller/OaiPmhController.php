@@ -91,7 +91,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    public function initializeAction()
+    public function initializeAction(): void
     {
         $this->request = $this->request->withFormat("xml");
     }

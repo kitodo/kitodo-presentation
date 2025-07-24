@@ -33,7 +33,7 @@ class SolrSearchQuery extends Query
      *
      * @return void
      */
-    public function __construct($solrSearch)
+    public function __construct(SolrSearch $solrSearch)
     {
         $this->solrSearch = $solrSearch;
 

@@ -28,9 +28,9 @@ class SolrCore extends AbstractEntity
 {
     /**
      * @access protected
-     * @var int
+     * @var ?int
      */
-    protected $pid;
+    protected ?int $pid;
 
     /**
      * @access protected
