@@ -3,7 +3,12 @@
         --controls-color: white;
 
         --volume-base-color: rgba(255, 255, 255, 0.54);
-        --volume-level-color: rgba(255, 255, 255);
+        --volume-level-color: rgba(255, 255, 255, 0.8);
+
+        .shaka-overflow-menu, .shaka-settings-menu {
+            max-height: 400px;
+            margin-bottom: 10px;
+        }
 
         .dlf-media-flat-seek-bar {
             --base-color: rgba(255, 255, 255, 0.3);
@@ -17,18 +22,23 @@
     }
 
     &[data-mode="audio"] {
-        --controls-color: #2a2b2c;
+        --controls-color: #212121;
 
         --volume-base-color: rgba(0, 0, 0, 0.4);
         --volume-level-color: rgba(0, 0, 0, 0.8);
 
+        .shaka-overflow-menu, .shaka-settings-menu {
+            max-height: 400px;
+            margin-bottom: 14px;
+        }
+
         .dlf-media-flat-seek-bar {
             --base-color: rgba(0, 0, 0, 0.3);
             --buffered-color: rgba(0, 0, 0, 0.54);
-            --played-color: #2a2b2c;
+            --played-color: rgba(0, 0, 0, 0.75);
 
             .dlf-media-chapter-marker {
-                background-color: lighten(rgb(79, 179, 199), 30%);
+                background-color: #e3e3e3;
             }
 
             .seek-marker {
@@ -77,13 +87,15 @@
     .shaka-volume-bar {
         &::-webkit-slider-thumb,
         &::-moz-range-thumb {
-            background: var(--volume-level-color);
+            background: var(--controls-color);
         }
     }
 
-    .shaka-spinner-container .shaka-spinner-path {
-        stroke: #fff7;
-    }
+    // optional spinner color change
+    /* 
+    .shaka-spinner-container .shaka-spinner .q-spinner {
+        stroke: rgba(255, 255, 255, 0.8);
+    } */
 
     .dlf-hide-big-play-button {
         // hide BigPlayButton in >= tabletViewportWidth - show in mobile for tap ui compatibilities
@@ -118,6 +130,10 @@
         .shaka-bottom-controls {
             width: 100%;
             padding-bottom: 0.4em;
+        }
+
+        .shaka-controls-button-panel > * {
+            text-shadow: none;
         }
     }
 }
