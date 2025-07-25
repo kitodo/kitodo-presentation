@@ -92,41 +92,8 @@ dlf-media {
     }
 }
 
-.shaka-overflow-menu,
-.shaka-settings-menu {
-    max-height: 350px;
-    /* Interim Solution - waiting for a flexbox fix from shaka player */
-
-    bottom: 5%; // Default for larger screens
-
-    // Smaller than 1200px
-    @media screen and (max-height: 1600px) {
-        bottom: 8%;
-    }
-
-    // Smaller than 1200px
-    @media screen and (max-height: 1200px) {
-        bottom: 10%;
-    }
-
-    // Smaller than 992px
-    @media screen and (max-height: 992px) {
-        bottom: 10%;
-    }
-
-    // Smaller than 768px
-    @media screen and (max-height: 768px) {
-        bottom: 12%;
-    }
-
-    // Smaller than 576px
-    @media screen and (max-height: 576px) {
-        bottom: 20%;
-    }
-}
-
 .dlf-playrate-slider {
-    background: #ccc;
+    background: #555;
 
     margin-top: 8px;
     margin-bottom: 10px;
@@ -144,7 +111,7 @@ dlf-media {
 
         &::-webkit-slider-thumb,
         &::-moz-range-thumb {
-            background: black !important;
+            background: white !important;
         }
     }
 }
@@ -155,9 +122,10 @@ dlf-media {
 
 .dlf-playrate-tooltip {
     display: none;
-    background: white;
-    box-shadow: 0 1px 9px 0 rgba(0 0 0 / 40%);
-    border-radius: 2px;
+    color: white;
+    background: #555;
+    box-shadow: 0 1px 9px 0 rgba(0 0 0 / 20%);
+    border-radius: 5px;
     padding: 4px 6px;
     margin-top: 12px;
     position: absolute;
