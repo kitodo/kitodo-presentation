@@ -1,0 +1,27 @@
+name: Webpack Build Check (Node.js)
+description: 'This workflow triggers a Node.js build on a Pull Request to main to check the workflow: it reads the Node version from Build/.nvmrc, checks out the code, installs dependencies via npm ci, and runs the production Webpack build.'
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js from .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'Build/.nvmrc'
+
+      - name: Install Dependencies from package-lock.json
+        working-directory: Build
+        run: npm ci
+
+      - name: Run Webpack Build for Production (Check Only)
+        working-directory: Build
+        run: npm run build
