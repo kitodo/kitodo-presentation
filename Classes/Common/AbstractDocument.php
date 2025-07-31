@@ -496,19 +496,6 @@ abstract class AbstractDocument
     abstract protected function init(string $location, array $settings): void;
 
     /**
-     * METS/IIIF specific part of loading a location
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @param string $location The URL of the file to load
-     *
-     * @return bool true on success or false on failure
-     */
-    abstract protected function loadLocation(string $location): bool;
-
-    /**
      * Format specific part of building the document's metadata array
      *
      * @access protected
@@ -579,6 +566,8 @@ abstract class AbstractDocument
                     }
                 }
             }
+        } else {
+            Helper::error('Invalid file location "' . $location . '" for document loading');
         }
 
         if ($documentFormat == 'METS') {
@@ -749,27 +738,6 @@ abstract class AbstractDocument
     }
 
     /**
-     * Load XML file / IIIF resource from URL
-     *
-     * @access protected
-     *
-     * @param string $location The URL of the file to load
-     *
-     * @return bool true on success or false on failure
-     */
-    protected function load(string $location): bool
-    {
-        // Load XML / JSON-LD file.
-        if (GeneralUtility::isValidUrl($location)) {
-            // the actual loading is format specific
-            return $this->loadLocation($location);
-        } else {
-            $this->logger->error('Invalid file location "' . $location . '" for document loading');
-        }
-        return false;
-    }
-
-    /**
      * Register all available data formats
      *
      * @access protected
@@ -863,10 +831,11 @@ abstract class AbstractDocument
      * @access protected
      *
      * @param string $format of the document eg. METS
+     * @param bool $isAdministrative If true, the metadata is for administrative purposes and needs to have record_id
      *
      * @return array
      */
-    protected function initializeMetadata(string $format): array
+    protected function initializeMetadata(string $format, bool $isAdministrative = false): array
     {
         return [
             'title' => [],
@@ -895,7 +864,8 @@ abstract class AbstractDocument
             'owner' => [],
             'mets_label' => [],
             'mets_orderlabel' => [],
-            'document_format' => [$format]
+            'document_format' => [$format],
+            'is_administrative' => [$isAdministrative]
         ];
     }
 

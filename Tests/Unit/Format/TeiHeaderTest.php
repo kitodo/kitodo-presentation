@@ -16,7 +16,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class TeiHeaderTest extends UnitTestCase
 {
-    protected $metadata = [];
+    protected array $metadata = [];
 
     public function setUp(): void
     {

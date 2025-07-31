@@ -81,13 +81,18 @@ class NavigationController extends AbstractController
             $this->viewData['requestData'] = $this->requestData;
         }
 
-        // get the closest previous sibling or leaf node
-        $prevDocumentUid = $this->documentRepository->getPreviousDocumentUid($this->document->getUid());
-        $this->view->assign('documentBack', $prevDocumentUid);
+        if ($this->document->getUid() !== null) {
+            // get the closest previous sibling or leaf node
+            $prevDocumentUid = $this->documentRepository->getPreviousDocumentUid($this->document->getUid());
+            $this->view->assign('documentBack', $prevDocumentUid);
 
-        // get the closest next sibling or leaf node
-        $nextDocumentUid = $this->documentRepository->getNextDocumentUid($this->document->getUid());
-        $this->view->assign('documentForward', $nextDocumentUid);
+            // get the closest next sibling or leaf node
+            $nextDocumentUid = $this->documentRepository->getNextDocumentUid($this->document->getUid());
+            $this->view->assign('documentForward', $nextDocumentUid);
+        } else {
+            $this->view->assign('documentBack', '');
+            $this->view->assign('documentForward', '');
+        }
 
         // Steps for X pages backward / forward. Double page view uses double steps.
         $pageSteps = $this->settings['pageStep'] * ($this->requestData['double'] + 1);
@@ -130,8 +135,9 @@ class NavigationController extends AbstractController
                 $musicalStructure = $this->document->getCurrentDocument()->musicalStructure;
                 $musicalStructureInfo = $this->document->getCurrentDocument()->musicalStructureInfo;
                 for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
-                    if (array_key_exists($i, $musicalStructure) && array_key_exists($i, $musicalStructureInfo)) {
-                        $measureOptions[$i] = '[' . $i . ']' . ($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($musicalStructureInfo[$musicalStructureInfo[$i]]['orderlabel']) : '');
+                    if (isset($musicalStructure[$i]['measureid'])
+                        && isset($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel'])) {
+                        $measureOptions[$i] = '[' . $i . ']' . (!empty($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel']) ? ' - ' . htmlspecialchars($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel']) : '');
                         $measurePages[$i] = $musicalStructure[$i]['page'];
                     }
                 }

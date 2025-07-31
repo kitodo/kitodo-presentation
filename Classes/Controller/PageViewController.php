@@ -17,8 +17,10 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
 use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 
@@ -95,28 +97,20 @@ class PageViewController extends AbstractController
     {
         // Load current document.
         $this->loadDocument();
+
         if ($this->isDocMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return $this->htmlResponse();
-        } else {
-            if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType'] && empty($this->requestData['multiview'])) {
-                $params = array_merge(
-                    ['tx_dlf' => $this->requestData],
-                    ['tx_dlf[multiview]' => 1]
-                );
-                $uriBuilder = $this->uriBuilder;
-                $uri = $uriBuilder
-                    ->setArguments($params)
-                    ->setArgumentPrefix('tx_dlf')
-                    ->uriFor('main');
-                $this->redirectToUri($uri);
-            }
-            $this->setPage();
-            $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
-
-            $documentAnnotation = DocumentAnnotation::getInstance($this->document);
-            $this->verovioAnnotations = $documentAnnotation->getVerovioRelevantAnnotations();
         }
+
+        if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType'] && empty($this->requestData['multiview'])) {
+            return $this->multiviewRedirect();
+        }
+
+        $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
+
+        $documentAnnotation = DocumentAnnotation::getInstance($this->document);
+        $this->verovioAnnotations = $documentAnnotation->getVerovioRelevantAnnotations();
 
         $this->setPage();
 
@@ -288,18 +282,7 @@ class PageViewController extends AbstractController
             if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
                 $nextMultipleSourceKey = max(array_keys($this->requestData['multipleSource'])) + 1;
             }
-            $params = array_merge(
-                ['tx_dlf' => $this->requestData],
-                ['tx_dlf[multipleSource][' . $nextMultipleSourceKey . ']' => $formAddDocument->getLocation()],
-                ['tx_dlf[multiview]' => 1]
-            );
-            $uriBuilder = $this->uriBuilder;
-            $uri = $uriBuilder
-                ->setArguments($params)
-                ->setArgumentPrefix('tx_dlf')
-                ->uriFor('main');
-
-            return $this->redirectToUri($uri);
+            return $this->multiviewRedirect(['tx_dlf[multipleSource][' . $nextMultipleSourceKey . ']' => $formAddDocument->getLocation()]);
         }
 
         return $this->htmlResponse();
@@ -540,10 +523,15 @@ class PageViewController extends AbstractController
                 });';
         } else {
             $currentMeasureId = '';
-            $docPage = $this->requestData['page'] ?? 0;
+            $docPage = 0;
+
+            if (isset($this->requestData['page'])) {
+                $docPage = $this->requestData['page'];
+            }
 
             $docMeasures = $this->getMeasures($docPage);
-            if ($this->requestData['measure'] ?? false) {
+            if (isset($this->requestData['measure'])
+                && isset($docMeasures['measureCounterToMeasureId'][$this->requestData['measure']])) {
                 $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
             }
 
@@ -587,7 +575,7 @@ class PageViewController extends AbstractController
             $iiif = $this->document->getCurrentDocument()->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
-                /* @var $canvas \Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface */
+                /** @var CanvasInterface $canvas */
                 if ($canvas != null && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     $annotationContainers = [];
                     /*
@@ -613,7 +601,7 @@ class PageViewController extends AbstractController
                             }
                         }
                     }
-                    $result = [
+                    return [
                         'canvas' => [
                             'id' => $canvas->getId(),
                             'width' => $canvas->getWidth(),
@@ -621,7 +609,6 @@ class PageViewController extends AbstractController
                         ],
                         'annotationContainers' => $annotationContainers
                     ];
-                    return $result;
                 }
             }
         }
@@ -703,5 +690,27 @@ class PageViewController extends AbstractController
         }
 
         return null;
+    }
+
+    private function multiviewRedirect(array $params=[]): RedirectResponse
+    {
+        $arguments = array_merge(
+            ['tx_dlf' => $this->requestData],
+            ['tx_dlf[multiview]' => 1]
+        );
+
+        if(!empty($params)) {
+            $arguments = array_merge(
+                $arguments,
+                $params
+            );
+        }
+
+        $uriBuilder = $this->uriBuilder;
+        $uri = $uriBuilder
+            ->setArguments($arguments)
+            ->setArgumentPrefix('tx_dlf')
+            ->uriFor('main');
+        return new RedirectResponse($this->addBaseUriIfNecessary($uri), 308);
     }
 }
