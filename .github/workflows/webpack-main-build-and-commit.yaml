@@ -1,0 +1,46 @@
+name: Webpack Build Production & Commit (Node.js)
+description: 'This workflow triggers a Node.js build on push or manually: it reads the Node version from Build/.nvmrc, checks out the code, installs dependencies via npm ci, runs the production Webpack build, and commits the built assets back to the repository.'
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js from .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'Build/.nvmrc'
+
+      - name: Install Dependencies from package-lock.json
+        working-directory: Build
+        run: npm ci
+
+      - name: Run Webpack Build for Production
+        working-directory: Build
+        run: npm run build
+
+      # needs to be adjusted after changes in the webpack.config output paths
+      # filename: 'JavaScript/DlfMediaPlayer/[name].js'
+      # filename: "Css/[name].css",
+      - name: Commit and Push Built Assets
+        run: |
+          git config --global user.name "webpack-builder[bot]"
+          git config --global user.email "webpack-builder[bot]@users.noreply.github.com"
+
+          git add Resources/Public/JavaScript/DlfMediaPlayer
+          git add Resources/Public/Css
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "build: update webpack built assets [ci skip]"
+            git push
+          fi
