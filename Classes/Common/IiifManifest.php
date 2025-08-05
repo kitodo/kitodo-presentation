@@ -135,8 +135,8 @@ final class IiifManifest extends AbstractDocument
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
                     $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', (int) $pid),
-                    $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->or(
+                        $queryBuilder->expr()->and(
                             $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
                             $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
                             $queryBuilder->expr()->eq('tx_dlf_metadata.index_name', $queryBuilder->createNamedParameter('record_id')),
@@ -566,8 +566,8 @@ final class IiifManifest extends AbstractDocument
             ->where(
                 $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', $this->configPid),
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
                         $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
                         $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($this->getIiifVersion()))

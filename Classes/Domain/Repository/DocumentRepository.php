@@ -520,7 +520,7 @@ class DocumentRepository extends Repository
         // Fetch document info for UIDs in $documentSet from DB
         $exprDocumentMatchesUid = $queryBuilder->expr()->in('uid', $uids);
         if ($checkPartof) {
-            $exprDocumentMatchesUid = $queryBuilder->expr()->orX(
+            $exprDocumentMatchesUid = $queryBuilder->expr()->or(
                 $exprDocumentMatchesUid,
                 $queryBuilder->expr()->in('partof', $uids)
             );
@@ -540,7 +540,8 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->in('pid', $this->settings['storagePid']),
                 $exprDocumentMatchesUid
             )
-            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
+            ->getConcreteQueryBuilder()
+            ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
             ->addOrderBy('mets_orderlabel', 'asc')
             ->executeQuery();
 

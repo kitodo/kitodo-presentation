@@ -765,8 +765,8 @@ class Helper
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
                 if ($languageContentId > 0) {
-                    $additionalWhere = $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->orX(
+                    $additionalWhere = $queryBuilder->expr()->and(
+                        $queryBuilder->expr()->or(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
                             $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId)
                         ),

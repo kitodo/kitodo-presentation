@@ -208,7 +208,7 @@ class Solr implements LoggerAwareInterface
                 ->where(
                     $queryBuilder->expr()->eq('index_indexed', 1),
                     $queryBuilder->expr()->eq('pid', (int) $pid),
-                    $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->or(
                         $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
                         $queryBuilder->expr()->eq('l18n_parent', 0)
                     ),
