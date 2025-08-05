@@ -28,12 +28,6 @@ class SolrCore extends AbstractEntity
 {
     /**
      * @access protected
-     * @var ?int
-     */
-    protected ?int $pid;
-
-    /**
-     * @access protected
      * @var string Label of the core that is displayed in the backend.
      */
     protected $label;
