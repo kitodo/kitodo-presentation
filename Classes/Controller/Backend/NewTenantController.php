@@ -148,20 +148,24 @@ class NewTenantController extends AbstractController
      * 
      * @access protected
      * 
-     * @param ?string $html optional html
+     * @param bool $isError whether to render the non-error or error template
+     * 
+     * @param array $extra extra view data used to render the template (in addition to $viewData of AbstractController)
      * 
      * @return ResponseInterface the response
      */
-    protected function htmlResponse(?string $html = null): ResponseInterface
+    protected function templateResponse(bool $isError, array $extraData): ResponseInterface
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
 
         $moduleTemplateFactory = GeneralUtility::makeInstance(ModuleTemplateFactory::class);
         $moduleTemplate = $moduleTemplateFactory->create($this->request);
-        $moduleTemplate->setContent($this->view->render());
+        $moduleTemplate->assignMultiple($this->viewData);
+        $moduleTemplate->assignMultiple($extraData);
         $moduleTemplate->setFlashMessageQueue($messageQueue);
-        return parent::htmlResponse(($html ?? $moduleTemplate->renderContent()));
+        $template = $isError ? 'Backend/NewTenant/Error' : 'Backend/NewTenant/Index';
+        return $moduleTemplate->renderResponse($template);
     }
 
     /**
@@ -173,8 +177,7 @@ class NewTenantController extends AbstractController
      */
     protected function initializeAction(): void
     {
-        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-        $this->pid = (int) GeneralUtility::_GP('id');
+        $this->pid = (int) $this->request->getQueryParams()['id'] ?? null;
 
         $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
@@ -437,9 +440,9 @@ class NewTenantController extends AbstractController
 
         $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->countByPid($this->pid);
 
-        $this->view->assign('recordInfos', $recordInfos);
+        $viewData = ['recordInfos' => $recordInfos];
 
-        return $this->htmlResponse();
+        return $this->templateResponse(false, $viewData);
     }
 
     /**
@@ -452,7 +455,7 @@ class NewTenantController extends AbstractController
     // @phpstan-ignore-next-line
     public function errorAction(): ResponseInterface
     {
-        return $this->htmlResponse();
+        return $this->templateResponse(true, []);
     }
 
     /**
