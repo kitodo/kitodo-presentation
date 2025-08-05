@@ -253,8 +253,10 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
       }
     }
 
-    // Attempt: Parse timecode hash in URL ("#timecode=120;fileId=FILE_0000_DEFAULT_MPD,FILE_0000_DEFAULT_HLS")
-    const timecodeMatch = link.hash.match(/timecode=(\d+(?:\.\d?)?)(?:;fileIds=([a-zA-Z0-9_,]+))?/);
+    // Attempt: Parse timecode hash in URL. Accepts URLs with hashes like:
+    // #timecode=120;fileIds=FILE_0000_DEFAULT_MPD,FILE_0000_DEFAULT_HLS
+    // #timecode=123.456;fileIds=uuid-0aabcd1e-12a3-xxx,uuid-0aabcd1e-12a3-yyy
+    const timecodeMatch = link.hash.match(/#timecode=(\d+(?:\.\d+)?)(?:;fileIds=([\w,-]+))?/);
     if (timecodeMatch !== null) {
       const timecode = Number(timecodeMatch[1]);
       if (Number.isFinite(timecode)) {
