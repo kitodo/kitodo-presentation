@@ -121,8 +121,7 @@ class SearchController extends AbstractController
         $this->search = $this->getParametersSafely('search');
 
         // if search was triggered by the ListView plugin, get the parameters from GET variables
-        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-        $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
+        $listRequestData = $this->request->getQueryParams()['tx_dlf_listview'] ?? null;
         // Quit without doing anything if no search parameters.
         if (empty($this->search) && empty($listRequestData)) {
             $this->logger->warning('Missing search parameters');
