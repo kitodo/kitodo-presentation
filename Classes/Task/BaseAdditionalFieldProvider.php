@@ -309,7 +309,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                     ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
             );
         }
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
         while ($record = $result->fetchAssociative()) {
             $solrCores[$record['label'] . ' (' . $record['index_name'] . ')'] = $record['uid'];

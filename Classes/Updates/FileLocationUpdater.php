@@ -196,7 +196,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                         )
                     )
                     ->orderBy('uid')
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAllAssociative();
                 if ($countOnly === true) {
                     $numResults += count($result);
@@ -293,7 +293,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                     'storage',
                     $queryBuilder->createNamedParameter($storageUid, \PDO::PARAM_INT)
                 )
-            )->execute()->fetchAssociative();
+            )->executeQuery()->fetchAssociative();
 
             // the file exists
             if (is_array($existingFileRecord)) {
@@ -317,7 +317,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
             $result = $queryBuilder
                 ->insert('sys_file_reference')
                 ->values($fields)
-                ->execute();
+                ->executeStatement();
 
             // Update referencing table's original field to now contain the count of references,
             // which is "1" in our case.
@@ -327,7 +327,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                     'uid',
                     $queryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
                 )
-            )->set($this->fieldsToMigrate[$table], 1)->execute();
+            )->set($this->fieldsToMigrate[$table], 1)->executeStatement();
         }
     }
 }

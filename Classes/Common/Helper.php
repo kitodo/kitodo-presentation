@@ -456,7 +456,7 @@ class Helper
                     $table . '.pid AS pid',
                 )
                 ->from($table)
-                ->execute();
+                ->executeQuery();
 
             $cache[$table] = [];
 
@@ -542,7 +542,7 @@ class Helper
             )
             ->from('tx_dlf_structures')
             ->where($where)
-            ->execute();
+            ->executeQuery();
 
         $allStructures = $kitodoStructures->fetchAllAssociative();
 
@@ -733,7 +733,7 @@ class Helper
                 self::whereExpression($table, true)
             )
             ->setMaxResults(1)
-            ->execute();
+            ->executeQuery();
 
         $row = $result->fetchAssociative();
 
@@ -749,7 +749,7 @@ class Helper
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
-                ->execute();
+                ->executeQuery();
 
             $row = $result->fetchAssociative();
 
@@ -784,7 +784,7 @@ class Helper
                         self::whereExpression($table, true)
                     )
                     ->setMaxResults(10000)
-                    ->execute();
+                    ->executeQuery();
 
                 if ($result->rowCount() > 0) {
                     while ($resArray = $result->fetchAssociative()) {

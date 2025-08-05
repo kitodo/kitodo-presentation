@@ -145,7 +145,7 @@ final class IiifManifest extends AbstractDocument
                         $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
                     )
                 )
-                ->execute();
+                ->executeQuery();
             while ($resArray = $result->fetchAssociative()) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
@@ -575,7 +575,7 @@ final class IiifManifest extends AbstractDocument
                     $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
                 )
             )
-            ->execute();
+            ->executeQuery();
         $iiifResource = $this->iiif->getContainedResourceById($id);
         while ($resArray = $result->fetchAssociative()) {
             // Set metadata field's value(s).

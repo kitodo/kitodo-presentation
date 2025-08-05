@@ -176,7 +176,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
                     $queryBuilder->expr()->eq('pid', 0)
                 )
                 ->orderBy('uid')
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative();
             if ($countOnly === true) {
                 $numResults += count($result);
@@ -242,7 +242,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
                 $solrQueryBuilder->expr()->eq('uid', 1)
             )
             ->orderBy('uid')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if ($result !== false) {
@@ -252,7 +252,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
                     'uid',
                     $queryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
                 )
-            )->set('pid', $result['pid'])->execute();
+            )->set('pid', $result['pid'])->executeStatement();
         }
     }
 }

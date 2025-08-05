@@ -161,7 +161,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
 
         $allSolrCores = $queryBuilder->select('uid', 'index_name')
             ->from('tx_dlf_solrcores')
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
 
         $affectedSolrCores = [];

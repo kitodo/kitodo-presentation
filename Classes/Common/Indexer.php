@@ -281,7 +281,7 @@ class Indexer
                     $queryBuilder->expr()->eq('pid', $pid),
                     Helper::whereExpression('tx_dlf_metadata')
                 )
-                ->execute();
+                ->executeQuery();
 
             while ($indexing = $result->fetchAssociative()) {
                 if ($indexing['index_tokenized']) {

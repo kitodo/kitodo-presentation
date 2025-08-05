@@ -25,6 +25,8 @@ use Kitodo\Dlf\Domain\Model\Library;
 use Kitodo\Dlf\Validation\DocumentValidator;
 use Symfony\Component\Console\Command\Command;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -128,6 +130,8 @@ class BaseCommand extends Command
      */
     protected function initializeRepositories(int $storagePid): void
     {
+        $request = (new ServerRequest())->withAttribute("applicationType", SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $this->configurationManager->setRequest($request);
         $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
         $this->configurationManager->setConfiguration($frameworkConfiguration);
@@ -180,7 +184,7 @@ class BaseCommand extends Command
                     $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
 
         while ($record = $result->fetchAssociative()) {
             $solrCores[$record['index_name']] = $record['uid'];

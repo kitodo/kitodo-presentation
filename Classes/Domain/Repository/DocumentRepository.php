@@ -281,7 +281,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
                     $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -326,7 +326,7 @@ class DocumentRepository extends Repository
                         $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                     )
-                    ->execute()
+                    ->executeQuery()
                     ->fetchFirstColumn();
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -341,7 +341,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->eq('partof', 0),
                     Helper::whereExpression('tx_dlf_documents')
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -365,7 +365,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->eq('pid', (int)$settings['storagePid']),
                     $queryBuilder->expr()->notIn('uid', $subQuery)
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
         }
 
@@ -421,7 +421,7 @@ class DocumentRepository extends Repository
             )
             ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
-            ->execute();
+            ->executeQuery();
     }
 
     /**
@@ -542,7 +542,7 @@ class DocumentRepository extends Repository
             )
             ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
             ->addOrderBy('mets_orderlabel', 'asc')
-            ->execute();
+            ->executeQuery();
 
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
@@ -685,7 +685,7 @@ class DocumentRepository extends Repository
                         'volume_sorting < \'' . $currentVolume . '\''
                     )
                     ->addOrderBy('volume_sorting', 'desc')
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAssociative();
 
                 if (!empty($prevDocument)) {
@@ -732,7 +732,7 @@ class DocumentRepository extends Repository
                         'volume_sorting > \'' . $currentVolume . '\''
                     )
                     ->addOrderBy('volume_sorting', 'asc')
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAssociative();
 
                 if (!empty($nextDocument)) {
@@ -769,7 +769,7 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('partof', $uid)
             )
             ->addOrderBy('volume_sorting', 'asc')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (empty($child['uid'])) {
@@ -802,7 +802,7 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('partof', $uid)
             )
             ->addOrderBy('volume_sorting', 'desc')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (empty($child['uid'])) {

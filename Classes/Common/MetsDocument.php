@@ -1029,7 +1029,7 @@ final class MetsDocument extends AbstractDocument
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', $this->configPid),
                 $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
             )
-            ->execute();
+            ->executeQuery();
         // Get all metadata without a format, but with a default value next.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_metadata');
@@ -1051,7 +1051,7 @@ final class MetsDocument extends AbstractDocument
                 $queryBuilder->expr()->eq('format', 0),
                 $queryBuilder->expr()->neq('default_value', $queryBuilder->createNamedParameter(''))
             )
-            ->execute();
+            ->executeQuery();
         // Merge both result sets.
         $allResults = array_merge($resultWithFormat->fetchAllAssociative(), $resultWithoutFormat->fetchAllAssociative());
 
@@ -1095,8 +1095,8 @@ final class MetsDocument extends AbstractDocument
                 $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', $this->configPid)
             )
             ->orderBy('tx_dlf_subentries_joins.sorting')
-            ->execute();
-        $subentriesResult = $subentries->fetchAll();
+            ->executeQuery();
+        $subentriesResult = $subentries->fetchAllAssociative();
 
         return array_merge($allResults, ['subentries' => $subentriesResult]);
     }
@@ -1631,7 +1631,7 @@ final class MetsDocument extends AbstractDocument
                     Helper::whereExpression('tx_dlf_structures')
                 )
                 ->setMaxResults(1)
-                ->execute();
+                ->executeQUery();
 
             $allResults = $result->fetchAllAssociative();
 

@@ -214,7 +214,7 @@ class Solr implements LoggerAwareInterface
                     ),
                     Helper::whereExpression('tx_dlf_metadata')
                 )
-                ->execute();
+                ->executeQuery();
 
             while ($resArray = $result->fetchAssociative()) {
                 $fields[] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . ($resArray['index_stored'] ? 's' : 'u') . 'i';
