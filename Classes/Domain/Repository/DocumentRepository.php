@@ -693,7 +693,10 @@ class DocumentRepository extends Repository
                     return $prevDocument['uid'];
                 }
 
-                return $this->getLastChild($this->getPreviousDocumentUid($parentId));
+                $previousDocumentId = $this->getPreviousDocumentUid($parentId);
+                if ($previousDocumentId) {
+                    return $this->getLastChild($previousDocumentId);
+                }
             }
         }
 
@@ -740,7 +743,10 @@ class DocumentRepository extends Repository
                     return $nextDocument['uid'];
                 }
 
-                return $this->getFirstChild($this->getNextDocumentUid($parentId));
+                $nextDocumentId = $this->getNextDocumentUid($parentId);
+                if ($nextDocumentId) {
+                    return $this->getFirstChild($nextDocumentId);
+                }
             }
         }
 
