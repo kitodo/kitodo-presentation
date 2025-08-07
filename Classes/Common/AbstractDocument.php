@@ -43,7 +43,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read array $physicalStructure this holds the physical structure
  * @property-read array $physicalStructureInfo this holds the physical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
- * @property-read int $pid this holds the PID of the document or zero if not in database
  * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
@@ -962,18 +961,6 @@ abstract class AbstractDocument
     }
 
     /**
-     * This returns $this->pid via __get()
-     *
-     * @access protected
-     *
-     * @return int The PID of the document or zero if not in database
-     */
-    protected function magicGetPid(): int
-    {
-        return $this->pid;
-    }
-
-    /**
      * This returns $this->ready via __get()
      *
      * @access protected
@@ -1008,7 +995,7 @@ abstract class AbstractDocument
     {
         if (!$this->rootIdLoaded) {
             if ($this->parentId) {
-                $parent = self::getInstance((string) $this->parentId, ['storagePid' => $this->pid]);
+                $parent = self::getInstance((string) $this->parentId, ['storagePid' => $this->configPid]);
                 $this->rootId = $parent->rootId;
             }
             $this->rootIdLoaded = true;
@@ -1045,7 +1032,9 @@ abstract class AbstractDocument
      */
     protected function _setConfigPid(int $value): void
     {
-        $this->configPid = max($value, 0);
+        if ($this->configPid == 0) {
+            $this->configPid = max($value, 0);
+        }
     }
 
     /**
@@ -1065,9 +1054,7 @@ abstract class AbstractDocument
         // Note: Any change here might require an update in function __sleep
         // of class MetsDocument and class IiifManifest, too.
         $storagePid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
-        if ($this->configPid == 0) {
-            $this->configPid = $storagePid;
-        }
+        $this->configPid = $storagePid;
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location, $settings);

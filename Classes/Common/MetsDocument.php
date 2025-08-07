@@ -49,7 +49,6 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read array $musicalStructure This holds the musical structure
  * @property-read array $musicalStructureInfo This holds the musical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
- * @property-read int $pid this holds the PID of the document or zero if not in database
  * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
@@ -1731,7 +1730,7 @@ final class MetsDocument extends AbstractDocument
     {
         // SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
         $this->asXML = $this->xml->asXML();
-        return ['pid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asXML'];
+        return ['configPid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asXML'];
     }
 
     /**
