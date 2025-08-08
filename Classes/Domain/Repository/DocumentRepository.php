@@ -419,7 +419,8 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($pid)),
                 $excludeOtherWhere
             )
-            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
+            ->getConcreteQueryBuilder()
+            ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
             ->executeQuery();
     }
