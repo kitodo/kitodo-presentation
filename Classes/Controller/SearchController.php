@@ -131,7 +131,7 @@ class SearchController extends AbstractController
         if (isset($listRequestData['search']) && is_array($listRequestData['search'])) {
             $this->search = array_merge($this->search ?: [], $listRequestData['search']);
             $listViewSearch = true;
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->search);
+            $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->search);
         }
 
         $this->search = is_array($this->search) ? $this->search : [];
