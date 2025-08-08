@@ -257,6 +257,9 @@
             <trans-unit id="tx_dlf_metadataformat.tab1">
                 <source>General</source>
             </trans-unit>
+            <trans-unit id="tx_dlf_metadatasubentries">
+                <source>Metadata Subentries</source>
+            </trans-unit>
             <trans-unit id="tx_dlf_formats">
                 <source>Data Formats</source>
             </trans-unit>
