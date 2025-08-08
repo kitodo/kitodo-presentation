@@ -135,7 +135,7 @@ class SearchController extends AbstractController
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->search);
         }
 
-        $this->search = is_array($this->search) ? array_filter($this->search, 'strlen') : [];
+        $this->search = is_array($this->search) ? $this->search : [];
 
         // sanitize date search input
         if (array_key_exists('dateFrom', $this->search) || array_key_exists('dateTo', $this->search)) {
