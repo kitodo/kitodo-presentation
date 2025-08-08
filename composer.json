@@ -45,13 +45,13 @@
   },
   "require-dev": {
     "phpstan/phpstan": "^1.12",
-    "phpunit/phpunit": "^9.6",
+    "phpunit/phpunit": "^10.1",
     "spatie/phpunit-watcher": "^1.23",
     "typo3/cms-backend": "^12.4|^13.4",
     "typo3/cms-fluid": "^12.4|^13.4",
     "typo3/cms-fluid-styled-content": "^12.4|^13.4",
     "typo3/cms-frontend": "^12.4|^13.4",
-    "typo3/testing-framework": "^7.1",
+    "typo3/testing-framework": "^8.2",
     "vlucas/phpdotenv": "^5.6"
   },
   "replace": {
