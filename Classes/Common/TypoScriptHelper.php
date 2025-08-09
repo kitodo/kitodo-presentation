@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Context\Context;
@@ -19,8 +21,11 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\SiteFinder;
-use TYPO3\CMS\Core\TypoScript\FrontendTypoScriptFactory;
 use TYPO3\CMS\Core\TypoScript\IncludeTree\SysTemplateRepository;
+use TYPO3\CMS\Core\TypoScript\IncludeTree\SysTemplateTreeBuilder;
+use TYPO3\CMS\Core\TypoScript\IncludeTree\Traverser\ConditionVerdictAwareIncludeTreeTraverser;
+use TYPO3\CMS\Core\TypoScript\IncludeTree\Traverser\IncludeTreeTraverser;
+use TYPO3\CMS\Core\TypoScript\Tokenizer\LossyTokenizer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -33,7 +38,12 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class TypoScriptHelper
 {
     public function __construct(
-        private readonly FrontendTypoScriptFactory $frontendTypoScriptFactory,
+        private readonly ContainerInterface $container,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly SysTemplateTreeBuilder $treeBuilder,
+        private readonly LossyTokenizer $tokenizer,
+        private readonly IncludeTreeTraverser $includeTreeTraverser,
+        private readonly ConditionVerdictAwareIncludeTreeTraverser $includeTreeTraverserConditionVerdictAware,
         private readonly SysTemplateRepository $sysTemplateRepository,
     ) {}
 
@@ -54,14 +64,24 @@ class TypoScriptHelper
         $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $pid)->get();
         $sysTemplateRows = $this->sysTemplateRepository->getSysTemplateRowsByRootline($rootLine);
 
-        $frontendTypoScript = $this->frontendTypoScriptFactory->createSettingsAndSetupConditions(
+        $frontendTypoScriptFactory = GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\TypoScript\FrontendTypoScriptFactory::class, 
+            $this->container,
+            $this->eventDispatcher,
+            $this->treeBuilder,
+            $this->tokenizer,
+            $this->includeTreeTraverser,
+            $this->includeTreeTraverserConditionVerdictAware,
+        );
+
+        $frontendTypoScript = $frontendTypoScriptFactory->createSettingsAndSetupConditions(
             $site,
             $sysTemplateRows,
             [],
             null,
         );
 
-        $ts = $this->frontendTypoScriptFactory->createSetupConfigOrFullSetup(
+        $ts = $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
             true,
             $frontendTypoScript,
             $site,
