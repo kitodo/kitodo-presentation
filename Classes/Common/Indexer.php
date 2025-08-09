@@ -774,11 +774,11 @@ class Indexer
      *
      * @param string $message
      * @param string $type
-     * @param int $status
+     * @param ContextualFeedbackSeverity $severity
      *
      * @return void
      */
-    private static function addMessage(string $message, string $type, int $status): void
+    private static function addMessage(string $message, string $type, ContextualFeedbackSeverity $severity): void
     {
         Helper::addMessage(
             $message,
