@@ -132,7 +132,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'ValidationForm',
-    $pluginsLabel . 'validation.title',
+    $pluginsLabel . 'validationform.title',
     $iconsDirectory . 'tx-dlf-validationform.svg'
 );
 
