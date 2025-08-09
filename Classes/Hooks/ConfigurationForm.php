@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
  */
 class ConfigurationForm
 {
+    const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
 
     /**
      * Check if a connection to a Solr server could be established with the given credentials.
@@ -39,31 +40,18 @@ class ConfigurationForm
         $solr = Solr::getInstance();
         if ($solr->ready) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('solr.status'),
-                Helper::getLanguageService()->getLL('solr.connected'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'solr.status'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'solr.connected'),
                 ContextualFeedbackSeverity::OK
             );
         } else {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('solr.error'),
-                Helper::getLanguageService()->getLL('solr.notConnected'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'solr.error'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'solr.notConnected'),
                 ContextualFeedbackSeverity::WARNING
             );
         }
         return Helper::renderFlashMessages();
-    }
-
-    /**
-     * This is the constructor.
-     *
-     * @access public
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        // Load backend localization file.
-        Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
     }
 
 }

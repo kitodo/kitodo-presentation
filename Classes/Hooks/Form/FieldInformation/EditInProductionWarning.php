@@ -38,11 +38,9 @@ class EditInProductionWarning extends AbstractNode
         $result = $this->initializeResultArray();
         // Show warning only when editing existing records.
         if ($this->data['command'] !== 'new') {
-            // Load localization file.
-            Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Create flash message.
             Helper::addMessage(
-                htmlspecialchars(Helper::getLanguageService()->getLL('flash.editInProductionWarning')),
+                htmlspecialchars(Helper::getLanguageService()->sL('LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flash.editInProductionWarning')),
                 '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                 ContextualFeedbackSeverity::WARNING
             );

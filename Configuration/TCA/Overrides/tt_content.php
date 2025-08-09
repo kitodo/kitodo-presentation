@@ -19,7 +19,7 @@ $addList = 'pi_flexform';
 
 $flexFormsPathPrefix = 'FILE:EXT:dlf/Configuration/FlexForms/';
 $iconsDirectory = 'EXT:dlf/Resources/Public/Icons/';
-$pluginsLabel = 'EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.';
+$pluginsLabel = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.';
 
 // Plugin "annotation".
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(

@@ -31,6 +31,8 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
+    const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:';
+
     /**
      * Gets additional fields to render in the form to add/edit a task
      *
@@ -55,14 +57,12 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
     {
         $fieldsValid = true;
 
-        Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_tasks.xlf');
-
-        $messageTitle = Helper::getLanguageService()->getLL('additionalFields.error');
+        $messageTitle = Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.error');
         $messageSeverity = ContextualFeedbackSeverity::ERROR;
 
         if (isset($submittedData['doc']) && empty($submittedData['doc'])) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.doc') . ' ' . Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
                 true,
@@ -73,7 +73,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         if ((isset($submittedData['pid']) && (int) $submittedData['pid'] <= 0)) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.pid') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.pid') . ' ' . Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
                 true,
@@ -84,7 +84,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         if (!isset($submittedData['commit']) && !isset($submittedData['optimize']) && !isset($submittedData['pid']) && ($submittedData['class'] != 'Kitodo\Dlf\Task\SuggestBuildTask')) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.commitOrOptimize'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.commitOrOptimize'),
                 $messageTitle,
                 $messageSeverity,
                 true,
@@ -94,13 +94,13 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         }
 
         if (!$submittedData['uid']) {
-            $messageTitle = Helper::getLanguageService()->getLL('additionalFields.warning');
+            $messageTitle = Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.warning');
             $messageSeverity = ContextualFeedbackSeverity::WARNING;
         }
 
         if ((isset($submittedData['lib']) && (int) $submittedData['lib'] <= 0)) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.lib') . ' ' . Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
                 true,
@@ -111,7 +111,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         if ((isset($submittedData['solr']) && (int) $submittedData['solr'] <= 0) || !isset($submittedData['solr'])) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.solr') . ' ' . Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
                 true,
@@ -123,7 +123,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         if (((isset($submittedData['coll']) && isset($submittedData['all'])) || (!isset($submittedData['coll']) && !isset($submittedData['all'])))
             && !isset($submittedData['doc']) && !isset($submittedData['lib']) && isset($submittedData['pid'])) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.collOrAll'),
                 $messageTitle,
                 $messageSeverity,
                 true,

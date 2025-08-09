@@ -44,6 +44,11 @@ class Indexer
     public static string $extKey = 'dlf';
 
     /**
+     * Prefix for translation keys.
+     */
+    const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
+
+    /**
      * @access protected
      * @static
      * @var array Array of metadata fields' configuration
@@ -151,12 +156,20 @@ class Indexer
                 if (!(Environment::isCli())) {
                     if ($success) {
                         self::addMessage(
-                            sprintf(Helper::getLanguageService()->getLL('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
+                            sprintf(
+                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentIndexed'), 
+                                $document->getTitle(), 
+                                $document->getUid()
+                            ),
                             'flash.done',
                             ContextualFeedbackSeverity::OK
                         );
                     } else {
-                        self::addErrorMessage(sprintf(Helper::getLanguageService()->getLL('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()));
+                        self::addErrorMessage(sprintf(
+                            Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentNotIndexed'), 
+                            $document->getTitle(), 
+                            $document->getUid()
+                        ));
                     }
                 }
                 return $success;
@@ -167,7 +180,7 @@ class Indexer
         } else {
             if (!(Environment::isCli())) {
                 self::addMessage(
-                    Helper::getLanguageService()->getLL('flash.solrNoConnection'),
+                    Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrNoConnection'),
                     'flash.warning',
                     ContextualFeedbackSeverity::WARNING
                 );
@@ -200,8 +213,8 @@ class Indexer
             } catch (\Exception $e) {
                 if (!(Environment::isCli())) {
                     Helper::addMessage(
-                        Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
-                        Helper::getLanguageService()->getLL('flash.error'),
+                        Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
+                        Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.error'),
                         ContextualFeedbackSeverity::ERROR,
                         true,
                         'core.template.flashMessages'
@@ -727,7 +740,7 @@ class Indexer
     private static function handleException(string $errorMessage): void
     {
         if (!(Environment::isCli())) {
-            self::addErrorMessage(Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
+            self::addErrorMessage(Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
         }
         Helper::error('Apache Solr threw exception: "' . $errorMessage . '"');
     }
@@ -769,8 +782,8 @@ class Indexer
     {
         Helper::addMessage(
             $message,
-            Helper::getLanguageService()->getLL($type),
-            $status,
+            Helper::getLanguageService()->sL(self::LANG_PREFIX . $type),
+            $severity,
             true,
             'core.template.flashMessages'
         );
