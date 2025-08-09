@@ -55,7 +55,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      */
     protected function getClass(FlashMessage $flashMessage): string
     {
-        return $flashMessage->getSeverity()->getCssClass();
+        return 'alert-' . $flashMessage->getSeverity()->getCssClass();
     }
 
     /**
@@ -83,7 +83,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      */
     protected function getMessageAsMarkup(array $flashMessages): string
     {
-        // \TYPO3\CMS\Core\Messaging\FlashMessage::getMessageAsMarkup() uses htmlspecialchars()
+        // \TYPO3\CMS\Core\Messaging\Renderer\BootstrapRenderer::render() uses htmlspecialchars()
         // on all messages, but we have messages with HTML tags. Therefore we copy the official
         // implementation and remove the htmlspecialchars() call on the message body.
         $markup = [];
@@ -91,16 +91,10 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
         foreach ($flashMessages as $flashMessage) {
             $messageTitle = $flashMessage->getTitle();
             $markup[] = '<div class="alert ' . htmlspecialchars($this->getClass($flashMessage)) . '">';
-            $markup[] = '  <div class="media">';
-            $markup[] = '    <div class="media-left">';
-            $markup[] = '      <span class="fa-stack fa-lg">';
-            $markup[] = '        <i class="fa fa-circle fa-stack-2x"></i>';
-            $markup[] = '        <i class="fa fa-' . htmlspecialchars($this->getIconName($flashMessage)) . ' fa-stack-1x"></i>';
-            $markup[] = '      </span>';
-            $markup[] = '    </div>';
-            $markup[] = '    <div class="media-body">';
+            $markup[] = '  <div class="alert-inner">';
+            $markup[] = '    <div class="alert-content">';
             if ($messageTitle !== '') {
-                $markup[] = '      <h4 class="alert-title">' . htmlspecialchars($messageTitle) . '</h4>';
+                $markup[] = '      <div class="alert-title">' . htmlspecialchars($messageTitle) . '</div>';
             }
             $markup[] = '      <p class="alert-message">' . $flashMessage->getMessage() . '</p>';
             $markup[] = '    </div>';
