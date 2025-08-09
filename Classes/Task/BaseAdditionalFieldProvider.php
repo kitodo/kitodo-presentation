@@ -15,7 +15,7 @@ use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
@@ -58,7 +58,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_tasks.xlf');
 
         $messageTitle = Helper::getLanguageService()->getLL('additionalFields.error');
-        $messageSeverity = FlashMessage::ERROR;
+        $messageSeverity = ContextualFeedbackSeverity::ERROR;
 
         if (isset($submittedData['doc']) && empty($submittedData['doc'])) {
             Helper::addMessage(
@@ -95,7 +95,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         if (!$submittedData['uid']) {
             $messageTitle = Helper::getLanguageService()->getLL('additionalFields.warning');
-            $messageSeverity = FlashMessage::WARNING;
+            $messageSeverity = ContextualFeedbackSeverity::WARNING;
         }
 
         if ((isset($submittedData['lib']) && (int) $submittedData['lib'] <= 0)) {
@@ -106,7 +106,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === ContextualFeedbackSeverity::ERROR ? false : $fieldsValid;
         }
 
         if ((isset($submittedData['solr']) && (int) $submittedData['solr'] <= 0) || !isset($submittedData['solr'])) {
@@ -117,7 +117,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === ContextualFeedbackSeverity::ERROR ? false : $fieldsValid;
         }
 
         if (((isset($submittedData['coll']) && isset($submittedData['all'])) || (!isset($submittedData['coll']) && !isset($submittedData['all'])))
@@ -129,7 +129,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === ContextualFeedbackSeverity::ERROR ? false : $fieldsValid;
         }
         return $fieldsValid;
     }

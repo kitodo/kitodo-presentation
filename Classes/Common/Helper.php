@@ -27,6 +27,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Resource\MimeTypeCollection;
 use TYPO3\CMS\Core\Resource\MimeTypeDetector;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -85,13 +86,13 @@ class Helper
      *
      * @param string $message The body of the message
      * @param string $title The title of the message
-     * @param int $severity The message's severity
+     * @param ContextualFeedbackSeverity $severity The message's severity
      * @param bool $session Should the message be saved in the user's session?
      * @param string $queue The queue's unique identifier
      *
      * @return FlashMessageQueue The queue the message was added to
      */
-    public static function addMessage(string $message, string $title, int $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
+    public static function addMessage(string $message, string $title, ContextualFeedbackSeverity $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);

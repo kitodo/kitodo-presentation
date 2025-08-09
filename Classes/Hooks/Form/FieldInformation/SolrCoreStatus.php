@@ -16,7 +16,7 @@ use IntlDateFormatter;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\Solr;
 use TYPO3\CMS\Backend\Form\AbstractNode;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * FieldInformation renderType for TYPO3 FormEngine
@@ -73,7 +73,7 @@ class SolrCoreStatus extends AbstractNode
                     Helper::addMessage(
                         sprintf(Helper::getLanguageService()->getLL('flash.coreStatus'), $startTime, $uptime, $lastModified, $numDocuments),
                         '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
-                        FlashMessage::INFO
+                        ContextualFeedbackSeverity::INFO
                     );
                 }
             } else {
@@ -81,7 +81,7 @@ class SolrCoreStatus extends AbstractNode
                 Helper::addMessage(
                     Helper::getLanguageService()->getLL('solr.error'),
                     '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
-                    FlashMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
             }
             // Add message to result array.

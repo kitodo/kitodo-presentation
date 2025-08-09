@@ -14,7 +14,7 @@ namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\Solr;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * Hooks and helper for \TYPO3\CMS\Core\TypoScript\ConfigurationForm
@@ -41,13 +41,13 @@ class ConfigurationForm
             Helper::addMessage(
                 Helper::getLanguageService()->getLL('solr.status'),
                 Helper::getLanguageService()->getLL('solr.connected'),
-                FlashMessage::OK
+                ContextualFeedbackSeverity::OK
             );
         } else {
             Helper::addMessage(
                 Helper::getLanguageService()->getLL('solr.error'),
                 Helper::getLanguageService()->getLL('solr.notConnected'),
-                FlashMessage::WARNING
+                ContextualFeedbackSeverity::WARNING
             );
         }
         return Helper::renderFlashMessages();

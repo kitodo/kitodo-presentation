@@ -21,7 +21,7 @@ use Solarium\QueryType\Update\Query\Query;
 use Symfony\Component\Console\Input\InputInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Core\Environment;
@@ -153,7 +153,7 @@ class Indexer
                         self::addMessage(
                             sprintf(Helper::getLanguageService()->getLL('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
                             'flash.done',
-                            FlashMessage::OK
+                            ContextualFeedbackSeverity::OK
                         );
                     } else {
                         self::addErrorMessage(sprintf(Helper::getLanguageService()->getLL('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()));
@@ -169,7 +169,7 @@ class Indexer
                 self::addMessage(
                     Helper::getLanguageService()->getLL('flash.solrNoConnection'),
                     'flash.warning',
-                    FlashMessage::WARNING
+                    ContextualFeedbackSeverity::WARNING
                 );
             }
             Helper::error('Could not connect to Apache Solr server');
@@ -202,7 +202,7 @@ class Indexer
                     Helper::addMessage(
                         Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
                         Helper::getLanguageService()->getLL('flash.error'),
-                        FlashMessage::ERROR,
+                        ContextualFeedbackSeverity::ERROR,
                         true,
                         'core.template.flashMessages'
                     );
@@ -748,7 +748,7 @@ class Indexer
         self::addMessage(
             $message,
             'flash.error',
-            FlashMessage::ERROR
+            ContextualFeedbackSeverity::ERROR
         );
     }
 
