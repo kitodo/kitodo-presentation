@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Tests\Functional\Api;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class PageViewProxyTest extends FunctionalTestCase
 {
@@ -55,11 +56,11 @@ class PageViewProxyTest extends FunctionalTestCase
      */
     protected function queryProxy(array $query, string $method = 'GET'): ResponseInterface
     {
-        $query['eID'] = 'tx_dlf_pageview_proxy';
+        $request = (new InternalRequest($this->baseUrl))->withQueryParameters(array_merge([ 
+            'eID' => 'tx_dlf_pageview_proxy',
+        ], $query))->withMethod($method);
 
-        return $this->httpClient->request($method, '', [
-            'query' => $query,
-        ]);
+        return $this->executeInternalRequest($request);
     }
 
     /**
