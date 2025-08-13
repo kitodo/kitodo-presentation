@@ -11,8 +11,6 @@
 
 namespace Kitodo\Dlf\ViewHelpers;
 
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -57,10 +55,10 @@ class StdWrapViewHelper extends AbstractViewHelper
         $wrap = $this->arguments['wrap'];
         $data = $this->arguments['data'] ?? [];
 
-        if (!$this->renderingContext->hasAttribute(ServerRequestInterface::class)) {
+        if (!$this->renderingContext->getRequest()) {
             throw new \RuntimeException('Required request not found in RenderingContext');
         }
-        $request = $this->renderingContext->getAttribute(ServerRequestInterface::class);
+        $request = $this->renderingContext->getRequest();
         $cObj = $request->getAttribute('currentContentObject');
 
         $insideContent = $this->renderChildren();
