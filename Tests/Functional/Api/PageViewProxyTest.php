@@ -19,8 +19,6 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class PageViewProxyTest extends FunctionalTestCase
 {
-    protected bool $disableJsonWrappedResponse = true;
-
     /**
      * Returns the DLF configuration for the test instance.
      *
