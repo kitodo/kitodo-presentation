@@ -60,7 +60,7 @@ class OaiPmhTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/metadata.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/libraries.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/pages.csv');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/OaiPmh/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/OaiPmh/pages.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/OaiPmh/solrcores.csv');
 
         $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, 20000);
