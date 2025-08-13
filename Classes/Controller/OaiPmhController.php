@@ -19,6 +19,7 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
  * Controller class for the plugin 'OAI-PMH Interface'.
@@ -147,10 +148,11 @@ class OaiPmhController extends AbstractController
      * Load URL parameters
      *
      * @access protected
+     * @param RequestInterface $request the HTTP request
      *
      * @return void
      */
-    protected function getUrlParams()
+    protected function getUrlParams(RequestInterface $request)
     {
         $allowedParams = [
             'verb',
@@ -165,9 +167,8 @@ class OaiPmhController extends AbstractController
         $this->parameters = [];
         // Set only allowed parameters.
         foreach ($allowedParams as $param) {
-            // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-            if (GeneralUtility::_GP($param)) {
-                $this->parameters[$param] = GeneralUtility::_GP($param);
+            if ($request->getQueryParams()[$param] ?? null) {
+                $this->parameters[$param] = $request->getQueryParams()[$param];
             }
         }
     }
@@ -271,7 +272,7 @@ class OaiPmhController extends AbstractController
     public function mainAction(): ResponseInterface
     {
         // Get allowed GET and POST variables.
-        $this->getUrlParams();
+        $this->getUrlParams($this->request);
 
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
