@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\SolrCore;
@@ -190,6 +191,7 @@ class SolrIndexingTest extends FunctionalTestCase
      */
     protected function createSolrCore(): object
     {
+        Helper::resetIndexNameCache();
         $coreName = Solr::createCore();
         $solr = Solr::getInstance($coreName);
 

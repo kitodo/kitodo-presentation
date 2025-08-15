@@ -78,6 +78,13 @@ class Helper
     protected static array $messages = [];
 
     /**
+     * @access protected
+     * @static 
+     * @var array A cache remembering which Solr core uid belongs to which index name
+     */
+    protected static array $indexNameCache = [];
+
+    /**
      * Generates a flash message and adds it to a message queue.
      *
      * @access public
@@ -445,8 +452,7 @@ class Helper
             return $pid . '.' . $uid;
         };
 
-        static $cache = [];
-        if (!isset($cache[$table])) {
+        if (!isset(self::$indexNameCache[$table])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table);
 
@@ -459,23 +465,35 @@ class Helper
                 ->from($table)
                 ->executeQuery();
 
-            $cache[$table] = [];
+            self::$indexNameCache[$table] = [];
 
             while ($row = $result->fetchAssociative()) {
-                $cache[$table][$makeCacheKey($row['pid'], $row['uid'])]
-                    = $cache[$table][$makeCacheKey(-1, $row['uid'])]
+                self::$indexNameCache[$table][$makeCacheKey($row['pid'], $row['uid'])]
+                    = self::$indexNameCache[$table][$makeCacheKey(-1, $row['uid'])]
                     = $row['index_name'];
             }
         }
 
         $cacheKey = $makeCacheKey($pid, $uid);
-        $result = $cache[$table][$cacheKey] ?? '';
+        $result = self::$indexNameCache[$table][$cacheKey] ?? '';
 
         if ($result === '') {
             self::warning('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"');
         }
 
         return $result;
+    }
+
+    /**
+     * Reset the index name cache.
+     * 
+     * @access public
+     *
+     * @static
+     */
+    public static function resetIndexNameCache()
+    {
+        self::$indexNameCache = [];
     }
 
     /**
