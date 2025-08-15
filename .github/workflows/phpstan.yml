@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         uses: php-actions/composer@v6
         with:
-          command: update
+          command: update --ignore-platform-reqs
 
       - name: PHPStan Static Analysis
         uses: php-actions/phpstan@v3
