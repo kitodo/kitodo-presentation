@@ -106,7 +106,6 @@ class Indexer
             return true;
         } elseif (self::solrConnect($document->getSolrcore(), $document->getPid())) {
             $success = true;
-            Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Handle multi-volume documents.
             $parentId = $document->getPartof();
             if ($parentId) {
