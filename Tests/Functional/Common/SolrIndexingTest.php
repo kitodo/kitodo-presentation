@@ -20,7 +20,6 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SolrIndexingTest extends FunctionalTestCase
@@ -47,9 +46,6 @@ class SolrIndexingTest extends FunctionalTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        // Needed for Indexer::add, which uses the language service
-        Bootstrap::initializeLanguageObject();
 
         $this->collectionRepository = $this->initializeRepository(CollectionRepository::class, 20000);
         $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 20000);

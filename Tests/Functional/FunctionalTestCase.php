@@ -85,6 +85,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected SolrCoreRepository $solrCoreRepository;
 
+    protected ?Solr $solr = null;
+
     /**
      * Sets up the test case environment.
      *
@@ -328,21 +330,19 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
 
         // Setup Solr only once for all tests in this suite
-        static $solr = null;
-
-        if ($solr === null) {
+        if ($this->solr === null) {
             $coreName = Solr::createCore();
-            $solr = Solr::getInstance($coreName);
+            $this->solr = Solr::getInstance($coreName);
             foreach ($solrFixtures as $filePath) {
-                $this->importSolrDocuments($solr, $filePath);
+                $this->importSolrDocuments($this->solr, $filePath);
             }
         }
 
         $coreModel = $this->solrCoreRepository->findByUid($uid);
-        $coreModel->setIndexName($solr->core);
+        $coreModel->setIndexName($this->solr->core);
         $this->solrCoreRepository->update($coreModel);
         $this->persistenceManager->persistAll();
-        return $solr;
+        return $this->solr;
     }
 
     /**

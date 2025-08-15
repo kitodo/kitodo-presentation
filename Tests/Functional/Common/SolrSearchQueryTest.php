@@ -48,7 +48,6 @@ class SolrSearchQueryTest extends FunctionalTestCase
     }
 
     /**
-     * @test
      * @ignore
      */
     public function canExecute()

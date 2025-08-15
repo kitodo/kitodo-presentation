@@ -28,8 +28,6 @@ class SolrSearchTest extends FunctionalTestCase
         __DIR__ . '/../../Fixtures/Common/documents_1.solr.json'
     ];
 
-    private Solr $solr;
-
     /**
      * Sets up the test environment.
      *
@@ -44,7 +42,7 @@ class SolrSearchTest extends FunctionalTestCase
     {
         parent::setUp();
         $this->setUpData(self::$databaseFixtures);
-        $this->solr = $this->setUpSolr(5, 0, self::$solrFixtures);
+        $this->setUpSolr(5, 0, self::$solrFixtures);
     }
 
     /**
