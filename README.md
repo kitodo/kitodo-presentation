@@ -10,7 +10,7 @@ For a complete overview of all features, visit the [Kitodo homepage](https://www
 
 ## Requirements
 
-Kitodo.Presentation requires [**TYPO3 v11**](https://get.typo3.org/version/11) or [**TYPO3 v12**](https://get.typo3.org/version/12). Additionally, [**Apache Solr v8.11 - v9.7**](https://solr.apache.org) with [**solr-ocrhighlighting v0.9.1+**](https://github.com/dbmdz/solr-ocrhighlighting/releases) are required as search engine backend.
+Kitodo.Presentation requires [**TYPO3 v12**](https://get.typo3.org/version/12) or [**TYPO3 v13**](https://get.typo3.org/version/13). Additionally, [**Apache Solr v8.11 - v9.7**](https://solr.apache.org) with [**solr-ocrhighlighting v0.9.1+**](https://github.com/dbmdz/solr-ocrhighlighting/releases) are required as search engine backend.
 
 Application level dependencies are handled by [Composer](https://getcomposer.org) (see [composer.json](./composer.json)).
 
