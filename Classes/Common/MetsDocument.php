@@ -1179,14 +1179,14 @@ final class MetsDocument extends AbstractDocument
 
             if (!empty($physicalStructureNode)) {
                 while ($useGroup = array_shift($useGroups)) {
-                    if (in_array($useGroup, $physicalStructureNode['files'])) {
+                    if (in_array($useGroup, array_keys($physicalStructureNode['files']))) {
                         $fileLocations[$useGroup] = $this->getFileLocation($physicalStructureNode['files'][$useGroup]);
                     }
                 }
             }
 
             if (empty($fileLocations)) {
-                $this->logger->error('No file locations for fulltext @ID "' . $id . '"');
+                $this->logger->debug('No file locations for fulltext @ID "' . $id . '"');
                 return $fullText;
             }
 
