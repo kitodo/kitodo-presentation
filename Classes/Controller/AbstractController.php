@@ -166,7 +166,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $childDocuments = $doc->tableOfContents[0]['children'];
             $i = 0;
             foreach ($childDocuments as $document) {
-                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings, true);
+                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings);
                 if (isset(explode('#', $document['points'])[1])) {
                     $initPage = explode('#', $document['points'])[1];
                     $this->requestData['docPage'][$i] = $initPage;
@@ -179,7 +179,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
             $i = 0;
             foreach ($this->requestData['multipleSource'] as $location) {
-                $document = AbstractDocument::getInstance($location, $this->settings, true);
+                $document = AbstractDocument::getInstance($location, $this->settings);
                 if ($document !== null) {
                     $this->documentArray['extra_' . $i] = $document;
                 }
@@ -228,7 +228,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->document = $this->documentRepository->findOneByRecordId($this->requestData['recordId']);
 
             if ($this->document !== null) {
-                $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
+                $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
                 if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {
