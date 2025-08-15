@@ -550,7 +550,7 @@ class DocumentRepository extends Repository
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
         // Process documents in a usable array structure
         while ($resArray = $kitodoDocuments->fetchAssociative()) {
-            $resArray['structure'] = $documentStructures[$resArray['structure']];
+            $resArray['structure'] = $documentStructures[$resArray['structure']] ?? null;
             $allDocuments[$resArray['uid']] = $resArray;
         }
 

@@ -414,7 +414,7 @@ class Helper
     public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
-        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
+        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] ?? null)) {
             foreach (self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
                 $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }

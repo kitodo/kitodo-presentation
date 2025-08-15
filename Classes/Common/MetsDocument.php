@@ -227,18 +227,18 @@ final class MetsDocument extends AbstractDocument
     public function getDownloadLocation(string $id): string
     {
         $file = $this->getFileInfo($id);
-        if ($file['mimeType'] === 'application/vnd.kitodo.iiif') {
+        if (!empty($file) && $file['mimeType'] === 'application/vnd.kitodo.iiif') {
             $file['location'] = (strrpos($file['location'], 'info.json') === strlen($file['location']) - 9) ? $file['location'] : (strrpos($file['location'], '/') === strlen($file['location']) ? $file['location'] . 'info.json' : $file['location'] . '/info.json');
             $service = self::loadIiifResource($file['location']);
             if ($service instanceof AbstractImageService) {
                 return $service->getImageUrl();
             }
-        } elseif ($file['mimeType'] === 'application/vnd.netfpx') {
+        } elseif (!empty($file) && $file['mimeType'] === 'application/vnd.netfpx') {
             $baseURL = $file['location'] . (str_contains($file['location'], '?') ? '' : '?');
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
             return $baseURL . '&CVT=jpeg';
         }
-        return $file['location'];
+        return $file['location'] ?? null;
     }
 
     /**
@@ -1174,7 +1174,7 @@ final class MetsDocument extends AbstractDocument
 
         if ($this->hasFulltext) {
             $useGroups = $this->useGroupsConfiguration->getFulltext();
-            $physicalStructureNode = $this->physicalStructureInfo[$id];
+            $physicalStructureNode = $this->physicalStructureInfo[$id] ?? null;
             $fileLocations = [];
 
             if (!empty($physicalStructureNode)) {

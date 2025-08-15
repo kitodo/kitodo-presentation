@@ -256,7 +256,7 @@ class Solr implements LoggerAwareInterface
             self::$fields['type'] = $solrFields['type'];
             self::$fields['title'] = $solrFields['title'];
             self::$fields['volume'] = $solrFields['volume'];
-            self::$fields['date'] = $solrFields['date'];
+            self::$fields['date'] = $solrFields['date'] ?? null;
             self::$fields['thumbnail'] = $solrFields['thumbnail'];
             self::$fields['default'] = $solrFields['default'];
             self::$fields['timestamp'] = $solrFields['timestamp'];
@@ -356,19 +356,19 @@ class Solr implements LoggerAwareInterface
             // Derive Solr host name.
             $config['host'] = ($conf['host'] ? $conf['host'] : '127.0.0.1');
             // Set username and password.
-            $config['username'] = $conf['user'];
-            $config['password'] = $conf['pass'];
+            $config['username'] = $conf['user'] ?? null;
+            $config['password'] = $conf['pass'] ?? null;
             // Set port if not set.
-            $config['port'] = MathUtility::forceIntegerInRange($conf['port'], 1, 65535, 8983);
+            $config['port'] = MathUtility::forceIntegerInRange($conf['port'] ?? null, 1, 65535, 8983);
             // Trim path of slashes and (re-)add trailing slash if path not empty.
-            $config['path'] = trim($conf['path'], '/');
+            $config['path'] = trim($conf['path'] ?? '', '/');
             if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
 
             // Set connection timeout lower than PHP's max_execution_time.
             $maxExecutionTime = (int) ini_get('max_execution_time') ? : 30;
-            $config['timeout'] = MathUtility::forceIntegerInRange($conf['timeout'], 1, $maxExecutionTime, 10);
+            $config['timeout'] = MathUtility::forceIntegerInRange($conf['timeout'] ?? null, 1, $maxExecutionTime, 10);
             $this->config = $config;
         }
     }

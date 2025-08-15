@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use DateTime;
 use DOMDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Solr\Solr;
@@ -680,9 +681,9 @@ class OaiPmhController extends AbstractController
         // Check "from" for valid value.
         if (!empty($this->parameters['from'])) {
             // Is valid format?
-            $date = $this->getDate('from');
-            if (is_array($date)) {
-                $from = $this->getDateFromTimestamp($date, '.000Z');
+            $date = $this->getDateTimeFromParameter('from');
+            if ($date) {
+                $from = $this->dateTimeToString($date, '.000Z');
             } else {
                 $this->error = 'badArgument';
             }
@@ -705,9 +706,9 @@ class OaiPmhController extends AbstractController
         // Check "until" for valid value.
         if (!empty($this->parameters['until'])) {
             // Is valid format?
-            $date = $this->getDate('until');
-            if (is_array($date)) {
-                $until = $this->getDateFromTimestamp($date, '.999Z');
+            $date = $this->getDateTimeFromParameter('until');
+            if ($date) {
+                $until = $this->dateTimeToString($date, '.999Z');
                 if ($from != "*" && $from > $until) {
                     $this->error = 'badArgument';
                 }
@@ -725,11 +726,12 @@ class OaiPmhController extends AbstractController
      *
      * @param string $dateType
      *
-     * @return array|false
+     * @return DateTime|false
      */
-    private function getDate(string $dateType)
+    private function getDateTimeFromParameter(string $dateType)
     {
-        return strptime($this->parameters[$dateType], '%Y-%m-%dT%H:%M:%SZ') ?: strptime($this->parameters[$dateType], '%Y-%m-%d');
+        return DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $this->parameters[$dateType]) 
+            ?: DateTime::createFromFormat('Y-m-d', $this->parameters[$dateType]);
     }
 
     /**
@@ -742,17 +744,9 @@ class OaiPmhController extends AbstractController
      *
      * @return string
      */
-    private function getDateFromTimestamp(array $date, string $end): string
+    private function dateTimeToString(DateTime $date, string $end): string
     {
-        $timestamp = gmmktime(
-            $date['tm_hour'],
-            $date['tm_min'],
-            $date['tm_sec'],
-            $date['tm_mon'] + 1,
-            $date['tm_mday'],
-            $date['tm_year'] + 1900
-        );
-        return date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . $end;
+        return $date->format('Y-m-d') . 'T' . $date->format("H:i:s") . $end;
     }
 
     /**
@@ -803,7 +797,7 @@ class OaiPmhController extends AbstractController
 
             if ($verb === 'ListRecords') {
                 // Add metadata node.
-                $metadataPrefix = $this->parameters['metadataPrefix'];
+                $metadataPrefix = $this->parameters['metadataPrefix'] ?? null;
                 if (!$metadataPrefix) {
                     // If we resume an action the metadataPrefix is stored with the documentSet
                     $metadataPrefix = $documentListSet['metadata']['metadataPrefix'];

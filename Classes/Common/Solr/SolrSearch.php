@@ -212,7 +212,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     public function offsetExists($offset): bool
     {
-        $idx = $this->result['document_keys'][$offset];
+        $idx = $this->result['document_keys'][$offset] ?? null;
         return isset($this->result['documents'][$idx]);
     }
 
@@ -228,7 +228,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        $idx = $this->result['document_keys'][$offset];
+        $idx = $this->result['document_keys'][$offset] ?? null;
         $document = $this->result['documents'][$idx] ?? null;
 
         if ($document !== null) {
@@ -659,7 +659,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         foreach ($result['documents'] as $doc) {
             $this->translateLanguageCode($doc);
-            $metadataArray[$doc['uid']] = $doc['metadata'];
+            $metadataArray[$doc['uid']] = $doc['metadata'] ?? null;
         }
 
         return $metadataArray;
@@ -911,7 +911,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     private function translateLanguageCode(&$doc): void
     {
-        if (is_array($doc['metadata']) && array_key_exists('language', $doc['metadata'])) {
+        if (is_array($doc['metadata'] ?? null) && array_key_exists('language', $doc['metadata'])) {
             foreach($doc['metadata']['language'] as $indexName => $language) {
                 $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
             }
