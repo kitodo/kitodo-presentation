@@ -210,6 +210,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // Try to get document format from database
         if (!empty($documentId)) {
 
+
             $doc = null;
 
             if (MathUtility::canBeInterpretedAsInteger($documentId)) {
@@ -714,13 +715,13 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access protected
      *
-     * @param string $documentId The document's URL
+     * @param string $documentUrl The document's URL
      *
      * @return AbstractDocument
      */
-    protected function getDocumentByUrl(string $documentId)
+    protected function getDocumentByUrl(string $documentUrl)
     {
-        $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
+        $doc = AbstractDocument::getInstance($documentUrl, $this->settings);
 
         if ($doc !== null) {
             $this->buildMultiView($doc);
@@ -735,9 +736,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 }
             }
 
-            $this->document->setLocation($documentId);
+            $this->document->setLocation($documentUrl);
         } else {
-            $this->logger->error('Invalid location given "' . $documentId . '" for document loading');
+            $this->logger->error('Invalid location given "' . $documentUrl . '" for document loading');
         }
 
         return $doc;
