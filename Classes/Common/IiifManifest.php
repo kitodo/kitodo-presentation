@@ -54,7 +54,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read array $physicalStructure this holds the physical structure
  * @property-read array $physicalStructureInfo this holds the physical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
- * @property-read int $pid this holds the PID of the document or zero if not in database
  * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
@@ -962,6 +961,6 @@ final class IiifManifest extends AbstractDocument
         // TODO implement serialization in IIIF library
         $jsonArray = $this->iiif->getOriginalJsonArray();
         $this->asJson = json_encode($jsonArray);
-        return ['pid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asJson'];
+        return ['configPid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asJson'];
     }
 }
