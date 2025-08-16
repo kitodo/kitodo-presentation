@@ -105,7 +105,6 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
                         <config>
                             <type>group</type>
-                            <internal_type>db</internal_type>
                             <allowed>pages</allowed>
                             <size>1</size>
                             <maxitems>1</maxitems>

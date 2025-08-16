@@ -107,7 +107,6 @@
                         <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                         <config>
                             <type>group</type>
-                            <internal_type>db</internal_type>
                             <allowed>pages</allowed>
                             <size>1</size>
                             <maxitems>1</maxitems>

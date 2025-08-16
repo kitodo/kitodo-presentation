@@ -23,7 +23,6 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.flexform.targetPidPageView</label>
                         <config>
                             <type>group</type>
-                            <internal_type>db</internal_type>
                             <allowed>pages</allowed>
                             <size>1</size>
                             <maxitems>1</maxitems>
@@ -41,7 +40,6 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.initialDocument</label>
                         <config>
                             <type>group</type>
-                            <internal_type>db</internal_type>
                             <allowed>tx_dlf_documents</allowed>
                             <size>1</size>
                             <maxitems>1</maxitems>
