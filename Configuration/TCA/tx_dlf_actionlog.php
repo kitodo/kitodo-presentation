@@ -67,10 +67,9 @@ return [
         'count_pages' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.count_pages',
             'config' => [
-                'type' => 'input',
+                'type' => 'number',
                 'size' => 30,
-                'max' => 11,
-                'eval' => 'num,int',
+                'format' => 'integer',
                 'default' => 0,
             ],
         ],

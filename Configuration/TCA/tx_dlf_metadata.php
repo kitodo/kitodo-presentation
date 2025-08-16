@@ -180,11 +180,10 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadata.index_boost',
             'config' => [
-                'type' => 'input',
+                'type' => 'number',
                 'size' => 5,
-                'max' => 5,
                 'default' => 1.0,
-                'eval' => 'double2',
+                'format' => 'decimal',
             ],
         ],
         'is_sortable' => [
