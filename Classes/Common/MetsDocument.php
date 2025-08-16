@@ -1185,7 +1185,7 @@ final class MetsDocument extends AbstractDocument
             }
 
             if (empty($fileLocations)) {
-                $this->logger->debug('No file locations for fulltext @ID "' . $id . '"');
+                $this->logger->debug('No file locations for page @ID "' . $id . '"');
                 return $fullText;
             }
 
