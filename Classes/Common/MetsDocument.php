@@ -1178,8 +1178,15 @@ final class MetsDocument extends AbstractDocument
 
             if (!empty($physicalStructureNode)) {
                 while ($useGroup = array_shift($useGroups)) {
-                    $fileLocations[$useGroup] = $this->getFileLocation($physicalStructureNode['files'][$useGroup]);
+                    if (in_array($useGroup, array_keys($physicalStructureNode['files']))) {
+                        $fileLocations[$useGroup] = $this->getFileLocation($physicalStructureNode['files'][$useGroup]);
+                    }
                 }
+            }
+
+            if (empty($fileLocations)) {
+                $this->logger->debug('No file locations for page @ID "' . $id . '"');
+                return $fullText;
             }
 
             $fullText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml($id, $fileLocations, $physicalStructureNode);
