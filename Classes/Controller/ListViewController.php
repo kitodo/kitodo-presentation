@@ -79,7 +79,7 @@ class ListViewController extends AbstractController
     public function mainAction(): ResponseInterface
     {
         $this->search = $this->getParametersSafely('search');
-        $this->search = is_array($this->search) ? array_filter($this->search, 'strlen') : [];
+        $this->search = is_array($this->search) ? $this->search : [];
 
         // extract collection(s) from collection parameter
         $collections = [];
