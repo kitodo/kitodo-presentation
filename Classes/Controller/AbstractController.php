@@ -696,7 +696,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         if ($this->document) {
             $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
             if ($doc !== null) {
-                $doc->pid = $this->document->getPid();
+                $doc->configPid = $this->document->getPid();
                 $this->buildMultiView($doc);
                 // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
                 $this->documentArray[] = $doc;
