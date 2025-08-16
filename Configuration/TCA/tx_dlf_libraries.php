@@ -62,7 +62,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,trim',
+                'required' => true,
+                'eval' => 'trim',
                 'default' => '',
             ],
         ],
@@ -74,7 +75,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,uniqueInPid',
+                'required' => true,
+                'eval' => 'uniqueInPid',
                 'default' => '',
                 'fieldInformation' => [
                     'editInProductionWarning' => [
