@@ -281,7 +281,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
                     $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -326,7 +326,7 @@ class DocumentRepository extends Repository
                         $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                     )
-                    ->execute()
+                    ->executeQuery()
                     ->fetchFirstColumn();
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -341,7 +341,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->eq('partof', 0),
                     Helper::whereExpression('tx_dlf_documents')
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -365,7 +365,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->eq('pid', (int)$settings['storagePid']),
                     $queryBuilder->expr()->notIn('uid', $subQuery)
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
         }
 
@@ -419,9 +419,10 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($pid)),
                 $excludeOtherWhere
             )
-            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
+            ->getConcreteQueryBuilder()
+            ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
-            ->execute();
+            ->executeQuery();
     }
 
     /**
@@ -520,7 +521,7 @@ class DocumentRepository extends Repository
         // Fetch document info for UIDs in $documentSet from DB
         $exprDocumentMatchesUid = $queryBuilder->expr()->in('uid', $uids);
         if ($checkPartof) {
-            $exprDocumentMatchesUid = $queryBuilder->expr()->orX(
+            $exprDocumentMatchesUid = $queryBuilder->expr()->or(
                 $exprDocumentMatchesUid,
                 $queryBuilder->expr()->in('partof', $uids)
             );
@@ -540,15 +541,16 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->in('pid', $this->settings['storagePid']),
                 $exprDocumentMatchesUid
             )
-            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
+            ->getConcreteQueryBuilder()
+            ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
             ->addOrderBy('mets_orderlabel', 'asc')
-            ->execute();
+            ->executeQuery();
 
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
         // Process documents in a usable array structure
         while ($resArray = $kitodoDocuments->fetchAssociative()) {
-            $resArray['structure'] = $documentStructures[$resArray['structure']];
+            $resArray['structure'] = $documentStructures[$resArray['structure']] ?? null;
             $allDocuments[$resArray['uid']] = $resArray;
         }
 
@@ -685,14 +687,17 @@ class DocumentRepository extends Repository
                         'volume_sorting < \'' . $currentVolume . '\''
                     )
                     ->addOrderBy('volume_sorting', 'desc')
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAssociative();
 
                 if (!empty($prevDocument)) {
                     return $prevDocument['uid'];
                 }
 
-                return $this->getLastChild($this->getPreviousDocumentUid($parentId));
+                $previousDocumentId = $this->getPreviousDocumentUid($parentId);
+                if ($previousDocumentId) {
+                    return $this->getLastChild($previousDocumentId);
+                }
             }
         }
 
@@ -732,14 +737,17 @@ class DocumentRepository extends Repository
                         'volume_sorting > \'' . $currentVolume . '\''
                     )
                     ->addOrderBy('volume_sorting', 'asc')
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAssociative();
 
                 if (!empty($nextDocument)) {
                     return $nextDocument['uid'];
                 }
 
-                return $this->getFirstChild($this->getNextDocumentUid($parentId));
+                $nextDocumentId = $this->getNextDocumentUid($parentId);
+                if ($nextDocumentId) {
+                    return $this->getFirstChild($nextDocumentId);
+                }
             }
         }
 
@@ -769,7 +777,7 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('partof', $uid)
             )
             ->addOrderBy('volume_sorting', 'asc')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (empty($child['uid'])) {
@@ -802,7 +810,7 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('partof', $uid)
             )
             ->addOrderBy('volume_sorting', 'desc')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (empty($child['uid'])) {

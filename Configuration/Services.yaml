@@ -42,6 +42,9 @@ services:
       - name: console.command
         command: 'kitodo:suggestBuild'
 
+  Kitodo\Dlf\Common\TypoScriptHelper:
+    public: true
+
   Kitodo\Dlf\Validation\DOMDocumentValidationStack:
     autowire: false
 

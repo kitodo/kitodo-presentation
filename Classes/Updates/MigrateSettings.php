@@ -91,7 +91,7 @@ class MigrateSettings implements UpgradeWizardInterface
                 $queryBuilder->expr()->eq('CType', $queryBuilder->createNamedParameter('list')),
                 $queryBuilder->expr()->like('list_type', $queryBuilder->createNamedParameter('dlf_%'))
             )
-            ->execute();
+            ->executeQuery();
 
         // Update the found record sets
         while ($record = $statement->fetchAssociative()) {
@@ -104,7 +104,7 @@ class MigrateSettings implements UpgradeWizardInterface
                     )
                 )
                 ->set('pi_flexform', $this->migrateFlexFormSettings($record['pi_flexform']))
-                ->execute();
+                ->executeStatement();
 
             // exit if at least one update statement is not successful
             if (!((bool) $updateResult)) {
@@ -139,7 +139,7 @@ class MigrateSettings implements UpgradeWizardInterface
                 $queryBuilder->expr()->eq('CType', $queryBuilder->createNamedParameter('list')),
                 $queryBuilder->expr()->like('list_type', $queryBuilder->createNamedParameter('dlf_%'))
             )
-            ->execute();
+            ->executeQuery();
 
         // Update the found record sets
         while ($record = $statement->fetchAssociative()) {

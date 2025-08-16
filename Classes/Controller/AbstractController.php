@@ -121,7 +121,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         /** @var Request $request */
         $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
-        $this->pageUid = (int) GeneralUtility::_GET('id');
+        $this->pageUid = (int) $request->getQueryParams()['id'] ?? null;
         $this->requestData['page'] = $this->requestData['page'] ?? 1;
 
         // Sanitize user input to prevent XSS attacks.

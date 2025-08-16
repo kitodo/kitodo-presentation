@@ -150,7 +150,7 @@ class CollectionRepository extends Repository
             )
             ->setMaxResults(1);
 
-        return $result->execute();
+        return $result->executeQuery();
     }
 
 }

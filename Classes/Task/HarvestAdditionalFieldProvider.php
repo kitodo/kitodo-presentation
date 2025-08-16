@@ -149,7 +149,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
                 $queryBuilder->expr()
                     ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
             )
-            ->execute();
+            ->executeQuery();
 
         while ($record = $result->fetchAssociative()) {
             $libraries[$record['label']] = $record['uid'];

@@ -19,7 +19,7 @@ $addList = 'pi_flexform';
 
 $flexFormsPathPrefix = 'FILE:EXT:dlf/Configuration/FlexForms/';
 $iconsDirectory = 'EXT:dlf/Resources/Public/Icons/';
-$pluginsLabel = 'EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.';
+$pluginsLabel = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.';
 
 // Plugin "annotation".
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -132,7 +132,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'ValidationForm',
-    $pluginsLabel . 'validation.title',
+    $pluginsLabel . 'validationform.title',
     $iconsDirectory . 'tx-dlf-validationform.svg'
 );
 
