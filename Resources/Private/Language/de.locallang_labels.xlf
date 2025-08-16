@@ -341,6 +341,10 @@
                 <source>General</source>
                 <target>Allgemein</target>
             </trans-unit>
+            <trans-unit id="tx_dlf_metadatasubentries">
+                <source>Metadata Subentries</source>
+                <target>Metadaten Untereinträge</target>
+            </trans-unit>
             <trans-unit id="tx_dlf_formats">
                 <source>Data Formats</source>
                 <target>Datenformate</target>
