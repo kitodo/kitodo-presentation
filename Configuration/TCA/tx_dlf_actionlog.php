@@ -15,7 +15,6 @@ return [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog',
         'label'     => 'label',
         'crdate'    => 'crdate',
-        'cruser_id' => 'user_id',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfreport.png',

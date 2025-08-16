@@ -16,7 +16,6 @@ return [
         'label'     => 'encoded',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
-        'cruser_id' => 'cruser_id',
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfmetadata.png',
         'rootLevel' => 0,

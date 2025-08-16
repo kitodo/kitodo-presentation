@@ -16,7 +16,6 @@ return [
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
-        'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfsolrcores.png',

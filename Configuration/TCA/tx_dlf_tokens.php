@@ -16,7 +16,6 @@ return [
         'label'     => 'token',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
-        'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY token',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfsolrcores.png',
         'rootLevel' => -1,
