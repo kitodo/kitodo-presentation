@@ -78,9 +78,18 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => [
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', '-1'],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', '-2'],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        'value' => '-1',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        'value' => '-2',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        'value' => '--div--',
+                    ],
                 ],
                 'foreign_table' => 'fe_groups',
                 'size' => 5,
@@ -410,7 +419,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.status.default', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.status.default',
+                        'value' => 0,
+                    ],
                 ],
                 'size' => 1,
                 'minitems' => 1,
@@ -425,8 +437,14 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.mets', 'METS'],
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.iiif', 'IIIF'],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.mets',
+                        'value' => 'METS',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.iiif', 
+                        'value' => 'IIIF',
+                    ],
                 ],
                 'size' => 1,
                 'minitems' => 1,

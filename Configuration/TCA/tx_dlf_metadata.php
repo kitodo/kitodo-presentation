@@ -47,7 +47,10 @@ return [
                 'foreign_table' => 'tx_dlf_metadata',
                 'foreign_table_where' => 'AND tx_dlf_metadata.pid=###CURRENT_PID### AND tx_dlf_metadata.sys_language_uid IN (-1,0) ORDER BY label ASC',
                 'items' => [
-                    ['', 0],
+                    [
+                        'label' => '',
+                        'value' => 0,
+                    ],
                 ],
                 'default' => 0,
             ],
@@ -229,7 +232,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadata.status.default', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadata.status.default',
+                        'value' => 0,
+                    ],
                 ],
                 'size' => 1,
                 'minitems' => 1,

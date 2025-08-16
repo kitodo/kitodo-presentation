@@ -43,7 +43,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id.none', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id.none',
+                        'value' => 0,
+                    ],
                 ],
                 'foreign_table' => 'fe_users',
                 'foreign_table_where' => 'ORDER BY fe_users.username',

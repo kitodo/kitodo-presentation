@@ -44,7 +44,10 @@ return [
                 'foreign_table' => 'tx_dlf_libraries',
                 'foreign_table_where' => 'AND tx_dlf_libraries.pid=###CURRENT_PID### AND tx_dlf_libraries.sys_language_uid IN (-1,0)',
                 'items' => [
-                    ['', 0],
+                    [
+                        'label' => '', 
+                        'value' => 0,
+                    ],
                 ],
                 'default' => 0,
             ],
