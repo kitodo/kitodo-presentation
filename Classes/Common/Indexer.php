@@ -440,7 +440,7 @@ class Indexer
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);
             $solrDoc->setField('page', $page);
-            $useGroupsThumbnail = GeneralUtility::trimExplode(',', $extConf['Thumbnail']);
+            $useGroupsThumbnail = GeneralUtility::trimExplode(',', $extConf['useGroupsThumbnail']);
             while ($useGroupThumbnail = array_shift($useGroupsThumbnail)) {
                 if (!empty($physicalUnit['files'][$useGroupThumbnail])) {
                     $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$useGroupThumbnail]));
