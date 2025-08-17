@@ -438,7 +438,7 @@ class SearchController extends AbstractController
                             $entryArray['ITEM_STATE'] = 'IFSUB';
                         }
                         $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
-                        if (++$i == $this->settings['limit']) {
+                        if (++$i == ($this->settings['limit'] ?? 0)) {
                             break;
                         }
                     } else {

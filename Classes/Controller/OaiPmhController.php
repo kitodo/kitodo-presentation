@@ -196,7 +196,7 @@ class OaiPmhController extends AbstractController
         $record[] = ['dc:format' => $record['application/mets+xml'] ?? ''];
         $record[] = ['dc:type' => $record['Text'] ?? 'text'];
         if (!empty($record['partof'])) {
-            $document = $this->documentRepository->findOneByPartof($metadata['partof']);
+            $document = $this->documentRepository->findOneByPartof($metadata['partof'] ?? '');
 
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
