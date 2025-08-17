@@ -143,11 +143,11 @@ class PageViewController extends AbstractController
 
         $this->view->assign('docCount', count($this->documentArray));
         $this->view->assign('docArray', $this->documentArray);
-        $this->view->assign('docPage', $this->requestData['docPage']);
+        $this->view->assign('docPage', $this->requestData['docPage'] ?? null);
         $this->view->assign('docType', $this->document->getCurrentDocument()->tableOfContents[0]['type']);
 
-        $this->view->assign('multiview', $this->requestData['multiview']);
-        if ($this->requestData['multiview']) {
+        $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
+        if ($this->requestData['multiview'] ?? false) {
             $this->multipageNavigation();
         }
 
@@ -527,14 +527,15 @@ class PageViewController extends AbstractController
             $docPage = $this->requestData['page'];
 
             $docMeasures = $this->getMeasures($docPage);
-            if ($this->requestData['measure']) {
+            if (isset($this->requestData['measure'])
+                && isset($docMeasures['measureCounterToMeasureId'][$this->requestData['measure']])) {
                 $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
             }
 
             $viewer = [
                 'controls' => $this->controls,
                 'div' => $this->settings['elementId'],
-                'progressElementId' => $this->settings['progressElementId'],
+                'progressElementId' => $this->settings['progressElementId'] ?? 'tx-dlf-page-progress',
                 'images' => $this->images,
                 'fulltexts' => $this->fulltexts,
                 'score' => $this->scores,

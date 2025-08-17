@@ -356,7 +356,7 @@ class Indexer
                 // There can be only one toplevel unit per UID, independently of backend configuration
                 $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->getToplevelId());
                 $solrDoc->setField('title', $metadata['title'][0]);
-                $solrDoc->setField('volume', $metadata['volume'][0]);
+                $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
                 // verify date formatting
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
@@ -368,7 +368,7 @@ class Indexer
                 $solrDoc->setField('license', $metadata['license']);
                 $solrDoc->setField('terms', $metadata['terms']);
                 $solrDoc->setField('restrictions', $metadata['restrictions']);
-                $coordinates = json_decode($metadata['coordinates'][0]);
+                $coordinates = json_decode($metadata['coordinates'][0] ?? '');
                 if (is_object($coordinates)) {
                     $feature = (array) $coordinates->features[0];
                     $geometry = (array) $feature['geometry'];
@@ -524,7 +524,8 @@ class Indexer
                 && substr($indexName, -8) !== '_sorting'
             ) {
                 $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data);
-                if (in_array($indexName, self::$fields['sortables'])) {
+                if (in_array($indexName, self::$fields['sortables']) &&
+                    in_array($indexName . '_sorting', $metadata)) {
                     // Add sortable fields to index.
                     $solrDoc->setField($indexName . '_sorting', $metadata[$indexName . '_sorting'][0]);
                 }
