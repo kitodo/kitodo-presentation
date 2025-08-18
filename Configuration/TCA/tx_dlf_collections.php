@@ -147,7 +147,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'nospace,alphanum_x,uniqueInPid',
+                // TODO: Add own form evaluation (see OAI-PMH setSpec).
+                'eval' => 'nospace,uniqueInPid',
                 'default' => '',
             ],
         ],

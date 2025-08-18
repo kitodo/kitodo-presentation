@@ -185,6 +185,8 @@ p.intro {
         <td class="value"><xsl:value-of select="oai:responseDate"/></td></tr>
         <tr><td class="key">Request URL</td>
         <td class="value"><xsl:value-of select="oai:request"/></td></tr>
+        <tr><td class="key">Request Type</td>
+        <td class="value"><xsl:value-of select="oai:request/@verb"/></td></tr>
     </table>
     <xsl:choose>
         <xsl:when test="oai:error">
@@ -195,7 +197,6 @@ p.intro {
             </div>
         </xsl:when>
         <xsl:otherwise>
-            <p>Request was of type <xsl:value-of select="oai:request/@verb"/>.</p>
             <div class="results">
                 <xsl:apply-templates select="oai:Identify" />
                 <xsl:apply-templates select="oai:GetRecord"/>
