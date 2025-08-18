@@ -166,7 +166,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $childDocuments = $doc->tableOfContents[0]['children'];
             $i = 0;
             foreach ($childDocuments as $document) {
-                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings, true);
+                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings);
                 if (isset(explode('#', $document['points'])[1])) {
                     $initPage = explode('#', $document['points'])[1];
                     $this->requestData['docPage'][$i] = $initPage;
@@ -179,7 +179,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
             $i = 0;
             foreach ($this->requestData['multipleSource'] as $location) {
-                $document = AbstractDocument::getInstance($location, $this->settings, true);
+                $document = AbstractDocument::getInstance($location, $this->settings);
                 if ($document !== null) {
                     $this->documentArray['extra_' . $i] = $document;
                 }
@@ -210,6 +210,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // Try to get document format from database
         if (!empty($documentId)) {
 
+
             $doc = null;
 
             if (MathUtility::canBeInterpretedAsInteger($documentId)) {
@@ -227,7 +228,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->document = $this->documentRepository->findOneByRecordId($this->requestData['recordId']);
 
             if ($this->document !== null) {
-                $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings, true);
+                $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
                 if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {
@@ -714,13 +715,13 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @access protected
      *
-     * @param string $documentId The document's URL
+     * @param string $documentUrl The document's URL
      *
      * @return AbstractDocument
      */
-    protected function getDocumentByUrl(string $documentId)
+    protected function getDocumentByUrl(string $documentUrl)
     {
-        $doc = AbstractDocument::getInstance($documentId, $this->settings, true);
+        $doc = AbstractDocument::getInstance($documentUrl, $this->settings);
 
         if ($doc !== null) {
             $this->buildMultiView($doc);
@@ -735,9 +736,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 }
             }
 
-            $this->document->setLocation($documentId);
+            $this->document->setLocation($documentUrl);
         } else {
-            $this->logger->error('Invalid location given "' . $documentId . '" for document loading');
+            $this->logger->error('Invalid location given "' . $documentUrl . '" for document loading');
         }
 
         return $doc;
