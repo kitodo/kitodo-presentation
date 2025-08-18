@@ -385,7 +385,7 @@ class DocumentRepository extends Repository
             ->getQueryBuilderForTable('tx_dlf_documents');
 
         $excludeOtherWhere = '';
-        if ($settings['excludeOther']) {
+        if ($settings['excludeOther'] ?? false) {
             $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($settings['storagePid']);
         }
         // Check if there are any metadata to suggest.

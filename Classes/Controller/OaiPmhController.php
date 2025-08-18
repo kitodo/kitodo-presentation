@@ -193,10 +193,10 @@ class OaiPmhController extends AbstractController
         $this->addDublinCoreData($metadata, 'dc:date', $record['year']);
         $this->addDublinCoreData($metadata, 'dc:coverage', $record['place']);
 
-        $record[] = ['dc:format' => $record['application/mets+xml']];
-        $record[] = ['dc:type' => $record['Text']];
+        $record[] = ['dc:format' => $record['application/mets+xml'] ?? ''];
+        $record[] = ['dc:type' => $record['Text'] ?? 'text'];
         if (!empty($record['partof'])) {
-            $document = $this->documentRepository->findOneByPartof($metadata['partof']);
+            $document = $this->documentRepository->findOneByPartof($metadata['partof'] ?? '');
 
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];

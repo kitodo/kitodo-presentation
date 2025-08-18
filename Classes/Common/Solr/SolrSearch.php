@@ -204,7 +204,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     public function offsetExists($offset): bool
     {
-        $idx = $this->result['document_keys'][$offset];
+        $idx = $this->result['document_keys'][$offset] ?? '';
         return isset($this->result['documents'][$idx]);
     }
 
@@ -570,7 +570,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                                             'structure' => $docChild['structure'],
                                             'metsOrderlabel' => $docChild['metsOrderlabel'],
                                             'uid' => $docChild['uid'],
-                                            'metadata' => $metadataOf[$docChild['uid']],
+                                            'metadata' => $metadataOf[$docChild['uid']] ?? '',
                                         ];
                                         $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
                                     }
@@ -875,7 +875,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     private function translateLanguageCode(&$doc): void
     {
-        if (is_array($doc['metadata']) && array_key_exists('language', $doc['metadata'])) {
+        if (is_array($doc['metadata'] ?? false) && array_key_exists('language', $doc['metadata'])) {
             foreach($doc['metadata']['language'] as $indexName => $language) {
                 $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
             }

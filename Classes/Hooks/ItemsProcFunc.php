@@ -86,7 +86,7 @@ class ItemsProcFunc implements LoggerAwareInterface
             $ts->runThroughTemplates($rootLine, 0);
             $ts->generateConfig();
             $typoScriptConfig = $ts->setup;
-            $this->storagePid = $typoScriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
+            $this->storagePid = $typoScriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'] ?? 0;
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }

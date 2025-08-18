@@ -106,12 +106,12 @@ class CollectionRepository extends Repository
         }
 
         // do not find user created collections (used by oai-pmh plugin)
-        if (!$settings['show_userdefined']) {
+        if (!($settings['show_userdefined'] ?? false)) {
             $constraints[] = $query->equals('fe_cruser_id', 0);
         }
 
         // do not find collections without oai_name set (used by oai-pmh plugin)
-        if ($settings['hideEmptyOaiNames']) {
+        if ($settings['hideEmptyOaiNames'] ?? false) {
             $constraints[] = $query->logicalNot($query->equals('oai_name', ''));
         }
 
