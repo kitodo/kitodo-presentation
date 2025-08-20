@@ -100,7 +100,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     public function setUp(): void
     {
         $this->configurationToUseInTestInstance['EXTENSIONS']['dlf'] = $this->getDlfConfiguration();
-        
+
         parent::setUp();
 
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
@@ -371,7 +371,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     /**
      * Execute an internal Typo3 Http request and return its response.
-     * 
+     *
      * @param InternalRequest $request the request
      * @return ResponseInterface the response
      */

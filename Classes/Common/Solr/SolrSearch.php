@@ -106,7 +106,8 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         array $searchParams = [],
         ?QueryResult $listedMetadata = null,
         ?QueryResult $indexedMetadata = null
-    ) {
+    )
+    {
         $this->documentRepository = $documentRepository;
         $this->collections = $collections;
         $this->settings = $settings;

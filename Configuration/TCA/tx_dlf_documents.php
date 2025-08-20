@@ -442,7 +442,7 @@ return [
                         'value' => 'METS',
                     ],
                     [
-                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.iiif', 
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.iiif',
                         'value' => 'IIIF',
                     ],
                 ],

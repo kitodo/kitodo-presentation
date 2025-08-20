@@ -156,8 +156,8 @@ class Indexer
                     if ($success) {
                         self::addMessage(
                             sprintf(
-                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentIndexed'), 
-                                $document->getTitle(), 
+                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentIndexed'),
+                                $document->getTitle(),
                                 $document->getUid()
                             ),
                             'flash.done',
@@ -166,8 +166,8 @@ class Indexer
                     } else {
                         self::addErrorMessage(
                             sprintf(
-                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentNotIndexed'), 
-                                $document->getTitle(), 
+                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentNotIndexed'),
+                                $document->getTitle(),
                                 $document->getUid()
                             )
                         );

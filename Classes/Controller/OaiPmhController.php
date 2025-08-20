@@ -730,7 +730,7 @@ class OaiPmhController extends AbstractController
      */
     private function getDateTimeFromParameter(string $dateType)
     {
-        return DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $this->parameters[$dateType]) 
+        return DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $this->parameters[$dateType])
             ?: DateTime::createFromFormat('Y-m-d', $this->parameters[$dateType]);
     }
 

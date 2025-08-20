@@ -12,13 +12,13 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
+use \Exception;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use Phpoaipmh\ClientInterface;
 use Phpoaipmh\Exception\OaipmhException;
 use Phpoaipmh\Exception\MalformedResponseException;
 use SimpleXMLElement;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
-
 
 /**
  * Custom implementation of Phpoaipmh\ClientInterface such that Phpoaipmh\Endpoint can be used
@@ -51,18 +51,19 @@ class OaiPmhTypo3Client implements ClientInterface
 
     /**
      * Initialize a OaiPmh client.
-     * 
+     *
      * @param string $baseUrl the base url of the Typo3 server used for functional tests
      * @param int $pageId the Typo3 page id of the OAI endpoint
      * @param FunctionalTestCase $funtionalTestCase reference to the functional test case in order to issue internal requests
      * @param bool $throwError whether to throw an OaiPmhException if the OAI response contains error information
      */
     public function __construct(
-        string $baseUrl, 
+        string $baseUrl,
         int $pageId,
         FunctionalTestCase $functionalTestCase,
         bool $throwError = true
-    ) {
+    )
+    {
         $this->baseUrl = $baseUrl;
         $this->pageId = $pageId;
         $this->functionalTestCase = $functionalTestCase;
@@ -71,13 +72,14 @@ class OaiPmhTypo3Client implements ClientInterface
 
     /**
      * Issue a OaiPmh request for a given verb and options.
-     * 
+     *
      * @param $verb the verb as string
      * @param array $params additional options
      * @throws OaipmhException if there is an OaiPmh error and $throwError is true
+     * @throws MalformedResponseException if the XML response cannot be parsed
      * @return SimpleXMLElement the parsed response as XML element
      */
-    public function request($verb, array $params = array()) 
+    public function request($verb, array $params = [])
     {
         $request = (new InternalRequest($this->baseUrl))->withQueryParameters(
             array_merge([ 'id' => $this->pageId, 'verb' => $verb ], $params)

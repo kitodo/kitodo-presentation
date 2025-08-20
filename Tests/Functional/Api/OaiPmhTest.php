@@ -198,9 +198,7 @@ class OaiPmhTest extends FunctionalTestCase
         // The general handling of resumption tokens should be the same for these verbs
         foreach (['ListIdentifiers', 'ListRecords'] as $verb) {
             // Check that we get a proper resumption token when starting a list
-            $xml = $client->request($verb, [
-                    'metadataPrefix' => 'mets',
-            ]);
+            $xml = $client->request($verb, [ 'metadataPrefix' => 'mets' ]);
 
             $resumptionToken = $xml->$verb->resumptionToken;
             self::assertEquals('0', (string) $resumptionToken['cursor']);
@@ -214,9 +212,7 @@ class OaiPmhTest extends FunctionalTestCase
             // Check that we can resume and get a proper cursor value
             $cursor = 1;
             do {
-                $xml = $client->request($verb, [
-                        'resumptionToken' => (string) $resumptionToken,
-                ]);
+                $xml = $client->request($verb, [ 'resumptionToken' => (string) $resumptionToken ]);
 
                 $resumptionToken = $xml->$verb->resumptionToken;
                 $tokenStr = (string) $resumptionToken;
@@ -242,10 +238,7 @@ class OaiPmhTest extends FunctionalTestCase
         $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
 
         foreach (['ListIdentifiers', 'ListRecords'] as $verb) {
-            $xml = $client->request($verb, [
-                    'metadataPrefix' => 'mets',
-                    'set' => 'collection-with-single-document',
-            ]);
+            $xml = $client->request($verb, [ 'metadataPrefix' => 'mets', 'set' => 'collection-with-single-document' ]);
 
             self::assertCount(1, $xml->$verb->children());
             self::assertEmpty($xml->$verb->resumptionToken);

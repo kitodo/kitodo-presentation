@@ -34,7 +34,7 @@ class StdWrapViewHelperTest extends FunctionalTestCase
     public function renderWithStdWrap(): void
     {
         $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-        
+
         $request = new ServerRequest();
         $request = $request->withAttribute("currentContentObject", $cObj);
         

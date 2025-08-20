@@ -51,7 +51,7 @@ return [
                 'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0)',
                 'items' => [
                     [
-                        'label' => '', 
+                        'label' => '',
                         'value' => 0,
                     ],
                 ],
@@ -80,11 +80,11 @@ return [
                 'foreign_table' => 'fe_groups',
                 'items' => [
                     [
-                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', 
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
                         'value' => '-1',
                     ],
                     [
-                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', 
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
                         'value' => '-2',
                     ],
                     [

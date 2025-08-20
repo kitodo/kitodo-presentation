@@ -31,7 +31,7 @@ class StdOutStream implements StreamInterface, SelfEmittableStreamInterface
     /**
      * Constructor
      */
-    public function __construct(protected readonly StreamInterface $stream) 
+    public function __construct(protected readonly StreamInterface $stream)
     {
     }
 

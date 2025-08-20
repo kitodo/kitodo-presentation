@@ -43,9 +43,10 @@ class TypoScriptHelper
         private readonly SysTemplateTreeBuilder $treeBuilder,
         private readonly LossyTokenizer $tokenizer,
         private readonly IncludeTreeTraverser $includeTreeTraverser,
-        private readonly ConditionVerdictAwareIncludeTreeTraverser $includeTreeTraverserConditionVerdictAware,
+        private readonly ConditionVerdictAwareIncludeTreeTraverser $includeConditionVerdictAware,
         private readonly SysTemplateRepository $sysTemplateRepository,
-    ) {
+    )
+    {
     }
 
     /**
@@ -67,13 +68,13 @@ class TypoScriptHelper
 
         $frontendTypoScriptFactory = GeneralUtility::makeInstance(
             // @phpstan-ignore-next-line (class does not exist in Typo3 v12)
-            \TYPO3\CMS\Core\TypoScript\FrontendTypoScriptFactory::class, 
+            \TYPO3\CMS\Core\TypoScript\FrontendTypoScriptFactory::class,
             $this->container,
             $this->eventDispatcher,
             $this->treeBuilder,
             $this->tokenizer,
             $this->includeTreeTraverser,
-            $this->includeTreeTraverserConditionVerdictAware,
+            $this->includeConditionVerdictAware,
         );
 
         // @phpstan-ignore-next-line ($frontendTypoScriptFactory does not exist in Typo3 v12)
@@ -113,7 +114,7 @@ class TypoScriptHelper
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         $site = $siteFinder->getSiteByPageId($pid);
         $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $pid)->get();
-        
+
         $typoScriptFrontendController = GeneralUtility::makeInstance(
             TypoScriptFrontendController::class,
             GeneralUtility::makeInstance(Context::class),
@@ -132,10 +133,10 @@ class TypoScriptHelper
 
     /**
      * Get TypoScript configuration from site root
-     * 
+     *
      * Note: When upgrading Typo3, maybe use site settings to store storagePid, see:
      * https://docs.typo3.org/permalink/t3coreapi:sitehandling-settings
-     * 
+     *
      * @access public
      *
      * @param int $pid page id
