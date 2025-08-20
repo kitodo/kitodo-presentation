@@ -45,8 +45,8 @@ class TypoScriptHelper
         private readonly IncludeTreeTraverser $includeTreeTraverser,
         private readonly ConditionVerdictAwareIncludeTreeTraverser $includeConditionVerdictAware,
         private readonly SysTemplateRepository $sysTemplateRepository,
-    )
-    {
+    ) {
+        // empty
     }
 
     /**
@@ -127,7 +127,7 @@ class TypoScriptHelper
         $typoScriptFrontendController->rootLine = $rootLine;
         $request = new ServerRequest();
         $request = $typoScriptFrontendController->getFromCache($request);
-       
+
         return $request->getAttribute('frontend.typoscript')->getSetupArray();
     }
 

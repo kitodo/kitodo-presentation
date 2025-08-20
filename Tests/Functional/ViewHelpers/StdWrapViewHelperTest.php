@@ -37,7 +37,7 @@ class StdWrapViewHelperTest extends FunctionalTestCase
 
         $request = new ServerRequest();
         $request = $request->withAttribute("currentContentObject", $cObj);
-        
+
         $view = new StandaloneView();
         $view->setRequest($request);
 

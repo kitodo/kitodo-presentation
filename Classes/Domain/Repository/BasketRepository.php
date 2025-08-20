@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @subpackage dlf
  *
  * @access public
- * 
+ *
  * @method Basket|null findOneBy(array $criteria) Get a basket by criteria
  */
 class BasketRepository extends Repository

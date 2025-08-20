@@ -62,8 +62,7 @@ class OaiPmhTypo3Client implements ClientInterface
         int $pageId,
         FunctionalTestCase $functionalTestCase,
         bool $throwError = true
-    )
-    {
+    ) {
         $this->baseUrl = $baseUrl;
         $this->pageId = $pageId;
         $this->functionalTestCase = $functionalTestCase;
