@@ -491,6 +491,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         if ($this->listedMetadata) {
             foreach ($this->listedMetadata as $metadata) {
+                /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
                 if ($metadata->getIndexStored() || $metadata->getIndexIndexed()) {
                     $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . ($metadata->getIndexIndexed() ? 'i' : 'u');
                     $params['fields'] .= ',' . $listMetadataRecord;
@@ -644,6 +645,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         if ($this->listedMetadata) {
             foreach ($this->listedMetadata as $metadata) {
+                /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
                 if ($metadata->getIndexStored() || $metadata->getIndexIndexed()) {
                     $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . ($metadata->getIndexIndexed() ? 'i' : 'u');
                     $params['fields'] .= ',' . $listMetadataRecord;
@@ -714,6 +716,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             if ($this->indexedMetadata) {
                 foreach ($this->indexedMetadata as $metadata) {
+                    /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
                     if ($metadata->getIndexIndexed()) {
                         $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
                         $queryFields .= $listMetadataRecord . '^' . $metadata->getIndexBoost() . ' ';

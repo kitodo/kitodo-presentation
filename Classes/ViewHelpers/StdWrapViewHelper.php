@@ -55,10 +55,12 @@ class StdWrapViewHelper extends AbstractViewHelper
         $wrap = $this->arguments['wrap'];
         $data = $this->arguments['data'] ?? [];
 
-        if (!$this->renderingContext->getRequest()) {
+        /** @var \TYPO3\CMS\Fluid\Core\Rendering\RenderingContext $renderingContext */
+        $renderingContext = $this->renderingContext;
+        if (!$renderingContext->getRequest()) {
             throw new \RuntimeException('Required request not found in RenderingContext');
         }
-        $request = $this->renderingContext->getRequest();
+        $request = $renderingContext->getRequest();
         $cObj = $request->getAttribute('currentContentObject');
 
         $insideContent = $this->renderChildren();

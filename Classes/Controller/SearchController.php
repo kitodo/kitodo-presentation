@@ -409,6 +409,7 @@ class SearchController extends AbstractController
             $virtualCollectionsQueryString = '';
             foreach ($collections as $collectionEntry) {
                 // check for virtual collections query string
+                /** @var Collection $collectionEntry */
                 if ($collectionEntry->getIndexSearch()) {
                     $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR (' . $collectionEntry->getIndexSearch() . ')';
                 } else {

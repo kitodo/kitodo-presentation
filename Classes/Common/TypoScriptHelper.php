@@ -65,6 +65,7 @@ class TypoScriptHelper
         $sysTemplateRows = $this->sysTemplateRepository->getSysTemplateRowsByRootline($rootLine);
 
         $frontendTypoScriptFactory = GeneralUtility::makeInstance(
+            // @phpstan-ignore-next-line (class does not exist in Typo3 v12)
             \TYPO3\CMS\Core\TypoScript\FrontendTypoScriptFactory::class, 
             $this->container,
             $this->eventDispatcher,
@@ -74,6 +75,7 @@ class TypoScriptHelper
             $this->includeTreeTraverserConditionVerdictAware,
         );
 
+        // @phpstan-ignore-next-line ($frontendTypoScriptFactory does not exist in Typo3 v12)
         $frontendTypoScript = $frontendTypoScriptFactory->createSettingsAndSetupConditions(
             $site,
             $sysTemplateRows,
@@ -81,6 +83,7 @@ class TypoScriptHelper
             null,
         );
 
+        // @phpstan-ignore-next-line ($frontendTypoScriptFactory does not exist in Typo3 v12)
         $ts = $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
             true,
             $frontendTypoScript,

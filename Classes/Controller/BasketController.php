@@ -553,7 +553,8 @@ class BasketController extends AbstractController
         // send mail
         $mailId = $this->requestData['mail_action'];
 
-        $mailObject = $this->mailRepository->findByUid(intval($mailId))->getFirst();
+        /** @var \Kitodo\Dlf\Domain\Model\Mail $mailObject */
+        $mailObject = $this->mailRepository->findByUid(intval($mailId));
 
         $mailText = htmlspecialchars(LocalizationUtility::translate('basket.mailBody', 'dlf')) . "\n";
         $numberOfPages = 0;

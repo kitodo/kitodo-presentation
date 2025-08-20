@@ -36,6 +36,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
+ * @method Document|null findByUid(int|null $uid) Get a document by its UID
  * @method Document|null findOneByUid(int $uid) Get a document by its UID
  * @method Document|null findOneByRecordId(string $recordId) Get a document by its record ID
  * @method Document|null findOneByIndexName(string $indexName) Get a document by its index name
@@ -120,7 +121,9 @@ class DocumentRepository extends Repository
         $query->setOrderings(['tstamp' => QueryInterface::ORDER_ASCENDING]);
         $query->setLimit(1);
 
-        return $query->execute()->getFirst();
+        /** @var Document $document */
+        $document = $query->execute()->getFirst();
+        return $document;
     }
 
     /**

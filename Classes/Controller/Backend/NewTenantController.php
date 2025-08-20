@@ -150,7 +150,7 @@ class NewTenantController extends AbstractController
      * 
      * @param bool $isError whether to render the non-error or error template
      * 
-     * @param array $extra extra view data used to render the template (in addition to $viewData of AbstractController)
+     * @param array $extraData extra view data used to render the template (in addition to $viewData of AbstractController)
      * 
      * @return ResponseInterface the response
      */
@@ -177,7 +177,7 @@ class NewTenantController extends AbstractController
      */
     protected function initializeAction(): void
     {
-        $this->pid = (int) $this->request->getQueryParams()['id'] ?? null;
+        $this->pid = (int) ($this->request->getQueryParams()['id'] ?? null);
 
         $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
@@ -289,6 +289,7 @@ class NewTenantController extends AbstractController
 
         $insertedMetadata = [];
         foreach ($metadataIds as $id => $uid) {
+            /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
             $metadata = $this->metadataRepository->findByUid($uid);
             // id array contains also ids of formats
             if ($metadata != null) {
@@ -384,7 +385,9 @@ class NewTenantController extends AbstractController
 
         $insertedStructures = [];
         foreach ($structureIds as $id => $uid) {
-            $insertedStructures[$uid] = $this->structureRepository->findByUid($uid)->getIndexName();
+            /** @var \Kitodo\Dlf\Domain\Model\Structure $structure */
+            $structure = $this->structureRepository->findByUid($uid);
+            $insertedStructures[$uid] = $structure->getIndexName();
         }
 
         foreach ($this->siteLanguages as $siteLanguage) {
