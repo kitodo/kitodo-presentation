@@ -23,8 +23,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @access public
  *
- * @method int countByPid(int $uid) Count amount of structures for given PID
- * @method Structure|null findOneByIndexName(string $indexName) Get a structure by its index name
+ * @method Structure|null findOneBy(array $criteria) Get a structure by criteria
  */
 class StructureRepository extends Repository
 {

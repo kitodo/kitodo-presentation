@@ -201,7 +201,7 @@ class OaiPmhController extends AbstractController
         $record[] = ['dc:format' => $record['application/mets+xml'] ?? ''];
         $record[] = ['dc:type' => $record['Text'] ?? ''];
         if (!empty($record['partof'])) {
-            $document = $this->documentRepository->findOneByPartof($metadata['partof'] ?? '');
+            $document = $this->documentRepository->findOneBy([ 'partof' => $metadata['partof'] ?? '' ]);
 
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
@@ -317,7 +317,7 @@ class OaiPmhController extends AbstractController
      */
     protected function resume(): ?array
     {
-        $token = $this->tokenRepository->findOneByToken($this->parameters['resumptionToken']);
+        $token = $this->tokenRepository->findOneBy([ 'token' => $this->parameters['resumptionToken'] ]);
 
         if ($token) {
             $options = $token->getOptions();
@@ -492,7 +492,7 @@ class OaiPmhController extends AbstractController
         $resArray = [];
         // check for the optional "identifier" parameter
         if (isset($this->parameters['identifier'])) {
-            $resArray = $this->documentRepository->findOneByRecordId($this->parameters['identifier']);
+            $resArray = $this->documentRepository->findOneBy([ 'recordId' => $this->parameters['identifier'] ]);
         }
 
         $resultSet = [];

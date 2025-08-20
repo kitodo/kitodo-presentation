@@ -57,15 +57,15 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
-     * @var QueryResult|null
+     * @var QueryResultInterface|null
      */
-    private ?QueryResult $listedMetadata;
+    private ?QueryResultInterface $listedMetadata;
 
     /**
      * @access private
-     * @var QueryResult|null
+     * @var QueryResultInterface|null
      */
-    private ?QueryResult $indexedMetadata;
+    private ?QueryResultInterface $indexedMetadata;
 
     /**
      * @access private
@@ -94,8 +94,8 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @param array|QueryResultInterface $collections can contain 0, 1 or many Collection objects
      * @param array $settings
      * @param array $searchParams
-     * @param QueryResult $listedMetadata
-     * @param QueryResult $indexedMetadata
+     * @param QueryResultInterface|null $listedMetadata
+     * @param QueryResultInterface|null $indexedMetadata
      *
      * @return void
      */
@@ -104,10 +104,9 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         array|QueryResultInterface $collections,
         array $settings = [],
         array $searchParams = [],
-        ?QueryResult $listedMetadata = null,
-        ?QueryResult $indexedMetadata = null
-    )
-    {
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ) {
         $this->documentRepository = $documentRepository;
         $this->collections = $collections;
         $this->settings = $settings;

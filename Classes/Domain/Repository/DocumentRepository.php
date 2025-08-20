@@ -37,10 +37,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @access public
  *
  * @method Document|null findByUid(int|null $uid) Get a document by its UID
- * @method Document|null findOneByUid(int $uid) Get a document by its UID
- * @method Document|null findOneByRecordId(string $recordId) Get a document by its record ID
- * @method Document|null findOneByIndexName(string $indexName) Get a document by its index name
- * @method Document|null findOneByLocation(string $location) Get a document by its XML location
+ * @method Document|null findOneBy(array $criteria) Get a document by criteria
  */
 class DocumentRepository extends Repository
 {
@@ -78,14 +75,14 @@ class DocumentRepository extends Repository
 
         } else if (isset($parameters['recordId'])) {
 
-            $document = $this->findOneByRecordId($parameters['recordId']);
+            $document = $this->findOneBy([ 'recordId' => $parameters['recordId'] ]);
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
             $doc = AbstractDocument::getInstance($parameters['location']);
 
             if ($doc !== null && $doc->recordId) {
-                $document = $this->findOneByRecordId($doc->recordId);
+                $document = $this->findOneBy([ 'recordId' => $doc->recordId ]);
             }
 
             if ($document === null) {
@@ -588,13 +585,18 @@ class DocumentRepository extends Repository
      * @param Collection $collection
      * @param array $settings
      * @param array $searchParams
-     * @param ?QueryResult $listedMetadata
-     * @param ?QueryResult $indexedMetadata
+     * @param ?QueryResultInterface $listedMetadata
+     * @param ?QueryResultInterface $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrByCollection(Collection $collection, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null)
-    {
+    public function findSolrByCollection(
+        Collection $collection,
+        array $settings,
+        array $searchParams,
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ) {
         return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -606,13 +608,18 @@ class DocumentRepository extends Repository
      * @param array|QueryResultInterface $collections
      * @param array $settings
      * @param array $searchParams
-     * @param ?QueryResult $listedMetadata
-     * @param ?QueryResult $indexedMetadata
+     * @param ?QueryResultInterface $listedMetadata
+     * @param ?QueryResultInterface $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrByCollections(array|QueryResultInterface $collections, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
-    {
+    public function findSolrByCollections(
+        array|QueryResultInterface $collections,
+        array $settings,
+        array $searchParams,
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ): SolrSearch {
         return $this->findSolr($collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -623,13 +630,17 @@ class DocumentRepository extends Repository
      *
      * @param array $settings
      * @param array $searchParams
-     * @param ?QueryResult $listedMetadata
-     * @param ?QueryResult $indexedMetadata
+     * @param ?QueryResultInterface $listedMetadata
+     * @param ?QueryResultInterface $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrWithoutCollection(array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
-    {
+    public function findSolrWithoutCollection(
+        array $settings,
+        array $searchParams,
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ): SolrSearch {
         return $this->findSolr([], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -641,13 +652,18 @@ class DocumentRepository extends Repository
      * @param array|QueryResultInterface $collections
      * @param array $settings
      * @param array $searchParams
-     * @param ?QueryResult $listedMetadata
-     * @param ?QueryResult $indexedMetadata
+     * @param ?QueryResultInterface $listedMetadata
+     * @param ?QueryResultInterface $indexedMetadata
      *
      * @return SolrSearch
      */
-    private function findSolr(array|QueryResultInterface $collections, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
-    {
+    private function findSolr(
+        array|QueryResultInterface $collections,
+        array $settings,
+        array $searchParams,
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ): SolrSearch {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
@@ -669,7 +685,7 @@ class DocumentRepository extends Repository
      */
     public function getPreviousDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneByUid($uid);
+        $currentDocument = $this->findOneBy([ 'uid' => $uid ]);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 
@@ -719,7 +735,7 @@ class DocumentRepository extends Repository
      */
     public function getNextDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneByUid($uid);
+        $currentDocument = $this->findOneBy([ 'uid' => $uid ]);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 
