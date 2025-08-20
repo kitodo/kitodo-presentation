@@ -164,11 +164,13 @@ class Indexer
                             ContextualFeedbackSeverity::OK
                         );
                     } else {
-                        self::addErrorMessage(sprintf(
-                            Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentNotIndexed'), 
-                            $document->getTitle(), 
-                            $document->getUid()
-                        ));
+                        self::addErrorMessage(
+                            sprintf(
+                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentNotIndexed'), 
+                                $document->getTitle(), 
+                                $document->getUid()
+                            )
+                        );
                     }
                 }
                 return $success;

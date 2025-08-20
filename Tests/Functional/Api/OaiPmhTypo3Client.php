@@ -23,7 +23,7 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 /**
  * Custom implementation of Phpoaipmh\ClientInterface such that Phpoaipmh\Endpoint can be used
  * to test the Typo3 OAI endpoint.
- * 
+ *
  * See: https://github.com/caseyamcl/phpoaipmh/blob/master/src/ClientInterface.php
  */
 class OaiPmhTypo3Client implements ClientInterface
@@ -59,11 +59,10 @@ class OaiPmhTypo3Client implements ClientInterface
      */
     public function __construct(
         string $baseUrl, 
-        int $pageId, 
-        FunctionalTestCase $functionalTestCase, 
+        int $pageId,
+        FunctionalTestCase $functionalTestCase,
         bool $throwError = true
-    )
-    {
+    ) {
         $this->baseUrl = $baseUrl;
         $this->pageId = $pageId;
         $this->functionalTestCase = $functionalTestCase;
@@ -75,14 +74,13 @@ class OaiPmhTypo3Client implements ClientInterface
      * 
      * @param $verb the verb as string
      * @param array $params additional options
+     * @throws OaipmhException if there is an OaiPmh error and $throwError is true
      * @return SimpleXMLElement the parsed response as XML element
      */
-    public function request($verb, array $params = array()) {
+    public function request($verb, array $params = array()) 
+    {
         $request = (new InternalRequest($this->baseUrl))->withQueryParameters(
-            array_merge([ 
-                'id' => $this->pageId,
-                'verb' => $verb,
-            ], $params)
+            array_merge([ 'id' => $this->pageId, 'verb' => $verb ], $params)
         );
 
         $response = $this->functionalTestCase->executeInternalRequest($request);
@@ -110,5 +108,4 @@ class OaiPmhTypo3Client implements ClientInterface
     {
         return null;
     }
-
 }

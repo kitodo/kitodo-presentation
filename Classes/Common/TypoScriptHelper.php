@@ -45,7 +45,8 @@ class TypoScriptHelper
         private readonly IncludeTreeTraverser $includeTreeTraverser,
         private readonly ConditionVerdictAwareIncludeTreeTraverser $includeTreeTraverserConditionVerdictAware,
         private readonly SysTemplateRepository $sysTemplateRepository,
-    ) {}
+    ) {
+    }
 
     /**
      * Extract typoScript configuration from site root for Typo3 v13

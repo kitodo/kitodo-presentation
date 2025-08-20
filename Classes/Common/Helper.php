@@ -79,7 +79,7 @@ class Helper
 
     /**
      * @access protected
-     * @static 
+     * @static
      * @var array A cache remembering which Solr core uid belongs to which index name
      */
     protected static array $indexNameCache = [];
@@ -486,7 +486,7 @@ class Helper
 
     /**
      * Reset the index name cache.
-     * 
+     *
      * @access public
      *
      * @static
