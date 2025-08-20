@@ -568,7 +568,7 @@ class Indexer
         // use the structlink information
         foreach ($doc->smLinks['l2p'] as $logicalId => $physicalId) {
             // find page in structlink
-            if (in_array($physicalUnit['id'], $physicalId)) {
+            if (in_array($logicalId, $doc->metadataArray) && in_array($physicalUnit['id'], $physicalId)) {
                 // for each associated metadata of structlink
                 foreach ($doc->metadataArray[$logicalId] as $indexName => $data) {
                     if (
