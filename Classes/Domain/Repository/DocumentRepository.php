@@ -126,12 +126,12 @@ class DocumentRepository extends Repository
     /**
      * @access public
      *
-     * @param int $partOf
+     * @param int|null $partOf
      * @param Structure $structure
      *
      * @return array|QueryResultInterface
      */
-    public function getChildrenOfYearAnchor(int $partOf, Structure $structure): array|QueryResultInterface
+    public function getChildrenOfYearAnchor(?int $partOf, Structure $structure): array|QueryResultInterface
     {
         $query = $this->createQuery();
 
