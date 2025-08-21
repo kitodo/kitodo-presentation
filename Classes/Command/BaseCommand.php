@@ -223,7 +223,7 @@ class BaseCommand extends Command
             $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ?? '');
 
             $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
-            if ($structure) {
+            if ($structure !== null) {
                 $document->setStructure($structure);
             }
 
