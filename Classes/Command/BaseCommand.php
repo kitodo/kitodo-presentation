@@ -215,15 +215,17 @@ class BaseCommand extends Command
             // set title data
             $document->setTitle($metadata['title'][0] ?? '');
             $document->setTitleSorting($metadata['title_sorting'][0] ?? '');
-            $document->setPlace(implode('; ', $metadata['place']));
-            $document->setYear(implode('; ', $metadata['year']));
-            $document->setAuthor($this->getAuthors($metadata['author']));
+            $document->setPlace(implode('; ', $metadata['place'] ?? []));
+            $document->setYear(implode('; ', $metadata['year'] ?? []));
+            $document->setAuthor($this->getAuthors($metadata['author'] ?? []));
             $document->setThumbnail($doc->thumbnail ?? '');
             $document->setMetsLabel($metadata['mets_label'][0] ?? '');
             $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ?? '');
 
             $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
-            $document->setStructure($structure);
+            if ($structure !== null) {
+                $document->setStructure($structure);
+            }
 
             if (is_array($metadata['collection'])) {
                 $this->addCollections($document, $metadata['collection']);
@@ -234,7 +236,7 @@ class BaseCommand extends Command
             $document->setOpacId($metadata['opac_id'][0] ?? '');
             $document->setUnionId($metadata['union_id'][0] ?? '');
 
-            $document->setRecordId($metadata['record_id'][0]);
+            $document->setRecordId($metadata['record_id'][0] ?? '');
             $document->setUrn($metadata['urn'][0] ?? '');
             $document->setPurl($metadata['purl'][0] ?? '');
             $document->setDocumentFormat($metadata['document_format'][0] ?? '');
