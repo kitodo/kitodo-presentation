@@ -89,13 +89,16 @@ class OaiPmhTypo3Client implements ClientInterface
         try {
             $xml = new SimpleXMLElement((string) $response->getBody());
         } catch (Exception $e) {
+            // ignore phpcs error "All output should be run through an escaping function, see WordPress security"
+            // phpcs:ignore
             throw new MalformedResponseException(sprintf("Could not decode XML Response: %s", $e->getMessage()));
         }
 
         if ($this->throwError && isset($xml->error)) {
             $code = (string) $xml->error['code'];
             $msg  = (string) $xml->error;
-
+            // ignore phpcs error "All output should be run through an escaping function, see WordPress security"
+            // phpcs:ignore
             throw new OaipmhException($code, $msg);
         }
 
