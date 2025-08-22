@@ -625,7 +625,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 //      addQueryString="untrusted"
                 //      argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}"
                 //      additionalParams="{'tx_dlf[page]': page.startRecordNumber}"
-                //      arguments="{search: lastSearch}">{page.label}</f:link.action>
+                //      arguments="{searchParameter: lastSearch}">{page.label}</f:link.action>
                 $pages[$i] = [
                     'label' => $i,
                     'startRecordNumber' => $startRecordNumber

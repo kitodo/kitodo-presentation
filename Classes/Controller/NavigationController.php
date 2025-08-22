@@ -105,7 +105,7 @@ class NavigationController extends AbstractController
         if ($searchSessionParameters) {
             $lastSearchArguments = [
                 'tx_dlf_listview' => [
-                    'search' => $searchSessionParameters
+                    'searchParameter' => $searchSessionParameters
                 ]
             ];
 

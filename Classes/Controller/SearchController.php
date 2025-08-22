@@ -89,10 +89,10 @@ class SearchController extends AbstractController
     public function searchAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
-        $this->search = $this->getParametersSafely('search', ['tx_dlf_collection', 'tx_dlf_listview']);
+        $this->search = $this->getParametersSafely('searchParameter', ['tx_dlf_collection', 'tx_dlf_listview']);
 
         // output is done by main action
-        return $this->redirect('main', null, null, ['search' => $this->search]);
+        return $this->redirect('main', null, null, ['searchParameter' => $this->search]);
     }
 
     /**
@@ -118,7 +118,7 @@ class SearchController extends AbstractController
         $this->enableSuggester();
 
         // if search was triggered, get search parameters from POST variables
-        $this->search = $this->getParametersSafely('search');
+        $this->search = $this->getParametersSafely('searchParameter');
 
         // if search was triggered by the ListView plugin, get the parameters from GET variables
         // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
@@ -129,8 +129,8 @@ class SearchController extends AbstractController
             return $this->htmlResponse();
         }
 
-        if (isset($listRequestData['search']) && is_array($listRequestData['search'])) {
-            $this->search = array_merge($this->search ?: [], $listRequestData['search']);
+        if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
+            $this->search = array_merge($this->search ?: [], $listRequestData['searchParameter']);
             $listViewSearch = true;
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->search);
         }
@@ -167,7 +167,7 @@ class SearchController extends AbstractController
                 'ListView',
                 null,
                 [
-                    'search' => $this->search,
+                    'searchParameter' => $this->search,
                     'page' => $currentPage
                 ], $this->settings['targetPid']
             );
