@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 use TYPO3\CMS\Install\Updates\ChattyInterface;
@@ -34,6 +35,7 @@ use TYPO3\CMS\Install\Updates\ChattyInterface;
  *
  * @access public
  */
+#[UpgradeWizard('fileLocationUpdater')]
 class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -57,16 +59,6 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     protected array $fieldsToMigrate = [
         'tx_dlf_collections' => 'thumbnail'
     ];
-
-    /**
-     * @access public
-     *
-     * @return string Unique identifier of this updater
-     */
-    public function getIdentifier(): string
-    {
-        return self::class;
-    }
 
     /**
      * Return the speaking name of this wizard

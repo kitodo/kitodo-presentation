@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Solr\Solr;
 use Solarium\Core\Client\Request;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
@@ -27,22 +28,9 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  *
  * @internal
  */
+#[UpgradeWizard('updateSolrSchema')]
 class UpdateSolrSchema implements UpgradeWizardInterface
 {
-
-    /**
-     * Return the identifier for this wizard
-     * This should be the same string as used in the ext_localconf class registration
-     *
-     * @access public
-     *
-     * @return string
-     */
-    public function getIdentifier(): string
-    {
-        return self::class;
-    }
-
     /**
      * Return the speaking name of this wizard
      *

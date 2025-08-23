@@ -19,6 +19,7 @@ use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\ChattyInterface;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
@@ -31,6 +32,7 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  *
  * @access public
  */
+#[UpgradeWizard('formatUpdater')]
 class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -46,19 +48,6 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
      * @var OutputInterface
      */
     protected OutputInterface $output;
-
-    /**
-     * Return the identifier for this wizard
-     * This should be the same string as used in the ext_localconf class registration
-     *
-     * @access public
-     *
-     * @return string Unique identifier of this updater
-     */
-    public function getIdentifier(): string
-    {
-        return self::class;
-    }
 
     /**
      * Return the speaking name of this wizard
