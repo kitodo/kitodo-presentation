@@ -123,7 +123,7 @@ class CollectionController extends AbstractController
      */
     public function showAction(Collection $collection): ResponseInterface
     {
-        $search = $this->getParametersSafely('search');
+        $search = $this->getParametersSafely('searchParameter');
 
         // Instantiate the Solr. Without Solr present, we can't do anything.
         $solr = Solr::getInstance($this->settings['solrcore']);
@@ -144,7 +144,7 @@ class CollectionController extends AbstractController
             return $this->redirect(
                 'main', 'ListView', null,
                 [
-                    'search' => $search,
+                    'searchParameter' => $search,
                     'page' => $currentPage
                 ], $this->settings['targetPid']
             );
@@ -196,7 +196,7 @@ class CollectionController extends AbstractController
     public function showSortedAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
-        $search = $this->getParametersSafely('search');
+        $search = $this->getParametersSafely('searchParameter');
 
         $collection = null;
         if ($search['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($search['collection']['__identity'])) {
@@ -204,7 +204,7 @@ class CollectionController extends AbstractController
         }
 
         // output is done by show action
-        return $this->redirect('show', null, null, ['search' => $search, 'collection' => $collection]);
+        return $this->redirect('show', null, null, ['searchParameter' => $search, 'collection' => $collection]);
     }
 
     /**
