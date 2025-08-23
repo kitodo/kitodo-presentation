@@ -809,7 +809,7 @@ class Helper
                     while ($resArray = $result->fetchAssociative()) {
                         // Overlay localized labels if available.
                         if ($languageContentId > 0) {
-                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageContentId, $languageAspect->getLegacyOverlayType());
+                            $resArray = $pageRepository->getLanguageOverlay($table, $resArray, $languageAspect);
                         }
                         if ($resArray) {
                             $labels[$table][$pid][$languageContentId][$resArray['index_name']] = $resArray['label'];
