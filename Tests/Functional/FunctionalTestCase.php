@@ -19,6 +19,7 @@ use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Yaml\Yaml;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -49,7 +50,20 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
             'displayErrors' => '1'
         ],
         'SC_OPTIONS' => [
-            'dlf/Classes/Plugin/Toolbox.php' => []
+            'dlf/Classes/Plugin/Toolbox.php' => [
+                'tools' => [
+                    'tx_dlf_scoretool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.scoretool',
+                    'tx_dlf_fulltexttool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltexttool',
+                    'tx_dlf_adddocumenttool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.adddocumenttool',
+                    'tx_dlf_annotationtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.annotationtool',
+                    'tx_dlf_fulltextdownloadtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltextdownloadtool',
+                    'tx_dlf_imagedownloadtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagedownloadtool',
+                    'tx_dlf_imagemanipulationtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagemanipulationtool',
+                    'tx_dlf_modeldownloadtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.modeldownloadtool',
+                    'tx_dlf_pdfdownloadtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.pdfdownloadtool',
+                    'tx_dlf_searchindocumenttool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.searchindocumenttool',
+                ]
+            ]
         ],
         'EXTENSIONS' => [
             'dlf' => [], // = $this->getDlfConfiguration(), set in constructor
@@ -293,6 +307,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $backendUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $backendUser->user["lang"] = $locale;
         $GLOBALS['BE_USER'] = $backendUser;
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create($locale);
     }
 
     /**

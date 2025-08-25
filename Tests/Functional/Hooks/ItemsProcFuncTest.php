@@ -15,18 +15,20 @@ namespace Kitodo\Dlf\Tests\Functional\Hooks;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Hooks\ItemsProcFunc;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class ItemsProcFuncTest extends FunctionalTestCase
 {
+    /**
+     * @var DocumentRepository
+     */
+    protected DocumentRepository $documentRepository;
+
     public function setUp(): void
     {
         parent::setUp();
 
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/pages.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/metadata.csv');
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
 
     }
@@ -36,18 +38,21 @@ class ItemsProcFuncTest extends FunctionalTestCase
      */
     public function canToollist()
     {
-        $GLOBALS['LANG'] = LanguageService::create('default');
+        $this->initLanguageService('default');
         $itemsProcFunc = new ItemsProcFunc();
 
         $params = [];
         $itemsProcFunc->toolList($params);
         $expected = [
             'items' => [
+                ['Score', 'tx_dlf_scoretool'],
                 ['Fulltext', 'tx_dlf_fulltexttool'],
+                ['', 'tx_dlf_adddocumenttool'],
                 ['IIIF Annotations', 'tx_dlf_annotationtool'],
                 ['Fulltext Download', 'tx_dlf_fulltextdownloadtool'],
                 ['Image Download', 'tx_dlf_imagedownloadtool'],
                 ['Image Manipulation', 'tx_dlf_imagemanipulationtool'],
+                ['Model Download', 'tx_dlf_modeldownloadtool'],
                 ['PDF Download', 'tx_dlf_pdfdownloadtool'],
                 ['Search in Document', 'tx_dlf_searchindocumenttool']
             ]

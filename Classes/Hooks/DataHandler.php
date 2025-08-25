@@ -92,7 +92,7 @@ class DataHandler implements LoggerAwareInterface
                         $fieldArray['label'] = $fieldArray['index_name'];
                     }
                     // Ensure that index names don't get mixed up with sorting values.
-                    if (substr($fieldArray['index_name'], -8) == '_sorting') {
+                    if (!empty($fieldArray['index_name']) && substr($fieldArray['index_name'], -8) == '_sorting') {
                         $fieldArray['index_name'] .= '0';
                     }
                     break;

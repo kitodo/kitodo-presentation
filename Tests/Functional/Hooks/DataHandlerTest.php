@@ -12,16 +12,17 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Hooks;
 
-use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
-use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Hooks\DataHandler;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class DataHandlerTest extends FunctionalTestCase
 {
+    /**
+     * @var DocumentRepository
+     */
+    protected DocumentRepository $documentRepository;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -29,10 +30,10 @@ class DataHandlerTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/documents.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/metadata.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Hooks/solrcores.csv');
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
 
-        $this->setUpSolr(1, 20000, __DIR__ . '/../../Fixtures/Hooks/documents.solr.json');
+        $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 20000);
+
+        $this->setUpSolr(1, 20000, [ __DIR__ . '/../../Fixtures/Hooks/documents.solr.json' ]);
     }
 
     /**
@@ -116,7 +117,6 @@ class DataHandlerTest extends FunctionalTestCase
      */
     public function canProcessDatamap_afterDatabaseOperations()
     {
-        $GLOBALS['LANG'] = LanguageService::create('default');
         $solrSettings = [
             'solrcore' => 1,
             'storagePid' => 20000,
@@ -125,11 +125,11 @@ class DataHandlerTest extends FunctionalTestCase
         $dataHandler = new DataHandler();
 
         // check doc title in index
-        $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
+        $solrSearch = $this->documentRepository->findSolrWithoutCollection($solrSettings, ['query' => '*']);
         $solrSearch->getQuery()->execute();
         $elementFound = false;
         foreach ($solrSearch->getSolrResults()['documents'] as $solrDoc) {
-            if ($solrDoc['toplevel'] && $solrDoc['uid'] === $id) {
+            if ($solrDoc['toplevel'] && $solrDoc['uid'] == $id) {
                 $this->assertEquals('Old title', $solrDoc['title']);
                 $elementFound = true;
                 break;
@@ -140,11 +140,11 @@ class DataHandlerTest extends FunctionalTestCase
         // doc title in index should not change
         $fieldArray = [];
         $dataHandler->processDatamap_afterDatabaseOperations('update', 'tx_dlf_documents', $id, $fieldArray);
-        $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
+        $solrSearch = $this->documentRepository->findSolrWithoutCollection($solrSettings, ['query' => '*']);
         $solrSearch->getQuery()->execute();
         $elementFound = false;
         foreach ($solrSearch->getSolrResults()['documents'] as $solrDoc) {
-            if ($solrDoc['toplevel'] && $solrDoc['uid'] === $id) {
+            if ($solrDoc['toplevel'] && $solrDoc['uid'] == $id) {
                 $this->assertEquals('Old title', $solrDoc['title']);
                 $elementFound = true;
                 break;
@@ -155,11 +155,11 @@ class DataHandlerTest extends FunctionalTestCase
         // doc title in index should be updated
         $fieldArray = ['hidden' => 1];
         $dataHandler->processDatamap_afterDatabaseOperations('update', 'tx_dlf_documents', $id, $fieldArray);
-        $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '10 Keyboard pieces']);
+        $solrSearch = $this->documentRepository->findSolrWithoutCollection($solrSettings, ['query' => '10 Keyboard pieces']);
         $solrSearch->getQuery()->execute();
         $elementFound = false;
         foreach ($solrSearch->getSolrResults()['documents'] as $solrDoc) {
-            if ($solrDoc['toplevel'] && $solrDoc['uid'] === $id) {
+            if ($solrDoc['toplevel'] && $solrDoc['uid'] == $id) {
                 $this->assertEquals('10 Keyboard pieces - Go. S. 658', $solrDoc['title']);
                 $elementFound = true;
                 break;
@@ -173,7 +173,6 @@ class DataHandlerTest extends FunctionalTestCase
      */
     public function canProcessCmdmap_postProcess()
     {
-        $GLOBALS['LANG'] = LanguageService::create('default');
         $solrSettings = [
             'solrcore' => 1,
             'storagePid' => 20000,
@@ -181,32 +180,14 @@ class DataHandlerTest extends FunctionalTestCase
         $dataHandler = new DataHandler();
 
         $dataHandler->processCmdmap_postProcess('delete', 'tx_dlf_documents', 1002);
-        $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '6 Sacred songs - Go. S. 591']);
+        $solrSearch = $this->documentRepository->findSolrWithoutCollection($solrSettings, ['query' => '6 Sacred songs - Go. S. 591']);
         $solrSearch->getQuery()->execute();
         $this->assertEquals(0, $solrSearch->getNumFound(), 'Document should have been removed from index');
 
         $dataHandler->processCmdmap_postProcess('undelete', 'tx_dlf_documents', 1002);
-        $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '6 Sacred songs - Go. S.']);
+        $solrSearch = $this->documentRepository->findSolrWithoutCollection($solrSettings, ['query' => '6 Sacred songs - Go. S.']);
         $solrSearch->getQuery()->execute();
         $this->assertEquals(1, $solrSearch->getNumFound(), 'Document should have been reindexed');
     }
 
-    protected function setUpSolr($uid, $storagePid, $solrFixture)
-    {
-        $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
-
-        // Setup Solr only once for all tests in this suite
-        static $solr = null;
-
-        if ($solr === null) {
-            $coreName = Solr::createCore();
-            $solr = Solr::getInstance($coreName);
-            $this->importSolrDocuments($solr, $solrFixture);
-        }
-
-        $coreModel = $this->solrCoreRepository->findByUid($uid);
-        $coreModel->setIndexName($solr->core);
-        $this->solrCoreRepository->update($coreModel);
-        $this->persistenceManager->persistAll();
-    }
 }
