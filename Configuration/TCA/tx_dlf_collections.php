@@ -20,6 +20,7 @@ return [
         'fe_cruser_id' => 'fe_cruser_id',
         'fe_admin_lock' => 'fe_admin_lock',
         'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
@@ -38,21 +39,11 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
-                'items' => [
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
-                ],
-                'default' => 0,
-                'onchange' => 'reload',
+                'type' => 'language'
             ],
         ],
         'l18n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
@@ -146,7 +137,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'nospace,alphanum_x,uniqueInPid',
+                // TODO: Add own form evaluation (see OAI-PMH setSpec).
+                'eval' => 'nospace,uniqueInPid',
                 'default' => '',
             ],
         ],
@@ -179,7 +171,6 @@ return [
                     'foreign_match_fields' => [
                         'fieldname' => 'thumbnail',
                         'tablenames' => 'tx_dlf_collections',
-                        'table_local' => 'sys_file',
                     ],
                 ],
                 $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,9 +13,7 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use Kitodo\Dlf\ViewHelpers\MetadataWrapVariableViewHelper;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 
 /**
  * @covers MetadataWrapVariableViewHelper
@@ -24,7 +23,7 @@ class MetadataWrapVariableViewHelperTest extends FunctionalTestCase
     /**
      * @var bool Speed up this test case, it needs no database
      */
-    protected $initializeDatabase = false;
+    protected bool $initializeDatabase = false;
 
     /**
      * @test

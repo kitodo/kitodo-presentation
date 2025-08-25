@@ -17,7 +17,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class AudioVideoMDTest extends UnitTestCase
 {
-    protected $metadata = [];
+    protected array $metadata = [];
 
     public function setUp(): void
     {
@@ -26,7 +26,8 @@ class AudioVideoMDTest extends UnitTestCase
         $this->metadata = [
             'duration' => [],
             'video_duration' => [],
-            'audio_duration' => []
+            'audio_duration' => [],
+            'video_frame_rate' => []
         ];
     }
 
@@ -47,7 +48,8 @@ class AudioVideoMDTest extends UnitTestCase
             [
                 'duration' => ["00:01:30.07"],
                 'video_duration' => ["00:01:30.07"],
-                'audio_duration' => ["01:10:35.08"]
+                'audio_duration' => ["01:10:35.08"],
+                'video_frame_rate' => ["24"]
             ],
             $this->metadata
         );

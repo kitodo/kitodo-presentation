@@ -38,6 +38,15 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_collection
         }
       }
+      tx_dlf_embedded3dviewer {
+        iconIdentifier = tx-dlf-embedded3dviewer
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_embedded3dviewer
+        }
+      }
       tx_dlf_feeds {
         iconIdentifier = tx-dlf-feeds
         title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.title
@@ -54,6 +63,15 @@ mod.wizards.newContentElement.wizardItems {
         tt_content_defValues {
           CType = list
           list_type = dlf_listview
+        }
+      }
+      tx_dlf_mediaplayer {
+        iconIdentifier = tx-dlf-mediaplayer
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_mediaplayer
         }
       }
       tx_dlf_metadata {
@@ -135,6 +153,15 @@ mod.wizards.newContentElement.wizardItems {
         tt_content_defValues {
           CType = list
           list_type = dlf_toolbox
+        }
+      }
+      tx_dlf_validationform {
+        iconIdentifier = tx-dlf-validationform
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validation.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validation.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_validationform
         }
       }
     }

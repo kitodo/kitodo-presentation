@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build-in standard 3D viewer - &lt;model-viewer&gt;</title>
+</head>
+<body>
+<style>
+    body {
+        margin: 0;
+    }
+
+    model-viewer {
+        width: 100vw;
+        height: 100vh;
+    }
+</style>
+<script type="module" src="{{modelViewerJS}}"></script>
+<model-viewer src="{{modelUrl}}" shadow-intensity="1" camera-controls touch-action="pan-y"></model-viewer>
+</body>
+</html>

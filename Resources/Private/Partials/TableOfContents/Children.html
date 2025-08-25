@@ -36,14 +36,18 @@
 
     <f:if condition="{child.doNotLinkIt}">
         <f:then>
-            <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
+            <span class="a">
+                <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
+            </span>
         </f:then>
         <f:else>
             <f:link.action
                 action="main"
                 pageUid="{settings.targetPid}"
                 additionalParams="{f:if(condition:'{child.id}', then:'{\'tx_dlf[id]\':child.id, \'tx_dlf[page]\':child.page}', else: '{\'tx_dlf[page]\':child.page}')}"
-                addQueryString="1"
+                argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}"
+                addQueryString="untrusted"
+                section="{child.section}"
                 title="{f:if(condition:'{child.title}', then: '{child.title}', else: '{child.type}')}">
                     <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
             </f:link.action>
@@ -57,7 +61,7 @@
                     action="main"
                     controller="Basket"
                     additionalParams="{'tx_dlf[addToBasket]':'toc', 'tx_dlf[logId]':child.basketButton.logId, 'tx_dlf[startpage]':child.basketButton.startpage, 'tx_dlf_basket[action]':'add', 'tx_dlf_basket[controller]':'Basket'}"
-                    addQueryString="1">
+                    addQueryString="untrusted">
                         <f:translate key="basket.addBasket" />
                 </f:link.action>
         </span>

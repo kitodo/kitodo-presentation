@@ -71,9 +71,9 @@ class MetadataWrapVariableViewHelper extends AbstractViewHelper
         $parser = GeneralUtility::makeInstance(TypoScriptParser::class);
         $parser->parse($renderChildrenClosure());
         $wrap = [
-            'key' => $parser->setup['key.'],
-            'value' => $parser->setup['value.'],
-            'all' => $parser->setup['all.'],
+            'key' => $parser->setup['key.'] ?? [],
+            'value' => $parser->setup['value.'] ?? [],
+            'all' => $parser->setup['all.'] ?? [],
         ];
         $renderingContext->getVariableProvider()->add($arguments['name'], $wrap);
     }

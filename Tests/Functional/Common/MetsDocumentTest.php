@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,10 +13,21 @@
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 
 class MetsDocumentTest extends FunctionalTestCase
 {
+    /**
+     * Sets up the test environment.
+     *
+     * This method is called before each test method is executed.
+     * It imports the necessary CSV datasets for the tests.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -25,10 +37,27 @@ class MetsDocumentTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/MetsDocument/metadata_mets.csv');
     }
 
-    protected function doc(string $file)
+    /**
+     * Returns a MetsDocument instance for the given file.
+     *
+     * @access protected
+     *
+     * @param string $file The name of the file to load
+     *
+     * @return MetsDocument
+     */
+    protected function doc(string $file): MetsDocument
     {
         $url = 'http://web:8001/Tests/Fixtures/MetsDocument/' . $file;
-        $doc = AbstractDocument::getInstance($url, ['useExternalApisForMetadata' => 0]);
+        $doc = AbstractDocument::getInstance(
+            $url,
+            [
+                'general' => [
+                    'useExternalApisForMetadata' => 0
+                ],
+                'storagePid' => 20000
+            ]
+        );
         self::assertNotNull($doc);
         return $doc;
     }
@@ -40,7 +69,7 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('av_beispiel.xml');
 
-        $toplevelMetadata = $doc->getToplevelMetadata(20000);
+        $toplevelMetadata = $doc->getToplevelMetadata();
 
         self::assertEquals(['Odol-Mundwasser, 3 Werbespots'], $toplevelMetadata['title']);
         self::assertEquals(['24'], $toplevelMetadata['frame_rate']);
@@ -59,10 +88,10 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('av_beispiel.xml');
 
-        $thumbsMeta = $doc->getMetadata('FILE_0000_THUMBS', 20000);
-        self::assertEquals($thumbsMeta, []);
+        $thumbsMeta = $doc->getMetadata('FILE_0000_THUMBS');
+        self::assertEmpty($thumbsMeta);
 
-        $videoMeta = $doc->getMetadata('FILE_0000_DEFAULT', 20000);
+        $videoMeta = $doc->getMetadata('FILE_0000_DEFAULT_MOV');
         self::assertArrayMatches([
             'frame_rate' => ['24'],
         ], $videoMeta);
@@ -80,29 +109,78 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertArrayMatches([
             'dmdId' => 'DMDLOG_0000',
             'admId' => 'AMD',
+            'videoChapter' => [
+                'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
+                'timecode' => 0,
+            ],
             'children' => [
                 [
                     'id' => 'LOG_0001',
                     'dmdId' => '',
                     'admId' => '',
+                    'videoChapter' => [
+                        'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
+                        'timecode' => 0,
+                    ],
                 ],
                 [
                     'id' => 'LOG_0002',
                     'dmdId' => '',
                     'admId' => '',
+                    'videoChapter' => [
+                        'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
+                        'timecode' => 20.5,
+                    ],
                 ],
                 [
                     'id' => 'LOG_0003',
                     'dmdId' => '',
                     'admId' => '',
+                    'videoChapter' => [
+                        'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
+                        'timecode' => 40,
+                    ],
                 ],
                 [
                     'id' => 'LOG_0004',
                     'dmdId' => '',
                     'admId' => '',
+                    'videoChapter' => [
+                        'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
+                        'timecode' => 60,
+                    ],
                 ],
             ],
         ], $toc, 'Expected TOC to contain the specified values');
+    }
+
+    /**
+     * @test
+     */
+    public function canReadChapterArea()
+    {
+        $doc = $this->doc('av_beispiel.xml');
+
+        $chapterThreePage = $doc->physicalStructureInfo[$doc->physicalStructure[3]];
+        self::assertArrayMatches([
+            'DEFAULT' => 'FILE_0000_DEFAULT_MP4',
+        ], $chapterThreePage['files']);
+        self::assertArrayMatches([
+            'DEFAULT' => [
+                'FILE_0000_DEFAULT_MOV',
+                'FILE_0000_DEFAULT_MP4',
+            ],
+        ], $chapterThreePage['all_files']);
+        self::assertArrayMatches([
+            'FILE_0000_DEFAULT_MP4' => [
+                'area' => [
+                    'begin' => '00:00:40',
+                    'betype' => 'TIME',
+                    'extent' => '00:00:20',
+                    'exttype' => 'TIME',
+                ],
+            ],
+        ], $chapterThreePage['fileInfos']);
     }
 
     /**
@@ -112,7 +190,7 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('two_dmdsec.xml');
 
-        $toplevelMetadata = $doc->getToplevelMetadata(20000);
+        $toplevelMetadata = $doc->getToplevelMetadata();
         $toc = $doc->tableOfContents[0] ?? [];
 
         self::assertEquals('DMDLOG_0000 DMDLOG_0000b', $toc['dmdId']); // TODO: Do we want the raw (non-split) value here?
@@ -127,16 +205,16 @@ class MetsDocumentTest extends FunctionalTestCase
         $doc = $this->doc('two_dmdsec.xml');
 
         // DMD and AMD works
-        $metadata = $doc->getMetadata('LOG_0000', 20000);
+        $metadata = $doc->getMetadata('LOG_0000');
         self::assertEquals('Test Value in DMDLOG_0000', $metadata['test_value'][0]);
 
         // DMD only works
-        $metadata = $doc->getMetadata('LOG_0001', 20000);
+        $metadata = $doc->getMetadata('LOG_0001');
         self::assertEquals(['Test Value in DMDLOG_0000b'], $metadata['test_value']);
 
         // AMD only does not work
-        $metadata = $doc->getMetadata('LOG_0002', 20000);
-        self::assertEquals([], $metadata);
+        $metadata = $doc->getMetadata('LOG_0002');
+        self::assertEmpty($metadata);
     }
 
     /**
@@ -151,7 +229,7 @@ class MetsDocumentTest extends FunctionalTestCase
 
         /*
          * The method `getDownloadLocation` should return a string, but returns null in some cases.
-         * Therefor, a TypeError must be expected here.
+         * Therefore, a TypeError must be expected here.
          */
         $this->expectException('TypeError');
         $doc->getDownloadLocation('ID_DOES_NOT_EXIST');
@@ -169,7 +247,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals('https://digital.slub-dresden.de/data/kitodo/1703800435/video.mov', $correct);
 
         $incorrect = $doc->getFileLocation('ID_DOES_NOT_EXIST');
-        self::assertEquals('', $incorrect);
+        self::assertEmpty($incorrect);
     }
 
     /**
@@ -183,7 +261,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals('video/quicktime', $correct);
 
         $incorrect = $doc->getFileMimeType('ID_DOES_NOT_EXIST');
-        self::assertEquals('', $incorrect);
+        self::assertEmpty($incorrect);
     }
 
     // FIXME: Method getPhysicalPage does not work as expected
@@ -210,7 +288,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals('10 Keyboard pieces - Go. S. 658', $correct);
 
         $incorrect = $doc->getTitle(1234);
-        self::assertEquals('', $incorrect);
+        self::assertEmpty($incorrect);
     }
 
     /**
@@ -227,7 +305,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals($expected, $fulltext);
 
         $incorrect = $doc->getFullText('ID_DOES_NOT_EXIST');
-        self::assertEquals('', $incorrect);
+        self::assertEmpty('', $incorrect);
     }
 
     /**
@@ -241,6 +319,6 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals(3, $correct);
 
         $incorrect = $doc->getStructureDepth('ID_DOES_NOT_EXIST');
-        self::assertEquals(0, $incorrect);
+        self::assertFalse($incorrect);
     }
 }

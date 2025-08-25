@@ -1,0 +1,60 @@
+name: Documentation
+# Build and test documentation on pull_request and push event
+# If the git reference is the main branch, additionally build the documentation artifact and deploy it to GitHub Pages
+
+on:
+  push:
+    paths:
+      - 'Documentation/**'
+  pull_request:
+    paths:
+      - 'Documentation/**'
+  workflow_dispatch:
+
+jobs:
+    build:
+        name: Build and test documentation
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Test if the documentation will render without warnings
+              run: |
+                  mkdir -p Documentation-GENERATED-temp \
+                  && docker run --rm --pull always -v $(pwd):/project ghcr.io/typo3-documentation/render-guides:latest configure --project-version="dev-main" ./Documentation \
+                  && docker run -v $(pwd):/project ghcr.io/typo3-documentation/render-guides:latest --config=Documentation --no-progress --fail-on-log
+
+            - name: Rename root page
+              if: github.ref == 'refs/heads/main'
+              run: mv ./Documentation-GENERATED-temp/Index.html ./Documentation-GENERATED-temp/index.html
+
+            - name: Upload artifact
+              if: github.ref == 'refs/heads/main'
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: ./Documentation-GENERATED-temp/
+
+    deploy:
+      name: Deploy documentation to GitHub Pages
+
+      # Add a dependency to the build job
+      needs: build
+
+      if: github.repository_owner == 'kitodo' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+
+      # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+      permissions:
+        pages: write      # to deploy to Pages
+        id-token: write   # to verify the deployment originates from an appropriate source
+
+      # Deploy to the github-pages environment
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+
+      # Specify runner + deployment step
+      runs-on: ubuntu-latest
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4

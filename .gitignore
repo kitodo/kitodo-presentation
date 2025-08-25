@@ -1,3 +1,4 @@
+*.bak
 /.buildpath
 /.cache
 /.idea/
@@ -10,9 +11,14 @@
 /Build/Documentation/_build
 /Build/Documentation/venv
 /Build/Documentation/dbdocs/var
+/Build/node_modules
 /Build/Test/.env
 /Documentation-GENERATED-temp/
 /nbproject/
 /public/
 /var/
 /vendor/
+.DS_Store
+_build
+venv
+*.map

@@ -33,7 +33,7 @@ marker templates for plugins are not supported anymore.
 Now, all HTML markup is done in Fluid. To use different templates, you have
 to overload the templates by the common TYPO3 way.
 
-The following TypoScript defines addition paths inside a "example" extenion::
+The following TypoScript defines additional paths inside an "example" extension::
 
    plugin.tx_dlf {
       view {
@@ -54,7 +54,7 @@ In this example, you place the customized fluid template into this file::
 Audioplayer
 -----------
 
-The audioplayer plugin is only active if the selected document has a valid audio filegroup (fileGrpAudio).
+The audioplayer plugin is only active if the selected document has valid audio file use groups (useGroupsAudio).
 
 Properties
 ^^^^^^^^^^
@@ -157,7 +157,7 @@ Basket
  - :Property:
        targetBasket
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 
@@ -252,12 +252,12 @@ The collection plugin shows one collection, all collections or selected collecti
        Default
    :Description:
        Description
-          
+
 
  - :Property:
        collections
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
@@ -283,14 +283,52 @@ The collection plugin shows one collection, all collections or selected collecti
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
        targetFeed
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
+
+Embedded 3D Viewer
+-----------
+
+The embedded3dviewer plugin renders an iFrame in which the configured 3D viewer displays the model.
+
+:typoscript:`plugin.tx_dlf_embedded3dviewer.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Description:
+       Description
+
+ - :Property:
+        document
+   :Data Type:
+        :ref:`t3tsref:data-type-string`
+   :Description:
+        The URL of the XML document which contains the model.
+
+ - :Property:
+       model
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Description:
+        The URL of the 3D model.
+
+ - :Property:
+       viewer
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Description:
+      Override the default viewer from the extension configuration (see :ref:`Embedded 3D Viewer Configuration`) with a supported viewer (from the "dlf_3d_viewers" directory).
 
 
 Feeds
@@ -321,7 +359,7 @@ The TypoScript part is necessary to switch the page rendering to a different pag
  - :Property:
        collections
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
@@ -354,7 +392,7 @@ The TypoScript part is necessary to switch the page rendering to a different pag
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
@@ -395,7 +433,7 @@ List View
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
@@ -415,8 +453,40 @@ List View
  - :Property:
        targetBasket
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
+
+
+Media Player
+------------
+
+The mediaplayer plugin is only active if the selected document has valid video file use groups (useGroupsVideo).
+
+:typoscript:`plugin.tx_dlf_mediaplayer.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Default:
+        Default
+
+ - :Property:
+        excludeOther_
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+        1
+
+ - :Property:
+       elementId_
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+        tx-dlf-video
 
 
 Metadata
@@ -451,7 +521,7 @@ Metadata
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
@@ -504,7 +574,7 @@ Navigation
    :Default:
       By default all features are activated. The selection is stored as comma separated list.
 
-       doublepage,pageFirst,pageBack,pageStepBack,pageselect,pageForward,pageStepForward,pageLast,listview,zoom,rotation
+       doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,litView,zoom,rotation,measureForward,measureBack
 
  - :Property:
        pageStep
@@ -516,7 +586,7 @@ Navigation
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 
@@ -602,7 +672,7 @@ Page Grid
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 Page View
@@ -630,7 +700,7 @@ Page View
  - :Property:
        features
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
        1
 
@@ -679,7 +749,7 @@ Page View
  - :Property:
        targetBasket
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 Search
@@ -755,13 +825,13 @@ Search
  - :Property:
        collections
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
        facets
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
@@ -800,13 +870,13 @@ Search
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
        targetPidPageView
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
 Statistics
@@ -827,7 +897,7 @@ Statistics
  - :Property:
        collections
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
 
  - :Property:
@@ -869,21 +939,28 @@ Table Of Contents
        0
 
  - :Property:
+        showFull
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
        targetBasket
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
        targetPid
    :Data Type:
-       :ref:`t3tsref:data-type-page-id`
+       `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
        titleReplacement
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
    :Description:
        List containing types for which title should be replaced
@@ -919,9 +996,10 @@ Toolbox
  - :Property:
        tools
    :Data Type:
-       :ref:`t3tsref:data-type-list`
+       `t3tsref:data-type-list`
    :Default:
    :Values:
+       * tx_dlf_adddocumenttool
        * tx_dlf_annotationtool
        * tx_dlf_fulltexttool
        * tx_dlf_imagedownloadtool
@@ -936,12 +1014,6 @@ Toolbox
        :ref:`t3tsref:data-type-integer`
    :Default:
 
- - :Property:
-       fileGrpsImageDownload
-   :Data Type:
-       :ref:`t3tsref:data-type-list`
-   :Default:
-       MIN,DEFAULT,MAX
 
 Fulltext Tool
 ^^^^^^^^^^^^^
@@ -986,10 +1058,25 @@ The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-ful
 
 **Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ must be configured appropriate on the providing webserver.
 
+Model download tool
+^^^^^^^^^^^^^
+
+This tool makes it possible to extract the model URL from the METS file or use the provided model parameter to provide a download URL.
+
+:typoscript:`plugin.tx_dlf_modeldownloadtool.`
+
+Viewer selection tool
+^^^^^^^^^^^^^
+
+This tool can display a selection list of configured 3D viewers (from the "dlf_3d_viewers" directory see :ref:`Embedded 3D Viewer Setup`) that support the current model.
+
+The model URL is extracted from the METS file or taken from the provided model parameter. The extension of the model is extracted from this URL and compared with the supported model formats specified in the respective viewer configuration.
+
+:typoscript:`plugin.tx_dlf_viewerselectiontool.`
 
 Search in Document Tool
 ^^^^^^^^^^^^^^^^^^^^^^^
-This plugin adds an possibility to search all appearances of the phrase in currently displayed document
+This plugin adds a possibility to search all appearances of the phrase in currently displayed document.
 
 :typoscript:`plugin.tx_dlf_searchindocumenttool.`
 
@@ -1061,3 +1148,29 @@ This plugin adds an possibility to search all appearances of the phrase in curre
        :ref:`t3tsref:data-type-string`
    :Default:
        tx_dlf[encrypted]
+
+.. _Plugin Validation Form:
+
+Validation Form
+-----------
+
+The plugin renders an input field where a METS URL can be entered. After submission, the document is loaded and validated against the :ref:`DOMDocumentValidation Middleware`. For the validation to work, a corresponding configuration (see :ref:`DOMDocumentValidation Middleware Configuration`) must be present in TypoScript, and the type of this configuration must be provided to the plugin as a required parameter.
+
+:typoscript:`plugin.tx_dlf_validationform.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Description:
+       Description
+
+ - :Property:
+        type
+   :Data Type:
+        :ref:`t3tsref:data-type-string`
+   :Description:
+        Validation configuration type for DOMDocument validation

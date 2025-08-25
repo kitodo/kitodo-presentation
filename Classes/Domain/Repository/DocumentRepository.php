@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Doctrine\DBAL\ForwardCompatibility\Result;
+use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\SolrSearch;
@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Document repository.
@@ -34,6 +35,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @method Document|null findOneByUid(int $uid) Get a document by its UID
+ * @method Document|null findOneByRecordId(string $recordId) Get a document by its record ID
+ * @method Document|null findOneByIndexName(string $indexName) Get a document by its index name
+ * @method Document|null findOneByLocation(string $location) Get a document by its XML location
  */
 class DocumentRepository extends Repository
 {
@@ -41,7 +47,7 @@ class DocumentRepository extends Repository
      * @access protected
      * @var array The controller settings passed to the repository for some special actions.
      */
-    protected $settings;
+    protected array $settings;
 
     /**
      * Find one document by given parameters
@@ -60,7 +66,7 @@ class DocumentRepository extends Repository
      *
      * @return Document|null
      */
-    public function findOneByParameters($parameters)
+    public function findOneByParameters(array $parameters): ?Document
     {
         $doc = null;
         $document = null;
@@ -75,9 +81,9 @@ class DocumentRepository extends Repository
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
-            $doc = AbstractDocument::getInstance($parameters['location'], [], true);
+            $doc = AbstractDocument::getInstance($parameters['location']);
 
-            if ($doc->recordId) {
+            if ($doc !== null && $doc->recordId) {
                 $document = $this->findOneByRecordId($doc->recordId);
             }
 
@@ -90,7 +96,7 @@ class DocumentRepository extends Repository
         }
 
         if ($document !== null && $doc === null) {
-            $doc = AbstractDocument::getInstance($document->getLocation(), [], true);
+            $doc = AbstractDocument::getInstance($document->getLocation());
         }
 
         if ($doc !== null) {
@@ -107,7 +113,7 @@ class DocumentRepository extends Repository
      *
      * @return Document|null
      */
-    public function findOldestDocument()
+    public function findOldestDocument(): ?Document
     {
         $query = $this->createQuery();
 
@@ -120,12 +126,12 @@ class DocumentRepository extends Repository
     /**
      * @access public
      *
-     * @param int $partOf
+     * @param int|null $partOf
      * @param Structure $structure
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function getChildrenOfYearAnchor($partOf, $structure)
+    public function getChildrenOfYearAnchor(?int $partOf, Structure $structure): array|QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -149,9 +155,9 @@ class DocumentRepository extends Repository
      *
      * @return Document|null
      */
-    public function findOneByIdAndSettings($uid, $settings = [])
+    public function findOneByIdAndSettings(int $uid, array $settings = []): ?Document
     {
-        $settings = ['documentSets' => $uid];
+        $settings['documentSets'] = $uid;
 
         return $this->findDocumentsBySettings($settings)->getFirst();
     }
@@ -163,16 +169,16 @@ class DocumentRepository extends Repository
      *
      * @param array $settings
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function findDocumentsBySettings($settings = [])
+    public function findDocumentsBySettings(array $settings = []): array|QueryResultInterface
     {
         $query = $this->createQuery();
 
         $constraints = [];
 
-        if ($settings['documentSets']) {
-            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', $settings['documentSets']));
+        if ($settings['documentSets'] ?? false) {
+            $constraints[] = $query->in('uid', GeneralUtility::intExplode(',', ((string) $settings['documentSets'])));
         }
 
         if (isset($settings['excludeOther']) && (int) $settings['excludeOther'] === 0) {
@@ -181,7 +187,7 @@ class DocumentRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd($constraints)
+                $query->logicalAnd(...$constraints)
             );
         }
 
@@ -189,16 +195,17 @@ class DocumentRepository extends Repository
     }
 
     /**
-     * Finds all documents for the given collections
+     * Finds all documents for the given collections and conditions
      *
      * @access public
      *
      * @param array $collections
      * @param int $limit
+     * @param int $offset
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array|QueryResultInterface
      */
-    public function findAllByCollectionsLimited($collections, $limit = 50)
+    public function findAllByCollectionsLimited(array $collections, int $limit = 50, int $offset = 0): array|QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -214,12 +221,13 @@ class DocumentRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd($constraints)
+                $query->logicalAnd(...$constraints)
             );
         }
 
         if ($limit > 0) {
-            $query->setLimit((int) $limit);
+            $query->setLimit($limit);
+            $query->setOffset($offset);
         }
 
         return $query->execute();
@@ -238,7 +246,7 @@ class DocumentRepository extends Repository
      *
      * @return array
      */
-    public function getStatisticsForSelectedCollection($settings)
+    public function getStatisticsForSelectedCollection(array $settings): array
     {
         if ($settings['collections']) {
             // Include only selected collections.
@@ -326,11 +334,11 @@ class DocumentRepository extends Repository
 
             // Include all collections.
             $countTitles = $queryBuilder
-                ->count('tx_dlf_documents.uid')
+                ->count('uid')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
-                    $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
+                    $queryBuilder->expr()->eq('pid', (int) $settings['storagePid']),
+                    $queryBuilder->expr()->eq('partof', 0),
                     Helper::whereExpression('tx_dlf_documents')
                 )
                 ->execute()
@@ -342,26 +350,26 @@ class DocumentRepository extends Repository
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
             $subQuery = $subQueryBuilder
-                ->select('tx_dlf_documents.partof')
+                ->select('partof')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
+                    $subQueryBuilder->expr()->neq('partof', 0)
                 )
-                ->groupBy('tx_dlf_documents.partof')
+                ->groupBy('partof')
                 ->getSQL();
 
             $countVolumes = $queryBuilder
-                ->count('tx_dlf_documents.uid')
+                ->count('uid')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
-                    $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery)
+                    $queryBuilder->expr()->eq('pid', (int)$settings['storagePid']),
+                    $queryBuilder->expr()->notIn('uid', $subQuery)
                 )
                 ->execute()
                 ->fetchFirstColumn();
         }
 
-        return ['titles' => $countTitles, 'volumes' => $countVolumes];
+        return ['titles' => $countTitles[0] ?? 0, 'volumes' => $countVolumes[0] ?? 0];
     }
 
     /**
@@ -375,14 +383,14 @@ class DocumentRepository extends Repository
      *
      * @return Result
      */
-    public function getTableOfContentsFromDb($uid, $pid, $settings)
+    public function getTableOfContentsFromDb(int $uid, int $pid, array $settings): Result
     {
         // Build table of contents from database.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
         $excludeOtherWhere = '';
-        if ($settings['excludeOther']) {
+        if ($settings['excludeOther'] ?? false) {
             $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($settings['storagePid']);
         }
         // Check if there are any metadata to suggest.
@@ -411,7 +419,7 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($pid)),
                 $excludeOtherWhere
             )
-            ->addOrderBy('tx_dlf_documents.volume_sorting')
+            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
             ->execute();
     }
@@ -426,7 +434,7 @@ class DocumentRepository extends Repository
      *
      * @return array The found document object
      */
-    public function getOaiRecord($settings, $parameters)
+    public function getOaiRecord(array $settings, array $parameters): array
     {
         $where = '';
 
@@ -468,7 +476,7 @@ class DocumentRepository extends Repository
      *
      * @return Result The found document objects
      */
-    public function getOaiDocumentList($documentsToProcess): Result
+    public function getOaiDocumentList(array $documentsToProcess): Result
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable('tx_dlf_documents');
@@ -500,40 +508,40 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param array $uids
-     * @param bool $checkPartof Whether or not to also match $uids against partof.
+     * @param bool $checkPartof Whether to also match $uids against partof.
      *
      * @return array
      */
-    public function findAllByUids($uids, $checkPartof = false)
+    public function findAllByUids(array $uids, bool $checkPartof = false): array
     {
         // get all documents from db we are talking about
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
         // Fetch document info for UIDs in $documentSet from DB
-        $exprDocumentMatchesUid = $queryBuilder->expr()->in('tx_dlf_documents.uid', $uids);
+        $exprDocumentMatchesUid = $queryBuilder->expr()->in('uid', $uids);
         if ($checkPartof) {
             $exprDocumentMatchesUid = $queryBuilder->expr()->orX(
                 $exprDocumentMatchesUid,
-                $queryBuilder->expr()->in('tx_dlf_documents.partof', $uids)
+                $queryBuilder->expr()->in('partof', $uids)
             );
         }
         $kitodoDocuments = $queryBuilder
             ->select(
-                'tx_dlf_documents.uid AS uid',
-                'tx_dlf_documents.title AS title',
-                'tx_dlf_documents.structure AS structure',
-                'tx_dlf_documents.thumbnail AS thumbnail',
-                'tx_dlf_documents.volume_sorting AS volumeSorting',
-                'tx_dlf_documents.mets_orderlabel AS metsOrderlabel',
-                'tx_dlf_documents.partof AS partOf'
+                'uid',
+                'title',
+                'structure',
+                'thumbnail',
+                'volume_sorting AS volumeSorting',
+                'mets_orderlabel AS metsOrderlabel',
+                'partof AS partOf'
             )
             ->from('tx_dlf_documents')
             ->where(
-                $queryBuilder->expr()->in('tx_dlf_documents.pid', $this->settings['storagePid']),
+                $queryBuilder->expr()->in('pid', $this->settings['storagePid']),
                 $exprDocumentMatchesUid
             )
-            ->addOrderBy('tx_dlf_documents.volume_sorting', 'asc')
-            ->addOrderBy('tx_dlf_documents.mets_orderlabel', 'asc')
+            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
+            ->addOrderBy('mets_orderlabel', 'asc')
             ->execute();
 
         $allDocuments = [];
@@ -554,7 +562,7 @@ class DocumentRepository extends Repository
      *
      * @return array
      */
-    public function findChildrenOfEach(array $uids)
+    public function findChildrenOfEach(array $uids): array
     {
         $allDocuments = $this->findAllByUids($uids, true);
 
@@ -572,21 +580,241 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param QueryResult|Collection|null $collection
+     * @param Collection $collection
      * @param array $settings
      * @param array $searchParams
-     * @param QueryResult $listedMetadata
+     * @param ?QueryResult $listedMetadata
+     * @param ?QueryResult $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrByCollection($collection, $settings, $searchParams, $listedMetadata = null)
+    public function findSolrByCollection(Collection $collection, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null)
+    {
+        return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata, $indexedMetadata);
+    }
+
+    /**
+     * Find all documents with given collections from Solr
+     *
+     * @access public
+     *
+     * @param array|QueryResultInterface $collections
+     * @param array $settings
+     * @param array $searchParams
+     * @param ?QueryResult $listedMetadata
+     * @param ?QueryResult $indexedMetadata
+     *
+     * @return SolrSearch
+     */
+    public function findSolrByCollections(array|QueryResultInterface $collections, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
+    {
+        return $this->findSolr($collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
+    }
+
+    /**
+     * Find all documents without given collection from Solr
+     *
+     * @access public
+     *
+     * @param array $settings
+     * @param array $searchParams
+     * @param ?QueryResult $listedMetadata
+     * @param ?QueryResult $indexedMetadata
+     *
+     * @return SolrSearch
+     */
+    public function findSolrWithoutCollection(array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
+    {
+        return $this->findSolr([], $settings, $searchParams, $listedMetadata, $indexedMetadata);
+    }
+
+    /**
+     * Find all documents with from Solr
+     *
+     * @access private
+     *
+     * @param array|QueryResultInterface $collections
+     * @param array $settings
+     * @param array $searchParams
+     * @param ?QueryResult $listedMetadata
+     * @param ?QueryResult $indexedMetadata
+     *
+     * @return SolrSearch
+     */
+    private function findSolr(array|QueryResultInterface $collections, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
     {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
 
-        $search = new SolrSearch($this, $collection, $settings, $searchParams, $listedMetadata);
+        $search = new SolrSearch($this, $collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
         $search->prepare();
         return $search;
+    }
+
+    /**
+     * Find the uid of the previous document relative to the current document uid.
+     * Otherwise, backtrack the closest previous leaf node.
+     *
+     * @access public
+     *
+     * @param int $uid
+     *
+     * @return int|null
+     */
+    public function getPreviousDocumentUid(int $uid): ?int
+    {
+        $currentDocument = $this->findOneByUid($uid);
+        if ($currentDocument) {
+            $parentId = $currentDocument->getPartof();
+
+            if ($parentId) {
+                $currentVolume = $currentDocument->getVolumeSorting();
+
+                $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+                $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
+
+                // Grab previous volume
+                $prevDocument = $queryBuilder
+                    ->select(
+                        'uid'
+                    )
+                    ->from('tx_dlf_documents')
+                    ->where(
+                        $queryBuilder->expr()->eq('partof', $parentId),
+                        'volume_sorting < \'' . $currentVolume . '\''
+                    )
+                    ->addOrderBy('volume_sorting', 'desc')
+                    ->execute()
+                    ->fetchAssociative();
+
+                if (!empty($prevDocument)) {
+                    return $prevDocument['uid'];
+                }
+
+                $previousDocumentId = $this->getPreviousDocumentUid($parentId);
+                if ($previousDocumentId) {
+                    return $this->getLastChild($previousDocumentId);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the uid of the next document relative to the current document uid.
+     * Otherwise, backtrack the closest next leaf node.
+     *
+     * @access public
+     *
+     * @param int $uid
+     *
+     * @return int|null
+     */
+    public function getNextDocumentUid(int $uid): ?int
+    {
+        $currentDocument = $this->findOneByUid($uid);
+        if ($currentDocument) {
+            $parentId = $currentDocument->getPartof();
+
+            if ($parentId) {
+                $currentVolume = $currentDocument->getVolumeSorting();
+
+                $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+                $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
+
+                // Grab next volume
+                $nextDocument = $queryBuilder
+                    ->select(
+                        'uid'
+                    )
+                    ->from('tx_dlf_documents')
+                    ->where(
+                        $queryBuilder->expr()->eq('partof', $parentId),
+                        'volume_sorting > \'' . $currentVolume . '\''
+                    )
+                    ->addOrderBy('volume_sorting', 'asc')
+                    ->execute()
+                    ->fetchAssociative();
+
+                if (!empty($nextDocument)) {
+                    return $nextDocument['uid'];
+                }
+
+                $nextDocumentId = $this->getNextDocumentUid($parentId);
+                if ($nextDocumentId) {
+                    return $this->getFirstChild($nextDocumentId);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the uid of the first leaf node
+     *
+     * @access public
+     *
+     * @param int $uid
+     *
+     * @return int
+     */
+    public function getFirstChild(int $uid): int
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
+
+        $child = $queryBuilder
+            ->select(
+                'uid'
+            )
+            ->from('tx_dlf_documents')
+            ->where(
+                $queryBuilder->expr()->eq('partof', $uid)
+            )
+            ->addOrderBy('volume_sorting', 'asc')
+            ->execute()
+            ->fetchAssociative();
+
+        if (empty($child['uid'])) {
+            return $uid;
+        }
+
+        return $this->getFirstChild($child['uid']);
+    }
+
+    /**
+     * Find the uid of the last leaf node
+     *
+     * @access public
+     *
+     * @param int $uid
+     *
+     * @return int
+     */
+    public function getLastChild(int $uid): int
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
+
+        $child = $queryBuilder
+            ->select(
+                'uid'
+            )
+            ->from('tx_dlf_documents')
+            ->where(
+                $queryBuilder->expr()->eq('partof', $uid)
+            )
+            ->addOrderBy('volume_sorting', 'desc')
+            ->execute()
+            ->fetchAssociative();
+
+        if (empty($child['uid'])) {
+            return $uid;
+        }
+
+        return $this->getFirstChild($child['uid']);
     }
 }

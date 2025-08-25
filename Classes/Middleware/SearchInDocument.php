@@ -63,7 +63,7 @@ class SearchInDocument implements MiddlewareInterface
     {
         $response = $handler->handle($request);
         // Get input parameters and decrypt core name.
-        $parameters = $request->getQueryParams();
+        $parameters = $request->getParsedBody();
         // Return if not this middleware
         if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/search-in-document')) {
             return $response;
@@ -93,7 +93,7 @@ class SearchInDocument implements MiddlewareInterface
             $highlighting = $data['ocrHighlighting'];
 
             $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-            $site = $siteFinder->getSiteByPageId($parameters['pid']);
+            $site = $siteFinder->getSiteByPageId((int) $parameters['pid']);
 
             // @phpstan-ignore-next-line
             foreach ($result as $record) {

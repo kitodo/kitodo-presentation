@@ -1,17 +1,28 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Functional;
 
+use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 
 /**
  * Base class for functional test cases. This provides some common configuration
@@ -19,11 +30,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
  */
 class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\FunctionalTestCase
 {
-    protected $testExtensionsToLoad = [
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/dlf',
     ];
 
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'SYS' => [
             'caching' => [
                 'cacheConfigurations' => [
@@ -33,6 +44,9 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                 ],
             ],
             'displayErrors' => '1'
+        ],
+        'SC_OPTIONS' => [
+            'dlf/Classes/Plugin/Toolbox.php' => []
         ],
         'EXTENSIONS' => [
             'dlf' => [], // = $this->getDlfConfiguration(), set in constructor
@@ -59,27 +73,24 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      *
      * @var bool
      */
-    protected $disableJsonWrappedResponse = false;
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected bool $disableJsonWrappedResponse = false;
 
     /**
      * @var PersistenceManager
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
 
     /**
      * @var string
      */
-    protected $baseUrl;
+    protected string $baseUrl;
 
     /**
      * @var HttpClient
      */
-    protected $httpClient;
+    protected HttpClient $httpClient;
+
+    protected SolrCoreRepository $solrCoreRepository;
 
     public function __construct()
     {
@@ -94,11 +105,19 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         }
     }
 
+    /**
+     * Sets up the test case environment.
+     *
+     * @access public
+     *
+     * @return void
+     *
+     * @access public
+     */
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
         $this->baseUrl = 'http://web:8000/public/typo3temp/var/tests/functional-' . $this->identifier . '/';
@@ -110,46 +129,87 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $this->addSiteConfig('dlf-testing');
     }
 
-    protected function getDlfConfiguration()
+    /**
+     * Returns the DLF configuration for the test instance.
+     *
+     * This configuration is loaded from a .env file in the test directory.
+     * It includes general settings, file groups, and Solr settings.
+     *
+     * @access protected
+     *
+     * @return array The DLF configuration
+     *
+     * @access protected
+     */
+    protected function getDlfConfiguration(): array
     {
-        return [
-            'useExternalApisForMetadata' => 0,
-            'fileGrpImages' => 'DEFAULT,MAX',
-            'fileGrpThumbs' => 'THUMBS',
-            'fileGrpDownload' => 'DOWNLOAD',
-            'fileGrpFulltext' => 'FULLTEXT',
-            'fileGrpAudio' => 'AUDIO',
-            'solrFieldAutocomplete' => 'autocomplete',
-            'solrFieldCollection' => 'collection',
-            'solrFieldDefault' => 'default',
-            'solrFieldFulltext' => 'fulltext',
-            'solrFieldGeom' => 'geom',
-            'solrFieldId' => 'id',
-            'solrFieldLicense' => 'license',
-            'solrFieldLocation' => 'location',
-            'solrFieldPage' => 'page',
-            'solrFieldPartof' => 'partof',
-            'solrFieldPid' => 'pid',
-            'solrFieldPurl' => 'purl',
-            'solrFieldRecordId' => 'record_id',
-            'solrFieldRestrictions' => 'restrictions',
-            'solrFieldRoot' => 'root',
-            'solrFieldSid' => 'sid',
-            'solrFieldTerms' => 'terms',
-            'solrFieldThumbnail' => 'thumbnail',
-            'solrFieldTimestamp' => 'timestamp',
-            'solrFieldTitle' => 'title',
-            'solrFieldToplevel' => 'toplevel',
-            'solrFieldType' => 'type',
-            'solrFieldUid' => 'uid',
-            'solrFieldUrn' => 'urn',
-            'solrFieldVolume' => 'volume',
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../Build/Test/', 'test.env');
+        $dotenv->load();
 
-            'solrHost' => getenv('dlfTestingSolrHost'),
+        return [
+            'general' => [
+                'useExternalApisForMetadata' => 0,
+                'requiredMetadataFields' => 'document_format'
+            ],
+            'files' => [
+                'useGroupsImage' => 'DEFAULT,MAX',
+                'useGroupsThumbnail' => 'THUMBS',
+                'useGroupsDownload' => 'DOWNLOAD',
+                'useGroupsFulltext' => 'FULLTEXT',
+                'useGroupsAudio' => 'AUDIO',
+                'useGroupsVideo' => 'VIDEO,DEFAULT',
+                'useGroupsWaveform' => 'WAVEFORM'
+            ],
+            'solr' => [
+                'host' => getenv('dlfTestingSolrHost'),
+                'fields' => [
+                    'autocomplete' => 'autocomplete',
+                    'collection' => 'collection',
+                    'default' => 'default',
+                    'fulltext' => 'fulltext',
+                    'geom' => 'geom',
+                    'id' => 'id',
+                    'license' => 'license',
+                    'location' => 'location',
+                    'page' => 'page',
+                    'partof' => 'partof',
+                    'pid' => 'pid',
+                    'purl' => 'purl',
+                    'recordId' => 'record_id',
+                    'restrictions' => 'restrictions',
+                    'root' => 'root',
+                    'sid' => 'sid',
+                    'terms' => 'terms',
+                    'thumbnail' => 'thumbnail',
+                    'timestamp' => 'timestamp',
+                    'title' => 'title',
+                    'toplevel' => 'toplevel',
+                    'type' => 'type',
+                    'uid' => 'uid',
+                    'urn' => 'urn',
+                    'volume' => 'volume'
+                ]
+            ]
         ];
     }
 
-    protected function addSiteConfig($identifier)
+    /**
+     * Adds a site configuration for the given identifier.
+     *
+     * This method creates a site configuration file in the
+     * typo3conf/sites directory with the specified identifier.
+     * The configuration is loaded from a YAML file and includes
+     * the base URL and language settings.
+     *
+     * @access protected
+     *
+     * @param string $identifier The identifier for the site configuration
+     *
+     * @return void
+     *
+     * @access protected
+     */
+    protected function addSiteConfig(string $identifier): void
     {
         $siteConfig = Yaml::parseFile(__DIR__ . '/../Fixtures/siteconfig.yaml');
         $siteConfig['base'] = $this->baseUrl;
@@ -158,20 +218,55 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $siteConfigPath = $this->instancePath . '/typo3conf/sites/' . $identifier;
         @mkdir($siteConfigPath, 0775, true);
         file_put_contents($siteConfigPath . '/config.yaml', Yaml::dump($siteConfig));
+
+        // refresh site cache (otherwise site config is not found)
+        $finder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
+        $finder->getAllSites(false); // useCache = false
     }
 
-    protected function initializeRepository(string $className, int $storagePid)
+    /**
+     * Initializes a repository with the given class name and storage PID.
+     *
+     * This method creates an instance of the specified repository class,
+     * sets the default query settings to use the specified storage PID,
+     * and returns the initialized repository.
+     *
+     * @access protected
+     *
+     * @template T
+     *
+     * @param class-string<T> $className The fully qualified class name of the repository
+     * @param int $storagePid The storage PID to set in the query settings
+     *
+     * @return T The initialized repository
+     */
+    protected function initializeRepository(string $className, int $storagePid): Repository
     {
-        $repository = $this->objectManager->get($className);
-
-        $querySettings = $this->objectManager->get(Typo3QuerySettings::class);
+        /* @var Repository $repository */
+        $repository = GeneralUtility::makeInstance($className);
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds([$storagePid]);
         $repository->setDefaultQuerySettings($querySettings);
 
         return $repository;
     }
 
-    protected function importSolrDocuments(Solr $solr, string $path)
+    /**
+     * Imports Solr documents from a JSON file into the specified Solr instance.
+     *
+     * This method reads a JSON file containing an array of documents,
+     * creates Solr documents from them, and adds them to the Solr index.
+     *
+     * @access protected
+     *
+     * @param Solr $solr The Solr instance to import documents into
+     * @param string $path The path to the JSON file containing the documents
+     *
+     * @return void
+     *
+     * @access protected
+     */
+    protected function importSolrDocuments(Solr $solr, string $path): void
     {
         $jsonDocuments = json_decode(file_get_contents($path), true);
 
@@ -191,24 +286,101 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $solr->service->update($updateQuery);
     }
 
-    protected function initLanguageService(string $locale)
+    /**
+     * Initializes the language service with the given locale.
+     *
+     * This method sets up a mock backend user with the specified locale,
+     * which is then used by the LanguageServiceFactory to load the language
+     * in backend mode.
+     *
+     * @access protected
+     *
+     * @param string $locale The locale to set for the backend user
+     *
+     * @return void
+     *
+     * @access protected
+     */
+    protected function initLanguageService(string $locale): void
     {
-        if (class_exists(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)) {
-            $GLOBALS['LANG'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageServiceFactory::class)->create($locale);
-        } else {
-            $typo3MajorVersion = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version())['version_main'];
-            self::assertEquals(9, $typo3MajorVersion);
+        // create mock backend user and set language
+        // which is loaded by LanguageServiceFactory as default value in backend mode
+        $backendUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
+        $backendUser->user["lang"] = $locale;
+        $GLOBALS['BE_USER'] = $backendUser;
+    }
 
-            $lang = new LanguageService();
-            $lang->init($locale);
-            $GLOBALS['LANG'] = $lang;
+    /**
+     * Sets up the data for the test environment.
+     *
+     * This method imports the necessary CSV datasets for the tests.
+     *
+     * @access protected
+     *
+     * @param array $databaseFixtures An array of file paths to CSV datasets
+     *
+     * @return void
+     */
+    protected function setUpData(array $databaseFixtures): void
+    {
+        foreach ($databaseFixtures as $filePath) {
+            $this->importCSVDataSet($filePath);
         }
     }
 
     /**
-     * Assert that $sub is recursively contained within $super.
+     * Sets up the Solr core for the test environment.
+     *
+     * This method initializes the Solr core repository and imports the necessary Solr documents.
+     *
+     * @access protected
+     *
+     * @param int $uid The UID of the Solr core to set up
+     * @param int $storagePid The storage PID for the Solr core
+     * @param array $solrFixtures An array of file paths to Solr fixtures
+     *
+     * @return Solr|null The initialized Solr instance
      */
-    protected function assertArrayMatches(array $sub, array $super, string $message = '')
+    protected function setUpSolr(int $uid, int $storagePid, array $solrFixtures): Solr|null
+    {
+        $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
+
+        // Setup Solr only once for all tests in this suite
+        static $solr = null;
+
+        if ($solr === null) {
+            $coreName = Solr::createCore();
+            $solr = Solr::getInstance($coreName);
+            foreach ($solrFixtures as $filePath) {
+                $this->importSolrDocuments($solr, $filePath);
+            }
+        }
+
+        $coreModel = $this->solrCoreRepository->findByUid($uid);
+        $coreModel->setIndexName($solr->core);
+        $this->solrCoreRepository->update($coreModel);
+        $this->persistenceManager->persistAll();
+        return $solr;
+    }
+
+    /**
+     * Assert that $sub is recursively contained within $super.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param array $sub
+     * @param array $super
+     * @param string $message
+     *
+     * @return void
+     *
+     * @access protected
+     *
+     * @static
+     */
+    protected static function assertArrayMatches(array $sub, array $super, string $message = ''): void
     {
         self::assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
     }

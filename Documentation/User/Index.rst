@@ -129,13 +129,46 @@ With the command `kitodo:reindex` it is possible to reindex one or more
 collections or even to reindex all documents on the given page.::
 
     # reindex collection with uid 1 on page 123 with solr core 'dlfCore1'
+    # short notation
     ./vendor/bin/typo3 kitodo:reindex -c 1 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --pid 123 --solr dlfCore1
+
+    # reindex collection with uid 1 on page 123 with solr core 'dlfCore1' in given range
+    # short notation
+    ./vendor/bin/typo3 kitodo:reindex -c 1 -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -c 1 -l 1000 -b 1000 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
     # reindex collection with uid 1 and 4 on page 123 with solr core 'dlfCore1'
+    # short notation
     ./vendor/bin/typo3 kitodo:reindex -c 1,4 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --pid 123 --solr dlfCore1
 
-    # reindex all documents on page 123 with solr core 'dlfCore1'
+    # reindex collection with uid 1 and 4 on page 123 with solr core 'dlfCore1' in given range
+    # short notation
+    ./vendor/bin/typo3 kitodo:reindex -c 1,4 -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -c 1,4 -l 1000 -b 1000 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
+
+    # reindex all documents on page 123 with solr core 'dlfCore1' (caution can result in memory problems for big amount of documents)
+    # short notation
     ./vendor/bin/typo3 kitodo:reindex -a -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --all --pid 123 --solr dlfCore1
+
+    # reindex all documents on page 123 with solr core 'dlfCore1' in given range
+    # short notation
+    ./vendor/bin/typo3 kitodo:reindex -a -l 1000 -b 0 -p 123 -s dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex -a -l 1000 -b 1000 -p 123 -s dlfCore1
+    # long notation
+    ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
 
 .. t3-field-list-table::
@@ -200,6 +233,32 @@ collections or even to reindex all documents on the given page.::
        to try to read the ownership from the metadata field "owner".
    :Example:
        123
+
+ - :Option:
+       ``-l|--index-limit``
+   :Required:
+       no
+   :Description:
+       With this option, all documents in given limit for the given page will
+       be reindex.
+
+       Used when it is expected that memory problems can appear due to the high
+       amount of documents.
+   :Example:
+       1000
+
+ - :Option:
+       ``-b|--index-begin``
+   :Required:
+       no
+   :Description:
+       With this option, all documents beginning from given value for the given page
+       will be reindex.
+
+       Used when it is expected that memory problems can appear due to the high
+       amount of documents.
+   :Example:
+       0
 
  - :Option:
        ``--dry-run``
@@ -317,6 +376,147 @@ OAI-PMH base URL (e.g. https://digital.slub-dresden.de/oai/).
        given set.
    :Example:
        'vd18'
+
+ - :Option:
+       ``--dry-run``
+   :Required:
+       no
+   :Description:
+       Nothing will be written to database or index. All documents will be
+       listed which would be processed on a real run.
+   :Example:
+
+ - :Option:
+       ``-q|--quite``
+   :Required:
+       no
+   :Description:
+       Do not output any message. Useful when using a wrapper script. The
+       script may check the return value of the CLI job. This is always 0 on
+       success and 1 on failure.
+   :Example:
+
+ - :Option:
+       ``-v|--verbose``
+   :Required:
+       no
+   :Description:
+       Show each processed documents uid and location with timestamp and
+       amount of processed/all documents.
+   :Example:
+
+Delete single document
+---------------------
+
+The command `kitodo:delete` is used for deleting a single document::
+
+    ./vendor/bin/typo3 kitodo:delete -d http://example.com/path/mets.xml -p 123 -s dlfCore1
+
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Option:
+       Option
+   :Required:
+       Required
+   :Description:
+       Description
+   :Example:
+       Example
+
+ - :Option:
+      ``-d|--doc``
+   :Required:
+       yes
+   :Description:
+       This may be an UID of an existing document in `tx_dlf_documents` or the
+       URL of a METS XML file.
+
+       Hint: Do not encode the URL! If you have spaces in path, use quotation
+       marks.
+   :Example:
+       123 or http://example.com/path/mets.xml
+
+ - :Option:
+       ``-p|--pid``
+   :Required:
+       yes
+   :Description:
+       The page UID of the Kitodo.Presentation data folder. This keeps all
+       records of documents, metadata, structures, solrcores etc.
+   :Example:
+       123
+
+ - :Option:
+       ``-s|--solr``
+   :Required:
+       yes
+   :Description:
+       This may be the UID of the solrcore record in `tx_dlf_solrcores`.
+       Alternatively you may write the index name of the solr core.
+
+       The solr core must exist in table tx_dlf_solrcores on page "pid".
+       Otherwise an error is shown and the processing won't start.
+   :Example:
+       123 or 'dlfCore1'
+
+ - :Option:
+       ``-v|--verbose``
+   :Required:
+       no
+   :Description:
+       Show processed documents uid and location with deleting parameters.
+   :Example:
+
+Commit and/or optimize index
+-------------------------
+
+With the command `kitodo:optimize` it is possible to hard commit documents to and/or optimize the index.::
+
+    # example
+    ./vendor/bin/typo3 kitodo:optimize --solr=<CORE> --commit --optimize
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Option:
+       Option
+   :Required:
+       Required
+   :Description:
+       Description
+   :Example:
+       Example
+
+ - :Option:
+       ``-s|--solr``
+   :Required:
+       yes
+   :Description:
+       This may be the UID of the solrcore record in `tx_dlf_solrcores`.
+       Alternatively you may write the index name of the solr core.
+
+       The solr core must exist in table tx_dlf_solrcores on page "pid".
+       Otherwise an error is shown and the processing won't start.
+   :Example:
+       123 or 'dlfCore1'
+
+ - :Option:
+       ``--commit``
+   :Required:
+       no
+   :Description:
+       Hard commit documents to the index.
+   :Example:
+
+ - :Option:
+       ``--optimize``
+   :Required:
+       no
+   :Description:
+       Optimize the index.
+   :Example:
 
  - :Option:
        ``--dry-run``

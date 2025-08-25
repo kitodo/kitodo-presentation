@@ -102,9 +102,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @param Document $record: found document record
-     * @param array $highlighting: Array of found highlight elements
-     * @param array $fields: Array of fields used for search
+     * @param Document $record found document record
+     * @param array $highlighting array of found highlight elements
+     * @param array $fields array of fields used for search
      *
      * @return void
      */
@@ -115,11 +115,13 @@ class ResultDocument
         $this->page = $record[$fields['page']];
         $this->thumbnail = $record[$fields['thumbnail']];
         $this->title = $record[$fields['title']];
-        $this->toplevel = $record[$fields['toplevel']];
+        $this->toplevel = $record[$fields['toplevel']] ?? false;
         $this->type = $record[$fields['type']];
 
-        $highlightingForRecord = $highlighting[$record[$fields['id']]][$fields['fulltext']];
-        $this->snippetsForRecord = is_array($highlightingForRecord['snippets']) ? $highlightingForRecord['snippets'] : [];
+        if (!empty($highlighting[$this->id])) {
+            $highlightingForRecord = $highlighting[$this->id][$fields['fulltext']];
+            $this->snippetsForRecord = is_array($highlightingForRecord['snippets']) ? $highlightingForRecord['snippets'] : [];
+        }
 
         $this->parseSnippets();
         $this->parsePages();
@@ -228,7 +230,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return array(Page) All result's pages which contain search phrase
+     * @return Page[] All result's pages which contain search phrase
      */
     public function getPages(): array
     {
@@ -240,7 +242,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return array(Region) All result's regions which contain search phrase
+     * @return Region[] All result's regions which contain search phrase
      */
     public function getRegions(): array
     {
@@ -252,7 +254,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return array(Highlight) All result's highlights of search phrase
+     * @return Highlight[] All result's highlights of search phrase
      */
     public function getHighlights(): array
     {
@@ -264,7 +266,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return array(string) All result's highlights of search phrase
+     * @return string[] All result's highlights of search phrase
      */
     public function getHighlightsIds(): array
     {

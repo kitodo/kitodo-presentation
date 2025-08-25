@@ -25,12 +25,19 @@
  *
  * @typedef {ResourceLocator} FulltextDesc
  *
+ * @typedef {ResourceLocator} ScoreDesc
+ *
+ * @typedef {ResourceLocator} MeasureDesc
+ *
  * @typedef {{
  *  div: string;
  *  progressElementId?: string;
  *  images?: ImageDesc[] | [];
  *  fulltexts?: FulltextDesc[] | [];
+ *  scores?: ScoreDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
+ *  measureCoords?: MeasureDesc[] | [];
+ *  measureIdLinks?: MeasureDesc[] | [];
  * }} DlfViewerConfig
  */
 
@@ -39,7 +46,7 @@
  * @param {DlfViewerConfig} settings
  * @constructor
  */
-var dlfViewer = function(settings){
+var dlfViewer = function (settings) {
 
     /**
      * The element id of the map container
@@ -78,6 +85,38 @@ var dlfViewer = function(settings){
     this.images = [];
 
     /**
+     * Score information (e.g. URL)
+     * @type {string}
+     * @private
+     */
+    this.score = dlfUtils.exists(settings.score['url']) ? settings.score['url'] : '';
+
+    this.scoreMap = null;
+
+    this.measureCoords = dlfUtils.exists(settings.measureCoords) ? settings.measureCoords : [];
+
+    this.measureIdLinks =  dlfUtils.exists(settings.measureIdLinks) ? settings.measureIdLinks : [];
+
+    this.measureLayer = undefined;
+
+    this.counter = dlfUtils.exists(settings.counter) ? settings.counter : 0;
+
+    this.currentMeasureId = dlfUtils.exists(settings.currentMeasureId) ? settings.currentMeasureId : '';
+
+    this.facsimileMeasureActive = null;
+    this.facsimileMeasureHover = null;
+
+    this.verovioMeasureActive = null;
+    this.verovioMeasureHover = null;
+
+    /**
+     * Id of pagebeginning in score
+     * @type {string}
+     * @private
+     */
+    this.pagebeginning = dlfUtils.exists(settings.score['pagebeginning']) ? settings.score['pagebeginning'] : '';
+
+    /**
      * The <progress> element for loading indicator.
      * @type {LoadingIndicator}
      * @private
@@ -90,6 +129,13 @@ var dlfViewer = function(settings){
      * @private
      */
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
+
+    /**
+     * Loaded scores (as jQuery deferred object).
+     * @type {svg}
+     * @private
+     */
+    this.scoresLoaded_ = null;
 
     /**
      * Loaded fulltexts (as jQuery deferred object).
@@ -129,6 +175,7 @@ var dlfViewer = function(settings){
      */
     this.imageManipulationControl = undefined;
 
+    this.syncControl = undefined;
     /**
      * @type {Object|undefined}
      * @private
@@ -177,11 +224,24 @@ var dlfViewer = function(settings){
      */
     this.magnifierEnabled = false;
 
+
+    /**
+     * @type {Object}
+     * @public
+     */
+     this.tk = null;
+
     /**
      * @type {Boolean|false}
      * @private
      */
     this.initMagnifier = false;
+
+    /**
+     *
+     * @type {Object|null}
+     */
+    this.view = null;
 
     /**
      * use internal proxy setting
@@ -277,16 +337,129 @@ dlfViewer.prototype.countPages = function () {
 
 /**
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
- * fulltext and the image manipulation control
- *
- * @param {Array.<string>} controlNames
+ * fulltext, score, and the image manipulation control
  */
 dlfViewer.prototype.addCustomControls = function() {
     var fulltextControl = undefined,
         fulltextDownloadControl = undefined,
         annotationControl = undefined,
-        imageManipulationControl = undefined,
-        images = this.images;
+        imageManipulationControl = undefined;
+
+    //
+    // Annotation facsimile
+    //
+    // draw annotations
+    var listItems = $('.annotation-list-item details');
+    if (listItems.length > 0) {
+
+        // add new layer for annotations
+        if (!dlfUtils.exists(this.annotationLayer)) {
+            this.annotationLayer = new ol.layer.Vector({
+                'source': new ol.source.Vector(),
+                'style': dlfViewerOLStyles.defaultStyle(),
+                'id': 'annotationLayer'
+            });
+            this.map.addLayer(this.annotationLayer);
+        }
+        this.annotationLayer.getSource().clear();
+
+        var map = this.map;
+        var annotationLayer = this.annotationLayer;
+
+        var i = 0, xLow = 0, xHigh = 0, yLow = 0, yHigh = 0;
+
+        listItems.each(function(index) {
+            var annotationId = $(this).data('annotation-id');
+            var dataRanges = $(this).data('range-facsimile').split(";");
+
+            $.each(dataRanges, function(key, value) {
+
+                var splitValue = value.split(","),
+                    x1 = splitValue[0],
+                    y1 = splitValue[1],
+                    x2 = splitValue[2],
+                    y2 = splitValue[3],
+                    coordinatesWithoutScale = [[[x1, -y1], [x2, -y1], [x2, -y2], [x1, -y2], [x1, -y1]]],
+                    width = x1 - x2,
+                    height = y1 - y2;
+
+                var geometry = new ol.geom.Polygon(coordinatesWithoutScale);
+                var feature = new ol.Feature(geometry);
+                feature.setId(annotationId);
+                feature.setProperties({
+                    width,
+                    height,
+                    x1,
+                    y1
+                });
+                annotationLayer.getSource().addFeature(feature);
+            });
+
+        });
+
+        //
+        // Annotation click event
+        //
+        let clicked = null;
+        map.on('singleclick', function (evt) {
+            if (clicked !== null) {
+                $('[data-annotation-id="'+clicked.getId()+'"]').removeClass('active');
+                $('[data-annotation-id="'+clicked.getId()+'"]').removeAttr('open');
+                clicked.setStyle(undefined);
+                clicked = null;
+            }
+            map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                if (feature !== null) {
+                    feature.setStyle(dlfViewerOLStyles.selectStyle());
+                    $('[data-annotation-id="'+feature.getId()+'"]').addClass('active');
+                    $('[data-annotation-id="'+feature.getId()+'"]').attr('open', '');
+                    clicked = feature;
+                    return true;
+                }
+            });
+        });
+
+        let selected = null;
+        map.on('pointermove', function (e) {
+            if (selected !== null) {
+                $('[data-annotation-id="'+selected.getId()+'"]').removeClass('hover')
+                selected.setStyle(undefined);
+                selected = null;
+
+                if (clicked !== null) {
+                    clicked.setStyle(dlfViewerOLStyles.selectStyle());
+                }
+            }
+
+            map.forEachFeatureAtPixel(e.pixel, function (f) {
+                selected = f;
+                dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
+                $('[data-annotation-id="'+selected.getId()+'"]').addClass('hover');
+                f.setStyle(dlfViewerOLStyles.hoverStyle());
+                return true;
+            });
+        });
+
+        //
+        // Hover event on html annotation
+        //
+        $('[data-range-facsimile]').each(function(index) {
+            $(this).on('mouseenter', function (evt) {
+                var feature = annotationLayer.getSource().getFeatureById($(this).data('annotation-id'));
+                if (feature !== null) {
+                    selected = feature;
+                    feature.setStyle(dlfViewerOLStyles.hoverStyle());
+                }
+            });
+            $(this).on('mouseleave', function (evt) {
+                var feature = annotationLayer.getSource().getFeatureById($(this).data('annotation-id'));
+                if (feature !== null) {
+                    selected = null;
+                    feature.setStyle(dlfViewerOLStyles.defaultStyle());
+                }
+            });
+        });
+    }
 
     // Adds fulltext behavior and download only if there is fulltext available and no double page
     // behavior is active
@@ -306,6 +479,127 @@ dlfViewer.prototype.addCustomControls = function() {
         $('#tx-dlf-tools-fulltext').remove();
     }
 
+    if (this.scoresLoaded_ !== undefined && this.scoresLoaded_ !== null) {
+        var context = this;
+        const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
+        this.scoresLoaded_.then(function (scoreData) {
+            scoreControl.loadScoreData(scoreData, tk);
+
+            // Add synchronisation control
+            context.syncControl = new dlfViewerSyncControl(context);
+            context.syncControl.addSyncControl();
+
+        }).catch(function () {
+            scoreControl.deactivate();
+        });
+
+        //
+        // Show measure boxes if coordinates are available
+        //
+        if (this.measureCoords) {
+            // Add measure layer for facsimile
+            if (!dlfUtils.exists(this.measureLayer)) {
+                this.measureLayer = new ol.layer.Vector({
+                    'source': new ol.source.Vector(),
+                    'style': dlfViewerOLStyles.invisibleStyle,
+                    'id': 'measureLayer'
+                });
+                this.map.addLayer(this.measureLayer);
+            }
+            this.measureLayer.getSource().clear();
+
+            var map = this.map;
+            var measureLayer = this.measureLayer;
+
+            var i = 0, xLow = 0, xHigh = 0, yLow = 0, yHigh = 0;
+
+            $.each(this.measureCoords, function(key, value) {
+                var splitValue = value.split(","),
+                    x1 = splitValue[0],
+                    y1 = splitValue[1],
+                    x2 = splitValue[2],
+                    y2 = splitValue[3],
+                    coordinatesWithoutScale = [[[x1, -y1], [x2, -y1], [x2, -y2], [x1, -y2], [x1, -y1]]],
+                    width = x1 - x2,
+                    height = y1 - y2;
+
+                if (i === 0) {
+                    xLow = x1;
+                    yLow = y1;
+                }
+                xHigh = x2;
+                yHigh = y2;
+
+                var geometry = new ol.geom.Polygon(coordinatesWithoutScale);
+                var feature = new ol.Feature(geometry);
+                feature.setId(key);
+                feature.setProperties({
+                    width,
+                    height,
+                    x1,
+                    y1
+                });
+                measureLayer.getSource().addFeature(feature);
+
+                if (key === context.currentMeasureId) {
+                    feature.setStyle(dlfViewerOLStyles.selectStyle());
+                    context.facsimileMeasureActive = feature;
+                }
+
+                i++;
+
+            });
+
+            map.on('singleclick', function (evt) {
+                if (context.facsimileMeasureActive !== null) {
+                    context.verovioMeasureActive.removeClass('active');
+                    context.facsimileMeasureActive.setStyle(undefined);
+                    context.facsimileMeasureActive = null;
+                }
+                map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                    if (feature !== null) {
+                        // show ajax spinner if exists
+                        if ($('#overlay .ajax-spinner')) {
+                            $('#overlay').fadeIn(300);
+                        }
+
+                        context.facsimileMeasureActive = feature;
+                        context.verovioMeasureActive = $('#tx-dlf-score-'+context.counter+' #' + feature.getId() + ' rect').addClass('active');
+                        if (context.measureIdLinks[feature.getId()]) {
+                            window.location.replace(context.measureIdLinks[feature.getId()]);
+                        }
+                        return true;
+                    }
+                });
+            });
+
+            map.on('pointermove', function (e) {
+                if (context.facsimileMeasureHover !== null) {
+                    context.facsimileMeasureHover.setStyle(undefined);
+                    context.facsimileMeasureHover = null;
+                    context.verovioMeasureHover.removeClass('hover');
+
+                    if (context.facsimileMeasureActive !== null) {
+                        context.facsimileMeasureActive.setStyle(dlfViewerOLStyles.selectStyle());
+                    }
+                }
+
+                map.forEachFeatureAtPixel(e.pixel, function (f) {
+                    context.facsimileMeasureHover = f;
+                    dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
+                    f.setStyle(dlfViewerOLStyles.hoverStyle());
+
+                    context.verovioMeasureHover = $('#tx-dlf-score-'+context.counter+' #' + context.facsimileMeasureHover.getId() + ' rect').addClass('hover');
+                    return true;
+                });
+            });
+        }
+
+	} else {
+		$('#tx-dlf-tools-score').remove();
+	}
+
+
     if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
         && this.annotationContainers[0].annotationContainers.length > 0 && this.images.length === 1) {
         // Adds annotation behavior only if there are annotations available and view is single page
@@ -324,13 +618,14 @@ dlfViewer.prototype.addCustomControls = function() {
     //
     if ($('#tx-dlf-tools-imagetools').length > 0) {
 
-        // should be called if cors is enabled
+        // Should be called if CORS is enabled
         imageManipulationControl = new dlfViewerImageManipulationControl({
-            controlTarget: $('.tx-dlf-tools-imagetools')[0],
+            controlTarget: $('.tx-dlf-tools-imagetools')[this.counter],
             map: this.map,
+            counter: this.counter,
         });
 
-        // bind behavior of both together
+        // Bind behavior of both together
         if (fulltextControl !== undefined) {
             $(imageManipulationControl).on("activate-imagemanipulation", $.proxy(fulltextControl.deactivate, fulltextControl));
             $(fulltextControl).on("activate-fulltext", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
@@ -340,10 +635,11 @@ dlfViewer.prototype.addCustomControls = function() {
             $(annotationControl).on("activate-annotations", $.proxy(imageManipulationControl.deactivate, imageManipulationControl));
         }
 
-        // set on object scope
+        // Set on object scope
         this.imageManipulationControl = imageManipulationControl;
 
     }
+
 };
 
 /**
@@ -354,7 +650,7 @@ dlfViewer.prototype.addCustomControls = function() {
  * @param {number} width
  * @param {number} height
  *
- * @return void
+ * @returns void
  */
 dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, width, height) {
 
@@ -375,7 +671,7 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
  * Creates OpenLayers controls
  * @param {Array.<string>} controlNames
  * @param {Array.<ol.layer.Layer>} layers
- * @return {Array.<ol.control.Control>}
+ * @returns {Array.<ol.control.Control>}
  * @private
  */
 dlfViewer.prototype.createControls_ = function(controlNames, layers) {
@@ -399,7 +695,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
  *
  * @param {string} controlName
  * @param {Array.<ol.layer.Layer>} layers
- * @return {ol.control.Control | null}
+ * @returns {ol.control.Control | null}
  * @protected
  */
 dlfViewer.prototype.createControl = function(controlName, layers) {
@@ -412,7 +708,7 @@ dlfViewer.prototype.createControl = function(controlName, layers) {
 
             var ovExtent = ol.extent.buffer(
                 extent,
-                1 * Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent))
+                Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent))
             );
 
             return new ol.control.OverviewMap({
@@ -440,6 +736,18 @@ dlfViewer.prototype.createControl = function(controlName, layers) {
 };
 
 /**
+ * Forwards the search to dlfUtils.searchFeatureCollectionForWords
+ *
+ * @param {Array.<ol.Feature>} stringFeatures - Array of features containing text information
+ * @param {string} value - Search term
+ * @returns {Array.<ol.Feature>|undefined} Array of OpenLayers features containing found words
+ * @see dlfUtils.searchFeatureCollectionForWords
+ */
+dlfViewer.prototype.searchFeatures = function(stringFeatures, value) {
+  return dlfUtils.searchFeatureCollectionForWords(stringFeatures, value);
+};
+
+/**
  * Displays highlight words
  */
 dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
@@ -447,7 +755,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         this.highlightWords = highlightWords;
     }
 
-    // exctract highlighWords from URL
+    // extract highlighWords from URL
     if (this.highlightWords === null) {
         this.highlightWords = dlfUtils.getUrlParam('tx_dlf[highlight_word]');
     }
@@ -491,23 +799,23 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
     }
 
     if (this.highlightWords !== null) {
-        var self = this;
-        var values = decodeURIComponent(this.highlightWords).split(';');
+        const self = this;
+        const values = decodeURIComponent(this.highlightWords).split(';');
 
         $.when.apply($, this.fulltextsLoaded_)
-            .done(function (fulltextData, fulltextDataImageTwo) {
-                var stringFeatures = [];
+            .done((fulltextData, fulltextDataImageTwo) => {
+                const stringFeatures = [];
 
-                [fulltextData, fulltextDataImageTwo].forEach(function (data) {
+                [fulltextData, fulltextDataImageTwo].forEach(data => {
                     if (data !== undefined) {
                         Array.prototype.push.apply(stringFeatures, data.getStringFeatures());
                     }
                 });
 
-                values.forEach(function(value) {
-                    var features = dlfUtils.searchFeatureCollectionForCoordinates(stringFeatures, value);
+                values.forEach((value) => {
+                    const features = this.searchFeatures(stringFeatures, value);
                     if (features !== undefined) {
-                        for (var i = 0; i < features.length; i++) {
+                        for (let i = 0; i < features.length; i++) {
                             self.highlightLayer.getSource().addFeatures([features[i]]);
                         }
                     }
@@ -533,6 +841,11 @@ dlfViewer.prototype.init = function(controlNames) {
             // Initiate loading fulltexts
             this.initLoadFulltexts();
 
+            if (this.score !== '') {
+                // Initiate loading scores
+                this.initLoadScores();
+            }
+
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
                 : [];
@@ -540,7 +853,7 @@ dlfViewer.prototype.init = function(controlNames) {
                 //        coordinateFormat: ol.coordinate.createStringXY(4),
                 //        undefinedHTML: '&nbsp;'
                 //    })];
-
+            this.view = dlfUtils.createOlView(this.images);
             // create map
             this.map = new ol.Map({
                 layers: layers,
@@ -555,11 +868,11 @@ dlfViewer.prototype.init = function(controlNames) {
                     new ol.interaction.MouseWheelZoom(),
                     new ol.interaction.KeyboardPan(),
                     new ol.interaction.KeyboardZoom(),
-                    new ol.interaction.DragRotateAndZoom()
+                    new ol.interaction.DragRotateAndZoom(),
                 ],
                 // necessary for proper working of the keyboard events
                 keyboardEventTarget: document,
-                view: dlfUtils.createOlView(this.images),
+                view: this.view,
             });
 
             // Position image according to user preferences
@@ -617,11 +930,15 @@ dlfViewer.prototype.init = function(controlNames) {
         this.initCropping();
 };
 
+dlfViewer.prototype.updateLayerSize = function() {
+  this.map.updateSize();
+};
+
 /**
  * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
  * @param {ImageDesc[]} imageSourceObjs
- * @return {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
+ * @returns {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
  * @private
  */
 dlfViewer.prototype.initLayer = function(imageSourceObjs) {
@@ -646,6 +963,17 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
 };
 
 /**
+ * Start loading scores and store them to `scoresLoaded_` (as jQuery deferred objects).
+ *
+ * @private
+ */
+dlfViewer.prototype.initLoadScores = function () {
+  this.config = dlfScoreUtil.fetchScoreDataFromServer(this.score, this.pagebeginning);
+  this.scoresLoaded_ = this.config[0];
+  this.tk = this.config[1];
+};
+
+/**
  * Start loading fulltexts and store them to `fulltextsLoaded_` (as jQuery deferred objects).
  *
  * @private
@@ -658,7 +986,7 @@ dlfViewer.prototype.initLoadFulltexts = function () {
         var image = this.images[i];
 
         if (dlfUtils.isFulltextDescriptor(fulltext)) {
-            this.fulltextsLoaded_[i] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext.url, image, xOffset);
+            this.fulltextsLoaded_[i] = dlfFullTextUtils.fetchFullTextDataFromServer(fulltext, image, xOffset);
         }
 
         xOffset += image.width;

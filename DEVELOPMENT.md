@@ -1,55 +1,16 @@
 # Development
 
-## Kitodo.Presentation 4.0
-
-- In Extbase, there is a default naming scheme to map model names to database
-  table names. As we currently don't use these for historic reasons, the mapping
-  needs to be reconfigured:
-
-  - [ext_typoscript_setup.txt](ext_typoscript_setup.txt) is for compatibility
-    with TYPO3 v9.
-  - [Classes.php](Configuration/Extbase/Persistence/Classes.php) is for TYPO3
-    v10 onwards.
-  - `polyfillExtbaseClassesForTYPO3v9` (defined in [Helper.php](Classes/Common/Helper.php))
-    is used for TYPO3 v9 compatibility with the expression language function
-    `getDocumentType()` ([DocumentTypeFunctionProvider.php](Classes/ExpressionLanguage/DocumentTypeFunctionProvider.php)).
-
-  To simplify this, we may consider to rename database tables according to the
-  default naming scheme.
-
-
-## Future Changes
-
-### TCA type "language"
-The TCA field 'sys_language_uid' of table 'tx_dlf_collections' is defined as the 'languageField' and should therefore use the TCA type 'language' instead of TCA type 'select' with 'foreign_table=sys_language' or 'special=languages'.
-
-### Forward() in controller actions will be removed in TYPO3 12
-
-Instead of calling $this->forward() the controller action must return a ForwardResponse
-
-https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Deprecation-92815-ActionControllerForward.html
-
-### Pagination Widget will be removed in TYPO3 11
-
-https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Breaking-92529-AllFluidWidgetFunctionalityRemoved.html
-
-The current solution does only work with TYPO3 9 and 10.
-
-As of TYPO3 10 a new pagination API has been introduced. This could be used as replacement in a release supporting TYPO3 10 and 11.
-
-https://docs.typo3.org/m/typo3/reference-coreapi/10.4/en-us/ApiOverview/Pagination/Index.html
-
 ## Testing
 
 Before running any of the tests, please install the project dependencies. Choose which version of TYPO3 you would like to test against.
 
 ```bash
-# If you use PHP 7.3 or 7.4 (supported by Kitodo)
-composer update --with=typo3/cms-core:^10.4
+# If you use PHP 8.1 (supported by Kitodo)
+composer update --with=typo3/cms-core:^11.5
 
 # If you use PHP 8
-composer install-via-docker -- -t 10.4
 composer install-via-docker -- -t 11.5
+composer install-via-docker -- -t 12.4
 ```
 
 ### Quick Start
@@ -99,9 +60,9 @@ You may also interact with the Docker containers directly:
 ```bash
 cd Build/Test/
 vim .env  # Edit configuration
-docker-compose run unit
-docker-compose run functional
-docker-compose down
+docker compose run unit
+docker compose run functional
+docker compose down
 ```
 
 ### Fixtures
@@ -124,50 +85,67 @@ docker-compose down
 
 ## Documentation
 
-Following TYPO3's practices, the main documentation of the extension is located in `Documentation` and written in [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText). The build system is [Sphinx](https://en.wikipedia.org/wiki/Sphinx_(documentation_generator)).
-
-### Local Preview Server
-
-To preview the rendered output and automatically rebuild documentation on changes, you may spawn a local server. This supports auto-refresh and is faster than the official preview build, but omits some features such as syntax highlighting.
-
-This requires Python 2 to be installed.
+Build the documentation using the `docs:build` script with Composer. This
+script generates the documentation using the rendering tool for Typo3 and
+places it in the `Documentation-GENERATED-temp` folder.
 
 ```bash
-# First start: Setup Sphinx in a virtualenv
-composer docs:setup
-
-# Spawn server
-composer docs:serve
-composer docs:serve -- -E  # Don't use a saved environment (useful when changing toctree)
-composer docs:serve -- -p 8000  # Port may be specified
+composer docs:build
 ```
 
-By default, the output is served to http://127.0.0.1:8000.
+Take a look at the documentation by opening the file `Index.html` in the folder
+`Documentation-GENERATED-temp` in your browser.
 
-> The setup and serve commands are defined in [Build/Documentation/sphinx.sh](./Build/Documentation/sphinx.sh).
+### Provide via HTTP Server (optional)
 
-### Official Preview Build
-
-The TYPO3 project [provides a Docker image to build documentation](https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/RenderingDocs/Quickstart.html). This requires both Docker and Docker Compose to be installed.
+Starts the HTTP server and mounts the mandatory directory `Documentation-GENERATED-temp`.
 
 ```bash
-# Full build
-composer docs:t3 makehtml
-
-# Only run sphinx-build
-composer docs:t3 just1sphinxbuild
-
-# (Alternative) Run docker-compose manually
-docker-compose -f ./Build/Documentation/docker-compose.t3docs.yml run --rm t3docs makehtml
+composer docs:start
 ```
 
-The build output is available at [Documentation-GENERATED-temp/Result/project/0.0.0/Index.html](./Documentation-GENERATED-temp/Result/project/0.0.0/Index.html).
+Take a look at the documentation by opening <http://localhost:8000>
+in your browser.
+
+The server runs in detached mode, so you will need to stop it manually.
+
+```bash
+composer docs:stop
+```
 
 ### Database Documentation
 
-Generate the database reference table:
+Generate the database reference table by running the following command from the composer-based TYPO3 install directory (not the Kitodo.Presentation source directory):
 
 ```bash
-composer install
-composer docs:db
+vendor/bin/typo3 kitodo:dbdocs
+```
+
+### Troubleshooting
+
+#### Permission
+
+The documentation container runs as a non-root user. If there are some problem regarding
+the permission of container user you can link the UID and GID of host into the container
+using the `--user` parameter.
+
+**Example:**
+
+```bash
+docker run --rm --user=$(id -u):$(id -g) [...]
+```
+
+_In the `docs:build` Composer script, this parameter is already included.
+If any issues arise, you can adjust or remove it as needed._
+
+#### Output directory
+
+The default documentation directory name is `Documentation-GENERATED-temp`.
+If you want to change the directory name add the `--output` parameter at the
+end of the building command.
+
+**Example:**
+
+```bash
+[...] --config ./Documentation --output="My_Documentation_Directory"
 ```

@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\SolrPaginator;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -71,19 +72,17 @@ class CollectionController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function listAction(): void
+    public function listAction(): ResponseInterface
     {
         $solr = Solr::getInstance($this->settings['solrcore']);
 
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
-            return;
+            return $this->htmlResponse();
         }
-        // We only care about the UID and partOf in the results and want them sorted
-        $params['fields'] = 'uid,partof';
-        $params['sort'] = ['uid' => 'asc'];
+
         $collections = [];
 
         // Sort collections according to order in plugin flexform configuration
@@ -98,7 +97,7 @@ class CollectionController extends AbstractController
         }
 
         if (count($collections) == 1 && empty($this->settings['dont_show_single']) && is_array($collections)) {
-            $this->forward('show', null, null, ['collection' => array_pop($collections)]);
+            return $this->redirect('show', null, null, ['collection' => array_pop($collections)]);
         }
 
         $processedCollections = $this->processCollections($collections, $solr);
@@ -109,6 +108,8 @@ class CollectionController extends AbstractController
         }
 
         $this->view->assign('collections', $processedCollections);
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -118,17 +119,17 @@ class CollectionController extends AbstractController
      *
      * @param Collection $collection The collection object
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function showAction(Collection $collection): void
+    public function showAction(Collection $collection): ResponseInterface
     {
-        $searchParams = $this->getParametersSafely('searchParameter');
+        $search = $this->getParametersSafely('search');
 
         // Instantiate the Solr. Without Solr present, we can't do anything.
         $solr = Solr::getInstance($this->settings['solrcore']);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
-            return;
+            return $this->htmlResponse();
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
@@ -137,12 +138,13 @@ class CollectionController extends AbstractController
             $currentPage = 1;
         }
 
-        $searchParams['collection'] = $collection;
+        $search['collection'] = $collection->getUid();
         // If a targetPid is given, the results will be shown by ListView on the target page.
         if (!empty($this->settings['targetPid'])) {
-            $this->redirect('main', 'ListView', null,
+            return $this->redirect(
+                'main', 'ListView', null,
                 [
-                    'searchParameter' => $searchParams,
+                    'search' => $search,
                     'page' => $currentPage
                 ], $this->settings['targetPid']
             );
@@ -151,13 +153,16 @@ class CollectionController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
+        // get all indexed metadata fields
+        $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
 
         // get all documents of given collection
         $solrResults = null;
-        if (is_array($searchParams) && !empty($searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata);
+        if (is_array($search) && !empty($search)) {
+            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $search, $listedMetadata, $indexedMetadata);
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
             if (empty($itemsPerPage)) {
@@ -174,9 +179,11 @@ class CollectionController extends AbstractController
         $this->view->assign('documents', $solrResults);
         $this->view->assign('collection', $collection);
         $this->view->assign('page', $currentPage);
-        $this->view->assign('lastSearch', $searchParams);
+        $this->view->assign('lastSearch', $search);
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -184,21 +191,20 @@ class CollectionController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function showSortedAction(): void
+    public function showSortedAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
-        $searchParams = $this->getParametersSafely('searchParameter');
+        $search = $this->getParametersSafely('search');
 
         $collection = null;
-        if ($searchParams['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($searchParams['collection']['__identity'])) {
-            $collection = $this->collectionRepository->findByUid($searchParams['collection']['__identity']);
+        if ($search['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($search['collection']['__identity'])) {
+            $collection = $this->collectionRepository->findByUid($search['collection']['__identity']);
         }
 
         // output is done by show action
-        $this->forward('show', null, null, ['searchParameter' => $searchParams, 'collection' => $collection]);
-
+        return $this->redirect('show', null, null, ['search' => $search, 'collection' => $collection]);
     }
 
     /**
@@ -206,33 +212,40 @@ class CollectionController extends AbstractController
      *
      * @access private
      *
-     * @param array $collections to be processed
+     * @param QueryResultInterface|array|object $collections to be processed
      * @param Solr $solr for query
      *
      * @return array
      */
-    private function processCollections(array $collections, Solr $solr): array
+    private function processCollections($collections, Solr $solr): array
     {
         $processedCollections = [];
 
         // Process results.
         foreach ($collections as $collection) {
-            $solr_query = '';
+            $solrQuery = '';
             if ($collection->getIndexSearch() != '') {
-                $solr_query .= '(' . $collection->getIndexSearch() . ')';
+                $solrQuery .= '(' . $collection->getIndexSearch() . ')';
             } else {
-                $solr_query .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
+                $solrQuery .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
             }
 
+            // We only care about the UID and partOf in the results and want them sorted
+            $params = [
+                'fields' => 'uid,partof',
+                'sort' => [
+                    'uid' => 'asc'
+                ]
+            ];
             // virtual collection might yield documents, that are not toplevel true or partof anything
             if ($collection->getIndexSearch()) {
-                $params['query'] = $solr_query;
+                $params['query'] = $solrQuery;
             } else {
-                $params['query'] = $solr_query . ' AND partof:0 AND toplevel:true';
+                $params['query'] = $solrQuery . ' AND partof:0 AND toplevel:true';
             }
             $partOfNothing = $solr->searchRaw($params);
 
-            $params['query'] = $solr_query . ' AND NOT partof:0 AND toplevel:true';
+            $params['query'] = $solrQuery . ' AND NOT partof:0 AND toplevel:true';
             $partOfSomething = $solr->searchRaw($params);
 
             $collectionInfo = [];
@@ -253,7 +266,7 @@ class CollectionController extends AbstractController
 
             // Generate random but unique array key taking amount of documents into account.
             do {
-                $key = (count($collection['priority']) * 1000) + random_int(0, 1000);
+                $key = ($collection->getPriority() * 1000) + random_int(0, 1000);
             } while (!empty($processedCollections[$key]));
 
             $processedCollections[$key]['collection'] = $collection;

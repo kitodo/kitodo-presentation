@@ -18,7 +18,7 @@
             <f:translate key="search.search"  />
             <f:translate key="search.for" arguments="{0: '{lastSearch.query}'}" />
             <f:comment>
-                We need an ViewHelper to get the Extbase document object here. Usable e.g. on search in a newspaper title.
+                We need a ViewHelper to get the Extbase document object here. Usable e.g. on search in a newspaper title.
                 <f:translate key="search.in" arguments="{0: '{lastSearch.documentId}'}" />
             </f:comment>
         </h2>
@@ -26,9 +26,11 @@
 
         <f:variable name="action" value="main" />
         <f:variable name="controller" value="ListView" />
-        <f:render partial="ListView/SortingForm" arguments="{_all}" />
 
-        <f:render partial="ListView/Results" arguments="{_all}" />
+        <f:if condition="{numResults} > 0">
+            <f:render partial="ListView/SortingForm" arguments="{_all}" />
+            <f:render partial="ListView/Results" arguments="{_all}" />
+        </f:if>
 
     </div>
 

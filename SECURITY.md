@@ -6,8 +6,9 @@ The following versions of Kitodo.Presentation are currently being supported with
 
 | Version | With TYPO3      | Active Development | Security Fixes |
 | ------- | --------------- | :----------------: | :------------: |
-| 5.x     | 10 LTS + 11 LTS | ☒                 | ☒              |
-| 4.x     | 9 LTS + 10 LTS  | ☐                 | ☒              |
+| 6.x     | 11 LTS + 12 LTS | ☒                 | ☒              |
+| 5.x     | 10 LTS + 11 LTS | ☐                 | ☒              |
+| 4.x     | 9 LTS + 10 LTS  | ☐                 | ☐              |
 | 3.3.x   | 9 LTS           | ☐                 | ☐              |
 | 3.2.x   | 8 LTS + 9 LTS   | ☐                 | ☐              |
 | 3.1.x   | 8 LTS + 9 LTS   | ☐                 | ☐              |

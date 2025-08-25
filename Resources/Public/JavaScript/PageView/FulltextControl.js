@@ -62,7 +62,6 @@ dlfFulltextSegments.prototype.populate = function (features) {
 dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
     for (var i = 0; i < this.segments_.length; i++) {
         var segment = this.segments_[i];
-
         if (ol.extent.containsCoordinate(segment.extent, coordinate)) {
             return segment.feature;
         }
@@ -86,7 +85,7 @@ var dlfViewerFullTextControl = function(map) {
      * @type {Object}
      * @private
      */
-    this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').attr('data-dic') ?
+    this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').data('dic') ?
         dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
         {
             'fulltext':'Fulltext',
@@ -94,7 +93,7 @@ var dlfViewerFullTextControl = function(map) {
             'fulltext-on':'Activate Fulltext',
             'fulltext-off':'Deactivate Fulltext',
             'activate-full-text-initially':'0',
-            'full-text-scroll-element':'html, body'};
+            'full-text-scroll-element':'#tx-dlf-fulltextselection'};
 
     /**
      * @private
@@ -112,7 +111,13 @@ var dlfViewerFullTextControl = function(map) {
      * @type {string}
      * @private
      */
-    this.fullTextScrollElement = this.dic['full-text-scroll-element'];
+    let regex = /[^A-Za-z0-9\.\-\#\s_]/g;
+    let fullTextScrollElementUnChecked = this.dic['full-text-scroll-element'];
+    if (regex.fullTextScrollElementUnChecked) {
+        this.fullTextScrollElement = "";
+    } else {
+        this.fullTextScrollElement = fullTextScrollElementUnChecked;
+    }
 
     /**
      * @type {Object}
@@ -157,6 +162,13 @@ var dlfViewerFullTextControl = function(map) {
      * @private
      */
     this.lastRenderedFeatures_ = undefined;
+
+    /**
+     * @type {Array}
+     * @private
+     */
+     this.positions = {};
+
 
     /**
      * @type {dlfFulltextSegments}
@@ -230,15 +242,31 @@ var dlfViewerFullTextControl = function(map) {
         this)
     };
 
-    $('#tx-dlf-fulltextselection').text(this.dic['fulltext-loading']);
+    $('html').find(this.fullTextScrollElement).text(this.dic['fulltext-loading']);
 
     this.changeActiveBehaviour();
+};
+
+
+dlfViewerFullTextControl.prototype.getFullTextScrollElementId = function() {
+    // in getElementById no '#' is necessary / allowed at the beginning
+    // of the string. Therefor remove '#' if pre
+    let fullTextScrollElementId = this.fullTextScrollElement;
+    if (fullTextScrollElementId.substr(0,1) === '#') {
+      fullTextScrollElementId = fullTextScrollElementId.substr(1);
+    }
+    return fullTextScrollElementId.trim();
 };
 
 /**
  * @param {FullTextFeature} fulltextData
  */
 dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
+
+    if(dlfUtils.exists(fulltextData.type) && fulltextData.type == 'tei') {
+      document.getElementById(this.getFullTextScrollElementId()).innerHTML = fulltextData.fulltext;
+      return;
+    }
     // add features to fulltext layer
     this.textblockFeatures_ = fulltextData.getTextblocks();
     this.layers_.textblock.getSource().addFeatures(this.textblockFeatures_);
@@ -250,13 +278,13 @@ dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
 
     // add first feature of textBlockFeatures to map
     if (this.textblockFeatures_.length > 0) {
-        this.layers_.select.getSource().addFeature(this.textblockFeatures_[0]);
-        this.selectedFeature_ = this.textblockFeatures_[0];
+      this.layers_.select.getSource().addFeature(this.textblockFeatures_[0]);
+      this.selectedFeature_ = this.textblockFeatures_[0];
 
-        // If the control is *not* yet active, the fulltext is instead rendered on activation.
-        if (this.isActive) {
-            this.showFulltext(this.textblockFeatures_);
-        }
+      // If the control is *not* yet active, the fulltext is instead rendered on activation.
+      if (this.isActive) {
+        this.showFulltext(this.textblockFeatures_);
+      }
     }
 };
 
@@ -326,6 +354,34 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") === 'enabled') {
         // activate the fulltext behavior
         this.activate();
+    }
+};
+
+/**
+ * Recalculate position of text lines if full text container was resized
+ */
+dlfViewerFullTextControl.prototype.onResize = function() {
+    if (this.element != undefined && this.element.css('width') != this.lastHeight) {
+        this.lastHeight = this.element.css('width');
+        this.calculatePositions();
+    }
+};
+
+/**
+ * Calculate positions of text lines for scrolling
+ */
+dlfViewerFullTextControl.prototype.calculatePositions = function() {
+    this.positions.length = 0;
+
+    let texts = $('html').find(this.fullTextScrollElement).children('span.textline');
+    // check if fulltext exists for this page
+    if (texts.length > 0) {
+        let offset = $('#' + texts[0].id).position().top;
+
+        for(let text of texts) {
+            let pos = $('#' + text.id).position().top;
+            this.positions[text.id] = pos - offset;
+        }
     }
 };
 
@@ -416,7 +472,8 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
 
         if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
             targetElem.addClass('highlight');
-            setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement);
+            this.onResize();
+            setTimeout(this.scrollToText, 1000, targetElem, this.fullTextScrollElement, this.positions);
             hoverSourceTextline_.addFeature(textlineFeature);
         }
     }
@@ -427,10 +484,10 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
  * @param {any} element
  * @param {string} fullTextScrollElement
  */
-dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement) {
+dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement, positions) {
     if (element.hasClass('highlight')) {
         $(fullTextScrollElement).animate({
-            scrollTop: element.offset().top
+            scrollTop: positions[element[0].id]
         }, 500);
     }
 };
@@ -498,8 +555,9 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
         .attr('title', this.dic['fulltext-on']);
     }
 
-    $('#tx-dlf-fulltextselection').removeClass(className);
-    $('#tx-dlf-fulltextselection').hide();
+    $('html').find(this.fullTextScrollElement).removeClass(className);
+    $('html').find(this.fullTextScrollElement).hide();
+
     $('body').removeClass(className);
 
 };
@@ -530,8 +588,8 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
         .attr('title', this.dic['fulltext-off']);
     }
 
-    $('#tx-dlf-fulltextselection').addClass(className);
-    $('#tx-dlf-fulltextselection').show();
+    $('html').find(this.fullTextScrollElement).addClass(className);
+    $('html').find(this.fullTextScrollElement).show();
     $('body').addClass(className);
 };
 
@@ -564,7 +622,7 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
         return;
     }
 
-    var target = document.getElementById('tx-dlf-fulltextselection');
+    var target = document.getElementById(this.getFullTextScrollElementId());
     if (target !== null) {
         target.innerHTML = "";
         for (var feature of features) {
@@ -576,6 +634,7 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
             target.append(document.createElement('br'), document.createElement('br'));
         }
 
+        this.calculatePositions();
         this.lastRenderedFeatures_ = features;
     }
 };

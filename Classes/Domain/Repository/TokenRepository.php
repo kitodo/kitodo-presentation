@@ -39,10 +39,10 @@ class TokenRepository extends Repository
 
         $constraints = [];
 
-        $constraints[] = $query->lessThan('tstamp', (int) (time() - $expireTime));
+        $constraints[] = $query->lessThan('tstamp', time() - $expireTime);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd($constraints));
+            $query->matching($query->logicalAnd(...$constraints));
         }
 
         $tokensToBeRemoved = $query->execute();

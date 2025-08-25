@@ -17,11 +17,9 @@ use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class SolrSearchQueryTest extends FunctionalTestCase
 {
-
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Common/documents_1.csv',
         __DIR__ . '/../../Fixtures/Common/pages.csv',
@@ -32,6 +30,16 @@ class SolrSearchQueryTest extends FunctionalTestCase
         __DIR__ . '/../../Fixtures/Common/documents_1.solr.json'
     ];
 
+    /**
+     * Sets up the test environment.
+     *
+     * This method is called before each test method is executed.
+     * It imports the necessary CSV datasets and sets up the Solr core for the tests.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -49,45 +57,14 @@ class SolrSearchQueryTest extends FunctionalTestCase
         $settings = ['solrcore' => 4, 'storagePid' => 0];
 
         $params = ['query' => '10 Keyboard pieces'];
-        $search = new SolrSearch($documentRepository, null, $settings, $params);
+        $search = new SolrSearch($documentRepository, [], $settings, $params);
         $search->prepare();
         $solrSearchQuery = $search->getQuery();
         $result = $solrSearchQuery->execute();
         // FIXME: test would fail because it is not possible to set $this->settings['storagePid'] for the
         //  documentRepository used in DocumentRepository.php:502
 
-        $this->assertCount(0, $result);
-        $this->assertEquals(0, $solrSearchQuery->getLimit());
-    }
-
-    protected function setUpData($databaseFixtures): void
-    {
-        foreach ($databaseFixtures as $filePath) {
-            $this->importCSVDataSet($filePath);
-        }
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $this->initializeRepository(DocumentRepository::class, 0);
-    }
-
-    protected function setUpSolr($uid, $storagePid, $solrFixtures)
-    {
-        $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
-
-        // Setup Solr only once for all tests in this suite
-        static $solr = null;
-
-        if ($solr === null) {
-            $coreName = Solr::createCore();
-            $solr = Solr::getInstance($coreName);
-            foreach ($solrFixtures as $filePath) {
-                $this->importSolrDocuments($solr, $filePath);
-            }
-        }
-
-        $coreModel = $this->solrCoreRepository->findByUid($uid);
-        $coreModel->setIndexName($solr->core);
-        $this->solrCoreRepository->update($coreModel);
-        $this->persistenceManager->persistAll();
-        return $solr;
+        self::assertCount(0, $result);
+        self::assertEquals(0, $solrSearchQuery->getLimit());
     }
 }

@@ -12,8 +12,12 @@
 
 namespace Kitodo\Dlf\Common;
 
+use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Context\Context;
@@ -21,10 +25,13 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
+use TYPO3\CMS\Core\Resource\MimeTypeCollection;
+use TYPO3\CMS\Core\Resource\MimeTypeDetector;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 
 /**
@@ -57,7 +64,7 @@ class Helper
      * @access protected
      * @static
      * @var string This holds the hash algorithm
-     * 
+     *
      * @see openssl_get_md_methods() for options
      */
     protected static string $hashAlgorithm = 'sha256';
@@ -88,7 +95,8 @@ class Helper
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
-        $flashMessage = GeneralUtility::makeInstance(FlashMessage::class,
+        $flashMessage = GeneralUtility::makeInstance(
+            FlashMessage::class,
             $message,
             $title,
             $severity,
@@ -113,11 +121,7 @@ class Helper
     public static function checkIdentifier(string $id, string $type): bool
     {
         $digits = substr($id, 0, 8);
-        $checksum = 0;
-        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += (9 - $i) * intval(substr($digits, $i, 1));
-        }
-        $checksum = (11 - ($checksum % 11)) % 11;
+        $checksum = self::getChecksum($digits);
         switch (strtoupper($type)) {
             case 'PPN':
             case 'IDN':
@@ -146,9 +150,7 @@ class Helper
                 if (!preg_match('/\d{8}-\d{1}/i', $id)) {
                     return false;
                 } elseif ($checksum == 10) {
-                    //TODO: Binary operation "+" between string and 1 results in an error.
-                    // @phpstan-ignore-next-line
-                    return self::checkIdentifier(($digits + 1) . substr($id, -2, 2), 'SWD');
+                    return self::checkIdentifier(((int) $digits + 1) . substr($id, -2, 2), 'SWD');
                 } elseif (substr($id, -1, 1) != $checksum) {
                     return false;
                 }
@@ -169,6 +171,26 @@ class Helper
     }
 
     /**
+     * Get checksum for given digits.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param string $digits
+     *
+     * @return int
+     */
+    private static function getChecksum(string $digits): int
+    {
+        $checksum = 0;
+        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
+            $checksum += (9 - $i) * (int) substr($digits, $i, 1);
+        }
+        return (11 - ($checksum % 11)) % 11;
+    }
+
+    /**
      * Decrypt encrypted value with given control hash
      *
      * @access public
@@ -185,28 +207,27 @@ class Helper
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
             || !in_array(self::$hashAlgorithm, openssl_get_md_methods(true))
         ) {
-            self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
+            self::error('OpenSSL library doesn\'t support cipher and/or hash algorithm');
             return false;
         }
-        if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
-            self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
+        if (empty(self::getEncryptionKey())) {
+            self::error('No encryption key set in TYPO3 configuration');
             return false;
         }
         if (
             empty($encrypted)
             || strlen($encrypted) < openssl_cipher_iv_length(self::$cipherAlgorithm)
         ) {
-            self::log('Invalid parameters given for decryption', LOG_SEVERITY_ERROR);
+            self::error('Invalid parameters given for decryption');
             return false;
         }
         // Split initialisation vector and encrypted data.
         $binary = base64_decode($encrypted);
         $iv = substr($binary, 0, openssl_cipher_iv_length(self::$cipherAlgorithm));
         $data = substr($binary, openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
         // Decrypt data.
-        $decrypted = openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
-        return $decrypted;
+        return openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
     }
 
     /**
@@ -231,49 +252,64 @@ class Helper
 
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(true);
-        // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-        $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
+
         // Try to load XML from file.
         $xml = simplexml_load_string($content);
-        // reset entity loader setting
-        libxml_disable_entity_loader($previousValueOfEntityLoader);
+
         // Reset libxml's error logging.
         libxml_use_internal_errors($libxmlErrors);
         return $xml;
     }
 
     /**
-     * Add a message to the TYPO3 log
+     * Add a notice message to the TYPO3 log
      *
      * @access public
      *
      * @static
      *
      * @param string $message The message to log
-     * @param int $severity The severity of the message 0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
      *
      * @return void
      */
-    public static function log(string $message, int $severity = 0): void
+    public static function notice(string $message): void
     {
         $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
+        $logger->notice($message);
+    }
 
-        switch ($severity) {
-            case 0:
-                $logger->info($message);
-                break;
-            case 1:
-                $logger->notice($message);
-                break;
-            case 2:
-                $logger->warning($message);
-                break;
-            case 3:
-                $logger->error($message);
-                break;
-            default:
-                break;
-        }
+    /**
+     * Add a warning message to the TYPO3 log
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param string $message The message to log
+     *
+     * @return void
+     */
+    public static function warning(string $message): void
+    {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
+        $logger->warning($message);
+    }
+
+    /**
+     * Add an error message to the TYPO3 log
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param string $message The message to log
+     *
+     * @return void
+     */
+    public static function error(string $message): void
+    {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
+        $logger->error($message);
     }
 
     /**
@@ -290,12 +326,11 @@ class Helper
     public static function digest(string $string)
     {
         if (!in_array(self::$hashAlgorithm, openssl_get_md_methods(true))) {
-            self::log('OpenSSL library doesn\'t support hash algorithm', LOG_SEVERITY_ERROR);
+            self::error('OpenSSL library doesn\'t support hash algorithm');
             return false;
         }
         // Hash string.
-        $hashed = openssl_digest($string, self::$hashAlgorithm);
-        return $hashed;
+        return openssl_digest($string, self::$hashAlgorithm);
     }
 
     /**
@@ -315,16 +350,16 @@ class Helper
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
             || !in_array(self::$hashAlgorithm, openssl_get_md_methods(true))
         ) {
-            self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
+            self::error('OpenSSL library doesn\'t support cipher and/or hash algorithm');
             return false;
         }
-        if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])) {
-            self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
+        if (empty(self::getEncryptionKey())) {
+            self::error('No encryption key set in TYPO3 configuration');
             return false;
         }
         // Generate random initialization vector.
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'], self::$hashAlgorithm, true);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
         // Encrypt data.
         $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
         // Merge initialization vector and encrypted data.
@@ -335,24 +370,7 @@ class Helper
     }
 
     /**
-     * Get the unqualified name of a class
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $qualifiedClassName The qualified class name from get_class()
-     *
-     * @return string The unqualified class name
-     */
-    public static function getUnqualifiedClassName(string $qualifiedClassName): string
-    {
-        $nameParts = explode('\\', $qualifiedClassName);
-        return end($nameParts);
-    }
-
-    /**
-     * Clean up a string to use in an URL.
+     * Clean up a string to use in a URL.
      *
      * @access public
      *
@@ -371,8 +389,7 @@ class Helper
         // Remove multiple dashes or whitespaces.
         $string = preg_replace('/[\s-]+/', ' ', $string);
         // Convert whitespaces and underscore to dash.
-        $string = preg_replace('/[\s_]/', '-', $string);
-        return $string;
+        return preg_replace('/[\s_]/', '-', $string);
     }
 
     /**
@@ -389,8 +406,8 @@ class Helper
     public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
+        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
+            foreach (self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
                 $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }
         }
@@ -398,7 +415,7 @@ class Helper
     }
 
     /**
-     * Get the "index_name" for an UID
+     * Get the "index_name" for a UID
      *
      * @access public
      *
@@ -413,13 +430,13 @@ class Helper
     public static function getIndexNameFromUid(int $uid, string $table, int $pid = -1): string
     {
         // Sanitize input.
-        $uid = max(intval($uid), 0);
+        $uid = max($uid, 0);
         if (
             !$uid
             // NOTE: Only use tables that don't have too many entries!
-            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures', 'tx_dlf_solrcores'])
+            || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
-            self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
+            self::error('Invalid UID "' . $uid . '" or table "' . $table . '"');
             return '';
         }
 
@@ -454,7 +471,7 @@ class Helper
         $result = $cache[$table][$cacheKey] ?? '';
 
         if ($result === '') {
-            self::log('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
+            self::warning('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"');
         }
 
         return $result;
@@ -487,7 +504,7 @@ class Helper
         if (!empty($lang)) {
             return $lang;
         } else {
-            self::log('Language code "' . $code . '" not found in ISO-639 table', LOG_SEVERITY_NOTICE);
+            self::notice('Language code "' . $code . '" not found in ISO-639 table');
             return $code;
         }
     }
@@ -513,15 +530,15 @@ class Helper
         $where = '';
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
-            $pid = max(intval($pid), 0);
-            $where = $queryBuilder->expr()->eq('tx_dlf_structures.pid', $pid);
+            $pid = max($pid, 0);
+            $where = $queryBuilder->expr()->eq('pid', $pid);
         }
 
         // Fetch document info for UIDs in $documentSet from DB
         $kitodoStructures = $queryBuilder
             ->select(
-                'tx_dlf_structures.uid AS uid',
-                'tx_dlf_structures.index_name AS indexName'
+                'uid',
+                'index_name AS indexName'
             )
             ->from('tx_dlf_structures')
             ->where($where)
@@ -530,97 +547,7 @@ class Helper
         $allStructures = $kitodoStructures->fetchAllAssociative();
 
         // make lookup-table indexName -> uid
-        $allStructures = array_column($allStructures, 'indexName', 'uid');
-
-        return $allStructures;
-    }
-
-    /**
-     * Get the URN of an object
-     * @see http://www.persistent-identifier.de/?link=316
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $base The namespace and base URN
-     * @param string $id The object's identifier
-     *
-     * @return string Uniform Resource Name as string
-     */
-    public static function getURN(string $base, string $id): string
-    {
-        $concordance = [
-            '0' => 1,
-            '1' => 2,
-            '2' => 3,
-            '3' => 4,
-            '4' => 5,
-            '5' => 6,
-            '6' => 7,
-            '7' => 8,
-            '8' => 9,
-            '9' => 41,
-            'a' => 18,
-            'b' => 14,
-            'c' => 19,
-            'd' => 15,
-            'e' => 16,
-            'f' => 21,
-            'g' => 22,
-            'h' => 23,
-            'i' => 24,
-            'j' => 25,
-            'k' => 42,
-            'l' => 26,
-            'm' => 27,
-            'n' => 13,
-            'o' => 28,
-            'p' => 29,
-            'q' => 31,
-            'r' => 12,
-            's' => 32,
-            't' => 33,
-            'u' => 11,
-            'v' => 34,
-            'w' => 35,
-            'x' => 36,
-            'y' => 37,
-            'z' => 38,
-            '-' => 39,
-            ':' => 17,
-        ];
-        $urn = strtolower($base . $id);
-        if (preg_match('/[^a-z\d:-]/', $urn)) {
-            self::log('Invalid chars in given parameters', LOG_SEVERITY_WARNING);
-            return '';
-        }
-        $digits = '';
-        for ($i = 0, $j = strlen($urn); $i < $j; $i++) {
-            $digits .= $concordance[substr($urn, $i, 1)];
-        }
-        $checksum = 0;
-        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += ($i + 1) * intval(substr($digits, $i, 1));
-        }
-        $checksum = substr((string) floor($checksum / (int) substr($digits, -1, 1)), -1, 1);
-        return $base . $id . $checksum;
-    }
-
-    /**
-     * Check if given ID is a valid Pica Production Number (PPN)
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $id The identifier to check
-     *
-     * @return bool Is $id a valid PPN?
-     */
-    public static function isPPN(string $id): bool
-    {
-        return self::checkIdentifier($id, 'PPN');
+        return array_column($allStructures, 'indexName', 'uid');
     }
 
     /**
@@ -640,40 +567,72 @@ class Helper
             return false;
         }
 
-        $parsed = parse_url($url);
-        $scheme = $parsed['scheme'] ?? '';
-        $schemeNormalized = strtolower($scheme);
-
-        return $schemeNormalized === 'http' || $schemeNormalized === 'https';
+        try {
+            $uri = new Uri($url);
+            return !empty($uri->getScheme());
+        } catch (\InvalidArgumentException $e) {
+            self::error($e->getMessage());
+            return false;
+        }
     }
 
     /**
-     * Merges two arrays recursively and actually returns the modified array.
-     * @see ArrayUtility::mergeRecursiveWithOverrule()
+     * Process a data and/or command map with TYPO3 core engine as admin.
      *
      * @access public
      *
-     * @static
+     * @param array $data Data map
+     * @param array $cmd Command map
+     * @param bool $reverseOrder Should the data map be reversed?
+     * @param bool $cmdFirst Should the command map be processed first?
      *
-     * @param array $original Original array
-     * @param array $overrule Overrule array, overruling the original array
-     * @param bool $addKeys If set to false, keys that are not found in $original will not be set
-     * @param bool $includeEmptyValues If set, values from $overrule will overrule if they are empty
-     * @param bool $enableUnsetFeature If set, special value "__UNSET" can be used in the overrule array to unset keys in the original array
-     *
-     * @return array Merged array
+     * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
      */
-    public static function mergeRecursiveWithOverrule(array $original, array $overrule, bool $addKeys = true, bool $includeEmptyValues = true, bool $enableUnsetFeature = true): array
+    public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], $reverseOrder = false, $cmdFirst = false)
     {
-        ArrayUtility::mergeRecursiveWithOverrule($original, $overrule, $addKeys, $includeEmptyValues, $enableUnsetFeature);
-        return $original;
+        $context = GeneralUtility::makeInstance(Context::class);
+
+        if (
+            ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()
+            && $context->getPropertyFromAspect('backend.user', 'isAdmin')
+        ) {
+            // Instantiate TYPO3 core engine.
+            $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+            // We do not use workspaces and have to bypass restrictions in DataHandler.
+            $dataHandler->bypassWorkspaceRestrictions = true;
+            // Load data and command arrays.
+            $dataHandler->start($data, $cmd);
+            // Process command map first if default order is reversed.
+            if (
+                !empty($cmd)
+                && $cmdFirst
+            ) {
+                $dataHandler->process_cmdmap();
+            }
+            // Process data map.
+            if (!empty($data)) {
+                $dataHandler->reverseOrder = $reverseOrder;
+                $dataHandler->process_datamap();
+            }
+            // Process command map if processing order is not reversed.
+            if (
+                !empty($cmd)
+                && !$cmdFirst
+            ) {
+                $dataHandler->process_cmdmap();
+            }
+            return $dataHandler->substNEWwithIDs;
+        } else {
+            self::error('Current backend user has no admin privileges');
+            return [];
+        }
     }
 
     /**
      * Fetches and renders all available flash messages from the queue.
      *
      * @access public
-     * 
+     *
      * @static
      *
      * @param string $queue The queue's unique identifier
@@ -685,9 +644,40 @@ class Helper
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
-        $content = GeneralUtility::makeInstance(KitodoFlashMessageRenderer::class)
+        return GeneralUtility::makeInstance(KitodoFlashMessageRenderer::class)
             ->render($flashMessages);
-        return $content;
+    }
+
+    /**
+     * Converts time code to seconds, where time code has one of those formats:
+     * - `hh:mm:ss`
+     * - `mm:ss`
+     * - `ss`
+     *
+     * Floating point values may be used.
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param string $timeCode The time code to convert
+     *
+     * @return float
+     */
+    public static function timeCodeToSeconds(string $timeCode): float
+    {
+        $parts = explode(":", $timeCode);
+
+        $totalSeconds = 0;
+        $factor = 1;
+
+        // Iterate through $parts reversely
+        for ($i = count($parts) - 1; $i >= 0; $i--) {
+            $totalSeconds += $factor * (float) $parts[$i];
+            $factor *= 60;
+        }
+
+        return $totalSeconds;
     }
 
     /**
@@ -708,9 +698,9 @@ class Helper
         // Load labels into static variable for future use.
         static $labels = [];
         // Sanitize input.
-        $pid = max(intval($pid), 0);
+        $pid = max((int) $pid, 0);
         if (!$pid) {
-            self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
+            self::warning('Invalid PID ' . $pid . ' for translation');
             return $indexName;
         }
         /** @var PageRepository $pageRepository */
@@ -719,7 +709,7 @@ class Helper
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
         $languageContentId = $languageAspect->getContentId();
 
-        // Check if "index_name" is an UID.
+        // Check if "index_name" is a UID.
         if (MathUtility::canBeInterpretedAsInteger($indexName)) {
             $indexName = self::getIndexNameFromUid((int) $indexName, $table, $pid);
         }
@@ -755,7 +745,7 @@ class Helper
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
                     $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId)),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
@@ -764,7 +754,7 @@ class Helper
             $row = $result->fetchAssociative();
 
             if ($row) {
-                // If there is an translated content element, overwrite the received $indexName.
+                // If there is a translated content element, overwrite the received $indexName.
                 $indexName = $row['index_name'];
             }
         }
@@ -772,13 +762,13 @@ class Helper
         // Check if we already got a translation.
         if (empty($labels[$table][$pid][$languageContentId][$indexName])) {
             // Check if this table is allowed for translation.
-            if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_structures'])) {
+            if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
                 if ($languageContentId > 0) {
                     $additionalWhere = $queryBuilder->expr()->andX(
                         $queryBuilder->expr()->orX(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', intval($languageContentId))
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId)
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
@@ -807,10 +797,10 @@ class Helper
                         }
                     }
                 } else {
-                    self::log('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible', LOG_SEVERITY_NOTICE);
+                    self::notice('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible');
                 }
             } else {
-                self::log('No translations available for table "' . $table . '"', LOG_SEVERITY_WARNING);
+                self::warning('No translations available for table "' . $table . '"');
             }
         }
 
@@ -835,8 +825,7 @@ class Helper
      */
     public static function whereExpression(string $table, bool $showHidden = false): string
     {
-        // TODO: Check with applicationType; TYPO3_MODE is removed in v12
-        if (\TYPO3_MODE === 'FE') {
+        if (!Environment::isCli() && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             // Should we ignore the record's hidden flag?
             $ignoreHide = 0;
             if ($showHidden) {
@@ -851,14 +840,13 @@ class Helper
             } else {
                 return '';
             }
-            // TODO: Check with applicationType; TYPO3_MODE is removed in v12
-        } elseif (\TYPO3_MODE === 'BE') {
+        } elseif (Environment::isCli() || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             return GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table)
                 ->expr()
                 ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
-            self::log('Unexpected TYPO3_MODE', LOG_SEVERITY_ERROR);
+            self::error('Unexpected application type (neither frontend or backend)');
             return '1=-1';
         }
     }
@@ -909,25 +897,23 @@ class Helper
         }
 
         // Get extension configuration.
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
 
         /** @var RequestFactory $requestFactory */
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $configuration = [
             'timeout' => 30,
             'headers' => [
-                'User-Agent' => $extConf['useragent'] ?? 'Kitodo.Presentation Proxy',
+                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation',
             ],
         ];
         try {
             $response = $requestFactory->request($url, 'GET', $configuration);
         } catch (\Exception $e) {
-            self::log('Could not fetch data from URL "' . $url . '". Error: ' . $e->getMessage() . '.', LOG_SEVERITY_WARNING);
+            self::warning('Could not fetch data from URL "' . $url . '". Error: ' . $e->getMessage() . '.');
             return false;
         }
-        $content  = $response->getBody()->getContents();
-
-        return $content;
+        return $response->getBody()->getContents();
     }
 
     /**
@@ -945,5 +931,141 @@ class Helper
     public static function isValidXmlId($id): bool
     {
         return preg_match('/^[_a-z][_a-z0-9-.]*$/i', $id) === 1;
+    }
+
+    /**
+     * Get options from local configuration.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @return array
+     */
+    private static function getOptions(): array
+    {
+        return self::getLocalConfigurationByPath('SC_OPTIONS');
+    }
+
+    /**
+     * Get encryption key from local configuration.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @return string|null
+     */
+    private static function getEncryptionKey(): ?string
+    {
+        return self::getLocalConfigurationByPath('SYS/encryptionKey');
+    }
+
+    /**
+     * Get local configuration for given path.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param string $path
+     *
+     * @return mixed
+     */
+    private static function getLocalConfigurationByPath(string $path)
+    {
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+
+        if (array_key_exists(strtok($path, '/'), $configurationManager->getLocalConfiguration())) {
+            return $configurationManager->getLocalConfigurationValueByPath($path);
+        }
+
+        return ArrayUtility::getValueByPath($GLOBALS['TYPO3_CONF_VARS'], $path);
+    }
+
+    /**
+     * Filters a file based on its mimetype.
+     *
+     * This method checks if the provided file array contains a specified mimetype key and
+     * verifies if the mimetype belongs to any of the allowed mimetypes or matches any of the additional custom mimetypes.
+     *
+     * @param mixed $file The file array to filter
+     * @param array $allowedCategories The allowed MIME type categories to filter by (e.g., ['audio'], ['video'] or ['image', 'application'])
+     * @param null|bool|array $dlfMimeTypes Optional array of custom dlf mimetype keys to filter by. Default is null.
+     *                      - null: use no custom dlf mimetypes
+     *                      - true: use all custom dlf mimetypes
+     *                      - array: use only specific types - Accepted values: 'IIIF', 'IIP', 'ZOOMIFY', 'JPG'
+     * @param string $mimeTypeKey The key used to access the mimetype in the file array (default is 'mimetype')
+     *
+     * @return bool True if the file mimetype belongs to any of the allowed mimetypes or matches any custom dlf mimetypes, false otherwise
+     */
+    public static function filterFilesByMimeType($file, array $allowedCategories, null|bool|array $dlfMimeTypes = null, string $mimeTypeKey = 'mimetype'): bool
+    {
+        if (empty($allowedCategories) && empty($dlfMimeTypes)) {
+            return false;
+        }
+
+        // Retrieves MIME types from the TYPO3 Core MimeTypeCollection
+        $mimeTypeCollection = GeneralUtility::makeInstance(MimeTypeCollection::class);
+        $allowedMimeTypes = array_filter(
+            $mimeTypeCollection->getMimeTypes(),
+            function ($mimeType) use ($allowedCategories) {
+                foreach ($allowedCategories as $category) {
+                    if (str_starts_with($mimeType, $category . '/')) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        );
+
+        // Custom dlf MIME types
+        $dlfMimeTypeArray = [
+            'IIIF' => 'application/vnd.kitodo.iiif',
+            'IIP' => 'application/vnd.netfpx',
+            'ZOOMIFY' => 'application/vnd.kitodo.zoomify',
+            'JPG' => 'image/jpg' // Wrong declared JPG MIME type in falsy METS Files for JPEG files
+        ];
+
+        // Apply filtering to the custom dlf MIME type array
+        $filteredDlfMimeTypes = match (true) {
+            $dlfMimeTypes === null => [],
+            $dlfMimeTypes === true => $dlfMimeTypeArray,
+            is_array($dlfMimeTypes) => array_intersect_key($dlfMimeTypeArray, array_flip($dlfMimeTypes)),
+            default => []
+        };
+
+        // Actual filtering to check if the file's MIME type is allowed
+        if (is_array($file) && isset($file[$mimeTypeKey])) {
+            return in_array($file[$mimeTypeKey], $allowedMimeTypes) ||
+                   in_array($file[$mimeTypeKey], $filteredDlfMimeTypes);
+        } else {
+            self::warning('MIME type validation failed: File array is invalid or MIME type key is not set. File array: ' . json_encode($file) . ', mimeTypeKey: ' . $mimeTypeKey);
+            return false;
+        }
+    }
+
+    /**
+     * Get file extensions for a given MIME type
+     *
+     * @param string $mimeType
+     * @return array
+     */
+    public static function getFileExtensionsForMimeType(string $mimeType): array
+    {
+        $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
+        return $mimeTypeDetector->getFileExtensionsForMimeType($mimeType);
+    }
+
+    /**
+     * Get MIME types for a given file extension
+     *
+     * @param string $fileExtension
+     * @return array
+     */
+    public static function getMimeTypesForFileExtension(string $fileExtension): array
+    {
+        $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
+        return $mimeTypeDetector->getMimeTypesForFileExtension($fileExtension);
     }
 }

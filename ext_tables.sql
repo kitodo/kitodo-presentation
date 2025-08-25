@@ -62,6 +62,7 @@ CREATE TABLE tx_dlf_structures (
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
+    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     hidden smallint(6) DEFAULT '0' NOT NULL,
     toplevel smallint(6) DEFAULT '0' NOT NULL,
     label varchar(255) DEFAULT '' NOT NULL,
@@ -89,6 +90,7 @@ CREATE TABLE tx_dlf_metadata (
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
+    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     hidden smallint(6) DEFAULT '0' NOT NULL,
     sorting int(11) DEFAULT '0' NOT NULL,
     label varchar(255) DEFAULT '' NOT NULL,
@@ -126,17 +128,44 @@ CREATE TABLE tx_dlf_metadataformat (
     crdate int(11) DEFAULT '0' NOT NULL,
     cruser_id int(11) DEFAULT '0' NOT NULL,
     deleted smallint(6) DEFAULT '0' NOT NULL,
-    sys_language_uid int(11) DEFAULT '0' NOT NULL,
-    l18n_parent int(11) DEFAULT '0' NOT NULL,
+    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     parent_id int(11) DEFAULT '0' NOT NULL,
     encoded int(11) DEFAULT '0' NOT NULL,
     xpath varchar(1024) DEFAULT '' NOT NULL,
     xpath_sorting varchar(1024) DEFAULT '' NOT NULL,
+    subentries int(11) DEFAULT '0' NOT NULL,
     mandatory smallint(6) DEFAULT '0' NOT NULL,
 
     PRIMARY KEY (uid),
     KEY parent (pid),
     KEY parent_id (parent_id)
+);
+
+--
+-- Table structure for table 'tx_dlf_metadatasubentries'
+--
+CREATE TABLE tx_dlf_metadatasubentries (
+    uid int(11) NOT NULL auto_increment,
+    pid int(11) DEFAULT '0' NOT NULL,
+    parent_id int(11) DEFAULT '0' NOT NULL,
+    tstamp int(11) DEFAULT '0' NOT NULL,
+    crdate int(11) DEFAULT '0' NOT NULL,
+    cruser_id int(11) DEFAULT '0' NOT NULL,
+    deleted smallint(6) DEFAULT '0' NOT NULL,
+    sys_language_uid int(11) DEFAULT '0' NOT NULL,
+    l18n_parent int(11) DEFAULT '0' NOT NULL,
+    l18n_diffsource mediumblob NOT NULL,
+    label varchar(255) DEFAULT '' NOT NULL,
+    index_name varchar(255) DEFAULT '' NOT NULL,
+    xpath varchar(1024) DEFAULT '' NOT NULL,
+    default_value varchar(255) DEFAULT '' NOT NULL,
+    wrap text NOT NULL,
+
+    PRIMARY KEY (uid),
+    KEY parent (pid),
+    KEY parent_id (parent_id),
+    KEY language (l18n_parent,sys_language_uid),
+    KEY index_name (index_name)
 );
 
 --
@@ -191,6 +220,7 @@ CREATE TABLE tx_dlf_collections (
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
+    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     hidden smallint(6) DEFAULT '0' NOT NULL,
     fe_group varchar(100) DEFAULT '' NOT NULL,
     label varchar(255) DEFAULT '' NOT NULL,
@@ -225,6 +255,7 @@ CREATE TABLE tx_dlf_libraries (
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
+    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     label varchar(255) DEFAULT '' NOT NULL,
     index_name varchar(255) DEFAULT '' NOT NULL,
     website varchar(255) DEFAULT '' NOT NULL,
@@ -287,8 +318,9 @@ CREATE TABLE tx_dlf_basket (
     sys_language_uid int(11) DEFAULT '0' NOT NULL,
     l18n_parent int(11) DEFAULT '0' NOT NULL,
     l18n_diffsource mediumblob NOT NULL,
+    l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     label varchar(255) DEFAULT '' NOT NULL,
-    session_id varchar(32) DEFAULT '' NOT NULL,
+    session_id varchar(190) DEFAULT '' NOT NULL,
     doc_ids varchar(255) DEFAULT '' NOT NULL,
 
     PRIMARY KEY (uid),

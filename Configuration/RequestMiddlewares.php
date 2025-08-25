@@ -24,5 +24,17 @@ return [
                 'typo3/cms-frontend/prepare-tsfe-rendering'
             ]
         ],
+        'dlf/embedded3DViewer' => [
+            'target' => \Kitodo\Dlf\Middleware\Embedded3dViewer::class,
+            'after' => [
+                'typo3/cms-frontend/prepare-tsfe-rendering'
+            ]
+        ],
+        'dlf/domDocumentValidation' => [
+            'target' => \Kitodo\Dlf\Middleware\DOMDocumentValidation::class,
+            'after' => [
+                'typo3/cms-frontend/prepare-tsfe-rendering'
+            ]
+        ]
     ],
 ];

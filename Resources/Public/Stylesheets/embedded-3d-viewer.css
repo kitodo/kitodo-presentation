@@ -1,0 +1,10 @@
+.tx-dlf-embedded3dviewer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.tx-dlf-embedded3dviewer > iframe {
+    width: inherit;
+    height: inherit;
+}

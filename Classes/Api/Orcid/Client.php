@@ -94,7 +94,8 @@ class Client
      *
      * @return void
      */
-    public function setEndpoint(string $endpoint): void {
+    public function setEndpoint(string $endpoint): void
+    {
         $this->endpoint = $endpoint;
     }
 
@@ -105,7 +106,7 @@ class Client
      *
      * @return object|bool
      **/
-    public function getData()
+    public function getData(): object|bool
     {
         $url = $this->getApiEndpoint();
         try {

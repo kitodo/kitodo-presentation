@@ -78,7 +78,8 @@ class Client
      *
      * @return void
      */
-    public function setEndpoint(string $endpoint): void {
+    public function setEndpoint(string $endpoint): void
+    {
         $this->endpoint = $endpoint;
     }
 
@@ -89,7 +90,7 @@ class Client
      *
      * @return object|bool
      **/
-    public function getData()
+    public function getData(): object|bool
     {
         $url = $this->getApiEndpoint();
         try {
@@ -103,7 +104,7 @@ class Client
 
     /**
      * Creates the qualified API endpoint for retrieving the desired data
-     * 
+     *
      * @access private
      *
      * @return string

@@ -17,7 +17,6 @@ use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 class SolrSearchTest extends FunctionalTestCase
 {
@@ -30,8 +29,17 @@ class SolrSearchTest extends FunctionalTestCase
     ];
 
     private Solr $solr;
-    private SolrCoreRepository $solrCoreRepository;
 
+    /**
+     * Sets up the test environment.
+     *
+     * This method is called before each test method is executed.
+     * It imports the necessary CSV datasets and sets up the Solr core for the tests.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -49,58 +57,27 @@ class SolrSearchTest extends FunctionalTestCase
         $settings = ['solrcore' => $solrCoreName, 'storagePid' => 0];
 
         $resultSet = $this->solr->searchRaw(['core' => 5, 'collection' => 1]);
-        $this->assertCount(33, $resultSet);
+        self::assertCount(33, $resultSet);
 
         $params1 = ['query' => '*'];
         $search = new SolrSearch($documentRepository, null, $settings, $params1);
         $search->prepare();
-        $this->assertEquals(33, $search->getNumFound());
-        $this->assertEquals(3, $search->getSolrResults()['numberOfToplevels']);
-        $this->assertCount(15, $search->getSolrResults()['documents']);
+        self::assertEquals(33, $search->getNumFound());
+        self::assertEquals(3, $search->getSolrResults()['numberOfToplevels']);
+        self::assertCount(15, $search->getSolrResults()['documents']);
 
         $params2 = ['query' => '10 Keyboard pieces'];
         $search2 = new SolrSearch($documentRepository, null, $settings, $params2);
         $search2->prepare();
-        $this->assertEquals(1, $search2->getNumFound());
-        $this->assertEquals(1, $search2->getSolrResults()['numberOfToplevels']);
-        $this->assertCount(1, $search2->getSolrResults()['documents']);
+        self::assertEquals(1, $search2->getNumFound());
+        self::assertEquals(1, $search2->getSolrResults()['numberOfToplevels']);
+        self::assertCount(1, $search2->getSolrResults()['documents']);
 
         $params3 = ['query' => 'foobar'];
         $search3 = new SolrSearch($documentRepository, null, $settings, $params3);
         $search3->prepare();
-        $this->assertEquals(0, $search3->getNumFound());
-        $this->assertEquals(0, $search3->getSolrResults()['numberOfToplevels']);
-        $this->assertCount(0, $search3->getSolrResults()['documents']);
-    }
-
-    protected function setUpData($databaseFixtures): void
-    {
-        foreach ($databaseFixtures as $filePath) {
-            $this->importCSVDataSet($filePath);
-        }
-        $this->persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $this->initializeRepository(DocumentRepository::class, 0);
-    }
-
-    protected function setUpSolr($uid, $storagePid, $solrFixtures)
-    {
-        $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
-
-        // Setup Solr only once for all tests in this suite
-        static $solr = null;
-
-        if ($solr === null) {
-            $coreName = Solr::createCore();
-            $solr = Solr::getInstance($coreName);
-            foreach ($solrFixtures as $filePath) {
-                $this->importSolrDocuments($solr, $filePath);
-            }
-        }
-
-        $coreModel = $this->solrCoreRepository->findByUid($uid);
-        $coreModel->setIndexName($solr->core);
-        $this->solrCoreRepository->update($coreModel);
-        $this->persistenceManager->persistAll();
-        return $solr;
+        self::assertEquals(0, $search3->getNumFound());
+        self::assertEquals(0, $search3->getSolrResults()['numberOfToplevels']);
+        self::assertCount(0, $search3->getSolrResults()['documents']);
     }
 }

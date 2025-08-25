@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -29,6 +30,6 @@ class IiifUrlReaderTest extends FunctionalTestCase
         self::assertSame($expected, $iiifUrlReader->getContent($correctUrl));
 
         $incorrectUrl = 'http://web:8001/incorrectPath';
-        self::assertSame('', $iiifUrlReader->getContent($incorrectUrl));
+        self::assertEmpty($iiifUrlReader->getContent($incorrectUrl));
     }
 }

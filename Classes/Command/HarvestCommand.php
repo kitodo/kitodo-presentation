@@ -13,9 +13,9 @@
 namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -88,6 +88,12 @@ class HarvestCommand extends BaseCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Name of the set to limit harvesting to.'
+            )
+            ->addOption(
+                'softCommit',
+                null,
+                InputOption::VALUE_NONE,
+                'If this option is set, documents are just added to the index by a soft commit.'
             );
     }
 
@@ -108,11 +114,11 @@ class HarvestCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
 
-        $this->initializeRepositories($input->getOption('pid'));
+        $this->initializeRepositories((int) $input->getOption('pid'));
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            exit(1);
+            return Command::FAILURE;
         }
 
         if (
@@ -127,21 +133,21 @@ class HarvestCommand extends BaseCommand
             }
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
-                $output_solrCores = [];
-                foreach ($allSolrCores as $index_name => $uid) {
-                    $output_solrCores[] = $uid . ' : ' . $index_name;
+                $outputSolrCores = [];
+                foreach ($allSolrCores as $indexName => $uid) {
+                    $outputSolrCores[] = $uid . ' : ' . $indexName;
                 }
-                if (empty($output_solrCores)) {
+                if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    exit(1);
+                    return Command::FAILURE;
                 } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $output_solrCores) . "\n");
-                    exit(1);
+                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
+                    return Command::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            exit(1);
+            return Command::FAILURE;
         }
 
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('lib'))) {
@@ -152,11 +158,11 @@ class HarvestCommand extends BaseCommand
             $baseUrl = $this->owner->getOaiBase();
         } else {
             $io->error('ERROR: Required parameter --lib|-l is not a valid UID.');
-            exit(1);
+            return Command::FAILURE;
         }
         if (!GeneralUtility::isValidUrl($baseUrl)) {
             $io->error('ERROR: No valid OAI Base URL set for library with given UID ("' . $input->getOption('lib') . '").');
-            exit(1);
+            return Command::FAILURE;
         } else {
             try {
                 $oai = Endpoint::build($baseUrl);
@@ -198,7 +204,7 @@ class HarvestCommand extends BaseCommand
             }
             if (empty($set)) {
                 $io->error('ERROR: OAI interface does not provide a set with given setSpec ("' . $input->getOption('set') . '").');
-                exit(1);
+                return Command::FAILURE;
             }
         }
 
@@ -253,15 +259,15 @@ class HarvestCommand extends BaseCommand
                 }
                 $document->setCurrentDocument($doc);
                 // save to database
-                $this->saveToDatabase($document);
+                $this->saveToDatabase($document, $input->getOption('softCommit'));
                 // add to index
-                Indexer::add($document, $this->documentRepository);
+                Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
             }
         }
 
         $io->success('All done!');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**

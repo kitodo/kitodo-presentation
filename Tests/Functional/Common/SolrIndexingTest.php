@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\AbstractDocument;
@@ -16,14 +26,24 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SolrIndexingTest extends FunctionalTestCase
 {
     /** @var CollectionRepository */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
     /** @var DocumentRepository */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
     /** @var SolrCoreRepository */
-    protected $solrCoreRepository;
+    protected SolrCoreRepository $solrCoreRepository;
 
+    /**
+     * Sets up the test environment.
+     *
+     * This method is called before each test method is executed.
+     * It initializes the repositories and imports necessary CSV datasets for the tests.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -78,9 +98,9 @@ class SolrIndexingTest extends FunctionalTestCase
             'storagePid' => $document->getPid(),
         ];
 
-        $solrSearch = $this->documentRepository->findSolrByCollection(null, $solrSettings, ['query' => '*']);
+        $solrSearch = $this->documentRepository->findSolrWithoutCollection($solrSettings, ['query' => '*']);
         $solrSearch->getQuery()->execute();
-        self::assertEquals(1, count($solrSearch));
+        self::assertCount(1, $solrSearch);
         self::assertEquals(15, $solrSearch->getNumFound());
 
         // Check that the title stored in Solr matches the title of database entry
@@ -107,7 +127,7 @@ class SolrIndexingTest extends FunctionalTestCase
         foreach ($solrSearch as $key => $value) {
             $iter[$key] = $value;
         }
-        self::assertEquals(1, count($iter));
+        self::assertCount(1, $iter);
         self::assertEquals($solrSearch[0], $iter[0]);
     }
 
@@ -125,7 +145,7 @@ class SolrIndexingTest extends FunctionalTestCase
         $collections = $this->collectionRepository->findCollectionsBySettings([
             'index_name' => ['Musik', 'Projekt: Dresdner Hefte'],
         ]);
-        $musik[] = $collections[0];
+        $music[] = $collections[0];
         $dresdnerHefte[] = $collections[1];
 
         $settings = [
@@ -134,21 +154,21 @@ class SolrIndexingTest extends FunctionalTestCase
         ];
 
         // No query: Only list toplevel result(s) in collection(s)
-        $musikSearch = $this->documentRepository->findSolrByCollection($musik, $settings, []);
-        $dresdnerHefteSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, []);
-        $multiCollectionSearch = $this->documentRepository->findSolrByCollection($collections, $settings, []);
-        self::assertGreaterThanOrEqual(1, $musikSearch->getNumFound());
+        $musicSearch = $this->documentRepository->findSolrByCollections($music, $settings, []);
+        $dresdnerHefteSearch = $this->documentRepository->findSolrByCollections($dresdnerHefte, $settings, []);
+        $multiCollectionSearch = $this->documentRepository->findSolrByCollections($collections, $settings, []);
+        self::assertGreaterThanOrEqual(1, $musicSearch->getNumFound());
         self::assertGreaterThanOrEqual(1, $dresdnerHefteSearch->getNumFound());
         self::assertEquals('533223312LOG_0000', $dresdnerHefteSearch->getSolrResults()['documents'][0]['id']);
         self::assertEquals(
             // Assuming there's no overlap
-            $dresdnerHefteSearch->getNumFound() + $musikSearch->getNumFound(),
+            $dresdnerHefteSearch->getNumFound() + $musicSearch->getNumFound(),
             $multiCollectionSearch->getNumFound()
         );
 
         // With query: List all results
-        $metadataSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden']);
-        $fulltextSearch = $this->documentRepository->findSolrByCollection($dresdnerHefte, $settings, ['query' => 'Dresden', 'fulltext' => '1']);
+        $metadataSearch = $this->documentRepository->findSolrByCollection($collections[1], $settings, ['query' => 'Dresden']);
+        $fulltextSearch = $this->documentRepository->findSolrByCollection($collections[1], $settings, ['query' => 'Dresden', 'fulltext' => '1']);
         self::assertGreaterThan($metadataSearch->getNumFound(), $fulltextSearch->getNumFound());
     }
 
@@ -157,11 +177,21 @@ class SolrIndexingTest extends FunctionalTestCase
      */
     public function canGetIndexFieldName()
     {
-        $this->assertEquals('title_usi', Indexer::getIndexFieldName('title', 20000));
-        $this->assertEquals('year_uuu', Indexer::getIndexFieldName('year', 20000));
-        $this->assertEquals('', Indexer::getIndexFieldName('title'));
+        self::assertEquals('title_usi', Indexer::getIndexFieldName('title', 20000));
+        self::assertEquals('year_uuu', Indexer::getIndexFieldName('year', 20000));
+        self::assertEmpty(Indexer::getIndexFieldName('title'));
     }
 
+    /**
+     * Creates a new Solr core for testing purposes.
+     *
+     * This method creates a new Solr core, initializes it, and stores the core
+     * information in the database.
+     *
+     * @access protected
+     *
+     * @return object An object containing the Solr instance and the SolrCore model
+     */
     protected function createSolrCore(): object
     {
         $coreName = Solr::createCore();

@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Kitodo\Dlf\Domain\Model\Basket;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
@@ -21,6 +22,9 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @method Basket|null findOneByFeUserId(int $feUserId) Get a basket by frontend user ID
+ * @method Basket|null findOneBySessionId(string $sessionId) Get a document by session id
  */
 class BasketRepository extends Repository
 {

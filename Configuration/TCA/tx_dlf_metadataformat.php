@@ -17,7 +17,6 @@ return [
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
-        'languageField' => 'sys_language_uid', // There are no translations of metadataformat records. But to avoid error messages of the datahandler on translating metadata records, we have to add these fields here.
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfmetadata.png',
         'rootLevel' => 0,
@@ -27,36 +26,6 @@ return [
     'interface' => [
     ],
     'columns' => [
-        'sys_language_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'foreign_table' => 'sys_language',
-                'foreign_table_where' => 'ORDER BY sys_language.title',
-                'items' => [
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.default_value', 0],
-                ],
-                'default' => 0,
-            ],
-        ],
-        'l18n_parent' => [
-            'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'foreign_table' => 'tx_dlf_metadataformat',
-                'foreign_table_where' => 'AND tx_dlf_metadataformat.pid=###CURRENT_PID### AND tx_dlf_metadataformat.sys_language_uid IN (-1,0) ORDER BY encoded ASC',
-                'items' => [
-                    ['', 0],
-                ],
-                'default' => 0,
-            ],
-        ],
         'parent_id' => [
             'config' => [
                 'type' => 'passthrough',
@@ -107,9 +76,32 @@ return [
                 'default' => 0,
             ],
         ],
+        'subentries' => [
+            'exclude' => 1,
+            'l10n_mode' => 'exclude',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadatasubentries',
+            'config' => [
+                'type' => 'inline',
+                'foreign_table' => 'tx_dlf_metadatasubentries',
+                'foreign_field' => 'parent_id',
+                'appearance' => [
+                    'expandSingle' => 1,
+                    'levelLinksPosition' => 'bottom',
+                    'enabledControls' => [
+                        'info' => 1,
+                        'new' => 1,
+                        'dragdrop' => 0,
+                        'sort' => 1,
+                        'hide' => 0,
+                        'delete' => 1,
+                        'localize' => 0,
+                    ],
+                ],
+            ],
+        ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadataformat.tab1,encoded,xpath,xpath_sorting,mandatory'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadataformat.tab1,encoded,xpath,xpath_sorting,mandatory,subentries;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadatasubentries'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

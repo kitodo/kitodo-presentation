@@ -4,7 +4,7 @@ Database Tables
 
 This is a reference of all database tables defined by Kitodo.Presentation.
 
-.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``composer docs:db`` inside the Kitodo.Presentation base folder.
+.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``vendor/bin/typo3 kitodo:dbdocs`` from the composer-based TYPO3 install directory (not the Kitodo.Presentation source directory).
 
 tx_dlf_actionlog: Action protocol
 =================================
@@ -20,10 +20,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\ActionLog``
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    crdate  *integer*
      :description:              
@@ -63,10 +63,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Basket``
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -84,6 +84,9 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Basket``
      :description:              
 
    - :field:                    l18n_diffsource  *blob*
+     :description:              
+
+   - :field:                    l10n_state  *text*
      :description:              
 
    - :field:                    label  *string*
@@ -112,10 +115,10 @@ Domain model of the 'Collection'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -142,6 +145,9 @@ Domain model of the 'Collection'.
      :description:              *Transl.Orig*
 
    - :field:                    l18n_diffsource  *blob*
+     :description:              
+
+   - :field:                    l10n_state  *text*
      :description:              
 
    - :field:                    hidden  *smallint*
@@ -199,10 +205,10 @@ Domain model of the 'Document'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              *Last Modified*
@@ -338,10 +344,10 @@ For more information, see the documentation page on metadata.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -399,10 +405,10 @@ A library institution with the following use cases:
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -425,6 +431,9 @@ A library institution with the following use cases:
    - :field:                    l18n_diffsource  *blob*
      :description:              
 
+   - :field:                    l10n_state  *text*
+     :description:              
+
    - :field:                    label  *string*
      :description:              *Name*
 
@@ -437,8 +446,7 @@ A library institution with the following use cases:
    - :field:                    contact  *string*
      :description:              *Contact*
                                 
-                                Contact email address of the library (used as ``adminEmail`` in responses
-                                to OAI ``Identify`` requests).
+                                Contact email address of the library (used as ``adminEmail`` in responses to OAI ``Identify`` requests).
 
    - :field:                    image  *string*
      :description:              *Logo*
@@ -448,8 +456,7 @@ A library institution with the following use cases:
    - :field:                    oai_label  *string*
      :description:              *Open Archives Interface (OAI) Label*
                                 
-                                The label that is used as ``repositoryName`` in responses to OAI
-                                ``Identify`` requests.
+                                The label that is used as ``repositoryName`` in responses to OAI ``Identify`` requests
 
    - :field:                    oai_base  *string*
      :description:              *Open Archives Interface (OAI) Base URL*
@@ -485,10 +492,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Mail``
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    deleted  *smallint*
      :description:              
@@ -522,10 +529,10 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -548,6 +555,9 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
    - :field:                    l18n_diffsource  *blob*
      :description:              
 
+   - :field:                    l10n_state  *text*
+     :description:              
+
    - :field:                    hidden  *smallint*
      :description:              *Hide*
 
@@ -563,7 +573,7 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
    - :field:                    format  *integer*
      :description:              *Data Format*
                                 
-                                The formats that encode this metadatum (local IRRE field to ``tx_dlf_metadataformat``).
+                                The formats that encode this metadata (local IRRE field to ``tx_dlf_metadataformat``).
 
    - :field:                    default_value  *string*
      :description:              *Default Value*
@@ -606,6 +616,73 @@ tx_dlf_metadataformat: Metadata Format
 
 Extbase domain model: ``Kitodo\Dlf\Domain\Model\MetadataFormat``
 
+This specifies a way how a metadata (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
+
+For instance, the title of a document may be obtained from either the MODS
+title field, or from the TEIHDR caption. This is modeled as two ``tx_dlf_metadaformat``
+that refer to the same ``tx_dlf_metadata`` but different ``tx_dlf_format``.
+
+This contains the xpath expressions on the model 'Metadata'.
+
+.. t3-field-list-table::
+   :header-rows: 1
+
+   - :field:                    Field
+     :description:              Description
+
+   - :field:                    **uid**  *integer*
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
+
+   - :field:                    pid  *integer*
+     :description:              The id of the page the record is "stored".
+
+   - :field:                    tstamp  *integer*
+     :description:              
+
+   - :field:                    crdate  *integer*
+     :description:              
+
+   - :field:                    cruser_id  *integer*
+     :description:              
+
+   - :field:                    deleted  *smallint*
+     :description:              
+
+   - :field:                    l10n_state  *text*
+     :description:              
+
+   - :field:                    parent_id  *integer*
+     :description:              UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
+
+   - :field:                    encoded  *integer*
+     :description:              *Encoding*
+                                
+                                UID of the ``tx_dlf_format`` in which this metadata entry is encoded.
+
+   - :field:                    xpath  *string*
+     :description:              *XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object)*
+                                
+                                XPath/JSONPath expression to extract the metadata (relative to the data format root).
+
+   - :field:                    xpath_sorting  *string*
+     :description:              *XPath / JSONPath for sorting (optional)*
+                                
+                                XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadata.
+
+   - :field:                    subentries  *integer*
+     :description:              
+
+   - :field:                    mandatory  *smallint*
+     :description:              *Mandatory field?*
+
+
+
+
+tx_dlf_metadatasubentries: Metadata
+===================================
+
+Extbase domain model: ``Kitodo\Dlf\Domain\Model\MetadataSubentry``
+
 This specifies a way how a metadatum (``tx_dlf_metadata``) may be encoded in a specific data format (``tx_dlf_format``).
 
 For instance, the title of a document may be obtained from either the MODS
@@ -621,9 +698,12 @@ This contains the xpath expressions on the model 'Metadata'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
+     :description:              The id of the page the record is "stored".
+
+   - :field:                    parent_id  *integer*
      :description:              
 
    - :field:                    tstamp  *integer*
@@ -639,33 +719,28 @@ This contains the xpath expressions on the model 'Metadata'.
      :description:              
 
    - :field:                    sys_language_uid  *integer*
-     :description:              *Language*
+     :description:              
 
    - :field:                    l18n_parent  *integer*
-     :description:              *Transl.Orig*
+     :description:              
 
-   - :field:                    parent_id  *integer*
-     :description:              UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
+   - :field:                    l18n_diffsource  *blob*
+     :description:              
 
-   - :field:                    encoded  *integer*
-     :description:              *Encoding*
-                                
-                                UID of the ``tx_dlf_format`` in which this metadata entry is encoded.
+   - :field:                    label  *string*
+     :description:              *Display Label*
+
+   - :field:                    index_name  *string*
+     :description:              *Index Name*
 
    - :field:                    xpath  *string*
      :description:              *XPath (relative to //dmdSec/mdWrap/xmlData/root and with namespace) or JSONPath (relative to resource JSON object)*
-                                
-                                XPath/JSONPath expression to extract the metadatum (relative to the data format root).
 
-   - :field:                    xpath_sorting  *string*
-     :description:              *XPath / JSONPath for sorting (optional)*
-                                
-                                XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadatum.
+   - :field:                    default_value  *string*
+     :description:              *Default Value*
 
-   - :field:                    mandatory  *smallint*
-     :description:              *Mandatory field?*
-                                
-                                Whether or not the field is mandatory. Not used at the moment (originally planned to be used in METS validator).
+   - :field:                    wrap  *text*
+     :description:              *TypoScript-Wrap*
 
 
 
@@ -684,10 +759,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Printer``
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    deleted  *smallint*
      :description:              
@@ -752,7 +827,7 @@ In particular, this holds the index name of the used Solr core.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
      :description:              
@@ -796,10 +871,10 @@ Domain model of 'Structure'.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              
@@ -820,6 +895,9 @@ Domain model of 'Structure'.
      :description:              *Transl.Orig*
 
    - :field:                    l18n_diffsource  *blob*
+     :description:              
+
+   - :field:                    l10n_state  *text*
      :description:              
 
    - :field:                    hidden  *smallint*
@@ -846,8 +924,8 @@ Domain model of 'Structure'.
 
 
 
-tx_dlf_tokens
-=============
+tx_dlf_tokens: Tokens
+=====================
 
 Extbase domain model: ``Kitodo\Dlf\Domain\Model\Token``
 
@@ -860,10 +938,10 @@ Resumption tokens for OAI-PMH interface.
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
      :description:              Timestamp of the token used to determine if it has expired.

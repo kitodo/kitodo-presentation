@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\SolrPaginator;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
@@ -64,34 +65,32 @@ class ListViewController extends AbstractController
 
     /**
      * @access protected
-     * @var array The current search parameter
+     * @var array of the current search parameters
      */
-    protected $searchParams;
+    protected $search;
 
     /**
      * The main method of the plugin
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
-        $this->searchParams = $this->getParametersSafely('searchParameter');
+        $this->search = $this->getParametersSafely('search');
+        $this->search = is_array($this->search) ? $this->search : [];
 
         // extract collection(s) from collection parameter
-        $collection = null;
-        if ($this->searchParams['collection']) {
-            foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                $collection[] = $this->collectionRepository->findByUid((int) $collectionEntry);
+        $collections = [];
+        if (array_key_exists('collection', $this->search)) {
+            foreach(explode(',', $this->search['collection']) as $collectionEntry) {
+                $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
         }
 
         // Get current page from request data because the parameter is shared between plugins
-        $currentPage = $this->requestData['page'];
-        if (empty($currentPage)) {
-            $currentPage = 1;
-        }
+        $currentPage = $this->requestData['page'] ?? 1;
 
         // get all sortable metadata records
         $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
@@ -99,11 +98,13 @@ class ListViewController extends AbstractController
         // get all metadata records to be shown in results
         $listedMetadata = $this->metadataRepository->findByIsListed(true);
 
+        // get all indexed metadata fields
+        $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+
         $solrResults = null;
         $numResults = 0;
-        if (is_array($this->searchParams) && !empty($this->searchParams)) {
-            // @phpstan-ignore-next-line
-            $solrResults = $this->documentRepository->findSolrByCollection($collection ? : null, $this->settings, $this->searchParams, $listedMetadata);
+        if (!empty($this->search)) {
+            $solrResults = $this->documentRepository->findSolrByCollections($collections, $this->settings, $this->search, $listedMetadata, $indexedMetadata);
             $numResults = $solrResults->getNumFound();
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
@@ -121,8 +122,10 @@ class ListViewController extends AbstractController
         $this->view->assign('documents', $solrResults);
         $this->view->assign('numResults', $numResults);
         $this->view->assign('page', $currentPage);
-        $this->view->assign('lastSearch', $this->searchParams);
+        $this->view->assign('lastSearch', $this->search);
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);
+
+        return $this->htmlResponse();
     }
 }

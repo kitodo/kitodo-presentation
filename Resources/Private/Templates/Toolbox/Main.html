@@ -12,6 +12,18 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
+<f:if condition="{renderAddDocumentTool}">
+    <f:then>
+        <a href="#" title="{f:translate(key:'tools.adddocument.label', extensionName:'dlf')}">{f:translate(key:'tools.adddocument.label', extensionName:'dlf')}</a>
+        <f:form method="post" pluginName="pageview" action="addDocument" addQueryString="untrusted" name="formAddDocument" object="{formAddDocument}" extensionName="dlf" controller="PageView">
+            <p class="add-document-description">{f:translate(key:'tools.adddocument.description', extensionName:'dlf')}</p>
+            <label for="location-field">{f:translate(key:'tools.adddocument.label', extensionName:'dlf')}</label>
+            <f:form.textfield property="location" id="location-field" placeholder="{f:translate(key:'tools.adddocument.placeholder', extensionName:'dlf')}" required="required" />
+            <f:form.button>{f:translate(key:'tools.adddocument.submit', extensionName:'dlf')}</f:form.button>
+        </f:form>
+    </f:then>
+</f:if>
+
 <ul>
     <f:if condition="{renderAnnotationTool}">
         <f:then>
@@ -75,6 +87,39 @@
         </f:then>
     </f:if>
 
+    <f:if condition="{renderModelDownloadTool} && {modelUrl}">
+        <f:then>
+            <li>
+            <span class="tx-dlf-tools-modeldownload">
+                <f:link.external uri="{modelUrl}">
+                    <f:translate key="downloadModel"/>
+                </f:link.external>
+            </span>
+            </li>
+        </f:then>
+    </f:if>
+
+    <f:if condition="{renderViewerSelectionTool} && {viewers}">
+        <f:then>
+            <form method="get" action="{f:uri.page(pageUid='{viewData.pageUid}')}">
+                <f:if condition="{viewData.requestData.id}">
+                    <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
+                </f:if>
+                <f:if condition="{viewData.requestData.model}">
+                    <f:form.hidden name="tx_dlf[model]" value="{viewData.requestData.model}"/>
+                </f:if>
+                <f:form.select id="tx-dlf-viewer-{viewData.uniqueId}" name="tx_dlf[viewer]"
+                               options="{viewers}"
+                               optionValueField="id"
+                               optionLabelField="name"
+                               value="{viewData.requestData.viewer}"
+                               additionalAttributes="{'onchange': 'javascript:this.form.submit();'}"
+                               prependOptionLabel="{f:translate(key: 'tools.viewerselection.default', extensionName: 'dlf')}">
+                </f:form.select>
+                <form>
+        </f:then>
+    </f:if>
+
     <f:if condition="{renderFulltextTool}">
         <f:then>
             <li>
@@ -119,6 +164,21 @@
         </f:then>
     </f:if>
 
+    <f:if condition="{renderScoreTool} && {score}">
+        <f:then>
+            <li class="score">
+                <a class="select switchoff" id="tx-dlf-tools-score-0" title="">
+                    <f:translate key="tools.score"/>
+                </a>
+            </li>
+            <li class="score">
+                <a id="tx-dlf-tools-midi" >
+                    <f:translate key="tools.score.player"/>
+                </a>
+            </li>
+        </f:then>
+    </f:if>
+
     <f:if condition="{renderPdfDownloadTool}">
         <f:then>
             <li>
@@ -152,6 +212,20 @@
                         </f:then>
                     </f:if>
                 </span>
+                <span class="tx-dlf-tools-score">
+                    <f:if condition="{scoreLinks}">
+                        <f:then>
+                            <a href="#" id="tx_dlf_mididownload" class="download-document">
+                                <f:translate key="mididownload"/>
+                                (MIDI)
+                            </a>
+                            <a href="#" id="tx_dlf_scoredownload" class="download-document">
+                                <f:translate key="scoredownload"/>
+                                (PDF)
+                            </a>
+                        </f:then>
+                    </f:if>
+                </span>
             </li>
         </f:then>
     </f:if>
@@ -173,14 +247,14 @@
                             <f:translate key="search.query"/>
                         </label>
                         <!-- Never change the @id of this input field! Otherwise search won't work! -->
-                        <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{LABEL_QUERY_URL}" />
+                        <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{searchInDocument.labelQueryUrl}" />
                         <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
-                        <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.LABEL_START}" value="0" />
-                        <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.LABEL_ID}" value="{searchInDocument.CURRENT_DOCUMENT}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-pid" name="{searchInDocument.LABEL_PID}" value="{viewData.pageUid}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.LABEL_PAGE_URL}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.LABEL_HIGHLIGHT_WORD}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.LABEL_ENCRYPTED}" value="{searchInDocument.SOLR_ENCRYPTED}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.labelStart}" value="0" />
+                        <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.labelId}" value="{searchInDocument.documentId}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-pid" name="{searchInDocument.labelPid}" value="{viewData.pageUid}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.labelPageUrl}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.labelHighlightWord}" />
+                        <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.labelEncrypted}" value="{searchInDocument.solrEncrypted}" />
                     </div>
                 </form>
                 <div id="tx-dlf-search-in-document-loading" style="display: none;"><f:translate key="tools.searchindocument.loading"/>...</div>

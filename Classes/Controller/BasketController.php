@@ -19,6 +19,7 @@ use Kitodo\Dlf\Domain\Repository\ActionLogRepository;
 use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
@@ -112,27 +113,27 @@ class BasketController extends AbstractController
      * 
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function basketAction(): void
+    public function basketAction(): ResponseInterface
     {
         $basket = $this->getBasketData();
 
         // action remove from basket
-        if ($this->requestData['basket_action'] === 'remove') {
+        if (($this->requestData['basket_action'] ?? '') === 'remove') {
             // remove entry from list
             if (isset($this->requestData['selected'])) {
                 $basket = $this->removeFromBasket($this->requestData, $basket);
             }
         }
         // action remove from basket
-        if ($this->requestData['basket_action'] == 'download') {
+        if (($this->requestData['basket_action'] ?? '') == 'download') {
             // open selected documents
             if (isset($this->requestData['selected'])) {
                 $pdfUrl = $this->settings['pdfgenerate'];
                 foreach ($this->requestData['selected'] as $docValue) {
                     if ($docValue['id']) {
-                        $docData = $this->getDocumentData((int) $docValue['id'], $docValue);
+                        $docData = $this->getDocumentData($docValue['id'], $docValue);
                         $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                         $this->redirectToUri($pdfUrl);
                     }
@@ -140,20 +141,20 @@ class BasketController extends AbstractController
             }
         }
         // action print from basket
-        if ($this->requestData['print_action']) {
+        if ($this->requestData['print_action'] ?? false) {
             // open selected documents
             if (isset($this->requestData['selected'])) {
                 $this->printDocument();
             }
         }
         // action send mail
-        if ($this->requestData['mail_action']) {
+        if ($this->requestData['mail_action'] ?? false) {
             if (isset($this->requestData['selected'])) {
                 $this->sendMail();
             }
         }
 
-        $this->redirect('main');
+        return $this->redirect('main');
     }
 
     /**
@@ -161,9 +162,9 @@ class BasketController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function addAction(): void
+    public function addAction(): ResponseInterface
     {
         $basket = $this->getBasketData();
 
@@ -174,7 +175,7 @@ class BasketController extends AbstractController
             $basket = $this->addToBasket($this->requestData, $basket);
         }
 
-        $this->redirect('main');
+        return $this->redirect('main');
     }
 
     /**
@@ -182,9 +183,9 @@ class BasketController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         $basket = $this->getBasketData();
 
@@ -224,6 +225,8 @@ class BasketController extends AbstractController
             }
             $this->view->assign('entries', $entries);
         }
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -237,10 +240,9 @@ class BasketController extends AbstractController
     {
         // get user session
         $userSession = $GLOBALS['TSFE']->fe_user->getSession();
-        $context = GeneralUtility::makeInstance(Context::class);
 
         // Checking if a user is logged in
-        $userIsLoggedIn = $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+        $userIsLoggedIn = $this->isUserLoggedIn();
 
         if ($userIsLoggedIn) {
             $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
@@ -268,31 +270,27 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $data DocumentData
+     * @param bool|null|object $data DocumentData
      *
      * @return array One basket entry
      */
-    protected function getEntry(array $data): array
+    protected function getEntry($data): array
     {
-        // TODO: Call to function is_object() with array will always evaluate to false.
-        // @phpstan-ignore-next-line
         if (is_object($data)) {
             $data = get_object_vars($data);
         }
         $id = $data['id'];
-        $startpage = $data['startpage'];
-        $endpage = $data['endpage'];
+        $startPage = $data['startpage'];
+        $endPage = $data['endpage'];
         $startX = $data['startX'];
         $startY = $data['startY'];
         $endX = $data['endX'];
         $endY = $data['endY'];
         $rotation = $data['rotation'];
 
-        $docData = $this->getDocumentData((int) $id, $data);
+        $docData = $this->getDocumentData($id, $data);
 
-        $entryArray['BASKETDATA'] = $docData;
-
-        $entryKey = $id . '_' . $startpage;
+        $entryKey = $id . '_' . $startPage;
         if (!empty($startX)) {
             $entryKey .= '_' . $startX;
         }
@@ -300,10 +298,16 @@ class BasketController extends AbstractController
             $entryKey .= '_' . $endX;
         }
 
-        $entryArray['id'] = $id;
-        $entryArray['CONTROLS'] = [
-            'startpage' => $startpage,
-            'endpage' => $endpage,
+        $entry = [
+            'BASKETDATA' => $docData,
+            'id' => $id,
+            'NUMBER' => $docData['record_id'],
+            'key' => $entryKey
+        ];
+
+        $entry['CONTROLS'] = [
+            'startpage' => $startPage,
+            'endpage' => $endPage,
             'startX' => $startX,
             'startY' => $startY,
             'endX' => $endX,
@@ -311,11 +315,8 @@ class BasketController extends AbstractController
             'rotation' => $rotation,
         ];
 
-        $entryArray['NUMBER'] = $docData['record_id'];
-        $entryArray['key'] = $entryKey;
-
         // return one entry
-        return $entryArray;
+        return $entry;
     }
 
     /**
@@ -323,20 +324,20 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param int $id Document id
+     * @param string $id Document id
      * @param array $data DocumentData
      *
      * @return array|false download url or false
      */
-    protected function getDocumentData(int $id, array $data)
+    protected function getDocumentData(string $id, array $data)
     {
         // get document instance to load further information
-        $this->loadDocument((int) $id);
+        $this->loadDocument($id);
         if (isset($this->document)) {
             // replace url param placeholder
             // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
             // @phpstan-ignore-next-line
-            $urlParams = str_replace("##page##", (int) $data['page'], $this->settings['pdfparams']);
+            $urlParams = str_replace("##page##", (int) ($data['page'] ?? ''), $this->settings['pdfparams']);
             $urlParams = str_replace("##docId##", $this->document->getRecordId(), $urlParams);
             // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
             // @phpstan-ignore-next-line
@@ -412,7 +413,7 @@ class BasketController extends AbstractController
         }
         if ($page != null || $piVars['addToBasket'] == 'list') {
             $documentItem = [
-                'id' => (int) $piVars['id'],
+                'id' => $piVars['id'],
                 'startpage' => (int) $piVars['startpage'],
                 'endpage' => !isset($piVars['endpage']) || $piVars['endpage'] === "" ? "" : (int) $piVars['endpage'],
                 'startX' => !isset($piVars['startX']) || $piVars['startX'] === "" ? "" : (int) $piVars['startX'],
@@ -430,7 +431,7 @@ class BasketController extends AbstractController
                 $items = [];
             }
             // get document instance to load further information
-            $this->loadDocument((int) $documentItem['id']);
+            $this->loadDocument($documentItem['id']);
             if ($this->isDocMissing()) {
                 // Quit without doing anything if required variables are not set.
                 return null;
@@ -438,7 +439,7 @@ class BasketController extends AbstractController
             // set endpage for toc and subentry based on logid
             if (($piVars['addToBasket'] == 'subentry') or ($piVars['addToBasket'] == 'toc')) {
                 $smLinks = $this->document->getCurrentDocument()->smLinks;
-                $pageCounter = sizeof($smLinks['l2p'][$piVars['logId']]);
+                $pageCounter = count($smLinks['l2p'][$piVars['logId']]);
                 $documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
             }
             // add whole document
@@ -561,7 +562,7 @@ class BasketController extends AbstractController
         foreach ($this->requestData['selected'] as $docValue) {
             if ($docValue['id']) {
                 $explodeId = explode("_", $docValue['id']);
-                $docData = $this->getDocumentData((int) $explodeId[0], $docValue);
+                $docData = $this->getDocumentData($explodeId[0], $docValue);
                 $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                 $pages = (abs(intval($docValue['startpage']) - intval($docValue['endpage'])));
                 if ($pages === 0) {
@@ -602,7 +603,7 @@ class BasketController extends AbstractController
         $newActionLog->setCountPages($numberOfPages);
         $newActionLog->setLabel('Mail: ' . $mailObject->getMail());
 
-        if ($GLOBALS["TSFE"]->loginUser) {
+        if ($this->isUserLoggedIn()) {
             // internal user
             $newActionLog->setUserId($GLOBALS["TSFE"]->fe_user->user['uid']);
             $newActionLog->setName($GLOBALS["TSFE"]->fe_user->user['username']);
@@ -613,8 +614,6 @@ class BasketController extends AbstractController
         }
 
         $this->actionLogRepository->add($newActionLog);
-
-        $this->redirect('main');
     }
 
     /**
@@ -630,7 +629,7 @@ class BasketController extends AbstractController
         $numberOfPages = 0;
         foreach ($this->requestData['selected'] as $docId => $docValue) {
             if ($docValue['id']) {
-                $docData = $this->getDocumentData((int) $docValue['id'], $docValue);
+                $docData = $this->getDocumentData($docValue['id'], $docValue);
                 $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                 $numberOfPages += $docData['pageNums'];
             }
@@ -648,7 +647,7 @@ class BasketController extends AbstractController
             foreach ($this->requestData['selected'] as $docId => $docValue) {
                 if ($docValue['id']) {
                     $explodeId = explode("_", $docId);
-                    $docData = $this->getDocumentData((int) $explodeId[0], $docValue);
+                    $docData = $this->getDocumentData($explodeId[0], $docValue);
                     $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
                     $numberOfPages += $docData['pageNums'];
                 }
@@ -662,7 +661,7 @@ class BasketController extends AbstractController
         $actionLog->setFileName($pdfUrl);
         $actionLog->setCountPages($numberOfPages);
 
-        if ($GLOBALS["TSFE"]->loginUser) {
+        if ($this->isUserLoggedIn()) {
             // internal user
             $actionLog->setUserId($GLOBALS["TSFE"]->fe_user->user['uid']);
             $actionLog->setName($GLOBALS["TSFE"]->fe_user->user['username']);
@@ -677,5 +676,18 @@ class BasketController extends AbstractController
         $this->actionLogRepository->add($actionLog);
 
         $this->redirectToUri($pdfUrl);
+    }
+
+    /**
+     * Return true if the user is logged in.
+     * 
+     * @access protected
+     * 
+     * @return bool whether the user is logged in
+     */
+    protected function isUserLoggedIn(): bool
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        return $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
     }
 }

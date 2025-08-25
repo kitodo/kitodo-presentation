@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
 use DateTime;
@@ -13,30 +23,34 @@ use SimpleXMLElement;
 
 class OaiPmhTest extends FunctionalTestCase
 {
-    protected $disableJsonWrappedResponse = true;
+    protected bool $disableJsonWrappedResponse = true;
 
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'fluid',
         'fluid_styled_content',
     ];
 
     /** @var int */
-    protected $oaiPage = 20001;
+    protected int $oaiPage = 20001;
 
     /** @var string */
-    protected $oaiUrl;
+    protected string $oaiUrl;
 
     /** @var int */
-    protected $oaiPageNoStoragePid = 20002;
+    protected int $oaiPageNoStoragePid = 20002;
 
     /** @var string */
-    protected $oaiUrlNoStoragePid;
+    protected string $oaiUrlNoStoragePid;
 
     /**
-     * @var SolrCoreRepository
+     * Sets up the test case environment.
+     *
+     * @access public
+     *
+     * @return void
+     *
+     * @access public
      */
-    protected $solrCoreRepository;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -56,7 +70,17 @@ class OaiPmhTest extends FunctionalTestCase
         $this->setUpOaiSolr();
     }
 
-    protected function setUpOaiSolr()
+    /**
+     * Sets up the OAI Solr core for the tests.
+     *
+     * This method initializes the Solr core and imports documents from a JSON file.
+     * It is called only once for all tests in this suite to avoid redundant setup.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function setUpOaiSolr(): void
     {
         // Setup Solr only once for all tests in this suite
         static $solr = null;
@@ -95,8 +119,8 @@ class OaiPmhTest extends FunctionalTestCase
         self::assertStringNotContainsString('nastyVerb', (string) $xml->request);
 
         // For bad verbs, the <request> element must not contain any attributes
-        // - http://www.openarchives.org/OAI/openarchivesprotocol.html#XMLResponse
-        // - http://www.openarchives.org/OAI/openarchivesprotocol.html#ErrorConditions
+        // - https://www.openarchives.org/OAI/openarchivesprotocol.html#XMLResponse
+        // - https://www.openarchives.org/OAI/openarchivesprotocol.html#ErrorConditions
         self::assertEmpty($xml->request->attributes());
     }
 
@@ -246,7 +270,7 @@ class OaiPmhTest extends FunctionalTestCase
             ]);
             $xml = new SimpleXMLElement((string) $response->getBody());
 
-            self::assertEquals(1, count($xml->$verb->children()));
+            self::assertCount(1, $xml->$verb->children());
             self::assertEmpty($xml->$verb->resumptionToken);
         }
     }
@@ -268,18 +292,63 @@ class OaiPmhTest extends FunctionalTestCase
         self::assertEquals('oai:de:slub-dresden:db:id-476248086', $record->identifier);
     }
 
-    protected function parseUtc(string $dateTime)
+    /**
+     * Parses a UTC date string into a DateTime object.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param string $dateTime The date string in UTC format (e.g., '2023-10-01T12:00:00Z')
+     *
+     * @return DateTime|false Returns a DateTime object or false on failure
+     *
+     * @access protected
+     *
+     * @static
+     */
+    protected static function parseUtc(string $dateTime): DateTime|false
     {
         return DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $dateTime);
     }
 
-    protected function assertUtcDateString(string $dateTime)
+    /**
+     * Asserts that a given date string is a valid UTC date string.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param string $dateTime The date string to check
+     *
+     * @return void
+     *
+     * @access protected
+     *
+     * @static
+     */
+    protected static function assertUtcDateString(string $dateTime): void
     {
-        self::assertInstanceOf(DateTime::class, $this->parseUtc($dateTime));
+        self::assertInstanceOf(DateTime::class, self::parseUtc($dateTime));
     }
 
-    protected function assertInFuture(string $dateTime)
+    /**
+     * Asserts that a given date string is in the future.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param string $dateTime The date string to check
+     *
+     * @return void
+     *
+     * @access protected
+     *
+     * @static
+     */
+    protected static function assertInFuture(string $dateTime): void
     {
-        self::assertGreaterThan(new DateTime(), $this->parseUtc($dateTime));
+        self::assertGreaterThan(new DateTime(), self::parseUtc($dateTime));
     }
 }

@@ -33,6 +33,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      * @var array The message severity class names
      */
     protected static array $classes = [
+        // Todo: FlashMessage constants deprecated in v12, remove when dropping v11 support
         FlashMessage::NOTICE => 'notice',
         FlashMessage::INFO => 'info',
         FlashMessage::OK => 'success',
@@ -44,6 +45,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      * @var array The message severity icon names
      */
     protected static array $icons = [
+        // Todo: FlashMessage constants deprecated in v12, remove when dropping v11 support
         FlashMessage::NOTICE => 'lightbulb-o',
         FlashMessage::INFO => 'info',
         FlashMessage::OK => 'check',
@@ -66,6 +68,27 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
     }
 
     /**
+     * Gets the message severity as integer value for compatibility with Typo3 v12
+     *
+     * @access public
+     *
+     * @param FlashMessage $flashMessage
+     *
+     * @return int The message severity as integer
+     */
+    protected function getSeverityAsInt(FlashMessage $flashMessage): int
+    {
+        $severity = $flashMessage->getSeverity();
+        if (is_int($severity)) {
+            // $severity is integer constant from FlashMessage in Typo3 v11
+            return $severity;
+        }
+        // $severity is instance of ContextualFeedbackSeverity enum introduced in Typo3 v12
+        // TODO: migrate message severity to ContextualFeedbackSeverity when dropping support for Typo3 v11
+        return $severity->value;
+    }
+
+    /**
      * Gets the message severity class name
      *
      * @access public
@@ -76,7 +99,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      */
     protected function getClass(FlashMessage $flashMessage): string
     {
-        return 'alert-' . self::$classes[$flashMessage->getSeverity()];
+        return 'alert-' . self::$classes[$this->getSeverityAsInt($flashMessage)];
     }
 
     /**
@@ -90,7 +113,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      */
     protected function getIconName(FlashMessage $flashMessage): string
     {
-        return self::$icons[$flashMessage->getSeverity()];
+        return self::$icons[$this->getSeverityAsInt($flashMessage)];
     }
 
     /**

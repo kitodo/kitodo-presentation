@@ -11,7 +11,9 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\PageSelectForm;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -31,9 +33,9 @@ class NavigationController extends AbstractController
      *
      * @param PageSelectForm|NULL $pageSelectForm
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function pageSelectAction(PageSelectForm $pageSelectForm = NULL): void
+    public function pageSelectAction(?PageSelectForm $pageSelectForm = null): ResponseInterface
     {
         if ($pageSelectForm) {
             $uri = $this->uriBuilder->reset()
@@ -47,8 +49,10 @@ class NavigationController extends AbstractController
                     ]
                 )
                 ->uriFor('main');
-            $this->redirectToUri($uri);
+            return $this->redirectToUri($uri);
         }
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -56,15 +60,15 @@ class NavigationController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         // Set default values if not set.
@@ -73,6 +77,21 @@ class NavigationController extends AbstractController
         } else {
             $this->requestData['page'] = 0;
             $this->requestData['double'] = 0;
+            // reassign requestData to viewData after assigning default values
+            $this->viewData['requestData'] = $this->requestData;
+        }
+
+        if ($this->document->getUid() !== null) {
+            // get the closest previous sibling or leaf node
+            $prevDocumentUid = $this->documentRepository->getPreviousDocumentUid($this->document->getUid());
+            $this->view->assign('documentBack', $prevDocumentUid);
+
+            // get the closest next sibling or leaf node
+            $nextDocumentUid = $this->documentRepository->getNextDocumentUid($this->document->getUid());
+            $this->view->assign('documentForward', $nextDocumentUid);
+        } else {
+            $this->view->assign('documentBack', '');
+            $this->view->assign('documentForward', '');
         }
 
         // Steps for X pages backward / forward. Double page view uses double steps.
@@ -84,19 +103,14 @@ class NavigationController extends AbstractController
 
         $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
         if ($searchSessionParameters) {
-            $widgetPage = $GLOBALS['TSFE']->fe_user->getKey('ses', 'widgetPage');
             $lastSearchArguments = [
                 'tx_dlf_listview' => [
-                    'searchParameter' => $searchSessionParameters
+                    'search' => $searchSessionParameters
                 ]
             ];
 
-            if ($widgetPage) {
-                $lastSearchArguments['tx_dlf_listview']['@widget_0'] = $widgetPage;
-            }
-
             // save last search parameter to generate a link back to the search list
-            $this->view->assign('lastSearchParams', $lastSearchArguments);
+            $this->view->assign('lastSearch', $lastSearchArguments);
         }
 
         $pageOptions = [];
@@ -104,6 +118,7 @@ class NavigationController extends AbstractController
             $orderLabel = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$i]]['orderlabel'];
             $pageOptions[$i] = '[' . $i . ']' . ($orderLabel ? ' - ' . htmlspecialchars($orderLabel) : '');
         }
+
         $this->view->assign('pageOptions', $pageOptions);
 
         // prepare feature array for fluid
@@ -112,5 +127,36 @@ class NavigationController extends AbstractController
             $features[$feature] = true;
         }
         $this->view->assign('features', $features);
+
+        if ($this->document->getCurrentDocument() instanceof MetsDocument) {
+            if ($this->document->getCurrentDocument()->numMeasures > 0) {
+                $measureOptions = [];
+                $measurePages = [];
+                $musicalStructure = $this->document->getCurrentDocument()->musicalStructure;
+                $musicalStructureInfo = $this->document->getCurrentDocument()->musicalStructureInfo;
+                for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
+                    if (isset($musicalStructure[$i]['measureid'])
+                        && isset($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel'])) {
+                        $measureOptions[$i] = '[' . $i . ']' . (!empty($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel']) ? ' - ' . htmlspecialchars($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel']) : '');
+                        $measurePages[$i] = $musicalStructure[$i]['page'];
+                    }
+                }
+
+                if (!isset($this->requestData['measure'])) {
+                    $currentMeasure = array_search($this->requestData['page'], $measurePages);
+                } else {
+                    $currentMeasure = $this->requestData['measure'];
+                }
+
+                $this->view->assign('currentMeasure', $currentMeasure);
+                $this->view->assign('numMeasures', $this->document->getCurrentDocument()->numMeasures);
+                $this->view->assign('measureOptions', $measureOptions);
+                $this->view->assign('measurePages', $measurePages);
+            }
+        }
+
+        $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
+
+        return $this->htmlResponse();
     }
 }

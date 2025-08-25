@@ -2,24 +2,25 @@ name: PHPStan
 
 on:
     push:
-      branches: [ "master" ]
+      branches: [ "main" ]
     pull_request:
-      branches: [ "master" ]
+      branches: [ "main" ]
 
 jobs:
   phpstan:
+    name: Static Code Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         uses: php-actions/composer@v6
         with:
           command: update
-          php_version: "7.4"
 
       - name: PHPStan Static Analysis
         uses: php-actions/phpstan@v3
         with:
           configuration: ./.github/phpstan.neon
+          path: ''

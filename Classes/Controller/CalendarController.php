@@ -15,6 +15,8 @@ namespace Kitodo\Dlf\Controller;
 use Generator;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -56,9 +58,9 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Set initial document (anchor or year file) if configured.
         if (empty($this->requestData['id']) && !empty($this->settings['initialDocument'])) {
@@ -67,29 +69,23 @@ class CalendarController extends AbstractController
 
         // Load current document.
         $this->loadDocument();
-        if ($this->document === null) {
+        if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         $metadata = $this->document->getCurrentDocument()->getToplevelMetadata();
         if (!empty($metadata['type'][0])) {
             $type = $metadata['type'][0];
         } else {
-            return;
+            return $this->htmlResponse();
         }
 
-        switch ($type) {
-            case 'newspaper':
-            case 'ephemera':
-                $this->forward('years', null, null, $this->requestData);
-            case 'year':
-                $this->forward('calendar', null, null, $this->requestData);
-            case 'issue':
-            default:
-                break;
-        }
-
+        return match ($type) {
+            'newspaper', 'ephemera' => new ForwardResponse('years'),
+            'year' => new ForwardResponse('calendar'),
+            default => $this->htmlResponse()
+        };
     }
 
     /**
@@ -97,9 +93,9 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function calendarAction(): void
+    public function calendarAction(): ResponseInterface
     {
         // access arguments passed by the mainAction()
         $mainRequestData = $this->request->getArguments();
@@ -111,7 +107,7 @@ class CalendarController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         $calendarData = $this->buildCalendar();
@@ -136,6 +132,8 @@ class CalendarController extends AbstractController
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
         $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getCurrentDocument()->tableOfContents[0]['points']);
         $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getPartof()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -143,9 +141,9 @@ class CalendarController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function yearsAction(): void
+    public function yearsAction(): ResponseInterface
     {
         // access arguments passed by the mainAction()
         $mainRequestData = $this->request->getArguments();
@@ -157,7 +155,7 @@ class CalendarController extends AbstractController
         $this->loadDocument();
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
-            return;
+            return $this->htmlResponse();
         }
 
         // Get all children of anchor. This should be the year anchor documents
@@ -171,7 +169,7 @@ class CalendarController extends AbstractController
 
                 if (empty($yearLabel)) {
                     // if neither order nor orderlabel is set, use the id...
-                    $yearLabel = (string)$id;
+                    $yearLabel = (string) $id;
                 }
 
                 $years[] = [
@@ -221,6 +219,8 @@ class CalendarController extends AbstractController
 
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle((int) $this->document->getUid()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -280,75 +280,99 @@ class CalendarController extends AbstractController
                         $dayLinksText = [];
                         $dayLinkDiv = [];
                         $currentMonth = date('n', $currentDayTime);
-                        if (is_array($calendarIssuesByMonth[$currentMonth])) {
+                        if (array_key_exists($currentMonth, $calendarIssuesByMonth) && is_array($calendarIssuesByMonth[$currentMonth])) {
                             foreach ($calendarIssuesByMonth[$currentMonth] as $id => $day) {
                                 if ($id == date('j', $currentDayTime)) {
                                     $dayLinks = $id;
-                                    foreach ($day as $issue) {
-                                        $dayLinkLabel = empty($issue['title']) ? strftime('%x', $currentDayTime) : $issue['title'];
-
-                                        $dayLinksText[] = [
-                                            'documentId' => $issue['uid'],
-                                            'text' => $dayLinkLabel
-                                        ];
-
-                                        // Save issue for list view.
-                                        $this->allIssues[$currentDayTime][] = [
-                                            'documentId' => $issue['uid'],
-                                            'text' => $dayLinkLabel
-                                        ];
-                                    }
+                                    $dayLinksText = array_merge($dayLinksText, $this->getDayLinksText($day, $currentDayTime));
                                 }
                             }
                             $dayLinkDiv = $dayLinksText;
                         }
-                        switch (strftime('%w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
-                            case '0':
-                                $calendarData[$key]['week'][$j]['DAYSUN']['dayValue'] = strftime('%d', $currentDayTime);
-                                if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$key]['week'][$j]['DAYSUN']['issues'] = $dayLinkDiv;
-                                }
-                                break;
-                            case '1':
-                                $calendarData[$key]['week'][$j]['DAYMON']['dayValue'] = strftime('%d', $currentDayTime);
-                                if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$key]['week'][$j]['DAYMON']['issues'] = $dayLinkDiv;
-                                }
-                                break;
-                            case '2':
-                                $calendarData[$key]['week'][$j]['DAYTUE']['dayValue'] = strftime('%d', $currentDayTime);
-                                if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$key]['week'][$j]['DAYTUE']['issues'] = $dayLinkDiv;
-                                }
-                                break;
-                            case '3':
-                                $calendarData[$key]['week'][$j]['DAYWED']['dayValue'] = strftime('%d', $currentDayTime);
-                                if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$key]['week'][$j]['DAYWED']['issues'] = $dayLinkDiv;
-                                }
-                                break;
-                            case '4':
-                                $calendarData[$key]['week'][$j]['DAYTHU']['dayValue'] = strftime('%d', $currentDayTime);
-                                if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$key]['week'][$j]['DAYTHU']['issues'] = $dayLinkDiv;
-                                }
-                                break;
-                            case '5':
-                                $calendarData[$key]['week'][$j]['DAYFRI']['dayValue'] = strftime('%d', $currentDayTime);
-                                if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$key]['week'][$j]['DAYFRI']['issues'] = $dayLinkDiv;
-                                }
-                                break;
-                            case '6':
-                                $calendarData[$key]['week'][$j]['DAYSAT']['dayValue'] = strftime('%d', $currentDayTime);
-                                if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
-                                    $calendarData[$key]['week'][$j]['DAYSAT']['issues'] = $dayLinkDiv;
-                                }
-                                break;
-                        }
+                        $this->fillCalendar($calendarData[$key]['week'][$j], $currentDayTime, $dayLinks, $dayLinkDiv, $firstDayOfWeek, $k);
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Get text links for given day.
+     *
+     * @access private
+     *
+     * @param array $day all issues for given day
+     * @param int $currentDayTime
+     *
+     * @return array all issues for given day as text links
+     */
+    private function getDayLinksText(array $day, int $currentDayTime): array
+    {
+        $dayLinksText = [];
+        foreach ($day as $issue) {
+            $dayLinkLabel = empty($issue['title']) ? strftime('%x', $currentDayTime) : $issue['title'];
+
+            $dayLinksText[] = [
+                'documentId' => $issue['uid'],
+                'text' => $dayLinkLabel
+            ];
+
+            // Save issue for list view.
+            $this->allIssues[$currentDayTime][] = [
+                'documentId' => $issue['uid'],
+                'text' => $dayLinkLabel
+            ];
+        }
+        return $dayLinksText;
+    }
+
+    /**
+     * Fill calendar.
+     *
+     * @access private
+     *
+     * @param array &$calendarData calendar passed by reference
+     * @param int $currentDayTime
+     * @param string $dayLinks
+     * @param array $dayLinkDiv
+     * @param int $firstDayOfWeek
+     * @param int $k
+     *
+     * @return void
+     */
+    private function fillCalendar(array &$calendarData, int $currentDayTime, string $dayLinks, array $dayLinkDiv, int $firstDayOfWeek, int $k): void
+    {
+        $dayKey = match (date('w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
+            '0' => 'DAYSUN',
+            '1' => 'DAYMON',
+            '2' => 'DAYTUE',
+            '3' => 'DAYWED',
+            '4' => 'DAYTHU',
+            '5' => 'DAYFRI',
+            '6' => 'DAYSAT'
+        };
+
+        $this->fillDay($calendarData, $currentDayTime, $dayKey, $dayLinks, $dayLinkDiv);
+    }
+
+    /**
+     * Fill day.
+     *
+     * @access private
+     *
+     * @param array &$calendarData calendar passed by reference
+     * @param int $currentDayTime
+     * @param string $day
+     * @param string $dayLinks
+     * @param array $dayLinkDiv
+     *
+     * @return void
+     */
+    private function fillDay(array &$calendarData, int $currentDayTime, string $day, string $dayLinks, array $dayLinkDiv): void
+    {
+        $calendarData[$day]['dayValue'] = strftime('%d', $currentDayTime);
+        if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
+            $calendarData[$day]['issues'] = $dayLinkDiv;
         }
     }
 
@@ -450,19 +474,21 @@ class CalendarController extends AbstractController
         $toc = $this->document->getCurrentDocument()->tableOfContents;
 
         foreach ($toc[0]['children'] as $year) {
-            foreach ($year['children'] as $month) {
-                foreach ($month['children'] as $day) {
-                    foreach ($day['children'] as $issue) {
-                        $title = $issue['label'] ?: $issue['orderlabel'];
-                        if (strtotime($title) !== false) {
-                            $title = strftime('%x', strtotime($title));
-                        }
+            if (array_key_exists('children', $year)) {
+                foreach ($year['children'] as $month) {
+                    foreach ($month['children'] as $day) {
+                        foreach ($day['children'] as $issue) {
+                            $title = $issue['label'] ?: $issue['orderlabel'];
+                            if (strtotime($title) !== false) {
+                                $title = strftime('%x', strtotime($title));
+                            }
 
-                        yield [
-                            'uid' => $issue['points'],
-                            'title' => $title,
-                            'year' => $day['orderlabel'],
-                        ];
+                            yield [
+                                'uid' => $issue['points'],
+                                'title' => $title,
+                                'year' => $day['orderlabel'],
+                            ];
+                        }
                     }
                 }
             }

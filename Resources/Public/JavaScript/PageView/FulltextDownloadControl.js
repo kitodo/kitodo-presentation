@@ -1,3 +1,15 @@
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* global dlfUtils */
+
 var dlfViewerFullTextDownloadControl = function(map, fulltextData) {
 
     /**
@@ -64,14 +76,36 @@ dlfViewerFullTextDownloadControl.prototype.downloadFullTextFile = function() {
  * @param {FullTextFeature} fulltextData
  */
 dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fulltextData) {
+    let fileContent = '';
+    if(dlfUtils.exists(fulltextData.type) && fulltextData.type === 'tei') {
+      fileContent = dlfUtils.escapeHtml(fulltextData.fulltext);
+
+      // Use regex to replace any whitespace (spaces or tabs) before '<'
+      // eslint-disable-next-line
+      fileContent = fileContent.replace(/[ \t]+&lt;/gu, '&lt;');
+
+      // Replace every tag except <p> with an empty string
+      // eslint-disable-next-line
+      fileContent = fileContent.replace(/&lt;(?!\/?p&gt;)[^&]*?&gt;/gu, '');
+
+      // Remove empty lines
+      fileContent = fileContent.split('\n').filter(line => line.trim() !== '').join('\n');
+
+      // Replace <p> with newlines
+      fileContent = fileContent.replace(/&lt;\/?p&gt;/gu, '\n');
+
+      // Remove leading empty lines
+      return fileContent.replace(/^\s*\n+/gu, '');
+    }
+
+
     var features = fulltextData.getTextblocks();
-    var fileContent = '';
     for (var feature of features) {
-        var textLines = feature.get('textlines');
-        for (var textLine of textLines) {
-            fileContent = fileContent.concat(this.appendTextLine(textLine));
-        }
-        fileContent = fileContent.concat('\n\n');
+      var textLines = feature.get('textlines');
+      for (var textLine of textLines) {
+        fileContent = fileContent.concat(this.appendTextLine(textLine));
+      }
+      fileContent = fileContent.concat('\n\n');
     }
 
     return fileContent;
@@ -98,3 +132,5 @@ dlfViewerFullTextDownloadControl.prototype.appendTextLine = function(textLine) {
     }
     return fileContent;
 };
+
+

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -12,7 +13,6 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use Kitodo\Dlf\ViewHelpers\JsFooterViewHelper;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -25,14 +25,14 @@ class JsFooterViewHelperTest extends FunctionalTestCase
     /**
      * @var bool Speed up this test case, it needs no database
      */
-    protected $initializeDatabase = false;
+    protected bool $initializeDatabase = false;
 
     /**
      * @test
      */
     public function pageRendererCallsAddJsFooterInlineCode(): void
     {
-        $pageRendererProphecy = $this->getMockBuilder(PageRenderer::class)->getMock();
+        $pageRendererProphecy = $this->getMockBuilder(PageRenderer::class)->disableOriginalConstructor()->getMock();
 
         $pageRendererProphecy->expects(self::once())->method('addJsFooterInlineCode')->with(
             'js-dlf-inline-footer', '$(document).ready(function() {});'

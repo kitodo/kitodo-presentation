@@ -13,8 +13,14 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Middleware\Embedded3dViewer;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Controller class for plugin 'Toolbox'.
@@ -38,9 +44,9 @@ class ToolboxController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface the response
      */
-    public function mainAction(): void
+    public function mainAction(): ResponseInterface
     {
         // Load current document.
         $this->loadDocument();
@@ -53,6 +59,8 @@ class ToolboxController extends AbstractController
 
         $this->renderTools();
         $this->view->assign('viewData', $this->viewData);
+
+        return $this->htmlResponse();
     }
 
     /**
@@ -69,38 +77,21 @@ class ToolboxController extends AbstractController
             $tools = explode(',', $this->settings['tools']);
 
             foreach ($tools as $tool) {
-                switch ($tool) {
-                    case 'tx_dlf_annotationtool':
-                    case 'annotationtool':
-                        $this->renderToolByName('renderAnnotationTool');
-                        break;
-                    case 'tx_dlf_fulltextdownloadtool':
-                    case 'fulltextdownloadtool':
-                        $this->renderToolByName('renderFulltextDownloadTool');
-                        break;
-                    case 'tx_dlf_fulltexttool':
-                    case 'fulltexttool':
-                        $this->renderToolByName('renderFulltextTool');
-                        break;
-                    case 'tx_dlf_imagedownloadtool':
-                    case 'imagedownloadtool':
-                        $this->renderToolByName('renderImageDownloadTool');
-                        break;
-                    case 'tx_dlf_imagemanipulationtool':
-                    case 'imagemanipulationtool':
-                        $this->renderToolByName('renderImageManipulationTool');
-                        break;
-                    case 'tx_dlf_pdfdownloadtool':
-                    case 'pdfdownloadtool':
-                        $this->renderToolByName('renderPdfDownloadTool');
-                        break;
-                    case 'tx_dlf_searchindocumenttool':
-                    case 'searchindocumenttool':
-                        $this->renderToolByName('renderSearchInDocumentTool');
-                        break;
-                    default:
-                        $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
-                }
+                match ($tool) {
+                    'tx_dlf_adddocumenttool', 'adddocumenttool' => $this->renderToolByName('renderAddDocumentTool'),
+                    'tx_dlf_annotationtool', 'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
+                    'tx_dlf_fulltextdownloadtool', 'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
+                    'tx_dlf_fulltexttool', 'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
+                    'tx_dlf_imagedownloadtool', 'imagedownloadtool' => $this->renderToolByName('renderImageDownloadTool'),
+                    'tx_dlf_imagemanipulationtool', 'imagemanipulationtool' => $this->renderToolByName('renderImageManipulationTool'),
+                    'tx_dlf_modeldownloadtool', 'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
+                    'tx_dlf_pdfdownloadtool', 'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
+                    'tx_dlf_scoredownloadtool', 'scoredownloadtool' => $this->renderToolByName('renderScoreDownloadTool'),
+                    'tx_dlf_scoretool', 'scoretool' => $this->renderToolByName('renderScoreTool'),
+                    'tx_dlf_searchindocumenttool', 'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
+                    'tx_dlf_viewerselectiontool', 'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
+                    default => $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.')
+                };
             }
         }
     }
@@ -121,7 +112,93 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the annotation tool
+     * Get the URL of the model.
+     *
+     * Gets the URL of the model by parameter or from the configured file group of the document.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function getModelUrl(): string
+    {
+        $modelUrl = '';
+        if (!empty($this->requestData['model'])) {
+            $modelUrl = $this->requestData['model'];
+        } elseif (!($this->isDocMissingOrEmpty() || empty($this->useGroupsConfiguration->getModel()))) {
+            $this->setPage();
+            if (isset($this->requestData['page'])) {
+                $file = $this->getFile($this->requestData['page'], $this->useGroupsConfiguration->getModel());
+                $modelUrl = $file['url'] ?? '';
+            }
+        }
+        return $modelUrl;
+    }
+
+    /**
+     * Get the score file.
+     *
+     * @return string
+     */
+    private function getScoreFile(): string
+    {
+        $scoreFile = '';
+        if ($this->requestData['page']) {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
+        } else {
+            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
+        }
+
+        $useGroups = $this->useGroupsConfiguration->getScore();
+        foreach ($useGroups as $useGroup) {
+            $files = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'];
+            if (array_key_exists($useGroup, $files)) {
+                $scoreFile = $files[$useGroup];
+            }
+        }
+        return $scoreFile;
+    }
+
+    /**
+     * Get image's URL and MIME type information's.
+     *
+     * @access private
+     *
+     * @param int $page Page number
+     *
+     * @return array Array of image information's.
+     */
+    private function getImage(int $page): array
+    {
+        // Get @USE value of METS fileGroup.
+        $image = $this->getFile($page, $this->useGroupsConfiguration->getImage());
+        if (isset($image['mimetype'])) {
+            $fileExtension = Helper::getFileExtensionsForMimeType($image['mimetype']);
+            if ($image['mimetype'] == 'image/jpg') {
+                $image['mimetypeLabel'] = ' (JPG)'; // "image/jpg" is not a valid MIME type, so we need to handle it separately.
+            } else {
+                $image['mimetypeLabel'] = !empty($fileExtension) ? ' (' . strtoupper($fileExtension[0]) . ')' : '';
+            }
+        }
+        return $image;
+    }
+
+    /**
+     * Renders the add document tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderAddDocumentTool(): void
+    {
+        $this->view->assign('addDocumentTool', true);
+    }
+
+    /**
+     * Renders the annotation tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -139,7 +216,7 @@ class ToolboxController extends AbstractController
         $annotationContainers = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['annotationContainers'];
         if (
             $annotationContainers != null
-            && sizeof($annotationContainers) > 0
+            && count($annotationContainers) > 0
         ) {
             $this->view->assign('annotationTool', true);
         } else {
@@ -148,7 +225,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the fulltext download tool
+     * Renders the fulltext download tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -156,10 +234,7 @@ class ToolboxController extends AbstractController
      */
     private function renderFulltextDownloadTool(): void
     {
-        if (
-            $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpFulltext'])
-        ) {
+        if ($this->isDocOrFulltextMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return;
         }
@@ -171,7 +246,8 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the fulltext tool
+     * Renders the fulltext tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -179,10 +255,7 @@ class ToolboxController extends AbstractController
      */
     private function renderFulltextTool(): void
     {
-        if (
-            $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpFulltext'])
-        ) {
+        if ($this->isDocOrFulltextMissingOrEmpty()) {
             // Quit without doing anything if required variables are not set.
             return;
         }
@@ -198,7 +271,26 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the image download tool
+     * Renders the score tool
+     *
+     * @return void
+     */
+    public function renderScoreTool()
+    {
+        if (
+            $this->isDocMissingOrEmpty()
+            || empty($this->useGroupsConfiguration->getScore())
+        ) {
+            // Quit without doing anything if required variables are not set.
+            return;
+        }
+
+        $this->view->assign('score', !empty($this->getScoreFile()));
+    }
+
+    /**
+     * Renders the image download tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -208,64 +300,64 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->settings['fileGrpsImageDownload'])
+            || empty($this->useGroupsConfiguration->getImage())
         ) {
             // Quit without doing anything if required variables are not set.
             return;
         }
 
         $this->setPage();
+        $page = $this->requestData['page'] ?? 0;
 
         $imageArray = [];
         // Get left or single page download.
-        $imageArray[0] = $this->getImage($this->requestData['page']);
-        if ($this->requestData['double'] == 1) {
-            $imageArray[1] = $this->getImage($this->requestData['page'] + 1);
+        $image = $this->getImage($page);
+        if (Helper::filterFilesByMimeType($image, ['image'], true)) {
+            $imageArray[0] = $image;
         }
+
+        if ($this->requestData['double'] == 1) {
+            $image = $this->getImage($page + 1);
+            if (Helper::filterFilesByMimeType($image, ['image'], true)) {
+                $imageArray[1] = $image;
+            }
+        }
+
         $this->view->assign('imageDownload', $imageArray);
     }
 
     /**
-     * Get image's URL and MIME type
+     * Get file's URL and MIME type
      *
      * @access private
      *
      * @param int $page Page number
      *
-     * @return array Array of image links and image format information
+     * @return array Array of file information
      */
-    private function getImage(int $page): array
+    private function getFile(int $page, array $fileGrps): array
     {
-        $image = [];
-        // Get @USE value of METS fileGrp.
-        $fileGrps = GeneralUtility::trimExplode(',', $this->settings['fileGrpsImageDownload']);
+        $file = [];
+        $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]] ?? null;
         while ($fileGrp = @array_pop($fileGrps)) {
-            // Get image link.
-            $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]];
-            $fileId = $physicalStructureInfo['files'][$fileGrp];
-            if (!empty($fileId)) {
-                $image['url'] = $this->currentDocument->getDownloadLocation($fileId);
-                $image['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
-                switch ($image['mimetype']) {
-                    case 'image/jpeg':
-                        $image['mimetypeLabel']  = ' (JPG)';
-                        break;
-                    case 'image/tiff':
-                        $image['mimetypeLabel']  = ' (TIFF)';
-                        break;
-                    default:
-                        $image['mimetypeLabel']  = '';
+            if (isset($physicalStructureInfo['files'][$fileGrp])) {
+                $fileId = $physicalStructureInfo['files'][$fileGrp];
+                if (!empty($fileId)) {
+                    $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
+                    $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
+                } else {
+                    $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
                 }
-                break;
             } else {
-                $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
+                $this->logger->warning('fileGrp "' . $fileGrp . '" not found in Document mets:fileSec');
             }
         }
-        return $image;
+        return $file;
     }
 
     /**
-     * Renders the image manipulation tool
+     * Renders the image manipulation tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -281,7 +373,71 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the PDF download tool
+     * Renders the model download tool
+     * Renders the model download tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderModelDownloadTool(): void
+    {
+        $modelUrl = $this->getModelUrl();
+        if ($modelUrl === '') {
+            $this->logger->debug("Model URL could not be determined");
+            return;
+        }
+        $this->view->assign('modelUrl', $modelUrl);
+    }
+
+
+    /**
+     * Renders the viewer selection tool
+     * Renders the viewer selection tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     * @throws InsufficientFolderAccessPermissionsException
+     */
+    private function renderViewerSelectionTool(): void
+    {
+        $model = $this->getModelUrl();
+        if (!$model) {
+            $this->logger->debug("Model URL could not be determined");
+            return;
+        }
+
+        $pathInfo = PathUtility::pathinfo($model);
+        $modelFormat = strtolower($pathInfo["extension"]);
+        $viewers = [];
+        /** @var StorageRepository $storageRepository */
+        $storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
+        $defaultStorage = $storageRepository->getDefaultStorage();
+        if ($defaultStorage->hasFolder(Embedded3dViewer::VIEWER_FOLDER)) {
+            $viewerFolders = $defaultStorage->getFoldersInFolder($defaultStorage->getFolder(Embedded3dViewer::VIEWER_FOLDER));
+            if (count($viewerFolders) > 0) {
+                /** @var YamlFileLoader $yamlFileLoader */
+                $yamlFileLoader = GeneralUtility::makeInstance(YamlFileLoader::class);
+                foreach ($viewerFolders as $viewerFolder) {
+                    if ($viewerFolder->hasFile(Embedded3dViewer::VIEWER_CONFIG_YML)) {
+                        $fileIdentifier = $viewerFolder->getFile(Embedded3dViewer::VIEWER_CONFIG_YML)->getIdentifier();
+                        $viewerConfig = $yamlFileLoader->load($defaultStorage->getName() . $fileIdentifier)["viewer"];
+                        if (!empty($viewerConfig["supportedModelFormats"]) && in_array($modelFormat, array_map('strtolower', $viewerConfig["supportedModelFormats"]))) {
+                            $viewers[] = (object) ['id' => $viewerFolder->getName(), 'name' => $viewerConfig["name"] ?? $viewerFolder->getName()];
+                        }
+                    }
+                }
+                $this->view->assign('viewers', $viewers);
+            }
+        }
+    }
+
+    /**
+     * Renders the PDF download tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -291,7 +447,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpDownload'])
+            || empty($this->useGroupsConfiguration->getDownload())
         ) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -303,6 +459,8 @@ class ToolboxController extends AbstractController
         $this->view->assign('pageLinks', $this->getPageLink());
         // Get work download.
         $this->view->assign('workLink', $this->getWorkLink());
+
+        $this->view->assign('scoreLinks', !empty($this->getScoreFile()));
     }
 
     /**
@@ -317,15 +475,19 @@ class ToolboxController extends AbstractController
         $firstPageLink = '';
         $secondPageLink = '';
         $pageLinkArray = [];
-        $pageNumber = $this->requestData['page'];
-        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
+        $pageNumber = $this->requestData['page'] ?? 0;
+        $useGroups = $this->useGroupsConfiguration->getDownload();
         // Get image link.
-        while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
-            $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$fileGrpDownload];
+        while ($useGroup = array_shift($useGroups)) {
+            $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$useGroup] ?? [];
             if (!empty($firstFileGroupDownload)) {
                 $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
                 // Get second page, too, if double page view is activated.
-                $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber + 1]]['files'][$fileGrpDownload];
+                $nextPage = $pageNumber + 1;
+                $secondFileGroupDownload = '';
+                if ( array_key_exists($nextPage, $this->currentDocument->physicalStructure) ) {
+                    $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$nextPage]]['files'][$useGroup];
+                }
                 if (
                     $this->requestData['double']
                     && $pageNumber < $this->currentDocument->numPages
@@ -340,7 +502,7 @@ class ToolboxController extends AbstractController
             empty($firstPageLink)
             && empty($secondPageLink)
         ) {
-            $this->logger->warning('File not found in fileGrps "' . $this->extConf['fileGrpDownload'] . '"');
+            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
         }
 
         if (!empty($firstPageLink)) {
@@ -362,29 +524,30 @@ class ToolboxController extends AbstractController
     private function getWorkLink(): string
     {
         $workLink = '';
-        $fileGrpsDownload = GeneralUtility::trimExplode(',', $this->extConf['fileGrpDownload']);
+        $useGroups = $this->useGroupsConfiguration->getDownload();
         // Get work link.
-        while ($fileGrpDownload = array_shift($fileGrpsDownload)) {
-            $fileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[0]]['files'][$fileGrpDownload];
+        while ($useGroup = array_shift($useGroups)) {
+            $fileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[0]]['files'][$useGroup] ?? [];
             if (!empty($fileGroupDownload)) {
                 $workLink = $this->currentDocument->getFileLocation($fileGroupDownload);
                 break;
             } else {
-                $details = $this->currentDocument->getLogicalStructure($this->currentDocument->toplevelId);
-                if (!empty($details['files'][$fileGrpDownload])) {
-                    $workLink = $this->currentDocument->getFileLocation($details['files'][$fileGrpDownload]);
+                $details = $this->currentDocument->getLogicalStructure($this->currentDocument->getToplevelId());
+                if (!empty($details['files'][$useGroup])) {
+                    $workLink = $this->currentDocument->getFileLocation($details['files'][$useGroup]);
                     break;
                 }
             }
         }
         if (empty($workLink)) {
-            $this->logger->warning('File not found in fileGrps "' . $this->extConf['fileGrpDownload'] . '"');
+            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
         }
         return $workLink;
     }
 
     /**
-     * Renders the searchInDocument tool
+     * Renders the searchInDocument tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      *
      * @access private
      *
@@ -393,8 +556,7 @@ class ToolboxController extends AbstractController
     private function renderSearchInDocumentTool(): void
     {
         if (
-            $this->isDocMissingOrEmpty()
-            || empty($this->extConf['fileGrpFulltext'])
+            $this->isDocOrFulltextMissingOrEmpty()
             || empty($this->settings['solrcore'])
         ) {
             // Quit without doing anything if required variables are not set.
@@ -408,17 +570,16 @@ class ToolboxController extends AbstractController
             return;
         }
 
-        // Fill markers.
         $viewArray = [
-            'LABEL_QUERY_URL' => $this->settings['queryInputName'],
-            'LABEL_START' => $this->settings['startInputName'],
-            'LABEL_ID' => $this->settings['idInputName'],
-            'LABEL_PID' => $this->settings['pidInputName'],
-            'LABEL_PAGE_URL' => $this->settings['pageInputName'],
-            'LABEL_HIGHLIGHT_WORD' => $this->settings['highlightWordInputName'],
-            'LABEL_ENCRYPTED' => $this->settings['encryptedInputName'],
-            'CURRENT_DOCUMENT' => $this->getCurrentDocumentId(),
-            'SOLR_ENCRYPTED' => $this->getEncryptedCoreName() ? : ''
+            'labelQueryUrl' => $this->settings['queryInputName'],
+            'labelStart' => $this->settings['startInputName'],
+            'labelId' => $this->settings['idInputName'],
+            'labelPid' => $this->settings['pidInputName'],
+            'labelPageUrl' => $this->settings['pageInputName'],
+            'labelHighlightWord' => $this->settings['highlightWordInputName'],
+            'labelEncrypted' => $this->settings['encryptedInputName'],
+            'documentId' => $this->getCurrentDocumentId(),
+            'solrEncrypted' => $this->getEncryptedCoreName() ? : ''
         ];
 
         $this->view->assign('searchInDocument', $viewArray);
@@ -489,13 +650,15 @@ class ToolboxController extends AbstractController
      */
     private function isFullTextEmpty(): bool
     {
-        $fileGrpsFulltext = GeneralUtility::trimExplode(',', $this->extConf['fileGrpFulltext']);
-        while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-            $fullTextFile = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['files'][$fileGrpFulltext];
-            if (!empty($fullTextFile)) {
-                break;
+        $useGroups = $this->useGroupsConfiguration->getFulltext();
+        while ($useGroup = array_shift($useGroups)) {
+            if (isset($this->requestData['page'])) {
+                $files = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['files'];
+                if (!empty($files[$useGroup])) {
+                    return false;
+                }
             }
         }
-        return empty($fullTextFile);
+        return true;
     }
 }

@@ -1,7 +1,7 @@
 version: "1"
 rules:
-  - base: master
-    upstream: kitodo:master
+  - base: main
+    upstream: kitodo:main
     mergeMethod: hardreset
   - base: 1.x
     upstream: kitodo:1.x
@@ -17,4 +17,10 @@ rules:
     mergeMethod: hardreset
   - base: 4.x
     upstream: kitodo:4.x
+    mergeMethod: hardreset
+  - base: 5.0.x
+    upstream: kitodo:5.0.x
+    mergeMethod: hardreset
+  - base: 5.1.x
+    upstream: kitodo:5.1.x
     mergeMethod: hardreset

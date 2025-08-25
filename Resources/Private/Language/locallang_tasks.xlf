@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2023-12-12T14:00:36Z">
+        <header>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="indexTask.title" approved="yes">
+                <source><![CDATA[Index]]></source>
+            </trans-unit>
+            <trans-unit id="indexTask.description" approved="yes">
+                <source><![CDATA[Index a document.]]></source>
+            </trans-unit>
+            <trans-unit id="reindexTask.title" approved="yes">
+                <source><![CDATA[Reindex]]></source>
+            </trans-unit>
+            <trans-unit id="reindexTask.description" approved="yes">
+                <source><![CDATA[Reindex documents.]]></source>
+            </trans-unit>
+            <trans-unit id="harvestTask.title" approved="yes">
+                <source><![CDATA[Harvest]]></source>
+            </trans-unit>
+            <trans-unit id="harvestTask.description" approved="yes">
+                <source><![CDATA[Harvest documents.]]></source>
+            </trans-unit>
+            <trans-unit id="deleteTask.title" approved="yes">
+                <source><![CDATA[Delete]]></source>
+            </trans-unit>
+            <trans-unit id="deleteTask.description" approved="yes">
+                <source><![CDATA[Delete documents.]]></source>
+            </trans-unit>
+            <trans-unit id="optimizeTask.title" approved="yes">
+                <source><![CDATA[Optimize]]></source>
+            </trans-unit>
+            <trans-unit id="optimizeTask.description" approved="yes">
+                <source><![CDATA[Optimize index.]]></source>
+            </trans-unit>
+            <trans-unit id="suggestBuildTask.title" approved="yes">
+                <source><![CDATA[Suggest]]></source>
+            </trans-unit>
+            <trans-unit id="suggestBuildTask.description" approved="yes">
+                <source><![CDATA[Build suggestion dictionary.]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.dryRun" approved="yes">
+                <source><![CDATA[Dry run]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.doc" approved="yes">
+                <source><![CDATA[URL of document]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.lib" approved="yes">
+                <source><![CDATA[Library]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.coll" approved="yes">
+                <source><![CDATA[Collection]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.pid" approved="yes">
+                <source><![CDATA[Page]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.solr" approved="yes">
+                <source><![CDATA[Solr core]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.owner" approved="yes">
+                <source><![CDATA[Owner]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.all" approved="yes">
+                <source><![CDATA[All]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.from" approved="yes">
+                <source><![CDATA[From]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.until" approved="yes">
+                <source><![CDATA[Until]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.set" approved="yes">
+                <source><![CDATA[Set]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.softCommit" approved="yes">
+                <source><![CDATA[Soft commit]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.commit" approved="yes">
+                <source><![CDATA[Commit]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.optimize" approved="yes">
+                <source><![CDATA[Optimize]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.error" approved="yes">
+                <source><![CDATA[Error!]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.warning" approved="yes">
+                <source><![CDATA[Warning!]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.done" approved="yes">
+                <source><![CDATA[Done!]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.valid" approved="yes">
+                <source><![CDATA[has to be selected!]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.collOrAll" approved="yes">
+                <source><![CDATA[At least one collection or "All" has to be selected!]]></source>
+            </trans-unit>
+            <trans-unit id="additionalFields.commitOrOptimize" approved="yes">
+                <source><![CDATA[At least commit and/or optimize has to be selected!]]></source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
