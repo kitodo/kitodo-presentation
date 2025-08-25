@@ -11,6 +11,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use DateTime;
 use DOMDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Solr\Solr;
@@ -19,6 +20,7 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
  * Controller class for the plugin 'OAI-PMH Interface'.
@@ -91,7 +93,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    public function initializeAction()
+    public function initializeAction(): void
     {
         $this->request = $this->request->withFormat("xml");
     }
@@ -147,10 +149,11 @@ class OaiPmhController extends AbstractController
      * Load URL parameters
      *
      * @access protected
+     * @param RequestInterface $request the HTTP request
      *
      * @return void
      */
-    protected function getUrlParams()
+    protected function getUrlParams(RequestInterface $request)
     {
         $allowedParams = [
             'verb',
@@ -165,9 +168,8 @@ class OaiPmhController extends AbstractController
         $this->parameters = [];
         // Set only allowed parameters.
         foreach ($allowedParams as $param) {
-            // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-            if (GeneralUtility::_GP($param)) {
-                $this->parameters[$param] = GeneralUtility::_GP($param);
+            if ($request->getQueryParams()[$param] ?? null) {
+                $this->parameters[$param] = $request->getQueryParams()[$param];
             }
         }
     }
@@ -199,7 +201,7 @@ class OaiPmhController extends AbstractController
         $record[] = ['dc:format' => $record['application/mets+xml'] ?? ''];
         $record[] = ['dc:type' => $record['Text'] ?? ''];
         if (!empty($record['partof'])) {
-            $document = $this->documentRepository->findOneByPartof($metadata['partof'] ?? '');
+            $document = $this->documentRepository->findOneBy([ 'partof' => $metadata['partof'] ?? '' ]);
 
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
@@ -271,7 +273,7 @@ class OaiPmhController extends AbstractController
     public function mainAction(): ResponseInterface
     {
         // Get allowed GET and POST variables.
-        $this->getUrlParams();
+        $this->getUrlParams($this->request);
 
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
@@ -315,7 +317,7 @@ class OaiPmhController extends AbstractController
      */
     protected function resume(): ?array
     {
-        $token = $this->tokenRepository->findOneByToken($this->parameters['resumptionToken']);
+        $token = $this->tokenRepository->findOneBy([ 'token' => $this->parameters['resumptionToken'] ]);
 
         if ($token) {
             $options = $token->getOptions();
@@ -490,7 +492,7 @@ class OaiPmhController extends AbstractController
         $resArray = [];
         // check for the optional "identifier" parameter
         if (isset($this->parameters['identifier'])) {
-            $resArray = $this->documentRepository->findOneByRecordId($this->parameters['identifier']);
+            $resArray = $this->documentRepository->findOneBy([ 'recordId' => $this->parameters['identifier'] ]);
         }
 
         $resultSet = [];
@@ -679,9 +681,9 @@ class OaiPmhController extends AbstractController
         // Check "from" for valid value.
         if (!empty($this->parameters['from'])) {
             // Is valid format?
-            $date = $this->getDate('from');
-            if (is_array($date)) {
-                $from = $this->getDateFromTimestamp($date, '.000Z');
+            $date = $this->getDateTimeFromParameter('from');
+            if ($date) {
+                $from = $this->dateTimeToString($date, '.000Z');
             } else {
                 $this->error = 'badArgument';
             }
@@ -704,9 +706,9 @@ class OaiPmhController extends AbstractController
         // Check "until" for valid value.
         if (!empty($this->parameters['until'])) {
             // Is valid format?
-            $date = $this->getDate('until');
-            if (is_array($date)) {
-                $until = $this->getDateFromTimestamp($date, '.999Z');
+            $date = $this->getDateTimeFromParameter('until');
+            if ($date) {
+                $until = $this->dateTimeToString($date, '.999Z');
                 if ($from != "*" && $from > $until) {
                     $this->error = 'badArgument';
                 }
@@ -724,11 +726,12 @@ class OaiPmhController extends AbstractController
      *
      * @param string $dateType
      *
-     * @return array|false
+     * @return DateTime|false
      */
-    private function getDate(string $dateType)
+    private function getDateTimeFromParameter(string $dateType)
     {
-        return strptime($this->parameters[$dateType], '%Y-%m-%dT%H:%M:%SZ') ?: strptime($this->parameters[$dateType], '%Y-%m-%d');
+        return DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $this->parameters[$dateType])
+            ?: DateTime::createFromFormat('Y-m-d', $this->parameters[$dateType]);
     }
 
     /**
@@ -741,17 +744,9 @@ class OaiPmhController extends AbstractController
      *
      * @return string
      */
-    private function getDateFromTimestamp(array $date, string $end): string
+    private function dateTimeToString(DateTime $date, string $end): string
     {
-        $timestamp = gmmktime(
-            $date['tm_hour'],
-            $date['tm_min'],
-            $date['tm_sec'],
-            $date['tm_mon'] + 1,
-            $date['tm_mday'],
-            $date['tm_year'] + 1900
-        );
-        return date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . $end;
+        return $date->format('Y-m-d') . 'T' . $date->format("H:i:s") . $end;
     }
 
     /**

@@ -14,8 +14,10 @@ namespace Kitodo\Dlf\Tests\Functional;
 
 use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -23,6 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 /**
  * Base class for functional test cases. This provides some common configuration
@@ -67,15 +70,6 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     ];
 
     /**
-     * By default, the testing framework wraps responses into a JSON object
-     * that contains status code etc. as fields. Set this field to true to avoid
-     * this behavior by not loading the json_response extension.
-     *
-     * @var bool
-     */
-    protected bool $disableJsonWrappedResponse = false;
-
-    /**
      * @var PersistenceManager
      */
     protected PersistenceManager $persistenceManager;
@@ -92,18 +86,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
     protected SolrCoreRepository $solrCoreRepository;
 
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->configurationToUseInTestInstance['EXTENSIONS']['dlf'] = $this->getDlfConfiguration();
-
-        if ($this->disableJsonWrappedResponse) {
-            $this->frameworkExtensionsToLoad = array_filter($this->frameworkExtensionsToLoad, function ($ext) {
-                return $ext !== 'Resources/Core/Functional/Extensions/json_response';
-            });
-        }
-    }
+    protected ?Solr $solr = null;
 
     /**
      * Sets up the test case environment.
@@ -116,6 +99,8 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      */
     public function setUp(): void
     {
+        $this->configurationToUseInTestInstance['EXTENSIONS']['dlf'] = $this->getDlfConfiguration();
+
         parent::setUp();
 
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
@@ -346,21 +331,20 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
 
         // Setup Solr only once for all tests in this suite
-        static $solr = null;
-
-        if ($solr === null) {
+        if ($this->solr === null) {
+            Helper::resetIndexNameCache();
             $coreName = Solr::createCore();
-            $solr = Solr::getInstance($coreName);
+            $this->solr = Solr::getInstance($coreName);
             foreach ($solrFixtures as $filePath) {
-                $this->importSolrDocuments($solr, $filePath);
+                $this->importSolrDocuments($this->solr, $filePath);
             }
         }
 
         $coreModel = $this->solrCoreRepository->findByUid($uid);
-        $coreModel->setIndexName($solr->core);
+        $coreModel->setIndexName($this->solr->core);
         $this->solrCoreRepository->update($coreModel);
         $this->persistenceManager->persistAll();
-        return $solr;
+        return $this->solr;
     }
 
     /**
@@ -383,5 +367,16 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     protected static function assertArrayMatches(array $sub, array $super, string $message = ''): void
     {
         self::assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
+    }
+
+    /**
+     * Execute an internal Typo3 Http request and return its response.
+     *
+     * @param InternalRequest $request the request
+     * @return ResponseInterface the response
+     */
+    public function executeInternalRequest(InternalRequest $request): ResponseInterface
+    {
+        return $this->executeFrontendSubRequest($request);
     }
 }

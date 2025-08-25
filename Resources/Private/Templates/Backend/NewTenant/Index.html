@@ -12,80 +12,83 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:be.pageRenderer includeRequireJsModules="{
-    0:'TYPO3/CMS/Backend/Modal'
+<f:be.pageRenderer includeJavaScriptModules="{
+    0:'@typo3/backend/modal.js'
 }" />
 
-<h1><f:translate key="newTenant.module" /></h1>
+<div class="module-body t3js-module-body">
 
+    <h1><f:translate key="newTenant.module" /></h1>
 
-<div style="padding: 5px;">
+    <div style="padding: 5px;">
 
-    <f:if condition="{recordInfos.formats.numCurrent} >= {recordInfos.formats.numDefault}">
-        <f:then>
-            <f:variable name="formatsAvailable" value="1" />
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \"newTenant.formatOkay\")}', message: '{f:translate(key: \"newTenant.formatOkayMsg\")}', alert: 'success'}" />
-        </f:then>
-        <f:else>
-            <f:variable name="formatsAvailable" value="0" />
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \"newTenant.formatNotOkay\")}', message: '{f:translate(key: \"newTenant.formatNotOkayMsg\")}', alert: 'danger'}" />
-            <f:form action="addFormat" name="format">
-                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createFormat')}" class="btn btn-primary"/>
-            </f:form>
-        </f:else>
-    </f:if>
+        <f:if condition="{recordInfos.formats.numCurrent} >= {recordInfos.formats.numDefault}">
+            <f:then>
+                <f:variable name="formatsAvailable" value="1" />
+                <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \"newTenant.formatOkay\")}', message: '{f:translate(key: \"newTenant.formatOkayMsg\")}', alert: 'success'}" />
+            </f:then>
+            <f:else>
+                <f:variable name="formatsAvailable" value="0" />
+                <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \"newTenant.formatNotOkay\")}', message: '{f:translate(key: \"newTenant.formatNotOkayMsg\")}', alert: 'danger'}" />
+                <f:form action="addFormat" name="format">
+                    <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createFormat')}" class="btn btn-primary"/>
+                </f:form>
+            </f:else>
+        </f:if>
 
-</div>
+    </div>
 
-<div style="padding: 5px;">
+    <div style="padding: 5px;">
 
-    <f:if condition="{recordInfos.structures.numCurrent} >= {recordInfos.structures.numDefault}">
-        <f:then>
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.structureOkay\')}', message: '{f:translate(key: \'newTenant.structureOkayMsg\')}', alert: 'success'}" />
-        </f:then>
-        <f:else>
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.structureNotOkay\')}', message: '{f:translate(key: \'newTenant.structureNotOkayMsg\')}', alert: 'danger'}" />
-            <f:form action="addStructure" name="structure">
-                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createStructure')}" class="btn btn-primary"/>
-            </f:form>
-        </f:else>
-    </f:if>
+        <f:if condition="{recordInfos.structures.numCurrent} >= {recordInfos.structures.numDefault}">
+            <f:then>
+                <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.structureOkay\')}', message: '{f:translate(key: \'newTenant.structureOkayMsg\')}', alert: 'success'}" />
+            </f:then>
+            <f:else>
+                <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.structureNotOkay\')}', message: '{f:translate(key: \'newTenant.structureNotOkayMsg\')}', alert: 'danger'}" />
+                <f:form action="addStructure" name="structure">
+                    <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createStructure')}" class="btn btn-primary"/>
+                </f:form>
+            </f:else>
+        </f:if>
 
-</div>
+    </div>
 
-<div style="padding: 5px;">
-    <f:if condition="{recordInfos.metadata.numCurrent} >= {recordInfos.metadata.numDefault}">
-        <f:then>
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.metadataOkay\')}', message: '{f:translate(key: \'newTenant.metadataOkayMsg\')}', alert: 'success'}" />
-        </f:then>
-        <f:else>
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.metadataNotOkay\')}', message: '{f:translate(key: \'newTenant.metadataNotOkayMsg\')}', alert: 'danger'}" />
-            <f:form action="addMetadata" name="metadata">
-                <f:if condition="{formatsAvailable} == '0'">
-                    <f:then>
-                        <f:form.button name="submit" class="btn btn-primary" disabled="disabled"><f:translate key="newTenant.createMetadata" /></f:form.button>
-                    </f:then>
-                    <f:else>
-                        <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createMetadata')}" class="btn btn-primary" />
-                    </f:else>
-                </f:if>
-            </f:form>
-        </f:else>
-    </f:if>
-</div>
+    <div style="padding: 5px;">
+        <f:if condition="{recordInfos.metadata.numCurrent} >= {recordInfos.metadata.numDefault}">
+            <f:then>
+                <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.metadataOkay\')}', message: '{f:translate(key: \'newTenant.metadataOkayMsg\')}', alert: 'success'}" />
+            </f:then>
+            <f:else>
+                <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.metadataNotOkay\')}', message: '{f:translate(key: \'newTenant.metadataNotOkayMsg\')}', alert: 'danger'}" />
+                <f:form action="addMetadata" name="metadata">
+                    <f:if condition="{formatsAvailable} == '0'">
+                        <f:then>
+                            <f:form.button name="submit" class="btn btn-primary" disabled="disabled"><f:translate key="newTenant.createMetadata" /></f:form.button>
+                        </f:then>
+                        <f:else>
+                            <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createMetadata')}" class="btn btn-primary" />
+                        </f:else>
+                    </f:if>
+                </f:form>
+            </f:else>
+        </f:if>
+    </div>
 
-<div style="padding: 5px;">
-    <f:if condition="{recordInfos.solrcore.numCurrent} >= 1">
-        <f:then>
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.solrcoreOkay\')}', message: '{f:translate(key: \'newTenant.solrcoreOkayMsg\')}', alert: 'success'}" />
-        </f:then>
-        <f:else>
-            <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.solrcoreNotOkay\')}', message: '{f:translate(key: \'newTenant.solrcoreNotOkayMsg\')}', alert: 'danger'}" />
-            <f:form action="addSolrCore" name="solr">
-                <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createSolrCore')}" class="btn btn-primary" />
-            </f:form>
-        </f:else>
-    </f:if>
+    <div style="padding: 5px;">
+        <f:if condition="{recordInfos.solrcore.numCurrent} >= 1">
+            <f:then>
+                <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.solrcoreOkay\')}', message: '{f:translate(key: \'newTenant.solrcoreOkayMsg\')}', alert: 'success'}" />
+            </f:then>
+            <f:else>
+                <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.solrcoreNotOkay\')}', message: '{f:translate(key: \'newTenant.solrcoreNotOkayMsg\')}', alert: 'danger'}" />
+                <f:form action="addSolrCore" name="solr">
+                    <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createSolrCore')}" class="btn btn-primary" />
+                </f:form>
+            </f:else>
+        </f:if>
+    </div>
+
 </div>
 
 </html>

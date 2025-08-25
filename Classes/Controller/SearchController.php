@@ -121,8 +121,7 @@ class SearchController extends AbstractController
         $this->search = $this->getParametersSafely('search');
 
         // if search was triggered by the ListView plugin, get the parameters from GET variables
-        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-        $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
+        $listRequestData = $this->request->getQueryParams()['tx_dlf_listview'] ?? null;
         // Quit without doing anything if no search parameters.
         if (empty($this->search) && empty($listRequestData)) {
             $this->logger->warning('Missing search parameters');
@@ -132,7 +131,7 @@ class SearchController extends AbstractController
         if (isset($listRequestData['search']) && is_array($listRequestData['search'])) {
             $this->search = array_merge($this->search ?: [], $listRequestData['search']);
             $listViewSearch = true;
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->search);
+            $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->search);
         }
 
         $this->search = is_array($this->search) ? $this->search : [];
@@ -177,13 +176,13 @@ class SearchController extends AbstractController
         // An empty form will be shown.
         if (!empty($this->search)) {
             // get all sortable metadata records
-            $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+            $sortableMetadata = $this->metadataRepository->findBy(['isSortable' => true]);
 
             // get all metadata records to be shown in results
-            $listedMetadata = $this->metadataRepository->findByIsListed(true);
+            $listedMetadata = $this->metadataRepository->findBy(['isListed' => true]);
 
             // get all indexed metadata fields
-            $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+            $indexedMetadata = $this->metadataRepository->findBy(['indexIndexed' => true]);
 
             $solrResults = null;
             $numResults = 0;
@@ -410,6 +409,7 @@ class SearchController extends AbstractController
             $virtualCollectionsQueryString = '';
             foreach ($collections as $collectionEntry) {
                 // check for virtual collections query string
+                /** @var Collection $collectionEntry */
                 if ($collectionEntry->getIndexSearch()) {
                     $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR (' . $collectionEntry->getIndexSearch() . ')';
                 } else {

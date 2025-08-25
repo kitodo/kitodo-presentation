@@ -24,11 +24,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @subpackage dlf
  *
  * @access public
- *
- * @method int countByPid(int $uid) Count amount of metadata for given PID
- * @method QueryResult findByIsListed(bool $isListed) Get a metadata which is listed or not listed
- * @method QueryResult findByIndexIndexed(bool $indexIndexed) Get a metadata which is indexed or not indexed
- * @method QueryResult findByIsSortable(bool $isSortable) Get a metadata which is sortable or not sortable
  */
 class MetadataRepository extends Repository
 {

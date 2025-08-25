@@ -15,115 +15,106 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
-                </TCEforms>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.paginate.itemsPerPage>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.limit</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required,num,int</eval>
-                                <default>24</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.limit</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required,num,int</eval>
+                            <default>24</default>
+                        </config>
                     </settings.paginate.itemsPerPage>
                     <settings.placeholder>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.placeholder</label>
-                            <config>
-                                <type>inline</type>
-                                <maxitems>1</maxitems>
-                                <foreign_table>sys_file_reference</foreign_table>
-                                <foreign_table_field>tablenames</foreign_table_field>
-                                <foreign_label>uid_local</foreign_label>
-                                <foreign_sortby>sorting_foreign</foreign_sortby>
-                                <foreign_field>uid_foreign</foreign_field>
-                                <foreign_selector>uid_local</foreign_selector>
-                                <foreign_selector_fieldTcaOverride>
-                                    <config>
-                                        <appearance>
-                                            <elementBrowserType>file</elementBrowserType>
-                                            <elementBrowserAllowed>gif,jpg,jpeg,png</elementBrowserAllowed>
-                                        </appearance>
-                                    </config>
-                                </foreign_selector_fieldTcaOverride>
-                                <foreign_types type="array">
-                                    <numIndex index="0">
-                                        <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                    </numIndex>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.placeholder</label>
+                        <config>
+                            <type>inline</type>
+                            <maxitems>1</maxitems>
+                            <foreign_table>sys_file_reference</foreign_table>
+                            <foreign_table_field>tablenames</foreign_table_field>
+                            <foreign_label>uid_local</foreign_label>
+                            <foreign_sortby>sorting_foreign</foreign_sortby>
+                            <foreign_field>uid_foreign</foreign_field>
+                            <foreign_selector>uid_local</foreign_selector>
+                            <foreign_selector_fieldTcaOverride>
+                                <config>
+                                    <appearance>
+                                        <elementBrowserType>file</elementBrowserType>
+                                        <elementBrowserAllowed>gif,jpg,jpeg,png</elementBrowserAllowed>
+                                    </appearance>
+                                </config>
+                            </foreign_selector_fieldTcaOverride>
+                            <foreign_types type="array">
+                                <numIndex index="0">
+                                    <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
+                                </numIndex>
+                                <numIndex index="2">
+                                    <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
+                                </numIndex>
+                            </foreign_types>
+                            <foreign_match_fields>
+                                <fieldname>image</fieldname>
+                            </foreign_match_fields>
+                            <appearance type="array">
+                                <newRecordLinkAddTitle>1</newRecordLinkAddTitle>
+                                <headerThumbnail>
+                                    <field>uid_local</field>
+                                    <height>64</height>
+                                    <width>64</width>
+                                </headerThumbnail>
+                                <enabledControls>
+                                    <info>1</info>
+                                    <new>0</new>
+                                    <dragdrop>0</dragdrop>
+                                    <sort>1</sort>
+                                    <hide>0</hide>
+                                    <delete>1</delete>
+                                    <localize>1</localize>
+                                </enabledControls>
+                                <createNewRelationLinkTitle>LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference</createNewRelationLinkTitle>
+                            </appearance>
+                            <behaviour>
+                                <localizationMode>select</localizationMode>
+                                <localizeChildrenAtParentLocalization>1</localizeChildrenAtParentLocalization>
+                            </behaviour>
+                            <overrideChildTca>
+                                <columns type="array">
+                                    <uid_local type="array">
+                                        <config type="array">
+                                            <appearance type="array">
+                                                <elementBrowserType>file</elementBrowserType>
+                                                <elementBrowserAllowed>jpg,png,jpeg,gif</elementBrowserAllowed>
+                                            </appearance>
+                                        </config>
+                                    </uid_local>
+                                </columns>
+                                <types type="array">
                                     <numIndex index="2">
                                         <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
                                     </numIndex>
-                                </foreign_types>
-                                <foreign_match_fields>
-                                    <fieldname>image</fieldname>
-                                </foreign_match_fields>
-                                <appearance type="array">
-                                    <newRecordLinkAddTitle>1</newRecordLinkAddTitle>
-                                    <headerThumbnail>
-                                        <field>uid_local</field>
-                                        <height>64</height>
-                                        <width>64</width>
-                                    </headerThumbnail>
-                                    <enabledControls>
-                                        <info>1</info>
-                                        <new>0</new>
-                                        <dragdrop>0</dragdrop>
-                                        <sort>1</sort>
-                                        <hide>0</hide>
-                                        <delete>1</delete>
-                                        <localize>1</localize>
-                                    </enabledControls>
-                                    <createNewRelationLinkTitle>LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference</createNewRelationLinkTitle>
-                                </appearance>
-                                <behaviour>
-                                    <localizationMode>select</localizationMode>
-                                    <localizeChildrenAtParentLocalization>1</localizeChildrenAtParentLocalization>
-                                </behaviour>
-                                <overrideChildTca>
-                                    <columns type="array">
-                                        <uid_local type="array">
-                                            <config type="array">
-                                                <appearance type="array">
-                                                    <elementBrowserType>file</elementBrowserType>
-                                                    <elementBrowserAllowed>jpg,png,jpeg,gif</elementBrowserAllowed>
-                                                </appearance>
-                                            </config>
-                                        </uid_local>
-                                    </columns>
-                                    <types type="array">
-                                        <numIndex index="2">
-                                            <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                        </numIndex>
-                                    </types>
-                                </overrideChildTca>
-                            </config>
-                        </TCEforms>
+                                </types>
+                            </overrideChildTca>
+                        </config>
                     </settings.placeholder>
                     <settings.targetPid>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
-                            <config>
-                                <type>group</type>
-                                <internal_type>db</internal_type>
-                                <allowed>pages</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>1</minitems>
-                                <show_thumbs>1</show_thumbs>
-                                <wizards>
-                                    <suggest>
-                                        <type>suggest</type>
-                                    </suggest>
-                                </wizards>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
+                        <config>
+                            <type>group</type>
+                            <allowed>pages</allowed>
+                            <size>1</size>
+                            <maxitems>1</maxitems>
+                            <minitems>1</minitems>
+                            <show_thumbs>1</show_thumbs>
+                            <wizards>
+                                <suggest>
+                                    <type>suggest</type>
+                                </suggest>
+                            </wizards>
+                        </config>
                     </settings.targetPid>
                 </el>
             </ROOT>

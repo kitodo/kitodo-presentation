@@ -22,8 +22,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @subpackage dlf
  *
  * @access public
- *
- * @method Format|null findOneByType(string $type) Get a format by its type
  */
 class FormatRepository extends Repository
 {

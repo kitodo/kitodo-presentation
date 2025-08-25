@@ -13,12 +13,11 @@
 namespace Kitodo\Dlf\Hooks;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\TypoScriptHelper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -58,7 +57,7 @@ class ItemsProcFunc implements LoggerAwareInterface
     }
 
     /**
-     * Extract typoScript configuration from site root of the plugin
+     * Extract typoScript configuration from site root to load storagePid
      *
      * @access public
      *
@@ -66,28 +65,11 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @return void
      */
-    public function getTyposcriptConfigFromPluginSiteRoot(array $params): void
+    public function loadStoragePid(array $params): void
     {
         $pid = $params['flexParentDatabaseRow']['pid'];
-        $rootLine = BackendUtility::BEgetRootLine($pid);
-        $siteRootRow = [];
-        foreach ($rootLine as $row) {
-            if (isset($row['is_siteroot'])) {
-                $siteRootRow = $row;
-                break;
-            }
-        }
-
-        try {
-            $ts = GeneralUtility::makeInstance(TemplateService::class);
-            $ts->rootLine = $rootLine;
-            $ts->runThroughTemplates($rootLine, 0);
-            $ts->generateConfig();
-            $typoScriptConfig = $ts->setup;
-            $this->storagePid = $typoScriptConfig['plugin.']['tx_dlf.']['persistence.']['storagePid'];
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-        }
+        $config = TypoScriptHelper::getTyposcriptConfig($pid);
+        $this->storagePid = $config['plugin.']['tx_dlf.']['persistence.']['storagePid'];
     }
 
     /**
@@ -143,7 +125,7 @@ class ItemsProcFunc implements LoggerAwareInterface
      */
     protected function generateList(array &$params, string $fields, string $table, string $sorting, string $andWhere = ''): void
     {
-        $this->getTyposcriptConfigFromPluginSiteRoot($params);
+        $this->loadStoragePid($params);
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table);
@@ -158,7 +140,7 @@ class ItemsProcFunc implements LoggerAwareInterface
                 $andWhere
             )
             ->orderBy($sorting)
-            ->execute();
+            ->executeQuery();
 
         while ($resArray = $result->fetchNumeric()) {
             $params['items'][] = $resArray;

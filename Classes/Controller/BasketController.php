@@ -245,13 +245,13 @@ class BasketController extends AbstractController
         $userIsLoggedIn = $this->isUserLoggedIn();
 
         if ($userIsLoggedIn) {
-            $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
+            $basket = $this->basketRepository->findOneBy([ 'feUserId' => (int) $GLOBALS['TSFE']->fe_user->user['uid'] ]);
         } else {
             $userSession->set('ses', 'tx_dlf_basket', '');
             $userSession->dataWasUpdated();
             $GLOBALS['TSFE']->fe_user->storeSessionData();
 
-            $basket = $this->basketRepository->findOneBySessionId($userSession->getIdentifier());
+            $basket = $this->basketRepository->findOneBy([ 'sessionId' => $userSession->getIdentifier() ]);
         }
 
         // session does not exist
@@ -553,7 +553,8 @@ class BasketController extends AbstractController
         // send mail
         $mailId = $this->requestData['mail_action'];
 
-        $mailObject = $this->mailRepository->findByUid(intval($mailId))->getFirst();
+        /** @var \Kitodo\Dlf\Domain\Model\Mail $mailObject */
+        $mailObject = $this->mailRepository->findByUid((int) $mailId);
 
         $mailText = htmlspecialchars(LocalizationUtility::translate('basket.mailBody', 'dlf')) . "\n";
         $numberOfPages = 0;
@@ -638,7 +639,7 @@ class BasketController extends AbstractController
         $printerId = $this->requestData['print_action'];
 
         // get id from db and send selected doc download link
-        $printer = $this->printerRepository->findOneByUid($printerId);
+        $printer = $this->printerRepository->findOneBy([ 'uid' => $printerId ]);
 
         // printer is selected
         if ($printer) {
