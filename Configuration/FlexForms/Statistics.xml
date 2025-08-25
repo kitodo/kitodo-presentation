@@ -15,41 +15,35 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
-                </TCEforms>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.collections>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.collections</label>
-                            <config>
-                                <type>select</type>
-                                <renderType>selectMultipleSideBySide</renderType>
-                                <foreign_table>tx_dlf_collections</foreign_table>
-                                <foreign_table_where>AND tx_dlf_collections.hidden = 0 AND tx_dlf_collections.sys_language_uid IN (-1,0)
-                                    ORDER BY tx_dlf_collections.label ASC
-                                </foreign_table_where>
-                                <size>5</size>
-                                <autoSizeMax>15</autoSizeMax>
-                                <maxitems>1024</maxitems>
-                                <minitems>0</minitems>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.collections</label>
+                        <config>
+                            <type>select</type>
+                            <renderType>selectMultipleSideBySide</renderType>
+                            <foreign_table>tx_dlf_collections</foreign_table>
+                            <foreign_table_where>AND tx_dlf_collections.hidden = 0 AND tx_dlf_collections.sys_language_uid IN (-1,0)
+                                ORDER BY tx_dlf_collections.label ASC
+                            </foreign_table_where>
+                            <size>5</size>
+                            <autoSizeMax>15</autoSizeMax>
+                            <maxitems>1024</maxitems>
+                            <minitems>0</minitems>
+                        </config>
                     </settings.collections>
                     <settings.description>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.flexform.description</label>
-                            <config>
-                                <type>text</type>
-                                <cols>30</cols>
-                                <rows>10</rows>
-                                <wrap>virtual</wrap>
-                            </config>
-                            <defaultExtras>richtext[undo,redo,cut,copy,paste,link,image,line,acronym,chMode,blockstylelabel,formatblock,blockstyle,textstylelabel,textstyle,bold,italic,unorderedlist,orderedlist]:rte_transform[mode=ts_css]</defaultExtras>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.flexform.description</label>
+                        <config>
+                            <type>text</type>
+                            <cols>30</cols>
+                            <rows>10</rows>
+                            <wrap>virtual</wrap>
+                        </config>
+                        <defaultExtras>richtext[undo,redo,cut,copy,paste,link,image,line,acronym,chMode,blockstylelabel,formatblock,blockstyle,textstylelabel,textstyle,bold,italic,unorderedlist,orderedlist]:rte_transform[mode=ts_css]</defaultExtras>
                     </settings.description>
                 </el>
             </ROOT>

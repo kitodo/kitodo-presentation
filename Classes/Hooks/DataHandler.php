@@ -92,7 +92,7 @@ class DataHandler implements LoggerAwareInterface
                         $fieldArray['label'] = $fieldArray['index_name'];
                     }
                     // Ensure that index names don't get mixed up with sorting values.
-                    if (substr($fieldArray['index_name'], -8) == '_sorting') {
+                    if (!empty($fieldArray['index_name']) && substr($fieldArray['index_name'], -8) == '_sorting') {
                         $fieldArray['index_name'] .= '0';
                     }
                     break;
@@ -132,7 +132,7 @@ class DataHandler implements LoggerAwareInterface
                                 Helper::whereExpression($table)
                             )
                             ->setMaxResults(1)
-                            ->execute();
+                            ->executeQuery();
 
                         $resArray = $result->fetchAssociative();
                         if (is_array($resArray)) {
@@ -158,7 +158,7 @@ class DataHandler implements LoggerAwareInterface
                                 Helper::whereExpression($table)
                             )
                             ->setMaxResults(1)
-                            ->execute();
+                            ->executeQuery();
 
                         if ($resArray = $result->fetchAssociative()) {
                             // Reset indexing to current.
@@ -220,7 +220,7 @@ class DataHandler implements LoggerAwareInterface
                                 )
                             )
                             ->setMaxResults(1)
-                            ->execute();
+                            ->executeQuery();
 
                         $resArray = $result->fetchAssociative();
                         if (is_array($resArray)) {
@@ -282,7 +282,7 @@ class DataHandler implements LoggerAwareInterface
                     )
                 )
                 ->setMaxResults(1)
-                ->execute();
+                ->executeQuery();
 
             $resArray = $result->fetchAssociative();
             if (is_array($resArray)) {
@@ -381,7 +381,7 @@ class DataHandler implements LoggerAwareInterface
                 ->from('tx_dlf_solrcores')
                 ->where($queryBuilder->expr()->eq('uid', (int) $id))
                 ->setMaxResults(1)
-                ->execute();
+                ->executeQuery();
 
             $resArray = $result->fetchAssociative();
             if (is_array($resArray)) {

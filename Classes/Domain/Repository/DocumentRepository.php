@@ -36,10 +36,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
- * @method Document|null findOneByUid(int $uid) Get a document by its UID
- * @method Document|null findOneByRecordId(string $recordId) Get a document by its record ID
- * @method Document|null findOneByIndexName(string $indexName) Get a document by its index name
- * @method Document|null findOneByLocation(string $location) Get a document by its XML location
+ * @method Document|null findByUid(int|null $uid) Get a document by its UID
+ * @method Document|null findOneBy(array $criteria) Get a document by criteria
  */
 class DocumentRepository extends Repository
 {
@@ -77,14 +75,14 @@ class DocumentRepository extends Repository
 
         } else if (isset($parameters['recordId'])) {
 
-            $document = $this->findOneByRecordId($parameters['recordId']);
+            $document = $this->findOneBy([ 'recordId' => $parameters['recordId'] ]);
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
             $doc = AbstractDocument::getInstance($parameters['location']);
 
             if ($doc !== null && $doc->recordId) {
-                $document = $this->findOneByRecordId($doc->recordId);
+                $document = $this->findOneBy([ 'recordId' => $doc->recordId ]);
             }
 
             if ($document === null) {
@@ -120,7 +118,9 @@ class DocumentRepository extends Repository
         $query->setOrderings(['tstamp' => QueryInterface::ORDER_ASCENDING]);
         $query->setLimit(1);
 
-        return $query->execute()->getFirst();
+        /** @var Document $document */
+        $document = $query->execute()->getFirst();
+        return $document;
     }
 
     /**
@@ -281,7 +281,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
                     $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -326,7 +326,7 @@ class DocumentRepository extends Repository
                         $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
                     )
-                    ->execute()
+                    ->executeQuery()
                     ->fetchFirstColumn();
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -341,7 +341,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->eq('partof', 0),
                     Helper::whereExpression('tx_dlf_documents')
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -365,7 +365,7 @@ class DocumentRepository extends Repository
                     $queryBuilder->expr()->eq('pid', (int)$settings['storagePid']),
                     $queryBuilder->expr()->notIn('uid', $subQuery)
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
         }
 
@@ -419,9 +419,10 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($pid)),
                 $excludeOtherWhere
             )
-            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
+            ->getConcreteQueryBuilder()
+            ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
             ->addOrderBy('tx_dlf_documents.mets_orderlabel')
-            ->execute();
+            ->executeQuery();
     }
 
     /**
@@ -520,7 +521,7 @@ class DocumentRepository extends Repository
         // Fetch document info for UIDs in $documentSet from DB
         $exprDocumentMatchesUid = $queryBuilder->expr()->in('uid', $uids);
         if ($checkPartof) {
-            $exprDocumentMatchesUid = $queryBuilder->expr()->orX(
+            $exprDocumentMatchesUid = $queryBuilder->expr()->or(
                 $exprDocumentMatchesUid,
                 $queryBuilder->expr()->in('partof', $uids)
             );
@@ -540,15 +541,16 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->in('pid', $this->settings['storagePid']),
                 $exprDocumentMatchesUid
             )
-            ->add('orderBy', 'cast(volume_sorting as UNSIGNED) asc')
+            ->getConcreteQueryBuilder()
+            ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
             ->addOrderBy('mets_orderlabel', 'asc')
-            ->execute();
+            ->executeQuery();
 
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
         // Process documents in a usable array structure
         while ($resArray = $kitodoDocuments->fetchAssociative()) {
-            $resArray['structure'] = $documentStructures[$resArray['structure']];
+            $resArray['structure'] = $documentStructures[$resArray['structure']] ?? null;
             $allDocuments[$resArray['uid']] = $resArray;
         }
 
@@ -583,13 +585,18 @@ class DocumentRepository extends Repository
      * @param Collection $collection
      * @param array $settings
      * @param array $searchParams
-     * @param ?QueryResult $listedMetadata
-     * @param ?QueryResult $indexedMetadata
+     * @param ?QueryResultInterface $listedMetadata
+     * @param ?QueryResultInterface $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrByCollection(Collection $collection, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null)
-    {
+    public function findSolrByCollection(
+        Collection $collection,
+        array $settings,
+        array $searchParams,
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ) {
         return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -601,13 +608,18 @@ class DocumentRepository extends Repository
      * @param array|QueryResultInterface $collections
      * @param array $settings
      * @param array $searchParams
-     * @param ?QueryResult $listedMetadata
-     * @param ?QueryResult $indexedMetadata
+     * @param ?QueryResultInterface $listedMetadata
+     * @param ?QueryResultInterface $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrByCollections(array|QueryResultInterface $collections, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
-    {
+    public function findSolrByCollections(
+        array|QueryResultInterface $collections,
+        array $settings,
+        array $searchParams,
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ): SolrSearch {
         return $this->findSolr($collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -618,13 +630,17 @@ class DocumentRepository extends Repository
      *
      * @param array $settings
      * @param array $searchParams
-     * @param ?QueryResult $listedMetadata
-     * @param ?QueryResult $indexedMetadata
+     * @param ?QueryResultInterface $listedMetadata
+     * @param ?QueryResultInterface $indexedMetadata
      *
      * @return SolrSearch
      */
-    public function findSolrWithoutCollection(array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
-    {
+    public function findSolrWithoutCollection(
+        array $settings,
+        array $searchParams,
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ): SolrSearch {
         return $this->findSolr([], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -636,13 +652,18 @@ class DocumentRepository extends Repository
      * @param array|QueryResultInterface $collections
      * @param array $settings
      * @param array $searchParams
-     * @param ?QueryResult $listedMetadata
-     * @param ?QueryResult $indexedMetadata
+     * @param ?QueryResultInterface $listedMetadata
+     * @param ?QueryResultInterface $indexedMetadata
      *
      * @return SolrSearch
      */
-    private function findSolr(array|QueryResultInterface $collections, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null): SolrSearch
-    {
+    private function findSolr(
+        array|QueryResultInterface $collections,
+        array $settings,
+        array $searchParams,
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ): SolrSearch {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
@@ -664,7 +685,7 @@ class DocumentRepository extends Repository
      */
     public function getPreviousDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneByUid($uid);
+        $currentDocument = $this->findOneBy([ 'uid' => $uid ]);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 
@@ -685,7 +706,7 @@ class DocumentRepository extends Repository
                         'volume_sorting < \'' . $currentVolume . '\''
                     )
                     ->addOrderBy('volume_sorting', 'desc')
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAssociative();
 
                 if (!empty($prevDocument)) {
@@ -714,7 +735,7 @@ class DocumentRepository extends Repository
      */
     public function getNextDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneByUid($uid);
+        $currentDocument = $this->findOneBy([ 'uid' => $uid ]);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 
@@ -735,7 +756,7 @@ class DocumentRepository extends Repository
                         'volume_sorting > \'' . $currentVolume . '\''
                     )
                     ->addOrderBy('volume_sorting', 'asc')
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAssociative();
 
                 if (!empty($nextDocument)) {
@@ -775,7 +796,7 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('partof', $uid)
             )
             ->addOrderBy('volume_sorting', 'asc')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (empty($child['uid'])) {
@@ -808,7 +829,7 @@ class DocumentRepository extends Repository
                 $queryBuilder->expr()->eq('partof', $uid)
             )
             ->addOrderBy('volume_sorting', 'desc')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (empty($child['uid'])) {

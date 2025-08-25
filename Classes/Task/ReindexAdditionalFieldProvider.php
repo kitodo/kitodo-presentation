@@ -141,7 +141,7 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
                 $queryBuilder->expr()
                     ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
             )
-            ->execute();
+            ->executeQuery();
 
         while ($record = $result->fetchAssociative()) {
             $collections[$record['label']] = $record['uid'];

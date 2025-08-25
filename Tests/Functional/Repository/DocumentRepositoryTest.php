@@ -39,7 +39,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         $this->documentRepository = $this->initializeRepository(DocumentRepository::class, 20000);
 
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/documents_1.csv');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/Common/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/pages.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/libraries.csv');
     }
 

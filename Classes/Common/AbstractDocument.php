@@ -644,7 +644,7 @@ abstract class AbstractDocument
                     Helper::whereExpression('tx_dlf_documents')
                 )
                 ->setMaxResults(1)
-                ->execute();
+                ->executeQuery();
 
             $resArray = $result->fetchAssociative();
             if ($resArray) {
@@ -761,7 +761,7 @@ abstract class AbstractDocument
                 ->where(
                     $queryBuilder->expr()->eq('pid', $this->configPid)
                 )
-                ->execute();
+                ->executeQuery();
 
             while ($resArray = $result->fetchAssociative()) {
                 // Update format registry.

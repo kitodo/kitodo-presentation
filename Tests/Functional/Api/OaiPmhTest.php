@@ -13,18 +13,16 @@
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
 use DateTime;
-use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use Kitodo\Dlf\Tests\Functional\Api\OaiPmhTypo3Client;
 use Phpoaipmh\Endpoint;
 use Phpoaipmh\Exception\OaipmhException;
-use SimpleXMLElement;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class OaiPmhTest extends FunctionalTestCase
 {
-    protected bool $disableJsonWrappedResponse = true;
-
     protected array $coreExtensionsToLoad = [
         'fluid',
         'fluid_styled_content',
@@ -62,7 +60,7 @@ class OaiPmhTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/metadata.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/libraries.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/pages.csv');
-        $this->importDataSet(__DIR__ . '/../../Fixtures/OaiPmh/pages.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/OaiPmh/pages.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/OaiPmh/solrcores.csv');
 
         $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, 20000);
@@ -103,14 +101,8 @@ class OaiPmhTest extends FunctionalTestCase
      */
     public function correctlyRespondsOnBadVerb()
     {
-        $client = new HttpClient();
-        $response = $client->get($this->baseUrl, [
-            'query' => [
-                'id' => $this->oaiPage,
-                'verb' => 'nastyVerb',
-            ],
-        ]);
-        $xml = new SimpleXMLElement((string) $response->getBody());
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this, false);
+        $xml = $client->request('nastyVerb');
 
         self::assertEquals('badVerb', (string) $xml->error['code']);
 
@@ -129,8 +121,8 @@ class OaiPmhTest extends FunctionalTestCase
      */
     public function canIdentify()
     {
-        $oai = Endpoint::build($this->oaiUrl);
-        $identity = $oai->identify();
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
+        $identity = (new Endpoint($client))->identify();
 
         self::assertEquals('Identify', (string) $identity->request['verb']);
         self::assertEquals('Default Library - OAI Repository', (string) $identity->Identify->repositoryName);
@@ -143,8 +135,8 @@ class OaiPmhTest extends FunctionalTestCase
      */
     public function identifyGivesFallbackDatestampWhenNoDocuments()
     {
-        $oai = Endpoint::build($this->oaiUrlNoStoragePid);
-        $identity = $oai->identify();
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPageNoStoragePid, $this);
+        $identity = (new Endpoint($client))->identify();
 
         self::assertUtcDateString((string) $identity->Identify->earliestDatestamp);
     }
@@ -154,8 +146,8 @@ class OaiPmhTest extends FunctionalTestCase
      */
     public function canListMetadataFormats()
     {
-        $oai = Endpoint::build($this->oaiUrl);
-        $formats = $oai->listMetadataFormats();
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
+        $formats = (new Endpoint($client))->listMetadataFormats();
 
         $formatMap = [];
         foreach ($formats as $format) {
@@ -170,8 +162,8 @@ class OaiPmhTest extends FunctionalTestCase
      */
     public function canListRecords()
     {
-        $oai = Endpoint::build($this->oaiUrl);
-        $result = $oai->listRecords('mets');
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
+        $result = (new Endpoint($client))->listRecords('mets');
 
         $record = $result->current();
         $metsRoot = $record->metadata->children('http://www.loc.gov/METS/')[0];
@@ -187,8 +179,8 @@ class OaiPmhTest extends FunctionalTestCase
         $this->expectException(OaipmhException::class);
         $this->expectExceptionMessage('empty list');
 
-        $oai = Endpoint::build($this->oaiUrl);
-        $result = $oai->listRecords('mets', null, (new DateTime())->setDate(1900, 1, 1));
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
+        $result = (new Endpoint($client))->listRecords('mets', null, (new DateTime())->setDate(1900, 1, 1));
 
         $result->current();
     }
@@ -201,19 +193,12 @@ class OaiPmhTest extends FunctionalTestCase
         // NOTE: cursor and expirationDate are optional by the specification,
         //       but we include them in our implementation
 
-        $client = new HttpClient();
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
 
         // The general handling of resumption tokens should be the same for these verbs
         foreach (['ListIdentifiers', 'ListRecords'] as $verb) {
             // Check that we get a proper resumption token when starting a list
-            $response = $client->get($this->baseUrl, [
-                'query' => [
-                    'id' => $this->oaiPage,
-                    'verb' => $verb,
-                    'metadataPrefix' => 'mets',
-                ],
-            ]);
-            $xml = new SimpleXMLElement((string) $response->getBody());
+            $xml = $client->request($verb, [ 'metadataPrefix' => 'mets' ]);
 
             $resumptionToken = $xml->$verb->resumptionToken;
             self::assertEquals('0', (string) $resumptionToken['cursor']);
@@ -227,14 +212,7 @@ class OaiPmhTest extends FunctionalTestCase
             // Check that we can resume and get a proper cursor value
             $cursor = 1;
             do {
-                $response = $client->get($this->baseUrl, [
-                    'query' => [
-                        'id' => $this->oaiPage,
-                        'verb' => $verb,
-                        'resumptionToken' => (string) $resumptionToken,
-                    ],
-                ]);
-                $xml = new SimpleXMLElement((string) $response->getBody());
+                $xml = $client->request($verb, [ 'resumptionToken' => (string) $resumptionToken ]);
 
                 $resumptionToken = $xml->$verb->resumptionToken;
                 $tokenStr = (string) $resumptionToken;
@@ -257,18 +235,10 @@ class OaiPmhTest extends FunctionalTestCase
      */
     public function noResumptionTokenForCompleteList()
     {
-        $client = new HttpClient();
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
 
         foreach (['ListIdentifiers', 'ListRecords'] as $verb) {
-            $response = $client->get($this->baseUrl, [
-                'query' => [
-                    'id' => $this->oaiPage,
-                    'verb' => $verb,
-                    'metadataPrefix' => 'mets',
-                    'set' => 'collection-with-single-document',
-                ],
-            ]);
-            $xml = new SimpleXMLElement((string) $response->getBody());
+            $xml = $client->request($verb, [ 'metadataPrefix' => 'mets', 'set' => 'collection-with-single-document' ]);
 
             self::assertCount(1, $xml->$verb->children());
             self::assertEmpty($xml->$verb->resumptionToken);
@@ -280,8 +250,8 @@ class OaiPmhTest extends FunctionalTestCase
      */
     public function canListAndResumeIdentifiers()
     {
-        $oai = Endpoint::build($this->oaiUrl);
-        $result = $oai->listIdentifiers('mets');
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
+        $result = (new Endpoint($client))->listIdentifiers('mets');
 
         $record = $result->current();
         self::assertEquals('oai:de:slub-dresden:db:id-476251419', $record->identifier);

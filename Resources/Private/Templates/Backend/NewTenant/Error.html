@@ -12,8 +12,9 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<h1><f:translate key="newTenant.module" /></h1>
+<div class="module-body t3js-module-body">
+    <h1><f:translate key="newTenant.module" /></h1>
 
-<f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.wrongPageType\')}', message: '{f:translate(key: \'newTenant.wrongPageTypeMsg\')}', alert: 'danger'}" />
-
+    <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.wrongPageType\')}', message: '{f:translate(key: \'newTenant.wrongPageTypeMsg\')}', alert: 'danger'}" />
+</div>
 </html>

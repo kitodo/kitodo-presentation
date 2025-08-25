@@ -27,6 +27,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Resource\MimeTypeCollection;
 use TYPO3\CMS\Core\Resource\MimeTypeDetector;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -77,6 +78,13 @@ class Helper
     protected static array $messages = [];
 
     /**
+     * @access protected
+     * @static
+     * @var array A cache remembering which Solr core uid belongs to which index name
+     */
+    protected static array $indexNameCache = [];
+
+    /**
      * Generates a flash message and adds it to a message queue.
      *
      * @access public
@@ -85,13 +93,13 @@ class Helper
      *
      * @param string $message The body of the message
      * @param string $title The title of the message
-     * @param int $severity The message's severity
+     * @param ContextualFeedbackSeverity $severity The message's severity
      * @param bool $session Should the message be saved in the user's session?
      * @param string $queue The queue's unique identifier
      *
      * @return FlashMessageQueue The queue the message was added to
      */
-    public static function addMessage(string $message, string $title, int $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
+    public static function addMessage(string $message, string $title, ContextualFeedbackSeverity $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
@@ -406,7 +414,7 @@ class Helper
     public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
-        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
+        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] ?? null)) {
             foreach (self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
                 $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }
@@ -444,8 +452,7 @@ class Helper
             return $pid . '.' . $uid;
         };
 
-        static $cache = [];
-        if (!isset($cache[$table])) {
+        if (!isset(self::$indexNameCache[$table])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table);
 
@@ -456,25 +463,37 @@ class Helper
                     $table . '.pid AS pid',
                 )
                 ->from($table)
-                ->execute();
+                ->executeQuery();
 
-            $cache[$table] = [];
+            self::$indexNameCache[$table] = [];
 
             while ($row = $result->fetchAssociative()) {
-                $cache[$table][$makeCacheKey($row['pid'], $row['uid'])]
-                    = $cache[$table][$makeCacheKey(-1, $row['uid'])]
+                self::$indexNameCache[$table][$makeCacheKey($row['pid'], $row['uid'])]
+                    = self::$indexNameCache[$table][$makeCacheKey(-1, $row['uid'])]
                     = $row['index_name'];
             }
         }
 
         $cacheKey = $makeCacheKey($pid, $uid);
-        $result = $cache[$table][$cacheKey] ?? '';
+        $result = self::$indexNameCache[$table][$cacheKey] ?? '';
 
         if ($result === '') {
             self::warning('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"');
         }
 
         return $result;
+    }
+
+    /**
+     * Reset the index name cache.
+     *
+     * @access public
+     *
+     * @static
+     */
+    public static function resetIndexNameCache()
+    {
+        self::$indexNameCache = [];
     }
 
     /**
@@ -542,7 +561,7 @@ class Helper
             )
             ->from('tx_dlf_structures')
             ->where($where)
-            ->execute();
+            ->executeQuery();
 
         $allStructures = $kitodoStructures->fetchAllAssociative();
 
@@ -733,7 +752,7 @@ class Helper
                 self::whereExpression($table, true)
             )
             ->setMaxResults(1)
-            ->execute();
+            ->executeQuery();
 
         $row = $result->fetchAssociative();
 
@@ -749,7 +768,7 @@ class Helper
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
-                ->execute();
+                ->executeQuery();
 
             $row = $result->fetchAssociative();
 
@@ -765,8 +784,8 @@ class Helper
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
                 if ($languageContentId > 0) {
-                    $additionalWhere = $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->orX(
+                    $additionalWhere = $queryBuilder->expr()->and(
+                        $queryBuilder->expr()->or(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
                             $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId)
                         ),
@@ -784,13 +803,13 @@ class Helper
                         self::whereExpression($table, true)
                     )
                     ->setMaxResults(10000)
-                    ->execute();
+                    ->executeQuery();
 
                 if ($result->rowCount() > 0) {
                     while ($resArray = $result->fetchAssociative()) {
                         // Overlay localized labels if available.
                         if ($languageContentId > 0) {
-                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageContentId, $languageAspect->getLegacyOverlayType());
+                            $resArray = $pageRepository->getLanguageOverlay($table, $resArray, $languageAspect);
                         }
                         if ($resArray) {
                             $labels[$table][$pid][$languageContentId][$resArray['index_name']] = $resArray['label'];

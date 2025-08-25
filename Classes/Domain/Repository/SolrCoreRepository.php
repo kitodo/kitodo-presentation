@@ -22,9 +22,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @subpackage dlf
  *
  * @access public
- *
- * @method int countByPid(int $uid) Count amount of SOLR cores for given PID
- * @method SolrCore|null findOneByPid(int $uid) Get a SOLR core by its PID
  */
 class SolrCoreRepository extends Repository
 {

@@ -23,8 +23,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @access public
  *
- * @method Basket|null findOneByFeUserId(int $feUserId) Get a basket by frontend user ID
- * @method Basket|null findOneBySessionId(string $sessionId) Get a document by session id
+ * @method Basket|null findOneBy(array $criteria) Get a basket by criteria
  */
 class BasketRepository extends Repository
 {

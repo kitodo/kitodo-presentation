@@ -15,154 +15,138 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
-                </TCEforms>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.library>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.library</label>
-                            <config>
-                                <type>select</type>
-                                <renderType>selectSingle</renderType>
-                                <foreign_table>tx_dlf_libraries</foreign_table>
-                                <foreign_table_where>AND tx_dlf_libraries.sys_language_uid IN (-1,0)
-                                    ORDER BY tx_dlf_libraries.label ASC
-                                </foreign_table_where>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>0</minitems>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.library</label>
+                        <config>
+                            <type>select</type>
+                            <renderType>selectSingle</renderType>
+                            <foreign_table>tx_dlf_libraries</foreign_table>
+                            <foreign_table_where>AND tx_dlf_libraries.sys_language_uid IN (-1,0)
+                                ORDER BY tx_dlf_libraries.label ASC
+                            </foreign_table_where>
+                            <size>1</size>
+                            <maxitems>1</maxitems>
+                            <minitems>0</minitems>
+                        </config>
                     </settings.library>
                     <settings.limit>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.limit</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required,num,int</eval>
-                                <default>5</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.limit</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required,num,int</eval>
+                            <default>5</default>
+                        </config>
                     </settings.limit>
                     <settings.expired>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.expired</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required,num,int</eval>
-                                <default>1800</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.expired</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required,num,int</eval>
+                            <default>1800</default>
+                        </config>
                     </settings.expired>
                     <settings.show_userdefined>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.show_userdefined</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.show_userdefined</label>
+                        <config>
+                            <type>check</type>
+                            <default>0</default>
+                        </config>
                     </settings.show_userdefined>
                     <settings.solrcore>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
-                            <config>
-                                <type>select</type>
-                                <renderType>selectSingle</renderType>
-                                <foreign_table>tx_dlf_solrcores</foreign_table>
-                                <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>0</minitems>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
+                        <config>
+                            <type>select</type>
+                            <renderType>selectSingle</renderType>
+                            <foreign_table>tx_dlf_solrcores</foreign_table>
+                            <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
+                            <size>1</size>
+                            <maxitems>1</maxitems>
+                            <minitems>0</minitems>
+                        </config>
                     </settings.solrcore>
                     <settings.solr_limit>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.solr_limit</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required,num,int</eval>
-                                <default>50000</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.solr_limit</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required,num,int</eval>
+                            <default>50000</default>
+                        </config>
                     </settings.solr_limit>
                     <settings.stylesheet>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.stylesheet</label>
-                            <config>
-                                <type>inline</type>
-                                <maxitems>1</maxitems>
-                                <foreign_table>sys_file_reference</foreign_table>
-                                <foreign_table_field>tablenames</foreign_table_field>
-                                <foreign_label>uid_local</foreign_label>
-                                <foreign_sortby>sorting_foreign</foreign_sortby>
-                                <foreign_field>uid_foreign</foreign_field>
-                                <foreign_selector>uid_local</foreign_selector>
-                                <foreign_selector_fieldTcaOverride>
-                                    <config>
-                                        <appearance>
-                                            <elementBrowserType>file</elementBrowserType>
-                                            <elementBrowserAllowed>xsl,xslt</elementBrowserAllowed>
-                                        </appearance>
-                                    </config>
-                                </foreign_selector_fieldTcaOverride>
-                                <foreign_types type="array">
-                                    <numIndex index="0">
-                                        <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                    </numIndex>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.flexform.stylesheet</label>
+                        <config>
+                            <type>inline</type>
+                            <maxitems>1</maxitems>
+                            <foreign_table>sys_file_reference</foreign_table>
+                            <foreign_table_field>tablenames</foreign_table_field>
+                            <foreign_label>uid_local</foreign_label>
+                            <foreign_sortby>sorting_foreign</foreign_sortby>
+                            <foreign_field>uid_foreign</foreign_field>
+                            <foreign_selector>uid_local</foreign_selector>
+                            <foreign_selector_fieldTcaOverride>
+                                <config>
+                                    <appearance>
+                                        <elementBrowserType>file</elementBrowserType>
+                                        <elementBrowserAllowed>xsl,xslt</elementBrowserAllowed>
+                                    </appearance>
+                                </config>
+                            </foreign_selector_fieldTcaOverride>
+                            <foreign_types type="array">
+                                <numIndex index="0">
+                                    <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
+                                </numIndex>
+                                <numIndex index="2">
+                                    <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
+                                </numIndex>
+                            </foreign_types>
+                            <foreign_match_fields>
+                                <fieldname>stylesheet</fieldname>
+                            </foreign_match_fields>
+                            <appearance type="array">
+                                <newRecordLinkAddTitle>1</newRecordLinkAddTitle>
+                                <enabledControls>
+                                    <info>1</info>
+                                    <new>0</new>
+                                    <dragdrop>0</dragdrop>
+                                    <sort>1</sort>
+                                    <hide>0</hide>
+                                    <delete>1</delete>
+                                    <localize>1</localize>
+                                </enabledControls>
+                                <createNewRelationLinkTitle>LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:media.addFileReference</createNewRelationLinkTitle>
+                            </appearance>
+                            <behaviour>
+                                <localizationMode>select</localizationMode>
+                                <localizeChildrenAtParentLocalization>1</localizeChildrenAtParentLocalization>
+                            </behaviour>
+                            <overrideChildTca>
+                                <columns type="array">
+                                    <uid_local type="array">
+                                        <config type="array">
+                                            <appearance type="array">
+                                                <elementBrowserType>file</elementBrowserType>
+                                                <elementBrowserAllowed>xsl,xslt</elementBrowserAllowed>
+                                            </appearance>
+                                        </config>
+                                    </uid_local>
+                                </columns>
+                                <types type="array">
                                     <numIndex index="2">
                                         <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
                                     </numIndex>
-                                </foreign_types>
-                                <foreign_match_fields>
-                                    <fieldname>stylesheet</fieldname>
-                                </foreign_match_fields>
-                                <appearance type="array">
-                                    <newRecordLinkAddTitle>1</newRecordLinkAddTitle>
-                                    <enabledControls>
-                                        <info>1</info>
-                                        <new>0</new>
-                                        <dragdrop>0</dragdrop>
-                                        <sort>1</sort>
-                                        <hide>0</hide>
-                                        <delete>1</delete>
-                                        <localize>1</localize>
-                                    </enabledControls>
-                                    <createNewRelationLinkTitle>LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:media.addFileReference</createNewRelationLinkTitle>
-                                </appearance>
-                                <behaviour>
-                                    <localizationMode>select</localizationMode>
-                                    <localizeChildrenAtParentLocalization>1</localizeChildrenAtParentLocalization>
-                                </behaviour>
-                                <overrideChildTca>
-                                    <columns type="array">
-                                        <uid_local type="array">
-                                            <config type="array">
-                                                <appearance type="array">
-                                                    <elementBrowserType>file</elementBrowserType>
-                                                    <elementBrowserAllowed>xsl,xslt</elementBrowserAllowed>
-                                                </appearance>
-                                            </config>
-                                        </uid_local>
-                                    </columns>
-                                    <types type="array">
-                                        <numIndex index="2">
-                                            <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                        </numIndex>
-                                    </types>
-                                </overrideChildTca>
-                            </config>
-                        </TCEforms>
+                                </types>
+                            </overrideChildTca>
+                        </config>
                     </settings.stylesheet>
                 </el>
             </ROOT>
