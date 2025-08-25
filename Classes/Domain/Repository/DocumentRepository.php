@@ -126,12 +126,12 @@ class DocumentRepository extends Repository
     /**
      * @access public
      *
-     * @param int $partOf
+     * @param int|null $partOf
      * @param Structure $structure
      *
      * @return array|QueryResultInterface
      */
-    public function getChildrenOfYearAnchor(int $partOf, Structure $structure): array|QueryResultInterface
+    public function getChildrenOfYearAnchor(?int $partOf, Structure $structure): array|QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -390,7 +390,7 @@ class DocumentRepository extends Repository
             ->getQueryBuilderForTable('tx_dlf_documents');
 
         $excludeOtherWhere = '';
-        if ($settings['excludeOther']) {
+        if ($settings['excludeOther'] ?? false) {
             $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($settings['storagePid']);
         }
         // Check if there are any metadata to suggest.

@@ -141,10 +141,10 @@ class TableOfContentsController extends AbstractController
         $entryArray['doNotLinkIt'] = 1;
         $entryArray['ITEM_STATE'] = 'NO';
 
-        $this->buildMenuLinks($entryArray, $entry['id'], $entry['points'] ?? null, $entry['targetUid'] ?? null);
+        $this->buildMenuLinks($entryArray, $entry['id'] ?? null, $entry['points'] ?? null, $entry['targetUid'] ?? null);
 
         // Set "ITEM_STATE" to "CUR" if this entry points to current page.
-        if (in_array($entry['id'], $this->activeEntries)) {
+        if (in_array($entry['id'] ?? null, $this->activeEntries)) {
             $entryArray['ITEM_STATE'] = 'CUR';
         }
         // Build sub-menu if available and called recursively.
