@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Tests\Functional;
 use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Psr\Http\Message\ResponseInterface;
@@ -348,6 +349,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         // Setup Solr only once for all tests in this suite
         if ($this->solr === null) {
             Helper::resetIndexNameCache();
+            Indexer::resetProcessedDocs();
             $coreName = Solr::createCore();
             $this->solr = Solr::getInstance($coreName);
             foreach ($solrFixtures as $filePath) {
