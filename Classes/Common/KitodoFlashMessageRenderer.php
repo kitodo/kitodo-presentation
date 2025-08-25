@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * A class representing a bootstrap flash messages.
@@ -30,30 +31,6 @@ use TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface;
 class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 {
     /**
-     * @var array The message severity class names
-     */
-    protected static array $classes = [
-        // Todo: FlashMessage constants deprecated in v12, remove when dropping v11 support
-        FlashMessage::NOTICE => 'notice',
-        FlashMessage::INFO => 'info',
-        FlashMessage::OK => 'success',
-        FlashMessage::WARNING => 'warning',
-        FlashMessage::ERROR => 'danger'
-    ];
-
-    /**
-     * @var array The message severity icon names
-     */
-    protected static array $icons = [
-        // Todo: FlashMessage constants deprecated in v12, remove when dropping v11 support
-        FlashMessage::NOTICE => 'lightbulb-o',
-        FlashMessage::INFO => 'info',
-        FlashMessage::OK => 'check',
-        FlashMessage::WARNING => 'exclamation',
-        FlashMessage::ERROR => 'times'
-    ];
-
-    /**
      * Render method
      * 
      * @access public
@@ -68,27 +45,6 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
     }
 
     /**
-     * Gets the message severity as integer value for compatibility with Typo3 v12
-     *
-     * @access public
-     *
-     * @param FlashMessage $flashMessage
-     *
-     * @return int The message severity as integer
-     */
-    protected function getSeverityAsInt(FlashMessage $flashMessage): int
-    {
-        $severity = $flashMessage->getSeverity();
-        if (is_int($severity)) {
-            // $severity is integer constant from FlashMessage in Typo3 v11
-            return $severity;
-        }
-        // $severity is instance of ContextualFeedbackSeverity enum introduced in Typo3 v12
-        // TODO: migrate message severity to ContextualFeedbackSeverity when dropping support for Typo3 v11
-        return $severity->value;
-    }
-
-    /**
      * Gets the message severity class name
      *
      * @access public
@@ -99,7 +55,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      */
     protected function getClass(FlashMessage $flashMessage): string
     {
-        return 'alert-' . self::$classes[$this->getSeverityAsInt($flashMessage)];
+        return 'alert-' . $flashMessage->getSeverity()->getCssClass();
     }
 
     /**
@@ -113,7 +69,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      */
     protected function getIconName(FlashMessage $flashMessage): string
     {
-        return self::$icons[$this->getSeverityAsInt($flashMessage)];
+        return $flashMessage->getSeverity()->getIconIdentifier();
     }
 
     /**
@@ -127,7 +83,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
      */
     protected function getMessageAsMarkup(array $flashMessages): string
     {
-        // \TYPO3\CMS\Core\Messaging\FlashMessage::getMessageAsMarkup() uses htmlspecialchars()
+        // \TYPO3\CMS\Core\Messaging\Renderer\BootstrapRenderer::render() uses htmlspecialchars()
         // on all messages, but we have messages with HTML tags. Therefore we copy the official
         // implementation and remove the htmlspecialchars() call on the message body.
         $markup = [];
@@ -135,16 +91,10 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
         foreach ($flashMessages as $flashMessage) {
             $messageTitle = $flashMessage->getTitle();
             $markup[] = '<div class="alert ' . htmlspecialchars($this->getClass($flashMessage)) . '">';
-            $markup[] = '  <div class="media">';
-            $markup[] = '    <div class="media-left">';
-            $markup[] = '      <span class="fa-stack fa-lg">';
-            $markup[] = '        <i class="fa fa-circle fa-stack-2x"></i>';
-            $markup[] = '        <i class="fa fa-' . htmlspecialchars($this->getIconName($flashMessage)) . ' fa-stack-1x"></i>';
-            $markup[] = '      </span>';
-            $markup[] = '    </div>';
-            $markup[] = '    <div class="media-body">';
+            $markup[] = '  <div class="alert-inner">';
+            $markup[] = '    <div class="alert-content">';
             if ($messageTitle !== '') {
-                $markup[] = '      <h4 class="alert-title">' . htmlspecialchars($messageTitle) . '</h4>';
+                $markup[] = '      <div class="alert-title">' . htmlspecialchars($messageTitle) . '</div>';
             }
             $markup[] = '      <p class="alert-message">' . $flashMessage->getMessage() . '</p>';
             $markup[] = '    </div>';

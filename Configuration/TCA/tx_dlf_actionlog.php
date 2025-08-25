@@ -15,7 +15,6 @@ return [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog',
         'label'     => 'label',
         'crdate'    => 'crdate',
-        'cruser_id' => 'user_id',
         'default_sortby' => 'ORDER BY label',
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfreport.png',
@@ -33,7 +32,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,trim',
+                'required' => true,
+                'eval' => 'trim',
                 'default' => '',
             ],
         ],
@@ -43,7 +43,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id.none', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id.none',
+                        'value' => 0,
+                    ],
                 ],
                 'foreign_table' => 'fe_users',
                 'foreign_table_where' => 'ORDER BY fe_users.username',
@@ -66,10 +69,9 @@ return [
         'count_pages' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.count_pages',
             'config' => [
-                'type' => 'input',
+                'type' => 'number',
                 'size' => 30,
-                'max' => 11,
-                'eval' => 'num,int',
+                'format' => 'integer',
                 'default' => 0,
             ],
         ],

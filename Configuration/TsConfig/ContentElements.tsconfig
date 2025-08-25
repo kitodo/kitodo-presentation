@@ -157,8 +157,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_validationform {
         iconIdentifier = tx-dlf-validationform
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validation.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validation.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validationform.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validationform.description
         tt_content_defValues {
           CType = list
           list_type = dlf_validationform

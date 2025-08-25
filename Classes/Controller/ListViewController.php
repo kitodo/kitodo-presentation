@@ -93,13 +93,13 @@ class ListViewController extends AbstractController
         $currentPage = $this->requestData['page'] ?? 1;
 
         // get all sortable metadata records
-        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+        $sortableMetadata = $this->metadataRepository->findBy(['isSortable' => true]);
 
         // get all metadata records to be shown in results
-        $listedMetadata = $this->metadataRepository->findByIsListed(true);
+        $listedMetadata = $this->metadataRepository->findBy(['isListed' => true]);
 
         // get all indexed metadata fields
-        $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+        $indexedMetadata = $this->metadataRepository->findBy(['indexIndexed' => true]);
 
         $solrResults = null;
         $numResults = 0;

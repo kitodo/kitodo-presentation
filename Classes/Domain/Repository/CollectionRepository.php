@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
- * @method Collection|null findOneByIndexName(string $indexName) Get a collection by its index name
+ * @method Collection|null findOneBy(array $criteria) Get a collection by criteria
  */
 class CollectionRepository extends Repository
 {
@@ -150,7 +150,7 @@ class CollectionRepository extends Repository
             )
             ->setMaxResults(1);
 
-        return $result->execute();
+        return $result->executeQuery();
     }
 
 }

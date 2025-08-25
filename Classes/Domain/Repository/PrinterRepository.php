@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @access public
  *
- * @method Printer|null findOneByUid(int $uid) Get a printer by its UID
+ * @method Printer|null findOneBy(array $criteria) Get a printer by criteria
  */
 class PrinterRepository extends Repository
 {

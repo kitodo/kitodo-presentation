@@ -13,7 +13,10 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * @covers StdWrapViewHelper
@@ -30,7 +33,14 @@ class StdWrapViewHelperTest extends FunctionalTestCase
      */
     public function renderWithStdWrap(): void
     {
+        $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+
+        $request = new ServerRequest();
+        $request = $request->withAttribute("currentContentObject", $cObj);
+
         $view = new StandaloneView();
+        $view->setRequest($request);
+
         $view->assign(
             'metadataWrap',
             [
