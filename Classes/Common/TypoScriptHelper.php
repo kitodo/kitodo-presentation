@@ -127,6 +127,7 @@ class TypoScriptHelper
         $typoScriptFrontendController->rootLine = $rootLine;
         $request = new ServerRequest();
         $request = $typoScriptFrontendController->getFromCache($request);
+        $typoScriptFrontendController->releaseLocks();
 
         return $request->getAttribute('frontend.typoscript')->getSetupArray();
     }
