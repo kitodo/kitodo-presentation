@@ -17,6 +17,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
@@ -179,7 +180,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
                         $queryBuilder->expr()->isNotNull($this->fieldsToMigrate[$table]),
                         $queryBuilder->expr()->neq(
                             $this->fieldsToMigrate[$table],
-                            $queryBuilder->createNamedParameter('', \PDO::PARAM_STR)
+                            $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
                         ),
                         $queryBuilder->expr()->comparison(
                             'CAST(CAST(' . $queryBuilder->quoteIdentifier($this->fieldsToMigrate[$table]) . ' AS DECIMAL) AS CHAR)',
@@ -275,15 +276,15 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
             $existingFileRecord = $queryBuilder->select('uid')->from('sys_file')->where(
                 $queryBuilder->expr()->eq(
                     'missing',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'sha1',
-                    $queryBuilder->createNamedParameter($fileSha1, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($fileSha1, Connection::PARAM_STR)
                 ),
                 $queryBuilder->expr()->eq(
                     'storage',
-                    $queryBuilder->createNamedParameter($storageUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($storageUid, Connection::PARAM_INT)
                 )
             )->executeQuery()->fetchAssociative();
 
@@ -317,7 +318,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
             $queryBuilder->update($table)->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($row['uid'], Connection::PARAM_INT)
                 )
             )->set($this->fieldsToMigrate[$table], 1)->executeStatement();
         }
