@@ -499,6 +499,7 @@ final class IiifManifest extends AbstractDocument
         if (!empty($this->originalMetadataArray[$id])) {
             return $this->originalMetadataArray[$id];
         }
+        /** @var IiifResourceInterface $iiifResource */
         $iiifResource = $this->iiif->getContainedResourceById($id);
         $result = [];
         if ($iiifResource != null) {
@@ -713,6 +714,7 @@ final class IiifManifest extends AbstractDocument
                     }
                 }
                 if ($this->getIndexAnnotations() == 1) {
+                    /** @var IiifResourceInterface $iiifResource */
                     $iiifResource = $this->iiif->getContainedResourceById($id);
                     // Get annotation containers
                     $annotationContainerIds = $physicalStructureNode['annotationContainers'];
