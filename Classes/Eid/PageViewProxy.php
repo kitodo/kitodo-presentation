@@ -64,19 +64,19 @@ class PageViewProxy
     /**
      * Return a response that is derived from $response and contains CORS
      * headers to be sent to the client.
-     * 
+     *
      * @access protected
      *
      * @param ResponseInterface $response
      * @param ServerRequestInterface $request The incoming request.
-     * 
+     *
      * @return ResponseInterface
      */
     protected function withCorsResponseHeaders(
         ResponseInterface $response,
         ServerRequestInterface $request
     ): ResponseInterface {
-        $origin = (string) ($request->getHeaderLine('Origin') ? : '*');
+        $origin = $request->getHeaderLine('Origin') ? : '*';
 
         return $response
             ->withHeader('Access-Control-Allow-Methods', 'GET, OPTIONS, HEAD')
@@ -132,7 +132,7 @@ class PageViewProxy
     }
 
     /**
-     * Handle an HEAD request.
+     * Handle a HEAD request.
      *
      * @access protected
      *
@@ -148,7 +148,7 @@ class PageViewProxy
         try {
             $targetResponse = $this->requestFactory->request($url, 'HEAD', [
                 'headers' => [
-                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
+                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation',
                 ]
             ]);
         } catch (\Exception $e) {
@@ -193,7 +193,7 @@ class PageViewProxy
         try {
             $targetResponse = $this->requestFactory->request($url, 'GET', [
                 'headers' => [
-                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
+                    'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation',
                 ],
 
                 // For performance, don't download content up-front. Rather, we'll
@@ -235,20 +235,12 @@ class PageViewProxy
      */
     public function main(ServerRequestInterface $request): ResponseInterface
     {
-        switch ($request->getMethod()) {
-            case 'OPTIONS':
-                return $this->handleOptions($request);
-
-            case 'GET':
-                return $this->handleGet($request);
-
-            case 'HEAD':
-                return $this->handleHead($request);
-
-            default:
-                // 405 Method Not Allowed
-                return GeneralUtility::makeInstance(Response::class)
-                    ->withStatus(405);
-        }
+        return match ($request->getMethod()) {
+            'OPTIONS' => $this->handleOptions($request),
+            'GET' => $this->handleGet($request),
+            'HEAD' => $this->handleHead($request),
+            default => GeneralUtility::makeInstance(Response::class)
+                ->withStatus(405),
+        };
     }
 }

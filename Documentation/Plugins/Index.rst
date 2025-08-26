@@ -54,7 +54,7 @@ In this example, you place the customized fluid template into this file::
 Audioplayer
 -----------
 
-The audioplayer plugin is only active if the selected document has a valid audio filegroup (fileGrpAudio).
+The audioplayer plugin is only active if the selected document has valid audio file use groups (useGroupsAudio).
 
 Properties
 ^^^^^^^^^^
@@ -455,6 +455,38 @@ List View
    :Data Type:
        `t3tsref:data-type-page-id`
    :Default:
+
+
+Media Player
+------------
+
+The mediaplayer plugin is only active if the selected document has valid video file use groups (useGroupsVideo).
+
+:typoscript:`plugin.tx_dlf_mediaplayer.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Default:
+        Default
+
+ - :Property:
+        excludeOther_
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+        1
+
+ - :Property:
+       elementId_
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Default:
+        tx-dlf-video
 
 
 Metadata
@@ -907,6 +939,13 @@ Table Of Contents
        0
 
  - :Property:
+        showFull
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
        targetBasket
    :Data Type:
        `t3tsref:data-type-page-id`
@@ -960,6 +999,7 @@ Toolbox
        `t3tsref:data-type-list`
    :Default:
    :Values:
+       * tx_dlf_adddocumenttool
        * tx_dlf_annotationtool
        * tx_dlf_fulltexttool
        * tx_dlf_imagedownloadtool
@@ -974,12 +1014,6 @@ Toolbox
        :ref:`t3tsref:data-type-integer`
    :Default:
 
- - :Property:
-       fileGrpsImageDownload
-   :Data Type:
-       `t3tsref:data-type-list`
-   :Default:
-       MIN,DEFAULT,MAX
 
 Fulltext Tool
 ^^^^^^^^^^^^^
@@ -1024,10 +1058,25 @@ The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-ful
 
 **Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ must be configured appropriate on the providing webserver.
 
+Model download tool
+^^^^^^^^^^^^^
+
+This tool makes it possible to extract the model URL from the METS file or use the provided model parameter to provide a download URL.
+
+:typoscript:`plugin.tx_dlf_modeldownloadtool.`
+
+Viewer selection tool
+^^^^^^^^^^^^^
+
+This tool can display a selection list of configured 3D viewers (from the "dlf_3d_viewers" directory see :ref:`Embedded 3D Viewer Setup`) that support the current model.
+
+The model URL is extracted from the METS file or taken from the provided model parameter. The extension of the model is extracted from this URL and compared with the supported model formats specified in the respective viewer configuration.
+
+:typoscript:`plugin.tx_dlf_viewerselectiontool.`
 
 Search in Document Tool
 ^^^^^^^^^^^^^^^^^^^^^^^
-This plugin adds an possibility to search all appearances of the phrase in currently displayed document
+This plugin adds a possibility to search all appearances of the phrase in currently displayed document.
 
 :typoscript:`plugin.tx_dlf_searchindocumenttool.`
 
@@ -1099,3 +1148,29 @@ This plugin adds an possibility to search all appearances of the phrase in curre
        :ref:`t3tsref:data-type-string`
    :Default:
        tx_dlf[encrypted]
+
+.. _Plugin Validation Form:
+
+Validation Form
+-----------
+
+The plugin renders an input field where a METS URL can be entered. After submission, the document is loaded and validated against the :ref:`DOMDocumentValidation Middleware`. For the validation to work, a corresponding configuration (see :ref:`DOMDocumentValidation Middleware Configuration`) must be present in TypoScript, and the type of this configuration must be provided to the plugin as a required parameter.
+
+:typoscript:`plugin.tx_dlf_validationform.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Description:
+       Description
+
+ - :Property:
+        type
+   :Data Type:
+        :ref:`t3tsref:data-type-string`
+   :Description:
+        Validation configuration type for DOMDocument validation

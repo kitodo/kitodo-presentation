@@ -11,6 +11,8 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use DateTime;
+use DOMDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Token;
@@ -18,6 +20,7 @@ use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
  * Controller class for the plugin 'OAI-PMH Interface'.
@@ -90,7 +93,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    public function initializeAction()
+    public function initializeAction(): void
     {
         $this->request = $this->request->withFormat("xml");
     }
@@ -146,10 +149,11 @@ class OaiPmhController extends AbstractController
      * Load URL parameters
      *
      * @access protected
+     * @param RequestInterface $request the HTTP request
      *
      * @return void
      */
-    protected function getUrlParams()
+    protected function getUrlParams(RequestInterface $request)
     {
         $allowedParams = [
             'verb',
@@ -164,16 +168,15 @@ class OaiPmhController extends AbstractController
         $this->parameters = [];
         // Set only allowed parameters.
         foreach ($allowedParams as $param) {
-            // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-            if (GeneralUtility::_GP($param)) {
-                $this->parameters[$param] = GeneralUtility::_GP($param);
+            if ($request->getQueryParams()[$param] ?? null) {
+                $this->parameters[$param] = $request->getQueryParams()[$param];
             }
         }
     }
 
     /**
      * Get unqualified Dublin Core data.
-     * @see http://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
+     * @see https://www.openarchives.org/OAI/openarchivesprotocol.html#dublincore
      *
      * @access private
      *
@@ -195,10 +198,10 @@ class OaiPmhController extends AbstractController
         $this->addDublinCoreData($metadata, 'dc:date', $record['year']);
         $this->addDublinCoreData($metadata, 'dc:coverage', $record['place']);
 
-        $record[] = ['dc:format' => $record['application/mets+xml']];
-        $record[] = ['dc:type' => $record['Text']];
+        $record[] = ['dc:format' => $record['application/mets+xml'] ?? ''];
+        $record[] = ['dc:type' => $record['Text'] ?? ''];
         if (!empty($record['partof'])) {
-            $document = $this->documentRepository->findOneByPartof($metadata['partof']);
+            $document = $this->documentRepository->findOneBy([ 'partof' => $metadata['partof'] ?? '' ]);
 
             if ($document) {
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
@@ -270,39 +273,39 @@ class OaiPmhController extends AbstractController
     public function mainAction(): ResponseInterface
     {
         // Get allowed GET and POST variables.
-        $this->getUrlParams();
+        $this->getUrlParams($this->request);
 
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
 
-        switch ($this->parameters['verb'] ?? null) {
-            case 'GetRecord':
-                $this->verbGetRecord();
-                break;
-            case 'Identify':
-                $this->verbIdentify();
-                break;
-            case 'ListIdentifiers':
-                $this->verbListIdentifiers();
-                break;
-            case 'ListMetadataFormats':
-                $this->verbListMetadataFormats();
-                break;
-            case 'ListRecords':
-                $this->verbListRecords();
-                break;
-            case 'ListSets':
-                $this->verbListSets();
-                break;
-            default:
-                $this->error = 'badVerb';
-                break;
-        }
+        $verb = $this->parameters['verb'] ?? null;
+
+        match ($verb) {
+            'GetRecord' => $this->verbGetRecord(),
+            'Identify' => $this->verbIdentify(),
+            'ListIdentifiers' => $this->verbListIdentifiers(),
+            'ListMetadataFormats'=> $this->verbListMetadataFormats(),
+            'ListRecords' => $this->verbListRecords(),
+            'ListSets' => $this->verbListSets(),
+            default => $this->error = 'badVerb'
+        };
 
         $this->view->assign('parameters', $this->parameters);
         $this->view->assign('error', $this->error);
 
-        return $this->htmlResponse();
+        // Generate the XML output.
+        $xmlOutput = $this->view->render();
+
+        // Format the XML.
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        // Here we could also choose `false` for a minimized XML.
+        $dom->formatOutput = true;
+        $dom->loadXML($xmlOutput);
+        $formattedXmlOutput = trim($dom->saveXML());
+
+        // Return the formatted XML.
+        return $this->htmlResponse($formattedXmlOutput);
     }
 
     /**
@@ -314,18 +317,18 @@ class OaiPmhController extends AbstractController
      */
     protected function resume(): ?array
     {
-        $token = $this->tokenRepository->findOneByToken($this->parameters['resumptionToken']);
+        $token = $this->tokenRepository->findOneBy([ 'token' => $this->parameters['resumptionToken'] ]);
 
         if ($token) {
             $options = $token->getOptions();
+            if (is_array($options)) {
+                return $options;
+            }
         }
-        if (is_array($options)) {
-            return $options;
-        } else {
-            // No resumption token found or resumption token expired.
-            $this->error = 'badResumptionToken';
-            return null;
-        }
+
+        // No resumption token found or resumption token expired.
+        $this->error = 'badResumptionToken';
+        return null;
     }
 
     /**
@@ -366,17 +369,12 @@ class OaiPmhController extends AbstractController
         $document['collections'] = explode(' ', $document['collections']);
 
         // Add metadata
-        switch ($this->parameters['metadataPrefix']) {
-            case 'oai_dc':
-                $document['metadata'] = $this->getDublinCoreData($document);
-                break;
-            case 'epicur':
-                $document['metadata'] = $document;
-                break;
-            case 'mets':
-                $document['metadata'] = $this->getMetsData($document);
-                break;
-        }
+        $document['metadata'] = match ($this->parameters['metadataPrefix']) {
+            'oai_dc' => $this->getDublinCoreData($document),
+            'epicur' => $document,
+            'mets' => $this->getMetsData($document),
+            default => null,
+        };
 
         $this->view->assign('record', $document);
     }
@@ -390,13 +388,9 @@ class OaiPmhController extends AbstractController
      */
     protected function verbIdentify()
     {
-        $library = $this->libraryRepository->findByUid($this->settings['library']);
+        $library = $this->libraryRepository->findByUid($this->settings['library'] ?? 0);
 
         $oaiIdentifyInfo = [];
-
-        if (!$oaiIdentifyInfo) {
-            $this->logger->notice('Incomplete plugin configuration');
-        }
 
         $oaiIdentifyInfo['oai_label'] = $library ? $library->getOaiLabel() : '';
         // Use default values for an installation with incomplete plugin configuration.
@@ -498,7 +492,7 @@ class OaiPmhController extends AbstractController
         $resArray = [];
         // check for the optional "identifier" parameter
         if (isset($this->parameters['identifier'])) {
-            $resArray = $this->documentRepository->findOneByRecordId($this->parameters['identifier']);
+            $resArray = $this->documentRepository->findOneBy([ 'recordId' => $this->parameters['identifier'] ]);
         }
 
         $resultSet = [];
@@ -584,7 +578,7 @@ class OaiPmhController extends AbstractController
      */
     protected function verbListSets()
     {
-        // It is required to set a oai_name inside the collection record to be shown in oai-pmh plugin.
+        // It is required to set oai_name inside the collection record to be shown in oai-pmh plugin.
         $this->settings['hideEmptyOaiNames'] = true;
 
         $oaiSets = $this->collectionRepository->findCollectionsBySettings($this->settings);
@@ -642,7 +636,12 @@ class OaiPmhController extends AbstractController
 
         $solrQuery .= ' AND timestamp:[' . $from . ' TO ' . $until . ']';
 
-        $solr = Solr::getInstance($this->settings['solrcore']);
+        $solrcore = $this->settings['solrcore'] ?? false;
+        if (!$solrcore) {
+            $this->logger->error('Solr core not configured');
+            return $documentSet;
+        }
+        $solr = Solr::getInstance($solrcore);
         if (!$solr->ready) {
             $this->logger->error('Apache Solr not available');
             return $documentSet;
@@ -682,9 +681,9 @@ class OaiPmhController extends AbstractController
         // Check "from" for valid value.
         if (!empty($this->parameters['from'])) {
             // Is valid format?
-            $date = $this->getDate('from');
-            if (is_array($date)) {
-                $from = $this->getDateFromTimestamp($date, '.000Z');
+            $date = $this->getDateTimeFromParameter('from');
+            if ($date) {
+                $from = $this->dateTimeToString($date, '.000Z');
             } else {
                 $this->error = 'badArgument';
             }
@@ -707,9 +706,9 @@ class OaiPmhController extends AbstractController
         // Check "until" for valid value.
         if (!empty($this->parameters['until'])) {
             // Is valid format?
-            $date = $this->getDate('until');
-            if (is_array($date)) {
-                $until = $this->getDateFromTimestamp($date, '.999Z');
+            $date = $this->getDateTimeFromParameter('until');
+            if ($date) {
+                $until = $this->dateTimeToString($date, '.999Z');
                 if ($from != "*" && $from > $until) {
                     $this->error = 'badArgument';
                 }
@@ -727,11 +726,12 @@ class OaiPmhController extends AbstractController
      *
      * @param string $dateType
      *
-     * @return array|false
+     * @return DateTime|false
      */
-    private function getDate(string $dateType)
+    private function getDateTimeFromParameter(string $dateType)
     {
-        return strptime($this->parameters[$dateType], '%Y-%m-%dT%H:%M:%SZ') ?: strptime($this->parameters[$dateType], '%Y-%m-%d');
+        return DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $this->parameters[$dateType])
+            ?: DateTime::createFromFormat('Y-m-d', $this->parameters[$dateType]);
     }
 
     /**
@@ -744,17 +744,9 @@ class OaiPmhController extends AbstractController
      *
      * @return string
      */
-    private function getDateFromTimestamp(array $date, string $end): string
+    private function dateTimeToString(DateTime $date, string $end): string
     {
-        $timestamp = gmmktime(
-            $date['tm_hour'],
-            $date['tm_min'],
-            $date['tm_sec'],
-            $date['tm_mon'] + 1,
-            $date['tm_mday'],
-            $date['tm_year'] + 1900
-        );
-        return date("Y-m-d", $timestamp) . 'T' . date("H:i:s", $timestamp) . $end;
+        return $date->format('Y-m-d') . 'T' . $date->format("H:i:s") . $end;
     }
 
     /**
@@ -805,22 +797,17 @@ class OaiPmhController extends AbstractController
 
             if ($verb === 'ListRecords') {
                 // Add metadata node.
-                $metadataPrefix = $this->parameters['metadataPrefix'];
+                $metadataPrefix = $this->parameters['metadataPrefix'] ?? false;
                 if (!$metadataPrefix) {
                     // If we resume an action the metadataPrefix is stored with the documentSet
                     $metadataPrefix = $documentListSet['metadata']['metadataPrefix'];
                 }
-                switch ($metadataPrefix) {
-                    case 'oai_dc':
-                        $resArray['metadata'] = $this->getDublinCoreData($resArray);
-                        break;
-                    case 'epicur':
-                        $resArray['metadata'] = $resArray;
-                        break;
-                    case 'mets':
-                        $resArray['metadata'] = $this->getMetsData($resArray);
-                        break;
-                }
+                $resArray['metadata'] = match ($metadataPrefix) {
+                    'oai_dc' => $this->getDublinCoreData($resArray),
+                    'epicur' => $resArray,
+                    'mets' => $this->getMetsData($resArray),
+                    default => null,
+                };
             }
 
             $records[] = $resArray;
@@ -844,7 +831,7 @@ class OaiPmhController extends AbstractController
     protected function generateResumptionTokenForDocumentListSet(array $documentListSet, int $numShownDocuments)
     {
         // The cursor specifies how many elements have already been returned in previous requests
-        // See http://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl
+        // See https://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl
         $currentCursor = $documentListSet['metadata']['cursor'];
 
         if (count($documentListSet['elements']) !== 0) {

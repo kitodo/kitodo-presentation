@@ -21,8 +21,15 @@ class CollectionRepositoryTest extends FunctionalTestCase
     /**
      * @var CollectionRepository
      */
-    protected $collectionRepository;
+    protected CollectionRepository $collectionRepository;
 
+    /**
+     * Sets up the test environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -52,27 +59,6 @@ class CollectionRepositoryTest extends FunctionalTestCase
 
         self::assertArrayHasKey('Musik', $collectionsByLabel);
         self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
-    }
-
-    /**
-     * @test
-     * @group find
-     */
-    public function canGetCollectionForMetadata(): void
-    {
-        $collections = $this->collectionRepository->getCollectionForMetadata("20000");
-        self::assertNotNull($collections);
-        self::assertInstanceOf(QueryResult::class, $collections);
-
-        $collectionsByLabel = [];
-        foreach ($collections as $collection) {
-            $collectionsByLabel[$collection->getLabel()] = $collection;
-        }
-
-        self::assertArrayHasKey('Musik', $collectionsByLabel);
-        self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
-        self::assertArrayHasKey('Geschichte', $collectionsByLabel);
-        self::assertArrayHasKey('Bildende Kunst', $collectionsByLabel);
     }
 
     /**

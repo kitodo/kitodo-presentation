@@ -12,7 +12,7 @@
 namespace Kitodo\Dlf\Task;
 
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,7 +41,8 @@ class SuggestBuildTask extends BaseTask
         $return = $suggestBuildCommand->run($inputInterface, $outputInterface);
 
         if (!Environment::isCli()) {
-            $this->outputFlashMessages($outputInterface->fetch(), $return ? FlashMessage::ERROR : FlashMessage::OK);
+            $severity = $return ? ContextualFeedbackSeverity::ERROR : ContextualFeedbackSeverity::OK;
+            $this->outputFlashMessages($outputInterface->fetch(), $severity);
         }
         return !$return;
     }

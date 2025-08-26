@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Kitodo\Dlf\Domain\Model\SolrCore;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**

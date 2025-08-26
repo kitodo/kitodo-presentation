@@ -26,16 +26,16 @@
             <f:if condition="{viewData.requestData.double}">
                 <f:then>
                     <div class="tx-dlf-navigation-single">
-                        <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[double]':'0'}"
-                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                        <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[double]':'0','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                             <f:translate key="doublePageOff"/>
                         </f:link.action>
                     </div>
                     <div class="tx-dlf-navigation-double+">
                         <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
                             <f:then>
-                                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}'}"
-                                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                                     <f:translate key="doublePage+1"/>
                                 </f:link.action>
                             </f:then>
@@ -49,8 +49,8 @@
                 </f:then>
                 <f:else>
                     <div class="tx-dlf-navigation-double">
-                        <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[double]':'1'}"
-                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                        <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[double]':'1','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                             <f:translate key="doublePageOn"/>
                         </f:link.action>
                     </div>
@@ -72,8 +72,8 @@
     <div class="tx-dlf-navigation-first">
         <f:if condition="{viewData.requestData.page} > 1">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'1'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'1', 'tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                     <f:translate key="firstPage"/>
                 </f:link.action>
             </f:then>
@@ -90,8 +90,8 @@
     <div class="tx-dlf-navigation-back">
         <f:if condition="{viewData.requestData.page} > {pageSteps}">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                     <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
                 </f:link.action>
             </f:then>
@@ -108,8 +108,8 @@
     <div class="tx-dlf-navigation-prev">
         <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                     <f:translate key="prevPage"/>
                 </f:link.action>
             </f:then>
@@ -150,8 +150,8 @@
     <div class="tx-dlf-navigation-next">
         <f:if condition="{viewData.requestData.page + viewData.requestData.double} < {numPages}">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1 + viewData.requestData.double}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1 + viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                     <f:translate key="nextPage"/>
                 </f:link.action>
             </f:then>
@@ -168,8 +168,8 @@
         <div class="tx-dlf-navigation-fwd">
             <f:if condition="{viewData.requestData.page} <= {numPages - pageSteps}">
                 <f:then>
-                    <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}"
-                                   argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                    <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                                   argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                         <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
                     </f:link.action>
                 </f:then>
@@ -186,8 +186,8 @@
     <div class="tx-dlf-navigation-last">
         <f:if condition="{viewData.requestData.page} < {numPages - viewData.requestData.double}">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
                     <f:translate key="lastPage"/>
                 </f:link.action>
             </f:then>
@@ -202,23 +202,27 @@
 
 <f:section name="render.listView">
         <div class="tx-dlf-navigation-listview">
-            <f:link.page pageUid="{settings.targetPid}" additionalParams="{lastSearchParams}">
+            <f:link.page pageUid="{settings.targetPid}" additionalParams="{lastSearch}">
                 <f:translate key="linkToList"/>
             </f:link.page>
         </div>
 </f:section>
 
 <f:section name="render.zoom">
-    <div class="tx-dlf-navigation-zoom-in">
-        <a href="#" title="{f:translate(key: 'zoomIn')}" onclick="tx_dlf_viewer.map.zoomIn();">
-            <f:translate key="zoomIn"/>
-        </a>
-    </div>
-    <div class="tx-dlf-navigation-zoom-out">
-        <a href="#" title="{f:translate(key: 'zoomOut')}" onclick="tx_dlf_viewer.map.zoomOut();">
-            <f:translate key="zoomOut"/>
-        </a>
-    </div>
+    <f:if condition="{multiview} != 1">
+        <f:then>
+            <div class="tx-dlf-navigation-zoom-in">
+                <a href="#" title="{f:translate(key: 'zoomIn')}" onclick="tx_dlf_viewer.map.zoomIn();">
+                    <f:translate key="zoomIn"/>
+                </a>
+            </div>
+            <div class="tx-dlf-navigation-zoom-out">
+                <a href="#" title="{f:translate(key: 'zoomOut')}" onclick="tx_dlf_viewer.map.zoomOut();">
+                    <f:translate key="zoomOut"/>
+                </a>
+            </div>
+        </f:then>
+    </f:if>
     <div class="tx-dlf-navigation-fullscreen">
         <a href="#" title="{f:translate(key: 'zoomFullscreen')}">
             <f:translate key="zoomFullscreen"/>
@@ -227,21 +231,25 @@
 </f:section>
 
 <f:section name="render.rotation">
-    <div class="tx-dlf-navigation-rotate-left">
-        <a href="#" title="{f:translate(key: 'rotateLeft')}" onclick="tx_dlf_viewer.map.rotateLeft();">
-            <f:translate key="rotateLeft"/>
-        </a>
-    </div>
-    <div class="tx-dlf-navigation-rotate-right">
-        <a href="#" title="{f:translate(key: 'rotateRight')}" onclick="tx_dlf_viewer.map.rotateRight();">
-            <f:translate key="rotateRight"/>
-        </a>
-    </div>
-    <div class="tx-dlf-navigation-rotate-reset">
-        <a href="#" title="{f:translate(key: 'rotateReset')}" onclick="tx_dlf_viewer.map.resetRotation();">
-            <f:translate key="rotateReset"/>
-        </a>
-    </div>
+    <f:if condition="{multiview} != 1">
+        <f:then>
+            <div class="tx-dlf-navigation-rotate-left">
+                <a href="#" title="{f:translate(key: 'rotateLeft')}" onclick="tx_dlf_viewer.map.rotateLeft();">
+                    <f:translate key="rotateLeft"/>
+                </a>
+            </div>
+            <div class="tx-dlf-navigation-rotate-right">
+                <a href="#" title="{f:translate(key: 'rotateRight')}" onclick="tx_dlf_viewer.map.rotateRight();">
+                    <f:translate key="rotateRight"/>
+                </a>
+            </div>
+            <div class="tx-dlf-navigation-rotate-reset">
+                <a href="#" title="{f:translate(key: 'rotateReset')}" onclick="tx_dlf_viewer.map.resetRotation();">
+                    <f:translate key="rotateReset"/>
+                </a>
+            </div>
+        </f:then>
+    </f:if>
 </f:section>
 
 <f:section name="render.measureBack">
@@ -300,6 +308,40 @@
             </div>
         </f:then>
     </f:if>
+</f:section>
+
+<f:section name="render.documentBack">
+    <div class="tx-dlf-navigation-documentBack">
+        <f:if condition="{documentBack}">
+            <f:then>
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'1', 'tx_dlf[id]': '{documentBack}'}" title="{f:translate(key: 'navigation.documentBack')}">
+                    <f:translate key="navigation.documentBack"/>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span title="{f:translate(key: 'navigation.documentBack')}">
+                    <f:translate key="navigation.documentBack"/>
+                </span>
+            </f:else>
+        </f:if>
+    </div>
+</f:section>
+
+<f:section name="render.documentForward">
+    <div class="tx-dlf-navigation-documentForward">
+        <f:if condition="{documentForward}">
+            <f:then>
+                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'1', 'tx_dlf[id]': '{documentForward}'}" title="{f:translate(key: 'navigation.documentForward')}">
+                    <f:translate key="navigation.documentForward"/>
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <span title="{f:translate(key: 'navigation.documentForward')}">
+                    <f:translate key="navigation.documentForward"/>
+                </span>
+            </f:else>
+        </f:if>
+    </div>
 </f:section>
 
 </html>

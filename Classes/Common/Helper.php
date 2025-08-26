@@ -25,6 +25,9 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
+use TYPO3\CMS\Core\Resource\MimeTypeCollection;
+use TYPO3\CMS\Core\Resource\MimeTypeDetector;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -75,6 +78,13 @@ class Helper
     protected static array $messages = [];
 
     /**
+     * @access protected
+     * @static
+     * @var array A cache remembering which Solr core uid belongs to which index name
+     */
+    protected static array $indexNameCache = [];
+
+    /**
      * Generates a flash message and adds it to a message queue.
      *
      * @access public
@@ -83,13 +93,13 @@ class Helper
      *
      * @param string $message The body of the message
      * @param string $title The title of the message
-     * @param int $severity The message's severity
+     * @param ContextualFeedbackSeverity $severity The message's severity
      * @param bool $session Should the message be saved in the user's session?
      * @param string $queue The queue's unique identifier
      *
      * @return FlashMessageQueue The queue the message was added to
      */
-    public static function addMessage(string $message, string $title, int $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
+    public static function addMessage(string $message, string $title, ContextualFeedbackSeverity $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier($queue);
@@ -148,9 +158,7 @@ class Helper
                 if (!preg_match('/\d{8}-\d{1}/i', $id)) {
                     return false;
                 } elseif ($checksum == 10) {
-                    //TODO: Binary operation "+" between string and 1 results in an error.
-                    // @phpstan-ignore-next-line
-                    return self::checkIdentifier(($digits + 1) . substr($id, -2, 2), 'SWD');
+                    return self::checkIdentifier(((int) $digits + 1) . substr($id, -2, 2), 'SWD');
                 } elseif (substr($id, -1, 1) != $checksum) {
                     return false;
                 }
@@ -207,18 +215,18 @@ class Helper
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
             || !in_array(self::$hashAlgorithm, openssl_get_md_methods(true))
         ) {
-            self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
+            self::error('OpenSSL library doesn\'t support cipher and/or hash algorithm');
             return false;
         }
         if (empty(self::getEncryptionKey())) {
-            self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
+            self::error('No encryption key set in TYPO3 configuration');
             return false;
         }
         if (
             empty($encrypted)
             || strlen($encrypted) < openssl_cipher_iv_length(self::$cipherAlgorithm)
         ) {
-            self::log('Invalid parameters given for decryption', LOG_SEVERITY_ERROR);
+            self::error('Invalid parameters given for decryption');
             return false;
         }
         // Split initialisation vector and encrypted data.
@@ -253,55 +261,63 @@ class Helper
         // Turn off libxml's error logging.
         $libxmlErrors = libxml_use_internal_errors(true);
 
-        if (\PHP_VERSION_ID < 80000) {
-            // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-            $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
-        }
-
         // Try to load XML from file.
         $xml = simplexml_load_string($content);
 
-        if (\PHP_VERSION_ID < 80000) {
-            // reset entity loader setting
-            libxml_disable_entity_loader($previousValueOfEntityLoader);
-        }
         // Reset libxml's error logging.
         libxml_use_internal_errors($libxmlErrors);
         return $xml;
     }
 
     /**
-     * Add a message to the TYPO3 log
+     * Add a notice message to the TYPO3 log
      *
      * @access public
      *
      * @static
      *
      * @param string $message The message to log
-     * @param int $severity The severity of the message 0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
      *
      * @return void
      */
-    public static function log(string $message, int $severity = 0): void
+    public static function notice(string $message): void
     {
         $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
+        $logger->notice($message);
+    }
 
-        switch ($severity) {
-            case 0:
-                $logger->info($message);
-                break;
-            case 1:
-                $logger->notice($message);
-                break;
-            case 2:
-                $logger->warning($message);
-                break;
-            case 3:
-                $logger->error($message);
-                break;
-            default:
-                break;
-        }
+    /**
+     * Add a warning message to the TYPO3 log
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param string $message The message to log
+     *
+     * @return void
+     */
+    public static function warning(string $message): void
+    {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
+        $logger->warning($message);
+    }
+
+    /**
+     * Add an error message to the TYPO3 log
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param string $message The message to log
+     *
+     * @return void
+     */
+    public static function error(string $message): void
+    {
+        $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_called_class());
+        $logger->error($message);
     }
 
     /**
@@ -318,7 +334,7 @@ class Helper
     public static function digest(string $string)
     {
         if (!in_array(self::$hashAlgorithm, openssl_get_md_methods(true))) {
-            self::log('OpenSSL library doesn\'t support hash algorithm', LOG_SEVERITY_ERROR);
+            self::error('OpenSSL library doesn\'t support hash algorithm');
             return false;
         }
         // Hash string.
@@ -342,11 +358,11 @@ class Helper
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
             || !in_array(self::$hashAlgorithm, openssl_get_md_methods(true))
         ) {
-            self::log('OpenSSL library doesn\'t support cipher and/or hash algorithm', LOG_SEVERITY_ERROR);
+            self::error('OpenSSL library doesn\'t support cipher and/or hash algorithm');
             return false;
         }
         if (empty(self::getEncryptionKey())) {
-            self::log('No encryption key set in TYPO3 configuration', LOG_SEVERITY_ERROR);
+            self::error('No encryption key set in TYPO3 configuration');
             return false;
         }
         // Generate random initialization vector.
@@ -362,7 +378,7 @@ class Helper
     }
 
     /**
-     * Clean up a string to use in an URL.
+     * Clean up a string to use in a URL.
      *
      * @access public
      *
@@ -398,7 +414,7 @@ class Helper
     public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
-        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'])) {
+        if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] ?? null)) {
             foreach (self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
                 $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }
@@ -407,7 +423,7 @@ class Helper
     }
 
     /**
-     * Get the "index_name" for an UID
+     * Get the "index_name" for a UID
      *
      * @access public
      *
@@ -428,7 +444,7 @@ class Helper
             // NOTE: Only use tables that don't have too many entries!
             || !in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures', 'tx_dlf_solrcores'])
         ) {
-            self::log('Invalid UID "' . $uid . '" or table "' . $table . '"', LOG_SEVERITY_ERROR);
+            self::error('Invalid UID "' . $uid . '" or table "' . $table . '"');
             return '';
         }
 
@@ -436,8 +452,7 @@ class Helper
             return $pid . '.' . $uid;
         };
 
-        static $cache = [];
-        if (!isset($cache[$table])) {
+        if (!isset(self::$indexNameCache[$table])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table);
 
@@ -448,25 +463,37 @@ class Helper
                     $table . '.pid AS pid',
                 )
                 ->from($table)
-                ->execute();
+                ->executeQuery();
 
-            $cache[$table] = [];
+            self::$indexNameCache[$table] = [];
 
             while ($row = $result->fetchAssociative()) {
-                $cache[$table][$makeCacheKey($row['pid'], $row['uid'])]
-                    = $cache[$table][$makeCacheKey(-1, $row['uid'])]
+                self::$indexNameCache[$table][$makeCacheKey($row['pid'], $row['uid'])]
+                    = self::$indexNameCache[$table][$makeCacheKey(-1, $row['uid'])]
                     = $row['index_name'];
             }
         }
 
         $cacheKey = $makeCacheKey($pid, $uid);
-        $result = $cache[$table][$cacheKey] ?? '';
+        $result = self::$indexNameCache[$table][$cacheKey] ?? '';
 
         if ($result === '') {
-            self::log('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"', LOG_SEVERITY_WARNING);
+            self::warning('No "index_name" with UID ' . $uid . ' and PID ' . $pid . ' found in table "' . $table . '"');
         }
 
         return $result;
+    }
+
+    /**
+     * Reset the index name cache.
+     *
+     * @access public
+     *
+     * @static
+     */
+    public static function resetIndexNameCache()
+    {
+        self::$indexNameCache = [];
     }
 
     /**
@@ -496,7 +523,7 @@ class Helper
         if (!empty($lang)) {
             return $lang;
         } else {
-            self::log('Language code "' . $code . '" not found in ISO-639 table', LOG_SEVERITY_NOTICE);
+            self::notice('Language code "' . $code . '" not found in ISO-639 table');
             return $code;
         }
     }
@@ -523,18 +550,18 @@ class Helper
         // Should we check for a specific PID, too?
         if ($pid !== -1) {
             $pid = max($pid, 0);
-            $where = $queryBuilder->expr()->eq('tx_dlf_structures.pid', $pid);
+            $where = $queryBuilder->expr()->eq('pid', $pid);
         }
 
         // Fetch document info for UIDs in $documentSet from DB
         $kitodoStructures = $queryBuilder
             ->select(
-                'tx_dlf_structures.uid AS uid',
-                'tx_dlf_structures.index_name AS indexName'
+                'uid',
+                'index_name AS indexName'
             )
             ->from('tx_dlf_structures')
             ->where($where)
-            ->execute();
+            ->executeQuery();
 
         $allStructures = $kitodoStructures->fetchAllAssociative();
 
@@ -563,7 +590,7 @@ class Helper
             $uri = new Uri($url);
             return !empty($uri->getScheme());
         } catch (\InvalidArgumentException $e) {
-            self::log($e->getMessage(), LOG_SEVERITY_ERROR);
+            self::error($e->getMessage());
             return false;
         }
     }
@@ -615,7 +642,7 @@ class Helper
             }
             return $dataHandler->substNEWwithIDs;
         } else {
-            self::log('Current backend user has no admin privileges', LOG_SEVERITY_ERROR);
+            self::error('Current backend user has no admin privileges');
             return [];
         }
     }
@@ -624,7 +651,7 @@ class Helper
      * Fetches and renders all available flash messages from the queue.
      *
      * @access public
-     * 
+     *
      * @static
      *
      * @param string $queue The queue's unique identifier
@@ -638,6 +665,38 @@ class Helper
         $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
         return GeneralUtility::makeInstance(KitodoFlashMessageRenderer::class)
             ->render($flashMessages);
+    }
+
+    /**
+     * Converts time code to seconds, where time code has one of those formats:
+     * - `hh:mm:ss`
+     * - `mm:ss`
+     * - `ss`
+     *
+     * Floating point values may be used.
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param string $timeCode The time code to convert
+     *
+     * @return float
+     */
+    public static function timeCodeToSeconds(string $timeCode): float
+    {
+        $parts = explode(":", $timeCode);
+
+        $totalSeconds = 0;
+        $factor = 1;
+
+        // Iterate through $parts reversely
+        for ($i = count($parts) - 1; $i >= 0; $i--) {
+            $totalSeconds += $factor * (float) $parts[$i];
+            $factor *= 60;
+        }
+
+        return $totalSeconds;
     }
 
     /**
@@ -660,7 +719,7 @@ class Helper
         // Sanitize input.
         $pid = max((int) $pid, 0);
         if (!$pid) {
-            self::log('Invalid PID ' . $pid . ' for translation', LOG_SEVERITY_WARNING);
+            self::warning('Invalid PID ' . $pid . ' for translation');
             return $indexName;
         }
         /** @var PageRepository $pageRepository */
@@ -669,7 +728,7 @@ class Helper
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
         $languageContentId = $languageAspect->getContentId();
 
-        // Check if "index_name" is an UID.
+        // Check if "index_name" is a UID.
         if (MathUtility::canBeInterpretedAsInteger($indexName)) {
             $indexName = self::getIndexNameFromUid((int) $indexName, $table, $pid);
         }
@@ -693,7 +752,7 @@ class Helper
                 self::whereExpression($table, true)
             )
             ->setMaxResults(1)
-            ->execute();
+            ->executeQuery();
 
         $row = $result->fetchAssociative();
 
@@ -709,12 +768,12 @@ class Helper
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
-                ->execute();
+                ->executeQuery();
 
             $row = $result->fetchAssociative();
 
             if ($row) {
-                // If there is an translated content element, overwrite the received $indexName.
+                // If there is a translated content element, overwrite the received $indexName.
                 $indexName = $row['index_name'];
             }
         }
@@ -725,8 +784,8 @@ class Helper
             if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
                 $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
                 if ($languageContentId > 0) {
-                    $additionalWhere = $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->orX(
+                    $additionalWhere = $queryBuilder->expr()->and(
+                        $queryBuilder->expr()->or(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
                             $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId)
                         ),
@@ -744,23 +803,23 @@ class Helper
                         self::whereExpression($table, true)
                     )
                     ->setMaxResults(10000)
-                    ->execute();
+                    ->executeQuery();
 
                 if ($result->rowCount() > 0) {
                     while ($resArray = $result->fetchAssociative()) {
                         // Overlay localized labels if available.
                         if ($languageContentId > 0) {
-                            $resArray = $pageRepository->getRecordOverlay($table, $resArray, $languageContentId, $languageAspect->getLegacyOverlayType());
+                            $resArray = $pageRepository->getLanguageOverlay($table, $resArray, $languageAspect);
                         }
                         if ($resArray) {
                             $labels[$table][$pid][$languageContentId][$resArray['index_name']] = $resArray['label'];
                         }
                     }
                 } else {
-                    self::log('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible', LOG_SEVERITY_NOTICE);
+                    self::notice('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible');
                 }
             } else {
-                self::log('No translations available for table "' . $table . '"', LOG_SEVERITY_WARNING);
+                self::warning('No translations available for table "' . $table . '"');
             }
         }
 
@@ -806,7 +865,7 @@ class Helper
                 ->expr()
                 ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
         } else {
-            self::log('Unexpected application type (neither frontend or backend)', LOG_SEVERITY_ERROR);
+            self::error('Unexpected application type (neither frontend or backend)');
             return '1=-1';
         }
     }
@@ -864,13 +923,13 @@ class Helper
         $configuration = [
             'timeout' => 30,
             'headers' => [
-                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation Proxy',
+                'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation',
             ],
         ];
         try {
             $response = $requestFactory->request($url, 'GET', $configuration);
         } catch (\Exception $e) {
-            self::log('Could not fetch data from URL "' . $url . '". Error: ' . $e->getMessage() . '.', LOG_SEVERITY_WARNING);
+            self::warning('Could not fetch data from URL "' . $url . '". Error: ' . $e->getMessage() . '.');
             return false;
         }
         return $response->getBody()->getContents();
@@ -927,7 +986,7 @@ class Helper
      * @access private
      *
      * @static
-     * 
+     *
      * @param string $path
      *
      * @return mixed
@@ -941,5 +1000,91 @@ class Helper
         }
 
         return ArrayUtility::getValueByPath($GLOBALS['TYPO3_CONF_VARS'], $path);
+    }
+
+    /**
+     * Filters a file based on its mimetype.
+     *
+     * This method checks if the provided file array contains a specified mimetype key and
+     * verifies if the mimetype belongs to any of the allowed mimetypes or matches any of the additional custom mimetypes.
+     *
+     * @param mixed $file The file array to filter
+     * @param array $allowedCategories The allowed MIME type categories to filter by (e.g., ['audio'], ['video'] or ['image', 'application'])
+     * @param null|bool|array $dlfMimeTypes Optional array of custom dlf mimetype keys to filter by. Default is null.
+     *                      - null: use no custom dlf mimetypes
+     *                      - true: use all custom dlf mimetypes
+     *                      - array: use only specific types - Accepted values: 'IIIF', 'IIP', 'ZOOMIFY', 'JPG'
+     * @param string $mimeTypeKey The key used to access the mimetype in the file array (default is 'mimetype')
+     *
+     * @return bool True if the file mimetype belongs to any of the allowed mimetypes or matches any custom dlf mimetypes, false otherwise
+     */
+    public static function filterFilesByMimeType($file, array $allowedCategories, null|bool|array $dlfMimeTypes = null, string $mimeTypeKey = 'mimetype'): bool
+    {
+        if (empty($allowedCategories) && empty($dlfMimeTypes)) {
+            return false;
+        }
+
+        // Retrieves MIME types from the TYPO3 Core MimeTypeCollection
+        $mimeTypeCollection = GeneralUtility::makeInstance(MimeTypeCollection::class);
+        $allowedMimeTypes = array_filter(
+            $mimeTypeCollection->getMimeTypes(),
+            function ($mimeType) use ($allowedCategories) {
+                foreach ($allowedCategories as $category) {
+                    if (str_starts_with($mimeType, $category . '/')) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        );
+
+        // Custom dlf MIME types
+        $dlfMimeTypeArray = [
+            'IIIF' => 'application/vnd.kitodo.iiif',
+            'IIP' => 'application/vnd.netfpx',
+            'ZOOMIFY' => 'application/vnd.kitodo.zoomify',
+            'JPG' => 'image/jpg' // Wrong declared JPG MIME type in falsy METS Files for JPEG files
+        ];
+
+        // Apply filtering to the custom dlf MIME type array
+        $filteredDlfMimeTypes = match (true) {
+            $dlfMimeTypes === null => [],
+            $dlfMimeTypes === true => $dlfMimeTypeArray,
+            is_array($dlfMimeTypes) => array_intersect_key($dlfMimeTypeArray, array_flip($dlfMimeTypes)),
+            default => []
+        };
+
+        // Actual filtering to check if the file's MIME type is allowed
+        if (is_array($file) && isset($file[$mimeTypeKey])) {
+            return in_array($file[$mimeTypeKey], $allowedMimeTypes) ||
+                   in_array($file[$mimeTypeKey], $filteredDlfMimeTypes);
+        } else {
+            self::warning('MIME type validation failed: File array is invalid or MIME type key is not set. File array: ' . json_encode($file) . ', mimeTypeKey: ' . $mimeTypeKey);
+            return false;
+        }
+    }
+
+    /**
+     * Get file extensions for a given MIME type
+     *
+     * @param string $mimeType
+     * @return array
+     */
+    public static function getFileExtensionsForMimeType(string $mimeType): array
+    {
+        $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
+        return $mimeTypeDetector->getFileExtensionsForMimeType($mimeType);
+    }
+
+    /**
+     * Get MIME types for a given file extension
+     *
+     * @param string $fileExtension
+     * @return array
+     */
+    public static function getMimeTypesForFileExtension(string $fileExtension): array
+    {
+        $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
+        return $mimeTypeDetector->getMimeTypesForFileExtension($fileExtension);
     }
 }

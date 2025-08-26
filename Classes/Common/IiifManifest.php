@@ -41,7 +41,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  *
  * @access public
  *
- * @property int $cPid this holds the PID for the configuration
+ * @property int $configPid this holds the PID for the configuration
  * @property-read array $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
@@ -54,7 +54,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read array $physicalStructure this holds the physical structure
  * @property-read array $physicalStructureInfo this holds the physical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
- * @property-read int $pid this holds the PID of the document or zero if not in database
  * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
@@ -65,7 +64,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
- * @property-read string $toplevelId this holds the toplevel structure's "@ID" (METS) or the manifest's "@id" (IIIF)
  * @property \SimpleXMLElement $xml this holds the whole XML file as \SimpleXMLElement object
  * @property string $asJson this holds the manifest file as string for serialization purposes
  * @property ManifestInterface $iiif a PHP object representation of a IIIF manifest
@@ -73,7 +71,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $hasFulltextSet flag if document has already been analyzed for presence of the fulltext for the Solr index
  * @property array $originalMetadataArray this holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
  * @property array $mimeTypes this holds the mime types of linked resources in the manifest (extracted during parsing) for later us
- * 
+ *
  */
 final class IiifManifest extends AbstractDocument
 {
@@ -121,13 +119,7 @@ final class IiifManifest extends AbstractDocument
     protected function establishRecordId(int $pid): void
     {
         if ($this->iiif !== null) {
-            /*
-             *  FIXME This will not consistently work because we can not be sure to have the pid at hand. It may miss
-             *  if the plugin that actually loads the manifest allows content from other pages.
-             *  Up until now the cPid is only set after the document has been initialized. We need it before to
-             *  check the configuration.
-             *  TODO Saving / indexing should still work - check!
-             */
+            // TODO: Saving / indexing should still work - check!
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_metadata');
             // Get hidden records, too.
@@ -142,8 +134,8 @@ final class IiifManifest extends AbstractDocument
                 ->where(
                     $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
                     $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', (int) $pid),
-                    $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->or(
+                        $queryBuilder->expr()->and(
                             $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
                             $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
                             $queryBuilder->expr()->eq('tx_dlf_metadata.index_name', $queryBuilder->createNamedParameter('record_id')),
@@ -152,7 +144,7 @@ final class IiifManifest extends AbstractDocument
                         $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
                     )
                 )
-                ->execute();
+                ->executeQuery();
             while ($resArray = $result->fetchAssociative()) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
@@ -202,59 +194,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * True if getUseGroups() has been called and $this->useGrps is loaded
-     *
-     * @var bool
-     * @access protected
-     */
-    protected bool $useGrpsLoaded = false;
-
-    /**
-     * Holds the configured useGrps as array.
-     *
-     * @var array
-     * @access protected
-     */
-    protected array $useGrps = [];
-
-    /**
-     * IiifManifest also populates the physical structure array entries for matching
-     * 'fileGrp's. To do that, the configuration has to be loaded; afterwards configured
-     * 'fileGrp's for thumbnails, downloads, audio, fulltext and the 'fileGrp's for images
-     * can be requested with this method.
-     *
-     * @access protected
-     *
-     * @param string $use
-     *
-     * @return array|string
-     */
-    protected function getUseGroups(string $use)
-    {
-        if (!$this->useGrpsLoaded) {
-            // Get configured USE attributes.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
-            if (!empty($extConf['fileGrpImages'])) {
-                $this->useGrps['fileGrpImages'] = GeneralUtility::trimExplode(',', $extConf['fileGrpImages']);
-            }
-            if (!empty($extConf['fileGrpThumbs'])) {
-                $this->useGrps['fileGrpThumbs'] = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-            }
-            if (!empty($extConf['fileGrpDownload'])) {
-                $this->useGrps['fileGrpDownload'] = GeneralUtility::trimExplode(',', $extConf['fileGrpDownload']);
-            }
-            if (!empty($extConf['fileGrpFulltext'])) {
-                $this->useGrps['fileGrpFulltext'] = GeneralUtility::trimExplode(',', $extConf['fileGrpFulltext']);
-            }
-            if (!empty($extConf['fileGrpAudio'])) {
-                $this->useGrps['fileGrpAudio'] = GeneralUtility::trimExplode(',', $extConf['fileGrpAudio']);
-            }
-            $this->useGrpsLoaded = true;
-        }
-        return array_key_exists($use, $this->useGrps) ? $this->useGrps[$use] : [];
-    }
-
-    /**
      * @see AbstractDocument::magicGetPhysicalStructure()
      */
     protected function magicGetPhysicalStructure(): array
@@ -264,7 +203,7 @@ final class IiifManifest extends AbstractDocument
             if ($this->iiif == null || !($this->iiif instanceof ManifestInterface)) {
                 return [];
             }
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
+
             $iiifId = $this->iiif->getId();
             $this->physicalStructureInfo[$iiifId]['id'] = $iiifId;
             $this->physicalStructureInfo[$iiifId]['dmdId'] = $iiifId;
@@ -276,8 +215,8 @@ final class IiifManifest extends AbstractDocument
             $this->setFileUseDownload($iiifId, $this->iiif);
             $this->setFileUseFulltext($iiifId, $this->iiif);
 
-            $fileUseThumbs = $this->getUseGroups('fileGrpThumbs');
-            $fileUses = $this->getUseGroups('fileGrpImages');
+            $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
+            $fileUses = $this->useGroupsConfiguration->getImage();
 
             if (!empty($this->iiif->getDefaultCanvases())) {
                 // canvases have not order property, but the context defines canveses as @list with a specific order, so we can provide an alternative
@@ -307,7 +246,7 @@ final class IiifManifest extends AbstractDocument
                         $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = [];
                         foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                             $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'][] = $annotationContainer->getId();
-                            if ($extConf['indexAnnotations']) {
+                            if ($this->getIndexAnnotations() == 1) {
                                 $this->hasFulltext = true;
                                 $this->hasFulltextSet = true;
                             }
@@ -395,6 +334,15 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
+     * @see AbstractDocument::getFileLocationInUsegroup()
+     */
+    public function getFileLocationInUsegroup(string $id, string $useGroup): string
+    {
+        $fileLocation = $this->getFileLocation($id);
+        return $fileLocation;
+    }
+
+    /**
      * @see AbstractDocument::getFileMimeType()
      */
     public function getFileMimeType(string $id): string
@@ -471,9 +419,9 @@ final class IiifManifest extends AbstractDocument
         $details['contentIds'] = '';
         $details['volume'] = '';
         $details['pagination'] = '';
-        $cPid = ($this->cPid ? $this->cPid : $this->pid);
-        if ($details['id'] == $this->magicGetToplevelId()) {
-            $metadata = $this->getMetadata($details['id'], $cPid);
+
+        if ($details['id'] == $this->getToplevelId()) {
+            $metadata = $this->getMetadata($details['id']);
             if (!empty($metadata['type'][0])) {
                 $details['type'] = $metadata['type'][0];
             }
@@ -495,10 +443,7 @@ final class IiifManifest extends AbstractDocument
                 $details['points'] = $startCanvasIndex + 1;
             }
         }
-        $useGroups = $this->getUseGroups('fileGrpImages');
-        if (is_string($useGroups)) {
-            $useGroups = [$useGroups];
-        }
+
         // Keep for later usage.
         $this->logicalUnits[$details['id']] = $details;
         // Walk the structure recursively? And are there any children of the current element?
@@ -554,6 +499,7 @@ final class IiifManifest extends AbstractDocument
         if (!empty($this->originalMetadataArray[$id])) {
             return $this->originalMetadataArray[$id];
         }
+        /** @var IiifResourceInterface $iiifResource */
         $iiifResource = $this->iiif->getContainedResourceById($id);
         $result = [];
         if ($iiifResource != null) {
@@ -591,9 +537,9 @@ final class IiifManifest extends AbstractDocument
     /**
      * @see AbstractDocument::getMetadata()
      */
-    public function getMetadata(string $id, int $cPid = 0): array
+    public function getMetadata(string $id): array
     {
-        if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $cPid) {
+        if (!empty($this->metadataArray[$id]) && $this->metadataArray[0] == $this->configPid) {
             return $this->metadataArray[$id];
         }
 
@@ -618,10 +564,10 @@ final class IiifManifest extends AbstractDocument
             ->from('tx_dlf_metadataformat')
             ->from('tx_dlf_formats')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $cPid),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', (int) $cPid),
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
+                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', $this->configPid),
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
                         $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
                         $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($this->getIiifVersion()))
@@ -629,7 +575,7 @@ final class IiifManifest extends AbstractDocument
                     $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
                 )
             )
-            ->execute();
+            ->executeQuery();
         $iiifResource = $this->iiif->getContainedResourceById($id);
         while ($resArray = $result->fetchAssociative()) {
             // Set metadata field's value(s).
@@ -637,9 +583,9 @@ final class IiifManifest extends AbstractDocument
                 $values = $iiifResource->jsonPath($resArray['xpath']);
                 if (is_string($values)) {
                     $metadata[$resArray['index_name']] = [trim((string) $values)];
-                } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
+                } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
                     $metadata[$resArray['index_name']] = [];
-                    foreach ($values->data() as $value) {
+                    foreach ($values->getData() as $value) {
                         $metadata[$resArray['index_name']][] = trim((string) $value);
                     }
                 }
@@ -654,9 +600,9 @@ final class IiifManifest extends AbstractDocument
                     $values = $iiifResource->jsonPath($resArray['xpath_sorting']);
                     if (is_string($values)) {
                         $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
-                    } elseif ($values instanceof JSONPath && is_array($values->data()) && count($values->data()) > 1) {
+                    } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
                         $metadata[$resArray['index_name']] = [];
-                        foreach ($values->data() as $value) {
+                        foreach ($values->getData() as $value) {
                             $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $value);
                         }
                     }
@@ -700,7 +646,7 @@ final class IiifManifest extends AbstractDocument
      * @access private
      *
      * @param RangeInterface $range Current range whose canvases shall be linked
-     * 
+     *
      * @return void
      */
     private function smLinkRangeCanvasesRecursively(RangeInterface $range): void
@@ -726,7 +672,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @param CanvasInterface $canvas
      * @param IiifResourceInterface $resource
-     * 
+     *
      * @return void
      */
     private function smLinkCanvasToResource(CanvasInterface $canvas, IiifResourceInterface $resource): void
@@ -753,19 +699,25 @@ final class IiifManifest extends AbstractDocument
             // Load physical structure ...
             $this->magicGetPhysicalStructure();
             // ... and extension configuration.
-            $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-            $fileGrpsFulltext = GeneralUtility::trimExplode(',', $extConf['files']['fileGrpFulltext']);
-            if (!empty($this->physicalStructureInfo[$id])) {
-                while ($fileGrpFulltext = array_shift($fileGrpsFulltext)) {
-                    if (!empty($this->physicalStructureInfo[$id]['files'][$fileGrpFulltext])) {
-                        $rawText = parent::getFullTextFromXml($id);
+            $useGroups = $this->useGroupsConfiguration->getFulltext();
+
+            $physicalStructureNode = $this->physicalStructureInfo[$id];
+            if (!empty($physicalStructureNode)) {
+                while ($useGroup = array_shift($useGroups)) {
+                    if (!empty($physicalStructureNode['files'][$useGroup])) {
+                        $rawText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml(
+                            $id,
+                            [$useGroup => $this->getFileLocation($physicalStructureNode['files'][$useGroup])],
+                            $physicalStructureNode
+                        );
                         break;
                     }
                 }
-                if ($extConf['iiif']['indexAnnotations'] == 1) {
+                if ($this->getIndexAnnotations() == 1) {
+                    /** @var IiifResourceInterface $iiifResource */
                     $iiifResource = $this->iiif->getContainedResourceById($id);
                     // Get annotation containers
-                    $annotationContainerIds = $this->physicalStructureInfo[$id]['annotationContainers'];
+                    $annotationContainerIds = $physicalStructureNode['annotationContainers'];
                     if (!empty($annotationContainerIds)) {
                         $annotationTexts = $this->getAnnotationTexts($annotationContainerIds, $iiifResource->getId());
                         $rawText .= implode(' ', $annotationTexts);
@@ -801,33 +753,12 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::loadLocation()
-     */
-    protected function loadLocation(string $location): bool
-    {
-        $fileResource = GeneralUtility::getUrl($location);
-        if ($fileResource !== false) {
-            $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-            IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-            IiifHelper::setMaxThumbnailHeight($conf['thumbnailHeight']);
-            IiifHelper::setMaxThumbnailWidth($conf['thumbnailWidth']);
-            $resource = IiifHelper::loadIiifResource($fileResource);
-            if ($resource instanceof ManifestInterface) {
-                $this->iiif = $resource;
-                return true;
-            }
-        }
-        $this->logger->error('Could not load IIIF manifest from "' . $location . '"');
-        return false;
-    }
-
-    /**
      * @see AbstractDocument::prepareMetadataArray()
      */
-    protected function prepareMetadataArray(int $cPid): void
+    protected function prepareMetadataArray(): void
     {
         $id = $this->iiif->getId();
-        $this->metadataArray[(string) $id] = $this->getMetadata((string) $id, $cPid);
+        $this->metadataArray[(string) $id] = $this->getMetadata($id);
     }
 
     /**
@@ -839,6 +770,7 @@ final class IiifManifest extends AbstractDocument
             $this->iiif = $preloadedDocument;
             return true;
         }
+        $this->logger->error('Could not set preloaded IIIF file');
         return false;
     }
 
@@ -865,8 +797,8 @@ final class IiifManifest extends AbstractDocument
                     $this->hasFulltext = true;
                     return;
                 }
-                $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-                if ($extConf['indexAnnotations'] == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
+
+                if ($this->getIndexAnnotations() == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
                         $textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING);
                         if ($textAnnotations != null) {
@@ -892,15 +824,15 @@ final class IiifManifest extends AbstractDocument
     /**
      * @see AbstractDocument::magicGetThumbnail()
      */
-    protected function magicGetThumbnail(bool $forceReload = false): string
+    protected function magicGetThumbnail(): string
     {
         return $this->iiif->getThumbnailUrl();
     }
 
     /**
-     * @see AbstractDocument::magicGetToplevelId()
+     * @see AbstractDocument::getToplevelId()
      */
-    protected function magicGetToplevelId(): string
+    public function getToplevelId(): string
     {
         if (empty($this->toplevelId)) {
             if (isset($this->iiif)) {
@@ -920,12 +852,12 @@ final class IiifManifest extends AbstractDocument
      *
      * @return array
      */
-    private function getAnnotationTexts($annotationContainerIds, $iiifId): array
+    private function getAnnotationTexts(array $annotationContainerIds, string $iiifId): array
     {
         $annotationTexts = [];
         foreach ($annotationContainerIds as $annotationListId) {
+            /** @var AnnotationContainerInterface $annotationContainer */
             $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
-            /* @var $annotationContainer \Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface */
             foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
                 if (
                     $annotation->getTargetResourceId() == $iiifId &&
@@ -936,6 +868,18 @@ final class IiifManifest extends AbstractDocument
             }
         }
         return $annotationTexts;
+    }
+
+    /**
+     * Get index annotations setting from extension configuration.
+     *
+     * @access private
+     *
+     * @return integer value 0 or 1
+     */
+    private function getIndexAnnotations(): int
+    {
+        return (int) GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif')['indexAnnotations'];
     }
 
     /**
@@ -950,12 +894,12 @@ final class IiifManifest extends AbstractDocument
      */
     private function setFileUseDownload(string $iiifId, $iiif): void
     {
-        $fileUseDownload = $this->getUseGroups('fileGrpDownload');
+        $useGroups = $this->useGroupsConfiguration->getDownload();
 
-        if (!empty($fileUseDownload)) {
+        if (!empty($useGroups)) {
             $docPdfRendering = $iiif->getRenderingUrlsForFormat('application/pdf');
             if (!empty($docPdfRendering)) {
-                $this->physicalStructureInfo[$iiifId]['files'][$fileUseDownload[0]] = $docPdfRendering[0];
+                $this->physicalStructureInfo[$iiifId]['files'][$useGroups[0]] = $docPdfRendering[0];
             }
         }
     }
@@ -972,16 +916,16 @@ final class IiifManifest extends AbstractDocument
      */
     private function setFileUseFulltext(string $iiifId, $iiif): void
     {
-        $fileUseFulltext = $this->getUseGroups('fileGrpFulltext');
+        $useGroups = $this->useGroupsConfiguration->getFulltext();
 
-        if (!empty($fileUseFulltext)) {
+        if (!empty($useGroups)) {
             $alto = $iiif->getSeeAlsoUrlsForFormat('application/alto+xml');
             if (empty($alto)) {
                 $alto = $iiif->getSeeAlsoUrlsForProfile('http://www.loc.gov/standards/alto/', true);
             }
             if (!empty($alto)) {
                 $this->mimeTypes[$alto[0]] = 'application/alto+xml';
-                $this->physicalStructureInfo[$iiifId]['files'][$fileUseFulltext[0]] = $alto[0];
+                $this->physicalStructureInfo[$iiifId]['files'][$useGroups[0]] = $alto[0];
                 $this->hasFulltext = true;
                 $this->hasFulltextSet = true;
             }
@@ -998,11 +942,7 @@ final class IiifManifest extends AbstractDocument
      */
     public function __wakeup(): void
     {
-        $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
-        IiifHelper::setUrlReader(IiifUrlReader::getInstance());
-        IiifHelper::setMaxThumbnailHeight($conf['thumbnailHeight']);
-        IiifHelper::setMaxThumbnailWidth($conf['thumbnailWidth']);
-        $resource = IiifHelper::loadIiifResource($this->asJson);
+        $resource = self::loadIiifResource($this->asJson);
         if ($resource instanceof ManifestInterface) {
             $this->asJson = '';
             $this->iiif = $resource;
@@ -1023,6 +963,6 @@ final class IiifManifest extends AbstractDocument
         // TODO implement serialization in IIIF library
         $jsonArray = $this->iiif->getOriginalJsonArray();
         $this->asJson = json_encode($jsonArray);
-        return ['pid', 'recordId', 'parentId', 'asJson'];
+        return ['configPid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asJson'];
     }
 }

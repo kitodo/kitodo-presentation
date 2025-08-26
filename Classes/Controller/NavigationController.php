@@ -35,7 +35,7 @@ class NavigationController extends AbstractController
      *
      * @return ResponseInterface the response
      */
-    public function pageSelectAction(PageSelectForm $pageSelectForm = null): ResponseInterface
+    public function pageSelectAction(?PageSelectForm $pageSelectForm = null): ResponseInterface
     {
         if ($pageSelectForm) {
             $uri = $this->uriBuilder->reset()
@@ -81,6 +81,19 @@ class NavigationController extends AbstractController
             $this->viewData['requestData'] = $this->requestData;
         }
 
+        if ($this->document->getUid() !== null) {
+            // get the closest previous sibling or leaf node
+            $prevDocumentUid = $this->documentRepository->getPreviousDocumentUid($this->document->getUid());
+            $this->view->assign('documentBack', $prevDocumentUid);
+
+            // get the closest next sibling or leaf node
+            $nextDocumentUid = $this->documentRepository->getNextDocumentUid($this->document->getUid());
+            $this->view->assign('documentForward', $nextDocumentUid);
+        } else {
+            $this->view->assign('documentBack', '');
+            $this->view->assign('documentForward', '');
+        }
+
         // Steps for X pages backward / forward. Double page view uses double steps.
         $pageSteps = $this->settings['pageStep'] * ($this->requestData['double'] + 1);
 
@@ -88,21 +101,16 @@ class NavigationController extends AbstractController
         $this->view->assign('numPages', $this->document->getCurrentDocument()->numPages);
         $this->view->assign('viewData', $this->viewData);
 
-        $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
+        $searchSessionParameters = $this->request->getAttribute('frontend.user')->getKey('ses', 'search');
         if ($searchSessionParameters) {
-            $widgetPage = $GLOBALS['TSFE']->fe_user->getKey('ses', 'widgetPage');
             $lastSearchArguments = [
                 'tx_dlf_listview' => [
-                    'searchParameter' => $searchSessionParameters
+                    'search' => $searchSessionParameters
                 ]
             ];
 
-            if ($widgetPage) {
-                $lastSearchArguments['tx_dlf_listview']['@widget_0'] = $widgetPage;
-            }
-
             // save last search parameter to generate a link back to the search list
-            $this->view->assign('lastSearchParams', $lastSearchArguments);
+            $this->view->assign('lastSearch', $lastSearchArguments);
         }
 
         $pageOptions = [];
@@ -124,9 +132,14 @@ class NavigationController extends AbstractController
             if ($this->document->getCurrentDocument()->numMeasures > 0) {
                 $measureOptions = [];
                 $measurePages = [];
+                $musicalStructure = $this->document->getCurrentDocument()->musicalStructure;
+                $musicalStructureInfo = $this->document->getCurrentDocument()->musicalStructureInfo;
                 for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
-                    $measureOptions[$i] = '[' . $i . ']' . ($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructure[$i]['measureid']]['orderlabel'] ? ' - ' . htmlspecialchars($this->document->getCurrentDocument()->musicalStructureInfo[$this->document->getCurrentDocument()->musicalStructureInfo[$i]]['orderlabel']) : '');
-                    $measurePages[$i] = $this->document->getCurrentDocument()->musicalStructure[$i]['page'];
+                    if (isset($musicalStructure[$i]['measureid'])
+                        && isset($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel'])) {
+                        $measureOptions[$i] = '[' . $i . ']' . (!empty($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel']) ? ' - ' . htmlspecialchars($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel']) : '');
+                        $measurePages[$i] = $musicalStructure[$i]['page'];
+                    }
                 }
 
                 if (!isset($this->requestData['measure'])) {
@@ -141,6 +154,8 @@ class NavigationController extends AbstractController
                 $this->view->assign('measurePages', $measurePages);
             }
         }
+
+        $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
 
         return $this->htmlResponse();
     }

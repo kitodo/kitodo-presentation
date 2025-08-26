@@ -28,14 +28,21 @@ class SolrSearchTest extends FunctionalTestCase
         __DIR__ . '/../../Fixtures/Common/documents_1.solr.json'
     ];
 
-    private Solr $solr;
-    private SolrCoreRepository $solrCoreRepository;
-
+    /**
+     * Sets up the test environment.
+     *
+     * This method is called before each test method is executed.
+     * It imports the necessary CSV datasets and sets up the Solr core for the tests.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
         $this->setUpData(self::$databaseFixtures);
-        $this->solr = $this->setUpSolr(5, 0, self::$solrFixtures);
+        $this->setUpSolr(5, 0, self::$solrFixtures);
     }
 
     /**
@@ -48,52 +55,28 @@ class SolrSearchTest extends FunctionalTestCase
         $settings = ['solrcore' => $solrCoreName, 'storagePid' => 0];
 
         $resultSet = $this->solr->searchRaw(['core' => 5, 'collection' => 1]);
-        $this->assertCount(33, $resultSet);
+        self::assertCount(33, $resultSet);
 
         $params1 = ['query' => '*'];
-        $search = new SolrSearch($documentRepository, null, $settings, $params1);
+        $search = new SolrSearch($documentRepository, [], $settings, $params1);
         $search->prepare();
-        $this->assertEquals(33, $search->getNumFound());
-        $this->assertEquals(3, $search->getSolrResults()['numberOfToplevels']);
-        $this->assertCount(15, $search->getSolrResults()['documents']);
+        self::assertEquals(33, $search->getNumFound());
+        self::assertEquals(3, $search->getSolrResults()['numberOfToplevels']);
+        self::assertCount(15, $search->getSolrResults()['documents']);
 
         $params2 = ['query' => '10 Keyboard pieces'];
-        $search2 = new SolrSearch($documentRepository, null, $settings, $params2);
+        $search2 = new SolrSearch($documentRepository, [], $settings, $params2);
         $search2->prepare();
-        $this->assertEquals(1, $search2->getNumFound());
-        $this->assertEquals(1, $search2->getSolrResults()['numberOfToplevels']);
-        $this->assertCount(1, $search2->getSolrResults()['documents']);
+        self::assertEquals(1, $search2->getNumFound());
+        self::assertEquals(1, $search2->getSolrResults()['numberOfToplevels']);
+        self::assertCount(1, $search2->getSolrResults()['documents']);
 
         $params3 = ['query' => 'foobar'];
-        $search3 = new SolrSearch($documentRepository, null, $settings, $params3);
+        $search3 = new SolrSearch($documentRepository, [], $settings, $params3);
         $search3->prepare();
+
         $this->assertEquals(0, $search3->getNumFound());
         $this->assertEquals(0, $search3->getSolrResults()['numberOfToplevels']);
         $this->assertCount(0, $search3->getSolrResults()['documents']);
-    }
-
-    protected function setUpData($databaseFixtures): void
-    {
-        foreach ($databaseFixtures as $filePath) {
-            $this->importCSVDataSet($filePath);
-        }
-        $this->initializeRepository(DocumentRepository::class, 0);
-    }
-
-    protected function setUpSolr($uid, $storagePid, $solrFixtures)
-    {
-        $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
-
-        $coreName = Solr::createCore('solrSearchTest');
-        $solr = Solr::getInstance($coreName);
-        foreach ($solrFixtures as $filePath) {
-            $this->importSolrDocuments($solr, $filePath);
-        }
-
-        $coreModel = $this->solrCoreRepository->findByUid($uid);
-        $coreModel->setIndexName($solr->core);
-        $this->solrCoreRepository->update($coreModel);
-        $this->persistenceManager->persistAll();
-        return $solr;
     }
 }

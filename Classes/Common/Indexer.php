@@ -16,12 +16,12 @@ use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Validation\DocumentValidator;
-use Solarium\Core\Query\DocumentInterface;
+use Solarium\QueryType\Update\Query\Document as QueryDocument;
 use Solarium\QueryType\Update\Query\Query;
 use Symfony\Component\Console\Input\InputInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Core\Environment;
@@ -42,6 +42,11 @@ class Indexer
      * @var string The extension key
      */
     public static string $extKey = 'dlf';
+
+    /**
+     * Prefix for translation keys.
+     */
+    const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
 
     /**
      * @access protected
@@ -101,7 +106,6 @@ class Indexer
             return true;
         } elseif (self::solrConnect($document->getSolrcore(), $document->getPid())) {
             $success = true;
-            Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_be.xlf');
             // Handle multi-volume documents.
             $parentId = $document->getPartof();
             if ($parentId) {
@@ -114,7 +118,7 @@ class Indexer
                         $parent->setCurrentDocument($doc);
                         $success = self::add($parent, $documentRepository);
                     } else {
-                        Helper::log('Could not load parent document with UID ' . $document->getCurrentDocument()->parentId, LOG_SEVERITY_ERROR);
+                        Helper::error('Could not load parent document with UID ' . $document->getCurrentDocument()->parentId);
                         return false;
                     }
                 }
@@ -151,12 +155,22 @@ class Indexer
                 if (!(Environment::isCli())) {
                     if ($success) {
                         self::addMessage(
-                            sprintf(Helper::getLanguageService()->getLL('flash.documentIndexed'), $document->getTitle(), $document->getUid()),
+                            sprintf(
+                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentIndexed'),
+                                $document->getTitle(),
+                                $document->getUid()
+                            ),
                             'flash.done',
-                            FlashMessage::OK
+                            ContextualFeedbackSeverity::OK
                         );
                     } else {
-                        self::addErrorMessage(sprintf(Helper::getLanguageService()->getLL('flash.documentNotIndexed'), $document->getTitle(), $document->getUid()));
+                        self::addErrorMessage(
+                            sprintf(
+                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentNotIndexed'),
+                                $document->getTitle(),
+                                $document->getUid()
+                            )
+                        );
                     }
                 }
                 return $success;
@@ -167,12 +181,12 @@ class Indexer
         } else {
             if (!(Environment::isCli())) {
                 self::addMessage(
-                    Helper::getLanguageService()->getLL('flash.solrNoConnection'),
+                    Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrNoConnection'),
                     'flash.warning',
-                    FlashMessage::WARNING
+                    ContextualFeedbackSeverity::WARNING
                 );
             }
-            Helper::log('Could not connect to Apache Solr server', LOG_SEVERITY_ERROR);
+            Helper::error('Could not connect to Apache Solr server');
             return false;
         }
     }
@@ -200,19 +214,19 @@ class Indexer
             } catch (\Exception $e) {
                 if (!(Environment::isCli())) {
                     Helper::addMessage(
-                        Helper::getLanguageService()->getLL('flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
-                        Helper::getLanguageService()->getLL('flash.error'),
-                        FlashMessage::ERROR,
+                        Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
+                        Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.error'),
+                        ContextualFeedbackSeverity::ERROR,
                         true,
                         'core.template.flashMessages'
                     );
                 }
-                Helper::log('Apache Solr threw exception: "' . $e->getMessage() . '"', LOG_SEVERITY_ERROR);
+                Helper::error('Apache Solr threw exception: "' . $e->getMessage() . '"');
                 return false;
             }
         }
 
-        Helper::log('Document not deleted from SOLR - problem with the connection to the SOLR core ' . $solrCoreUid, LOG_SEVERITY_ERROR);
+        Helper::error('Document not deleted from SOLR - problem with the connection to the SOLR core ' . $solrCoreUid);
         return false;
     }
 
@@ -233,7 +247,7 @@ class Indexer
         // Sanitize input.
         $pid = max((int) $pid, 0);
         if (!$pid) {
-            Helper::log('Invalid PID ' . $pid . ' for metadata configuration', LOG_SEVERITY_ERROR);
+            Helper::error('Invalid PID ' . $pid . ' for metadata configuration');
             return '';
         }
         // Load metadata configuration.
@@ -266,22 +280,22 @@ class Indexer
             // Get the metadata indexing options.
             $result = $queryBuilder
                 ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.index_tokenized AS index_tokenized',
-                    'tx_dlf_metadata.index_stored AS index_stored',
-                    'tx_dlf_metadata.index_indexed AS index_indexed',
-                    'tx_dlf_metadata.is_sortable AS is_sortable',
-                    'tx_dlf_metadata.is_facet AS is_facet',
-                    'tx_dlf_metadata.is_listed AS is_listed',
-                    'tx_dlf_metadata.index_autocomplete AS index_autocomplete',
-                    'tx_dlf_metadata.index_boost AS index_boost'
+                    'index_name',
+                    'index_tokenized',
+                    'index_stored',
+                    'index_indexed',
+                    'is_sortable',
+                    'is_facet',
+                    'is_listed',
+                    'index_autocomplete',
+                    'index_boost'
                 )
                 ->from('tx_dlf_metadata')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
+                    $queryBuilder->expr()->eq('pid', $pid),
                     Helper::whereExpression('tx_dlf_metadata')
                 )
-                ->execute();
+                ->executeQuery();
 
             while ($indexing = $result->fetchAssociative()) {
                 if ($indexing['index_tokenized']) {
@@ -329,9 +343,9 @@ class Indexer
     {
         $success = true;
         $doc = $document->getCurrentDocument();
-        $doc->cPid = $document->getPid();
+        $doc->configPid = $document->getPid();
         // Get metadata for logical unit.
-        $metadata = $doc->metadataArray[$logicalUnit['id']];
+        $metadata = $doc->metadataArray[$logicalUnit['id']] ?? [];
         if (!empty($metadata)) {
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'general');
             $validator = new DocumentValidator($metadata, explode(',', $extConf['requiredMetadataFields']));
@@ -348,29 +362,33 @@ class Indexer
                 if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                     $solrDoc->setField('page', $logicalUnit['points']);
                 }
-                if ($logicalUnit['id'] == $doc->toplevelId) {
+                if ($logicalUnit['id'] == $doc->getToplevelId()) {
                     $solrDoc->setField('thumbnail', $doc->thumbnail);
                 } elseif (!empty($logicalUnit['thumbnailId'])) {
                     $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
                 }
                 // There can be only one toplevel unit per UID, independently of backend configuration
-                $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->toplevelId ? true : false);
+                $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->getToplevelId());
                 $solrDoc->setField('title', $metadata['title'][0]);
-                $solrDoc->setField('volume', $metadata['volume'][0]);
+                $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
                 // verify date formatting
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
                 }
-                $solrDoc->setField('record_id', $metadata['record_id'][0]);
-                $solrDoc->setField('purl', $metadata['purl'][0]);
+                $solrDoc->setField('record_id', $metadata['record_id'][0] ?? '');
+                $solrDoc->setField('purl', $metadata['purl'][0] ?? '');
                 $solrDoc->setField('location', $document->getLocation());
                 $solrDoc->setField('urn', $metadata['urn']);
                 $solrDoc->setField('license', $metadata['license']);
                 $solrDoc->setField('terms', $metadata['terms']);
                 $solrDoc->setField('restrictions', $metadata['restrictions']);
-                $coordinates = json_decode($metadata['coordinates'][0]);
+                $coordinates = json_decode($metadata['coordinates'][0] ?? '');
                 if (is_object($coordinates)) {
-                    $solrDoc->setField('geom', json_encode($coordinates->features[0]));
+                    $feature = (array) $coordinates->features[0];
+                    $geometry = (array) $feature['geometry'];
+                    krsort($geometry);
+                    $feature['geometry'] = $geometry;
+                    $solrDoc->setField('geom', json_encode($feature));
                 }
                 $autocomplete = self::processMetadata($document, $metadata, $solrDoc);
                 // Add autocomplete values to index.
@@ -381,9 +399,9 @@ class Indexer
                 if (
                     in_array('collection', self::$fields['facets'])
                     && empty($metadata['collection'])
-                    && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
+                    && !empty($doc->metadataArray[$doc->getToplevelId()]['collection'])
                 ) {
-                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
+                    $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->getToplevelId()]['collection']);
                 }
                 try {
                     $updateQuery->addDocument($solrDoc);
@@ -393,7 +411,8 @@ class Indexer
                     return false;
                 }
             } else {
-                Helper::log('Tip: If "record_id" field is missing then there is possibility that METS file still contains it but with the wrong source type attribute in "recordIdentifier" element', LOG_SEVERITY_NOTICE);
+                Helper::error('There are missing mandatory fields (at least one of those: ' . $extConf['requiredMetadataFields'] . ') in this document');
+                Helper::notice('Tip: If "record_id" field is missing then there is possibility that METS file still contains it but with the wrong source type attribute in "recordIdentifier" element');
                 return false;
             }
         }
@@ -427,7 +446,7 @@ class Indexer
     protected static function processPhysical(Document $document, int $page, array $physicalUnit): bool
     {
         $doc = $document->getCurrentDocument();
-        $doc->cPid = $document->getPid();
+        $doc->configPid = $document->getPid();
         if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
@@ -435,29 +454,23 @@ class Indexer
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);
             $solrDoc->setField('page', $page);
-            $fileGrpsThumb = GeneralUtility::trimExplode(',', $extConf['fileGrpThumbs']);
-            while ($fileGrpThumb = array_shift($fileGrpsThumb)) {
-                if (!empty($physicalUnit['files'][$fileGrpThumb])) {
-                    $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$fileGrpThumb]));
+            $useGroupsThumbnail = GeneralUtility::trimExplode(',', $extConf['useGroupsThumbnail']);
+            while ($useGroupThumbnail = array_shift($useGroupsThumbnail)) {
+                if (!empty($physicalUnit['files'][$useGroupThumbnail])) {
+                    $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$useGroupThumbnail]));
                     break;
                 }
             }
             $solrDoc->setField('toplevel', false);
             $solrDoc->setField('type', $physicalUnit['type']);
-            $solrDoc->setField('collection', $doc->metadataArray[$doc->toplevelId]['collection']);
+            $solrDoc->setField('collection', $doc->metadataArray[$doc->getToplevelId()]['collection']);
             $solrDoc->setField('location', $document->getLocation());
 
             $solrDoc->setField('fulltext', $fullText);
-            if (is_array($doc->metadataArray[$doc->toplevelId])) {
-                self::addFaceting($doc, $solrDoc);
+            if (is_array($doc->metadataArray[$doc->getToplevelId()])) {
+                self::addFaceting($doc, $solrDoc, $physicalUnit);
             }
-            // Add collection information to physical sub-elements if applicable.
-            if (
-                in_array('collection', self::$fields['facets'])
-                && !empty($doc->metadataArray[$doc->toplevelId]['collection'])
-            ) {
-                $solrDoc->setField('collection_faceting', $doc->metadataArray[$doc->toplevelId]['collection']);
-            }
+
             try {
                 $updateQuery->addDocument($solrDoc);
                 self::$solr->service->update($updateQuery);
@@ -506,11 +519,11 @@ class Indexer
      *
      * @param Document $document
      * @param array $metadata
-     * @param DocumentInterface &$solrDoc
+     * @param QueryDocument &$solrDoc
      *
      * @return array empty array or autocomplete values
      */
-    private static function processMetadata($document, $metadata, &$solrDoc): array
+    private static function processMetadata(Document $document, array $metadata, QueryDocument &$solrDoc): array
     {
         $autocomplete = [];
         foreach ($metadata as $indexName => $data) {
@@ -520,7 +533,8 @@ class Indexer
                 && substr($indexName, -8) !== '_sorting'
             ) {
                 $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data);
-                if (in_array($indexName, self::$fields['sortables'])) {
+                if (in_array($indexName, self::$fields['sortables']) &&
+                    in_array($indexName . '_sorting', $metadata)) {
                     // Add sortable fields to index.
                     $solrDoc->setField($indexName . '_sorting', $metadata[$indexName . '_sorting'][0]);
                 }
@@ -544,34 +558,59 @@ class Indexer
      * @access private
      *
      * @param AbstractDocument $doc
-     * @param DocumentInterface &$solrDoc
+     * @param QueryDocument &$solrDoc
+     * @param array $physicalUnit Array of the physical unit to process
      *
      * @return void
      */
-    private static function addFaceting($doc, &$solrDoc): void
+    private static function addFaceting($doc, QueryDocument &$solrDoc, array $physicalUnit): void
     {
-        // TODO: Include also subentries if available.
-        foreach ($doc->metadataArray[$doc->toplevelId] as $indexName => $data) {
-            if (
-                !empty($data)
-                && substr($indexName, -8) !== '_sorting'
-            ) {
-
-                if (in_array($indexName, self::$fields['facets'])) {
-                    // Remove appended "valueURI" from authors' names for indexing.
-                    if ($indexName == 'author') {
-                        $data = self::removeAppendsFromAuthor($data);
+        // this variable holds all possible facet-values for the index names
+        $facets = [];
+        // use the structlink information
+        foreach ($doc->smLinks['l2p'] as $logicalId => $physicalId) {
+            // find page in structlink
+            if (in_array($logicalId, $doc->metadataArray) && in_array($physicalUnit['id'], $physicalId)) {
+                // for each associated metadata of structlink
+                foreach ($doc->metadataArray[$logicalId] as $indexName => $data) {
+                    if (
+                        !empty($data)
+                        && substr($indexName, -8) !== '_sorting'
+                    ) {
+                        if (in_array($indexName, self::$fields['facets'])) {
+                            // Remove appended "valueURI" from authors' names for indexing.
+                            if ($indexName == 'author') {
+                                $data = self::removeAppendsFromAuthor($data);
+                            }
+                            // Add facets to facet-array and flatten the values
+                            if (is_array($data)) {
+                                foreach ($data as $value) {
+                                    if (!empty($value)) {
+                                        $facets[$indexName][] = $value;
+                                    }
+                                }
+                            } else {
+                                $facets[$indexName][] = $data;
+                            }
+                        }
                     }
-                    // Add facets to index.
-                    $solrDoc->setField($indexName . '_faceting', $data);
                 }
             }
+        }
+
+        // write all facet values of associated metadata to the page (self & ancestors)
+        foreach ($facets as $indexName => $data) {
+            $solrDoc->setField($indexName . '_faceting', $data);
+        }
+
+        // add sorting information
+        foreach ($doc->metadataArray[$doc->getToplevelId()] as $indexName => $data) {
             // Add sorting information to physical sub-elements if applicable.
             if (
                 !empty($data)
                 && substr($indexName, -8) == '_sorting'
             ) {
-                $solrDoc->setField($indexName, $doc->metadataArray[$doc->toplevelId][$indexName]);
+                $solrDoc->setField($indexName, $doc->metadataArray[$doc->getToplevelId()][$indexName]);
             }
         }
     }
@@ -615,10 +654,11 @@ class Indexer
      * @param array $unit Array of the logical or physical unit to process
      * @param string $fullText Text containing full text for indexing
      *
-     * @return DocumentInterface
+     * @return QueryDocument
      */
-    private static function getSolrDocument(Query $updateQuery, Document $document, array $unit, string $fullText = ''): DocumentInterface
+    private static function getSolrDocument(Query $updateQuery, Document $document, array $unit, string $fullText = ''): QueryDocument
     {
+        /** @var QueryDocument $solrDoc */
         $solrDoc = $updateQuery->createDocument();
         // Create unique identifier from document's UID and unit's XML ID.
         $solrDoc->setField('id', $document->getUid() . $unit['id']);
@@ -628,7 +668,7 @@ class Indexer
         $solrDoc->setField('root', $document->getCurrentDocument()->rootId);
         $solrDoc->setField('sid', $unit['id']);
         $solrDoc->setField('type', $unit['type']);
-        $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->toplevelId]['collection']);
+        $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->getToplevelId()]['collection']);
         $solrDoc->setField('fulltext', $fullText);
         return $solrDoc;
     }
@@ -645,7 +685,7 @@ class Indexer
      *
      * @return string formatted date YYYY or YYYY-MM or YYYY-MM-DD or empty string
      */
-    private static function getFormattedDate($date): string
+    private static function getFormattedDate(string $date): string
     {
         if (
             preg_match("/^[\d]{4}$/", $date)
@@ -675,12 +715,13 @@ class Indexer
      *
      * @return array|string
      */
-    private static function removeAppendsFromAuthor($authors)
+    private static function removeAppendsFromAuthor(array|string $authors): array|string
     {
         if (is_array($authors)) {
             foreach ($authors as $i => $author) {
-                $splitName = explode(pack('C', 31), $author);
-                $authors[$i] = $splitName[0];
+                if (is_array($author)) {
+                    $authors[$i] = $author['name'];
+                }
             }
         }
         return $authors;
@@ -700,9 +741,9 @@ class Indexer
     private static function handleException(string $errorMessage): void
     {
         if (!(Environment::isCli())) {
-            self::addErrorMessage(Helper::getLanguageService()->getLL('flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
+            self::addErrorMessage(Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
         }
-        Helper::log('Apache Solr threw exception: "' . $errorMessage . '"', LOG_SEVERITY_ERROR);
+        Helper::error('Apache Solr threw exception: "' . $errorMessage . '"');
     }
 
     /**
@@ -721,7 +762,7 @@ class Indexer
         self::addMessage(
             $message,
             'flash.error',
-            FlashMessage::ERROR
+            ContextualFeedbackSeverity::ERROR
         );
     }
 
@@ -734,16 +775,16 @@ class Indexer
      *
      * @param string $message
      * @param string $type
-     * @param int $status
+     * @param ContextualFeedbackSeverity $severity
      *
      * @return void
      */
-    private static function addMessage(string $message, string $type, int $status): void
+    private static function addMessage(string $message, string $type, ContextualFeedbackSeverity $severity): void
     {
         Helper::addMessage(
             $message,
-            Helper::getLanguageService()->getLL($type),
-            $status,
+            Helper::getLanguageService()->sL(self::LANG_PREFIX . $type),
+            $severity,
             true,
             'core.template.flashMessages'
         );

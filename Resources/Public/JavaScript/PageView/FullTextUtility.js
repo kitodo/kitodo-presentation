@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global dlfTeiParser */
+
  /**
  * Base namespace for utility functions used by the dlf module.
  *
@@ -41,23 +43,30 @@ dlfFullTextUtils.isFeatureEqual = function(element, feature){
 
 /**
  * Method fetches the fulltext data from the server
- * @param {string} url
- * @param {Object} image
+ * @param {object} fulltext
+ * @param {object} image
  * @param {number=} optOffset
- * @return {FullTextFeature | undefined}
+ * @returns {FullTextFeature | undefined}
  * @static
  */
-dlfFullTextUtils.fetchFullTextDataFromServer = function(url, image, optOffset) {
+dlfFullTextUtils.fetchFullTextDataFromServer = function(fulltext, image, optOffset) {
     var result = new $.Deferred();
-
+    var url = fulltext.url;
     $.ajax({ url }).done(function (data, status, jqXHR) {
         try {
-            var fulltext = dlfFullTextUtils.parseAltoData(image, optOffset, jqXHR);
+            var fulltextResult;
+            if(fulltext.mimetype === 'application/tei+xml') {
+              const params = new URLSearchParams(window.location.search);
+              const pageId = params.get("tx_dlf[page]");
+              fulltextResult = dlfFullTextUtils.parseTeiData(pageId, jqXHR);
+            } else {
+              fulltextResult = dlfFullTextUtils.parseAltoData(image, optOffset, jqXHR);
+            }
 
-            if (fulltext === undefined) {
+            if (data === undefined) {
                 result.reject();
             } else {
-                result.resolve(fulltext);
+                result.resolve(fulltextResult);
             }
         } catch (e) {
             console.error(e); // eslint-disable-line no-console
@@ -82,4 +91,17 @@ dlfFullTextUtils.parseAltoData = function(image, offset, request){
             request.responseText ? parser.parseFeatures(request.responseText) : [];
 
     return fulltextCoordinates.length > 0 ? fulltextCoordinates[0] : undefined;
+};
+
+/**
+ * Method parses TEI data
+ * @param {string=} pageId
+ * @param {object} request
+ * @returns {object}
+ * @static
+ */
+dlfFullTextUtils.parseTeiData = function(pageId, request){
+  const parser = new dlfTeiParser(pageId);
+  return request.responseXML ? parser.parse(request.responseXML) :
+      request.responseText ? parser.parse(request.responseText) : [];
 };

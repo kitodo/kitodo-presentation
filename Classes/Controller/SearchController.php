@@ -75,9 +75,9 @@ class SearchController extends AbstractController
 
     /**
      * @access protected
-     * @var array The current search parameter
+     * @var array of the current search parameters
      */
-    protected ?array $searchParams;
+    protected ?array $search;
 
     /**
      * Search Action
@@ -89,10 +89,10 @@ class SearchController extends AbstractController
     public function searchAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
-        $this->searchParams = $this->getParametersSafely('searchParameter');
+        $this->search = $this->getParametersSafely('search', ['tx_dlf_collection', 'tx_dlf_listview']);
 
         // output is done by main action
-        return $this->redirect('main', null, null, ['searchParameter' => $this->searchParams]);
+        return $this->redirect('main', null, null, ['search' => $this->search]);
     }
 
     /**
@@ -113,37 +113,43 @@ class SearchController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->addFieldsForExtendedSearch();
+
+        $this->enableSuggester();
+
         // if search was triggered, get search parameters from POST variables
-        $this->searchParams = $this->getParametersSafely('searchParameter');
+        $this->search = $this->getParametersSafely('search');
+
         // if search was triggered by the ListView plugin, get the parameters from GET variables
-        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-        $listRequestData = GeneralUtility::_GPmerged('tx_dlf_listview');
+        $listRequestData = $this->request->getQueryParams()['tx_dlf_listview'] ?? null;
         // Quit without doing anything if no search parameters.
-        if (empty($this->searchParams) && empty($listRequestData)) {
+        if (empty($this->search) && empty($listRequestData)) {
             $this->logger->warning('Missing search parameters');
             return $this->htmlResponse();
         }
 
-        if (isset($listRequestData['searchParameter']) && is_array($listRequestData['searchParameter'])) {
-            $this->searchParams = array_merge($this->searchParams ?: [], $listRequestData['searchParameter']);
+        if (isset($listRequestData['search']) && is_array($listRequestData['search'])) {
+            $this->search = array_merge($this->search ?: [], $listRequestData['search']);
             $listViewSearch = true;
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'search', $this->searchParams);
+            $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->search);
         }
 
+        $this->search = is_array($this->search) ? $this->search : [];
+
         // sanitize date search input
-        if (!empty($this->searchParams['dateFrom']) || !empty($this->searchParams['dateTo'])) {
-            if (empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
-                $this->searchParams['dateFrom'] = '*';
+        if (array_key_exists('dateFrom', $this->search) || array_key_exists('dateTo', $this->search)) {
+            if (!array_key_exists('dateFrom', $this->search) && array_key_exists('dateTo', $this->search)) {
+                $this->search['dateFrom'] = '*';
             }
 
-            if (empty($this->searchParams['dateTo']) && !empty($this->searchParams['dateFrom'])) {
-                $this->searchParams['dateTo'] = 'NOW';
+            if (!array_key_exists('dateTo', $this->search) && array_key_exists('dateFrom', $this->search)) {
+                $this->search['dateTo'] = 'NOW';
             }
 
-            if ($this->searchParams['dateFrom'] > $this->searchParams['dateTo']) {
-                $tmpDate = $this->searchParams['dateFrom'];
-                $this->searchParams['dateFrom'] = $this->searchParams['dateTo'];
-                $this->searchParams['dateTo'] = $tmpDate;
+            if ($this->search['dateFrom'] > $this->search['dateTo']) {
+                $tmpDate = $this->search['dateFrom'];
+                $this->search['dateFrom'] = $this->search['dateTo'];
+                $this->search['dateTo'] = $tmpDate;
             }
         }
 
@@ -154,13 +160,13 @@ class SearchController extends AbstractController
         }
 
         // If a targetPid is given, the results will be shown by ListView on the target page.
-        if (!empty($this->settings['targetPid']) && !empty($this->searchParams) && !$listViewSearch) {
+        if (!empty($this->settings['targetPid']) && !empty($this->search) && !$listViewSearch) {
             return $this->redirect(
                 'main',
                 'ListView',
                 null,
                 [
-                    'searchParameter' => $this->searchParams,
+                    'search' => $this->search,
                     'page' => $currentPage
                 ], $this->settings['targetPid']
             );
@@ -168,21 +174,21 @@ class SearchController extends AbstractController
 
         // If no search has been executed, no variables have to be prepared.
         // An empty form will be shown.
-        if (is_array($this->searchParams) && !empty($this->searchParams)) {
+        if (!empty($this->search)) {
             // get all sortable metadata records
-            $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+            $sortableMetadata = $this->metadataRepository->findBy(['isSortable' => true]);
 
             // get all metadata records to be shown in results
-            $listedMetadata = $this->metadataRepository->findByIsListed(true);
+            $listedMetadata = $this->metadataRepository->findBy(['isListed' => true]);
 
             // get all indexed metadata fields
-            $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+            $indexedMetadata = $this->metadataRepository->findBy(['indexIndexed' => true]);
 
             $solrResults = null;
             $numResults = 0;
             // Do not execute the Solr search if used together with ListView plugin.
             if (!$listViewSearch) {
-                $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->searchParams, $listedMetadata, $indexedMetadata);
+                $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->search, $listedMetadata, $indexedMetadata);
                 $numResults = $solrResults->getNumFound();
 
                 $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
@@ -199,7 +205,7 @@ class SearchController extends AbstractController
             $this->view->assign('documents', !empty($solrResults) ? $solrResults : []);
             $this->view->assign('numResults', $numResults);
             $this->view->assign('page', $currentPage);
-            $this->view->assign('lastSearch', $this->searchParams);
+            $this->view->assign('lastSearch', $this->search);
             $this->view->assign('listedMetadata', $listedMetadata);
             $this->view->assign('sortableMetadata', $sortableMetadata);
 
@@ -207,18 +213,10 @@ class SearchController extends AbstractController
             $this->addFacetsMenu();
         }
 
-        // Get additional fields for extended search.
-        $this->addExtendedSearch();
-
         // Add the current document if present to fluid. This way, we can limit further searches to this document.
         if (isset($this->requestData['id'])) {
             $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
             $this->view->assign('currentDocument', $currentDocument);
-        }
-
-        // Add uHash parameter to suggest parameter to make a basic protection of this form.
-        if ($this->settings['suggest']) {
-            $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
 
         $this->view->assign('viewData', $this->viewData);
@@ -250,13 +248,13 @@ class SearchController extends AbstractController
     /**
      * This builds a menu array for HMENU
      *
-     * @access public
+     * @access private
      *
      * @param array $facets
      *
      * @return array HMENU array
      */
-    public function makeFacetsMenuArray(array $facets): array
+    private function makeFacetsMenuArray(array $facets): array
     {
         // Set default value for facet search.
         $search = [
@@ -274,9 +272,9 @@ class SearchController extends AbstractController
         $fields = Solr::getFields();
 
         // Set search query.
-        $searchParams = $this->searchParams;
+        $searchParams = $this->search;
         if (
-            (!empty($searchParams['fulltext']))
+            (array_key_exists('fulltext', $searchParams))
             || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($searchParams['query']), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
@@ -286,6 +284,7 @@ class SearchController extends AbstractController
                 $search['query'] = $fields['fulltext'] . ':(' . Solr::escapeQuery(trim($searchParams['query'])) . ')';
             }
         } else {
+            $search['params']['filterquery'][]['query'] = '-type:page';
             // Retain given search field if valid.
             if (!empty($searchParams['query'])) {
                 $search['query'] = Solr::escapeQueryKeepField(trim($searchParams['query']), $this->settings['storagePid']);
@@ -298,9 +297,9 @@ class SearchController extends AbstractController
         }
 
         // add filter query for date search
-        if (!empty($this->searchParams['dateFrom']) && !empty($this->searchParams['dateTo'])) {
+        if (array_key_exists('dateFrom', $this->search) && array_key_exists('dateTo', $this->search)) {
             // combine dateFrom and dateTo into filterquery as range search
-            $search['params']['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}' . $fields['date'] . ':[' . $this->searchParams['dateFrom'] . ' TO ' . $this->searchParams['dateTo'] . ']';
+            $search['params']['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}' . $fields['date'] . ':[' . $this->search['dateFrom'] . ' TO ' . $this->search['dateTo'] . ']';
         }
 
         // Add extended search query.
@@ -326,8 +325,8 @@ class SearchController extends AbstractController
             }
         }
 
-        if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
-            foreach ($this->searchParams['fq'] as $fq) {
+        if (array_key_exists('fq', $this->search) && is_array($this->search['fq'])) {
+            foreach ($this->search['fq'] as $fq) {
                 $search['params']['filterquery'][]['query'] = $fq;
             }
         }
@@ -398,8 +397,8 @@ class SearchController extends AbstractController
         // if collections are given, we prepare the collections query string
         // extract collections from collection parameter
         $collections = null;
-        if (array_key_exists('collection', $this->searchParams)) {
-            foreach (explode(',', $this->searchParams['collection']) as $collectionEntry) {
+        if (array_key_exists('collection', $this->search)) {
+            foreach (explode(',', $this->search['collection']) as $collectionEntry) {
                 if (!empty($collectionEntry)) {
                     $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
                 }
@@ -410,6 +409,7 @@ class SearchController extends AbstractController
             $virtualCollectionsQueryString = '';
             foreach ($collections as $collectionEntry) {
                 // check for virtual collections query string
+                /** @var Collection $collectionEntry */
                 if ($collectionEntry->getIndexSearch()) {
                     $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collectionEntry->getIndexSearch() . ')' : ' OR (' . $collectionEntry->getIndexSearch() . ')';
                 } else {
@@ -542,32 +542,23 @@ class SearchController extends AbstractController
      */
     private function translateValue(string $field, string $value): string
     {
-        switch ($field) {
-            case 'owner_faceting':
-                // Translate name of holding library.
-                return htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid']));
-            case 'type_faceting':
-                // Translate document type.
-                return htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid']));
-            case 'collection_faceting':
-                // Translate name of collection.
-                return htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid']));
-            case 'language_faceting':
-                // Translate ISO 639 language code.
-                return htmlspecialchars(Helper::getLanguageName($value));
-            default:
-                return htmlspecialchars($value);
-        }
+        return match ($field) {
+            'owner_faceting' => htmlspecialchars(Helper::translate($value, 'tx_dlf_libraries', $this->settings['storagePid'])),
+            'type_faceting' => htmlspecialchars(Helper::translate($value, 'tx_dlf_structures', $this->settings['storagePid'])),
+            'collection_faceting' => htmlspecialchars(Helper::translate($value, 'tx_dlf_collections', $this->settings['storagePid'])),
+            'language_faceting' => htmlspecialchars(Helper::getLanguageName($value)),
+            default => htmlspecialchars($value)
+        };
     }
 
     /**
-     * Returns the extended search form and adds the JS files necessary for extended search.
+     * Adds the fields necessary for extended search.
      *
      * @access private
      *
      * @return void
      */
-    private function addExtendedSearch(): void
+    private function addFieldsForExtendedSearch(): void
     {
         // Quit without doing anything if no fields for extended search are selected.
         if (
@@ -579,15 +570,25 @@ class SearchController extends AbstractController
 
         // Get field selector options.
         $searchFields = GeneralUtility::trimExplode(',', $this->settings['extendedFields'], true);
+        $extendedSlotCount = range(0, (int) $this->settings['extendedSlotCount'] - 1);
 
-        $slotCountArray = [];
-        for ($i = 0; $i < $this->settings['extendedSlotCount']; $i++) {
-            $slotCountArray[] = $i;
-        }
-
-        $this->view->assign('extendedSlotCount', $slotCountArray);
-        $this->view->assign('extendedFields', $this->settings['extendedFields']);
+        $this->view->assign('extendedSlotCount', $extendedSlotCount);
         $this->view->assign('operators', ['AND', 'OR', 'NOT']);
         $this->view->assign('searchFields', $searchFields);
+    }
+
+    /**
+     * Enables suggester if setting is set.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function enableSuggester(): void
+    {
+        // Add uHash parameter to suggest parameter to make a basic protection of this form.
+        if ($this->settings['suggest']) {
+            $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
+        }
     }
 }

@@ -2,11 +2,15 @@
 Embedded 3D Viewer
 ========
 
-The `model-viewer <https://modelviewer.dev>`_ is installed as the build-in standard viewer and supports ‘glTF/GLB 3D models’ as the model file format. Alternatively you can use one or multiple custom viewer implementations or our reference implementations from the GitHub repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_. On this page, you will find all the information needed to configure and embed any 3D Viewer implementation for Kitodo.Presentation.
+The `model-viewer <https://modelviewer.dev>`_ is installed as the built-in standard viewer and supports ‘glTF/GLB 3D models’ as the model file format.
+Alternatively you can use one or multiple custom viewer implementations or our reference implementations from the GitHub repository `slub/dlf-3d-viewers <https://github.com/slub/dlf-3d-viewers>`_.
+On this page, you will find all the information needed to configure and embed any 3D Viewer implementation for Kitodo.Presentation.
 
 .. contents::
     :local:
     :depth: 2
+
+.. _Embedded 3D Viewer Setup:
 
 Setup
 =======
@@ -25,10 +29,12 @@ Configuration
 
 By default, the viewers from the folder ``dlf_3d_viewers`` are all active and can be accessed and tested via URL.
 
-For this, only the parameter ``tx_dlf[viewer]`` with the name of the viewer and the encoded URL to the model via the parameter ``tx_dlf[model]`` need to be passed to the URL under which the plugin ``plugin.tx_dlf_embedded3dViewer`` is rendered.
+For this, only the parameter ``tx_dlf[viewer]`` with the encoded subfolder name of the viewer needs to be passed to the URL where the plugin ``plugin.tx_dlf_embedded3dViewer`` is rendered.
 
 .. note::
    For example in the DFG Viewer, this is the page whose ID is set via the constant ``config.kitodoPageView``.
+
+To render the model, the encoded URL to the METS document should be set using the parameter ``tx_dlf[id]``. Alternatively, it is possible to define the model directly with an encoded URL via the parameter ``tx_dlf[model]``.
 
 Automatic selection of the viewer
 -------
@@ -95,8 +101,8 @@ Placeholders can be used within the file which is define under the ``base`` key 
      :description:              The fileserver where your resource is hosted. For example "https://example.com/my-model.glb".
 
    - :field:                    modelPath
-     :description:              Part of the ``modelUrl`` where your resource is hosted. For example, if your resource ist hosted at "https://example.com/my-model.glb", the value would be "https://example.com/static/models/".
+     :description:              Part of the ``modelUrl`` where your resource is hosted. For example, if your resource is hosted at "https://example.com/my-model.glb", the value would be "https://example.com/static/models/".
 
    - :field:                    modelResource
-     :description:              Resource part of the ``modelUrl`` with the filename to be loaded from the endpoint. For example, if your resource ist hosted at "https://example.com/my-model.glb", the value would be "my-model.glb".
+     :description:              Resource part of the ``modelUrl`` with the filename to be loaded from the endpoint. For example, if your resource is hosted at "https://example.com/my-model.glb", the value would be "my-model.glb".
 

@@ -123,7 +123,7 @@ class CollectionController extends AbstractController
      */
     public function showAction(Collection $collection): ResponseInterface
     {
-        $searchParams = $this->getParametersSafely('searchParameter');
+        $search = $this->getParametersSafely('search');
 
         // Instantiate the Solr. Without Solr present, we can't do anything.
         $solr = Solr::getInstance($this->settings['solrcore']);
@@ -138,31 +138,31 @@ class CollectionController extends AbstractController
             $currentPage = 1;
         }
 
-        $searchParams['collection'] = $collection;
+        $search['collection'] = $collection->getUid();
         // If a targetPid is given, the results will be shown by ListView on the target page.
         if (!empty($this->settings['targetPid'])) {
             return $this->redirect(
                 'main', 'ListView', null,
                 [
-                    'searchParameter' => $searchParams,
+                    'search' => $search,
                     'page' => $currentPage
                 ], $this->settings['targetPid']
             );
         }
 
         // get all metadata records to be shown in results
-        $listedMetadata = $this->metadataRepository->findByIsListed(true);
+        $listedMetadata = $this->metadataRepository->findBy(['isListed' => true]);
 
         // get all indexed metadata fields
-        $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+        $indexedMetadata = $this->metadataRepository->findBy(['indexIndexed' => true]);
 
         // get all sortable metadata records
-        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+        $sortableMetadata = $this->metadataRepository->findBy(['isSortable' => true]);
 
         // get all documents of given collection
         $solrResults = null;
-        if (is_array($searchParams) && !empty($searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $searchParams, $listedMetadata, $indexedMetadata);
+        if (is_array($search) && !empty($search)) {
+            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $search, $listedMetadata, $indexedMetadata);
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
             if (empty($itemsPerPage)) {
@@ -179,7 +179,7 @@ class CollectionController extends AbstractController
         $this->view->assign('documents', $solrResults);
         $this->view->assign('collection', $collection);
         $this->view->assign('page', $currentPage);
-        $this->view->assign('lastSearch', $searchParams);
+        $this->view->assign('lastSearch', $search);
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);
 
@@ -196,15 +196,15 @@ class CollectionController extends AbstractController
     public function showSortedAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
-        $searchParams = $this->getParametersSafely('searchParameter');
+        $search = $this->getParametersSafely('search');
 
         $collection = null;
-        if ($searchParams['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($searchParams['collection']['__identity'])) {
-            $collection = $this->collectionRepository->findByUid($searchParams['collection']['__identity']);
+        if ($search['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($search['collection']['__identity'])) {
+            $collection = $this->collectionRepository->findByUid($search['collection']['__identity']);
         }
 
         // output is done by show action
-        return $this->redirect('show', null, null, ['searchParameter' => $searchParams, 'collection' => $collection]);
+        return $this->redirect('show', null, null, ['search' => $search, 'collection' => $collection]);
     }
 
     /**

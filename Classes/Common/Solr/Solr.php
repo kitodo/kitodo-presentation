@@ -104,7 +104,7 @@ class Solr implements LoggerAwareInterface
 
     /**
      * @access protected
-     * @var array(Solr) This holds the singleton search objects with their core as array key
+     * @var Solr[] This holds the singleton search objects with their core as array key
      */
     protected static array $registry = [];
 
@@ -156,7 +156,7 @@ class Solr implements LoggerAwareInterface
                     // Nothing to do here.
                 }
             } else {
-                Helper::log('Apache Solr not available', LOG_SEVERITY_ERROR);
+                Helper::error('Apache Solr not available');
             }
         }
         return '';
@@ -200,21 +200,21 @@ class Solr implements LoggerAwareInterface
             $fields = [];
             $result = $queryBuilder
                 ->select(
-                    'tx_dlf_metadata.index_name AS index_name',
-                    'tx_dlf_metadata.index_tokenized AS index_tokenized',
-                    'tx_dlf_metadata.index_stored AS index_stored'
+                    'index_name',
+                    'index_tokenized',
+                    'index_stored'
                 )
                 ->from('tx_dlf_metadata')
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.index_indexed', 1),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
-                    $queryBuilder->expr()->orX(
-                        $queryBuilder->expr()->in('tx_dlf_metadata.sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0)
+                    $queryBuilder->expr()->eq('index_indexed', 1),
+                    $queryBuilder->expr()->eq('pid', (int) $pid),
+                    $queryBuilder->expr()->or(
+                        $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
+                        $queryBuilder->expr()->eq('l18n_parent', 0)
                     ),
                     Helper::whereExpression('tx_dlf_metadata')
                 )
-                ->execute();
+                ->executeQuery();
 
             while ($resArray = $result->fetchAssociative()) {
                 $fields[] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . ($resArray['index_stored'] ? 's' : 'u') . 'i';
@@ -256,7 +256,7 @@ class Solr implements LoggerAwareInterface
             self::$fields['type'] = $solrFields['type'];
             self::$fields['title'] = $solrFields['title'];
             self::$fields['volume'] = $solrFields['volume'];
-            self::$fields['date'] = $solrFields['date'];
+            self::$fields['date'] = $solrFields['date'] ?? null;
             self::$fields['thumbnail'] = $solrFields['thumbnail'];
             self::$fields['default'] = $solrFields['default'];
             self::$fields['timestamp'] = $solrFields['timestamp'];
@@ -296,7 +296,7 @@ class Solr implements LoggerAwareInterface
             empty($core)
             && $core !== null
         ) {
-            Helper::log('Invalid core UID or name given for Apache Solr', LOG_SEVERITY_ERROR);
+            Helper::error('Invalid core UID or name given for Apache Solr');
         }
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
@@ -331,11 +331,11 @@ class Solr implements LoggerAwareInterface
         $number = max($number, 0);
         // Check if core already exists.
         $solr = self::getInstance('dlfCore' . $number);
-        if (!$solr->ready) {
-            return $number;
-        } else {
-            return self::getNextCoreNumber($number + 1);
+        while ($solr->ready) {
+            $number++;
+            $solr = self::getInstance('dlfCore' . $number);
         }
+        return $number;
     }
 
     /**
@@ -356,19 +356,19 @@ class Solr implements LoggerAwareInterface
             // Derive Solr host name.
             $config['host'] = ($conf['host'] ? $conf['host'] : '127.0.0.1');
             // Set username and password.
-            $config['username'] = $conf['user'];
-            $config['password'] = $conf['pass'];
+            $config['username'] = $conf['user'] ?? null;
+            $config['password'] = $conf['pass'] ?? null;
             // Set port if not set.
-            $config['port'] = MathUtility::forceIntegerInRange($conf['port'], 1, 65535, 8983);
+            $config['port'] = MathUtility::forceIntegerInRange($conf['port'] ?? null, 1, 65535, 8983);
             // Trim path of slashes and (re-)add trailing slash if path not empty.
-            $config['path'] = trim($conf['path'], '/');
+            $config['path'] = trim($conf['path'] ?? '', '/');
             if (!empty($config['path'])) {
                 $config['path'] .= '/';
             }
 
             // Set connection timeout lower than PHP's max_execution_time.
             $maxExecutionTime = (int) ini_get('max_execution_time') ? : 30;
-            $config['timeout'] = MathUtility::forceIntegerInRange($conf['timeout'], 1, $maxExecutionTime, 10);
+            $config['timeout'] = MathUtility::forceIntegerInRange($conf['timeout'] ?? null, 1, $maxExecutionTime, 10);
             $this->config = $config;
         }
     }
@@ -592,7 +592,7 @@ class Solr implements LoggerAwareInterface
             $eventDispatcher = null;
         } else {
             // When updating to TYPO3 >=10.x and Solarium >=6.x
-            // we have to provide an PSR-14 Event Dispatcher instead of
+            // we have to provide a PSR-14 Event Dispatcher instead of
             // "null".
             $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
         }

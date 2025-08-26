@@ -25,34 +25,36 @@
     "docs": "https://docs.typo3.org/p/kitodo/presentation/main/en-us/"
   },
   "require": {
-    "php": "7.4 - 8.3",
+    "php": "8.1 - 8.4",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "^11.5.40|^12.4.21",
-    "typo3/cms-extbase": "^11.5.40|^12.4.21",
-    "typo3/cms-scheduler": "^11.5.40|^12.4.21",
-    "typo3/cms-tstemplate": "^11.5.40|^12.4.21",
-    "caseyamcl/phpoaipmh": "^3.3.1",
-    "slub/php-mods-reader": "^0.4.0",
-    "ubl/php-iiif-prezi-reader": "0.3.0",
-    "solarium/solarium": "5.2 - 6.3",
-    "symfony/process": "^5.4|^6.4"
+    "typo3/cms-core": "^12.4|^13.4",
+    "typo3/cms-extbase": "^12.4|^13.4",
+    "typo3/cms-install": "^12.4|^13.4",
+    "typo3/cms-scheduler": "^12.4|^13.4",
+    "typo3/cms-tstemplate": "^12.4|^13.4",
+    "caseyamcl/phpoaipmh": "^3.3",
+    "slub/php-mods-reader": "^0.4",
+    "ubl/php-iiif-prezi-reader": "0.3.1|0.3.2",
+    "solarium/solarium": "^6.3",
+    "softcreatr/jsonpath": "^0.10",
+    "symfony/process": "^6.4|^7.3"
   },
   "require-dev": {
     "fluidtypo3/vhs": "^7.0",
     "phpstan/phpstan": "^1.12",
-    "phpunit/phpunit": "^9.6.20",
+    "phpunit/phpunit": "^10.1",
     "spatie/phpunit-watcher": "^1.23",
-    "typo3/cms-backend": "^11.5.40|^12.4.21",
-    "typo3/cms-fluid": "^11.5.40|^12.4.21",
-    "typo3/cms-fluid-styled-content": "^11.5.40|^12.4.21",
-    "typo3/cms-frontend": "^11.5.40|^12.4.21",
-    "typo3/testing-framework": "^7.1.0",
-    "vlucas/phpdotenv": "^5.6.1"
+    "typo3/cms-backend": "^12.4|^13.4",
+    "typo3/cms-fluid": "^12.4|^13.4",
+    "typo3/cms-fluid-styled-content": "^12.4|^13.4",
+    "typo3/cms-frontend": "^12.4|^13.4",
+    "typo3/testing-framework": "^8.2",
+    "vlucas/phpdotenv": "^5.6"
   },
   "replace": {
     "typo3-ter/dlf": "self.version"
@@ -64,7 +66,6 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Kitodo\\DbDocs\\": "Build/Documentation/dbdocs",
       "Kitodo\\Dlf\\Tests\\": "Tests/"
     }
   },
@@ -102,9 +103,6 @@
     "test:func:watch": [
 		"@test:func -w"
 	],
-	"docs:db": [
-		"./Build/Documentation/dbdocs/generate.php ./Documentation/Developers/Database.rst"
-	],
   	"docs:build": [
 	  	"rm -Rf ./Documentation-GENERATED-temp",
 	  	"docker run --user=$(id -u):$(id -g) --rm -v ./:/project -it ghcr.io/typo3-documentation/render-guides:latest --config ./Documentation",
@@ -122,7 +120,7 @@
 	  	"@composer docs:start"
 	],
 	"phpstan": [
-		"@php vendor/bin/phpstan --configuration=\".github/phpstan.neon\""
+		"@php vendor/bin/phpstan --configuration=\".github/phpstan_13.4.neon\""
 	]
   },
   "config": {
@@ -130,5 +128,11 @@
       "typo3/class-alias-loader": true,
       "typo3/cms-composer-installers": true
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "github",
+      "url": "https://github.com/kitodo/php-iiif-prezi-reader.git"
+    }
+  ]
 }

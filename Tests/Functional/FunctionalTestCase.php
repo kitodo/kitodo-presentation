@@ -14,14 +14,18 @@ namespace Kitodo\Dlf\Tests\Functional;
 
 use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 /**
  * Base class for functional test cases. This provides some common configuration
@@ -66,44 +70,37 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     ];
 
     /**
-     * By default, the testing framework wraps responses into a JSON object
-     * that contains status code etc. as fields. Set this field to true to avoid
-     * this behavior by not loading the json_response extension.
-     *
-     * @var bool
-     */
-    protected $disableJsonWrappedResponse = false;
-
-    /**
      * @var PersistenceManager
      */
-    protected $persistenceManager;
+    protected PersistenceManager $persistenceManager;
 
     /**
      * @var string
      */
-    protected $baseUrl;
+    protected string $baseUrl;
 
     /**
      * @var HttpClient
      */
-    protected $httpClient;
+    protected HttpClient $httpClient;
 
-    public function __construct()
-    {
-        parent::__construct();
+    protected SolrCoreRepository $solrCoreRepository;
 
-        $this->configurationToUseInTestInstance['EXTENSIONS']['dlf'] = $this->getDlfConfiguration();
+    protected ?Solr $solr = null;
 
-        if ($this->disableJsonWrappedResponse) {
-            $this->frameworkExtensionsToLoad = array_filter($this->frameworkExtensionsToLoad, function ($ext) {
-                return $ext !== 'Resources/Core/Functional/Extensions/json_response';
-            });
-        }
-    }
-
+    /**
+     * Sets up the test case environment.
+     *
+     * @access public
+     *
+     * @return void
+     *
+     * @access public
+     */
     public function setUp(): void
     {
+        $this->configurationToUseInTestInstance['EXTENSIONS']['dlf'] = $this->getDlfConfiguration();
+
         parent::setUp();
 
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
@@ -117,9 +114,21 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $this->addSiteConfig('dlf-testing');
     }
 
-    protected function getDlfConfiguration()
+    /**
+     * Returns the DLF configuration for the test instance.
+     *
+     * This configuration is loaded from a .env file in the test directory.
+     * It includes general settings, file groups, and Solr settings.
+     *
+     * @access protected
+     *
+     * @return array The DLF configuration
+     *
+     * @access protected
+     */
+    protected function getDlfConfiguration(): array
     {
-        $dotenv = Dotenv::createImmutable('/home/runner/work/kitodo-presentation/kitodo-presentation/Build/Test/', 'test.env');
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../Build/Test/', 'test.env');
         $dotenv->load();
 
         return [
@@ -128,11 +137,13 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                 'requiredMetadataFields' => 'document_format'
             ],
             'files' => [
-                'fileGrpImages' => 'DEFAULT,MAX',
-                'fileGrpThumbs' => 'THUMBS',
-                'fileGrpDownload' => 'DOWNLOAD',
-                'fileGrpFulltext' => 'FULLTEXT',
-                'fileGrpAudio' => 'AUDIO'
+                'useGroupsImage' => 'DEFAULT,MAX',
+                'useGroupsThumbnail' => 'THUMBS',
+                'useGroupsDownload' => 'DOWNLOAD',
+                'useGroupsFulltext' => 'FULLTEXT',
+                'useGroupsAudio' => 'AUDIO',
+                'useGroupsVideo' => 'VIDEO,DEFAULT',
+                'useGroupsWaveform' => 'WAVEFORM'
             ],
             'solr' => [
                 'host' => getenv('dlfTestingSolrHost'),
@@ -167,7 +178,23 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         ];
     }
 
-    protected function addSiteConfig($identifier)
+    /**
+     * Adds a site configuration for the given identifier.
+     *
+     * This method creates a site configuration file in the
+     * typo3conf/sites directory with the specified identifier.
+     * The configuration is loaded from a YAML file and includes
+     * the base URL and language settings.
+     *
+     * @access protected
+     *
+     * @param string $identifier The identifier for the site configuration
+     *
+     * @return void
+     *
+     * @access protected
+     */
+    protected function addSiteConfig(string $identifier): void
     {
         $siteConfig = Yaml::parseFile(__DIR__ . '/../Fixtures/siteconfig.yaml');
         $siteConfig['base'] = $this->baseUrl;
@@ -182,8 +209,25 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $finder->getAllSites(false); // useCache = false
     }
 
-    protected function initializeRepository(string $className, int $storagePid)
+    /**
+     * Initializes a repository with the given class name and storage PID.
+     *
+     * This method creates an instance of the specified repository class,
+     * sets the default query settings to use the specified storage PID,
+     * and returns the initialized repository.
+     *
+     * @access protected
+     *
+     * @template T
+     *
+     * @param class-string<T> $className The fully qualified class name of the repository
+     * @param int $storagePid The storage PID to set in the query settings
+     *
+     * @return T The initialized repository
+     */
+    protected function initializeRepository(string $className, int $storagePid): Repository
     {
+        /* @var Repository $repository */
         $repository = GeneralUtility::makeInstance($className);
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds([$storagePid]);
@@ -192,7 +236,22 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         return $repository;
     }
 
-    protected function importSolrDocuments(Solr $solr, string $path)
+    /**
+     * Imports Solr documents from a JSON file into the specified Solr instance.
+     *
+     * This method reads a JSON file containing an array of documents,
+     * creates Solr documents from them, and adds them to the Solr index.
+     *
+     * @access protected
+     *
+     * @param Solr $solr The Solr instance to import documents into
+     * @param string $path The path to the JSON file containing the documents
+     *
+     * @return void
+     *
+     * @access protected
+     */
+    protected function importSolrDocuments(Solr $solr, string $path): void
     {
         $jsonDocuments = json_decode(file_get_contents($path), true);
 
@@ -212,7 +271,22 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $solr->service->update($updateQuery);
     }
 
-    protected function initLanguageService(string $locale)
+    /**
+     * Initializes the language service with the given locale.
+     *
+     * This method sets up a mock backend user with the specified locale,
+     * which is then used by the LanguageServiceFactory to load the language
+     * in backend mode.
+     *
+     * @access protected
+     *
+     * @param string $locale The locale to set for the backend user
+     *
+     * @return void
+     *
+     * @access protected
+     */
+    protected function initLanguageService(string $locale): void
     {
         // create mock backend user and set language
         // which is loaded by LanguageServiceFactory as default value in backend mode
@@ -222,10 +296,87 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     }
 
     /**
-     * Assert that $sub is recursively contained within $super.
+     * Sets up the data for the test environment.
+     *
+     * This method imports the necessary CSV datasets for the tests.
+     *
+     * @access protected
+     *
+     * @param array $databaseFixtures An array of file paths to CSV datasets
+     *
+     * @return void
      */
-    protected function assertArrayMatches(array $sub, array $super, string $message = '')
+    protected function setUpData(array $databaseFixtures): void
+    {
+        foreach ($databaseFixtures as $filePath) {
+            $this->importCSVDataSet($filePath);
+        }
+    }
+
+    /**
+     * Sets up the Solr core for the test environment.
+     *
+     * This method initializes the Solr core repository and imports the necessary Solr documents.
+     *
+     * @access protected
+     *
+     * @param int $uid The UID of the Solr core to set up
+     * @param int $storagePid The storage PID for the Solr core
+     * @param array $solrFixtures An array of file paths to Solr fixtures
+     *
+     * @return Solr|null The initialized Solr instance
+     */
+    protected function setUpSolr(int $uid, int $storagePid, array $solrFixtures): Solr|null
+    {
+        $this->solrCoreRepository = $this->initializeRepository(SolrCoreRepository::class, $storagePid);
+
+        // Setup Solr only once for all tests in this suite
+        if ($this->solr === null) {
+            Helper::resetIndexNameCache();
+            $coreName = Solr::createCore();
+            $this->solr = Solr::getInstance($coreName);
+            foreach ($solrFixtures as $filePath) {
+                $this->importSolrDocuments($this->solr, $filePath);
+            }
+        }
+
+        $coreModel = $this->solrCoreRepository->findByUid($uid);
+        $coreModel->setIndexName($this->solr->core);
+        $this->solrCoreRepository->update($coreModel);
+        $this->persistenceManager->persistAll();
+        return $this->solr;
+    }
+
+    /**
+     * Assert that $sub is recursively contained within $super.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param array $sub
+     * @param array $super
+     * @param string $message
+     *
+     * @return void
+     *
+     * @access protected
+     *
+     * @static
+     */
+    protected static function assertArrayMatches(array $sub, array $super, string $message = ''): void
     {
         self::assertEquals($sub, ArrayUtility::intersectRecursive($super, $sub), $message);
+    }
+
+    /**
+     * Execute an internal Typo3 Http request and return its response.
+     *
+     * @param InternalRequest $request the request
+     * @return ResponseInterface the response
+     */
+    public function executeInternalRequest(InternalRequest $request): ResponseInterface
+    {
+        return $this->executeFrontendSubRequest($request);
     }
 }

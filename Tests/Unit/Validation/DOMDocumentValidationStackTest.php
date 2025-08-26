@@ -17,7 +17,6 @@ namespace Kitodo\Dlf\Tests\Unit\Validation;
 use DOMDocument;
 use InvalidArgumentException;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
-use Kitodo\Dlf\Validation\XmlSchemesValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\UrlValidator;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -31,6 +30,13 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class DOMDocumentValidationStackTest extends UnitTestCase
 {
+    /**
+     * Sets up the test case environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -63,21 +69,7 @@ class DOMDocumentValidationStackTest extends UnitTestCase
     public function testValidatorDerivation(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Class must be an instance of AbstractDlfValidator.");
+        $this->expectExceptionMessage("Validator must be an instance of AbstractDlfValidator.");
         new DOMDocumentValidationStack([["className" => UrlValidator::class]]);
-    }
-
-    public function testBreakOnError(): void
-    {
-        $xmlSchemesValidatorConfig = ["className" => XmlSchemesValidator::class, "configuration" => [["namespace" => "http://www.openarchives.org/OAI/2.0/", "schemaLocation" => "https://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"]]];
-        $domDocumentValidationStack = new DOMDocumentValidationStack([$xmlSchemesValidatorConfig, $xmlSchemesValidatorConfig]);
-        $result = $domDocumentValidationStack->validate(new DOMDocument());
-        self::assertCount(1, $result->getErrors());
-
-        // disable breaking on error
-        $xmlSchemesValidatorConfig["breakOnError"] = "false";
-        $domDocumentValidationStack = new DOMDocumentValidationStack([$xmlSchemesValidatorConfig, $xmlSchemesValidatorConfig]);
-        $result = $domDocumentValidationStack->validate(new DOMDocument());
-        self::assertCount(2, $result->getErrors());
     }
 }

@@ -13,8 +13,9 @@
 namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Command\BaseCommand;
+use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Indexer;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -121,7 +122,7 @@ class ReindexCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         if (
@@ -139,22 +140,22 @@ class ReindexCommand extends BaseCommand
                 }
                 if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return BaseCommand::FAILURE;
+                    return Command::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return BaseCommand::FAILURE;
+                    return Command::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         if (!empty($input->getOption('owner'))) {
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
                 $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
             } else {
-                $this->owner = $this->libraryRepository->findOneByIndexName((string) $input->getOption('owner'));
+                $this->owner = $this->libraryRepository->findOneBy([ 'indexName' => (string) $input->getOption('owner') ]);
             }
         } else {
             $this->owner = null;
@@ -184,7 +185,7 @@ class ReindexCommand extends BaseCommand
             // "coll" may be a single integer or a comma-separated list of integers.
             if (empty(array_filter($collections))) {
                 $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
-                return BaseCommand::FAILURE;
+                return Command::FAILURE;
             }
 
             if (
@@ -200,7 +201,7 @@ class ReindexCommand extends BaseCommand
             }
         } else {
             $io->error('ERROR: One of parameters --all|-a or --coll|-c must be given.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         foreach ($documents as $id => $document) {
@@ -224,7 +225,7 @@ class ReindexCommand extends BaseCommand
                 Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
             }
             // Clear document cache to prevent memory exhaustion.
-            AbstractDocument::clearDocumentCache();
+            GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
         }
 
         // Clear state of persistence manager to prevent memory exhaustion.
@@ -232,6 +233,6 @@ class ReindexCommand extends BaseCommand
 
         $io->success('All done!');
 
-        return BaseCommand::SUCCESS;
+        return Command::SUCCESS;
     }
 }

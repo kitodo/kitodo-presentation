@@ -65,9 +65,9 @@ class ListViewController extends AbstractController
 
     /**
      * @access protected
-     * @var array The current search parameter
+     * @var array of the current search parameters
      */
-    protected $searchParams;
+    protected $search;
 
     /**
      * The main method of the plugin
@@ -78,15 +78,14 @@ class ListViewController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
-        $this->searchParams = $this->getParametersSafely('searchParameter');
+        $this->search = $this->getParametersSafely('search');
+        $this->search = is_array($this->search) ? $this->search : [];
 
         // extract collection(s) from collection parameter
         $collections = [];
-        if (is_array($this->searchParams) && array_key_exists('collection', $this->searchParams)) {
-            foreach(explode(',', $this->searchParams['collection']) as $collectionEntry) {
-                if (!empty($collectionEntry)) {
-                    $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
-                }
+        if (array_key_exists('collection', $this->search)) {
+            foreach(explode(',', $this->search['collection']) as $collectionEntry) {
+                $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
         }
 
@@ -94,18 +93,18 @@ class ListViewController extends AbstractController
         $currentPage = $this->requestData['page'] ?? 1;
 
         // get all sortable metadata records
-        $sortableMetadata = $this->metadataRepository->findByIsSortable(true);
+        $sortableMetadata = $this->metadataRepository->findBy(['isSortable' => true]);
 
         // get all metadata records to be shown in results
-        $listedMetadata = $this->metadataRepository->findByIsListed(true);
+        $listedMetadata = $this->metadataRepository->findBy(['isListed' => true]);
 
         // get all indexed metadata fields
-        $indexedMetadata = $this->metadataRepository->findByIndexIndexed(true);
+        $indexedMetadata = $this->metadataRepository->findBy(['indexIndexed' => true]);
 
         $solrResults = null;
         $numResults = 0;
-        if (is_array($this->searchParams) && !empty($this->searchParams)) {
-            $solrResults = $this->documentRepository->findSolrByCollections($collections, $this->settings, $this->searchParams, $listedMetadata, $indexedMetadata);
+        if (!empty($this->search)) {
+            $solrResults = $this->documentRepository->findSolrByCollections($collections, $this->settings, $this->search, $listedMetadata, $indexedMetadata);
             $numResults = $solrResults->getNumFound();
 
             $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
@@ -123,7 +122,7 @@ class ListViewController extends AbstractController
         $this->view->assign('documents', $solrResults);
         $this->view->assign('numResults', $numResults);
         $this->view->assign('page', $currentPage);
-        $this->view->assign('lastSearch', $this->searchParams);
+        $this->view->assign('lastSearch', $this->search);
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);
 

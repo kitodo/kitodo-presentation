@@ -13,7 +13,9 @@ namespace Kitodo\Dlf\ViewHelpers;
 
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
+use TYPO3\CMS\Core\TypoScript\AST\AstBuilder;
+use TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -68,12 +70,13 @@ class MetadataWrapVariableViewHelper extends AbstractViewHelper
         RenderingContextInterface $renderingContext
     ): void
     {
-        $parser = GeneralUtility::makeInstance(TypoScriptParser::class);
-        $parser->parse($renderChildrenClosure());
+        $factory = GeneralUtility::makeInstance(TypoScriptStringFactory::class);
+        $rootNode = $factory->parseFromString($renderChildrenClosure(), new AstBuilder(new NoopEventDispatcher()));
+        $setup = $rootNode->toArray();
         $wrap = [
-            'key' => $parser->setup['key.'] ?? [],
-            'value' => $parser->setup['value.'] ?? [],
-            'all' => $parser->setup['all.'] ?? [],
+            'key' => $setup['key.'] ?? [],
+            'value' => $setup['value.'] ?? [],
+            'all' => $setup['all.'] ?? [],
         ];
         $renderingContext->getVariableProvider()->add($arguments['name'], $wrap);
     }

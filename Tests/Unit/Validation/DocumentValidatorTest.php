@@ -17,6 +17,13 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class DocumentValidatorTest extends UnitTestCase
 {
+    /**
+     * Sets up the test case environment.
+     *
+     * @access public
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -30,8 +37,31 @@ class DocumentValidatorTest extends UnitTestCase
     public function passesHasAllMandatoryMetadataFields()
     {
         $metadata = [
+            'type' => [
+                'newspaper'
+            ],
             'record_id' => [
                 'xyz'
+            ],
+            'is_administrative' => [
+                true
+            ]
+        ];
+        $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
+        self::assertTrue($documentValidator->hasAllMandatoryMetadataFields());
+    }
+
+    /**
+     * @test
+     */
+    public function passesHasNotMandatoryMetadataFieldsButType()
+    {
+        $metadata = [
+            'type' => [
+                'chapter'
+            ],
+            'is_administrative' => [
+                false
             ]
         ];
         $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
@@ -46,6 +76,12 @@ class DocumentValidatorTest extends UnitTestCase
         $metadata = [
             'document_format' => [
                 'METS'
+            ],
+            'type' => [
+                'newspaper'
+            ],
+            'is_administrative' => [
+                true
             ]
         ];
         $documentValidator = new DocumentValidator($metadata, $this->getRequiredMetadataFields());
@@ -96,6 +132,13 @@ class DocumentValidatorTest extends UnitTestCase
         self::assertFalse($documentValidator->hasCorrectPhysicalStructure());
     }
 
+    /**
+     * Returns an array of required metadata fields for validation.
+     *
+     * @access private
+     *
+     * @return array The required metadata fields.
+     */
     private function getRequiredMetadataFields(): array
     {
         return [
@@ -103,6 +146,15 @@ class DocumentValidatorTest extends UnitTestCase
         ];
     }
 
+    /**
+     * Loads an XML file from the fixtures directory and returns it as a SimpleXMLElement.
+     *
+     * @access private
+     *
+     * @param string $file The name of the XML file to load.
+     *
+     * @return SimpleXMLElement The loaded XML as a SimpleXMLElement object.
+     */
     private function getXml(string $file): SimpleXMLElement
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/MetsDocument/' . $file);

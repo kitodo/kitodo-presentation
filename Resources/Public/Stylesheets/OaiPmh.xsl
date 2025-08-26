@@ -158,9 +158,9 @@ p.intro {
         <xsl:apply-templates select="/oai:OAI-PMH" />
         <xsl:call-template name="quicklinks"/>
         <h2><a name="moreinfo">About the XSLT</a></h2>
-        <p>An XSLT file has converted the <a href="http://www.openarchives.org">OAI-PMH 2.0</a> responses into XHTML in order to make it human-readable in a browser which supports XSLT such as Mozilla Firefox and Microsoft Internet Explorer.<br />
+        <p>An XSLT file has converted the <a href="https://www.openarchives.org">OAI-PMH 2.0</a> responses into XHTML in order to make it human-readable in a browser which supports XSLT such as Mozilla Firefox and Microsoft Internet Explorer.<br />
         The original XSLT file was created by <a href="http://www.ecs.soton.ac.uk/people/cjg">Christopher Gutteridge</a> at the University of Southampton as part of the <a href="http://software.eprints.org">GNU EPrints system</a>, and is freely redistributable under the <a href="http://www.gnu.org">GPL</a>.<br />
-        It was adapted to <a href="http://kitodo.org">Kitodo.Presentation</a> by <a href="mailto:sebastian.meyer@slub-dresden.de">Sebastian Meyer</a> at the Saxon State and University Library Dresden.</p>
+        It was adapted to <a href="https://kitodo.org/">Kitodo.Presentation</a> by <a href="mailto:sebastian.meyer@slub-dresden.de">Sebastian Meyer</a> at the Saxon State and University Library Dresden.</p>
     </body>
 </html>
 </xsl:template>
@@ -185,6 +185,8 @@ p.intro {
         <td class="value"><xsl:value-of select="oai:responseDate"/></td></tr>
         <tr><td class="key">Request URL</td>
         <td class="value"><xsl:value-of select="oai:request"/></td></tr>
+        <tr><td class="key">Request Type</td>
+        <td class="value"><xsl:value-of select="oai:request/@verb"/></td></tr>
     </table>
     <xsl:choose>
         <xsl:when test="oai:error">
@@ -195,7 +197,6 @@ p.intro {
             </div>
         </xsl:when>
         <xsl:otherwise>
-            <p>Request was of type <xsl:value-of select="oai:request/@verb"/>.</p>
             <div class="results">
                 <xsl:apply-templates select="oai:Identify" />
                 <xsl:apply-templates select="oai:GetRecord"/>

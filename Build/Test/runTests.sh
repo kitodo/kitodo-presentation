@@ -6,8 +6,6 @@
 # This is read by docker compose and vars defined here are
 # used in Build/Test/docker-compose.yml
 setUpDockerComposeDotEnv() {
-    # Delete possibly existing local .env file if exists
-    [ -e .env ] && rm .env
     # Set up a new .env file for docker compose
     {
         echo "COMPOSE_PROJECT_NAME=dlf_testing"
@@ -50,6 +48,12 @@ handleDbmsAndDriverOptions() {
                 exit 1
             fi
             ;;
+        *)
+            echo "Invalid option -a ${DATABASE_DRIVER} with -d ${DBMS}" >&2
+            echo >&2
+            echo "call \".Build/Test/runTests.sh -h\" to display help and valid options" >&2
+            exit 1
+            ;;
     esac
 }
 
@@ -65,7 +69,7 @@ a recent docker compose (tested >=2.27.1) is needed.
 
 Usage: $0 [options] [file]
 
-No arguments: Run all unit tests with PHP 7.4
+No arguments: Run all unit tests with PHP 8.1
 
 Options:
     -s <...>
@@ -74,7 +78,7 @@ Options:
             - functional: PHP functional tests
             - unit (default): PHP unit tests
 
-    -t <|11.5|12.4>
+    -t <11.5|12.4>
         Only with -s composerInstall
         Specifies which TYPO3 version to install. When unset, installs either the packages from
         composer.lock, or the latest version otherwise (default behavior of "composer install").
@@ -97,34 +101,28 @@ Options:
             - mariadb (default): use mariadb
             - mysql: use MySQL server
 
-    -i <10.1|10.2|10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10>
+    -i <10.2|10.3|10.4|10.5|10.6|10.11>
         Only with -d mariadb
         Specifies on which version of mariadb tests are performed
-            - 10.1
             - 10.2
             - 10.3 (default)
             - 10.4
             - 10.5
             - 10.6
-            - 10.7
-            - 10.8
-            - 10.9
-            - 10.10
+            - 10.11
 
-    -j <5.5|5.6|5.7|8.0>
+    -j <5.7|8.0>
         Only with -d mysql
         Specifies on which version of mysql tests are performed
-            - 5.5 (default)
-            - 5.6
             - 5.7
-            - 8.0
+            - 8.0 (default)
 
-    -p <7.4|8.0|8.1|8.2>
+    -p <8.1|8.2|8.3|8.4>
         Specifies the PHP minor version to be used
-            - 7.4: (default) use PHP 7.4
-            - 8.0: use PHP 8.0
-            - 8.1: use PHP 8.1
-            - 8.2: use PHP 8.2 (note that xdebug is currently not available for PHP8.2)
+            - 8.1: use PHP 8.1 (default)
+            - 8.2: use PHP 8.2
+            - 8.3: use PHP 8.3
+            - 8.4: use PHP 8.4
 
     -e "<phpunit options>"
         Only with -s functional|functionalDeprecated|unit|unitDeprecated|unitRandom|acceptance
@@ -180,7 +178,7 @@ fi
 TEST_SUITE="unit"
 TYPO3_VERSION=""
 DBMS="mariadb"
-PHP_VERSION="7.4"
+PHP_VERSION="8.1"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
 SERVER_PORT=8000
@@ -189,7 +187,7 @@ SCRIPT_VERBOSE=0
 PHPUNIT_WATCH=0
 DATABASE_DRIVER=""
 MARIADB_VERSION="10.3"
-MYSQL_VERSION="5.5"
+MYSQL_VERSION="8.0"
 
 # Option parsing
 # Reset in case getopts has been used previously in the shell
@@ -213,7 +211,7 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
             ;;
         i)
             MARIADB_VERSION=${OPTARG}
-            if ! [[ ${MARIADB_VERSION} =~ ^(10.2|10.3|10.4|10.5|10.6|10.11)$ ]]; then
+            if ! [[ ${MARIADB_VERSION} =~ ^(10.3|10.4|10.5|10.6|10.11)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
@@ -225,7 +223,7 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2|8.3)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2|8.3|8.4)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
@@ -251,10 +249,7 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
         v)
             SCRIPT_VERBOSE=1
             ;;
-        \?)
-            INVALID_OPTIONS+=("${OPTARG}")
-            ;;
-        :)
+        *)
             INVALID_OPTIONS+=("${OPTARG}")
             ;;
     esac
@@ -264,14 +259,14 @@ done
 if [ ${#INVALID_OPTIONS[@]} -ne 0 ]; then
     echo "Invalid option(s):" >&2
     for I in "${INVALID_OPTIONS[@]}"; do
-        echo "-"${I} >&2
+        echo "-${I}" >&2
     done
     echo >&2
     echo "call \".Build/Test/runTests.sh -h\" to display help and valid options"
     exit 1
 fi
 
-# Move "7.4" to "php74", the latter is the docker container name
+# Move "8.x" to "php8x", the latter is the docker container name
 DOCKER_PHP_IMAGE=$(echo "php${PHP_VERSION}" | sed -e 's/\.//')
 
 # Set $1 to first mass argument, this is the optional test file or test directory to execute
@@ -362,5 +357,5 @@ fi
 echo "###########################################################################" >&2
 echo "" >&2
 
-# Exit with code of test suite - This script return non-zero if the executed test failed.
-exit $SUITE_EXIT_CODE
+# Exit with code of test suite - This script returns non-zero if the executed test failed.
+exit "$SUITE_EXIT_CODE"

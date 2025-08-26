@@ -25,6 +25,8 @@ use Kitodo\Dlf\Domain\Model\Library;
 use Kitodo\Dlf\Validation\DocumentValidator;
 use Symfony\Component\Console\Command\Command;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -128,6 +130,8 @@ class BaseCommand extends Command
      */
     protected function initializeRepositories(int $storagePid): void
     {
+        $request = (new ServerRequest())->withAttribute("applicationType", SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $this->configurationManager->setRequest($request);
         $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
         $this->configurationManager->setConfiguration($frameworkConfiguration);
@@ -177,10 +181,10 @@ class BaseCommand extends Command
             ->where(
                 $queryBuilder->expr()->eq(
                     'pid',
-                    $queryBuilder->createNamedParameter((int) $pageId, Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
 
         while ($record = $result->fetchAssociative()) {
             $solrCores[$record['index_name']] = $record['uid'];
@@ -206,53 +210,55 @@ class BaseCommand extends Command
             return false;
         }
 
-        $doc->cPid = $this->storagePid;
+        $doc->configPid = $this->storagePid;
 
-        $metadata = $doc->getToplevelMetadata($this->storagePid);
+        $metadata = $doc->getToplevelMetadata();
         $validator = new DocumentValidator($metadata, explode(',', $this->extConf['general']['requiredMetadataFields']));
 
         if ($validator->hasAllMandatoryMetadataFields()) {
             // set title data
-            $document->setTitle($metadata['title'][0] ? : '');
-            $document->setTitleSorting($metadata['title_sorting'][0] ? : '');
-            $document->setPlace(implode('; ', $metadata['place']));
-            $document->setYear(implode('; ', $metadata['year']));
-            $document->setAuthor($this->getAuthors($metadata['author']));
-            $document->setThumbnail($doc->thumbnail ? : '');
-            $document->setMetsLabel($metadata['mets_label'][0] ? : '');
-            $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ? : '');
+            $document->setTitle($metadata['title'][0] ?? '');
+            $document->setTitleSorting($metadata['title_sorting'][0] ?? '');
+            $document->setPlace(implode('; ', $metadata['place'] ?? []));
+            $document->setYear(implode('; ', $metadata['year'] ?? []));
+            $document->setAuthor($this->getAuthors($metadata['author'] ?? []));
+            $document->setThumbnail($doc->thumbnail ?? '');
+            $document->setMetsLabel($metadata['mets_label'][0] ?? '');
+            $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ?? '');
 
-            $structure = $this->structureRepository->findOneByIndexName($metadata['type'][0]);
-            $document->setStructure($structure);
+            $structure = $this->structureRepository->findOneBy([ 'indexName' => $metadata['type'][0] ]);
+            if ($structure !== null) {
+                $document->setStructure($structure);
+            }
 
             if (is_array($metadata['collection'])) {
                 $this->addCollections($document, $metadata['collection']);
             }
 
             // set identifiers
-            $document->setProdId($metadata['prod_id'][0] ? : '');
-            $document->setOpacId($metadata['opac_id'][0] ? : '');
-            $document->setUnionId($metadata['union_id'][0] ? : '');
+            $document->setProdId($metadata['prod_id'][0] ?? '');
+            $document->setOpacId($metadata['opac_id'][0] ?? '');
+            $document->setUnionId($metadata['union_id'][0] ?? '');
 
-            $document->setRecordId($metadata['record_id'][0]);
-            $document->setUrn($metadata['urn'][0] ? : '');
-            $document->setPurl($metadata['purl'][0] ? : '');
-            $document->setDocumentFormat($metadata['document_format'][0] ? : '');
+            $document->setRecordId($metadata['record_id'][0] ?? '');
+            $document->setUrn($metadata['urn'][0] ?? '');
+            $document->setPurl($metadata['purl'][0] ?? '');
+            $document->setDocumentFormat($metadata['document_format'][0] ?? '');
 
             // set access
-            $document->setLicense($metadata['license'][0] ? : '');
-            $document->setTerms($metadata['terms'][0] ? : '');
-            $document->setRestrictions($metadata['restrictions'][0] ? : '');
-            $document->setOutOfPrint($metadata['out_of_print'][0] ? : '');
-            $document->setRightsInfo($metadata['rights_info'][0] ? : '');
+            $document->setLicense($metadata['license'][0] ?? '');
+            $document->setTerms($metadata['terms'][0] ?? '');
+            $document->setRestrictions($metadata['restrictions'][0] ?? '');
+            $document->setOutOfPrint($metadata['out_of_print'][0] ?? '');
+            $document->setRightsInfo($metadata['rights_info'][0] ?? '');
             $document->setStatus(0);
 
-            $this->setOwner($metadata['owner'][0]);
+            $this->setOwner($metadata['owner'][0] ?? '');
             $document->setOwner($this->owner);
 
             // set volume data
-            $document->setVolume($metadata['volume'][0] ? : '');
-            $document->setVolumeSorting($metadata['volume_sorting'][0] ? : $metadata['mets_order'][0] ? : '');
+            $document->setVolume($metadata['volume'][0] ?? '');
+            $document->setVolumeSorting($metadata['volume_sorting'][0] ?? $metadata['mets_order'][0] ?? '');
 
             // Get UID of parent document.
             if ($document->getDocumentFormat() === 'METS') {
@@ -292,10 +298,10 @@ class BaseCommand extends Command
 
         if ($doc !== null && !empty($doc->parentHref)) {
             // find document object by record_id of parent
-            $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid]);
+            $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid], true);
 
             if ($parent->recordId) {
-                $parentDocument = $this->documentRepository->findOneByRecordId($parent->recordId);
+                $parentDocument = $this->documentRepository->findOneBy([ 'recordId' => $parent->recordId ]);
 
                 if ($parentDocument === null) {
                     // create new Document object
@@ -333,13 +339,32 @@ class BaseCommand extends Command
     private function addCollections(Document &$document, array $collections): void
     {
         foreach ($collections as $collection) {
-            $documentCollection = $this->collectionRepository->findOneByIndexName($collection);
+            $documentCollection = $this->collectionRepository->findOneBy([ 'indexName' => $collection ]);
             if (!$documentCollection) {
                 // create new Collection object
                 $documentCollection = GeneralUtility::makeInstance(Collection::class);
                 $documentCollection->setIndexName($collection);
                 $documentCollection->setLabel($collection);
-                $documentCollection->setOaiName((!empty($this->extConf['general']['publishNewCollections']) ? Helper::getCleanString($collection) : ''));
+                $setSpec = '';
+                if (!empty($this->extConf['general']['publishNewCollections'])) {
+                    // setSpec only allows unreserved characters (rfc2396).
+                    // alnum | "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
+                    // Here we are a little bit more restrictive because
+                    // some more unreserved characters are not allowed.
+                    // Convert whitespaces to dash.
+                    $setSpec = $collection;
+                    $setSpec = preg_replace('/[\s]/', '-', $setSpec);
+                    // Remove multiple dashes.
+                    $setSpec = preg_replace('/[-]{2,}/', '-', $setSpec);
+                    // Remove undesired characters.
+                    $setSpec = preg_replace('/[^\w:-]/', '', $setSpec);
+                    // A hierarchical setSpec consists of two or more
+                    // normal setSpec which are separated by colons.
+                    // Remove colons which don't separate hierarchical setSpec entries.
+                    $setSpec = trim($setSpec, ':');
+                    $setSpec = preg_replace('/:{2,}/', ':', $setSpec);
+                }
+                $documentCollection->setOaiName($setSpec);
                 $documentCollection->setIndexSearch('');
                 $documentCollection->setDescription('');
                 // add to CollectionRepository
@@ -364,10 +389,11 @@ class BaseCommand extends Command
      */
     private function getAuthors(array $metadataAuthor): string
     {
-        // Remove appended "valueURI" from authors' names for storing in database.
+        // Get only authors' names for storing in database.
         foreach ($metadataAuthor as $i => $author) {
-            $splitName = explode(pack('C', 31), $author);
-            $metadataAuthor[$i] = $splitName[0];
+            if (is_array($author)) {
+                $metadataAuthor[$i] = $author['name'];
+            }
         }
 
         $authors = '';
@@ -406,7 +432,7 @@ class BaseCommand extends Command
         if (empty($this->owner)) {
             // owner is not set set but found by metadata --> take it or take default library
             $owner = $owner ? : 'default';
-            $this->owner = $this->libraryRepository->findOneByIndexName($owner);
+            $this->owner = $this->libraryRepository->findOneBy([ 'indexName' => $owner ]);
             if (empty($this->owner)) {
                 // create library
                 $this->owner = GeneralUtility::makeInstance(Library::class);

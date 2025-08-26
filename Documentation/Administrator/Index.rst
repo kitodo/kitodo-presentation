@@ -17,10 +17,20 @@ Administrator Manual
    :depth: 2
 
 
-
 ************
 Installation
 ************
+
+Make sure you have TYPO3 and Apache Solr already running.
+
+a. Get the latest release ("jar" file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.9.1 is the minimum version number. Make sure to pick the right file for Solr 8 or 9 respectively.
+
+b. Copy the jar file (e.g. `solr-ocrhighlighting-0.9.1.jar`) to the `modules/ocrsearch/lib/` directory of your Apache Solr.
+
+c. Copy the `schema.xml` and `solrconfig.xml` from `Configuration/ApacheSolr/configsets/dlf/conf/` to `$SOLR_HOME/configsets/dlf/`.
+
+d. Restart Solr.
+
 
 Composer Mode
 =============
@@ -35,30 +45,13 @@ Please run the following commands in your webroot where the TYPO3 :file:`compose
 
    .. code-block:: shell
 
-      composer require kitodo/presentation:^5
+      composer require kitodo/presentation
 
 #. Install and Activate the Extension
 
    .. code-block:: shell
 
       ./vendor/typo3 extension:activate dlf
-
-
-Classic Mode
-============
-
-However, there are two options to install the required packages solarium/solarium and symfony/event-dispatcher in non-composer mode:
-
-a. Run the command :php:`composer update` within the directory of the extension.
-   All required packages are downloaded automatically to the vendor subdirectory.
-
-b. Download the required packages manually to vendor/solarium/solarium and vendor/symfony/event-dispatcher.
-   Please check the require sections in :file:`composer.json` of the extension,
-   solarium and event-dispatcher to download and install matching versions.
-
-After the installation of the packages in non-composer mode you have to deactivate
-and (re-)activate the extension in the extension manager to trigger the TYPO3
-autoloader to rebuild the classmap.
 
 
 *******
@@ -70,7 +63,7 @@ This section contains version specific instructions on upgrading an existing Kit
 Version 3.3 -> 4.0
 ==================
 
-Upgrade-Wizards
+Upgrade Wizards
 ---------------
 
 There are two upgrade wizards available. If you upgrade an existing installation, you should use them. Without, you have to
@@ -86,7 +79,7 @@ Set the Storage Pid
 -------------------
 
 The Kitodo.Presentation configuration folder must be set by TypoScript constant `plugin.tx_dlf.persistence.storagePid` now.
-This setting is available for all plugins in the page tree. The plugin specific `pages` has been removed.
+This setting is available for all plugins in the page tree. The plugin specific constant `pages` has been removed.
 
 Migrate Plugin Settings
 -----------------------
@@ -211,24 +204,27 @@ f. Reindex all documents. This can be done by the kitodo:reindex CLI command wit
 Version 5.0 -> 5.1
 ==================
 
-Version 5.1 supports Solr 9 (9.4+) now, a revised configuration for Solr 8 (8.11.2) is included and support for Solr 7 and earlier is dropped.
+Version 5.1 supports Apache Solr 9 (9.4+) now, a revised configuration for Apache Solr 8 (8.11+) is included and support for Apache Solr 7 and earlier is dropped.
 
-Steps to Upgrade to Solr 9
+Steps to Upgrade to Solr 9.4+
 ----------------
 
-a. Get the latest release ("jar"-file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.8.0 is the minimum version number. Make sure to pick the right file for Solr 9.
-b. Copy the jar-file (e.g. "solr-ocrhighlighting-0.8.0.jar") to the modules/ocrsearch/lib/ directory of your Solr.
+a. Get the latest release ("jar"-file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.9.1 is the minimum version number. Make sure to pick the right file for Solr 9.
+b. Copy the jar-file (e.g. "solr-ocrhighlighting-0.9.1.jar") to the modules/ocrsearch/lib/ directory of your Solr.
 c. Copy the updated schema.xml and solrconfig.xml to your Solr configsets in $SOLR_HOME/configsets/dlf/
-e. Restart Solr.
-f. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
+d. Restart Solr.
+e. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
 
-Steps to Upgrade to Solr 8.11.2
+Steps to Upgrade to Solr 8.11+
 ----------------
 
 a. Copy the updated schema.xml and solrconfig_8.11.2.xml to your Solr configsets in $SOLR_HOME/configsets/dlf/
 b. Rename solrconfig_8.11.2.xml in $SOLR_HOME/configsets/dlf/ to solrconfig.xml
-e. Restart Solr.
-f. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
+c. Restart Solr.
+d. Reindex all documents. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
+
+Furthermore version 5.1 supports the use of Solr Managed Schemas to update the schemas automatically during the update of the extension.
+To use this feature you have to change the schemaFactory within solrconfig.xml from "ClassicIndexSchemaFactory" to "ManagedIndexSchemaFactory".
 
 *******
 Logging

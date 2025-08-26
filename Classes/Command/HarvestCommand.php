@@ -13,9 +13,9 @@
 namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -118,7 +118,7 @@ class HarvestCommand extends BaseCommand
 
         if ($this->storagePid == 0) {
             $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         if (
@@ -139,15 +139,15 @@ class HarvestCommand extends BaseCommand
                 }
                 if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return BaseCommand::FAILURE;
+                    return Command::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return BaseCommand::FAILURE;
+                    return Command::FAILURE;
                 }
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
 
         if (MathUtility::canBeInterpretedAsInteger($input->getOption('lib'))) {
@@ -158,11 +158,11 @@ class HarvestCommand extends BaseCommand
             $baseUrl = $this->owner->getOaiBase();
         } else {
             $io->error('ERROR: Required parameter --lib|-l is not a valid UID.');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         }
         if (!GeneralUtility::isValidUrl($baseUrl)) {
             $io->error('ERROR: No valid OAI Base URL set for library with given UID ("' . $input->getOption('lib') . '").');
-            return BaseCommand::FAILURE;
+            return Command::FAILURE;
         } else {
             try {
                 $oai = Endpoint::build($baseUrl);
@@ -204,7 +204,7 @@ class HarvestCommand extends BaseCommand
             }
             if (empty($set)) {
                 $io->error('ERROR: OAI interface does not provide a set with given setSpec ("' . $input->getOption('set') . '").');
-                return BaseCommand::FAILURE;
+                return Command::FAILURE;
             }
         }
 
@@ -240,7 +240,7 @@ class HarvestCommand extends BaseCommand
             }
 
             if ($doc->recordId) {
-                $document = $this->documentRepository->findOneByRecordId($doc->recordId);
+                $document = $this->documentRepository->findOneBy([ 'recordId' => $doc->recordId ]);
             }
 
             if ($document === null) {
@@ -267,7 +267,7 @@ class HarvestCommand extends BaseCommand
 
         $io->success('All done!');
 
-        return BaseCommand::SUCCESS;
+        return Command::SUCCESS;
     }
 
     /**

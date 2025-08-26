@@ -12,7 +12,7 @@
 namespace Kitodo\Dlf\Task;
 
 use Kitodo\Dlf\Common\Helper;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
@@ -367,16 +367,16 @@ class BaseTask extends AbstractTask
     }
 
     /**
-     * Generates and adds flash messages based on a string seperated by PHP_EOL.
+     * Generates and adds flash messages based on a string separated by PHP_EOL.
      *
      * @access protected
      *
-     * @param string $message Messages seperated by PHP_EOL
-     * @param int $severity
+     * @param string $message Messages separated by PHP_EOL
+     * @param ContextualFeedbackSeverity $severity
      *
      * @return void
      */
-    protected function outputFlashMessages(string $message, int $severity): void
+    protected function outputFlashMessages(string $message, ContextualFeedbackSeverity $severity): void
     {
         $messages = explode(PHP_EOL, $message);
 
@@ -385,10 +385,14 @@ class BaseTask extends AbstractTask
                 continue;
             }
 
+            if ($severity !== ContextualFeedbackSeverity::ERROR) {
+                $severity = ContextualFeedbackSeverity::OK;
+            }
+
             Helper::addMessage(
                 $message,
                 '',
-                $severity == FlashMessage::ERROR ? FlashMessage::ERROR : FlashMessage::OK,
+                $severity,
                 true,
                 'core.template.flashMessages'
             );

@@ -116,15 +116,15 @@ class MetadataController extends AbstractController
         $this->useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
 
         $metadata = $this->getMetadata();
-        $topLevelId = $this->currentDocument->toplevelId;
+        $topLevelId = $this->currentDocument->getToplevelId();
         // Get toplevel metadata?
         if (!$metadata || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $topLevelId)) {
             $data = [];
             if ($this->useOriginalIiifManifestMetadata) {
                 // @phpstan-ignore-next-line
-                $data = $this->currentDocument->getManifestMetadata($topLevelId, $this->settings['storagePid']);
+                $data = $this->currentDocument->getManifestMetadata($topLevelId);
             } else {
-                $data = $this->currentDocument->getToplevelMetadata($this->settings['storagePid']);
+                $data = $this->currentDocument->getToplevelMetadata();
             }
             $data['_id'] = $topLevelId;
             array_unshift($metadata, $data);
@@ -163,36 +163,16 @@ class MetadataController extends AbstractController
                 ]
             );
 
-            foreach ($metadata as $i => $section) {
-
-                foreach ($section as $name => $value) {
-                    // NOTE: Labels are to be escaped in Fluid template
-
-                    $metadata[$i][$name] = is_array($value)
-                        ? $value
-                        : explode($this->settings['separator'], $value);
-
-                    // PHPStan error
-                    // I don't understand what this code does, so I take it away until author can fix it
-                    /*if ($metadata[$i][$name][0] === 'Array') {
-                        $metadata[$i][$name] = [];
-                        foreach ($value as $subKey => $subValue) {
-                            $metadata[$i][$name][$subKey] = $subValue;
-                        }
-                    }*/
-
-                    $this->parseMetadata($i, $name, $value, $metadata);
-
-                    if (is_array($metadata[$i][$name])) {
-                        $metadata[$i][$name] = array_values(array_filter($metadata[$i][$name], function ($metadataValue) {
-                            return !empty($metadataValue);
-                        }));
-                    }
+            foreach ($metadata as $sectionKey => $sectionValue) {
+                foreach ($sectionValue as $metadataName => $metadataValue) {
+                    $this->replaceMetadataOfSection($sectionKey, $metadataName, $metadataValue, $metadata);
                 }
             }
 
+            $metadata = $this->removeEmptyEntries($metadata);
+
             $this->view->assign('buildUrl', $this->buildUrlFromMetadata($metadata));
-            $this->view->assign('externalUrl', $this->buildExternalUrlFromMetadata($metadata));
+            $this->view->assign('hasExternalUrl', $this->hasExternalUrlForMetadata($metadata));
             $this->view->assign('documentMetadataSections', $metadata);
             $this->view->assign('configMetadata', $metadataResult);
             $this->view->assign('separator', $this->settings['separator']);
@@ -287,12 +267,37 @@ class MetadataController extends AbstractController
 
             foreach ($section as $name => $value) {
                 $metaConfigObjectData[$i][$name] = is_array($value)
-                    ? implode($this->settings['separator'], $value)
+                    ? $this->mergeMetadata($this->settings['separator'], $value)
                     : $value;
             }
         }
 
         return $metaConfigObjectData;
+    }
+
+    /**
+     * Implode multivalued metadata into string recursively.
+     *
+     * @access private
+     *
+     * @param string $separator Glue to put between array elements
+     * @param array $items Array with items to concatenate
+     *
+     * @return string All items concatenated and linked by separator
+     */
+    private function mergeMetadata(string $separator, array $items): string
+    {
+        $result = [];
+
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $result[] = $this->mergeMetadata($separator, $item);
+            } else {
+                $result[] = $item;
+            }
+        }
+
+        return implode($separator, $result);
     }
 
     /**
@@ -323,36 +328,37 @@ class MetadataController extends AbstractController
     }
 
     /**
-     * Builds external URLs array for given metadata array.
+     * Checks and marks metadata with external URLs array for given metadata array.
      *
      * @access private
      *
      * @param array $metadata The metadata array
      *
-     * @return array external URLs
+     * @return array of true values for metadata sections with external URLs
      */
-    private function buildExternalUrlFromMetadata(array $metadata): array
+    private function hasExternalUrlForMetadata(array $metadata): array
     {
-        $externalUrl = [];
+        $hasExternalUrl = [];
 
         foreach ($metadata as $i => $section) {
             foreach ($section as $name => $value) {
-                if (($name == 'author' || $name == 'holder') && !empty($value) && !empty($value[0]['url'])) {
-                    $externalUrl[$i][$name]['externalUrl'] = $value[0];
+                if (($name == 'author' || $name == 'holder') && !empty($value)) {
+                    foreach ($value as $entry) {
+                        if (!empty($entry['url'])) {
+                            $hasExternalUrl[$i][$name][] = true;
+                        }
+                    }
                 } elseif (($name == 'geonames' || $name == 'wikidata' || $name == 'wikipedia') && !empty($value)) {
-                    $externalUrl[$i][$name]['externalUrl'] = [
-                        'name' => $value[0],
-                        'url' => $value[0]
-                    ];
+                    $hasExternalUrl[$i][$name][] = true;
                 }
             }
         }
 
-        return $externalUrl;
+        return $hasExternalUrl;
     }
 
     /**
-     * Parses metadata.
+     * Replace metadata of section.
      *
      * @access private
      *
@@ -363,8 +369,13 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseMetadata(int $i, string $name, $value, array &$metadata) : void
+    private function replaceMetadataOfSection(int $i, string $name, $value, array &$metadata): void
     {
+        // if the value has subentries, do not replace the values
+        if (is_array($value) && !empty($value) && is_array($value[0])) {
+            return;
+        }
+
         if ($name == 'title') {
             // Get title of parent document if needed.
             $this->parseParentTitle($i, $value, $metadata);
@@ -436,7 +447,7 @@ class MetadataController extends AbstractController
      */
     private function parseType(int $i, array &$metadata) : void
     {
-        $structure = $this->structureRepository->findOneByIndexName($metadata[$i]['type'][0]);
+        $structure = $this->structureRepository->findOneBy([ 'indexName' => $metadata[$i]['type'][0] ]);
         if ($structure) {
             $metadata[$i]['type'][0] = $structure->getLabel();
         }
@@ -457,7 +468,7 @@ class MetadataController extends AbstractController
     {
         $j = 0;
         foreach ($value as $entry) {
-            $collection = $this->collectionRepository->findOneByIndexName($entry);
+            $collection = $this->collectionRepository->findOneBy([ 'indexName' => $entry ]);
             if ($collection) {
                 $metadata[$i]['collection'][$j] = $collection->getLabel() ? : '';
                 $j++;
@@ -478,11 +489,13 @@ class MetadataController extends AbstractController
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
             $ids = [];
-            $page = $this->currentDocument->physicalStructure[$this->requestData['page']];
-            if (!empty($page) && !empty($this->currentDocument->smLinks['p2l'][$page])) {
-                foreach ($this->currentDocument->smLinks['p2l'][$page] as $logId) {
-                    $count = $this->currentDocument->getStructureDepth($logId);
-                    $ids[$count][] = $logId;
+            if (!empty($this->currentDocument->physicalStructure) && isset($this->requestData['page'])) {
+                $page = $this->currentDocument->physicalStructure[$this->requestData['page']];
+                if (!empty($page) && !empty($this->currentDocument->smLinks['p2l'][$page])) {
+                    foreach ($this->currentDocument->smLinks['p2l'][$page] as $logId) {
+                        $count = $this->currentDocument->getStructureDepth($logId);
+                        $ids[$count][] = $logId;
+                    }
                 }
             }
             ksort($ids);
@@ -517,13 +530,33 @@ class MetadataController extends AbstractController
         foreach ($id as $sid) {
             if ($this->useOriginalIiifManifestMetadata) {
                 // @phpstan-ignore-next-line
-                $data = $this->currentDocument->getManifestMetadata($sid, $this->settings['storagePid']);
+                $data = $this->currentDocument->getManifestMetadata($sid);
             } else {
-                $data = $this->currentDocument->getMetadata($sid, $this->settings['storagePid']);
+                $data = $this->currentDocument->getMetadata($sid);
             }
             if (!empty($data)) {
                 $data['_id'] = $sid;
                 $metadata[] = $data;
+            }
+        }
+        return $metadata;
+    }
+
+    /**
+     * Recursively remove empty entries.
+     *
+     * @param $metadata
+     * @return array
+     */
+    private function removeEmptyEntries($metadata): array
+    {
+        foreach ($metadata as $key => $value) {
+            if (is_array($value)) {
+                $metadata[$key] = $this->removeEmptyEntries($value);
+            }
+
+            if (empty($metadata[$key])) {
+                unset($metadata[$key]);
             }
         }
         return $metadata;

@@ -13,19 +13,31 @@
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class PageViewProxyDisabledTest extends FunctionalTestCase
 {
-    protected $disableJsonWrappedResponse = true;
-
-    protected function queryProxy(array $query, string $method = 'GET')
+    /**
+     * Query the page view proxy with the given parameters.
+     *
+     * @access protected
+     *
+     * @param array $query The query parameters to send
+     * @param string $method The HTTP method to use (default: 'GET')
+     *
+     * @return ResponseInterface
+     *
+     * @access protected
+     */
+    protected function queryProxy(array $query, string $method = 'GET'): ResponseInterface
     {
-        $query['eID'] = 'tx_dlf_pageview_proxy';
+        $request = (new InternalRequest($this->baseUrl))->withQueryParameters(
+            array_merge([ 'eID' => 'tx_dlf_pageview_proxy' ], $query)
+        )->withMethod($method);
 
-        return $this->httpClient->request($method, '', [
-            'query' => $query,
-        ]);
+        return $this->executeInternalRequest($request);
     }
 
     /**

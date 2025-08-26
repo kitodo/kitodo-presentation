@@ -126,6 +126,13 @@ class TableOfContentsController extends AbstractController
         // Set "title", "volume", "type" and "pagination" from $entry array.
         $entryArray['title'] = $this->setTitle($entry);
         $entryArray['volume'] = $entry['volume'];
+        if (isset($entry['videoChapter']) && $entry['videoChapter'] !== null) {
+            // Now consumers such as `slub_digitalcollections` may intercept clicks on these links
+            // and use the timecode to directly jump to that video position
+            // NOTE: Remember that the URL also contains parameters such as `tx_dlf[page]` and `cHash`
+            // TODO: For simplicity, this currently assumes all chapters are within the same video file
+            $entryArray['section'] = 'timecode=' . $entry['videoChapter']['timecode'] . ';fileIds=' . $entry['videoChapter']['fileIdsJoin'];
+        }
         $entryArray['year'] = $entry['year'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
         $entryArray['type'] = $this->getTranslatedType($entry['type']);
@@ -134,10 +141,10 @@ class TableOfContentsController extends AbstractController
         $entryArray['doNotLinkIt'] = 1;
         $entryArray['ITEM_STATE'] = 'NO';
 
-        $this->buildMenuLinks($entryArray, $entry['id'], $entry['points'] ?? null, $entry['targetUid'] ?? null);
+        $this->buildMenuLinks($entryArray, $entry['id'] ?? null, $entry['points'] ?? null, $entry['targetUid'] ?? null);
 
         // Set "ITEM_STATE" to "CUR" if this entry points to current page.
-        if (in_array($entry['id'], $this->activeEntries)) {
+        if (in_array($entry['id'] ?? null, $this->activeEntries)) {
             $entryArray['ITEM_STATE'] = 'CUR';
         }
         // Build sub-menu if available and called recursively.
@@ -146,11 +153,13 @@ class TableOfContentsController extends AbstractController
             && !empty($entry['children'])
         ) {
             // Build sub-menu only if one of the following conditions apply:
+            // 0. Configuration says that the full menu should be rendered
             // 1. Current menu node is in rootline
             // 2. Current menu node points to another file
             // 3. Current menu node has no corresponding images
             if (
-                $entryArray['ITEM_STATE'] == 'CUR'
+                (isset($this->settings['showFull']) && $this->settings['showFull'] == 1)
+                || $entryArray['ITEM_STATE'] == 'CUR'
                 || (array_key_exists('points', $entry) && is_string($entry['points']))
                 || empty($this->document->getCurrentDocument()->smLinks['l2p'][$entry['id']])
             ) {
@@ -263,16 +272,18 @@ class TableOfContentsController extends AbstractController
      */
     private function getAllLogicalUnits(): void
     {
-        $page = $this->requestData['page'];
         $physicalStructure = $this->document->getCurrentDocument()->physicalStructure;
-        if (
-            !empty($page)
+
+        if (isset($this->requestData['page']) &&
+            !empty($this->requestData['page'])
             && !empty($physicalStructure)
         ) {
+            $page = $this->requestData['page'];
             $structureMapLinks = $this->document->getCurrentDocument()->smLinks;
+
             $this->activeEntries = array_merge(
-                (array) $structureMapLinks['p2l'][$physicalStructure[0]],
-                (array) $structureMapLinks['p2l'][$physicalStructure[$page]]
+                (array) ($structureMapLinks['p2l'][$physicalStructure[0]] ?? []),
+                (array) ($structureMapLinks['p2l'][$physicalStructure[$page]] ?? [])
             );
             if (
                 !empty($this->requestData['double'])
@@ -280,7 +291,7 @@ class TableOfContentsController extends AbstractController
             ) {
                 $this->activeEntries = array_merge(
                     $this->activeEntries,
-                    (array) $structureMapLinks['p2l'][$physicalStructure[$page + 1]]
+                    (array) ($structureMapLinks['p2l'][$physicalStructure[$page + 1]] ?? [])
                 );
             }
         }
@@ -346,6 +357,7 @@ class TableOfContentsController extends AbstractController
                             $title .= $entry[$field] . ' ';
                         }
                     }
+
                     return trim($title);
                 }
             }

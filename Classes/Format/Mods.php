@@ -74,6 +74,8 @@ class Mods implements MetadataInterface
         $this->getAuthors();
         $this->getHolders();
         $this->getPlaces();
+        $this->getProdPlaces();
+        $this->getNamePersonal();
         $this->getYears();
 
         $metadata = $this->metadata;
@@ -179,9 +181,13 @@ class Mods implements MetadataInterface
             ksort($name);
             $this->metadata['author'][$i] = trim(implode(', ', $name));
         }
-        // Append "valueURI" to name using Unicode unit separator.
+
         if (!empty($authors[$i]->getValueURI())) {
-            $this->metadata['author'][$i] .= pack('C', 31) . $authors[$i]->getValueURI();
+            $displayName = $this->metadata['author'][$i];
+            $this->metadata['author'][$i] = [
+                'name' => $displayName,
+                'url' => (string) $authors[$i]->getValueURI()
+            ];
         }
     }
 
@@ -265,9 +271,13 @@ class Mods implements MetadataInterface
     private function getHolderFromXml(array $holders, int $i): void
     {
         $this->getHolderFromXmlDisplayForm($holders, $i);
-        // Append "valueURI" to name using Unicode unit separator.
+
+        $displayName = $this->metadata['holder'][$i];
         if (!empty($holders[$i]->getValueURI())) {
-            $this->metadata['holder'][$i] .= pack('C', 31) . $holders[$i]->getValueURI();
+            $this->metadata['holder'][$i] = [
+                'name' => $displayName,
+                'url' => (string) $holders[$i]->getValueURI()
+            ];
         }
     }
 
@@ -329,6 +339,76 @@ class Mods implements MetadataInterface
                     $this->metadata['place_sorting'][0] = preg_replace('/[[:punct:]]/', '', $place);
                 }
             }
+        }
+    }
+
+    /**
+     * Get MODS production places to allow linking valueURI
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function getProdPlaces(): void
+    {
+        $relatedItems = $this->modsReader->getRelatedItems('[@type="original"]');
+        foreach ($relatedItems as $relatedItem) {
+            $originInfos = $relatedItem->getOriginInfos('[@eventType="production"]');
+            foreach ($originInfos as $originInfo) {
+                foreach ($originInfo->getPlaces() as $prodPlaces) {
+                    foreach ($prodPlaces->getPlaceTerms() as $prodPlaceTerm) {
+                        $prodPlaceMd = $prodPlaceTerm->getValue();
+
+                        if (!empty($prodPlaceTerm->getValueURI())) {
+                            $prodPlaceMd .= pack('C', 31) . $prodPlaceTerm->getValueURI();
+                        }
+
+                        $this->metadata['production_place'][] = $prodPlaceMd;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get MODS personal names to allow linking valueURI
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function getNamePersonal(): void
+    {
+        $namePersonal = $this->modsReader->getNames('[@type="personal"]');
+
+        foreach ($namePersonal as $person) {
+            $roles = $person->getRoles();
+            if (empty($roles)) {
+                continue;
+            }
+            $roleCodes = $roles[0]->getRoleTerms('[@type="code" and @authority="marcrelator"]');
+            $roleTexts = $roles[0]->getRoleTerms('[@type="text"]');
+
+            if (empty($roleCodes) || empty($roleCodes[0]->getValue())) {
+                continue;
+            }
+            $roleCode = $roleCodes[0]->getValue();
+
+            $roleText = !empty($roleTexts) ? $roleTexts[0]->getValue() : '';
+
+            $displayForms = $person->getDisplayForms();
+            $personDisplayForm = !empty($displayForms) ? $displayForms[0]->getValue() : '';
+
+            $valueURI = $person->getValueURI() ?? '';
+
+            $personMd = implode(pack('C', 31), [
+                $personDisplayForm,
+                $valueURI,
+                $roleText,
+                $roleCode,
+            ]);
+
+            $this->metadata['name_personal_' . $roleCode][] = $personMd;
         }
     }
 

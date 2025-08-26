@@ -1,0 +1,26 @@
+parameters:
+  ignoreErrors:
+    - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
+    - 
+      message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController::getFromCache\(\)\.#'
+      path: ../Classes/Common/TypoScriptHelper.php
+    - 
+      message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController::releaseLocks\(\)\.#'
+      path: ../Classes/Common/TypoScriptHelper.php
+    - 
+      message: '#PHPDoc tag @var for variable \$action contains unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    - 
+      message: '#Access to constant EDIT on an unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    - 
+      message: '#Call to method equals\(\) on an unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+  level: 5
+  paths:
+    - ../Classes/
+  excludePaths:
+    - ../Classes/Controller/OaiPmhController.php
+  treatPhpDocTypesAsCertain: false

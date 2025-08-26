@@ -218,6 +218,22 @@ dlfUtils.exists = function (val) {
     return val !== undefined;
 };
 
+
+/**
+ * Escape html
+ *
+ * @param {string} html
+ * @returns {string} escaped html
+ */
+dlfUtils.escapeHtml = function(html) {
+  return html
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+};
+
 /**
  * Fetch image data for given image sources.
  *
@@ -648,14 +664,32 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
 /**
  * Search a feature collection for a feature with the given coordinates
  * @param {Array.<ol.Feature>} featureCollection
- * @param {string} coordinates
+ * @param {string} coordinates for highlighting
  * @returns {Array.<ol.Feature>|undefined}
  */
 dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, coordinates) {
     var features = [];
     featureCollection.forEach(function (ft) {
+        if (ft.get('fulltext') !== undefined) {
+            if (ft.getId() === coordinates) {
+                features.push(ft);
+            }
+        }
+    });
+    return features.length > 0 ? features : undefined;
+};
+
+/**
+ * Search a feature collection for a feature with the given word in its fulltext
+ * @param {Array.<ol.Feature>} featureCollection
+ * @param {string} word for highlighting
+ * @returns {Array.<ol.Feature>|undefined}
+ */
+dlfUtils.searchFeatureCollectionForWords = function (featureCollection, word) {
+    var features = [];
+    featureCollection.forEach(function (ft) {
         if (ft.values_.fulltext !== undefined) {
-            if (ft.values_.fulltext.includes(coordinates)) {
+            if (ft.values_.fulltext.toLowerCase().includes(word.toLowerCase())) {
                 features.push(ft);
             }
         }

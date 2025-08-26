@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Kitodo\Dlf\Domain\Model\Library;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
@@ -21,6 +22,9 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @method Library|null findByUid(int|null $uid) Get a library by its UID
+ * @method Library|null findOneBy(array $criteria) Get a library by criteria
  */
 class LibraryRepository extends Repository
 {

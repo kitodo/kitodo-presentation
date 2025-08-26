@@ -7,6 +7,11 @@ services:
   Kitodo\Dlf\:
     resource: '../Classes/*'
 
+  Kitodo\Dlf\Command\DbDocsCommand:
+    tags:
+      - name: console.command
+        command: 'kitodo:dbdocs'
+
   Kitodo\Dlf\Command\DeleteCommand:
     tags:
       - name: console.command
@@ -35,7 +40,10 @@ services:
   Kitodo\Dlf\Command\SuggestBuildCommand:
     tags:
       - name: console.command
-        command: 'kitodo:suggestBuld'
+        command: 'kitodo:suggestBuild'
+
+  Kitodo\Dlf\Common\TypoScriptHelper:
+    public: true
 
   Kitodo\Dlf\Validation\DOMDocumentValidationStack:
     autowire: false

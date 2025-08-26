@@ -16,7 +16,7 @@ services:
       - /var/lib/mysql/:rw,noexec,nosuid
 
   web:
-    image: docker.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: "${HOST_UID}:${HOST_GID}"
     stop_grace_period: 1s
     volumes:
@@ -44,7 +44,7 @@ services:
       "
 
   solr:
-    image: docker.io/solr:9
+    image: docker.io/solr:9.7
     volumes:
       - ${DLF_ROOT}/Configuration/ApacheSolr/configsets:/var/solr/data/configsets
       - ./solr/modules/ocrsearch:/opt/solr/modules/ocrsearch
@@ -58,7 +58,7 @@ services:
       "
 
   composer_install:
-    image: docker.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: "${HOST_UID}:${HOST_GID}"
     volumes:
       - ${DLF_ROOT}:${DLF_ROOT}
@@ -78,7 +78,7 @@ services:
       "
 
   functional:
-    image: docker.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     links:
       - ${DBMS}
       - web
@@ -134,7 +134,7 @@ services:
       "
 
   unit:
-    image: docker.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: "${HOST_UID}:${HOST_GID}"
     volumes:
       - ${DLF_ROOT}:${DLF_ROOT}

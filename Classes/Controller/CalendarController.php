@@ -16,6 +16,7 @@ use Generator;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
@@ -80,18 +81,11 @@ class CalendarController extends AbstractController
             return $this->htmlResponse();
         }
 
-        switch ($type) {
-            case 'newspaper':
-            case 'ephemera':
-                return $this->redirect('years', null, null, $this->requestData);
-            case 'year':
-                return $this->redirect('calendar', null, null, $this->requestData);
-            case 'issue':
-            default:
-                break;
-        }
-
-        return $this->htmlResponse();
+        return match ($type) {
+            'newspaper', 'ephemera' => new ForwardResponse('years'),
+            'year' => new ForwardResponse('calendar'),
+            default => $this->htmlResponse()
+        };
     }
 
     /**
@@ -165,7 +159,10 @@ class CalendarController extends AbstractController
         }
 
         // Get all children of anchor. This should be the year anchor documents
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('year'));
+        $documents = $this->documentRepository->getChildrenOfYearAnchor(
+            $this->document->getUid(),
+            $this->structureRepository->findOneBy([ 'indexName' => 'year' ])
+        );
 
         $years = [];
         // Process results.
@@ -286,7 +283,7 @@ class CalendarController extends AbstractController
                         $dayLinksText = [];
                         $dayLinkDiv = [];
                         $currentMonth = date('n', $currentDayTime);
-                        if (is_array($calendarIssuesByMonth[$currentMonth])) {
+                        if (array_key_exists($currentMonth, $calendarIssuesByMonth) && is_array($calendarIssuesByMonth[$currentMonth])) {
                             foreach ($calendarIssuesByMonth[$currentMonth] as $id => $day) {
                                 if ($id == date('j', $currentDayTime)) {
                                     $dayLinks = $id;
@@ -348,29 +345,17 @@ class CalendarController extends AbstractController
      */
     private function fillCalendar(array &$calendarData, int $currentDayTime, string $dayLinks, array $dayLinkDiv, int $firstDayOfWeek, int $k): void
     {
-        switch (strftime('%w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
-            case '0':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYSUN', $dayLinks, $dayLinkDiv);
-                break;
-            case '1':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYMON', $dayLinks, $dayLinkDiv);
-                break;
-            case '2':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYTUE', $dayLinks, $dayLinkDiv);
-                break;
-            case '3':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYWED', $dayLinks, $dayLinkDiv);
-                break;
-            case '4':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYTHU', $dayLinks, $dayLinkDiv);
-                break;
-            case '5':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYFRI', $dayLinks, $dayLinkDiv);
-                break;
-            case '6':
-                $this->fillDay($calendarData, $currentDayTime, 'DAYSAT', $dayLinks, $dayLinkDiv);
-                break;
-        }
+        $dayKey = match (date('w', strtotime('+ ' . $k . ' Day', $firstDayOfWeek))) {
+            '0' => 'DAYSUN',
+            '1' => 'DAYMON',
+            '2' => 'DAYTUE',
+            '3' => 'DAYWED',
+            '4' => 'DAYTHU',
+            '5' => 'DAYFRI',
+            '6' => 'DAYSAT'
+        };
+
+        $this->fillDay($calendarData, $currentDayTime, $dayKey, $dayLinks, $dayLinkDiv);
     }
 
     /**
@@ -470,7 +455,10 @@ class CalendarController extends AbstractController
      */
     private function getIssues(): Generator
     {
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
+        $documents = $this->documentRepository->getChildrenOfYearAnchor(
+            $this->document->getUid(),
+            $this->structureRepository->findOneBy([ 'indexName' => 'issue' ])
+        );
 
         // Process results.
         if ($documents->count() === 0) {
@@ -492,19 +480,21 @@ class CalendarController extends AbstractController
         $toc = $this->document->getCurrentDocument()->tableOfContents;
 
         foreach ($toc[0]['children'] as $year) {
-            foreach ($year['children'] as $month) {
-                foreach ($month['children'] as $day) {
-                    foreach ($day['children'] as $issue) {
-                        $title = $issue['label'] ?: $issue['orderlabel'];
-                        if (strtotime($title) !== false) {
-                            $title = strftime('%x', strtotime($title));
-                        }
+            if (array_key_exists('children', $year)) {
+                foreach ($year['children'] as $month) {
+                    foreach ($month['children'] as $day) {
+                        foreach ($day['children'] as $issue) {
+                            $title = $issue['label'] ?: $issue['orderlabel'];
+                            if (strtotime($title) !== false) {
+                                $title = strftime('%x', strtotime($title));
+                            }
 
-                        yield [
-                            'uid' => $issue['points'],
-                            'title' => $title,
-                            'year' => $day['orderlabel'],
-                        ];
+                            yield [
+                                'uid' => $issue['points'],
+                                'title' => $title,
+                                'year' => $day['orderlabel'],
+                            ];
+                        }
                     }
                 }
             }

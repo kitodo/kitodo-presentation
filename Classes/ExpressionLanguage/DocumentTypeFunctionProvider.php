@@ -23,7 +23,6 @@ use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 use TYPO3\CMS\Core\ExpressionLanguage\RequestWrapper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
@@ -59,16 +58,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     protected ?Document $document;
 
     /**
-     * @var ConfigurationManager
-     */
-    protected $configurationManager;
-
-    public function injectConfigurationManager(ConfigurationManager $configurationManager): void
-    {
-        $this->configurationManager = $configurationManager;
-    }
-
-    /**
      * @var DocumentRepository
      */
     protected $documentRepository;
@@ -91,9 +80,10 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     protected function initializeRepositories(int $storagePid): void
     {
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange((int) $storagePid, 0);
-        $this->configurationManager->setConfiguration($frameworkConfiguration);
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
+        $configurationManager->setConfiguration($frameworkConfiguration);
         $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
     }
 
@@ -116,7 +106,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             {
                 /** @var RequestWrapper $requestWrapper */
                 $requestWrapper = $arguments['request'];
-                $queryParams = $requestWrapper->getQueryParams();
+                $queryParams = $requestWrapper ? $requestWrapper->getQueryParams() : [];
 
                 $type = 'undefined';
 
@@ -143,15 +133,14 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
 
                 // Set PID for metadata definitions.
-                $this->document->getCurrentDocument()->cPid = $cPid;
+                $this->document->getCurrentDocument()->configPid = $cPid;
 
-                $metadata = $this->document->getCurrentDocument()->getToplevelMetadata($cPid);
+                $metadata = $this->document->getCurrentDocument()->getToplevelMetadata();
 
                 if (!empty($metadata['type'][0])
                     && !$this->isIiifManifestWithNewspaperRelatedType($metadata['type'][0])) {
                     $type = $metadata['type'][0];
                 }
-
                 return $type;
             });
     }
@@ -172,19 +161,21 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         if (!empty($requestData['id'])) {
             $this->initializeRepositories($pid);
             $doc = null;
+            $this->document = null;
             if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
                 // find document from repository by uid
                 $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id'], ['storagePid' => $pid]);
                 if ($this->document) {
-                    $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                    $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid]);
                 } else {
                     $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
                 }
             } elseif (GeneralUtility::isValidUrl($requestData['id'])) {
-                $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid], true);
+                $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid]);
+
                 if ($doc !== null) {
                     if ($doc->recordId) {
-                        $this->document = $this->documentRepository->findOneByRecordId($doc->recordId);
+                        $this->document = $this->documentRepository->findOneBy([ 'recordId' => $doc->recordId ]);
                     }
                     if (!isset($this->document)) {
                         // create new dummy Document object
@@ -199,9 +190,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 $this->document->setCurrentDocument($doc);
             }
         } elseif (!empty($requestData['recordId'])) {
-            $this->document = $this->documentRepository->findOneByRecordId($requestData['recordId']);
+            $this->document = $this->documentRepository->findOneBy([ 'recordId' => $requestData['recordId'] ]);
             if ($this->document !== null) {
-                $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid], true);
+                $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid]);
                 if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {

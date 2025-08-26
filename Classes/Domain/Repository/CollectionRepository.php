@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Domain\Repository;
 
 use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -27,6 +28,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @method Collection|null findOneBy(array $criteria) Get a collection by criteria
  */
 class CollectionRepository extends Repository
 {
@@ -57,27 +60,8 @@ class CollectionRepository extends Repository
         $constraints[] = $query->in('uid', $uids);
 
         if (count($constraints)) {
-            $query->matching($query->logicalAnd(...array_values($constraints)));
+            $query->matching($query->logicalAnd(...$constraints));
         }
-
-        return $query->execute();
-    }
-
-    /**
-     * Finds all collections
-     *
-     * @access public
-     *
-     * @param string $pages
-     *
-     * @return QueryResultInterface
-     */
-    public function getCollectionForMetadata(string $pages): QueryResultInterface
-    {
-        // Get list of collections to show.
-        $query = $this->createQuery();
-
-        $query->matching($query->equals('pid', $pages));
 
         return $query->execute();
     }
@@ -117,7 +101,7 @@ class CollectionRepository extends Repository
 
         if (count($constraints)) {
             $query->matching(
-                $query->logicalAnd(...array_values($constraints))
+                $query->logicalAnd(...$constraints)
             );
         }
 
@@ -146,27 +130,27 @@ class CollectionRepository extends Repository
 
         $where = '';
         if (!$settings['show_userdefined']) {
-            $where = $queryBuilder->expr()->eq('tx_dlf_collections.fe_cruser_id', 0);
+            $where = $queryBuilder->expr()->eq('fe_cruser_id', 0);
         }
         // For SOLR we need the index_name of the collection,
         // For DB Query we need the UID of the collection
         $result = $queryBuilder
             ->select(
-                'tx_dlf_collections.index_name AS index_name',
-                'tx_dlf_collections.uid AS uid',
-                'tx_dlf_collections.index_search as index_query'
+                'index_name',
+                'uid',
+                'index_search as index_query'
             )
             ->from('tx_dlf_collections')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_collections.pid', intval($settings['storagePid'])),
-                $queryBuilder->expr()->eq('tx_dlf_collections.oai_name',
+                $queryBuilder->expr()->eq('pid', intval($settings['storagePid'])),
+                $queryBuilder->expr()->eq('oai_name',
                     $queryBuilder->expr()->literal($set)),
                 $where,
                 Helper::whereExpression('tx_dlf_collections')
             )
             ->setMaxResults(1);
 
-        return $result->execute();
+        return $result->executeQuery();
     }
 
 }

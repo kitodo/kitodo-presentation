@@ -80,10 +80,12 @@ class DocumentValidator
      */
     public function hasAllMandatoryMetadataFields(): bool
     {
-        foreach ($this->requiredMetadataFields as $requiredMetadataField) {
-            if (empty($this->metadata[$requiredMetadataField][0])) {
-                $this->logger->error('Missing required metadata field "' . $requiredMetadataField . '".');
-                return false;
+        if ($this->metadata['is_administrative'][0]) {
+            foreach ($this->requiredMetadataFields as $requiredMetadataField) {
+                if (empty($this->metadata[$requiredMetadataField][0])) {
+                    $this->logger->error('Missing required metadata field "' . $requiredMetadataField . '".');
+                    return false;
+                }
             }
         }
         return true;

@@ -18,18 +18,24 @@ general.unhideOnIndex = 0
 general.useExternalApisForMetadata = 0
 # cat=General; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.requiredMetadataFields
 general.requiredMetadataFields = document_format,record_id
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpImages
-files.fileGrpImages = DEFAULT,MAX
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpThumbs
-files.fileGrpThumbs = THUMBS
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpDownload
-files.fileGrpDownload = DOWNLOAD
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpFulltext
-files.fileGrpFulltext = FULLTEXT
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpAudio
-files.fileGrpAudio = AUDIO
-# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.fileGrpScore
-files.fileGrpScore = SCORE
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsAudio
+files.useGroupsAudio = AUDIO
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsImage
+files.useGroupsImage = DEFAULT,MAX
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsThumbnail
+files.useGroupsThumbnail = THUMBS
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsDownload
+files.useGroupsDownload = DOWNLOAD
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsFulltext
+files.useGroupsFulltext = FULLTEXT
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsScore
+files.useGroupsScore = SCORE
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsModel
+files.useGroupsModel = DEFAULT
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsVideo
+files.useGroupsVideo = VIDEO,DEFAULT
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsWaveform
+files.useGroupsWaveform = WAVEFORM
 # cat=IIIF; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.indexAnnotations
 iiif.indexAnnotations = 0
 # cat=IIIF; type=int[1-2000]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.iiif.thumbnailWidth
