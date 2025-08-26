@@ -20,6 +20,7 @@ use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Mime\Address;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
@@ -590,12 +591,12 @@ class BasketController extends AbstractController
         // Prepare and send the message
         $mail
             // subject
-            ->setSubject(LocalizationUtility::translate('basket.mailSubject', 'dlf'))
+            ->subject(LocalizationUtility::translate('basket.mailSubject', 'dlf'))
             // Set the From address with an associative array
             ->setFrom($from)
             // Set the To addresses with an associative array
-            ->setTo([$mailObject->getMail() => $mailObject->getName()])
-            ->setBody($mailBody, 'text/html')
+            ->to(new Address($mailObject->getMail(), $mailObject->getName()))
+            ->html($mailBody)
             ->send();
 
         // create entry for action log
