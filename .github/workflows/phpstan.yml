@@ -27,5 +27,5 @@ jobs:
       - name: PHPStan Static Analysis
         uses: php-actions/phpstan@v3
         with:
-          configuration: ./.github/phpstan.neon
+          configuration: ./.github/phpstan_${{ matrix.variants.typo3 }}.neon
           path: ''

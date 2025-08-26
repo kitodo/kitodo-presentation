@@ -119,7 +119,7 @@
 	  	"@composer docs:start"
 	],
 	"phpstan": [
-		"@php vendor/bin/phpstan --configuration=\".github/phpstan.neon\""
+		"@php vendor/bin/phpstan --configuration=\".github/phpstan_13.4.neon\""
 	]
   },
   "config": {
