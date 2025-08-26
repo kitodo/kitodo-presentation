@@ -12,6 +12,12 @@ parameters:
     - 
       message: '#Call to method createSetupConfigOrFullSetup\(\) on an unknown class TYPO3\\CMS\\Core\\TypoScript\\FrontendTypoScriptFactory\.#'
       path: ../Classes/Common/TypoScriptHelper.php
+    - 
+      message: '#PHPDoc tag @var for variable \$action contains unknown class TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    - 
+      message: '#Access to constant EDIT on an unknown class TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
   level: 5
   paths:
     - ../Classes/

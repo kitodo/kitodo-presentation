@@ -12,8 +12,6 @@
 namespace Kitodo\Dlf\Task;
 
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Additional fields for index document task.
@@ -35,10 +33,8 @@ class DeleteAdditionalFieldProvider extends BaseAdditionalFieldProvider
      */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
-        $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
-
         /** @var BaseTask $task */
-        if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
+        if ($this->isEditAction($schedulerModule)) {
             $taskInfo['doc'] = $task->getDoc();
             $taskInfo['pid'] = $task->getPid();
             $taskInfo['solr'] = $task->getSolr();

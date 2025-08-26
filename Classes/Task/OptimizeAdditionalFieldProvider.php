@@ -11,11 +11,7 @@
  */
 namespace Kitodo\Dlf\Task;
 
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Additional fields for reindex documents task.
@@ -37,10 +33,8 @@ class OptimizeAdditionalFieldProvider extends BaseAdditionalFieldProvider
      */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
-        $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
-
         /** @var BaseTask $task */
-        if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
+        if ($this->isEditAction($schedulerModule)) {
             $taskInfo['solr'] = $task->getSolr();
             $taskInfo['commit'] = $task->isCommit();
             $taskInfo['optimize'] = $task->isOptimize();

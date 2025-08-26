@@ -15,11 +15,14 @@ use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
+use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Base class for additional fields classes of scheduler tasks.
@@ -338,5 +341,31 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
+    }
+
+    /**
+     * Return whether the current action is an edit action.
+     *
+     * Between Typo3 v12 and v13 the action type has changed from a custom Typo3 class to an PHP enum, see:
+     * https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-101129-ConvertActionToNativeEnum.html
+     *
+     * @access protected
+     *
+     * @param SchedulerModuleController $schedulerModule scheduler module
+     *
+     * @return bool whether current action is an edit action
+     */
+    protected function isEditAction(SchedulerModuleController $schedulerModule): bool
+    {
+        $typo3Version = (new Typo3Version())->getMajorVersion();
+        if ($typo3Version == 12) {
+            /** @var \TYPO3\CMS\Scheduler\Task\Enumeration\Action $action */
+            $action = $schedulerModule->getCurrentAction();
+            return $action->equals(Action::EDIT);
+        } else {
+            /** @var \TYPO3\CMS\Scheduler\SchedulerManagementAction $action */
+            $action = $schedulerModule->getCurrentAction();
+            return $action === SchedulerManagementAction::EDIT;
+        }
     }
 }
