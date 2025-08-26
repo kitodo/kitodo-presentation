@@ -14,8 +14,6 @@ namespace Kitodo\Dlf\Common;
 
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -29,7 +27,6 @@ use TYPO3\CMS\Core\TypoScript\Tokenizer\LossyTokenizer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Frontend\Page\PageInformation;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -67,7 +64,6 @@ class TypoScriptHelper
         $sysTemplateRows = $this->sysTemplateRepository->getSysTemplateRowsByRootline($rootLine);
 
         $frontendTypoScriptFactory = GeneralUtility::makeInstance(
-            // @phpstan-ignore-next-line (class does not exist in Typo3 v12)
             \TYPO3\CMS\Core\TypoScript\FrontendTypoScriptFactory::class,
             $this->container,
             $this->eventDispatcher,
@@ -77,7 +73,6 @@ class TypoScriptHelper
             $this->includeConditionVerdictAware,
         );
 
-        // @phpstan-ignore-next-line ($frontendTypoScriptFactory does not exist in Typo3 v12)
         $frontendTypoScript = $frontendTypoScriptFactory->createSettingsAndSetupConditions(
             $site,
             $sysTemplateRows,
@@ -85,7 +80,6 @@ class TypoScriptHelper
             null,
         );
 
-        // @phpstan-ignore-next-line ($frontendTypoScriptFactory does not exist in Typo3 v12)
         $ts = $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
             true,
             $frontendTypoScript,
