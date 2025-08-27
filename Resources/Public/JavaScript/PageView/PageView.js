@@ -832,7 +832,7 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
  */
 dlfViewer.prototype.init = function(controlNames) {
 
-    if (this.imageUrls.length <= 0)
+    if (!dlfUtils.hasContent(this.imageUrls))
         throw new Error('Missing image source objects.');
 
     this.initLayer(this.imageUrls)
