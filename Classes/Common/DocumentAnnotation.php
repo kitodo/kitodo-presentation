@@ -377,7 +377,7 @@ class DocumentAnnotation
     {
         $annotationData = [];
         $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
-        $apiBaseUrl = $conf['annotationServerUrl'];
+        $apiBaseUrl = $conf['annotationServerUrl'] ?? null;
         if ($apiBaseUrl && $document->getCurrentDocument() instanceof MetsDocument) {
             $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
             if (count($purl) > 0) {

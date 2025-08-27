@@ -107,10 +107,7 @@ class ListViewController extends AbstractController
             $solrResults = $this->documentRepository->findSolrByCollections($collections, $this->settings, $this->search, $listedMetadata, $indexedMetadata);
             $numResults = $solrResults->getNumFound();
 
-            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
-            if (empty($itemsPerPage)) {
-                $itemsPerPage = 25;
-            }
+            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'] ?? 25;
             $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
             $simplePagination = new SimplePagination($solrPaginator);
 

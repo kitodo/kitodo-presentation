@@ -177,7 +177,7 @@ class CalendarController extends AbstractController
 
                 $years[] = [
                     'title' => $yearLabel,
-                    'uid' => $year['points'],
+                    'uid' => $year['points'] ?? null,
                 ];
             }
         } else {
@@ -490,7 +490,7 @@ class CalendarController extends AbstractController
                             }
 
                             yield [
-                                'uid' => $issue['points'],
+                                'uid' => $issue['points'] ?? null,
                                 'title' => $title,
                                 'year' => $day['orderlabel'],
                             ];

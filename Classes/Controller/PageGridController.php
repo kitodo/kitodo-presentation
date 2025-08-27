@@ -68,10 +68,7 @@ class PageGridController extends AbstractController
         // Get current page from request data because the parameter is shared between plugins
         $currentPage = $this->requestData['page'] ?? 1;
 
-        $itemsPerPage = $this->settings['paginate']['itemsPerPage'];
-        if (empty($itemsPerPage)) {
-            $itemsPerPage = 25;
-        }
+        $itemsPerPage = $this->settings['paginate']['itemsPerPage'] ?? 25;
 
         $pageGridPaginator = new PageGridPaginator($entryArray, $currentPage, $itemsPerPage);
         $pageGridPagination = new PageGridPagination($pageGridPaginator);

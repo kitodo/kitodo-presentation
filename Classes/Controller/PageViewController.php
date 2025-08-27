@@ -130,10 +130,10 @@ class PageViewController extends AbstractController
         $this->measures = $this->getMeasures($page);
 
         // Get the controls for the map.
-        $this->controls = explode(',', $this->settings['features']);
+        $this->controls = explode(',', $this->settings['features'] ?? '');
 
         $this->view->assign('viewData', $this->viewData);
-        $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl']);
+        $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
 
         $this->addViewerJS();
 
@@ -537,7 +537,7 @@ class PageViewController extends AbstractController
 
             $viewer = [
                 'controls' => $this->controls,
-                'div' => $this->settings['elementId'],
+                'div' => $this->settings['elementId'] ?? 'tx-dlf-map',
                 'progressElementId' => $this->settings['progressElementId'] ?? 'tx-dlf-page-progress',
                 'images' => $this->images,
                 'fulltexts' => $this->fulltexts,
