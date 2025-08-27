@@ -601,28 +601,30 @@ export default class DlfMediaPlayer extends HTMLElement {
     const sources = [];
 
     this.querySelectorAll('source').forEach((el) => {
-      const url = el.getAttribute("src");
-      const mimeType = el.getAttribute("type");
+      if (!el.closest('.shaka-video-container')) {
+        const url = el.getAttribute("src");
+        const mimeType = el.getAttribute("type");
 
-      if (!url || !mimeType) {
-        console.warn('Ignoring <source> that does not specify URL or MIME type');
-        return;
-      }
-
-      /** @type {dlf.media.Source['frameRate']} */
-      let frameRate = null;
-      const attrFps = el.getAttribute("data-fps");
-      if (attrFps !== null) {
-        const fps = parseFloat(attrFps);
-        if (fps > 0) {
-          // Also excludes empty "data-fps" or NaN
-          frameRate = fps;
+        if (!url || !mimeType) {
+          console.warn('Ignoring <source> that does not specify URL or MIME type');
+          return;
         }
+
+        /** @type {dlf.media.Source['frameRate']} */
+        let frameRate = null;
+        const attrFps = el.getAttribute("data-fps");
+        if (attrFps !== null) {
+          const fps = parseFloat(attrFps);
+          if (fps > 0) {
+            // Also excludes empty "data-fps" or NaN
+            frameRate = fps;
+          }
+        }
+
+        const fileId = el.getAttribute("data-fileid");
+
+        sources.push({ url, mimeType, frameRate, fileId });
       }
-
-      const fileId = el.getAttribute("data-fileid");
-
-      sources.push({ url, mimeType, frameRate, fileId });
     });
 
     this.loadOneOf(sources);
