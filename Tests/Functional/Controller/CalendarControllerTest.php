@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\CalendarController;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 class CalendarControllerTest extends AbstractControllerTestCase
 {
@@ -37,7 +36,7 @@ class CalendarControllerTest extends AbstractControllerTestCase
     /**
      * This test hard-codes the URL that is used to load the METS of document 2001 (see documents_calendar.csv).
      * It will fail unless the docker test environment is used with the proxy hosted at "web:8001".
-     * 
+     *
      * @test
      */
     public function canCalendarAction()
@@ -93,12 +92,11 @@ class CalendarControllerTest extends AbstractControllerTestCase
     /**
      * This test hard-codes the URL that is used to load the METS of document 2002 (see documents_calendar.csv).
      * It will fail unless the docker test environment is used with the proxy hosted at "web:8001".
-     * 
+     *
      * @test
      */
     public function canYearsAction()
     {
-
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
             documentId: {documentId}
             allYearDocTitle: {allYearDocTitle}

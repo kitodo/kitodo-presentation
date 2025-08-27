@@ -31,7 +31,7 @@ class PageGridControllerTest extends AbstractControllerTestCase
     /**
      * This test hard-codes the URL that is used to load the METS of document 2001 (see documents_local.csv).
      * It will fail unless the docker test environment is used with the proxy hosted at "web:8001".
-     * 
+     *
      * @test
      */
     public function canMainAction()

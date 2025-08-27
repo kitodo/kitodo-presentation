@@ -20,7 +20,7 @@ class ListViewControllerTest extends AbstractControllerTestCase
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv'
     ];
 
-    static array $solrFixtures = [
+    private static array $solrFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents.solr.json'
     ];
 

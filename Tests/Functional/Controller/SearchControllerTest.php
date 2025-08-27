@@ -27,7 +27,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv'
     ];
 
-    static array $solrFixtures = [
+    private static array $solrFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents.solr.json'
     ];
 
@@ -69,7 +69,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         </html>';
 
         $uniqueSessionId = StringUtility::getUniqueId('test');
-        $currentTime = $GLOBALS['EXEC_TIME'];
+        $currentTime = time();
 
         // Main session backend setup
         $userSession = UserSession::createNonFixated($uniqueSessionId);
@@ -95,7 +95,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         $feUser = new FrontendUserAuthentication();
         $feUser->initializeUserSessionManager($userSessionManagerMock);
         $request = $request->withAttribute("frontend.user", $feUser);
-        
+
         $response = $controller->processRequest($request);
 
         $response->getBody()->rewind();
@@ -181,7 +181,6 @@ class SearchControllerTest extends AbstractControllerTestCase
                  other: -type:page manuscript: -type:page
         </html>';
         $this->assertEquals($expected, $actual);
-
     }
 
     /**

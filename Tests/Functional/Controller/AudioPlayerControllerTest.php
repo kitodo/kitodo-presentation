@@ -33,12 +33,9 @@ class AudioPlayerControllerTest extends AbstractControllerTestCase
      */
     public function canMainAction()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 2001,
-        ];
         $templateHtml = 'This template should be returned.';
         $controller = $this->setUpController(AudioPlayerController::class, [], $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2001 ] ]);
 
         $response = $controller->processRequest($request);
         $response->getBody()->rewind();

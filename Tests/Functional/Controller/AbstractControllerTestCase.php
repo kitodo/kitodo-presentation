@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use ReflectionClass;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -58,12 +59,12 @@ abstract class AbstractControllerTestCase extends FunctionalTestCase
         }
 
         $controller = $this->get($class);
-        
+
         // the protected property "defaultViewObjectName" is used to hide deprecated Typo3 v12 behaviour in v13
         // without settings this property (or starting in Typo3 v14), there seems to be no way any more to
         // provide a fluid template other than by providing file paths, see:
         // https://github.com/TYPO3/typo3/blob/7c1c619d28d997d32a33446d066e25904c2c893c/typo3/sysext/extbase/Classes/Mvc/Controller/ActionController.php#L533-L560
-        $reflectionClass = new \ReflectionClass($controller);
+        $reflectionClass = new ReflectionClass($controller);
         $reflectionMethod = $reflectionClass->getProperty('defaultViewObjectName');
         $reflectionMethod->setValue($controller, "something");
 
@@ -77,5 +78,4 @@ abstract class AbstractControllerTestCase extends FunctionalTestCase
         $controller->setSettingsForTest($settings);
         return $controller;
     }
-
 }
