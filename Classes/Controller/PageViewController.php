@@ -463,7 +463,7 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
-        if (is_array($this->documentArray) && count($this->documentArray) > 1) {
+        if (!empty($this->settings['multiViewType']) && is_array($this->documentArray) && count($this->documentArray) > 1) {
             $jsViewer = 'tx_dlf_viewer = [];';
             $i = 0;
             foreach ($this->documentArray as $document) {

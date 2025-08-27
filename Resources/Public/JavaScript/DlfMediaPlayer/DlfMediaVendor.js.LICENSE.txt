@@ -37,13 +37,6 @@
 
 /*
  @license
- EME Encryption Scheme Polyfill
- Copyright 2019 Google LLC
- SPDX-License-Identifier: Apache-2.0
-*/
-
-/*
- @license
  MSS Transmuxer
  Copyright 2015 Dash Industry Forum
  SPDX-License-Identifier: BSD-3-Clause
@@ -67,6 +60,13 @@
  @license
  Shaka Player
  Copyright 2023 Google LLC
+ SPDX-License-Identifier: Apache-2.0
+*/
+
+/*
+ @license
+ Shaka Player
+ Copyright 2025 Google LLC
  SPDX-License-Identifier: Apache-2.0
 */
 

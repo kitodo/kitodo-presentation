@@ -115,7 +115,7 @@ class CalendarController extends AbstractController
         // Prepare list as alternative view.
         $issueData = [];
         foreach ($this->allIssues as $dayTimestamp => $issues) {
-            $issueData[$dayTimestamp]['dateString'] = strftime('%A, %x', $dayTimestamp);
+            $issueData[$dayTimestamp]['dateString'] = date('l, Y-m-d', $dayTimestamp);
             $issueData[$dayTimestamp]['items'] = [];
             foreach ($issues as $issue) {
                 $issueData[$dayTimestamp]['items'][] = $issue;
@@ -242,14 +242,14 @@ class CalendarController extends AbstractController
             $key = $year . '-' . $i;
 
             $calendarData[$key] = [
-                'DAYMON_NAME' => strftime('%a', strtotime('last Monday')),
-                'DAYTUE_NAME' => strftime('%a', strtotime('last Tuesday')),
-                'DAYWED_NAME' => strftime('%a', strtotime('last Wednesday')),
-                'DAYTHU_NAME' => strftime('%a', strtotime('last Thursday')),
-                'DAYFRI_NAME' => strftime('%a', strtotime('last Friday')),
-                'DAYSAT_NAME' => strftime('%a', strtotime('last Saturday')),
-                'DAYSUN_NAME' => strftime('%a', strtotime('last Sunday')),
-                'MONTHNAME'  => strftime('%B', strtotime($year . '-' . $i . '-1')) . ' ' . $year,
+                'DAYMON_NAME' => date('D', strtotime('last Monday')),
+                'DAYTUE_NAME' => date('D', strtotime('last Tuesday')),
+                'DAYWED_NAME' => date('D', strtotime('last Wednesday')),
+                'DAYTHU_NAME' => date('D', strtotime('last Thursday')),
+                'DAYFRI_NAME' => date('D', strtotime('last Friday')),
+                'DAYSAT_NAME' => date('D', strtotime('last Saturday')),
+                'DAYSUN_NAME' => date('D', strtotime('last Sunday')),
+                'MONTHNAME'  => date('F', strtotime($year . '-' . $i . '-1')) . ' ' . $year,
                 'CALYEAR' => ($i == $firstMonth) ? $year : ''
             ];
 
@@ -310,7 +310,7 @@ class CalendarController extends AbstractController
     {
         $dayLinksText = [];
         foreach ($day as $issue) {
-            $dayLinkLabel = empty($issue['title']) ? strftime('%x', $currentDayTime) : $issue['title'];
+            $dayLinkLabel = empty($issue['title']) ? date('Y-m-d', $currentDayTime) : $issue['title'];
 
             $dayLinksText[] = [
                 'documentId' => $issue['uid'],
@@ -370,7 +370,7 @@ class CalendarController extends AbstractController
      */
     private function fillDay(array &$calendarData, int $currentDayTime, string $day, string $dayLinks, array $dayLinkDiv): void
     {
-        $calendarData[$day]['dayValue'] = strftime('%d', $currentDayTime);
+        $calendarData[$day]['dayValue'] = date('d', $currentDayTime);
         if ((int) $dayLinks === (int) date('j', $currentDayTime)) {
             $calendarData[$day]['issues'] = $dayLinkDiv;
         }

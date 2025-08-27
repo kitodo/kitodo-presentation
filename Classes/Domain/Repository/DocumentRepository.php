@@ -81,7 +81,7 @@ class DocumentRepository extends Repository
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
-            $doc = AbstractDocument::getInstance($parameters['location'], [], true);
+            $doc = AbstractDocument::getInstance($parameters['location']);
 
             if ($doc !== null && $doc->recordId) {
                 $document = $this->findOneByRecordId($doc->recordId);
@@ -96,7 +96,7 @@ class DocumentRepository extends Repository
         }
 
         if ($document !== null && $doc === null) {
-            $doc = AbstractDocument::getInstance($document->getLocation(), [], true);
+            $doc = AbstractDocument::getInstance($document->getLocation());
         }
 
         if ($doc !== null) {
@@ -126,12 +126,12 @@ class DocumentRepository extends Repository
     /**
      * @access public
      *
-     * @param int $partOf
+     * @param int|null $partOf
      * @param Structure $structure
      *
      * @return array|QueryResultInterface
      */
-    public function getChildrenOfYearAnchor(int $partOf, Structure $structure): array|QueryResultInterface
+    public function getChildrenOfYearAnchor(?int $partOf, Structure $structure): array|QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -390,7 +390,7 @@ class DocumentRepository extends Repository
             ->getQueryBuilderForTable('tx_dlf_documents');
 
         $excludeOtherWhere = '';
-        if ($settings['excludeOther']) {
+        if ($settings['excludeOther'] ?? false) {
             $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($settings['storagePid']);
         }
         // Check if there are any metadata to suggest.
@@ -692,7 +692,10 @@ class DocumentRepository extends Repository
                     return $prevDocument['uid'];
                 }
 
-                return $this->getLastChild($this->getPreviousDocumentUid($parentId));
+                $previousDocumentId = $this->getPreviousDocumentUid($parentId);
+                if ($previousDocumentId) {
+                    return $this->getLastChild($previousDocumentId);
+                }
             }
         }
 
@@ -739,7 +742,10 @@ class DocumentRepository extends Repository
                     return $nextDocument['uid'];
                 }
 
-                return $this->getFirstChild($this->getNextDocumentUid($parentId));
+                $nextDocumentId = $this->getNextDocumentUid($parentId);
+                if ($nextDocumentId) {
+                    return $this->getFirstChild($nextDocumentId);
+                }
             }
         }
 

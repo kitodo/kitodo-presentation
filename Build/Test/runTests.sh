@@ -6,8 +6,6 @@
 # This is read by docker compose and vars defined here are
 # used in Build/Test/docker-compose.yml
 setUpDockerComposeDotEnv() {
-    # Delete possibly existing local .env file if exists
-    [ -e .env ] && rm .env
     # Set up a new .env file for docker compose
     {
         echo "COMPOSE_PROJECT_NAME=dlf_testing"
@@ -49,6 +47,12 @@ handleDbmsAndDriverOptions() {
                 echo "call \".Build/Test/runTests.sh -h\" to display help and valid options" >&2
                 exit 1
             fi
+            ;;
+        *)
+            echo "Invalid option -a ${DATABASE_DRIVER} with -d ${DBMS}" >&2
+            echo >&2
+            echo "call \".Build/Test/runTests.sh -h\" to display help and valid options" >&2
+            exit 1
             ;;
     esac
 }
@@ -245,10 +249,7 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
         v)
             SCRIPT_VERBOSE=1
             ;;
-        \?)
-            INVALID_OPTIONS+=("${OPTARG}")
-            ;;
-        :)
+        *)
             INVALID_OPTIONS+=("${OPTARG}")
             ;;
     esac
@@ -258,7 +259,7 @@ done
 if [ ${#INVALID_OPTIONS[@]} -ne 0 ]; then
     echo "Invalid option(s):" >&2
     for I in "${INVALID_OPTIONS[@]}"; do
-        echo "-"${I} >&2
+        echo "-${I}" >&2
     done
     echo >&2
     echo "call \".Build/Test/runTests.sh -h\" to display help and valid options"
@@ -356,5 +357,5 @@ fi
 echo "###########################################################################" >&2
 echo "" >&2
 
-# Exit with code of test suite - This script return non-zero if the executed test failed.
-exit $SUITE_EXIT_CODE
+# Exit with code of test suite - This script returns non-zero if the executed test failed.
+exit "$SUITE_EXIT_CODE"

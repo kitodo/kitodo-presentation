@@ -96,7 +96,7 @@ class IndexCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
+        $dryRun = $input->getOption('dry-run') != false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
@@ -121,13 +121,13 @@ class IndexCommand extends BaseCommand
                 foreach ($allSolrCores as $indexName => $uid) {
                     $outputSolrCores[] = $uid . ' : ' . $indexName;
                 }
+
                 if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return Command::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return Command::FAILURE;
                 }
+                return Command::FAILURE;
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
@@ -231,7 +231,7 @@ class IndexCommand extends BaseCommand
     {
         $document = null;
 
-        if ($doc->recordId) {
+        if ($doc->recordId ?? false) {
             $document = $this->documentRepository->findOneByRecordId($doc->recordId);
         } else {
             $document = $this->documentRepository->findOneByLocation($url);

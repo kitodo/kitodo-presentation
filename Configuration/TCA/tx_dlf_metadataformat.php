@@ -79,7 +79,7 @@ return [
         'subentries' => [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:dlf/Resources/Private/Language/Labels.xml:tx_dlf_metadataformat.subentries',
+            'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadatasubentries',
             'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_dlf_metadatasubentries',
@@ -101,7 +101,7 @@ return [
         ],
     ],
     'types' => [
-        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadataformat.tab1,encoded,xpath,xpath_sorting,mandatory,subentries'],
+        '0' => ['showitem' => '--div--;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadataformat.tab1,encoded,xpath,xpath_sorting,mandatory,subentries;LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadatasubentries'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],

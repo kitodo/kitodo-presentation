@@ -440,7 +440,7 @@ class Indexer
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);
             $solrDoc->setField('page', $page);
-            $useGroupsThumbnail = GeneralUtility::trimExplode(',', $extConf['Thumbnail']);
+            $useGroupsThumbnail = GeneralUtility::trimExplode(',', $extConf['useGroupsThumbnail']);
             while ($useGroupThumbnail = array_shift($useGroupsThumbnail)) {
                 if (!empty($physicalUnit['files'][$useGroupThumbnail])) {
                     $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$useGroupThumbnail]));
@@ -556,7 +556,7 @@ class Indexer
         // use the structlink information
         foreach ($doc->smLinks['l2p'] as $logicalId => $physicalId) {
             // find page in structlink
-            if (in_array($physicalUnit['id'], $physicalId)) {
+            if (in_array($logicalId, $doc->metadataArray) && in_array($physicalUnit['id'], $physicalId)) {
                 // for each associated metadata of structlink
                 foreach ($doc->metadataArray[$logicalId] as $indexName => $data) {
                     if (

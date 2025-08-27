@@ -802,7 +802,7 @@ class OaiPmhController extends AbstractController
 
             if ($verb === 'ListRecords') {
                 // Add metadata node.
-                $metadataPrefix = $this->parameters['metadataPrefix'];
+                $metadataPrefix = $this->parameters['metadataPrefix'] ?? false;
                 if (!$metadataPrefix) {
                     // If we resume an action the metadataPrefix is stored with the documentSet
                     $metadataPrefix = $documentListSet['metadata']['metadataPrefix'];
