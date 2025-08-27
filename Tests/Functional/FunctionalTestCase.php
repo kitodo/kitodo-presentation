@@ -308,6 +308,10 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $backendUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $backendUser->user["lang"] = $locale;
         $GLOBALS['BE_USER'] = $backendUser;
+
+        // ignore phpcs error "Direct use of $GLOBALS Superglobal detected."
+        // required for Helper::getLanguageService()
+        // phpcs:ignore
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create($locale);
     }
 
