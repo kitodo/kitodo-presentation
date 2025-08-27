@@ -13,14 +13,13 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\SearchController;
-use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Session\UserSession;
 use TYPO3\CMS\Core\Session\UserSessionManager;
 use TYPO3\CMS\Core\Utility\StringUtility;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\TestingFramework\Core\SystemEnvironmentBuilder;
 
-class SearchControllerTest extends AbstractControllerTest
+class SearchControllerTest extends AbstractControllerTestCase
 {
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
@@ -35,8 +34,8 @@ class SearchControllerTest extends AbstractControllerTest
     public function setUp(): void
     {
         parent::setUp();
-        $this->setUpSolr(4, 0, self::$solrFixtures);
         $this->setUpData(self::$databaseFixtures);
+        $this->setUpSolr(self::$solrCoreId, self::$storagePid, self::$solrFixtures);
     }
 
     /**
@@ -44,19 +43,22 @@ class SearchControllerTest extends AbstractControllerTest
      */
     public function canMainAction()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 1001
-        ];
-        $_POST['tx_dlf_listview'] = [
-            'searchParameter' => []
+        $queryParameters = [
+            'tx_dlf' => [
+                'id' => 1001
+            ],
+            'tx_dlf_listview' => [
+                'searchParameter' => []
+            ]
         ];
         $arguments = [
-            'searchParameter' => [
+            'search' => [
                 'dateFrom' => '1800'
             ]
         ];
         $settings = [
-            'solrcore' => $this->currentCoreName,
+            'solrcore' => self::$solrCoreId,
+            'storagePid' => self::$storagePid,
             'extendedFields' => 'field1,field2,field3',
             'extendedSlotCount' => 1
         ];
@@ -88,11 +90,15 @@ class SearchControllerTest extends AbstractControllerTest
         $userSessionToBePersisted->set('foo', 'bar');
 
         $controller = $this->setUpController(SearchController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main', $arguments);
-        $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
-        $GLOBALS['TSFE']->fe_user->initializeUserSessionManager($userSessionManagerMock);
 
+        $request = $this->setUpRequest('main', $queryParameters, $arguments);
+        $feUser = new FrontendUserAuthentication();
+        $feUser->initializeUserSessionManager($userSessionManagerMock);
+        $request = $request->withAttribute("frontend.user", $feUser);
+        
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
             lastSearch:dateFrom:1800,dateTo:NOW,
@@ -107,21 +113,23 @@ class SearchControllerTest extends AbstractControllerTest
      */
     public function canMakeFacetsMenuArray()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 1001
-        ];
-        $_POST['tx_dlf_listview'] = [
-            'searchParameter' => []
+        $queryParameters = [
+            'tx_dlf' => [
+                'id' => 1001
+            ],
+            'tx_dlf_listview' => [
+                'searchParameter' => []
+            ]
         ];
         $arguments = [
-            'searchParameter' => [
+            'search' => [
                 'title' => '10 Keyboard pieces'
             ],
             'query' => '*'
         ];
         $settings = [
-            'solrcore' => $this->currentCoreName,
-            'storagePid' => 0,
+            'solrcore' => self::$solrCoreId,
+            'storagePid' => self::$storagePid,
             'facets' => 'type',
             'facetCollections' => '1'
         ];
@@ -155,18 +163,22 @@ class SearchControllerTest extends AbstractControllerTest
         $userSessionToBePersisted->set('foo', 'bar');
 
         $controller = $this->setUpController(SearchController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main', $arguments);
-        $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
-        $GLOBALS['TSFE']->fe_user->initializeUserSessionManager($userSessionManagerMock);
+
+        $request = $this->setUpRequest('main', $queryParameters, $arguments);
+        $feUser = new FrontendUserAuthentication();
+        $feUser->initializeUserSessionManager($userSessionManagerMock);
+        $request = $request->withAttribute("frontend.user", $feUser);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
             lastSearch:title:10 Keyboard pieces,
             currentDocument:1001
             facetsMenu:
                 type
-                 other: type_faceting:(&quot;other&quot;) manuscript: type_faceting:(&quot;manuscript&quot;)
+                 other: -type:page manuscript: -type:page
         </html>';
         $this->assertEquals($expected, $actual);
 
@@ -178,9 +190,10 @@ class SearchControllerTest extends AbstractControllerTest
     public function canSearchAction()
     {
         $controller = $this->setUpController(SearchController::class, [], '');
-        $request = $this->setUpRequest('search', []);
+        $request = $this->setUpRequest('search');
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
-        $this->expectException(StopActionException::class);
-        $controller->processRequest($request);
+        $response = $controller->processRequest($request);
+        $this->assertEquals(303, $response->getStatusCode());
     }
 }

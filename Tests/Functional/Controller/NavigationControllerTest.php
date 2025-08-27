@@ -14,11 +14,10 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\NavigationController;
 use Kitodo\Dlf\Domain\Model\PageSelectForm;
-use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\TestingFramework\Core\SystemEnvironmentBuilder;
 
-class NavigationControllerTest extends AbstractControllerTest
+class NavigationControllerTest extends AbstractControllerTestCase
 {
 
     private static array $databaseFixtures = [
@@ -38,18 +37,22 @@ class NavigationControllerTest extends AbstractControllerTest
      */
     public function canMainAction()
     {
-        $_POST['tx_dlf'] = ['id' => 1001];
+        $settings = [
+            'solrcore' => self::$solrCoreId,
+        ];
+
         $templateHtml = '<html>
                 pageSteps: {pageSteps}
                 numPages: {numPages}
                 pageOptions:<f:for each="{pageOptions}" as="entry">{entry},</f:for>
             </html>';
-        $controller = $this->setUpController(NavigationController::class, ['solrcore' => $this->currentCoreName], $templateHtml);
-        $request = $this->setUpRequest('main');
-        $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
-        $GLOBALS['TSFE']->fe_user->id = 1;
+        $controller = $this->setUpController(NavigationController::class, $settings, $templateHtml);
+        $request = $this->setUpRequest('main', [ 'tx_dlf' => [ 'id' => 1001 ] ]);
+        $request = $request->withAttribute("frontend.user", new FrontendUserAuthentication());
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
                 pageSteps: 5
@@ -64,15 +67,20 @@ class NavigationControllerTest extends AbstractControllerTest
      */
     public function canPageSelectAction()
     {
+        $settings = [
+            'solrcore' => self::$solrCoreId,
+        ];
+
         $pageSelectForm = new PageSelectForm();
         $pageSelectForm->setId(1);
         $pageSelectForm->setPage(2);
         $pageSelectForm->setDouble(false);
 
-        $controller = $this->setUpController(NavigationController::class, ['solrcore' => $this->currentCoreName], '');
-        $request = $this->setUpRequest('pageSelect', ['pageSelectForm' => $pageSelectForm]);
+        $controller = $this->setUpController(NavigationController::class, $settings, '');
+        $request = $this->setUpRequest('pageSelect', [], ['pageSelectForm' => $pageSelectForm]);
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
-        $this->expectException(StopActionException::class);
-        $controller->processRequest($request);
+        $response = $controller->processRequest($request);
+        $this->assertEquals(303, $response->getStatusCode());
     }
 }

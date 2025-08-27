@@ -13,9 +13,12 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\ToolboxController;
-use TYPO3\CMS\Core\Http\Response;
 
-class ToolboxControllerTest extends AbstractControllerTest
+/**
+ * This test class hard-codes the URL that is used to load the METS of document 2002 (see documents_local.csv).
+ * It will fail unless the docker test environment is used with the proxy hosted at "web:8001".
+ */
+class ToolboxControllerTest extends AbstractControllerTestCase
 {
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents_local.csv',
@@ -34,18 +37,16 @@ class ToolboxControllerTest extends AbstractControllerTest
      */
     public function canFulltextdownloadtool()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 2002,
-            'page' => '2'
-        ];
         $settings = [
             'tools' => 'tx_dlf_fulltextdownloadtool'
         ];
         $templateHtml = '<html>fulltextDownload:{fulltextDownload}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2002, 'page' => 2 ] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>fulltextDownload:1</html>';
         $this->assertEquals($expected, $actual);
@@ -56,19 +57,17 @@ class ToolboxControllerTest extends AbstractControllerTest
      */
     public function canFulltexttool()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 2002,
-            'page' => '2'
-        ];
         $settings = [
             'tools' => 'tx_dlf_fulltexttool',
             'activateFullTextInitially' => 1
         ];
         $templateHtml = '<html>fulltext:{fulltext},activateFullTextInitially:{activateFullTextInitially}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2002, 'page' => 2 ] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>fulltext:1,activateFullTextInitially:1</html>';
         $this->assertEquals($expected, $actual);
@@ -79,11 +78,6 @@ class ToolboxControllerTest extends AbstractControllerTest
      */
     public function canImagedownloadtool()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 2002,
-            'double' => 1,
-            'page' => 1
-        ];
         $settings = [
             'tools' => 'tx_dlf_imagedownloadtool',
             'fileGrpsImageDownload' => 'MAX'
@@ -92,9 +86,11 @@ class ToolboxControllerTest extends AbstractControllerTest
             {image.url}{image.mimetypeLabel}</f:for>
         </html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2002, 'double' => 1, 'page' => 1 ] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>imageDownload:
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000001.tif.large.jpg (JPG)
@@ -108,19 +104,17 @@ class ToolboxControllerTest extends AbstractControllerTest
      */
     public function canImagemanipulationtool()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 2002,
-            'page' => '2'
-        ];
         $settings = [
             'tools' => 'tx_dlf_imagemanipulationtool',
             'parentContainer' => '.parent-container'
         ];
         $templateHtml = '<html>imageManipulation:{imageManipulation},parentContainer:{parentContainer}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2002, 'page' => 2 ] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>imageManipulation:1,parentContainer:.parent-container</html>';
         $this->assertEquals($expected, $actual);
@@ -131,21 +125,19 @@ class ToolboxControllerTest extends AbstractControllerTest
      */
     public function canMainAction()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 1001,
-            'double' => 1
-        ];
         $settings = [
-            'solrcore' => $this->currentCoreName,
+            'solrcore' => self::$solrCoreId,
             'library' => 1,
             'tools' => 'tx_dlf_annotationtool',
             'limit' => 1
         ];
         $templateHtml = '<html>double:{double}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 1001, 'double' => 1 ] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>double:1</html>';
         $this->assertEquals($expected, $actual);
@@ -157,11 +149,6 @@ class ToolboxControllerTest extends AbstractControllerTest
      */
     public function canPdfdownloadtool()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 2002,
-            'page' => 1,
-            'double' => 1
-        ];
         $settings = [
             'tools' => 'tx_dlf_pdfdownloadtool'
         ];
@@ -170,14 +157,16 @@ class ToolboxControllerTest extends AbstractControllerTest
             workLink:{workLink}
         </html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2002, 'double' => 1, 'page' => 1 ] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>pageLinks:
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000001.tif.pdf
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000002.tif.pdf
-            workLink:http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000002.tif.pdf
+            workLink:http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/full.pdf
         </html>';
         $this->assertEquals($expected, $actual);
     }
@@ -187,12 +176,8 @@ class ToolboxControllerTest extends AbstractControllerTest
      */
     public function canSearchindocumenttool()
     {
-        $_POST['tx_dlf'] = [
-            'id' => 2002,
-            'page' => 1
-        ];
         $settings = [
-            'solrcore' => $this->currentSolrUid,
+            'solrcore' => self::$solrCoreId,
             'tools' => 'tx_dlf_searchindocumenttool',
             'queryInputName' => 'queryInputName',
             'startInputName' => 'startInputName',
@@ -212,9 +197,11 @@ class ToolboxControllerTest extends AbstractControllerTest
             CURRENT_DOCUMENT:{searchInDocument.documentId}
         </html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2002, 'page' => 1 ] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
             LABEL_QUERY_URL:queryInputName

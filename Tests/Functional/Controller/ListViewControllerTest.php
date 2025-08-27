@@ -12,10 +12,8 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\ListViewController;
-use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
-class ListViewControllerTest extends AbstractControllerTest
+class ListViewControllerTest extends AbstractControllerTestCase
 {
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
@@ -30,7 +28,7 @@ class ListViewControllerTest extends AbstractControllerTest
     {
         parent::setUp();
         $this->setUpData(self::$databaseFixtures);
-        $this->setUpSolr(4, 2, self::$solrFixtures);
+        $this->setUpSolr(self::$solrCoreId, self::$storagePid, self::$solrFixtures);
     }
 
     /**
@@ -40,13 +38,13 @@ class ListViewControllerTest extends AbstractControllerTest
     public function canMainAction(): void
     {
         $arguments = [
-            'searchParameter' => [
+            'search' => [
                 'query' => '10 Keyboard pieces',
             ]
         ];
         $settings = [
-            'solrcore' => $this->currentCoreName,
-            'storagePid' => 2,
+            'solrcore' => self::$solrCoreId,
+            'storagePid' => self::$storagePid,
             'dont_show_single' => 'some_value',
             'randomize' => ''
         ];
@@ -59,11 +57,12 @@ class ListViewControllerTest extends AbstractControllerTest
                 numResults: {numResults}
                 </f:spaceless>
             </html>';
-        $request = $this->setUpRequest('main', $arguments);
+        $request = $this->setUpRequest('main', [], $arguments);
         $controller = $this->setUpController(ListViewController::class, $settings, $templateHtml);
-        $GLOBALS['TSFE']->fe_user = new FrontendUserAuthentication();
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
                 uniqueId-length: 13

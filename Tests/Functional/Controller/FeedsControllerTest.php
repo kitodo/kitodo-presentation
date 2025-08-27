@@ -13,10 +13,8 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\FeedsController;
-use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Localization\LanguageService;
 
-class FeedsControllerTest extends AbstractControllerTest
+class FeedsControllerTest extends AbstractControllerTestCase
 {
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents.csv',
@@ -35,10 +33,11 @@ class FeedsControllerTest extends AbstractControllerTest
      */
     public function canMainAction()
     {
-        $GLOBALS['LANG'] = LanguageService::create('default');
         $settings = [
-            'solrcore' => $this->currentCoreName,
+            'storagePid' => self::$storagePid,
+            'solrcore' => self::$solrCoreId,
             'collections' => '1',
+            'library' => 0,
             'limit' => 1
         ];
         $templateHtml = '<html><f:for each="{documents}" as="document" iteration="iterator">
@@ -46,12 +45,11 @@ class FeedsControllerTest extends AbstractControllerTest
             feedMeta:<f:count subject="{feedMeta}"/>
         </html>';
         $controller = $this->setUpController(FeedsController::class, $settings, $templateHtml);
-        $arguments = [
-            'collection' => '1'
-        ];
-        $request = $this->setUpRequest('main', $arguments);
+        $request = $this->setUpRequest('main', [], [ 'collection' => '1' ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
             1003 – NEW: 6 Fugues - Go. S. 317

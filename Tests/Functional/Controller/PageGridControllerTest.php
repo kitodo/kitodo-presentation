@@ -13,9 +13,8 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\PageGridController;
-use TYPO3\CMS\Core\Http\Response;
 
-class PageGridControllerTest extends AbstractControllerTest
+class PageGridControllerTest extends AbstractControllerTestCase
 {
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents_local.csv',
@@ -30,22 +29,25 @@ class PageGridControllerTest extends AbstractControllerTest
     }
 
     /**
+     * This test hard-codes the URL that is used to load the METS of document 2001 (see documents_local.csv).
+     * It will fail unless the docker test environment is used with the proxy hosted at "web:8001".
+     * 
      * @test
      */
     public function canMainAction()
     {
-        $_POST['tx_dlf'] = ['id' => 2001];
-        $settings = [];
         $templateHtml = '<html>
             pageGridEntries:<f:count subject="{paginator.paginatedItems}"/>
             pageGridEntries[0]:{paginator.paginatedItems.0.pagination}, {paginator.paginatedItems.0.thumbnail}
             pageGridEntries[1]:{paginator.paginatedItems.1.pagination}, {paginator.paginatedItems.1.thumbnail}
             docUid:{docUid}
         </html>';
-        $controller = $this->setUpController(PageGridController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $controller = $this->setUpController(PageGridController::class, [], $templateHtml);
+        $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2001 ] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
             pageGridEntries:2

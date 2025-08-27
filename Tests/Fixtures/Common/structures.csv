@@ -1,0 +1,4 @@
+tx_dlf_structures,,,,,,,,,,,,,,,,,
+,uid,pid,tstamp,crdate,deleted,sys_language_uid,l18n_parent,l18n_diffsource,l10n_state,hidden,cruser_id,toplevel,label,index_name,oai_name,thumbnail,status
+,1,2,1755356755,1755356755,0,0,0,"{""l18n_parent"":"""",""hidden"":"""",""toplevel"":"""",""label"":"""",""index_name"":"""",""oai_name"":"""",""thumbnail"":"""",""status"":"""",""sys_language_uid"":""""}",NULL,0,0,1,Year,year,,0,0
+,48,2,1755356755,1755356755,0,0,0,"{""l18n_parent"":"""",""hidden"":"""",""toplevel"":"""",""label"":"""",""index_name"":"""",""oai_name"":"""",""thumbnail"":"""",""status"":"""",""sys_language_uid"":""""}",NULL,0,0,1,Issue,issue,,0,0

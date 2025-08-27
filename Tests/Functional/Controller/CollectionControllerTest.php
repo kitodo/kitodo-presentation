@@ -13,10 +13,9 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\CollectionController;
-use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 
-class CollectionControllerTest extends AbstractControllerTest
+class CollectionControllerTest extends AbstractControllerTestCase
 {
 
     private static array $databaseFixtures = [
@@ -32,7 +31,7 @@ class CollectionControllerTest extends AbstractControllerTest
     {
         parent::setUp();
         $this->setUpData(self::$databaseFixtures);
-        $this->setUpSolr(4, 2, self::$solrFixtures);
+        $this->setUpSolr(self::$solrCoreId, self::$storagePid, self::$solrFixtures);
     }
 
     /**
@@ -41,16 +40,17 @@ class CollectionControllerTest extends AbstractControllerTest
     public function canListAction()
     {
         $settings = [
-            'solrcore' => $this->currentCoreName,
+            'solrcore' => self::$solrCoreId,
             'collections' => '1',
             'dont_show_single' => 'some_value',
             'randomize' => ''
         ];
         $templateHtml = '<html><f:for each="{collections}" as="item">{item.collection.indexName}</f:for></html>';
         $controller = $this->setUpController(CollectionController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('list', ['id' => 1]);
+        $request = $this->setUpRequest('list', [ 'tx_dlf' => ['id' => 1] ]);
 
         $response = $controller->processRequest($request);
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>test-collection</html>';
         $this->assertEquals($expected, $actual);
@@ -62,15 +62,16 @@ class CollectionControllerTest extends AbstractControllerTest
     public function canListActionForwardToShow()
     {
         $settings = [
-            'solrcore' => $this->currentCoreName,
+            'solrcore' => self::$solrCoreId,
             'collections' => '1',
             'randomize' => ''
         ];
         $controller = $this->setUpController(CollectionController::class, $settings);
-        $request = $this->setUpRequest('list', ['id' => 1]);
+        $request = $this->setUpRequest('list', ['tx_dlf' => ['id' => 1] ]);
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
-        $this->expectException(StopActionException::class);
-        $controller->processRequest($request);
+        $response = $controller->processRequest($request);
+        $this->assertEquals(303, $response->getStatusCode());
     }
 
     /**
@@ -79,20 +80,21 @@ class CollectionControllerTest extends AbstractControllerTest
     public function canShowAction()
     {
         $settings = [
-            'solrcore' => $this->currentCoreName,
+            'solrcore' => self::$solrCoreId,
             'collections' => '1',
             'dont_show_single' => 'some_value',
             'randomize' => '',
-            'storagePid' => 0
+            'storagePid' => self::$storagePid
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"><f:for each="{documents.solrResults.documents}" as="page" iteration="docIterator">{page.title},</f:for></html>';
 
         $controller = $this->setUpController(CollectionController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('show', ['collection' => '1']);
+        $request = $this->setUpRequest('show', [], ['collection' => '1' ]);
 
         $response = $controller->processRequest($request);
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
-        $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,</html>';
+        $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,Beigefügte Quellenbeschreibung,</html>';
         $this->assertEquals($expected, $actual);
 
     }
@@ -103,15 +105,16 @@ class CollectionControllerTest extends AbstractControllerTest
     public function canShowSortedAction()
     {
         $settings = [
-            'solrcore' => $this->currentCoreName,
+            'solrcore' => self::$solrCoreId,
             'collections' => '1',
             'dont_show_single' => 'some_value',
             'randomize' => ''
         ];
         $controller = $this->setUpController(CollectionController::class, $settings);
         $request = $this->setUpRequest('showSorted');
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
-        $this->expectException(StopActionException::class);
-        $controller->processRequest($request);
+        $response = $controller->processRequest($request);
+        $this->assertEquals(303, $response->getStatusCode());
     }
 }

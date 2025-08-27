@@ -13,9 +13,8 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\TableOfContentsController;
-use TYPO3\CMS\Core\Http\Response;
 
-class TableOfContentsControllerTest extends AbstractControllerTest
+class TableOfContentsControllerTest extends AbstractControllerTestCase
 {
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents.csv',
@@ -34,8 +33,10 @@ class TableOfContentsControllerTest extends AbstractControllerTest
      */
     public function canMainAction()
     {
-        $_POST['tx_dlf'] = ['id' => 1001];
-        $settings = ['storagePid' => 0];
+        $settings = [
+            'storagePid' => self::$storagePid
+        ];
+
         $templateHtml = '<html><f:for each="{toc}" as="entry">
 {entry.type} – {entry.title}
 <f:for each="{entry._SUB_MENU}" as="subentry">
@@ -44,9 +45,11 @@ class TableOfContentsControllerTest extends AbstractControllerTest
 </f:for>
 </html>';
         $controller = $this->setUpController(TableOfContentsController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => ['id' => 1001] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
 manuscript – 10 Keyboard pieces - Go. S. 658

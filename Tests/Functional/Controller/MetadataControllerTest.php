@@ -13,9 +13,8 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\MetadataController;
-use TYPO3\CMS\Core\Http\Response;
 
-class MetadataControllerTest extends AbstractControllerTest
+class MetadataControllerTest extends AbstractControllerTestCase
 {
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents.csv',
@@ -35,18 +34,20 @@ class MetadataControllerTest extends AbstractControllerTest
     public function canMainAction()
     {
         $settings = [
-            'solrcore' => $this->currentCoreName,
-            'storagePid' => 0
+            'solrcore' => self::$solrCoreId,
+            'storagePid' => self::$storagePid,
+            'separator' => '#'
         ];
         $templateHtml = '<html>
             mets_label:<f:for each="{documentMetadataSections}" as="section"><f:for each="{section.mets_label}" as="entry">{entry}</f:for></f:for>
         </html>';
-        $_POST['tx_dlf'] = ['id' => 1001];
 
         $controller = $this->setUpController(MetadataController::class, $settings, $templateHtml);
-        $request = $this->setUpRequest('main');
+        $request = $this->setUpRequest('main', ['tx_dlf' => ['id' => 1001] ]);
 
         $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
             mets_label:10 Keyboard pieces - Go. S. 658

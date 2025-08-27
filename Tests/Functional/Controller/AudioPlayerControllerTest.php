@@ -15,7 +15,7 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 use Kitodo\Dlf\Controller\AudioPlayerController;
 use TYPO3\CMS\Core\Http\Response;
 
-class AudioPlayerControllerTest extends AbstractControllerTest
+class AudioPlayerControllerTest extends AbstractControllerTestCase
 {
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents_local.csv',
@@ -41,6 +41,7 @@ class AudioPlayerControllerTest extends AbstractControllerTest
         $request = $this->setUpRequest('main');
 
         $response = $controller->processRequest($request);
+        $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = 'This template should be returned.';
         $this->assertEquals($expected, $actual);
