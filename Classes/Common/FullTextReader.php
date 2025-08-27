@@ -33,7 +33,7 @@ class FullTextReader
 
     /**
      * Constructor
-     * 
+     *
      * @param array $formats
      */
     public function __construct(array $formats)
@@ -44,7 +44,7 @@ class FullTextReader
 
     /**
      * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
-     * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
+     * XML full text representation. For IIIF manifests, ALTO documents have
      * to be given in the Canvas' / Manifest's "seeAlso" property.
      *
      * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
