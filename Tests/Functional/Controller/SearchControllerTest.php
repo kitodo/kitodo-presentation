@@ -142,7 +142,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         </html>';
 
         $uniqueSessionId = StringUtility::getUniqueId('test');
-        $currentTime = $GLOBALS['EXEC_TIME'];
+        $currentTime = time();
 
         // Main session backend setup
         $userSession = UserSession::createNonFixated($uniqueSessionId);
