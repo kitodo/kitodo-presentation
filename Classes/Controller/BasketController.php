@@ -240,18 +240,18 @@ class BasketController extends AbstractController
     protected function getBasketData(): Basket
     {
         // get user session
-        $fe_user = $this->request->getAttribute('frontend.user');
-        $userSession = $fe_user->getSession();
+        $feUser = $this->request->getAttribute('frontend.user');
+        $userSession = $feUser->getSession();
 
         // Checking if a user is logged in
         $userIsLoggedIn = $this->isUserLoggedIn();
 
         if ($userIsLoggedIn) {
-            $basket = $this->basketRepository->findOneBy([ 'feUserId' => (int) $fe_user->getUserId() ]);
+            $basket = $this->basketRepository->findOneBy([ 'feUserId' => (int) $feUser->getUserId() ]);
         } else {
             $userSession->set('ses', 'tx_dlf_basket', '');
             $userSession->dataWasUpdated();
-            $fe_user->storeSessionData();
+            $feUser->storeSessionData();
 
             $basket = $this->basketRepository->findOneBy([ 'sessionId' => $userSession->getIdentifier() ]);
         }
@@ -261,7 +261,7 @@ class BasketController extends AbstractController
             // create new basket in db
             $basket = GeneralUtility::makeInstance(Basket::class);
             $basket->setSessionId($userSession->getIdentifier());
-            $basket->setFeUserId($userIsLoggedIn ? $fe_user->getUserId() : 0);
+            $basket->setFeUserId($userIsLoggedIn ? $feUser->getUserId() : 0);
         }
 
         return $basket;
