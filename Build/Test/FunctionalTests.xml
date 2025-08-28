@@ -15,6 +15,11 @@
     failOnWarning="true"
     cacheDirectory=".phpunit.cache"
     requireCoverageMetadata="false"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    displayDetailsOnTestsThatTriggerErrors="true"
+    displayDetailsOnTestsThatTriggerNotices="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
+    displayDetailsOnPhpunitDeprecations="true"
 >
     <testsuites>
         <testsuite name="Functional tests">
