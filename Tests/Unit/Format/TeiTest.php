@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Tests\Unit\Format;
 
-use Kitodo\Dlf\Format\Alto;
 use Kitodo\Dlf\Format\Tei;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -26,10 +25,10 @@ class TeiTest extends UnitTestCase
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/tei.xml');
         $tei = new Tei();
-
+        $tei->setPageId('f0001');
         $rawText = $tei->getRawText($xml);
 
-        self::assertEquals('Bürgertum und Bürgerlichkeit in Dresden DRESDNER HEFTE', $rawText);
+        self::assertEquals('Lorem ipsum dolor sit amet, consectetuer adipiscing elit.', $rawText);
     }
 
     /**
@@ -39,31 +38,13 @@ class TeiTest extends UnitTestCase
     public function getTextAsMiniOcr(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/tei.xml');
-        $alto = new Tei();
-
-        $rawText = $alto->getTextAsMiniOcr($xml);
+        $tei = new Tei();
+        $tei->setPageId('f0002');
+        $rawText = $tei->getTextAsMiniOcr($xml);
 
         $miniOCR = <<<XML
         <ocr>
-            <b>
-                <l>
-                    <w x="477 2083 437 95">B&#xFC;rgertum </w>
-                    <w x="950 2076 155 76">und </w>
-                </l>
-                <l>
-                    <w x="477 2201 574 102">B&#xFC;rgerlichkeit </w>
-                    <w x="1084 2205 74 68">in </w>
-                    <w x="1194 2199 333 75">Dresden </w>
-                </l>
-            </b>
-            <b>
-                <l>
-                    <w x="473 315 752 98">DRESDNER </w>
-                </l>
-                <l>
-                    <w x="473 492 448 97">HEFTE </w>
-                </l>
-            </b>
+            <b>Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</b>
         </ocr>
         XML;
 

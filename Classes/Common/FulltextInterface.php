@@ -22,8 +22,10 @@ namespace Kitodo\Dlf\Common;
  *
  * @abstract
  */
-interface FulltextInterface
-{
+interface FulltextInterface{
+
+    public function setPageId(string $pageId): void;
+
     /**
      * This extracts raw fulltext data from XML
      *

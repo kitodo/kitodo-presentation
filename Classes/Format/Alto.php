@@ -24,6 +24,7 @@ namespace Kitodo\Dlf\Format;
  */
 class Alto implements \Kitodo\Dlf\Common\FulltextInterface
 {
+
     /**
      * This extracts the fulltext data from ALTO XML
      *
@@ -158,5 +159,10 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
         } elseif (in_array('http://www.loc.gov/standards/alto/ns-v4#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v4#');
         }
+    }
+
+    public function setPageId(string $pageId): void
+    {
+        // Nothing to do here.
     }
 }

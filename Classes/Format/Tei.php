@@ -12,6 +12,9 @@
 
 namespace Kitodo\Dlf\Format;
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
 /**
  * Fulltext ALTO format class for the 'dlf' extension
  *
@@ -22,8 +25,17 @@ namespace Kitodo\Dlf\Format;
  *
  * @access public
  */
-class Tei implements \Kitodo\Dlf\Common\FulltextInterface
+class Tei implements \Kitodo\Dlf\Common\FulltextInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    private string $pageId;
+
+    public function setPageId(string $pageId): void
+    {
+        $this->pageId = $pageId;
+    }
+
     /**
      * This extracts the fulltext data from ALTO XML
      *
@@ -35,29 +47,43 @@ class Tei implements \Kitodo\Dlf\Common\FulltextInterface
      */
     public function getRawText(\SimpleXMLElement $xml): string
     {
-        $rawText = '';
+        if(empty($this->pageId)) {
+            $this->logger->warning('Text could not be retrieved from TEI because the page ID is empty.');
+            return '';
+        }
 
         // register ALTO namespace depending on document
         $this->registerTeiNamespace($xml);
 
         // Get all (presumed) words of the text.
-        $strings = $xml->xpath('./TEI:text/TEI:body//TEI:head');
-        $words = [];
-        if (!empty($strings)) {
-            for ($i = 0; $i < count($strings); $i++) {
-                $attributes = $strings[$i]->attributes();
-                if (isset($attributes['SUBS_TYPE'])) {
-                    if ($attributes['SUBS_TYPE'] == 'HypPart1') {
-                        $i++;
-                        $words[] = $attributes['SUBS_CONTENT'];
-                    }
-                } else {
-                    $words[] = $attributes['CONTENT'];
-                }
+        $contentHtml = $xml->xpath('./TEI:text')[0]->asXML();
+
+        // Remove tags but keep their content
+        $contentHtml = preg_replace('/<\/?(?:body|front|div|head|titlePage)[^>]*>/u', '', $contentHtml);
+
+        // Replace linebreaks
+        $contentHtml = preg_replace('/<lb(?:\s[^>]*)?\/>/u', '', $contentHtml);
+        $contentHtml = preg_replace('/\s+/', ' ', $contentHtml);
+
+        // Extract content between each <pb /> and the next <pb /> or end of string
+        $pattern = '/<pb[^>]*facs="([^"]+)"[^>]*\/>([\s\S]*?)(?=<pb[^>]*\/>|$)/u';
+        $facs = [];
+
+        // Use preg_match_all to get all matches at once
+        if (preg_match_all($pattern, $contentHtml, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $facsMatch = trim($match[1]);
+                $facsId = str_starts_with($facsMatch, "#") ? substr($facsMatch, 1) : $facsMatch;
+                $facs[$facsId] = trim(strip_tags($match[2])); // Everything until next <pb /> or end of string
             }
-            $rawText = implode(' ', $words);
         }
-        return $strings[0];
+
+        if(!array_key_exists($this->pageId, $facs)) {
+            $this->logger->debug('The page break attribute "facs" with the page identifier postfix "' . $this->pageId . '" could not be found in the TEI document');
+            return '';
+        }
+
+        return $facs[$this->pageId];
     }
 
     /**
@@ -71,42 +97,20 @@ class Tei implements \Kitodo\Dlf\Common\FulltextInterface
      */
     public function getTextAsMiniOcr(\SimpleXMLElement $xml): string
     {
-        // register ALTO namespace depending on document
-        $this->registerTeiNamespace($xml);
+        $rawText = $this->getRawText($xml);
 
-        // get all text blocks
-        $blocks = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock');
-
-        if (empty($blocks)) {
+        if (empty($rawText)) {
             return '';
         }
 
         $miniOcr = new \SimpleXMLElement("<ocr></ocr>");
-
-        foreach ($blocks as $block) {
-            $newBlock = $miniOcr->addChild('b');
-            foreach ($block->children() as $key => $value) {
-                if ($key === "TextLine") {
-                    $newLine = $newBlock->addChild('l');
-                    foreach ($value->children() as $wordKey => $word) {
-                        if ($wordKey == "String") {
-                            $attributes = $word->attributes();
-                            $newWord = $newLine->addChild('w', $this->getWord($attributes));
-                            $newWord->addAttribute('x', $this->getCoordinates($attributes));
-                        }
-                    }
-                }
-            }
-        }
-
+        $miniOcr->addChild('b', $rawText);
         $miniOcrXml = $miniOcr->asXml();
         if (\is_string($miniOcrXml)) {
             return $miniOcrXml;
         }
         return '';
     }
-
-
 
     /**
      * This registers the necessary ALTO namespace for the current ALTO-XML
@@ -130,4 +134,5 @@ class Tei implements \Kitodo\Dlf\Common\FulltextInterface
             $xml->registerXPathNamespace('TEI', 'http://www.tei-c.org/ns/1.0');
         }
     }
+
 }
