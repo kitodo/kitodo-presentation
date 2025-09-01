@@ -339,7 +339,7 @@ class BaseCommand extends Command
     private function addCollections(Document &$document, array $collections): void
     {
         foreach ($collections as $collection) {
-            $documentCollection = $this->collectionRepository->findOneBy([ 'indexName' => $collection ]);
+            $documentCollection = $this->collectionRepository->findOneBy(['indexName' => $collection]);
             if (!$documentCollection) {
                 // create new Collection object
                 $documentCollection = GeneralUtility::makeInstance(Collection::class);
