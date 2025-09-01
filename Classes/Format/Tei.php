@@ -129,5 +129,4 @@ class Tei implements FulltextInterface, LoggerAwareInterface
             $xml->registerXPathNamespace('TEI', 'http://www.tei-c.org/ns/1.0');
         }
     }
-
 }
