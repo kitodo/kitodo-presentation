@@ -3,7 +3,7 @@ description: 'This workflow triggers a Node.js build on a Pull Request to main t
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "6.x" ]
 
 jobs:
   build-check:
