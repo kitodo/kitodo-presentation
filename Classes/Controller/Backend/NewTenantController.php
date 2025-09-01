@@ -441,7 +441,7 @@ class NewTenantController extends AbstractController
         $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->count(['pid' => $this->pid]);
         $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
 
-        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->count([ 'pid' => $this->pid ]);
+        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->count(['pid' => $this->pid]);
 
         $viewData = ['recordInfos' => $recordInfos];
 
