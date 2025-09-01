@@ -222,7 +222,7 @@ class DeleteCommand extends BaseCommand
             if ($doc->recordId) {
                 $document = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
             } else {
-                $document = $this->documentRepository->findOneBy([ 'location' => $input->getOption('doc') ]);
+                $document = $this->documentRepository->findOneBy(['location' => $input->getOption('doc')]);
             }
         }
 
