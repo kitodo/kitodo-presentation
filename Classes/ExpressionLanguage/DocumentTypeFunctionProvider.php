@@ -190,7 +190,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 $this->document->setCurrentDocument($doc);
             }
         } elseif (!empty($requestData['recordId'])) {
-            $this->document = $this->documentRepository->findOneBy([ 'recordId' => $requestData['recordId'] ]);
+            $this->document = $this->documentRepository->findOneBy(['recordId' => $requestData['recordId']]);
             if ($this->document !== null) {
                 $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid]);
                 if ($doc !== null) {
