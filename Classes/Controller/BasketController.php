@@ -247,7 +247,7 @@ class BasketController extends AbstractController
         $userIsLoggedIn = $this->isUserLoggedIn();
 
         if ($userIsLoggedIn) {
-            $basket = $this->basketRepository->findOneBy([ 'feUserId' => (int) $feUser->getUserId() ]);
+            $basket = $this->basketRepository->findOneBy(['feUserId' => (int) $feUser->getUserId()]);
         } else {
             $userSession->set('ses', 'tx_dlf_basket', '');
             $userSession->dataWasUpdated();
