@@ -79,7 +79,7 @@ class Tei implements FulltextInterface, LoggerAwareInterface
             }
         }
 
-        if(!array_key_exists($this->pageId, $facs)) {
+        if (!array_key_exists($this->pageId, $facs)) {
             $this->logger->debug('The page break attribute "facs" with the page identifier postfix "' . $this->pageId . '" could not be found in the TEI document');
             return '';
         }
