@@ -48,7 +48,7 @@ class Tei implements FulltextInterface, LoggerAwareInterface
      */
     public function getRawText(\SimpleXMLElement $xml): string
     {
-        if(empty($this->pageId)) {
+        if (empty($this->pageId)) {
             $this->logger->warning('Text could not be retrieved from TEI because the page ID is empty.');
             return '';
         }
