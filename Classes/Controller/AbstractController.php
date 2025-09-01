@@ -730,7 +730,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
             if ($doc->recordId) {
                 // find document from repository by recordId
-                $docFromRepository = $this->documentRepository->findOneBy([ 'recordId' => $doc->recordId ]);
+                $docFromRepository = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
                 if ($docFromRepository !== null) {
                     $this->document = $docFromRepository;
                 }
