@@ -641,7 +641,7 @@ class BasketController extends AbstractController
         $printerId = $this->requestData['print_action'];
 
         // get id from db and send selected doc download link
-        $printer = $this->printerRepository->findOneBy([ 'uid' => $printerId ]);
+        $printer = $this->printerRepository->findOneBy(['uid' => $printerId]);
 
         // printer is selected
         if ($printer) {
