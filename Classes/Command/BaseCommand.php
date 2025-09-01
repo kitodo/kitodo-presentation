@@ -301,7 +301,7 @@ class BaseCommand extends Command
             $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid], true);
 
             if ($parent->recordId) {
-                $parentDocument = $this->documentRepository->findOneBy([ 'recordId' => $parent->recordId ]);
+                $parentDocument = $this->documentRepository->findOneBy(['recordId' => $parent->recordId]);
 
                 if ($parentDocument === null) {
                     // create new Document object
