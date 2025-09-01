@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Format;
 
+use Kitodo\Dlf\Common\FulltextInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -25,7 +26,7 @@ use Psr\Log\LoggerAwareTrait;
  *
  * @access public
  */
-class Tei implements \Kitodo\Dlf\Common\FulltextInterface, LoggerAwareInterface
+class Tei implements FulltextInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -37,7 +38,7 @@ class Tei implements \Kitodo\Dlf\Common\FulltextInterface, LoggerAwareInterface
     }
 
     /**
-     * This extracts the fulltext data from ALTO XML
+     * This extracts the fulltext data from TEI XML
      *
      * @access public
      *
@@ -87,7 +88,7 @@ class Tei implements \Kitodo\Dlf\Common\FulltextInterface, LoggerAwareInterface
     }
 
     /**
-     * This extracts the fulltext data from ALTO XML and returns it in MiniOCR format
+     * This extracts the fulltext data from TEI XML and returns it in MiniOCR format
      *
      * @access public
      *
@@ -113,20 +114,13 @@ class Tei implements \Kitodo\Dlf\Common\FulltextInterface, LoggerAwareInterface
     }
 
     /**
-     * This registers the necessary ALTO namespace for the current ALTO-XML
+     * This registers the necessary TEI namespace for the current TEI-XML
      *
      * @access private
      *
      * @param \SimpleXMLElement &$xml: The XML to register the namespace for
      */
-    /**
-     * This registers the necessary ALTO namespace for the current ALTO-XML
-     *
-     * @access private
-     *
-     * @param \SimpleXMLElement &$xml: The XML to register the namespace for
-     */
-    private function registerTeiNamespace(\SimpleXMLElement &$xml)
+    private function registerTeiNamespace(\SimpleXMLElement $xml)
     {
         $namespace = $xml->getDocNamespaces();
 
