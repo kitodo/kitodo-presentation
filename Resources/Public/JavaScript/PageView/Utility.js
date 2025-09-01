@@ -533,6 +533,27 @@ dlfUtils.getUrlParam = function (param) {
 };
 
 /**
+ * Check if an array (possibly nested) contains at least one non-empty value.
+ *
+ * @param {Array} arr - The array to check (may be nested).
+ * @returns {boolean} True if at least one non-empty value exists, false otherwise.
+ */
+dlfUtils.hasContent = function(arr) {
+    if (!Array.isArray(arr)) {
+        return false;
+    }
+
+    return arr.some(item => {
+        if (Array.isArray(item)) {
+            // Recurse into nested arrays
+            return dlfUtils.hasContent(item);
+        }
+        // Check primitive values: must not be null/undefined/empty-string
+        return item !== null && item !== undefined && String(item).trim() !== "";
+    });
+};
+
+/**
  * Returns true if the specified value is null.
  * @param {?} val
  * @returns {boolean}
