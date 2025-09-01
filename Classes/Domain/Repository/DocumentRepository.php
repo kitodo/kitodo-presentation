@@ -75,7 +75,7 @@ class DocumentRepository extends Repository
 
         } else if (isset($parameters['recordId'])) {
 
-            $document = $this->findOneBy([ 'recordId' => $parameters['recordId'] ]);
+            $document = $this->findOneBy(['recordId' => $parameters['recordId']]);
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
