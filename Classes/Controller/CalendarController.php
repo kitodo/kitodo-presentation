@@ -457,7 +457,7 @@ class CalendarController extends AbstractController
     {
         $documents = $this->documentRepository->getChildrenOfYearAnchor(
             $this->document->getUid(),
-            $this->structureRepository->findOneBy([ 'indexName' => 'issue' ])
+            $this->structureRepository->findOneBy(['indexName' => 'issue'])
         );
 
         // Process results.
