@@ -210,7 +210,7 @@ class NewTenantController extends AbstractController
 
         foreach ($formatsDefaults as $type => $values) {
             // if default format record is not found, add it to the repository
-            if ($this->formatRepository->findOneBy([ 'type' => $type ]) === null) {
+            if ($this->formatRepository->findOneBy(['type' => $type]) === null) {
                 $newRecord = GeneralUtility::makeInstance(Format::class);
                 $newRecord->setType($type);
                 $newRecord->setRoot($values['root']);
