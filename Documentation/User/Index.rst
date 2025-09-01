@@ -579,6 +579,11 @@ TEI contains all full texts of the entire document.
       </mets:file>
    </mets:fileGrp>
 
+.. note::
+
+   The identifier of the ``facsimile`` tag (and thus the ``pb`` tag (page break) references) in the TEI must match the ``ID`` attribute of the ``mets:div`` with type ``page`` in the physical structMap of the METS. Otherwise, the pages cannot be mapped and will not be indexed.
+
+
 For indexing full texts, the formats need to be defined in the Data Formats or in the table ``tx_dlf_formats`` with following settings.
 
 .. t3-field-list-table::
