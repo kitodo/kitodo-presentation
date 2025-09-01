@@ -432,7 +432,7 @@ class BaseCommand extends Command
         if (empty($this->owner)) {
             // owner is not set set but found by metadata --> take it or take default library
             $owner = $owner ? : 'default';
-            $this->owner = $this->libraryRepository->findOneBy([ 'indexName' => $owner ]);
+            $this->owner = $this->libraryRepository->findOneBy(['indexName' => $owner]);
             if (empty($this->owner)) {
                 // create library
                 $this->owner = GeneralUtility::makeInstance(Library::class);
