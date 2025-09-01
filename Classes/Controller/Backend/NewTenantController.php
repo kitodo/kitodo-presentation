@@ -434,7 +434,7 @@ class NewTenantController extends AbstractController
         $recordInfos['formats']['numDefault'] = count($formatsDefaults);
 
         $structuresDefaults = $this->getRecords('Structure');
-        $recordInfos['structures']['numCurrent'] = $this->structureRepository->count([ 'pid' => $this->pid ]);
+        $recordInfos['structures']['numCurrent'] = $this->structureRepository->count(['pid' => $this->pid]);
         $recordInfos['structures']['numDefault'] = count($structuresDefaults);
 
         $metadataDefaults = $this->getRecords('Metadata');
