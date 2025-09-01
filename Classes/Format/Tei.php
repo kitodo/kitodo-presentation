@@ -57,21 +57,21 @@ class Tei implements FulltextInterface, LoggerAwareInterface
         $this->registerTeiNamespace($xml);
 
         // Get all (presumed) words of the text.
-        $contentHtml = $xml->xpath('./TEI:text')[0]->asXML();
+        $contentXml = $xml->xpath('./TEI:text')[0]->asXML();
 
         // Remove tags but keep their content
-        $contentHtml = preg_replace('/<\/?(?:body|front|div|head|titlePage)[^>]*>/u', '', $contentHtml);
+        $contentXml = preg_replace('/<\/?(?:body|front|div|head|titlePage)[^>]*>/u', '', $contentXml);
 
         // Replace linebreaks
-        $contentHtml = preg_replace('/<lb(?:\s[^>]*)?\/>/u', '', $contentHtml);
-        $contentHtml = preg_replace('/\s+/', ' ', $contentHtml);
+        $contentXml = preg_replace('/<lb(?:\s[^>]*)?\/>/u', '', $contentXml);
+        $contentXml = preg_replace('/\s+/', ' ', $contentXml);
 
         // Extract content between each <pb /> and the next <pb /> or end of string
         $pattern = '/<pb[^>]*facs="([^"]+)"[^>]*\/>([\s\S]*?)(?=<pb[^>]*\/>|$)/u';
         $facs = [];
 
         // Use preg_match_all to get all matches at once
-        if (preg_match_all($pattern, $contentHtml, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all($pattern, $contentXml, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $facsMatch = trim($match[1]);
                 $facsId = str_starts_with($facsMatch, "#") ? substr($facsMatch, 1) : $facsMatch;
