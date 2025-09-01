@@ -105,7 +105,7 @@ class Tei implements FulltextInterface, LoggerAwareInterface
             return '';
         }
 
-        $miniOcr = new \SimpleXMLElement("<ocr></ocr>");
+        $miniOcr = new SimpleXMLElement("<ocr></ocr>");
         $miniOcr->addChild('b', $rawText);
         $miniOcrXml = $miniOcr->asXml();
         if (\is_string($miniOcrXml)) {
