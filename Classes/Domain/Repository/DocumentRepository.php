@@ -735,7 +735,7 @@ class DocumentRepository extends Repository
      */
     public function getNextDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneBy([ 'uid' => $uid ]);
+        $currentDocument = $this->findOneBy(['uid' => $uid]);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 
