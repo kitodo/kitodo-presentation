@@ -492,7 +492,7 @@ class OaiPmhController extends AbstractController
         $resArray = [];
         // check for the optional "identifier" parameter
         if (isset($this->parameters['identifier'])) {
-            $resArray = $this->documentRepository->findOneBy([ 'recordId' => $this->parameters['identifier'] ]);
+            $resArray = $this->documentRepository->findOneBy(['recordId' => $this->parameters['identifier']]);
         }
 
         $resultSet = [];
