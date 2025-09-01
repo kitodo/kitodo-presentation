@@ -175,7 +175,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
-                        $this->document = $this->documentRepository->findOneBy([ 'recordId' => $doc->recordId ]);
+                        $this->document = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
                     }
                     if (!isset($this->document)) {
                         // create new dummy Document object
