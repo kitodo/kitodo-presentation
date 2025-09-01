@@ -150,7 +150,7 @@ class IndexCommand extends BaseCommand
             if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
                 $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
             } else {
-                $this->owner = $this->libraryRepository->findOneBy([ 'indexName' => (string) $input->getOption('owner')]);
+                $this->owner = $this->libraryRepository->findOneBy(['indexName' => (string) $input->getOption('owner')]);
             }
         } else {
             $this->owner = null;
