@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Format;
 use Kitodo\Dlf\Common\FulltextInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use SimpleXMLElement;
 
 /**
  * Fulltext ALTO format class for the 'dlf' extension
