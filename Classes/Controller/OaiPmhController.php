@@ -317,7 +317,7 @@ class OaiPmhController extends AbstractController
      */
     protected function resume(): ?array
     {
-        $token = $this->tokenRepository->findOneBy([ 'token' => $this->parameters['resumptionToken'] ]);
+        $token = $this->tokenRepository->findOneBy(['token' => $this->parameters['resumptionToken']]);
 
         if ($token) {
             $options = $token->getOptions();
