@@ -253,7 +253,7 @@ class BasketController extends AbstractController
             $userSession->dataWasUpdated();
             $feUser->storeSessionData();
 
-            $basket = $this->basketRepository->findOneBy([ 'sessionId' => $userSession->getIdentifier() ]);
+            $basket = $this->basketRepository->findOneBy(['sessionId' => $userSession->getIdentifier()]);
         }
 
         // session does not exist
