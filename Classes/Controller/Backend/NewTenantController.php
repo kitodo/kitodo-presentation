@@ -333,7 +333,7 @@ class NewTenantController extends AbstractController
         // load language file in own array
         $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getTypo3Language());
 
-        if ($this->solrCoreRepository->findOneBy([ 'pid' => $this->pid ]) === null) {
+        if ($this->solrCoreRepository->findOneBy(['pid' => $this->pid]) === null) {
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
             $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getTypo3Language(), $beLabels). ' (PID ' . $this->pid . ')');
             $indexName = Solr::createCore('');
