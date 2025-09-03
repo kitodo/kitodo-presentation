@@ -62,36 +62,42 @@
 
         <script>
             const equalizer = document.querySelector('dlf-equalizer');
-            equalizer.parsePresets([
-                {
-                    key: "riaa",
-                    mode: "riaa",
-                    group: "riaa",
-                    label: "RIAA",
-                    params: {
-                        trebleCut: 75,
-                        baseBoost: 318,
-                        baseBoostRolloff: 3180,
+            if (equalizer) {
+                equalizer.parsePresets([
+                    {
+                        key: "riaa",
+                        mode: "riaa",
+                        group: "riaa",
+                        label: "RIAA",
+                        params: {
+                            trebleCut: 75,
+                            baseBoost: 318,
+                            baseBoostRolloff: 3180,
+                        },
                     },
-                },
-                {
-                    key: "riaa-iec",
-                    mode: "riaa",
-                    group: "riaa",
-                    label: "Enhanced RIAA / IEC",
-                    params: {
-                        trebleCut: 75,
-                        baseBoost: 318,
-                        baseBoostRolloff: 3180,
-                        deepBaseRolloff: 7950,
+                    {
+                        key: "riaa-iec",
+                        mode: "riaa",
+                        group: "riaa",
+                        label: "Enhanced RIAA / IEC",
+                        params: {
+                            trebleCut: 75,
+                            baseBoost: 318,
+                            baseBoostRolloff: 3180,
+                            deepBaseRolloff: 7950,
+                        },
                     },
-                },
-            ]);
-            equalizer.selectPreset("riaa");
-            const gainOffsetSlider = document.getElementById('gain-offset-slider');
-            window.setInterval(() => {
-                equalizer.view.fftSnapshot(gainOffsetSlider.valueAsNumber);
-            }, 500);
+                ]);
+                equalizer.selectPreset("riaa");
+                const gainOffsetSlider = document.getElementById('gain-offset-slider');
+                window.setInterval(() => {
+                    if (equalizer.view) {
+                        equalizer.view.fftSnapshot(gainOffsetSlider.valueAsNumber);
+                    }
+                }, 500);
+            } else {
+                console.warn('Equalizer component not found in the DOM.');
+            }
         </script>
     </body>
 </html>

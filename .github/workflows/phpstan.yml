@@ -2,9 +2,9 @@ name: PHPStan
 
 on:
     push:
-      branches: [ "main" ]
+      branches: [ "6.x" ]
     pull_request:
-      branches: [ "main" ]
+      branches: [ "6.x" ]
 
 jobs:
   phpstan:

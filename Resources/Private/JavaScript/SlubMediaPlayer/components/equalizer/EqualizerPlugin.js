@@ -34,13 +34,27 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
     };
 
     /** @private */
-    this.context = new AudioContext();
+    /** @private @type {AudioContext | null} */
+    // Don't create AudioContext eagerly: some browsers block creation before
+    // a user gesture (autoplay policies). Create / resume it on demand in resumeAudioContext().
+    this.context = null;
 
-    /** @private */
-    this.markAsResumed = (/** @type {any} */ _value) => { };
+    /** @private @type {(value?: any) => void} */
+    this.markAsResumed = (/* value */) => { };
+
+    /** @private @type {HTMLElement | null} */
+    this.resumeHintEl_ = null;
 
     /** @private */
     this.resumedPromise = new Promise((resolve) => { this.markAsResumed = resolve; });
+  }
+
+  /** @private */
+  removeResumeHint_() {
+    if (this.resumeHintEl_ && this.resumeHintEl_.parentNode) {
+      this.resumeHintEl_.parentNode.removeChild(this.resumeHintEl_);
+    }
+    this.resumeHintEl_ = null;
   }
 
   get view() {
@@ -56,8 +70,28 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
       console.error("Warning: The equalizer will probably fail without HTTPS");
     }
 
-    // Resume audio context
+    // Resume audio context (ensures this.context is available)
     await this.resumeAudioContext();
+
+    if (this.context === null) {
+      // As a last resort, create one. This should not normally happen because
+      // resumeAudioContext creates it, but this guard avoids null deref.
+      const AC = (typeof window.AudioContext !== 'undefined')
+        ? window.AudioContext
+        : /** @type {any} */ (globalThis).webkitAudioContext;
+      if (typeof AC === 'undefined') {
+        console.error('AudioContext is not supported in this environment');
+        return;
+      }
+      this.context = new AC();
+    }
+
+    if (this.context === null) {
+      console.error('AudioContext creation failed');
+      return;
+    }
+    /** @type {AudioContext} */
+    const ctx = this.context;
 
     // Load MultiIirProcessor
     const blob = new Blob([`
@@ -66,13 +100,18 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
     `], { type: 'application/javascript; charset=utf-8' });
     // TODO: Object URLs didn't work in Chrome?
     const dataUrl = await blobToDataURL(blob);
-    await this.context.audioWorklet.addModule(dataUrl);
+    try {
+      await ctx.audioWorklet.addModule(dataUrl);
+    } catch (err) {
+      console.error('Failed to load equalizer audio worklet:', err);
+      // Proceed without the worklet — equalizer may still function with fallback code paths.
+    }
 
     // Connect equalizer
     player.media.crossOrigin = 'anonymous';
-    const source = this.context.createMediaElementSource(player.media);
+    const source = ctx.createMediaElementSource(player.media);
     const eq = new Equalizer(source);
-    eq.connect(this.context.destination);
+    eq.connect(ctx.destination);
 
     // Setup view
     this.eqView_ = new EqualizerView(this.env, eq);
@@ -132,24 +171,66 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
    * @private
    */
   async resumeAudioContext() {
-    if (this.context.state === 'running') {
+    // Do NOT create or resume the AudioContext here synchronously.
+    // Instead show a resume UI and create/resume the context inside the user gesture handlers (pointerdown/keydown). 
+    // This avoids browsers blocking the action because it's not triggered by a user gesture.
+
+    // If we already have a context and it's running, immediately resolve.
+    if (this.context !== null && this.context.state === 'running') {
       this.markAsResumed();
-    } else {
-      this.append(e('div', { className: "dlf-equalizer-resume" }, [
-        this.env.t('control.sound_tools.equalizer.resume_context'),
-      ]));
-      this.context.resume().then(() => {
-        this.markAsResumed();
-      });
+      await this.resumedPromise;
+      return;
     }
-    window.addEventListener('pointerdown', async () => {
-      await this.context.resume();
+
+    // Show resume hint once - accessible button
+    if (!this.resumeHintEl_) {
+      const btn = e('button', { className: 'dlf-equalizer-resume', type: 'button', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, [
+        this.env.t('control.sound_tools.equalizer.resume_context'),
+      ]);
+      btn.addEventListener('click', () => createAndResume());
+      this.resumeHintEl_ = btn;
+      this.append(btn);
+    }
+
+    const createAndResume = async () => {
+      // Create AudioContext lazily if missing.
+      if (this.context === null) {
+        const AC = (typeof window.AudioContext !== 'undefined')
+          ? window.AudioContext
+          : /** @type {any} */ (globalThis).webkitAudioContext;
+        if (typeof AC === 'undefined') {
+          // Audio not supported -> resolve anyway
+          this.markAsResumed();
+          return;
+        }
+        this.context = new AC();
+      }
+
+      // Narrow to local non-null variable for the typechecker.
+      const ctx = this.context;
+      if (ctx) {
+        try {
+          // Resume the context (allowed because we're inside a user gesture).
+          await ctx.resume();
+        } catch (e) {
+          // ignore
+        }
+      }
+      // remove resume hint if present
+      this.removeResumeHint_();
       this.markAsResumed();
-    }, { once: true, capture: true });
-    window.addEventListener('keydown', async () => {
-      await this.context.resume();
+    };
+
+    // Attach once-only handlers that will create/resume the context on first user interaction.
+    window.addEventListener('pointerdown', createAndResume, { once: true, capture: true });
+    window.addEventListener('keydown', createAndResume, { once: true, capture: true });
+
+    // Also attempt to resume if the browser reports a running context later (edge case), but don't create it here.
+    if (this.context !== null && this.context.state === 'running') {
+      this.removeResumeHint_();
       this.markAsResumed();
-    }, { once: true, capture: true });
+    }
+
     await this.resumedPromise;
   }
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+    </teiHeader>
+    <facsimile>
+        <graphic mimeType="image/jpeg" url="https://www.example.com/00000001.tif.original.jpg" id="f0001"/>
+        <graphic mimeType="image/jpeg" url="https://www.example.com/00000002.tif.original.jpg" id="f0002"/>
+    </facsimile>
+    <text>
+        <front>
+            <titlePage id="uuid-82add175-7012-4a6d-bc13-a1a666acb769">
+                <pb facs="#f0001" n=" - " corresp="https://www.example.com/0001"/>
+                <p>
+                    <lb/>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+
+                </p>
+            </titlePage>
+        </front>
+        <body>
+            <div id="uuid-cf72f6ba-61a0-41b3-ba9b-a6331b7a504b" n="1" rend="Content">
+                <pb facs="#f0002" n=" - " corresp="https://www.example.com/0002"/>
+            </div>
+            <div id="uuid-45e92103-ecd2-46ab-aabd-ddc589a548d2" n="1" rend="Aenean commodo ligula eget dolor">
+                <head>
+                    <lb/>
+                    Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+                </head>
+            </div>
+        </body>
+        <back/>
+    </text>
+</TEI>

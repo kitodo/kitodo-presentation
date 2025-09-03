@@ -3,7 +3,7 @@ description: 'This workflow triggers a Node.js build on push or manually: it rea
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "6.x" ]
   workflow_dispatch:
 
 jobs:

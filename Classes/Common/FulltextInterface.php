@@ -24,6 +24,16 @@ namespace Kitodo\Dlf\Common;
  */
 interface FulltextInterface
 {
+
+    /**
+     * Set the page identifier.
+     *
+     * @access public
+     *
+     * @param string $pageId The page identifier of mets:div in the physical struct map of the METS.
+     */
+    public function setPageId(string $pageId): void;
+
     /**
      * This extracts raw fulltext data from XML
      *

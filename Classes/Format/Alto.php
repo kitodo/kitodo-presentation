@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Format;
 
+use Kitodo\Dlf\Common\FulltextInterface;
+
 /**
  * Fulltext ALTO format class for the 'dlf' extension
  *
@@ -22,7 +24,7 @@ namespace Kitodo\Dlf\Format;
  *
  * @access public
  */
-class Alto implements \Kitodo\Dlf\Common\FulltextInterface
+class Alto implements FulltextInterface
 {
     /**
      * This extracts the fulltext data from ALTO XML
@@ -158,5 +160,10 @@ class Alto implements \Kitodo\Dlf\Common\FulltextInterface
         } elseif (in_array('http://www.loc.gov/standards/alto/ns-v4#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v4#');
         }
+    }
+
+    public function setPageId(string $pageId): void
+    {
+        // Nothing to do here.
     }
 }

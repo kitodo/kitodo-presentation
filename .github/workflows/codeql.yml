@@ -2,9 +2,9 @@ name: CodeQL
 
 on:
   push:
-    branches: [ "main", "1.x", "2.x", "3.2.x", "3.3.x", "4.x", "5.0.x", "5.1.x" ]
+    branches: [ "6.x" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "6.x" ]
 
 jobs:
   analyze:
