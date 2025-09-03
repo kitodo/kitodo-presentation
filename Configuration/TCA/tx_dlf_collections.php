@@ -16,7 +16,6 @@ return [
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
-        'cruser_id' => 'cruser_id',
         'fe_cruser_id' => 'fe_cruser_id',
         'fe_admin_lock' => 'fe_admin_lock',
         'languageField' => 'sys_language_uid',
@@ -51,7 +50,10 @@ return [
                 'foreign_table' => 'tx_dlf_collections',
                 'foreign_table_where' => 'AND tx_dlf_collections.pid=###CURRENT_PID### AND tx_dlf_collections.sys_language_uid IN (-1,0)',
                 'items' => [
-                    ['', 0],
+                    [
+                        'label' => '',
+                        'value' => 0,
+                    ],
                 ],
                 'default' => 0,
             ],
@@ -77,9 +79,18 @@ return [
                 'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'fe_groups',
                 'items' => [
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', '-1'],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', '-2'],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        'value' => '-1',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        'value' => '-2',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        'value' => '--div--',
+                    ],
                 ],
                 'size' => 5,
                 'autoSizeMax' => 15,
@@ -96,7 +107,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,trim',
+                'required' => true,
+                'eval' => 'trim',
                 'default' => '',
             ],
         ],
@@ -108,7 +120,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,uniqueInPid',
+                'required' => true,
+                'eval' => 'uniqueInPid',
                 'default' => '',
                 'fieldInformation' => [
                     'editInProductionWarning' => [
@@ -162,19 +175,17 @@ return [
             'exclude' => 1,
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.thumbnail',
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                'image',
-                [
-                    'appearance' => [
-                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
-                    ],
-                    'foreign_match_fields' => [
-                        'fieldname' => 'thumbnail',
-                        'tablenames' => 'tx_dlf_collections',
-                    ],
+            'config' => [
+                'type' => 'file',
+                'appearance' => [
+                    'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference'
                 ],
-                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            )
+                'foreign_match_fields' => [
+                    'fieldname' => 'thumbnail',
+                    'tablenames' => 'tx_dlf_collections',
+                ],
+                'allowed' => 'common-image-types'
+            ],
         ],
         'priority' => [
             'exclude' => 1,
@@ -184,11 +195,26 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['1', 1],
-                    ['2', 2],
-                    ['3', 3],
-                    ['4', 4],
-                    ['5', 5],
+                    [
+                        'label' => '1',
+                        'value' => 1,
+                    ],
+                    [
+                        'label' => '2',
+                        'value' => 2,
+                    ],
+                    [
+                        'label' => '3',
+                        'value' => 3,
+                    ],
+                    [
+                        'label' => '4',
+                        'value' => 4,
+                    ],
+                    [
+                        'label' => '5',
+                        'value' => 5,
+                    ],
                 ],
                 'size' => 1,
                 'minitems' => 1,
@@ -226,7 +252,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.owner.none', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.owner.none',
+                        'value' => 0,
+                    ],
                 ],
                 'foreign_table' => 'tx_dlf_libraries',
                 'foreign_table_where' => 'AND tx_dlf_libraries.sys_language_uid IN (-1,0) ORDER BY tx_dlf_libraries.label',
@@ -244,7 +273,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id.none', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.fe_cruser_id.none',
+                        'value' => 0,
+                    ],
                 ],
                 'foreign_table' => 'fe_users',
                 'foreign_table_where' => 'ORDER BY fe_users.username',
@@ -271,7 +303,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.status.default', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections.status.default',
+                        'value' => 0,
+                    ],
                 ],
                 'size' => 1,
                 'minitems' => 1,

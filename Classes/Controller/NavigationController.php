@@ -101,7 +101,7 @@ class NavigationController extends AbstractController
         $this->view->assign('numPages', $this->document->getCurrentDocument()->numPages);
         $this->view->assign('viewData', $this->viewData);
 
-        $searchSessionParameters = $GLOBALS['TSFE']->fe_user->getKey('ses', 'search');
+        $searchSessionParameters = $this->request->getAttribute('frontend.user')->getKey('ses', 'search');
         if ($searchSessionParameters) {
             $lastSearchArguments = [
                 'tx_dlf_listview' => [

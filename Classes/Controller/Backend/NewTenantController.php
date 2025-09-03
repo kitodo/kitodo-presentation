@@ -148,20 +148,24 @@ class NewTenantController extends AbstractController
      * 
      * @access protected
      * 
-     * @param ?string $html optional html
+     * @param bool $isError whether to render the non-error or error template
+     * 
+     * @param array $extraData extra view data used to render the template (in addition to $viewData of AbstractController)
      * 
      * @return ResponseInterface the response
      */
-    protected function htmlResponse(?string $html = null): ResponseInterface
+    protected function templateResponse(bool $isError, array $extraData): ResponseInterface
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
 
         $moduleTemplateFactory = GeneralUtility::makeInstance(ModuleTemplateFactory::class);
         $moduleTemplate = $moduleTemplateFactory->create($this->request);
-        $moduleTemplate->setContent($this->view->render());
+        $moduleTemplate->assignMultiple($this->viewData);
+        $moduleTemplate->assignMultiple($extraData);
         $moduleTemplate->setFlashMessageQueue($messageQueue);
-        return parent::htmlResponse(($html ?? $moduleTemplate->renderContent()));
+        $template = $isError ? 'Backend/NewTenant/Error' : 'Backend/NewTenant/Index';
+        return $moduleTemplate->renderResponse($template);
     }
 
     /**
@@ -173,8 +177,7 @@ class NewTenantController extends AbstractController
      */
     protected function initializeAction(): void
     {
-        // replace with $this->request->getQueryParams() when dropping support for Typo3 v11, see Deprecation-100596
-        $this->pid = (int) GeneralUtility::_GP('id');
+        $this->pid = (int) ($this->request->getQueryParams()['id'] ?? null);
 
         $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
@@ -207,7 +210,7 @@ class NewTenantController extends AbstractController
 
         foreach ($formatsDefaults as $type => $values) {
             // if default format record is not found, add it to the repository
-            if ($this->formatRepository->findOneByType($type) === null) {
+            if ($this->formatRepository->findOneBy(['type' => $type]) === null) {
                 $newRecord = GeneralUtility::makeInstance(Format::class);
                 $newRecord->setType($type);
                 $newRecord->setRoot($values['root']);
@@ -286,6 +289,7 @@ class NewTenantController extends AbstractController
 
         $insertedMetadata = [];
         foreach ($metadataIds as $id => $uid) {
+            /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
             $metadata = $this->metadataRepository->findByUid($uid);
             // id array contains also ids of formats
             if ($metadata != null) {
@@ -329,7 +333,7 @@ class NewTenantController extends AbstractController
         // load language file in own array
         $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getTypo3Language());
 
-        if ($this->solrCoreRepository->findOneByPid($this->pid) === null) {
+        if ($this->solrCoreRepository->findOneBy(['pid' => $this->pid]) === null) {
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
             $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getTypo3Language(), $beLabels). ' (PID ' . $this->pid . ')');
             $indexName = Solr::createCore('');
@@ -381,7 +385,9 @@ class NewTenantController extends AbstractController
 
         $insertedStructures = [];
         foreach ($structureIds as $id => $uid) {
-            $insertedStructures[$uid] = $this->structureRepository->findByUid($uid)->getIndexName();
+            /** @var \Kitodo\Dlf\Domain\Model\Structure $structure */
+            $structure = $this->structureRepository->findByUid($uid);
+            $insertedStructures[$uid] = $structure->getIndexName();
         }
 
         foreach ($this->siteLanguages as $siteLanguage) {
@@ -428,18 +434,18 @@ class NewTenantController extends AbstractController
         $recordInfos['formats']['numDefault'] = count($formatsDefaults);
 
         $structuresDefaults = $this->getRecords('Structure');
-        $recordInfos['structures']['numCurrent'] = $this->structureRepository->countByPid($this->pid);
+        $recordInfos['structures']['numCurrent'] = $this->structureRepository->count(['pid' => $this->pid]);
         $recordInfos['structures']['numDefault'] = count($structuresDefaults);
 
         $metadataDefaults = $this->getRecords('Metadata');
-        $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->countByPid($this->pid);
+        $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->count(['pid' => $this->pid]);
         $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
 
-        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->countByPid($this->pid);
+        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->count(['pid' => $this->pid]);
 
-        $this->view->assign('recordInfos', $recordInfos);
+        $viewData = ['recordInfos' => $recordInfos];
 
-        return $this->htmlResponse();
+        return $this->templateResponse(false, $viewData);
     }
 
     /**
@@ -452,7 +458,7 @@ class NewTenantController extends AbstractController
     // @phpstan-ignore-next-line
     public function errorAction(): ResponseInterface
     {
-        return $this->htmlResponse();
+        return $this->templateResponse(true, []);
     }
 
     /**

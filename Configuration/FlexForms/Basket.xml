@@ -15,104 +15,85 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
-                </TCEforms>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.pregeneration>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.preGeneration</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.preGeneration</label>
+                        <config>
+                            <type>check</type>
+                            <default>0</default>
+                        </config>
                     </settings.pregeneration>
                     <settings.pdfgenerate>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfGenerate</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required</eval>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfGenerate</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required</eval>
+                        </config>
                     </settings.pdfgenerate>
                     <settings.pdfdownload>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfDownload</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required</eval>
-                                <default></default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfDownload</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required</eval>
+                            <default></default>
+                        </config>
                     </settings.pdfdownload>
                     <settings.pdfprint>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfPrint</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required</eval>
-                                <default></default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfPrint</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required</eval>
+                            <default></default>
+                        </config>
                     </settings.pdfprint>
                     <settings.pdfparams>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfParams</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required</eval>
-                                <default>##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfParams</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required</eval>
+                            <default>##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##</default>
+                        </config>
                     </settings.pdfparams>
                     <settings.pdfparamseparator>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfParamSeparator</label>
-                            <config>
-                                <type>input</type>
-                                <eval>required</eval>
-                                <default>*</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfParamSeparator</label>
+                        <config>
+                            <type>input</type>
+                            <eval>required</eval>
+                            <default>*</default>
+                        </config>
                     </settings.pdfparamseparator>
                     <settings.basketGoToButton>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.basketGoToButton</label>
-                            <config>
-                                <type>check</type>
-                                <default>0</default>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.basketGoToButton</label>
+                        <config>
+                            <type>check</type>
+                            <default>0</default>
+                        </config>
                     </settings.basketGoToButton>
                     <settings.targetBasket>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                                <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
-                                <config>
-                                    <type>group</type>
-                                    <internal_type>db</internal_type>
-                                    <allowed>pages</allowed>
-                                    <size>1</size>
-                                    <maxitems>1</maxitems>
-                                    <minitems>1</minitems>
-                                    <show_thumbs>1</show_thumbs>
-                                    <wizards>
-                                        <suggest>
-                                            <type>suggest</type>
-                                        </suggest>
-                                    </wizards>
-                                </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
+                        <config>
+                            <type>group</type>
+                            <allowed>pages</allowed>
+                            <size>1</size>
+                            <maxitems>1</maxitems>
+                            <minitems>1</minitems>
+                            <show_thumbs>1</show_thumbs>
+                            <wizards>
+                                <suggest>
+                                    <type>suggest</type>
+                                </suggest>
+                            </wizards>
+                        </config>
                     </settings.targetBasket>
                 </el>
             </ROOT>

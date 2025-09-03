@@ -44,27 +44,29 @@ class SolrSearchQueryTest extends FunctionalTestCase
     {
         parent::setUp();
         $this->setUpData(self::$databaseFixtures);
-        $this->setUpSolr(4, 0, self::$solrFixtures);
+        $this->setUpSolr(4, 20000, self::$solrFixtures);
     }
 
     /**
      * @test
-     * @ignore
      */
     public function canExecute()
     {
         $documentRepository = $this->initializeRepository(DocumentRepository::class, 0);
-        $settings = ['solrcore' => 4, 'storagePid' => 0];
+        $settings = ['solrcore' => 4, 'storagePid' => 20000];
+
+        // FIXME: test would fail because it is not possible to set $this->settings['storagePid'] for the
+        // documentRepository used in DocumentRepository.php:502
+        // as a workaround, call $documentRepository->findSolrWithoutCollection to register settings
+        $documentRepository->findSolrWithoutCollection($settings, []);
 
         $params = ['query' => '10 Keyboard pieces'];
         $search = new SolrSearch($documentRepository, [], $settings, $params);
         $search->prepare();
         $solrSearchQuery = $search->getQuery();
         $result = $solrSearchQuery->execute();
-        // FIXME: test would fail because it is not possible to set $this->settings['storagePid'] for the
-        //  documentRepository used in DocumentRepository.php:502
 
-        self::assertCount(0, $result);
-        self::assertEquals(0, $solrSearchQuery->getLimit());
+        self::assertCount(1, $result);
+        self::assertEquals(1, $solrSearchQuery->getLimit());
     }
 }

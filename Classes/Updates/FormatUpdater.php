@@ -17,8 +17,10 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\ChattyInterface;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
@@ -31,6 +33,7 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  *
  * @access public
  */
+#[UpgradeWizard('formatUpdater')]
 class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -46,19 +49,6 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
      * @var OutputInterface
      */
     protected OutputInterface $output;
-
-    /**
-     * Return the identifier for this wizard
-     * This should be the same string as used in the ext_localconf class registration
-     *
-     * @access public
-     *
-     * @return string Unique identifier of this updater
-     */
-    public function getIdentifier(): string
-    {
-        return self::class;
-    }
 
     /**
      * Return the speaking name of this wizard
@@ -176,7 +166,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
                     $queryBuilder->expr()->eq('pid', 0)
                 )
                 ->orderBy('uid')
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative();
             if ($countOnly === true) {
                 $numResults += count($result);
@@ -242,7 +232,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
                 $solrQueryBuilder->expr()->eq('uid', 1)
             )
             ->orderBy('uid')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if ($result !== false) {
@@ -250,9 +240,9 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
             $queryBuilder->update($this->table)->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($row['uid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($row['uid'], Connection::PARAM_INT)
                 )
-            )->set('pid', $result['pid'])->execute();
+            )->set('pid', $result['pid'])->executeStatement();
         }
     }
 }

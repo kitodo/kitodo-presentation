@@ -12,9 +12,11 @@
 
 namespace Kitodo\Dlf\Updates;
 
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
@@ -26,22 +28,9 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  *
  * @internal
  */
+#[UpgradeWizard('migrateSettings')]
 class MigrateSettings implements UpgradeWizardInterface
 {
-
-    /**
-     * Return the identifier for this wizard
-     * This should be the same string as used in the ext_localconf class registration
-     *
-     * @access public
-     *
-     * @return string
-     */
-    public function getIdentifier(): string
-    {
-        return self::class;
-    }
-
     /**
      * Return the speaking name of this wizard
      *
@@ -91,7 +80,7 @@ class MigrateSettings implements UpgradeWizardInterface
                 $queryBuilder->expr()->eq('CType', $queryBuilder->createNamedParameter('list')),
                 $queryBuilder->expr()->like('list_type', $queryBuilder->createNamedParameter('dlf_%'))
             )
-            ->execute();
+            ->executeQuery();
 
         // Update the found record sets
         while ($record = $statement->fetchAssociative()) {
@@ -100,11 +89,11 @@ class MigrateSettings implements UpgradeWizardInterface
                 ->where(
                     $queryBuilder->expr()->eq(
                         'uid',
-                        $queryBuilder->createNamedParameter($record['uid'], \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter($record['uid'], Connection::PARAM_INT)
                     )
                 )
                 ->set('pi_flexform', $this->migrateFlexFormSettings($record['pi_flexform']))
-                ->execute();
+                ->executeStatement();
 
             // exit if at least one update statement is not successful
             if (!((bool) $updateResult)) {
@@ -139,7 +128,7 @@ class MigrateSettings implements UpgradeWizardInterface
                 $queryBuilder->expr()->eq('CType', $queryBuilder->createNamedParameter('list')),
                 $queryBuilder->expr()->like('list_type', $queryBuilder->createNamedParameter('dlf_%'))
             )
-            ->execute();
+            ->executeQuery();
 
         // Update the found record sets
         while ($record = $statement->fetchAssociative()) {

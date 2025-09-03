@@ -28,8 +28,6 @@ class SolrSearchTest extends FunctionalTestCase
         __DIR__ . '/../../Fixtures/Common/documents_1.solr.json'
     ];
 
-    private Solr $solr;
-
     /**
      * Sets up the test environment.
      *
@@ -44,7 +42,7 @@ class SolrSearchTest extends FunctionalTestCase
     {
         parent::setUp();
         $this->setUpData(self::$databaseFixtures);
-        $this->solr = $this->setUpSolr(5, 0, self::$solrFixtures);
+        $this->setUpSolr(5, 0, self::$solrFixtures);
     }
 
     /**
@@ -60,21 +58,21 @@ class SolrSearchTest extends FunctionalTestCase
         self::assertCount(33, $resultSet);
 
         $params1 = ['query' => '*'];
-        $search = new SolrSearch($documentRepository, null, $settings, $params1);
+        $search = new SolrSearch($documentRepository, [], $settings, $params1);
         $search->prepare();
         self::assertEquals(33, $search->getNumFound());
         self::assertEquals(3, $search->getSolrResults()['numberOfToplevels']);
         self::assertCount(15, $search->getSolrResults()['documents']);
 
         $params2 = ['query' => '10 Keyboard pieces'];
-        $search2 = new SolrSearch($documentRepository, null, $settings, $params2);
+        $search2 = new SolrSearch($documentRepository, [], $settings, $params2);
         $search2->prepare();
         self::assertEquals(1, $search2->getNumFound());
         self::assertEquals(1, $search2->getSolrResults()['numberOfToplevels']);
         self::assertCount(1, $search2->getSolrResults()['documents']);
 
         $params3 = ['query' => 'foobar'];
-        $search3 = new SolrSearch($documentRepository, null, $settings, $params3);
+        $search3 = new SolrSearch($documentRepository, [], $settings, $params3);
         $search3->prepare();
         self::assertEquals(0, $search3->getNumFound());
         self::assertEquals(0, $search3->getSolrResults()['numberOfToplevels']);

@@ -16,7 +16,6 @@ return [
         'label'     => 'title',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
-        'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY title_sorting',
         'delete' => 'deleted',
         'enablecolumns' => [
@@ -45,27 +44,21 @@ return [
         'tstamp' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.timestamp',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime',
+                'type' => 'datetime',
             ]
         ],
         'crdate' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.creationDate',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime',
+                'type' => 'datetime',
             ]
         ],
         'starttime' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
                 'size' => 13,
-                'eval' => 'datetime',
                 'default' => 0,
             ],
         ],
@@ -73,10 +66,8 @@ return [
             'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
                 'size' => 13,
-                'eval' => 'datetime',
                 'default' => 0,
             ],
         ],
@@ -87,9 +78,18 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'items' => [
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login', '-1'],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login', '-2'],
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups', '--div--'],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        'value' => '-1',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        'value' => '-2',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        'value' => '--div--',
+                    ],
                 ],
                 'foreign_table' => 'fe_groups',
                 'size' => 5,
@@ -118,7 +118,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,uniqueInPid',
+                'required' => true,
+                'eval' => 'uniqueInPid',
                 'default' => '',
             ],
         ],
@@ -258,7 +259,6 @@ return [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.partof',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_dlf_documents',
                 'prepend_tname' => 0,
                 'size' => 1,
@@ -419,7 +419,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.status.default', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.status.default',
+                        'value' => 0,
+                    ],
                 ],
                 'size' => 1,
                 'minitems' => 1,
@@ -434,8 +437,14 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.mets', 'METS'],
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.iiif', 'IIIF'],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.mets',
+                        'value' => 'METS',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents.document_format.iiif',
+                        'value' => 'IIIF',
+                    ],
                 ],
                 'size' => 1,
                 'minitems' => 1,

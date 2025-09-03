@@ -65,9 +65,10 @@ class SolrTest extends FunctionalTestCase
      */
     public function canGetNextCoreNumber()
     {
-        self::assertEquals(4, Solr::getNextCoreNumber());
+        $currentCoreNumber = Solr::getNextCoreNumber();
+        self::assertGreaterThan(0, $currentCoreNumber);
         Solr::createCore();
-        self::assertEquals(5, Solr::getNextCoreNumber());
+        self::assertEquals($currentCoreNumber + 1, Solr::getNextCoreNumber());
     }
 
     /**

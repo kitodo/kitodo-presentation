@@ -29,6 +29,13 @@ class StdOutStream implements StreamInterface, SelfEmittableStreamInterface
     use StreamDecoratorTrait;
 
     /**
+     * Constructor
+     */
+    public function __construct(protected readonly StreamInterface $stream)
+    {
+    }
+
+    /**
      * @access public
      * 
      * @return void

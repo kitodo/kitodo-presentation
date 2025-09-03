@@ -15,42 +15,36 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <TCEforms>
-                    <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
-                </TCEforms>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.tools>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.tools</label>
-                            <config>
-                                <type>select</type>
-                                <renderType>selectMultipleSideBySide</renderType>
-                                <items type="array"></items>
-                                <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->toolList</itemsProcFunc>
-                                <size>5</size>
-                                <autoSizeMax>15</autoSizeMax>
-                                <maxitems>1024</maxitems>
-                                <minitems>1</minitems>
-                                <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.tools</label>
+                        <config>
+                            <type>select</type>
+                            <renderType>selectMultipleSideBySide</renderType>
+                            <items type="array"></items>
+                            <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->toolList</itemsProcFunc>
+                            <size>5</size>
+                            <autoSizeMax>15</autoSizeMax>
+                            <maxitems>1024</maxitems>
+                            <minitems>1</minitems>
+                            <enableMultiSelectFilterTextfield>1</enableMultiSelectFilterTextfield>
+                        </config>
                     </settings.tools>
                     <settings.solrcore>
-                        <TCEforms>
-                            <exclude>1</exclude>
-                            <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
-                            <config>
-                                <type>select</type>
-                                <renderType>selectSingle</renderType>
-                                <foreign_table>tx_dlf_solrcores</foreign_table>
-                                <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>0</minitems>
-                            </config>
-                        </TCEforms>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
+                        <config>
+                            <type>select</type>
+                            <renderType>selectSingle</renderType>
+                            <foreign_table>tx_dlf_solrcores</foreign_table>
+                            <foreign_table_where>ORDER BY tx_dlf_solrcores.label ASC</foreign_table_where>
+                            <size>1</size>
+                            <maxitems>1</maxitems>
+                            <minitems>0</minitems>
+                        </config>
                     </settings.solrcore>
                 </el>
             </ROOT>

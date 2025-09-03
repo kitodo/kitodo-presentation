@@ -12,18 +12,15 @@
 
 namespace Kitodo\Dlf\Command;
 
-use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Command\DbDocs\Generator;
-use Kitodo\Dlf\Domain\Model\Document;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * CLI Command for generating the reStructuredText file containing documentation
@@ -79,6 +76,11 @@ class DbDocsCommand extends Command
         $outputPath = "kitodo-presentation/Documentation/Developers/Database.rst";
         if ($input->getArgument('outputPath')) {
             $outputPath = $input->getArgument('outputPath');
+        }
+
+        $typo3Version = (new Typo3Version())->getMajorVersion();
+        if ($typo3Version != 13) {
+            throw new RuntimeException(("dbdocs command can only be run with TYPO3 v13"));
         }
 
         $tables = $this->generator->collectTables();

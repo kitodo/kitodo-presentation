@@ -159,7 +159,10 @@ class CalendarController extends AbstractController
         }
 
         // Get all children of anchor. This should be the year anchor documents
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('year'));
+        $documents = $this->documentRepository->getChildrenOfYearAnchor(
+            $this->document->getUid(),
+            $this->structureRepository->findOneBy(['indexName' => 'year'])
+        );
 
         $years = [];
         // Process results.
@@ -452,7 +455,10 @@ class CalendarController extends AbstractController
      */
     private function getIssues(): Generator
     {
-        $documents = $this->documentRepository->getChildrenOfYearAnchor($this->document->getUid(), $this->structureRepository->findOneByIndexName('issue'));
+        $documents = $this->documentRepository->getChildrenOfYearAnchor(
+            $this->document->getUid(),
+            $this->structureRepository->findOneBy(['indexName' => 'issue'])
+        );
 
         // Process results.
         if ($documents->count() === 0) {

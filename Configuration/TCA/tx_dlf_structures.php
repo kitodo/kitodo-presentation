@@ -16,7 +16,6 @@ return [
         'label'     => 'label',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
-        'cruser_id' => 'cruser_id',
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l18n_parent',
         'transOrigDiffSourceField' => 'l18n_diffsource',
@@ -48,7 +47,10 @@ return [
                 'foreign_table' => 'tx_dlf_structures',
                 'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY label ASC',
                 'items' => [
-                    ['', 0],
+                    [
+                        'label' => '',
+                        'value' => 0,
+                    ],
                 ],
                 'default' => 0,
             ],
@@ -83,7 +85,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,trim',
+                'required' => true,
+                'eval' => 'trim',
                 'default' => '',
             ],
         ],
@@ -95,7 +98,8 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'max' => 255,
-                'eval' => 'required,nospace,alphanum_x,uniqueInPid',
+                'required' => true,
+                'eval' => 'nospace,alphanum_x,uniqueInPid',
                 'default' => '',
                 'fieldInformation' => [
                     'editInProductionWarning' => [
@@ -125,7 +129,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_structures.thumbnail.self', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_structures.thumbnail.self',
+                        'value' => 0,
+                    ],
                 ],
                 'foreign_table' => 'tx_dlf_structures',
                 'foreign_table_where' => 'AND tx_dlf_structures.pid=###CURRENT_PID### AND tx_dlf_structures.toplevel=0 AND tx_dlf_structures.sys_language_uid IN (-1,0) ORDER BY tx_dlf_structures.label',
@@ -142,7 +149,10 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_structures.status.default', 0],
+                    [
+                        'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_structures.status.default',
+                        'value' => 0,
+                    ],
                 ],
                 'size' => 1,
                 'minitems' => 1,
