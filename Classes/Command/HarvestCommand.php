@@ -240,7 +240,7 @@ class HarvestCommand extends BaseCommand
             }
 
             if ($doc->recordId) {
-                $document = $this->documentRepository->findOneBy([ 'recordId' => $doc->recordId ]);
+                $document = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
             }
 
             if ($document === null) {

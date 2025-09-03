@@ -175,7 +175,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
-                        $this->document = $this->documentRepository->findOneBy([ 'recordId' => $doc->recordId ]);
+                        $this->document = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
                     }
                     if (!isset($this->document)) {
                         // create new dummy Document object
@@ -190,7 +190,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 $this->document->setCurrentDocument($doc);
             }
         } elseif (!empty($requestData['recordId'])) {
-            $this->document = $this->documentRepository->findOneBy([ 'recordId' => $requestData['recordId'] ]);
+            $this->document = $this->documentRepository->findOneBy(['recordId' => $requestData['recordId']]);
             if ($this->document !== null) {
                 $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid]);
                 if ($doc !== null) {

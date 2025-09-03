@@ -75,14 +75,14 @@ class DocumentRepository extends Repository
 
         } else if (isset($parameters['recordId'])) {
 
-            $document = $this->findOneBy([ 'recordId' => $parameters['recordId'] ]);
+            $document = $this->findOneBy(['recordId' => $parameters['recordId']]);
 
         } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
             $doc = AbstractDocument::getInstance($parameters['location']);
 
             if ($doc !== null && $doc->recordId) {
-                $document = $this->findOneBy([ 'recordId' => $doc->recordId ]);
+                $document = $this->findOneBy(['recordId' => $doc->recordId]);
             }
 
             if ($document === null) {
@@ -685,7 +685,7 @@ class DocumentRepository extends Repository
      */
     public function getPreviousDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneBy([ 'uid' => $uid ]);
+        $currentDocument = $this->findOneBy(['uid' => $uid]);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 
@@ -735,7 +735,7 @@ class DocumentRepository extends Repository
      */
     public function getNextDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneBy([ 'uid' => $uid ]);
+        $currentDocument = $this->findOneBy(['uid' => $uid]);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 

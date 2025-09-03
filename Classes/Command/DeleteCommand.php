@@ -220,9 +220,9 @@ class DeleteCommand extends BaseCommand
             $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
 
             if ($doc->recordId) {
-                $document = $this->documentRepository->findOneBy([ 'recordId' => $doc->recordId ]);
+                $document = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
             } else {
-                $document = $this->documentRepository->findOneBy([ 'location' => $input->getOption('doc') ]);
+                $document = $this->documentRepository->findOneBy(['location' => $input->getOption('doc')]);
             }
         }
 
