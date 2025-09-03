@@ -48,7 +48,7 @@ class DataHandler implements LoggerAwareInterface
      *
      * @return void
      */
-    public function processDatamap_postProcessFieldArray(string $status, string $table, $id, array &$fieldArray): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
+    public function processDatamap_postProcessFieldArray(string $status, string $table, int|string $id, array &$fieldArray): void
     {
         if ($status == 'new') {
             switch ($table) {
@@ -92,7 +92,7 @@ class DataHandler implements LoggerAwareInterface
                         $fieldArray['label'] = $fieldArray['index_name'];
                     }
                     // Ensure that index names don't get mixed up with sorting values.
-                    if (substr($fieldArray['index_name'], -8) == '_sorting') {
+                    if (str_ends_with($fieldArray['index_name'], '_sorting')) {
                         $fieldArray['index_name'] .= '0';
                     }
                     break;
@@ -107,65 +107,61 @@ class DataHandler implements LoggerAwareInterface
                     }
                     break;
             }
-        } elseif ($status == 'update') {
-            switch ($table) {
-                    // Field post-processing for table "tx_dlf_metadata".
-                case 'tx_dlf_metadata':
-                    $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                        ->getQueryBuilderForTable($table);
+        } elseif ($status == 'update' && $table == 'tx_dlf_metadata') {
+            // Field post-processing for table "tx_dlf_metadata".
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table);
 
-                    // Store field in index if it should appear in lists.
-                    if (!empty($fieldArray['is_listed'])) {
-                        $fieldArray['index_stored'] = 1;
-                    }
-                    if (
-                        isset($fieldArray['index_stored'])
-                        && $fieldArray['index_stored'] == 0
-                        && !isset($fieldArray['is_listed'])
-                    ) {
-                        // Get current configuration.
-                        $result = $queryBuilder
-                            ->select($table . '.is_listed AS is_listed')
-                            ->from($table)
-                            ->where(
-                                $queryBuilder->expr()->eq($table . '.uid', (int) $id),
-                                Helper::whereExpression($table)
-                            )
-                            ->setMaxResults(1)
-                            ->executeQuery();
+            // Store field in index if it should appear in lists.
+            if (!empty($fieldArray['is_listed'])) {
+                $fieldArray['index_stored'] = 1;
+            }
+            if (
+                isset($fieldArray['index_stored'])
+                && $fieldArray['index_stored'] == 0
+                && !isset($fieldArray['is_listed'])
+            ) {
+                // Get current configuration.
+                $result = $queryBuilder
+                    ->select($table . '.is_listed AS is_listed')
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->eq($table . '.uid', (int) $id),
+                        Helper::whereExpression($table)
+                    )
+                    ->setMaxResults(1)
+                    ->executeQuery();
 
-                        $resArray = $result->fetchAssociative();
-                        if (is_array($resArray)) {
-                            // Reset storing to current.
-                            $fieldArray['index_stored'] = $resArray['is_listed'];
-                        }
-                    }
-                    // Index field in index if it should be used for auto-completion.
-                    if (!empty($fieldArray['index_autocomplete'])) {
-                        $fieldArray['index_indexed'] = 1;
-                    }
-                    if (
-                        isset($fieldArray['index_indexed'])
-                        && $fieldArray['index_indexed'] == 0
-                        && !isset($fieldArray['index_autocomplete'])
-                    ) {
-                        // Get current configuration.
-                        $result = $queryBuilder
-                            ->select($table . '.index_autocomplete AS index_autocomplete')
-                            ->from($table)
-                            ->where(
-                                $queryBuilder->expr()->eq($table . '.uid', (int) $id),
-                                Helper::whereExpression($table)
-                            )
-                            ->setMaxResults(1)
-                            ->executeQuery();
+                $resArray = $result->fetchAssociative();
+                if (is_array($resArray)) {
+                    // Reset storing to current.
+                    $fieldArray['index_stored'] = $resArray['is_listed'];
+                }
+            }
+            // Index field in index if it should be used for auto-completion.
+            if (!empty($fieldArray['index_autocomplete'])) {
+                $fieldArray['index_indexed'] = 1;
+            }
+            if (
+                isset($fieldArray['index_indexed'])
+                && $fieldArray['index_indexed'] == 0
+                && !isset($fieldArray['index_autocomplete'])
+            ) {
+                // Get current configuration.
+                $result = $queryBuilder
+                    ->select($table . '.index_autocomplete AS index_autocomplete')
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->eq($table . '.uid', (int) $id),
+                        Helper::whereExpression($table)
+                    )
+                    ->setMaxResults(1)
+                    ->executeQuery();
 
-                        if ($resArray = $result->fetchAssociative()) {
-                            // Reset indexing to current.
-                            $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
-                        }
-                    }
-                    break;
+                if ($resArray = $result->fetchAssociative()) {
+                    // Reset indexing to current.
+                    $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
+                }
             }
         }
     }
@@ -182,56 +178,49 @@ class DataHandler implements LoggerAwareInterface
      *
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations(string $status, string $table, $id, array &$fieldArray): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
+    public function processDatamap_afterDatabaseOperations(string $status, string $table, int|string $id, array &$fieldArray): void
     {
-        if ($status == 'update') {
-            switch ($table) {
-                    // After database operations for table "tx_dlf_documents".
-                case 'tx_dlf_documents':
-                    // Delete/reindex document in Solr if "hidden" status or collections have changed.
-                    if (
-                        isset($fieldArray['hidden'])
-                        || isset($fieldArray['collections'])
-                    ) {
-                        // Get Solr-Core.
-                        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                            ->getQueryBuilderForTable('tx_dlf_solrcores');
+        if ($status == 'update' && $table == 'tx_dlf_documents') {
+            // After database operations for table "tx_dlf_documents".
+            // Delete/reindex document in Solr if "hidden" status or collections have changed.
+            if (
+                isset($fieldArray['hidden'])
+                || isset($fieldArray['collections'])
+            ) {
+                // Get Solr-Core.
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable('tx_dlf_solrcores');
 
-                        $result = $queryBuilder
-                            ->select(
-                                'tx_dlf_solrcores.uid AS core',
-                                'tx_dlf_solrcores.index_name',
-                                'tx_dlf_documents_join.hidden AS hidden'
-                            )
-                            ->innerJoin(
-                                'tx_dlf_solrcores',
-                                'tx_dlf_documents',
-                                'tx_dlf_documents_join',
-                                $queryBuilder->expr()->eq(
-                                    'tx_dlf_documents_join.solrcore',
-                                    'tx_dlf_solrcores.uid'
-                                )
-                            )
-                            ->from('tx_dlf_solrcores')
-                            ->where(
-                                $queryBuilder->expr()->eq(
-                                    'tx_dlf_documents_join.uid',
-                                    (int) $id
-                                )
-                            )
-                            ->setMaxResults(1)
-                            ->executeQuery();
+                $result = $queryBuilder
+                    ->select(
+                        'tx_dlf_solrcores.uid AS core',
+                        'tx_dlf_solrcores.index_name',
+                        'tx_dlf_documents_join.hidden AS hidden'
+                    )
+                    ->innerJoin(
+                        'tx_dlf_solrcores',
+                        'tx_dlf_documents',
+                        'tx_dlf_documents_join',
+                        $queryBuilder->expr()->eq(
+                            'tx_dlf_documents_join.solrcore',
+                            'tx_dlf_solrcores.uid'
+                        )
+                    )
+                    ->from('tx_dlf_solrcores')
+                    ->where(
+                        $queryBuilder->expr()->eq('tx_dlf_documents_join.uid', (int) $id)
+                    )
+                    ->setMaxResults(1)
+                    ->executeQuery();
 
-                        $resArray = $result->fetchAssociative();
-                        if (is_array($resArray)) {
-                            if ($resArray['hidden']) {
-                                $this->deleteDocument($resArray['core'], $id);
-                            } else {
-                                $this->reindexDocument($id);
-                            }
-                        }
+                $resArray = $result->fetchAssociative();
+                if (is_array($resArray)) {
+                    if ($resArray['hidden']) {
+                        $this->deleteDocument($resArray['core'], $id);
+                    } else {
+                        $this->reindexDocument($id);
                     }
-                    break;
+                }
             }
         }
     }
@@ -247,7 +236,7 @@ class DataHandler implements LoggerAwareInterface
      *
      * @return void
      */
-    public function processCmdmap_postProcess(string $command, string $table, $id): void // TODO: Add type-hinting for $id when dropping support for PHP 7.
+    public function processCmdmap_postProcess(string $command, string $table, int|string $id): void
     {
         if (
             in_array($command, ['move', 'delete', 'undelete'])
@@ -276,10 +265,7 @@ class DataHandler implements LoggerAwareInterface
                 )
                 ->from('tx_dlf_solrcores')
                 ->where(
-                    $queryBuilder->expr()->eq(
-                        'tx_dlf_documents_join.uid',
-                        (int) $id
-                    )
+                    $queryBuilder->expr()->eq('tx_dlf_documents_join.uid', (int) $id)
                 )
                 ->setMaxResults(1)
                 ->executeQuery();
@@ -317,7 +303,7 @@ class DataHandler implements LoggerAwareInterface
      *
      * @return void
      */
-    private function deleteDocument($core, $id): void
+    private function deleteDocument(mixed $core, int|string $id): void
     {
         // Establish Solr connection.
         $solr = Solr::getInstance($core);
@@ -339,16 +325,20 @@ class DataHandler implements LoggerAwareInterface
      *
      * @return void
      */
-    private function reindexDocument($id):void
+    private function reindexDocument(int|string $id): void
     {
         $documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
         $document = $documentRepository->findByUid((int) $id);
+        if ($document === null) {
+            $this->logger->error('Document with UID ' . $id . ' not found in repository');
+            return;
+        }
         $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
-        if ($document !== null && $doc !== null) {
+        if ($doc !== null) {
             $document->setCurrentDocument($doc);
             Indexer::add($document, $documentRepository);
         } else {
-            $this->logger->error('Failed to re-index document with UID ' . (string) $id);
+            $this->logger->error('Failed to re-index document with UID ' . $id);
         }
     }
 
@@ -361,7 +351,7 @@ class DataHandler implements LoggerAwareInterface
      *
      * @return void
      */
-    private function deleteSolrCore($id): void
+    private function deleteSolrCore(int|string $id): void
     {
         // Is core deletion allowed in extension configuration?
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'solr');
@@ -398,7 +388,7 @@ class DataHandler implements LoggerAwareInterface
                     $query->setAction($action);
                     try {
                         $response = $solr->service->coreAdmin($query);
-                        if ($response->getWasSuccessful() == false) {
+                        if (!$response->getWasSuccessful()) {
                             $this->logger->warning('Core ' . $resArray['core'] . ' could not be deleted from Apache Solr');
                         }
                     } catch (\Exception $e) {
