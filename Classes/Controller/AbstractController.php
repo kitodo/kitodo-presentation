@@ -129,11 +129,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             if ($request->getAttribute('applicationType') === 1) {
                 $this->pageUid = $request->getAttribute('routing')->getPageId();
             }
-        } else {
-            // For TYPO3 11 tests in OaiPmhTest fails
-            /*if ($this->request->getAttribute('applicationType') === 1) {
-                $this->pageUid = $this->request->getAttribute('routing')->getPageId();
-            }*/
         }
 
         // Sanitize user input to prevent XSS attacks.
