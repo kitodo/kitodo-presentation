@@ -15,11 +15,14 @@ use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
+use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Base class for additional fields classes of scheduler tasks.
@@ -31,6 +34,8 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
+    const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:';
+
     /**
      * Gets additional fields to render in the form to add/edit a task
      *
@@ -55,14 +60,12 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
     {
         $fieldsValid = true;
 
-        Helper::getLanguageService()->includeLLFile('EXT:dlf/Resources/Private/Language/locallang_tasks.xlf');
-
-        $messageTitle = Helper::getLanguageService()->getLL('additionalFields.error');
-        $messageSeverity = FlashMessage::ERROR;
+        $messageTitle = Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.error');
+        $messageSeverity = ContextualFeedbackSeverity::ERROR;
 
         if (isset($submittedData['doc']) && empty($submittedData['doc'])) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.doc') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.doc') . ' ' . Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
                 true,
@@ -73,7 +76,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         if ((isset($submittedData['pid']) && (int) $submittedData['pid'] <= 0)) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.pid') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.pid') . ' ' . Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
                 true,
@@ -84,7 +87,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 
         if (!isset($submittedData['commit']) && !isset($submittedData['optimize']) && !isset($submittedData['pid']) && ($submittedData['class'] != 'Kitodo\Dlf\Task\SuggestBuildTask')) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.commitOrOptimize'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.commitOrOptimize'),
                 $messageTitle,
                 $messageSeverity,
                 true,
@@ -94,42 +97,42 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
         }
 
         if (!$submittedData['uid']) {
-            $messageTitle = Helper::getLanguageService()->getLL('additionalFields.warning');
-            $messageSeverity = FlashMessage::WARNING;
+            $messageTitle = Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.warning');
+            $messageSeverity = ContextualFeedbackSeverity::WARNING;
         }
 
         if ((isset($submittedData['lib']) && (int) $submittedData['lib'] <= 0)) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.lib') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.lib') . ' ' . Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === ContextualFeedbackSeverity::ERROR ? false : $fieldsValid;
         }
 
         if ((isset($submittedData['solr']) && (int) $submittedData['solr'] <= 0) || !isset($submittedData['solr'])) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.solr') . ' ' . Helper::getLanguageService()->getLL('additionalFields.valid'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.solr') . ' ' . Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.valid'),
                 $messageTitle,
                 $messageSeverity,
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === ContextualFeedbackSeverity::ERROR ? false : $fieldsValid;
         }
 
         if (((isset($submittedData['coll']) && isset($submittedData['all'])) || (!isset($submittedData['coll']) && !isset($submittedData['all'])))
             && !isset($submittedData['doc']) && !isset($submittedData['lib']) && isset($submittedData['pid'])) {
             Helper::addMessage(
-                Helper::getLanguageService()->getLL('additionalFields.collOrAll'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'additionalFields.collOrAll'),
                 $messageTitle,
                 $messageSeverity,
                 true,
                 'core.template.flashMessages'
             );
-            $fieldsValid = $messageSeverity === FlashMessage::ERROR ? false : $fieldsValid;
+            $fieldsValid = $messageSeverity === ContextualFeedbackSeverity::ERROR ? false : $fieldsValid;
         }
         return $fieldsValid;
     }
@@ -309,7 +312,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
                     ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
             );
         }
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
         while ($record = $result->fetchAssociative()) {
             $solrCores[$record['label'] . ' (' . $record['index_name'] . ')'] = $record['uid'];
@@ -338,5 +341,31 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
+    }
+
+    /**
+     * Return whether the current action is an edit action.
+     *
+     * Between Typo3 v12 and v13 the action type has changed from a custom Typo3 class to an PHP enum, see:
+     * https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.0/Breaking-101129-ConvertActionToNativeEnum.html
+     *
+     * @access protected
+     *
+     * @param SchedulerModuleController $schedulerModule scheduler module
+     *
+     * @return bool whether current action is an edit action
+     */
+    protected function isEditAction(SchedulerModuleController $schedulerModule): bool
+    {
+        $typo3Version = (new Typo3Version())->getMajorVersion();
+        if ($typo3Version == 12) {
+            /** @var \TYPO3\CMS\Scheduler\Task\Enumeration\Action $action */
+            $action = $schedulerModule->getCurrentAction();
+            return $action->equals(Action::EDIT);
+        } else {
+            /** @var \TYPO3\CMS\Scheduler\SchedulerManagementAction $action */
+            $action = $schedulerModule->getCurrentAction();
+            return $action === SchedulerManagementAction::EDIT;
+        }
     }
 }

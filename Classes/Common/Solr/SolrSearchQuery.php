@@ -33,7 +33,7 @@ class SolrSearchQuery extends Query
      *
      * @return void
      */
-    public function __construct($solrSearch)
+    public function __construct(SolrSearch $solrSearch)
     {
         $this->solrSearch = $solrSearch;
 
@@ -51,7 +51,6 @@ class SolrSearchQuery extends Query
      * @return array
      */
     // TODO: Return type (array) of method SolrSearchQuery::execute() should be compatible with return type (iterable<object>&TYPO3\CMS\Extbase\Persistence\QueryResultInterface) of method TYPO3\CMS\Extbase\Persistence\QueryInterface::execute()
-    // @phpstan-ignore-next-line
     public function execute($returnRawQueryResult = false)
     {
         $this->solrSearch->submit($this->offset, $this->limit);

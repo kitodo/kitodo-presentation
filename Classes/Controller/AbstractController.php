@@ -121,7 +121,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         /** @var Request $request */
         $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
-        $this->pageUid = (int) GeneralUtility::_GET('id');
+        $this->pageUid = (int) ($request->getQueryParams()['id'] ?? null);
         $this->requestData['page'] = $this->requestData['page'] ?? 1;
 
         // Sanitize user input to prevent XSS attacks.
@@ -225,7 +225,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         } elseif (!empty($this->requestData['recordId'])) {
 
-            $this->document = $this->documentRepository->findOneByRecordId($this->requestData['recordId']);
+            $this->document = $this->documentRepository->findOneBy(['recordId' => $this->requestData['recordId']]);
 
             if ($this->document !== null) {
                 $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
@@ -730,7 +730,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
             if ($doc->recordId) {
                 // find document from repository by recordId
-                $docFromRepository = $this->documentRepository->findOneByRecordId($doc->recordId);
+                $docFromRepository = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
                 if ($docFromRepository !== null) {
                     $this->document = $docFromRepository;
                 }

@@ -57,15 +57,15 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
-     * @var QueryResult|null
+     * @var QueryResultInterface|null
      */
-    private ?QueryResult $listedMetadata;
+    private ?QueryResultInterface $listedMetadata;
 
     /**
      * @access private
-     * @var QueryResult|null
+     * @var QueryResultInterface|null
      */
-    private ?QueryResult $indexedMetadata;
+    private ?QueryResultInterface $indexedMetadata;
 
     /**
      * @access private
@@ -94,13 +94,19 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @param array|QueryResultInterface $collections can contain 0, 1 or many Collection objects
      * @param array $settings
      * @param array $searchParams
-     * @param QueryResult $listedMetadata
-     * @param QueryResult $indexedMetadata
+     * @param QueryResultInterface|null $listedMetadata
+     * @param QueryResultInterface|null $indexedMetadata
      *
      * @return void
      */
-    public function __construct(DocumentRepository $documentRepository, $collections, array $settings, array $searchParams, ?QueryResult $listedMetadata = null, ?QueryResult $indexedMetadata = null)
-    {
+    public function __construct(
+        DocumentRepository $documentRepository,
+        array|QueryResultInterface $collections,
+        array $settings = [],
+        array $searchParams = [],
+        ?QueryResultInterface $listedMetadata = null,
+        ?QueryResultInterface $indexedMetadata = null
+    ) {
         $this->documentRepository = $documentRepository;
         $this->collections = $collections;
         $this->settings = $settings;
@@ -206,7 +212,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     public function offsetExists($offset): bool
     {
-        $idx = $this->result['document_keys'][$offset];
+        $idx = $this->result['document_keys'][$offset] ?? null;
         return isset($this->result['documents'][$idx]);
     }
 
@@ -222,7 +228,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        $idx = $this->result['document_keys'][$offset];
+        $idx = $this->result['document_keys'][$offset] ?? null;
         $document = $this->result['documents'][$idx] ?? null;
 
         if ($document !== null) {
@@ -485,6 +491,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         if ($this->listedMetadata) {
             foreach ($this->listedMetadata as $metadata) {
+                /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
                 if ($metadata->getIndexStored() || $metadata->getIndexIndexed()) {
                     $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . ($metadata->getIndexIndexed() ? 'i' : 'u');
                     $params['fields'] .= ',' . $listMetadataRecord;
@@ -638,6 +645,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         if ($this->listedMetadata) {
             foreach ($this->listedMetadata as $metadata) {
+                /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
                 if ($metadata->getIndexStored() || $metadata->getIndexIndexed()) {
                     $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . ($metadata->getIndexIndexed() ? 'i' : 'u');
                     $params['fields'] .= ',' . $listMetadataRecord;
@@ -653,7 +661,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         foreach ($result['documents'] as $doc) {
             $this->translateLanguageCode($doc);
-            $metadataArray[$doc['uid']] = $doc['metadata'];
+            $metadataArray[$doc['uid']] = $doc['metadata'] ?? null;
         }
 
         return $metadataArray;
@@ -708,6 +716,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             if ($this->indexedMetadata) {
                 foreach ($this->indexedMetadata as $metadata) {
+                    /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
                     if ($metadata->getIndexIndexed()) {
                         $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
                         $queryFields .= $listMetadataRecord . '^' . $metadata->getIndexBoost() . ' ';
@@ -905,7 +914,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     private function translateLanguageCode(&$doc): void
     {
-        if (is_array($doc['metadata']) && array_key_exists('language', $doc['metadata'])) {
+        if (is_array($doc['metadata'] ?? null) && array_key_exists('language', $doc['metadata'])) {
             foreach($doc['metadata']['language'] as $indexName => $language) {
                 $doc['metadata']['language'][$indexName] = Helper::getLanguageName($language);
             }

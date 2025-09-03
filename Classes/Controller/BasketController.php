@@ -20,6 +20,7 @@ use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Mime\Address;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
@@ -239,19 +240,20 @@ class BasketController extends AbstractController
     protected function getBasketData(): Basket
     {
         // get user session
-        $userSession = $GLOBALS['TSFE']->fe_user->getSession();
+        $feUser = $this->request->getAttribute('frontend.user');
+        $userSession = $feUser->getSession();
 
         // Checking if a user is logged in
         $userIsLoggedIn = $this->isUserLoggedIn();
 
         if ($userIsLoggedIn) {
-            $basket = $this->basketRepository->findOneByFeUserId((int) $GLOBALS['TSFE']->fe_user->user['uid']);
+            $basket = $this->basketRepository->findOneBy(['feUserId' => (int) $feUser->getUserId()]);
         } else {
             $userSession->set('ses', 'tx_dlf_basket', '');
             $userSession->dataWasUpdated();
-            $GLOBALS['TSFE']->fe_user->storeSessionData();
+            $feUser->storeSessionData();
 
-            $basket = $this->basketRepository->findOneBySessionId($userSession->getIdentifier());
+            $basket = $this->basketRepository->findOneBy(['sessionId' => $userSession->getIdentifier()]);
         }
 
         // session does not exist
@@ -259,7 +261,7 @@ class BasketController extends AbstractController
             // create new basket in db
             $basket = GeneralUtility::makeInstance(Basket::class);
             $basket->setSessionId($userSession->getIdentifier());
-            $basket->setFeUserId($userIsLoggedIn ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0);
+            $basket->setFeUserId($userIsLoggedIn ? $feUser->getUserId() : 0);
         }
 
         return $basket;
@@ -553,7 +555,8 @@ class BasketController extends AbstractController
         // send mail
         $mailId = $this->requestData['mail_action'];
 
-        $mailObject = $this->mailRepository->findByUid(intval($mailId))->getFirst();
+        /** @var \Kitodo\Dlf\Domain\Model\Mail $mailObject */
+        $mailObject = $this->mailRepository->findByUid((int) $mailId);
 
         $mailText = htmlspecialchars(LocalizationUtility::translate('basket.mailBody', 'dlf')) . "\n";
         $numberOfPages = 0;
@@ -589,12 +592,12 @@ class BasketController extends AbstractController
         // Prepare and send the message
         $mail
             // subject
-            ->setSubject(LocalizationUtility::translate('basket.mailSubject', 'dlf'))
+            ->subject(LocalizationUtility::translate('basket.mailSubject', 'dlf'))
             // Set the From address with an associative array
             ->setFrom($from)
             // Set the To addresses with an associative array
-            ->setTo([$mailObject->getMail() => $mailObject->getName()])
-            ->setBody($mailBody, 'text/html')
+            ->to(new Address($mailObject->getMail(), $mailObject->getName()))
+            ->html($mailBody)
             ->send();
 
         // create entry for action log
@@ -638,7 +641,7 @@ class BasketController extends AbstractController
         $printerId = $this->requestData['print_action'];
 
         // get id from db and send selected doc download link
-        $printer = $this->printerRepository->findOneByUid($printerId);
+        $printer = $this->printerRepository->findOneBy(['uid' => $printerId]);
 
         // printer is selected
         if ($printer) {

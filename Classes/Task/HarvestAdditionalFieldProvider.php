@@ -15,7 +15,6 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
-use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Additional fields for harvest documents task.
@@ -37,10 +36,8 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
      */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
-        $currentSchedulerModuleAction = $schedulerModule->getCurrentAction();
-
         /** @var BaseTask $task */
-        if ($currentSchedulerModuleAction->equals(Action::EDIT)) {
+        if ($this->isEditAction($schedulerModule)) {
             $taskInfo['dryRun'] = $task->isDryRun();
             $taskInfo['lib'] = $task->getLib();
             $taskInfo['pid'] = $task->getPid();
@@ -149,7 +146,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
                 $queryBuilder->expr()
                     ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
             )
-            ->execute();
+            ->executeQuery();
 
         while ($record = $result->fetchAssociative()) {
             $libraries[$record['label']] = $record['uid'];
