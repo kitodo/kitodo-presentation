@@ -189,5 +189,4 @@ class DataHandlerTest extends FunctionalTestCase
         $solrSearch->getQuery()->execute();
         $this->assertEquals(1, $solrSearch->getNumFound(), 'Document should have been reindexed');
     }
-
 }
