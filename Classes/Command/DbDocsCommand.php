@@ -80,7 +80,7 @@ class DbDocsCommand extends Command
 
         $typo3Version = (new Typo3Version())->getMajorVersion();
         if ($typo3Version != 13) {
-            throw new RuntimeException(("dbdocs command can only be run with Typo3 v13"));
+            throw new RuntimeException(("dbdocs command can only be run with TYPO3 v13"));
         }
 
         $tables = $this->generator->collectTables();

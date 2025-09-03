@@ -226,7 +226,7 @@ class BaseCommand extends Command
             $document->setMetsLabel($metadata['mets_label'][0] ?? '');
             $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ?? '');
 
-            $structure = $this->structureRepository->findOneBy([ 'indexName' => $metadata['type'][0] ]);
+            $structure = $this->structureRepository->findOneBy(['indexName' => $metadata['type'][0]]);
             if ($structure !== null) {
                 $document->setStructure($structure);
             }
@@ -301,7 +301,7 @@ class BaseCommand extends Command
             $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid], true);
 
             if ($parent->recordId) {
-                $parentDocument = $this->documentRepository->findOneBy([ 'recordId' => $parent->recordId ]);
+                $parentDocument = $this->documentRepository->findOneBy(['recordId' => $parent->recordId]);
 
                 if ($parentDocument === null) {
                     // create new Document object
@@ -339,7 +339,7 @@ class BaseCommand extends Command
     private function addCollections(Document &$document, array $collections): void
     {
         foreach ($collections as $collection) {
-            $documentCollection = $this->collectionRepository->findOneBy([ 'indexName' => $collection ]);
+            $documentCollection = $this->collectionRepository->findOneBy(['indexName' => $collection]);
             if (!$documentCollection) {
                 // create new Collection object
                 $documentCollection = GeneralUtility::makeInstance(Collection::class);
@@ -432,7 +432,7 @@ class BaseCommand extends Command
         if (empty($this->owner)) {
             // owner is not set set but found by metadata --> take it or take default library
             $owner = $owner ? : 'default';
-            $this->owner = $this->libraryRepository->findOneBy([ 'indexName' => $owner ]);
+            $this->owner = $this->libraryRepository->findOneBy(['indexName' => $owner]);
             if (empty($this->owner)) {
                 // create library
                 $this->owner = GeneralUtility::makeInstance(Library::class);
