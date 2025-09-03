@@ -800,4 +800,14 @@ class Indexer
     private function __construct()
     {
     }
+
+    /**
+     * Reset the array of already processed docs in case a different index is used e.g. during testing.
+     *
+     * @return void
+     */
+    public static function resetProcessedDocs(): void
+    {
+        self::$processedDocs = [];
+    }
 }
