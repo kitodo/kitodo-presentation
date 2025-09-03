@@ -20,6 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
@@ -124,6 +125,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->pageUid = (int) GeneralUtility::_GET('id');
         $this->requestData['page'] = $this->requestData['page'] ?? 1;
 
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() >= 12) {
+            if ($request->getAttribute('applicationType') === 1) {
+                $this->pageUid = $request->getAttribute('routing')->getPageId();
+            }
+        }
+
         // Sanitize user input to prevent XSS attacks.
         $this->sanitizeRequestData();
 
@@ -151,7 +158,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         } catch (InvalidFileException) {
             $this->logger->warning('Public resource path of the dlf extension could not be determined');
         }
-
     }
 
     /**
