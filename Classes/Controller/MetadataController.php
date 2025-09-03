@@ -447,7 +447,7 @@ class MetadataController extends AbstractController
      */
     private function parseType(int $i, array &$metadata) : void
     {
-        $structure = $this->structureRepository->findOneBy([ 'indexName' => $metadata[$i]['type'][0] ]);
+        $structure = $this->structureRepository->findOneBy(['indexName' => $metadata[$i]['type'][0]]);
         if ($structure) {
             $metadata[$i]['type'][0] = $structure->getLabel();
         }
@@ -468,7 +468,7 @@ class MetadataController extends AbstractController
     {
         $j = 0;
         foreach ($value as $entry) {
-            $collection = $this->collectionRepository->findOneBy([ 'indexName' => $entry ]);
+            $collection = $this->collectionRepository->findOneBy(['indexName' => $entry]);
             if ($collection) {
                 $metadata[$i]['collection'][$j] = $collection->getLabel() ? : '';
                 $j++;

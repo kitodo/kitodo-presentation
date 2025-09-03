@@ -210,7 +210,7 @@ class NewTenantController extends AbstractController
 
         foreach ($formatsDefaults as $type => $values) {
             // if default format record is not found, add it to the repository
-            if ($this->formatRepository->findOneBy([ 'type' => $type ]) === null) {
+            if ($this->formatRepository->findOneBy(['type' => $type]) === null) {
                 $newRecord = GeneralUtility::makeInstance(Format::class);
                 $newRecord->setType($type);
                 $newRecord->setRoot($values['root']);
@@ -333,7 +333,7 @@ class NewTenantController extends AbstractController
         // load language file in own array
         $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getTypo3Language());
 
-        if ($this->solrCoreRepository->findOneBy([ 'pid' => $this->pid ]) === null) {
+        if ($this->solrCoreRepository->findOneBy(['pid' => $this->pid]) === null) {
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
             $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getTypo3Language(), $beLabels). ' (PID ' . $this->pid . ')');
             $indexName = Solr::createCore('');
@@ -434,14 +434,14 @@ class NewTenantController extends AbstractController
         $recordInfos['formats']['numDefault'] = count($formatsDefaults);
 
         $structuresDefaults = $this->getRecords('Structure');
-        $recordInfos['structures']['numCurrent'] = $this->structureRepository->count([ 'pid' => $this->pid ]);
+        $recordInfos['structures']['numCurrent'] = $this->structureRepository->count(['pid' => $this->pid]);
         $recordInfos['structures']['numDefault'] = count($structuresDefaults);
 
         $metadataDefaults = $this->getRecords('Metadata');
-        $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->count([ 'pid' => $this->pid ]);
+        $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->count(['pid' => $this->pid]);
         $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
 
-        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->count([ 'pid' => $this->pid ]);
+        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->count(['pid' => $this->pid]);
 
         $viewData = ['recordInfos' => $recordInfos];
 
