@@ -74,8 +74,9 @@ class SolrSearchTest extends FunctionalTestCase
         $params3 = ['query' => 'foobar'];
         $search3 = new SolrSearch($documentRepository, [], $settings, $params3);
         $search3->prepare();
-        self::assertEquals(0, $search3->getNumFound());
-        self::assertEquals(0, $search3->getSolrResults()['numberOfToplevels']);
-        self::assertCount(0, $search3->getSolrResults()['documents']);
+
+        $this->assertEquals(0, $search3->getNumFound());
+        $this->assertEquals(0, $search3->getSolrResults()['numberOfToplevels']);
+        $this->assertCount(0, $search3->getSolrResults()['documents']);
     }
 }

@@ -159,7 +159,7 @@ class MetadataController extends AbstractController
             // findBySettings also sorts entries by the `sorting` field
             $metadataResult = $this->metadataRepository->findBySettings(
                 [
-                    'is_listed' => !$this->settings['showFull'],
+                    'is_listed' => !($this->settings['showFull'] ?? true),
                 ]
             );
 
@@ -314,7 +314,7 @@ class MetadataController extends AbstractController
         $buildUrl = [];
 
         foreach ($metadata as $i => $section) {
-            if ($this->settings['linkTitle'] && $section['_id'] && isset($section['title']) && !empty($section['title'])) {
+            if (!empty($this->settings['linkTitle']) && $section['_id'] && isset($section['title']) && !empty($section['title'])) {
                 $details = $this->currentDocument->getLogicalStructure($section['_id'][0]);
                 $buildUrl[$i]['title'] = [
                     'id' => $this->document->getUid(),

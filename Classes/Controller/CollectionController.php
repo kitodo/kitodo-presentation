@@ -164,10 +164,7 @@ class CollectionController extends AbstractController
         if (is_array($search) && !empty($search)) {
             $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $search, $listedMetadata, $indexedMetadata);
 
-            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
-            if (empty($itemsPerPage)) {
-                $itemsPerPage = 25;
-            }
+            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'] ?? 25;
             $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
             $simplePagination = new SimplePagination($solrPaginator);
 
@@ -199,7 +196,7 @@ class CollectionController extends AbstractController
         $search = $this->getParametersSafely('search');
 
         $collection = null;
-        if ($search['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($search['collection']['__identity'])) {
+        if (!empty($search['collection']) && $search['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($search['collection']['__identity'])) {
             $collection = $this->collectionRepository->findByUid($search['collection']['__identity']);
         }
 

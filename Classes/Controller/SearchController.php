@@ -191,10 +191,7 @@ class SearchController extends AbstractController
                 $solrResults = $this->documentRepository->findSolrWithoutCollection($this->settings, $this->search, $listedMetadata, $indexedMetadata);
                 $numResults = $solrResults->getNumFound();
 
-                $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'];
-                if (empty($itemsPerPage)) {
-                    $itemsPerPage = 25;
-                }
+                $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'] ?? 25;
                 $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
                 $simplePagination = new SimplePagination($solrPaginator);
 
@@ -275,7 +272,7 @@ class SearchController extends AbstractController
         $searchParams = $this->search;
         if (
             (array_key_exists('fulltext', $searchParams))
-            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($searchParams['query']), $matches)
+            || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($searchParams['query'] ?? ''), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
             $searchParams['query'] = empty($matches[1]) ? $searchParams['query'] : $matches[1];
@@ -344,7 +341,7 @@ class SearchController extends AbstractController
                 'mincount' => '1',
                 'key' => $field,
                 'field' => $field,
-                'limit' => $this->settings['limitFacets'],
+                'limit' => $this->settings['limitFacets'] ?? 15,
                 'sort' => isset($this->settings['sortingFacets']) ? $this->settings['sortingFacets'] : 'count'
             ];
         }
@@ -517,7 +514,7 @@ class SearchController extends AbstractController
                             $entryArray['ITEM_STATE'] = 'IFSUB';
                         }
                         $entryArray['_SUB_MENU'][] = $this->getFacetsMenuEntry($field, $value, $count, $search, $entryArray['ITEM_STATE']);
-                        if (++$i == $this->settings['limit']) {
+                        if (++$i == ($this->settings['limitFacets'] ?? 15)) {
                             break;
                         }
                     } else {
@@ -587,7 +584,7 @@ class SearchController extends AbstractController
     private function enableSuggester(): void
     {
         // Add uHash parameter to suggest parameter to make a basic protection of this form.
-        if ($this->settings['suggest']) {
+        if ($this->settings['suggest'] ?? true) {
             $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
     }

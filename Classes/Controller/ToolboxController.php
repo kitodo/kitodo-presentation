@@ -574,7 +574,7 @@ class ToolboxController extends AbstractController
             'labelQueryUrl' => $this->settings['queryInputName'],
             'labelStart' => $this->settings['startInputName'],
             'labelId' => $this->settings['idInputName'],
-            'labelPid' => $this->settings['pidInputName'],
+            'labelPid' => $this->settings['pidInputName'] ?? null,
             'labelPageUrl' => $this->settings['pageInputName'],
             'labelHighlightWord' => $this->settings['highlightWordInputName'],
             'labelEncrypted' => $this->settings['encryptedInputName'],
