@@ -50,5 +50,4 @@ class TeiTest extends UnitTestCase
 
         self::assertXmlStringEqualsXmlString($miniOCR, $rawText);
     }
-
 }
