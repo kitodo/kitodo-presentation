@@ -78,12 +78,12 @@ Options:
             - functional: PHP functional tests
             - unit (default): PHP unit tests
 
-    -t <11.5|12.4>
+    -t <12.4|13.4>
         Only with -s composerInstall
         Specifies which TYPO3 version to install. When unset, installs either the packages from
         composer.lock, or the latest version otherwise (default behavior of "composer install").
-            - 11.5
             - 12.4
+            - 13.4
 
     -a <mysqli|pdo_mysql>
         Only with -s functional
@@ -101,20 +101,18 @@ Options:
             - mariadb (default): use mariadb
             - mysql: use MySQL server
 
-    -i <10.2|10.3|10.4|10.5|10.6|10.11>
+    -i <10.3|10.4|10.5|10.6|10.11>
         Only with -d mariadb
         Specifies on which version of mariadb tests are performed
-            - 10.2
             - 10.3 (default)
             - 10.4
             - 10.5
             - 10.6
             - 10.11
 
-    -j <5.7|8.0>
+    -j <8.0>
         Only with -d mysql
         Specifies on which version of mysql tests are performed
-            - 5.7
             - 8.0 (default)
 
     -p <8.1|8.2|8.3|8.4>
@@ -217,7 +215,7 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
             ;;
         j)
             MYSQL_VERSION=${OPTARG}
-            if ! [[ ${MYSQL_VERSION} =~ ^(5.7|8.0)$ ]]; then
+            if ! [[ ${MYSQL_VERSION} =~ ^(8.0)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
