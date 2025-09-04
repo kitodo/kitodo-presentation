@@ -34,4 +34,3 @@ To ensure it can best advise and assist users on technical and organisational is
 
 * [Extension Documentation](https://kitodo.github.io/kitodo-presentation)
 * [DDEV Development Environment](https://github.com/kitodo/ddev-kitodo-presentation)
-* [Demo Server](https://presentation-demo.kitodo.org/)
