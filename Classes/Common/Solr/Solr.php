@@ -580,22 +580,13 @@ class Solr implements LoggerAwareInterface
      */
     protected function __construct(?string $core)
     {
-        // Solarium requires different code for version 5 and 6.
-        $isSolarium5 = Client::checkExact('5');
         // Get Solr connection parameters from configuration.
         $this->loadSolrConnectionInfo();
         // Configure connection adapter.
         $adapter = GeneralUtility::makeInstance(Http::class);
         $adapter->setTimeout($this->config['timeout']);
         // Configure event dispatcher.
-        if ($isSolarium5) {
-            $eventDispatcher = null;
-        } else {
-            // When updating to TYPO3 >=10.x and Solarium >=6.x
-            // we have to provide a PSR-14 Event Dispatcher instead of
-            // "null".
-            $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
-        }
+        $eventDispatcher = GeneralUtility::makeInstance(EventDispatcher::class);
         // Configure endpoint.
         $config = [
             'endpoint' => [
@@ -611,14 +602,7 @@ class Solr implements LoggerAwareInterface
             ]
         ];
         // Instantiate Solarium\Client class.
-        if ($isSolarium5) {
-            $this->service = GeneralUtility::makeInstance(Client::class, $config);
-        } else {
-            // When updating to TYPO3 >=10.x and Solarium >=6.x
-            // $adapter and $eventDispatcher are mandatory arguments
-            // of the \Solarium\Client constructor.
-            $this->service = GeneralUtility::makeInstance(Client::class, $adapter, $eventDispatcher, $config);
-        }
+        $this->service = GeneralUtility::makeInstance(Client::class, $adapter, $eventDispatcher, $config);
         $this->service->setAdapter($adapter);
         // Check if connection is established.
         $query = $this->service->createCoreAdmin();
