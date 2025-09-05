@@ -149,6 +149,7 @@ class NavigationController extends AbstractController
                 }
 
                 $this->view->assign('currentMeasure', $currentMeasure);
+                $this->view->assign('double', $this->requestData['double']);
                 $this->view->assign('numMeasures', $this->document->getCurrentDocument()->numMeasures);
                 $this->view->assign('measureOptions', $measureOptions);
                 $this->view->assign('measurePages', $measurePages);
