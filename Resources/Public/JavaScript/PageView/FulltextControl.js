@@ -242,10 +242,8 @@ var dlfViewerFullTextControl = function(map) {
         this)
     };
 
-    if (this.isActive) {
-        this.activate();
-    } else {
-        this.deactivate();
+    if (!this.isActive) {
+      $(this.fullTextScrollElement).hide();
     }
 
     $(this.fullTextScrollElement).text(this.dic['fulltext-loading']);
