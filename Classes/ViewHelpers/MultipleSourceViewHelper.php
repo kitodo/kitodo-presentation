@@ -22,7 +22,7 @@ class MultipleSourceViewHelper extends AbstractViewHelper
     }
 
     /**
-     * Checks if key has a multisource prefix
+     * Checks whether docArray starts with the prefix multipleSource_ and returns the numeric postfix.
      *
      * @return int
      */
