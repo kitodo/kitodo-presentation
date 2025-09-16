@@ -16,7 +16,6 @@ User Manual
     :local:
     :depth: 2
 
-
 .. _indexing_documents:
 
 Indexing Documents
@@ -545,3 +544,76 @@ With the command `kitodo:optimize` it is possible to hard commit documents to an
        Show each processed documents uid and location with timestamp and
        amount of processed/all documents.
    :Example:
+
+
+.. _indexing_fulltexts:
+
+Indexing full texts
+==================
+
+Full texts must be provided in the ``FULLTEXT`` file group within the METS. Kitodo.Presentation supports the ALTO and TEI format for indexing full texts.
+
+**ALTO**
+
+Each ALTO file contains the full text of a single page of the document.
+
+.. code-block:: xml
+   <mets:fileGrp USE="FULLTEXT">
+      <mets:file ID="..." MIMETYPE="text/xml">
+         <mets:FLocat LOCTYPE="URL" xlink:href="https://www.example.com/example-alto-page-1.xml"/>
+      </mets:file>
+      <mets:file ID="..." MIMETYPE="text/xml">
+         <mets:FLocat LOCTYPE="URL" xlink:href="https://www.example.com/example-alto-page-2.xml"/>
+      </mets:file>
+      ...
+   </mets:fileGrp>
+
+**TEI**
+
+TEI contains all full texts of the entire document.
+
+.. code-block:: xml
+   <mets:fileGrp USE="FULLTEXT">
+      <mets:file ID="..." MIMETYPE="application/tei+xml">
+         <mets:FLocat LOCTYPE="URL" xlink:href="https://www.example.com/example-tei.xml"/>
+      </mets:file>
+   </mets:fileGrp>
+
+.. note::
+
+   The identifier of the ``facsimile`` tag (and thus the ``pb`` tag (page break) references) in the TEI must match the ``ID`` attribute of the ``mets:div`` with type ``page`` in the physical structMap of the METS. Otherwise, the pages cannot be mapped and will not be indexed.
+
+
+For indexing full texts, the formats need to be defined in the Data Formats or in the table ``tx_dlf_formats`` with following settings.
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Type:
+       Format Name (e.g. in METS)
+   :Root:
+       Root Element
+   :Namespace:
+       Namespace URI
+   :Class:
+       Class Name
+
+ - :Type:
+       ALTO
+   :Root:
+       alto
+   :Namespace:
+       http://www.loc.gov/standards/alto/ns-v2#
+   :Class:
+      ``Kitodo\Dlf\Format\Alto``
+
+ - :Type:
+       TEI
+   :Root:
+       TEI
+   :Namespace:
+       http://www.tei-c.org/ns/1.0
+   :Class:
+      ``Kitodo\Dlf\Format\Tei``
+
+After configuration, all full texts will be indexed when executing the commands of :ref:`indexing_documents`.
