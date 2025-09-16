@@ -96,7 +96,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
     /**
      * @access protected
-     * @var int
+     * @var int This holds the current page UID (only in frontend context)
      */
     protected int $pageUid;
 
@@ -121,8 +121,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         /** @var Request $request */
         $this->requestData = $request->getQueryParams()['tx_dlf'] ?? [];
-        $this->pageUid = (int) ($request->getQueryParams()['id'] ?? null);
         $this->requestData['page'] = $this->requestData['page'] ?? 1;
+        if ($request->getAttribute('applicationType') === 1) {
+            $this->pageUid = $request->getAttribute('routing')->getPageId();
+        }
 
         // Sanitize user input to prevent XSS attacks.
         $this->sanitizeRequestData();
@@ -135,14 +137,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
         $this->viewData = [
-            'pageUid' => $this->pageUid,
+            'pageUid' => $this->pageUid ?? 0,
             'uniqueId' => uniqid(),
             'requestData' => $this->requestData
         ];
 
         // TODO: ViewHelper f:link.action / UriBuilder does not properly encode specified entities in URL parameter
         // For more details, please see the following TYPO3 issue https://forge.typo3.org/issues/107026
-        if ( isset($this->requestData['id']) ) {
+        if (isset($this->requestData['id'])) {
             $this->viewData['partlyEncodedId'] = str_replace("%2F", "%252F", $this->requestData['id']);
         }
 
