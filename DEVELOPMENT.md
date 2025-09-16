@@ -5,12 +5,8 @@
 Before running any of the tests, please install the project dependencies. Choose which version of TYPO3 you would like to test against.
 
 ```bash
-# If you use PHP 8.1 (supported by Kitodo)
-composer update --with=typo3/cms-core:^11.5
-
-# If you use PHP 8
-composer install-via-docker -- -t 11.5
 composer install-via-docker -- -t 12.4
+composer install-via-docker -- -t 13.4
 ```
 
 ### Quick Start
@@ -80,7 +76,7 @@ docker compose down
 ### External Links
 
 - [TYPO3 Testing Framework](https://github.com/TYPO3/testing-framework)
-- [TYPO3 Explained: Extension testing](https://docs.typo3.org/m/typo3/reference-coreapi/9.5/en-us/Testing/ExtensionTesting.html)
+- [TYPO3 Explained: Extension testing](https://docs.typo3.org/m/typo3/reference-coreapi/13.4/en-us/Testing/ExtensionTesting.html)
 - [typo3/cms-styleguide](https://github.com/TYPO3/styleguide)
 
 ## Documentation
