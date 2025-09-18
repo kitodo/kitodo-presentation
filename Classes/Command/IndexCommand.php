@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Command\Command;
@@ -208,6 +209,8 @@ class IndexCommand extends BaseCommand
 
             if ($isSaved) {
                 $io->success('All done!');
+                // Clear document cache to prevent memory exhaustion.
+                GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
                 return Command::SUCCESS;
             }
 
