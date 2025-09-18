@@ -1264,7 +1264,7 @@ abstract class AbstractDocument
     /**
      * Remove Cache Hit for document instance
      *
-     * @access private
+     * @access public
      *
      * @static
      *
@@ -1272,7 +1272,7 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    private static function deleteDocumentCache(string $location): void
+    public static function deleteDocumentCache(string $location): void
     {
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_doc');
         $cache->remove(self::getCacheIdentifier($location));
