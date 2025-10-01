@@ -108,7 +108,6 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
     }
 
     // Connect equalizer
-    player.media.crossOrigin = 'anonymous';
     const source = ctx.createMediaElementSource(player.media);
     const eq = new Equalizer(source);
     eq.connect(ctx.destination);
