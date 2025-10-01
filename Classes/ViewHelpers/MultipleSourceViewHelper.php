@@ -29,7 +29,7 @@ class MultipleSourceViewHelper extends AbstractViewHelper
     public function render()
     {
         if (preg_match('/^multipleSource_(\d+)$/', $this->arguments['docArrayKey'], $matches)) {
-            return (int)$matches[1];
+            return (int) $matches[1];
         }
         return -1;
     }
