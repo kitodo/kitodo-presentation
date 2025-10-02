@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Command\BaseCommand;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Input\InputInterface;
@@ -192,6 +191,9 @@ class IndexCommand extends BaseCommand
         }
 
         $io->success('All done!');
+
+        // Clear document cache to prevent memory exhaustion.
+        AbstractDocument::deleteDocumentCache($document->getLocation());
 
         return BaseCommand::SUCCESS;
     }
