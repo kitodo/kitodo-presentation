@@ -71,6 +71,7 @@ export default class DlfMediaPlayer extends HTMLElement {
     this.video = e('video', {
       id: this.env.mkid(),
       className: "dlf-media",
+      crossOrigin: 'anonymous'
     });
 
     /**
