@@ -342,7 +342,7 @@ class SearchController extends AbstractController
                 'key' => $field,
                 'field' => $field,
                 'limit' => $this->settings['limitFacets'] ?? 15,
-                'sort' => isset($this->settings['sortingFacets']) ? $this->settings['sortingFacets'] : 'count'
+                'sort' => $this->settings['sortingFacets'] ?? 'count'
             ];
         }
 

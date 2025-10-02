@@ -99,7 +99,7 @@ class HarvestCommand extends BaseCommand
 
     /**
      * Executes the command to index the given document to DB and SOLR.
-     * 
+     *
      * @access protected
      *
      * @param InputInterface $input The input parameters
@@ -109,7 +109,7 @@ class HarvestCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
+        $dryRun = $input->getOption('dry-run') != false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
