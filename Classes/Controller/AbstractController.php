@@ -187,7 +187,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             foreach ($this->requestData['multipleSource'] as $location) {
                 $document = AbstractDocument::getInstance($location, $this->settings);
                 if ($document !== null) {
-                    $this->documentArray['extra_' . $i] = $document;
+                    $this->documentArray['multipleSource_' . $i] = $document;
                 }
                 $i++;
             }
