@@ -113,7 +113,7 @@ class ReindexCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dryRun = $input->getOption('dry-run') != false ? true : false;
+        $dryRun = $input->getOption('dry-run') != false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());

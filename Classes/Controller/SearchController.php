@@ -342,7 +342,7 @@ class SearchController extends AbstractController
                 'key' => $field,
                 'field' => $field,
                 'limit' => $this->settings['limitFacets'] ?? 15,
-                'sort' => isset($this->settings['sortingFacets']) ? $this->settings['sortingFacets'] : 'count'
+                'sort' => $this->settings['sortingFacets'] ?? 'count'
             ];
         }
 
@@ -449,10 +449,12 @@ class SearchController extends AbstractController
      */
     private function getFacetsMenuEntry(string $field, string $value, int $count, array $search, string &$state): array
     {
-        $entryArray = [];
-        $entryArray['title'] = $this->translateValue($field, $value);
-        $entryArray['count'] = $count;
-        $entryArray['doNotLinkIt'] = 0;
+        $entryArray = [
+            'title' => $this->translateValue($field, $value),
+            'count' => $count,
+            'doNotLinkIt' => 0
+        ];
+
         // Check if facet is already selected.
         $queryColumn = array_column($search['params']['filterquery'], 'query');
         $index = array_search($field . ':("' . Solr::escapeQuery($value) . '")', $queryColumn);
@@ -465,7 +467,6 @@ class SearchController extends AbstractController
             // Reset facets
             if ($this->settings['resetFacets']) {
                 $entryArray['resetFacet'] = true;
-                $entryArray['queryColumn'] = $queryColumn;
             }
         } else {
             // Facet is not selected, thus add it to filter.

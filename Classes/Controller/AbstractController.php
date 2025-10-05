@@ -586,13 +586,13 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // page range
         for ($i = $nBottom; $i <= $nTop; $i++) {
             if ($i > 0 and $i <= $lastPage) {
-                array_push($aRange, $i);
+                $aRange[] = $i;
             };
         };
 
         // check whether the first screen page is > 1, if yes then points must be added
         if ($aRange[0] > 1) {
-            array_push($pagesSect, ['label' => '...','startRecordNumber' => '...']);
+            $pagesSect[] = ['label' => '...', 'startRecordNumber' => '...'];
         };
         $lastStartRecordNumberGrid = 0; // due to validity outside the loop
         foreach (range($firstPage, $lastPage) as $i) {
@@ -608,7 +608,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 // Check if screen page is in range
                 // <f:for each="{pagination.pagesR}" as="page">
                 if (in_array($i, $aRange)) {
-                    array_push($pagesSect, ['label' => $i, 'startRecordNumber' => $i]);
+                    $pagesSect[] = ['label' => $i, 'startRecordNumber' => $i];
                 };
             } else { // GridView
                 // to calculate the values for generation the links for the pagination pages
@@ -635,15 +635,15 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
                 // Check if screen page is in range
                 if (in_array($i, $aRange)) {
-                    array_push($pagesSect, ['label' => $i,'startRecordNumber' => $startRecordNumber]);
+                    $pagesSect[] = ['label' => $i, 'startRecordNumber' => $startRecordNumber];
                 };
             };
         };
 
         // check whether the last element from $aRange <= last screen page, if yes then points must be added
         if ($aRange[array_key_last($aRange)] < $lastPage) {
-            array_push($pagesSect, ['label' => '...', 'startRecordNumber' => '...']);
-        };
+            $pagesSect[] = ['label' => '...', 'startRecordNumber' => '...'];
+        }
 
         // Safely get the next and previous page numbers
         $nextPageNumber = isset($pages[$currentPageNumber + 1]) ? $pages[$currentPageNumber + 1]['startRecordNumber'] : null;

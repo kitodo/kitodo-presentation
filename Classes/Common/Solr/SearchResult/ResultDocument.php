@@ -272,7 +272,7 @@ class ResultDocument
     {
         $highlightsIds = [];
         foreach ($this->highlights as $highlight) {
-            array_push($highlightsIds, $highlight->getId());
+            $highlightsIds[] = $highlight->getId();
         }
         return $highlightsIds;
     }
@@ -307,7 +307,7 @@ class ResultDocument
         $i = 0;
         foreach ($pageArray as $pages) {
             foreach ($pages as $page) {
-                array_push($this->pages, new Page($i, $page));
+                $this->pages[] = new Page($i, $page);
                 $i++;
             }
         }
@@ -328,7 +328,7 @@ class ResultDocument
         $i = 0;
         foreach ($regionArray as $regions) {
             foreach ($regions as $region) {
-                array_push($this->regions, new Region($i, $region));
+                $this->regions[] = new Region($i, $region);
                 $i++;
             }
         }
@@ -349,7 +349,7 @@ class ResultDocument
         foreach ($highlightArray as $highlights) {
             foreach ($highlights as $highlight) {
                 foreach ($highlight as $hl) {
-                    array_push($this->highlights, new Highlight($hl));
+                    $this->highlights[] = new Highlight($hl);
                 }
             }
         }
@@ -369,7 +369,7 @@ class ResultDocument
         $objectArray = [];
         foreach ($this->snippetsForRecord as $snippet) {
             if (!empty($snippet[$index])) {
-                array_push($objectArray, $snippet[$index]);
+                $objectArray[] = $snippet[$index];
             }
         }
         return $objectArray;
