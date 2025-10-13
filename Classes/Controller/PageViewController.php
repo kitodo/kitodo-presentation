@@ -137,118 +137,14 @@ class PageViewController extends AbstractController
 
         $this->addViewerJS();
 
-        $this->view->assign('docCount', is_array($this->documentArray) ? count($this->documentArray) : 0);
-        $this->view->assign('docArray', $this->documentArray);
-        $this->view->assign('docPage', $this->requestData['docPage'] ?? null);
-        $this->view->assign('docType', $this->document->getCurrentDocument()->tableOfContents[0]['type']);
-
-        $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
-        if ($this->requestData['multiview'] ?? false) {
-            $this->multipageNavigation();
-        }
-
         $this->view->assign('images', $this->images);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $page);
 
+        $this->view->assign('multiViewDocuments', $this->multiViewDocuments);
+        $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
+
         return $this->htmlResponse();
-    }
-
-    /**
-     * Add multi page navigation
-     * @return void
-     */
-    protected function multipageNavigation(): void
-    {
-        $navigationArray = [];
-        $navigationMeasureArray = [];
-        $navigateAllPageNext = [];
-        $navigateAllPagePrev = [];
-        $navigateAllMeasureNext = [];
-        $navigateAllMeasurePrev = [];
-        $docNumPages = [];
-        $i = 0;
-        foreach ($this->documentArray as $document) {
-            if ($document === null || !array_key_exists($i, $this->requestData['docPage'])) {
-                continue;
-            }
-
-            // convert either page or measure if requestData exists
-            if ($this->requestData['docPage'][$i] && empty($this->requestData['docMeasure'][$i])) {
-                // convert document page information to measure count information
-                $this->requestData['docMeasure'][$i] = $this->convertMeasureOrPage($document, null, $this->requestData['docPage'][$i]);
-
-            } elseif ((empty($this->requestData['docPage'][$i]) || $this->requestData['docPage'][$i] === 1) && $this->requestData['docMeasure'][$i]) {
-                $this->requestData['docPage'][$i] = $this->convertMeasureOrPage($document, $this->requestData['docMeasure'][$i]);
-            }
-
-            $navigationArray[$i]['next'] = [
-                'tx_dlf[docPage][' . $i . ']' =>
-                    MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
-            ];
-            $navigationArray[$i]['prev'] = [
-                'tx_dlf[docPage][' . $i . ']' =>
-                    MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
-            ];
-
-            $navigateAllPageNext = array_merge(
-                $navigateAllPageNext,
-                [
-                    'tx_dlf[docPage][' . $i . ']' =>
-                        MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] + 1, 1, $document->numPages, 1)
-                ]
-            );
-
-            $navigateAllPagePrev = array_merge(
-                $navigateAllPagePrev,
-                [
-                    'tx_dlf[docPage][' . $i . ']' =>
-                        MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i] - 1, 1, $document->numPages, 1)
-                ]
-            );
-
-            $navigateAllMeasureNext = array_merge(
-                $navigateAllMeasureNext,
-                [
-                    'tx_dlf[docMeasure][' . $i . ']' =>
-                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
-                ]
-            );
-
-            $navigateAllMeasurePrev = array_merge(
-                $navigateAllMeasurePrev,
-                [
-                    'tx_dlf[docMeasure][' . $i . ']' =>
-                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
-                ]
-            );
-
-            if ($document->numMeasures > 0) {
-                $navigationMeasureArray[$i]['next'] = [
-                    'tx_dlf[docMeasure][' . $i . ']' =>
-                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] + 1, 1, $document->numMeasures, 1)
-                ];
-
-                $navigationMeasureArray[$i]['prev'] = [
-                    'tx_dlf[docMeasure][' . $i . ']' =>
-                        MathUtility::forceIntegerInRange((int) $this->requestData['docMeasure'][$i] - 1, 1, $document->numMeasures, 1)
-                ];
-            }
-
-            $docNumPages[$i] = $document->numPages;
-            $i++;
-        }
-
-        // page navigation
-        $this->view->assign('navigationArray', $navigationArray);
-        $this->view->assign('navigateAllPageNext', $navigateAllPageNext);
-        $this->view->assign('navigateAllPagePrev', $navigateAllPagePrev);
-        // measure navigation
-        $this->view->assign('navigateAllMeasurePrev', $navigateAllMeasurePrev);
-        $this->view->assign('navigateAllMeasureNext', $navigateAllMeasureNext);
-        $this->view->assign('navigationMeasureArray', $navigationMeasureArray);
-
-        $this->view->assign('docNumPage', $docNumPages);
     }
 
     /**

@@ -77,6 +77,7 @@ class ToolboxController extends AbstractController
             $tools = explode(',', $this->settings['tools']);
 
             foreach ($tools as $tool) {
+                /*
                 match ($tool) {
                     'tx_dlf_adddocumenttool', 'adddocumenttool' => $this->renderToolByName('renderAddDocumentTool'),
                     'tx_dlf_annotationtool', 'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
@@ -92,6 +93,7 @@ class ToolboxController extends AbstractController
                     'tx_dlf_viewerselectiontool', 'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
                     default => $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.')
                 };
+                */
             }
         }
     }

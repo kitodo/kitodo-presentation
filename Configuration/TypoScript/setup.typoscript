@@ -72,16 +72,11 @@ page {
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
     kitodo-pageView-teiParser = EXT:dlf/Resources/Public/JavaScript/PageView/TeiParser.js
     kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
-  }
-}
 
-[request && like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
-page.includeJSFooter {
-    # Gridstack
     gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack-all.js
     gridstack-init = EXT:dlf/Resources/Public/JavaScript/PageView/Gridstack.js
+  }
 }
-[end]
 
 plugin.tx_dlf_pagegrid {
     settings {

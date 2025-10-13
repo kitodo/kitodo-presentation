@@ -119,6 +119,15 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_pageview
         }
       }
+      tx_dlf_multiview {
+        iconIdentifier = tx-dlf-multiview
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.multiview.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.multiview.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_multiview
+        }
+      }
       tx_dlf_search {
         iconIdentifier = tx-dlf-search
         title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.title

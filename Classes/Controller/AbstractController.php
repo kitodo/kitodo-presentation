@@ -80,6 +80,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      * @var array
      */
+    protected $multiViewDocuments = [];
+
+    /**
+     * @access protected
+     * @var array
+     */
     protected array $extConf;
 
     /**
@@ -157,6 +163,23 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
+     * @param $points
+     * @param int|string $key
+     * @return void
+     */
+    public function addMultiViewDocument($url): void
+    {
+        $index = count($this->multiViewDocuments);
+        $this->multiViewDocuments[$index]['url'] = $url;
+        $this->multiViewDocuments[$index]['encodedUrl'] = urlencode($this->multiViewDocuments[$index]['url']);
+        $page = 0;
+        if (strpos($url, '#') !== false) {
+            $page = (int) explode('#', $url)[1];
+        }
+        $this->multiViewDocuments[$index]['page'] = $page;
+    }
+
+    /**
      * Build the multi view.
      *
      * @param AbstractDocument $doc
@@ -166,26 +189,23 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         if (isset($this->settings['multiViewType']) && $doc->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
             $childDocuments = $doc->tableOfContents[0]['children'];
-            $i = 0;
             foreach ($childDocuments as $document) {
-                $this->documentArray[] = AbstractDocument::getInstance($document['points'], $this->settings);
-                if (isset(explode('#', $document['points'])[1])) {
-                    $initPage = explode('#', $document['points'])[1];
-                    $this->requestData['docPage'][$i] = $initPage;
-                }
-                $i++;
+                $this->addMultiViewDocument($document['points']);
             }
-        } else {
-            $this->documentArray[] = $doc;
         }
-        if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
-            $i = 0;
-            foreach ($this->requestData['multipleSource'] as $location) {
-                $document = AbstractDocument::getInstance($location, $this->settings);
-                if ($document !== null) {
-                    $this->documentArray['multipleSource_' . $i] = $document;
+        if (isset($this->requestData['multiViewSource']) && is_array($this->requestData['multiViewSource'])) {
+            foreach ($this->requestData['multiViewSource'] as $documentUrl) {
+                $sourceDocument = AbstractDocument::getInstance($documentUrl, $this->settings);
+                if ($sourceDocument !== null) {
+                    if (isset($this->settings['multiViewType']) && $sourceDocument->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
+                        $childDocuments = $sourceDocument->tableOfContents[0]['children'];
+                        foreach ($childDocuments as $sourceDocument) {
+                            $this->addMultiViewDocument($sourceDocument['points']);
+                        }
+                    } else {
+                        $this->addMultiViewDocument($documentUrl);
+                    }
                 }
-                $i++;
             }
         }
     }
@@ -523,22 +543,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->requestData['page'] = 1;
         }
 
-        if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
-            $i = 0;
-            $this->requestData['docPage'] = $this->requestData['docPage'] ?? [];
-            foreach ($this->documentArray as $document) {
-                if ($document !== null) {
-                    if (!array_key_exists($i, $this->requestData['docPage'])) {
-                        $this->requestData['docPage'][$i] = 1;
-                    } else {
-                        $this->requestData['docPage'][$i] = MathUtility::forceIntegerInRange((int) $this->requestData['docPage'][$i], 1, $document->numPages, 1);
-                    }
-                    $i++;
-                }
-            }
-        } else {
-            $this->requestData['page'] = MathUtility::forceIntegerInRange($this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
-        }
+        $this->requestData['page'] = MathUtility::forceIntegerInRange($this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
 
         // reassign viewData to get correct page
         $this->viewData['requestData'] = $this->requestData;
