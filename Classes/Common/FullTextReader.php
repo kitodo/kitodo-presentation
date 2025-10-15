@@ -33,7 +33,7 @@ class FullTextReader
 
     /**
      * Constructor
-     * 
+     *
      * @param array $formats
      */
     public function __construct(array $formats)
@@ -44,7 +44,7 @@ class FullTextReader
 
     /**
      * This extracts the OCR full text for a physical structure node / IIIF Manifest / Canvas from an
-     * XML full text representation (currently only ALTO). For IIIF manifests, ALTO documents have
+     * XML full text representation. For IIIF manifests, ALTO documents have
      * to be given in the Canvas' / Manifest's "seeAlso" property.
      *
      * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
@@ -83,7 +83,7 @@ class FullTextReader
         if (!empty($fileContent) && !empty($this->formats[$textFormat])) {
             $textMiniOcr = '';
             if (!empty($this->formats[$textFormat]['class'])) {
-                $textMiniOcr = $this->getRawTextFromClass($fileContent, $textFormat);
+                $textMiniOcr = $this->getRawTextFromClass($id, $fileContent, $textFormat);
             }
             $fullText = $textMiniOcr;
         } else {
@@ -98,12 +98,14 @@ class FullTextReader
      *
      * @access private
      *
+     * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
+     * of the Manifest / Range (IIIF)
      * @param string $fileContent The content of the XML file
      * @param string $textFormat
      *
      * @return string
      */
-    private function getRawTextFromClass(string $fileContent, string $textFormat): string
+    private function getRawTextFromClass(string $id, string $fileContent, string $textFormat): string
     {
         $textMiniOcr = '';
         $class = $this->formats[$textFormat]['class'];
@@ -113,6 +115,7 @@ class FullTextReader
             if ($obj instanceof FulltextInterface) {
                 // Load XML from file.
                 $ocrTextXml = Helper::getXmlFileAsString($fileContent);
+                $obj->setPageId($id);
                 $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
             } else {
                 $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
