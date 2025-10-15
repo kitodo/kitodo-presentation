@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\TypoScript\IncludeTree\SysTemplateRepository;
 use TYPO3\CMS\Core\TypoScript\IncludeTree\SysTemplateTreeBuilder;
 use TYPO3\CMS\Core\TypoScript\IncludeTree\Traverser\ConditionVerdictAwareIncludeTreeTraverser;
@@ -47,15 +48,15 @@ class TypoScriptHelper
     }
 
     /**
-     * Extract typoScript configuration from site root for Typo3 v13
+     * Return frontend typoScript for the site root for Typo3 v13.
      *
      * @access public
      *
      * @param int $pid
      *
-     * @return array
+     * @return FrontendTypoScript
      */
-    public function getTyposcriptConfigV13(int $pid): array
+    public function getFrontendTyposcriptV13(int $pid): FrontendTypoScript
     {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         $site = $siteFinder->getSiteByPageId($pid);
@@ -80,7 +81,7 @@ class TypoScriptHelper
             null,
         );
 
-        $ts = $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
+        return $frontendTypoScriptFactory->createSetupConfigOrFullSetup(
             true,
             $frontendTypoScript,
             $site,
@@ -90,20 +91,18 @@ class TypoScriptHelper
             null,
             null,
         );
-
-        return $ts->getSetupArray();
     }
 
     /**
-     * Extract typoScript configuration from site root for Typo3 v12
+     * Return the frontend typoScript for the site root for Typo3 v12.
      *
      * @access public
      *
      * @param int $pid page id
      *
-     * @return array typoscript configuration of site root
+     * @return FrontendTypoScript the frontend typoscript of the site root
      */
-    public static function getTyposcriptConfigV12(int $pid): array
+    public static function getFrontendTyposcriptV12(int $pid): FrontendTypoScript
     {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         $site = $siteFinder->getSiteByPageId($pid);
@@ -123,11 +122,11 @@ class TypoScriptHelper
         $request = $typoScriptFrontendController->getFromCache($request);
         $typoScriptFrontendController->releaseLocks();
 
-        return $request->getAttribute('frontend.typoscript')->getSetupArray();
+        return $request->getAttribute('frontend.typoscript');
     }
 
     /**
-     * Get TypoScript configuration from site root
+     * Get frontend TypoScript from site root.
      *
      * Note: When upgrading Typo3, maybe use site settings to store storagePid, see:
      * https://docs.typo3.org/permalink/t3coreapi:sitehandling-settings
@@ -136,14 +135,14 @@ class TypoScriptHelper
      *
      * @param int $pid page id
      *
-     * @return array typoscript configuration of site root
+     * @return FrontendTypoScript the frontend typoscript of the site root
      */
-    public static function getTyposcriptConfig(int $pid): array
+    public static function getFrontendTyposcript(int $pid): FrontendTypoScript
     {
         $typo3Version = (new Typo3Version())->getMajorVersion();
         if ($typo3Version === 13) {
-            return GeneralUtility::makeInstance(TypoScriptHelper::class)->getTyposcriptConfigV13($pid);
+            return GeneralUtility::makeInstance(TypoScriptHelper::class)->getFrontendTyposcriptV13($pid);
         }
-        return TypoScriptHelper::getTyposcriptConfigV12($pid);
+        return TypoScriptHelper::getFrontendTyposcriptV12($pid);
     }
 }
