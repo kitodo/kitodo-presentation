@@ -84,8 +84,9 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     protected function initializeRepositories(int $storagePid, int $pid): void
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-        $configurationManager->setRequest(
-            $GLOBALS['TYPO3_REQUEST']->withAttribute('frontend.typoscript', TypoScriptHelper::getFrontendTyposcript($pid))
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
+            'frontend.typoscript', 
+            TypoScriptHelper::getFrontendTyposcript($pid)
         );
         $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
