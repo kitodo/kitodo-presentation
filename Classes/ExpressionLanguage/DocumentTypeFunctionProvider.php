@@ -76,7 +76,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * @access protected
      *
      * @param int $storagePid The storage pid
-     * 
+     *
      * @param int $pid the page id
      *
      * @return void
@@ -85,7 +85,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
         $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
-            'frontend.typoscript', 
+            'frontend.typoscript',
             TypoScriptHelper::getFrontendTyposcript($pid)
         );
         $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -109,7 +109,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             {
                 // Not implemented, we only use the evaluator
             },
-            function($arguments, $storagePid)
+            function ($arguments, $storagePid)
             {
                 $pid = $arguments["page"]["pid"];
 
@@ -183,7 +183,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                     $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $storagePid . '" for document loading');
                 }
             } elseif (GeneralUtility::isValidUrl($requestData['id'])) {
-                $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $storagePid]);          
+                $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $storagePid]);
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
