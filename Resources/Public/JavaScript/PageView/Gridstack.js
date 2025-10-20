@@ -1,5 +1,10 @@
 /*global GridStack */
 $( document ).ready(function() {
+
+    if(!document.querySelector(".multiview .grid-stack")) {
+      return;
+    }
+
     var options = { // Put in gridstack options here
         disableOneColumnMode: true, // For jfiddle small window size
         float: false,
