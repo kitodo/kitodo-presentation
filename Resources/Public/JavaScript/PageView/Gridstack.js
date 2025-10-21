@@ -9,8 +9,6 @@ $( document ).ready(function() {
         disableOneColumnMode: true, // For jfiddle small window size
         float: false,
         handle: '.gridstack-dragging-handle',
-        minW: 2,
-        minH: 2
     };
     var grid = GridStack.init(options);
 

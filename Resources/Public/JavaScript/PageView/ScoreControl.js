@@ -56,9 +56,7 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       const pageToShow = tk.getPageWithElement(pagebeginning);
       const score = tk.renderToSVG(pageToShow);
 
-      /**
-       * Callback when player is stopped.
-       */
+      /*
       function onStop() {
         $('body').removeClass('midi-active')
       }
@@ -79,6 +77,8 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
           "download": getMeiTitle(tk) + ".midi"
         })
       });
+
+       */
 
       if (score === undefined) {
         result.reject();

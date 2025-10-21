@@ -135,14 +135,14 @@ class PageViewController extends AbstractController
         $this->view->assign('viewData', $this->viewData);
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
 
-        $this->addViewerJS();
-
         $this->view->assign('images', $this->images);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $page);
 
-        $this->view->assign('multiViewDocuments', $this->multiViewDocuments);
         $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
+        $this->view->assign('multiViewDocuments', $this->multiViewDocuments);
+
+        $this->addViewerJS();
 
         return $this->htmlResponse();
     }
@@ -165,23 +165,6 @@ class PageViewController extends AbstractController
         }
 
         return $return;
-    }
-
-    /**
-     * Action to add multiple mets sources (multi page view)
-     * @return ResponseInterface the response
-     */
-    public function addDocumentAction(FormAddDocument $formAddDocument): ResponseInterface
-    {
-        if (GeneralUtility::isValidUrl($formAddDocument->getLocation())) {
-            $nextMultipleSourceKey = 0;
-            if (isset($this->requestData['multipleSource']) && is_array($this->requestData['multipleSource'])) {
-                $nextMultipleSourceKey = max(array_keys($this->requestData['multipleSource'])) + 1;
-            }
-            return $this->multiviewRedirect(['tx_dlf[multipleSource][' . $nextMultipleSourceKey . ']' => $formAddDocument->getLocation()]);
-        }
-
-        return $this->htmlResponse();
     }
 
     /**
@@ -359,65 +342,7 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
-        if (!empty($this->settings['multiViewType']) && is_array($this->documentArray) && count($this->documentArray) > 1) {
-            $jsViewer = 'tx_dlf_viewer = [];';
-            $i = 0;
-            foreach ($this->documentArray as $document) {
-                if ($document !== null && array_key_exists('docPage', $this->requestData) && array_key_exists($i, $this->requestData['docPage'])) {
-                    $docPage = $this->requestData['docPage'][$i];
-                    $docImage = [];
-                    $docFulltext = [];
-                    $docAnnotationContainers = [];
-                    if ($this->document->getCurrentDocument() instanceof MetsDocument) {
-                        // check if page or measure is set
-                        if (array_key_exists('docMeasure', $this->requestData)) {
-                            // convert document page information to measure count information
-                            $measure2Page = array_column($document->musicalStructure, 'page');
-                            $docPage = $measure2Page[$this->requestData['docMeasure'][$i]];
-                        }
-                    }
-                    if ($docPage == null) {
-                        $docPage = 1;
-                    }
-                    $docImage[0] = $this->getImage($docPage, $document);
-                    $currentMeasureId = '';
-
-                    $docScore = $this->getScore($docPage, $document);
-                    $docMeasures = $this->getMeasures($docPage, $document);
-
-                    if (array_key_exists('docMeasure', $this->requestData) && $this->requestData['docMeasure'][$i]) {
-                        $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['docMeasure'][$i]];
-                    }
-
-                    $viewer = [
-                        'controls' => $this->controls,
-                        'div' => 'tx-dfgviewer-map-' . $i,
-                        'progressElementId' => $this->settings['progressElementId'] ?? '',
-                        'counter' => $i,
-                        'images' => $docImage,
-                        'fulltexts' => $docFulltext,
-                        'score' => $docScore,
-                        'annotationContainers' => $docAnnotationContainers,
-                        'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
-                        'useInternalProxy' => $this->settings['useInternalProxy'],
-                        'currentMeasureId' => $currentMeasureId,
-                        'measureIdLinks' => $docMeasures['measureLinks']
-                    ];
-
-                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer(' . json_encode($viewer) . ');
-                            ';
-                    $i++;
-                }
-            }
-
-            // Viewer configuration.
-            $viewerConfiguration = '$(document).ready(function() {
-                    if (dlfUtils.exists(dlfViewer)) {
-                        ' . $jsViewer . '
-                        viewerCount = ' . ($i - 1) . ';
-                    }
-                });';
-        } else {
+        if (!$this->isMultiView()) {
             $currentMeasureId = '';
             $docPage = 0;
 
@@ -452,8 +377,9 @@ class PageViewController extends AbstractController
                         tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
                     }
                 });';
+
+            $this->view->assign('viewerConfiguration', $viewerConfiguration);
         }
-        $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
 
     /**
@@ -608,5 +534,13 @@ class PageViewController extends AbstractController
             ->setArgumentPrefix('tx_dlf')
             ->uriFor('main');
         return new RedirectResponse($this->addBaseUriIfNecessary($uri), 308);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultiView(): bool
+    {
+        return isset($this->requestData['multiview']) && $this->requestData['multiview'] == 1;
     }
 }

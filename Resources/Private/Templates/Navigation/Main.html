@@ -255,7 +255,7 @@
 <f:section name="render.measureBack">
     <f:if condition="{numMeasures} > 0 && {double} != 1">
         <f:then>
-            <div class="measureBacks" style="top: 100px;">
+            <div class="measureBacks">
                 <span class="prev">
                     <f:if condition="{currentMeasure} > 1">
                         <f:then>
@@ -279,7 +279,7 @@
 <f:section name="render.measureForward">
     <f:if condition="{numMeasures} > 0 && {double} != 1">
         <f:then>
-            <div class="measureFwds" style="top: 200px;">
+            <div class="measureFwds">
                 <span class="next">
                     <f:if condition="{currentMeasure} < {numMeasures}">
                         <f:then>

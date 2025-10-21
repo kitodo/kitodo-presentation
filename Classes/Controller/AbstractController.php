@@ -74,12 +74,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      * @var array
      */
-    protected $documentArray;
-
-    /**
-     * @access protected
-     * @var array
-     */
     protected $multiViewDocuments = [];
 
     /**
@@ -167,7 +161,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param int|string $key
      * @return void
      */
-    public function addMultiViewDocument($url): void
+    public function addMultiViewDocument($url, $sourceKey = -1): void
     {
         $index = count($this->multiViewDocuments);
         $this->multiViewDocuments[$index]['url'] = $url;
@@ -177,33 +171,30 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $page = (int) explode('#', $url)[1];
         }
         $this->multiViewDocuments[$index]['page'] = $page;
+        $this->multiViewDocuments[$index]['sourceKey'] = $sourceKey;
     }
 
-    /**
-     * Build the multi view.
-     *
-     * @param AbstractDocument $doc
-     * @return void
-     */
-    protected function buildMultiView(AbstractDocument $doc): void
+    protected function buildMultiView(string $docUrl, AbstractDocument $doc): void
     {
         if (isset($this->settings['multiViewType']) && $doc->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
             $childDocuments = $doc->tableOfContents[0]['children'];
             foreach ($childDocuments as $document) {
                 $this->addMultiViewDocument($document['points']);
             }
+        } else {
+            $this->addMultiViewDocument($docUrl);
         }
         if (isset($this->requestData['multiViewSource']) && is_array($this->requestData['multiViewSource'])) {
-            foreach ($this->requestData['multiViewSource'] as $documentUrl) {
+            foreach ($this->requestData['multiViewSource'] as $sourceKey => $documentUrl) {
                 $sourceDocument = AbstractDocument::getInstance($documentUrl, $this->settings);
                 if ($sourceDocument !== null) {
                     if (isset($this->settings['multiViewType']) && $sourceDocument->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
                         $childDocuments = $sourceDocument->tableOfContents[0]['children'];
                         foreach ($childDocuments as $sourceDocument) {
-                            $this->addMultiViewDocument($sourceDocument['points']);
+                            $this->addMultiViewDocument($sourceDocument['points'], $sourceKey);
                         }
                     } else {
-                        $this->addMultiViewDocument($documentUrl);
+                        $this->addMultiViewDocument($documentUrl, $sourceKey);
                     }
                 }
             }
@@ -704,9 +695,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
             if ($doc !== null) {
                 $doc->configPid = $this->document->getPid();
-                $this->buildMultiView($doc);
-                // fix for count(): Argument #1 ($value) must be of type Countable|array, null given
-                $this->documentArray[] = $doc;
+                $this->buildMultiView($this->document->getLocation(), $doc);
             }
         }
 
@@ -731,7 +720,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $doc = AbstractDocument::getInstance($documentUrl, $this->settings);
 
         if ($doc !== null) {
-            $this->buildMultiView($doc);
+            $this->buildMultiView($documentUrl, $doc);
 
             $this->document = GeneralUtility::makeInstance(Document::class);
 
