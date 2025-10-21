@@ -15,7 +15,6 @@ use Kitodo\Dlf\Common\DocumentAnnotation;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Common\MetsDocument;
-use Kitodo\Dlf\Domain\Model\FormAddDocument;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

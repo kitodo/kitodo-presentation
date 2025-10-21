@@ -182,7 +182,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 $this->addMultiViewDocument($document['points']);
             }
         } else {
-            $this->addMultiViewDocument($docUrl);
+            $this->addMultiViewDocument($docUrl . '#' . $this->requestData['page']);
         }
         if (isset($this->requestData['multiViewSource']) && is_array($this->requestData['multiViewSource'])) {
             foreach ($this->requestData['multiViewSource'] as $sourceKey => $documentUrl) {
