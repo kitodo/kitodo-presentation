@@ -256,18 +256,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Dlf',
-    'MultiView',
-    [
-        \Kitodo\Dlf\Controller\MultiViewController::class => 'main',
-    ],
-    // non-cacheable actions
-    [
-        \Kitodo\Dlf\Controller\MultiViewController::class => '',
-    ]
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Dlf',
     'Basket',
     [
         \Kitodo\Dlf\Controller\BasketController::class => 'main, add, basket',
