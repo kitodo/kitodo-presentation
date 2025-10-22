@@ -76,11 +76,11 @@ page {
 }
 
 [request && like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
-  page.includeJSFooter {
+page.includeJSFooter {
     # Gridstack
     gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack-all.js
     gridstack-init = EXT:dlf/Resources/Public/JavaScript/PageView/Gridstack.js
-  }
+}
 [end]
 
 plugin.tx_dlf_pagegrid {
