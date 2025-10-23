@@ -134,6 +134,9 @@
             <f:if condition="{viewData.requestData.double}">
                 <f:form.hidden property="double" value="{viewData.requestData.double}"/>
             </f:if>
+            <f:if condition="{viewData.requestData.multiviewembedded} == 1">
+                <f:form.hidden name="tx_dlf[multiviewembedded]" value="{viewData.requestData.multiviewembedded}"/>
+            </f:if>
             <label for="tx-dlf-page-{viewData.uniqueId}">
                 <f:translate key="selectPage"/>
             </label>
