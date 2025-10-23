@@ -183,6 +183,13 @@ export default class Markers extends EventTarget {
   }
 
   /**
+   * Deactivates the currently active segment
+   */
+  deactivateSegment() {
+    this.activateSegment(null);
+  }
+
+  /**
    *
    * @param {string} id
    * @returns {Readonly<Segment> | undefined}

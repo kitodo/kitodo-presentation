@@ -1,0 +1,39 @@
+// Mixin: automatically darken/lighten background/text on hover
+//
+// Usage Example:
+// .button {
+//   .hover-darken-bg(#ddd, 10%);
+//   .hover-lighten-color(#eee, 10%);
+// }
+
+.hover-lighten-bg(@bg-color, @bg-amount) {
+    background-color: @bg-color;
+
+    &:hover {
+        background-color: lighten(@bg-color, @bg-amount);
+    }
+}
+
+.hover-darken-bg(@bg-color, @bg-amount) {
+    background-color: @bg-color;
+
+    &:hover {
+        background-color: darken(@bg-color, @bg-amount);
+    }
+}
+
+.hover-lighten-color(@text-color, @text-amount) {
+    color: @text-color;
+
+    &:hover {
+        color: lighten(@text-color, @text-amount);
+    }
+}
+
+.hover-darken-color(@text-color, @text-amount) {
+    color: @text-color;
+
+    &:hover {
+        color: darken(@text-color, @text-amount);
+    }
+}

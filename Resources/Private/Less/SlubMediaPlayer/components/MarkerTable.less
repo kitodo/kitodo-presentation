@@ -9,6 +9,12 @@
             line-height: normal;
         }
 
+        table tr::before {
+            content: "";
+            display: table-cell;
+            width: 4px;
+        }
+
         th {
             border-bottom: 1px solid black;
         }
@@ -17,12 +23,23 @@
             padding: 0.1em 2em 0.1em 0;
         }
 
-        tbody tr:hover {
-            background-color: #eee;
+        tbody tr {
+            transition: background-color 0.3s ease, color 0.3s ease;
+            
+            &:hover {
+                background-color: #eee;
+            }
         }
 
         tr.active-segment {
-            color: darkcyan;
+            @active-bg: fade(@accent-color, 12%);
+            color: @accent-color;
+
+            .hover-darken-bg(@active-bg, 5%);
+
+            &::before {
+                background-color: @accent-color;
+            }
         }
 
         .marker-id-col {
@@ -46,6 +63,9 @@
         .marker-start-col,
         .marker-end-col {
             cursor: pointer;
+            &:hover {
+                color: lighten(@accent-color, 8%);
+            }
         }
 
         .marker-buttons-col {
