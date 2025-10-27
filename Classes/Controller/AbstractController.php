@@ -157,11 +157,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * @param $points
-     * @param int|string $key
+     * Add a document the list of multi view documents
+     *
+     * @param string $url Url to the document
+     * @param int $page Page in document to select
+     * @param int $sourceKey Key of document url in multiViewSource parameter array. Defaults to -1 if the document URL does not originate from this parameter.
      * @return void
      */
-    public function addMultiViewDocument($url, $page = 0,$sourceKey = -1): void
+    public function addMultiViewDocument(string $url, int $page = 0, int $sourceKey = -1): void
     {
         $index = count($this->multiViewDocuments);
         $this->multiViewDocuments[$index]['url'] = $url;
