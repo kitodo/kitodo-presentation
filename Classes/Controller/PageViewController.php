@@ -536,7 +536,9 @@ class PageViewController extends AbstractController
     }
 
     /**
-     * @return bool
+     * Check url containing multiview parameter
+     *
+     * @return bool True if request parameter `multiview` has value 1
      */
     public function isMultiView(): bool
     {

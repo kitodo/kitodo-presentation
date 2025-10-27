@@ -161,12 +161,11 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param int|string $key
      * @return void
      */
-    public function addMultiViewDocument($url, $sourceKey = -1): void
+    public function addMultiViewDocument($url, $page = 0,$sourceKey = -1): void
     {
         $index = count($this->multiViewDocuments);
         $this->multiViewDocuments[$index]['url'] = $url;
         $this->multiViewDocuments[$index]['encodedUrl'] = urlencode($this->multiViewDocuments[$index]['url']);
-        $page = 0;
         if (strpos($url, '#') !== false) {
             $page = (int) explode('#', $url)[1];
         }
@@ -182,7 +181,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 $this->addMultiViewDocument($document['points']);
             }
         } else {
-            $this->addMultiViewDocument($docUrl . '#' . $this->requestData['page']);
+            $this->addMultiViewDocument($docUrl, $this->requestData['page']);
         }
         if (isset($this->requestData['multiViewSource']) && is_array($this->requestData['multiViewSource'])) {
             foreach ($this->requestData['multiViewSource'] as $sourceKey => $documentUrl) {
@@ -191,10 +190,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                     if (isset($this->settings['multiViewType']) && $sourceDocument->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
                         $childDocuments = $sourceDocument->tableOfContents[0]['children'];
                         foreach ($childDocuments as $sourceDocument) {
-                            $this->addMultiViewDocument($sourceDocument['points'], $sourceKey);
+                            $this->addMultiViewDocument($sourceDocument['points'], 0, $sourceKey);
                         }
                     } else {
-                        $this->addMultiViewDocument($documentUrl, $sourceKey);
+                        $this->addMultiViewDocument($documentUrl, 0, $sourceKey);
                     }
                 }
             }
