@@ -106,14 +106,27 @@ class PageViewController extends AbstractController
             return $this->multiviewRedirect();
         }
 
+        $this->setPage();
+
+        $page = $this->requestData['page'] ?? 0;
+
+        $this->view->assign('viewData', $this->viewData);
+        $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
+        $this->view->assign('docId', $this->requestData['id']);
+        $this->view->assign('page', $page);
+
+        if($this->isMultiView()) {
+            $this->view->assign('multiview', 1);
+            $this->view->assign('multiViewDocuments', $this->multiViewDocuments);
+            return $this->htmlResponse();
+        }
+
+        // Get the controls for the map.
+        $this->controls = explode(',', $this->settings['features'] ?? '');
         $this->requestData['double'] = MathUtility::forceIntegerInRange($this->requestData['double'], 0, 1, 0);
 
         $documentAnnotation = DocumentAnnotation::getInstance($this->document);
         $this->verovioAnnotations = $documentAnnotation->getVerovioRelevantAnnotations();
-
-        $this->setPage();
-
-        $page = $this->requestData['page'] ?? 0;
 
         // Get image data.
         $this->images[0] = $this->getImage($page);
@@ -128,19 +141,8 @@ class PageViewController extends AbstractController
         $this->scores = $this->getScore($page);
         $this->measures = $this->getMeasures($page);
 
-        // Get the controls for the map.
-        $this->controls = explode(',', $this->settings['features'] ?? '');
-
-        $this->view->assign('viewData', $this->viewData);
-        $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
 
         $this->view->assign('images', $this->images);
-        $this->view->assign('docId', $this->requestData['id']);
-        $this->view->assign('page', $page);
-
-        $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
-        $this->view->assign('multiViewDocuments', $this->multiViewDocuments);
-
         $this->addViewerJS();
 
         return $this->htmlResponse();
@@ -341,44 +343,42 @@ class PageViewController extends AbstractController
      */
     protected function addViewerJS(): void
     {
-        if (!$this->isMultiView()) {
-            $currentMeasureId = '';
-            $docPage = 0;
+        $currentMeasureId = '';
+        $docPage = 0;
 
-            if (isset($this->requestData['page'])) {
-                $docPage = $this->requestData['page'];
-            }
-
-            $docMeasures = $this->getMeasures($docPage);
-            if (isset($this->requestData['measure'])
-                && isset($docMeasures['measureCounterToMeasureId'][$this->requestData['measure']])) {
-                $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
-            }
-
-            $viewer = [
-                'controls' => $this->controls,
-                'div' => $this->settings['elementId'] ?? 'tx-dlf-map',
-                'progressElementId' => $this->settings['progressElementId'] ?? 'tx-dlf-page-progress',
-                'images' => $this->images,
-                'fulltexts' => $this->fulltexts,
-                'score' => $this->scores,
-                'annotationContainers' => $this->annotationContainers,
-                'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
-                'useInternalProxy' => $this->settings['useInternalProxy'],
-                'verovioAnnotations' => $this->verovioAnnotations,
-                'currentMeasureId' => $currentMeasureId,
-                'measureIdLinks' => $docMeasures['measureLinks']
-            ];
-
-            // Viewer configuration.
-            $viewerConfiguration = '$(document).ready(function() {
-                    if (dlfUtils.exists(dlfViewer)) {
-                        tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
-                    }
-                });';
-
-            $this->view->assign('viewerConfiguration', $viewerConfiguration);
+        if (isset($this->requestData['page'])) {
+            $docPage = $this->requestData['page'];
         }
+
+        $docMeasures = $this->getMeasures($docPage);
+        if (isset($this->requestData['measure'])
+            && isset($docMeasures['measureCounterToMeasureId'][$this->requestData['measure']])) {
+            $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
+        }
+
+        $viewer = [
+            'controls' => $this->controls,
+            'div' => $this->settings['elementId'] ?? 'tx-dlf-map',
+            'progressElementId' => $this->settings['progressElementId'] ?? 'tx-dlf-page-progress',
+            'images' => $this->images,
+            'fulltexts' => $this->fulltexts,
+            'score' => $this->scores,
+            'annotationContainers' => $this->annotationContainers,
+            'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
+            'useInternalProxy' => $this->settings['useInternalProxy'],
+            'verovioAnnotations' => $this->verovioAnnotations,
+            'currentMeasureId' => $currentMeasureId,
+            'measureIdLinks' => $docMeasures['measureLinks']
+        ];
+
+        // Viewer configuration.
+        $viewerConfiguration = '$(document).ready(function() {
+                if (dlfUtils.exists(dlfViewer)) {
+                    tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
+                }
+            });';
+
+        $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
 
     /**
@@ -533,15 +533,5 @@ class PageViewController extends AbstractController
             ->setArgumentPrefix('tx_dlf')
             ->uriFor('main');
         return new RedirectResponse($this->addBaseUriIfNecessary($uri), 308);
-    }
-
-    /**
-     * Check url containing multiview parameter
-     *
-     * @return bool True if request parameter `multiview` has value 1
-     */
-    public function isMultiView(): bool
-    {
-        return isset($this->requestData['multiview']) && $this->requestData['multiview'] == 1;
     }
 }

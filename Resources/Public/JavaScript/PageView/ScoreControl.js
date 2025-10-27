@@ -58,7 +58,7 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
 
       /**
        * Callback when player is stopped.
-       */
+
       function onStop() {
         $('body').removeClass('midi-active')
       }
@@ -79,6 +79,7 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
           "download": getMeiTitle(tk) + ".midi"
         })
       });
+       */
 
       if (score === undefined) {
         result.reject();

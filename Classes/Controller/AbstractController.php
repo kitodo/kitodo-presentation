@@ -749,4 +749,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         $this->settings = $settings;
     }
+
+    /**
+     * Check url containing multiview parameter
+     *
+     * @return bool True if request parameter `multiview` has value 1
+     */
+    protected function isMultiView(): bool
+    {
+        return isset($this->requestData['multiview']) && $this->requestData['multiview'] == 1;
+    }
 }
