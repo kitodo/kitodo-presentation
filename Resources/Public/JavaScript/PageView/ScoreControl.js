@@ -417,7 +417,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
  * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.
  */
 dlfViewerScoreControl.prototype.changeActiveBehaviour = function () {
-  if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled' && this.pagecount === 1) {
+  if (!dlfUtils.isMultiViewEmbedded() && dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled' && this.pagecount === 1) {
     this.addActiveBehaviourForSwitchOn();
   } else {
     this.addActiveBehaviourForSwitchOff();
@@ -469,7 +469,7 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function () {
   }
 
   // If score is activated via cookie than run activation method
-  if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled') {
+  if (!dlfUtils.isMultiViewEmbedded() && dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled') {
     // Activate the score behavior
     this.activate();
   }
