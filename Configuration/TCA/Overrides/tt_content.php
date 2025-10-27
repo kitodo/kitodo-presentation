@@ -284,16 +284,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     $iconsDirectory . 'tx-dlf-pageview.svg'
 );
 
-// Plugin "multiview".
-$plugin = 'dlf_multiview';
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'MultiView',
-    $pluginsLabel . 'plugins.multiview.title',
-    $iconsDirectory . 'tx-dlf-multiview.svg'
-);
-
 // Plugin "search".
 $plugin = 'dlf_search';
 
