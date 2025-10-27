@@ -1,10 +1,11 @@
 /*global GridStack */
 $( document ).ready(function() {
-
     var options = { // Put in gridstack options here
         disableOneColumnMode: true, // For jfiddle small window size
         float: false,
         handle: '.gridstack-dragging-handle',
+        minW: 2,
+        minH: 2
     };
     var grid = GridStack.init(options);
 
