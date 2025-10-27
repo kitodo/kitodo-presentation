@@ -373,10 +373,10 @@ class PageViewController extends AbstractController
 
         // Viewer configuration.
         $viewerConfiguration = '$(document).ready(function() {
-                if (dlfUtils.exists(dlfViewer)) {
-                    tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
-                }
-            });';
+                    if (dlfUtils.exists(dlfViewer)) {
+                        tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
+                    }
+                });';
 
         $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
