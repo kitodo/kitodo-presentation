@@ -246,11 +246,23 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     'Dlf',
     'PageView',
     [
-        \Kitodo\Dlf\Controller\PageViewController::class => 'main, addDocument',
+        \Kitodo\Dlf\Controller\PageViewController::class => 'main',
     ],
     // non-cacheable actions
     [
-        \Kitodo\Dlf\Controller\PageViewController::class => 'addDocument',
+        \Kitodo\Dlf\Controller\PageViewController::class => '',
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'Dlf',
+    'MultiView',
+    [
+        \Kitodo\Dlf\Controller\MultiViewController::class => 'main',
+    ],
+    // non-cacheable actions
+    [
+        \Kitodo\Dlf\Controller\MultiViewController::class => '',
     ]
 );
 

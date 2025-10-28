@@ -28,6 +28,7 @@ use TYPO3\CMS\Core\Resource\Exception\InvalidFileException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
@@ -176,9 +177,24 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->multiViewDocuments[$index]['sourceKey'] = $sourceKey;
     }
 
+    public function isMultiDocumentType(string $type): bool
+    {
+        /** @var ConfigurationManagerInterface $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $fullTypoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+
+        if (!empty($fullTypoScript['plugin.']['tx_dlf_multiview.'])
+            && !empty($fullTypoScript['plugin.']['tx_dlf_multiview.']['settings.'])
+            && !empty($fullTypoScript['plugin.']['tx_dlf_multiview.']['settings.']['multiDocumentTypes'])
+        ) {
+            $multiDocumentTypes = $fullTypoScript['plugin.']['tx_dlf_multiview.']['settings.']['multiDocumentTypes'];
+        }
+        return !empty($multiDocumentTypes) && in_array($type, array_map('trim', explode(',', $multiDocumentTypes)));
+    }
+
     protected function buildMultiView(string $docUrl, AbstractDocument $doc): void
     {
-        if (isset($this->settings['multiViewType']) && $doc->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
+        if ($this->isMultiDocumentType($doc->tableOfContents[0]['type'])) {
             $childDocuments = $doc->tableOfContents[0]['children'];
             foreach ($childDocuments as $document) {
                 $this->addMultiViewDocument($document['points']);
@@ -190,7 +206,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             foreach ($this->requestData['multiViewSource'] as $sourceKey => $documentUrl) {
                 $sourceDocument = AbstractDocument::getInstance($documentUrl, $this->settings);
                 if ($sourceDocument !== null) {
-                    if (isset($this->settings['multiViewType']) && $sourceDocument->tableOfContents[0]['type'] === $this->settings['multiViewType']) {
+                    if ($this->isMultiDocumentType($sourceDocument->tableOfContents[0]['type'])) {
                         $childDocuments = $sourceDocument->tableOfContents[0]['children'];
                         foreach ($childDocuments as $sourceDocument) {
                             $this->addMultiViewDocument($sourceDocument['points'], 0, $sourceKey);
@@ -300,8 +316,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function isDocMissingOrEmpty(): bool
     {
-        $multiViewType = $this->settings['multiViewType'] ?? '';
-        return $this->isDocMissing() || ($this->document->getCurrentDocument()->numPages < 1 && $this->document->getCurrentDocument()->tableOfContents[0]['type'] !== $multiViewType);
+        return $this->isDocMissing() || $this->document->getCurrentDocument()->numPages < 1;
     }
 
     /**
@@ -748,15 +763,5 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     public function setSettingsForTest($settings)
     {
         $this->settings = $settings;
-    }
-
-    /**
-     * Check url containing multiview parameter
-     *
-     * @return bool True if request parameter `multiview` has value 1
-     */
-    protected function isMultiView(): bool
-    {
-        return isset($this->requestData['multiview']) && $this->requestData['multiview'] == 1;
     }
 }

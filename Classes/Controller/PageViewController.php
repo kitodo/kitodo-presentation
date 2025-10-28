@@ -98,12 +98,11 @@ class PageViewController extends AbstractController
         $this->loadDocument();
 
         if ($this->isDocMissingOrEmpty()) {
-            // Quit without doing anything if required variables are not set.
+            if (!$this->isDocMissing() &&
+                $this->isMultiDocumentType($this->document->getCurrentDocument()->tableOfContents[0]['type'])) {
+                return $this->multiviewRedirect();
+            }
             return $this->htmlResponse();
-        }
-
-        if (isset($this->settings['multiViewType']) && $this->document->getCurrentDocument()->tableOfContents[0]['type'] === $this->settings['multiViewType'] && empty($this->requestData['multiview'])) {
-            return $this->multiviewRedirect();
         }
 
         $this->setPage();
@@ -114,12 +113,6 @@ class PageViewController extends AbstractController
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $page);
-
-        if($this->isMultiView()) {
-            $this->view->assign('multiview', 1);
-            $this->view->assign('multiViewDocuments', $this->multiViewDocuments);
-            return $this->htmlResponse();
-        }
 
         // Get the controls for the map.
         $this->controls = explode(',', $this->settings['features'] ?? '');
@@ -513,25 +506,18 @@ class PageViewController extends AbstractController
         return null;
     }
 
-    private function multiviewRedirect(array $params=[]): RedirectResponse
+    private function multiviewRedirect(): ResponseInterface
     {
-        $arguments = array_merge(
-            ['tx_dlf' => $this->requestData],
-            ['tx_dlf[multiview]' => 1]
-        );
+        $arguments = [
+            'tx_dlf[id]' => $this->requestData['id'],
+            'tx_dlf[page]' => $this->requestData['page'],
+            'tx_dlf[multiview]' => 1
+        ];
 
-        if(!empty($params)) {
-            $arguments = array_merge(
-                $arguments,
-                $params
-            );
-        }
-
-        $uriBuilder = $this->uriBuilder;
-        $uri = $uriBuilder
+        $uri = $this->uriBuilder
+            ->reset()
             ->setArguments($arguments)
-            ->setArgumentPrefix('tx_dlf')
-            ->uriFor('main');
+            ->build();
         return new RedirectResponse($this->addBaseUriIfNecessary($uri), 308);
     }
 }
