@@ -13,8 +13,8 @@
 document.body.classList.add('multiview');
 
 $( document ).ready(function() {
-  const options = { // put in gridstack options here
-    disableOneColumnMode: true, // for jfiddle small window size
+  const options = { // Put in gridstack options here
+    disableOneColumnMode: true, // For jfiddle small window size
     float: false,
     handle: '.gridstack-dragging-handle',
     minW: 2,
@@ -23,7 +23,7 @@ $( document ).ready(function() {
   const grid = GridStack.init(options);
 
   if (Cookies.get('gsLayout')) {
-    // only extract saved layout for elements that exist
+    // Only extract saved layout for elements that exist
     const loadedGridLayout = JSON.parse(Cookies.get('gsLayout'));
     $(loadedGridLayout).each(function () {
       const elements = $("[gs-id='" + this.id + "']");
@@ -50,11 +50,11 @@ $( document ).ready(function() {
 const iframes = document.querySelectorAll('.grid-stack iframe');
 iframes.forEach(iframe => {
   iframe.addEventListener('load', () => {
-    // add class for multiview styling in iframe
+    // Add class for multiview styling in iframe
     iframe.contentDocument.body.classList.add('multiviewembedded');
-    // hide the loader of the iframe in the multiview
+    // Hide the loader of the iframe in the multiview
     iframe.parentNode.querySelector('.loader').style.display = 'none';
-    // display necessary page controls
+    // Display necessary page controls
     document.querySelectorAll('.page-control > div a').forEach(link => {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
       const pageControl = iframeDoc.querySelector('.page-control ' + link.dataset.pageControlSelector);
@@ -66,11 +66,11 @@ iframes.forEach(iframe => {
   });
 });
 
-// add click event to the controls of the multi view
+// Add click event to the controls of the multi view
 const multiViewControls = document.querySelectorAll(".page-control a");
 multiViewControls.forEach(multiviewControl => {
   multiviewControl.addEventListener("click", function (event) {
-    event.preventDefault(); // stops navigation
+    event.preventDefault(); // Stops navigation
     const clicked = event.currentTarget;
 
     const loadedIframes = Array.from(document.querySelectorAll('.grid-stack iframe')).filter(iframe => {
@@ -86,7 +86,7 @@ multiViewControls.forEach(multiviewControl => {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
       const pageControl = iframeDoc.querySelector('.page-control ' + clicked.dataset.pageControlSelector);
       if(pageControl) {
-        // hide current page controls to decide again after iframe is loaded
+        // Hide current page controls to decide again after iframe is loaded
         document.querySelectorAll('.page-control > div').forEach(div => {
           div.style.display = '';
         });

@@ -98,6 +98,7 @@ class PageViewController extends AbstractController
         $this->loadDocument();
 
         if ($this->isDocMissingOrEmpty()) {
+            // if document is empty and current document type is a multi document type redirect to multi view
             if (!$this->isDocMissing() &&
                 $this->isMultiDocumentType($this->document->getCurrentDocument()->tableOfContents[0]['type'])) {
                 return $this->multiviewRedirect();
