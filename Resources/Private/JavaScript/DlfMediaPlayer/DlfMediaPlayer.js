@@ -721,6 +721,9 @@ export default class DlfMediaPlayer extends HTMLElement {
       });
       this.dispatchEvent(event);
     }
+
+    // Pauses playback when the video reaches the active segment’s end.
+    this.stopActiveSegment();
   }
 
   onTrackChange() {
@@ -758,6 +761,9 @@ export default class DlfMediaPlayer extends HTMLElement {
 
   onPlay() {
     this.videoPausedOn = null;
+
+    // Deactivates the segment if playback passes its end time.
+    this.deactivateActiveSegment();
   }
 
   /**
@@ -1064,6 +1070,67 @@ export default class DlfMediaPlayer extends HTMLElement {
       const error = event.detail;
       console.error('Error from Shaka player', error.code, error);
     }
+  }
+  
+  /**
+   * Returns the active segment if it exists and has a valid endTime.
+   * 
+   * @private
+   * @typedef {import('./Markers.js').Segment & { endTime: number }} SegmentWithEnd
+   * @returns {SegmentWithEnd | null}
+   */
+  getValidActiveSegment() {
+    const activeSegment = this.markers_.activeSegment;
+    if (activeSegment === null || typeof activeSegment.endTime !== 'number') {
+      return null;
+    }
+    return /** @type {SegmentWithEnd} */ (activeSegment);
+  }
+
+  /**
+   * Checks whether the active segment has reached or passed its end time and deactivates it.
+   * 
+   * @private
+   * @returns {boolean}
+   */
+  deactivateActiveSegment() {
+    const activeSegment = this.getValidActiveSegment();
+    if (!activeSegment) return false;
+
+    const eps = 0.05;
+
+    if (Math.abs(this.video.currentTime - activeSegment.endTime) <= eps || this.video.currentTime >= activeSegment.endTime) {
+      try {
+        this.markers_.deactivateSegment();
+      } catch (e) {
+        console.debug('Could not deactivate segment after seek', e);
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Checks whether playback has reached the active segment’s end time and pauses the video.
+   * 
+   * @private
+   * @returns {boolean}
+   */
+  stopActiveSegment() {
+    const activeSegment = this.getValidActiveSegment();
+    if (!activeSegment) return false;
+
+    if (!this.video.paused && this.video.currentTime >= activeSegment.endTime) {
+      this.video.pause();
+      try {
+        this.video.currentTime = activeSegment.endTime;
+      } catch (e) {
+        console.debug('Could not set video.currentTime to segment end:', e);
+      }
+      return true;
+    }
+
+    return false;
   }
 }
 
