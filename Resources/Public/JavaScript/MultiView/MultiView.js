@@ -10,8 +10,6 @@
 
 /*global GridStack, Cookies */
 
-document.body.classList.add('multiview');
-
 $( document ).ready(function() {
   const options = { // Put in gridstack options here
     disableOneColumnMode: true, // For jfiddle small window size
@@ -50,8 +48,6 @@ $( document ).ready(function() {
 const iframes = document.querySelectorAll('.grid-stack iframe');
 iframes.forEach(iframe => {
   iframe.addEventListener('load', () => {
-    // Add class for multiview styling in iframe
-    iframe.contentDocument.body.classList.add('multiviewembedded');
     // Hide the loader of the iframe in the multiview
     iframe.parentNode.querySelector('.loader').style.display = 'none';
     // Display necessary page controls
