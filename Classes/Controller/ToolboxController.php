@@ -146,11 +146,11 @@ class ToolboxController extends AbstractController
         $scoreFile = '';
         if ($this->requestData['page']) {
             $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
-        } elseif(!empty($this->currentDocument->physicalStructure)) {
+        } elseif (!empty($this->currentDocument->physicalStructure)) {
             $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
         }
 
-        if(!empty($currentPhysPage)) {
+        if (!empty($currentPhysPage)) {
             $useGroups = $this->useGroupsConfiguration->getScore();
             foreach ($useGroups as $useGroup) {
                 $files = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'];
@@ -484,7 +484,7 @@ class ToolboxController extends AbstractController
         $useGroups = $this->useGroupsConfiguration->getDownload();
         // Get image link.
         while ($useGroup = array_shift($useGroups)) {
-            if(!empty($this->currentDocument->physicalStructure)) {
+            if (!empty($this->currentDocument->physicalStructure)) {
                 $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$useGroup] ?? [];
                 if (!empty($firstFileGroupDownload)) {
                     $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);

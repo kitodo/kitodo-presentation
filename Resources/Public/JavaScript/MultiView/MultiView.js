@@ -1,3 +1,5 @@
+document.body.classList.add('multiview');
+
 /*global GridStack */
 $( document ).ready(function() {
   let options = { // Put in gridstack options here
@@ -37,11 +39,14 @@ $( document ).ready(function() {
   }
 });
 
-// hide loader when iframe is loaded and display page controls
 const iframes = document.querySelectorAll('.grid-stack iframe');
 iframes.forEach(iframe => {
   iframe.addEventListener('load', () => {
+    // add class for multiview styling in iframe
+    iframe.contentDocument.body.classList.add('multiviewembedded');
+    // hide the loader of the iframe in the multiview
     iframe.parentNode.querySelector('.loader').style.display = 'none';
+    // display necessary page controls
     document.querySelectorAll('.page-control > div a').forEach(link => {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
       const pageControl = iframeDoc.querySelector('.page-control ' + link.dataset.pageControlSelector);

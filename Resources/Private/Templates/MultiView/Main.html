@@ -40,7 +40,7 @@
             <div class="grid-stack-item {f:if(condition: '{document.sourceKey} >= 0', then: 'grid-stack-item-highlighted')}" gs-w="6" gs-h="6" gs-id="{iterator.index}" >
                 <div class="grid-stack-item-content" style="overflow: hidden">
                     <div class="loader" ><div class="spinner"></div></div>
-                    <iframe src="/viewer?tx_dlf%5Bid%5D={document.encodedUrl}&tx_dlf%5Bpage%5D={document.page}&tx_dlf%5Bmultiviewembedded%5D=1" width="100%" height="100%" style="overflow: hidden;" ></iframe>
+                    <iframe src="/viewer?tx_dlf%5Bid%5D={document.encodedUrl}&tx_dlf%5Bpage%5D={document.page}&tx_dlf%5Bmultiviewembedded%5D=1" width="100%" height="100%"></iframe>
                 </div>
                 <div class="gridstack-dragging-handle" title="{f:translate(key: 'multiview.dragging_label', extensionName: 'dfgviewer')}"></div>
                 <f:if condition="{document.sourceKey} >= 0">
