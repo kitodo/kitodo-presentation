@@ -534,7 +534,7 @@ class ToolboxController extends AbstractController
         $useGroups = $this->useGroupsConfiguration->getDownload();
         // Get work link.
         while ($useGroup = array_shift($useGroups)) {
-            if(!empty($this->currentDocument->physicalStructure)) {
+            if (!empty($this->currentDocument->physicalStructure)) {
                 $fileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[0]]['files'][$useGroup] ?? [];
                 if (!empty($fileGroupDownload)) {
                     $workLink = $this->currentDocument->getFileLocation($fileGroupDownload);

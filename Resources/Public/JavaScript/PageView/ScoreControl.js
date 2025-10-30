@@ -57,6 +57,8 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       const score = tk.renderToSVG(pageToShow);
 
       /**
+       * Midi Player does not work and will be replaced soon
+       *
        * Callback when player is stopped.
 
       function onStop() {

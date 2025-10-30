@@ -1,22 +1,34 @@
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/*global GridStack, Cookies */
+
 document.body.classList.add('multiview');
 
-/*global GridStack */
 $( document ).ready(function() {
-  let options = { // Put in gridstack options here
-    disableOneColumnMode: true, // For jfiddle small window size
+  const options = { // put in gridstack options here
+    disableOneColumnMode: true, // for jfiddle small window size
     float: false,
     handle: '.gridstack-dragging-handle',
     minW: 2,
     minH: 2
   };
-  let grid = GridStack.init(options);
+  const grid = GridStack.init(options);
 
   if (Cookies.get('gsLayout')) {
-    // Only extract saved layout for elements that exist
-    let loadedGridLayout = JSON.parse(Cookies.get('gsLayout'));
+    // only extract saved layout for elements that exist
+    const loadedGridLayout = JSON.parse(Cookies.get('gsLayout'));
     $(loadedGridLayout).each(function () {
-      if ($("[gs-id='" + this.id + "']").length === 1) {
-        let element = $("[gs-id='" + this.id + "']")[0];
+      const elements = $("[gs-id='" + this.id + "']");
+      if (elements.length === 1) {
+        const element = elements[0];
         grid.update(element, this);
       }
     });
@@ -29,11 +41,7 @@ $( document ).ready(function() {
   });
 
   if (grid) {
-    // Resize each map
     grid.on('change', function() {
-      $('.tx-dlf-map').each(function (index) {
-        tx_dlf_viewer[index].map.updateSize()
-      });
       Cookies.set('gsLayout', JSON.stringify(grid.save(false)));
     });
   }
