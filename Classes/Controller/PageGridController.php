@@ -47,7 +47,7 @@ class PageGridController extends AbstractController
 
         // Access cachemanager for pagegrid
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_pagegrid');
-        $cacheKey = $this->document->getCurrentDocument()->recordId;
+        $cacheKey = 'dlf_' . md5($this->document->getCurrentDocument()->recordId);
         $cachedData = $cache->get($cacheKey);
 
         $entryArray = [];
