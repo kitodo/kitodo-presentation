@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\ExpressionLanguage;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\IiifManifest;
+use Kitodo\Dlf\Common\TypoScriptHelper;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Psr\Log\LoggerAwareInterface;
@@ -76,11 +77,17 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @param int $storagePid The storage pid
      *
+     * @param int $pid the page id
+     *
      * @return void
      */
-    protected function initializeRepositories(int $storagePid): void
+    protected function initializeRepositories(int $storagePid, int $pid): void
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
+            'frontend.typoscript',
+            TypoScriptHelper::getFrontendTyposcript($pid)
+        );
         $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
         $configurationManager->setConfiguration($frameworkConfiguration);
@@ -102,8 +109,10 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             {
                 // Not implemented, we only use the evaluator
             },
-            function($arguments, $cPid)
+            function ($arguments, $storagePid)
             {
+                $pid = $arguments["page"]["pid"];
+
                 /** @var RequestWrapper $requestWrapper */
                 $requestWrapper = $arguments['request'];
                 $queryParams = $requestWrapper ? $requestWrapper->getQueryParams() : [];
@@ -127,13 +136,13 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
 
                 // Load document with current plugin parameters.
-                $this->loadDocument($queryParams['tx_dlf'], $cPid);
+                $this->loadDocument($queryParams['tx_dlf'], $storagePid, $pid);
                 if (!isset($this->document) || $this->document->getCurrentDocument() === null) {
                     return $type;
                 }
 
                 // Set PID for metadata definitions.
-                $this->document->getCurrentDocument()->configPid = $cPid;
+                $this->document->getCurrentDocument()->configPid = $storagePid;
 
                 $metadata = $this->document->getCurrentDocument()->getToplevelMetadata();
 
@@ -151,27 +160,30 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * @access protected
      *
      * @param array $requestData The request data
-     * @param int $pid Storage Pid
+     * @param int $storagePid Storage Pid
+     * @param int $pid the page id
      *
      * @return void
      */
-    protected function loadDocument(array $requestData, int $pid): void
+    protected function loadDocument(array $requestData, int $storagePid, int $pid): void
     {
         // Try to get document format from database
         if (!empty($requestData['id'])) {
-            $this->initializeRepositories($pid);
+            $this->initializeRepositories($storagePid, $pid);
             $doc = null;
             $this->document = null;
             if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
                 // find document from repository by uid
-                $this->document = $this->documentRepository->findOneByIdAndSettings((int) $requestData['id'], ['storagePid' => $pid]);
+                $this->document = $this->documentRepository->findOneByIdAndSettings(
+                    (int) $requestData['id'], ['storagePid' => $storagePid]
+                );
                 if ($this->document) {
-                    $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid]);
+                    $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid]);
                 } else {
-                    $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $pid . '" for document loading');
+                    $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $storagePid . '" for document loading');
                 }
             } elseif (GeneralUtility::isValidUrl($requestData['id'])) {
-                $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $pid]);
+                $doc = AbstractDocument::getInstance($requestData['id'], ['storagePid' => $storagePid]);
 
                 if ($doc !== null) {
                     if ($doc->recordId) {
@@ -192,7 +204,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         } elseif (!empty($requestData['recordId'])) {
             $this->document = $this->documentRepository->findOneBy(['recordId' => $requestData['recordId']]);
             if ($this->document !== null) {
-                $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $pid]);
+                $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid]);
                 if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {
@@ -200,7 +212,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 }
             }
         } else {
-            $this->logger->error('Empty UID or invalid PID "' . $pid . '" for document loading');
+            $this->logger->error('Empty UID or invalid PID "' . $storagePid . '" for document loading');
         }
     }
 
