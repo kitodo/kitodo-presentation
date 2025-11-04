@@ -69,7 +69,7 @@ a recent docker compose (tested >=2.27.1) is needed.
 
 Usage: $0 [options] [file]
 
-No arguments: Run all unit tests with PHP 8.1
+No arguments: Run all unit tests with PHP 8.2
 
 Options:
     -s <...>
@@ -115,10 +115,9 @@ Options:
         Specifies on which version of mysql tests are performed
             - 8.0 (default)
 
-    -p <8.1|8.2|8.3|8.4>
+    -p <8.2|8.3|8.4>
         Specifies the PHP minor version to be used
-            - 8.1: use PHP 8.1 (default)
-            - 8.2: use PHP 8.2
+            - 8.2: use PHP 8.2 (default)
             - 8.3: use PHP 8.3
             - 8.4: use PHP 8.4
 
@@ -176,7 +175,7 @@ fi
 TEST_SUITE="unit"
 TYPO3_VERSION=""
 DBMS="mariadb"
-PHP_VERSION="8.1"
+PHP_VERSION="8.2"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
 SERVER_PORT=8000
@@ -221,7 +220,7 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.2|8.3|8.4)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
