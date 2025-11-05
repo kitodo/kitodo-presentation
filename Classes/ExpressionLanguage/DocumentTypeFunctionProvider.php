@@ -111,7 +111,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             },
             function ($arguments, $storagePid)
             {
-                $pid = $arguments["page"]["pid"];
+                $pid = $arguments["page"]["pid"] ?? $arguments['page'];
 
                 /** @var RequestWrapper $requestWrapper */
                 $requestWrapper = $arguments['request'];
