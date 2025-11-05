@@ -10,7 +10,6 @@
 
 document.querySelector('.multiViewAddSource').addEventListener('submit', function (e) {
   e.preventDefault();
-  console.log("hier");
   const url = new URL(window.location.href);
   const params = [...url.searchParams.keys()];
   const multiview = params.filter(p => p.startsWith("tx_dlf[multiview]"));
@@ -21,5 +20,5 @@ document.querySelector('.multiViewAddSource').addEventListener('submit', functio
   const nextIndex = multiViewSources.length;
   const urlValue = document.getElementById('location-field').value.trim();
   url.searchParams.append(`tx_dlf[multiViewSource][${nextIndex}]`, urlValue);
-  window.location.href = url.toString();
+  window.location.href = escape(url.toString());
 });
