@@ -104,7 +104,9 @@ class SearchInDocument implements MiddlewareInterface
                     [
                         'tx_dlf[id]' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
                         'tx_dlf[page]' => $resultDocument->getPage(),
-                        'tx_dlf[highlight_word]' => $parameters['q']
+                        'tx_dlf[highlight_word]' => preg_replace('/^;|;$/', '',       // remove ; at beginning or end
+                                                    preg_replace('/;+/', ';',         // replace any multiple of ; with a single ;
+                                                    preg_replace('/[{~\d*}{\s+}{^=*\d+.*\d*}{\sAND\s}{\sOR\s}{\sNOT\s}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $parameters['q']))); // replace search operators and special characters with ;
                     ]
                 );
 

@@ -571,7 +571,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                                 $searchResult['highlight'] = $doc['highlight'];
                                 $searchResult['highlight_word'] = preg_replace('/^;|;$/', '',       // remove ; at beginning or end
                                                                   preg_replace('/;+/', ';',         // replace any multiple of ; with a single ;
-                                                                  preg_replace('/[{~\d*}{\s+}{^=*\d+.*\d*}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $this->searchParams['query']))); // replace search operators and special characters with ;
+                                                                  preg_replace('/[{~\d*}{\s+}{^=*\d+.*\d*}{\sAND\s}{\sOR\s}{\sNOT\s}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $this->searchParams['query']))); // replace search operators and special characters with ;
                             }
                             $documents[$doc['uid']]['searchResults'][] = $searchResult;
                         }
