@@ -78,7 +78,7 @@ class ToolboxController extends AbstractController
 
             foreach ($tools as $tool) {
                 match ($tool) {
-                    'tx_dlf_adddocumenttool', 'adddocumenttool' => $this->renderToolByName('renderAddDocumentTool'),
+                    'tx_dlf_multiviewaddsourcetool', 'multiviewaddsourcetool' => $this->renderToolByName('renderMultiViewAddSourceTool'),
                     'tx_dlf_annotationtool', 'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
                     'tx_dlf_fulltextdownloadtool', 'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
                     'tx_dlf_fulltexttool', 'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
@@ -194,9 +194,9 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
-    private function renderAddDocumentTool(): void
+    private function renderMultiViewAddSourceTool(): void
     {
-        $this->view->assign('addDocumentTool', true);
+        $this->view->assign('multiViewAddSourceTool', true);
     }
 
     /**

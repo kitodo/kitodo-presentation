@@ -12,15 +12,15 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:if condition="{renderAddDocumentTool}">
+<f:if condition="{multiViewAddSourceTool}">
     <f:then>
-        <a href="#" title="{f:translate(key:'tools.adddocument.label', extensionName:'dlf')}">{f:translate(key:'tools.adddocument.label', extensionName:'dlf')}</a>
-        <f:form method="post" pluginName="pageview" action="addDocument" addQueryString="untrusted" name="formAddDocument" object="{formAddDocument}" extensionName="dlf" controller="PageView">
-            <p class="add-document-description">{f:translate(key:'tools.adddocument.description', extensionName:'dlf')}</p>
-            <label for="location-field">{f:translate(key:'tools.adddocument.label', extensionName:'dlf')}</label>
-            <f:form.textfield property="location" id="location-field" placeholder="{f:translate(key:'tools.adddocument.placeholder', extensionName:'dlf')}" required="required" />
-            <f:form.button>{f:translate(key:'tools.adddocument.submit', extensionName:'dlf')}</f:form.button>
-        </f:form>
+        <a href="#" title="{f:translate(key:'tools.multiviewaddsource.label', extensionName:'dlf')}">{f:translate(key:'tools.multiviewaddsource.label', extensionName:'dlf')}</a>
+        <form class="multiViewAddSource" >
+            <p class="add-document-description">{f:translate(key:'tools.multiviewaddsource.description', extensionName:'dlf')}</p>
+            <label for="location-field">{f:translate(key:'tools.multiviewaddsource.label', extensionName:'dlf')}</label>
+            <f:form.textfield property="location" id="location-field" placeholder="{f:translate(key:'tools.multiviewaddsource.placeholder', extensionName:'dlf')}" required="required" />
+            <f:form.button>{f:translate(key:'tools.multiviewaddsource.submit', extensionName:'dlf')}</f:form.button>
+        </form>
     </f:then>
 </f:if>
 

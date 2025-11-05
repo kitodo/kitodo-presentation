@@ -401,21 +401,21 @@
                 <source><![CDATA[titles]]></source>
                 <target><![CDATA[Titel]]></target>
             </trans-unit>
-			<trans-unit id="tools.adddocument.description">
-				<source>To add another document to this view, enter the entire URL of the METS/MODS file here.</source>
-				<target>Um dieser Ansicht ein weiteres Dokument hinzuzufügen geben Sie hier die gesamte URL der METS/MODS-Datei an.</target>
+			<trans-unit id="tools.multiviewaddsource.description">
+				<source><![CDATA[To add another document to this view, enter the entire URL of the METS/MODS file here.]]></source>
+				<target><![CDATA[Um dieser Ansicht ein weiteres Dokument hinzuzufügen geben Sie hier die gesamte URL der METS/MODS-Datei an.]]></target>
 			</trans-unit>
-			<trans-unit id="tools.adddocument.label">
-				<source>Add Document</source>
-				<target>Dokument hinzufügen</target>
+			<trans-unit id="tools.multiviewaddsource.label">
+				<source><![CDATA[Add Document]]></source>
+				<target><![CDATA[Dokument hinzufügen]]></target>
 			</trans-unit>
-			<trans-unit id="tools.adddocument.placeholder">
-				<source>Document URL</source>
-				<target>Dokument URL</target>
+			<trans-unit id="tools.multiviewaddsource.placeholder">
+				<source><![CDATA[Document URL]]></source>
+				<target><![CDATA[Dokument URL]]></target>
 			</trans-unit>
-			<trans-unit id="tools.adddocument.submit">
-				<source>Add now</source>
-				<target>Jetzt hinzufügen</target>
+			<trans-unit id="tools.multiviewaddsource.submit">
+				<source><![CDATA[Add now]]></source>
+				<target><![CDATA[Jetzt hinzufügen]]></target>
 			</trans-unit>
             <trans-unit id="tools.annotation.not-available" approved="yes">
                 <source><![CDATA[No Annotations available]]></source>
