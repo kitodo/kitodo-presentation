@@ -581,6 +581,10 @@
                 <source>Model Download</source>
                 <target>Model-Download</target>
             </trans-unit>
+			<trans-unit id="tx_dlf_toolbox.multiviewaddsourcetool">
+				<source>Add Multiview Source</source>
+				<target>Quelle zur Multiview hinzufügen</target>
+			</trans-unit>
             <trans-unit id="tx_dlf_toolbox.pdfdownloadtool">
                 <target>PDF-Download</target>
                 <source>PDF Download</source>
