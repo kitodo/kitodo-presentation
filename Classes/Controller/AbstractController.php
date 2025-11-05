@@ -177,6 +177,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->multiViewDocuments[$index]['sourceKey'] = $sourceKey;
     }
 
+    /**
+     * Checks whether the multiview plugin setting `multiDocumentTypes` contains the type parameter value.
+     *
+     * @param string $type of the document
+     * @return bool True if the multiview plugin is configured and its multiDocumentTypes setting contains the given type value.
+     */
     public function isMultiDocumentType(string $type): bool
     {
         /** @var ConfigurationManagerInterface $configurationManager */

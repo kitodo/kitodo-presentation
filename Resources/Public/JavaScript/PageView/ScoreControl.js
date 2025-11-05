@@ -56,33 +56,6 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       const pageToShow = tk.getPageWithElement(pagebeginning);
       const score = tk.renderToSVG(pageToShow);
 
-      /**
-       * Midi Player does not work and will be replaced soon
-       *
-       * Callback when player is stopped.
-
-      function onStop() {
-        $('body').removeClass('midi-active')
-      }
-
-      $("#player").midiPlayer({
-        onStop
-      });
-
-      $("#tx-dlf-tools-midi").click(
-        function () {
-          $("#player").midiPlayer.play('data:audio/midi;base64,' + tk.renderToMIDI());
-          $('body').addClass('midi-active');
-        });
-
-      $("#tx_dlf_mididownload").click(function () {
-        $(this).attr({
-          "href": 'data:audio/midi;base64,' + tk.renderToMIDI(),
-          "download": getMeiTitle(tk) + ".midi"
-        })
-      });
-       */
-
       if (score === undefined) {
         result.reject();
       } else {

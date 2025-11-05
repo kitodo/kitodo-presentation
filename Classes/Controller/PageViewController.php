@@ -507,6 +507,13 @@ class PageViewController extends AbstractController
         return null;
     }
 
+    /**
+     * Redirect to multiview.
+     *
+     * @access private
+     *
+     * @return ResponseInterface
+     */
     private function multiviewRedirect(): ResponseInterface
     {
         $arguments = [
