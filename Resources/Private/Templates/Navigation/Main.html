@@ -70,7 +70,11 @@
 
 <f:section name="render.pageFirst">
     <div class="tx-dlf-navigation-first">
-        <f:link.action class="page-first {f:if(condition: \"{viewData.requestData.page} <= 1\", then: \"disabled:\")}" addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'1', 'tx_dlf[id]':'{viewData.partlyEncodedId}'}" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+        <f:link.action
+            class="page-first {f:if(condition: '{viewData.requestData.page} <= 1', then: 'disabled')}"
+            addQueryString="untrusted"
+            additionalParams="{'tx_dlf[page]':'1','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+            argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
             <f:translate key="firstPage"/>
         </f:link.action>
     </div>
@@ -137,7 +141,11 @@
 
 <f:section name="render.pageForward">
     <div class="tx-dlf-navigation-next">
-        <f:link.action class="page-forward {f:if(condition: \"{viewData.requestData.page + viewData.requestData.double} >= {numPages}\", then: \"disabled:\")}" addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{'tx_dlf[page]':'{viewData.requestData.page + 1 + viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+        <f:link.action
+            class="page-forward {f:if(condition: '{viewData.requestData.page + viewData.requestData.double} >= {numPages}', then: 'disabled')}"
+            addQueryString="untrusted"
+            additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1 + viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+            argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
             <f:translate key="nextPage"/>
         </f:link.action>
     </div>
@@ -146,7 +154,12 @@
 <f:section name="render.pageStepForward">
     <div class="tx-dlf-navigation-fwd">
         <f:variable name="forwardTextTemplate" value="{f:translate(key: 'forwardXPages', arguments: '{0: \'PAGE_STEPS\'}')}" />
-        <f:link.action class="page-step-forward {f:if(condition: \"{viewData.requestData.page} > {numPages - pageSteps}\", then: \"disabled:\")}" addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}'}" additionalAttributes="{'data-text': '{forwardTextTemplate}'}" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}">
+        <f:link.action
+            class="page-step-forward {f:if(condition: '{viewData.requestData.page} > {numPages - pageSteps}', then: 'disabled')}"
+            addQueryString="untrusted"
+            additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+            additionalAttributes="{'data-text': '{forwardTextTemplate}'}"
+            argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
             <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
         </f:link.action>
     </div>
@@ -154,7 +167,11 @@
 
 <f:section name="render.pageLast">
     <div class="tx-dlf-navigation-last">
-        <f:link.action class="page-last {f:if(condition: \"{viewData.requestData.page} >= {numPages - viewData.requestData.double}\", then: \"disabled:\")}" addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+        <f:link.action
+            class="page-last {f:if(condition: '{viewData.requestData.page} >= {numPages - viewData.requestData.double}', then: 'disabled')}"
+            addQueryString="untrusted"
+            additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
+            argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
             <f:translate key="lastPage"/>
         </f:link.action>
     </div>
