@@ -1184,8 +1184,7 @@ abstract class AbstractDocument
      */
     public function getPageLink($pageNumber)
     {
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey);
-        $fileGrpsDownload = GeneralUtility::trimExplode(',', $extConf['files']['fileGrpDownload']);
+        $fileGrpsDownload = $this->useGroupsConfiguration->getDownload();
         // Get image link.
         foreach ($fileGrpsDownload as $fileGrpDownload) {
             if (!empty($this->physicalStructureInfo[$this->physicalStructure[$pageNumber]]['files'][$fileGrpDownload])) {
