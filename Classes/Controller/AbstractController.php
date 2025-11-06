@@ -158,6 +158,19 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
+     * Get the multiview plugin configuration.
+     *
+     * @return array|null The configuration
+     */
+    public function getMultiViewPluginConfig(): ?array
+    {
+        /** @var ConfigurationManagerInterface $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $fullTypoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        return $fullTypoScript['plugin.']['tx_dlf_multiview.'] ?? null;
+    }
+
+    /**
      * Add a document the list of multi view documents
      *
      * @param string $url Url to the document
@@ -185,21 +198,30 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     public function isMultiDocumentType(string $type): bool
     {
-        /** @var ConfigurationManagerInterface $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-        $fullTypoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-
-        if (!empty($fullTypoScript['plugin.']['tx_dlf_multiview.'])
-            && !empty($fullTypoScript['plugin.']['tx_dlf_multiview.']['settings.'])
-            && !empty($fullTypoScript['plugin.']['tx_dlf_multiview.']['settings.']['multiDocumentTypes'])
+        $multiViewPluginConfig = $this->getMultiViewPluginConfig();
+        if (!$multiViewPluginConfig !== null
+            && !empty($multiViewPluginConfig['settings.'])
+            && !empty($multiViewPluginConfig['settings.']['multiDocumentTypes'])
         ) {
-            $multiDocumentTypes = $fullTypoScript['plugin.']['tx_dlf_multiview.']['settings.']['multiDocumentTypes'];
+            $multiDocumentTypes = $multiViewPluginConfig['settings.']['multiDocumentTypes'];
         }
         return !empty($multiDocumentTypes) && in_array($type, array_map('trim', explode(',', $multiDocumentTypes)));
     }
 
-    protected function buildMultiView(string $docUrl, AbstractDocument $doc): void
+    /**
+     * Build the multiview documents.
+     *
+     * @param string $docUrl The URL of the document.
+     * @param AbstractDocument $doc The document itself.
+     * @return void
+     */
+    protected function buildMultiViewDocuments(string $docUrl, AbstractDocument $doc): void
     {
+        if ($this->getMultiViewPluginConfig() === null) {
+            $this->logger->debug("The multiview plugin is not configured.");
+            return;
+        }
+
         if ($this->isMultiDocumentType($doc->tableOfContents[0]['type'])) {
             $childDocuments = $doc->tableOfContents[0]['children'];
             foreach ($childDocuments as $document) {
@@ -718,7 +740,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
             if ($doc !== null) {
                 $doc->configPid = $this->document->getPid();
-                $this->buildMultiView($this->document->getLocation(), $doc);
+                $this->buildMultiViewDocuments($this->document->getLocation(), $doc);
             }
         }
 
@@ -743,7 +765,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $doc = AbstractDocument::getInstance($documentUrl, $this->settings);
 
         if ($doc !== null) {
-            $this->buildMultiView($documentUrl, $doc);
+            $this->buildMultiViewDocuments($documentUrl, $doc);
 
             $this->document = GeneralUtility::makeInstance(Document::class);
 

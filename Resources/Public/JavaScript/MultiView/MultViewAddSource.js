@@ -20,5 +20,6 @@ document.querySelector('.multiViewAddSource').addEventListener('submit', functio
   const nextIndex = multiViewSources.length;
   const urlValue = document.getElementById('location-field').value.trim();
   url.searchParams.append(`tx_dlf[multiViewSource][${nextIndex}]`, urlValue);
-  window.location.href = escape(url.toString());
+  // eslint-disable-next-line
+  window.location.href = url.toString();
 });

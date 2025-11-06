@@ -196,6 +196,11 @@ class ToolboxController extends AbstractController
      */
     private function renderMultiViewAddSourceTool(): void
     {
+        if ($this->getMultiViewPluginConfig() === null) {
+            $this->logger->debug("The multiview plugin is not configured.");
+            return;
+        }
+
         $this->view->assign('multiViewAddSourceTool', true);
     }
 
