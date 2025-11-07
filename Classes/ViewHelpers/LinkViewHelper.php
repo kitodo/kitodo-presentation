@@ -20,9 +20,9 @@ use TYPO3\CMS\Frontend\Uri\TypolinkCodecService;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
- * This view helper generates a link with DLF parameters derived from the current controller’s view data and request information.
+ * This view helper generates a link with dlf parameters derived from the current controller’s view data and request information.
  */
-class LinkViewHelper extends AbstractTagBasedViewHelper
+final class LinkViewHelper extends AbstractTagBasedViewHelper
 {
 
     /**
@@ -84,6 +84,7 @@ class LinkViewHelper extends AbstractTagBasedViewHelper
             $uri .= '#' . $this->arguments['section'];
         }
 
+        // @phpstan-ignore-next-line
         $tag = new static();
         $tag->tag->setTagName('a');
         $tag->tag->addAttribute('href', $uri);
