@@ -3,16 +3,25 @@ declare(strict_types=1);
 
 namespace Kitodo\Dlf\ViewHelpers;
 
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Http\ApplicationType;
+/**
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\RequestInterface as ExtbaseRequestInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\CMS\Frontend\Routing\UriBuilder as FrontendUriBuilder;
 use TYPO3\CMS\Frontend\Uri\TypolinkCodecService;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
+/**
+ * This view helper generates a link with DLF parameters derived from the current controller’s view data and request information.
+ */
 class LinkViewHelper extends AbstractTagBasedViewHelper
 {
 
@@ -24,22 +33,11 @@ class LinkViewHelper extends AbstractTagBasedViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerArgument('action', 'string', 'Target action');
-        $this->registerArgument('viewData', 'array', 'Arguments for the controller action, associative array (do not use reserved keywords "action", "controller" or "format" if not referring to these internal variables specifically)', false, []);
-        $this->registerArgument('controller', 'string', 'Target controller. If NULL current controllerName is used');
-        $this->registerArgument('extensionName', 'string', 'Target Extension Name (without `tx_` prefix and no underscores). If NULL the current extension name is used');
-        $this->registerArgument('pluginName', 'string', 'Target plugin. If empty, the current plugin name is used');
+        $this->registerArgument('viewData', 'array', 'View data of the current controller.');
         $this->registerArgument('pageUid', 'int', 'Target page. See TypoLink destination');
-        $this->registerArgument('pageType', 'int', 'Type of the target page. See typolink.parameter', false, 0);
-        $this->registerArgument('noCache', 'bool', 'Set this to disable caching for the target page. You should not need this.');
-        $this->registerArgument('language', 'string', 'link to a specific language - defaults to the current language, use a language ID or "current" to enforce a specific language');
         $this->registerArgument('section', 'string', 'The anchor to be added to the URI', false, '');
-        $this->registerArgument('format', 'string', 'The requested format, e.g. ".html', false, '');
-        $this->registerArgument('linkAccessRestrictedPages', 'bool', 'If set, links pointing to access restricted pages will still link to the page even though the page cannot be accessed.', false, false);
-        $this->registerArgument('additionalParams', 'array', 'Additional query parameters that won\'t be prefixed like $arguments (overrule $arguments)', false, []);
-        $this->registerArgument('absolute', 'bool', 'If set, the URI of the rendered link is absolute', false, false);
-        $this->registerArgument('addQueryString', 'string', 'If set, the current query parameters will be kept in the URL. If set to "untrusted", then ALL query parameters will be added. Be aware, that this might lead to problems when the generated link is cached.', false, false);
-        $this->registerArgument('excludedParams', 'array', 'Arguments to be removed from the URI. Only active if $addQueryString = true', false, []);
+        $this->registerArgument('additionalParams', 'array', 'Additional dlf parameters', false, []);
+        $this->registerArgument('excludedParams', 'array', 'Dlf parameters to be removed from the URI.', false, []);
     }
 
     public function render(): string
@@ -50,6 +48,8 @@ class LinkViewHelper extends AbstractTagBasedViewHelper
 
         $viewData = $this->arguments['viewData'];
 
+        // UriBuilder does not properly encode specified entities in URL parameter
+        // For more details, please see the following TYPO3 issue https://forge.typo3.org/issues/107026
         if (isset($viewData['requestData']['id']) && GeneralUtility::isValidUrl($viewData['requestData']['id'])) {
             $viewData['requestData']['id'] = str_replace("%2F", "%252F", $viewData['requestData']['id']);
         }
