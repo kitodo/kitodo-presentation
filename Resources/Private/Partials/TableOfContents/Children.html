@@ -10,6 +10,7 @@
 -->
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:for each="{children}" as="child">
@@ -41,16 +42,15 @@
             </span>
         </f:then>
         <f:else>
-            <f:link.action
-                action="main"
+            <kitodo:link
+                viewData="{viewData}"
                 pageUid="{settings.targetPid}"
-                additionalParams="{f:if(condition:'{child.id}', then:'{\'tx_dlf[id]\':child.id, \'tx_dlf[page]\':child.page}', else: '{\'tx_dlf[page]\':child.page}')}"
-                argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]'}"
-                addQueryString="untrusted"
+                additionalParams="{f:if(condition:'{child.id}', then:'{\'id\':child.id, \'page\':child.page}', else: '{\'page\':child.page}')}"
+                excludedParams="{0: 'measure'}"
                 section="{child.section}"
                 title="{f:if(condition:'{child.title}', then: '{child.title}', else: '{child.type}')}">
                     <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
-            </f:link.action>
+            </kitodo:link>
         </f:else>
     </f:if>
 
@@ -69,7 +69,7 @@
 
     <f:if condition="{child._SUB_MENU} && ({child.ITEM_STATE} == 'IFSUB' || {child.ITEM_STATE} == 'ACTIFSUB' || {child.ITEM_STATE} == 'CURIFSUB')">
         <ul>
-            <f:render partial="TableOfContents/Children" arguments="{children: child._SUB_MENU}"/>
+            <f:render partial="TableOfContents/Children" arguments="{children: child._SUB_MENU, viewData: viewData}"/>
         </ul>
     </f:if>
 

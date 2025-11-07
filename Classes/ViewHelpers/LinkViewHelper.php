@@ -70,10 +70,19 @@ class LinkViewHelper extends AbstractTagBasedViewHelper
 
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uriBuilder->setRequest($request);
+
+        if (!empty($this->arguments['pageUid'])) {
+            $uriBuilder->setTargetPageUid((int) $this->arguments['pageUid']);
+        }
+
         $uri = $uriBuilder
             ->setArguments($arguments)
             ->setArgumentPrefix('tx_dlf')
             ->uriFor('main');
+
+        if (!empty($this->arguments['section'])) {
+            $uri .= '#' . $this->arguments['section'];
+        }
 
         $tag = new static();
         $tag->tag->setTagName('a');
@@ -81,46 +90,5 @@ class LinkViewHelper extends AbstractTagBasedViewHelper
         $tag->tag->setContent($childContent);
 
         return $tag->tag->render();
-
-        throw new \RuntimeException(
-            'The rendering context of ViewHelper f:link.action is missing a valid request object.',
-            1690365240
-        );
     }
-/*
-    protected $tagName = 'a';
-
-    public function initializeArguments(): void
-    {
-        parent::initializeArguments();
-
-        $this->registerArgument('viewData', 'array', 'View data of abstract controller', true);
-    }
-
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $content = $renderChildrenClosure();
-        $viewData = $arguments['viewData'];
-
-        var_dump($viewData);
-
-        die();
-
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $uri = $uriBuilder
-            ->setArguments($viewData['requestData'])
-            ->setArgumentPrefix('tx_dlf')
-            ->uriFor('main');
-
-        $tag = new static();
-        $tag->tag->setTagName('a');
-        $tag->tag->addAttribute('href', $uri);
-        $tag->tag->setContent($content);
-
-        return $tag->tag->render();
-    }
-*/
 }
