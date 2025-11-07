@@ -22,6 +22,7 @@ page {
     embedded3dviewer = EXT:dlf/Resources/Public/Stylesheets/embedded-3d-viewer.css
     jPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/blue.monday/css/jplayer.blue.monday.min.css
     openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.css
+    gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack.min.css
   }
 
   includeJSFooterlibs {
@@ -29,10 +30,6 @@ page {
     jQuery.forceOnTop = 1
     jQueryJPlayer = EXT:dlf/Resources/Public/JavaScript/jPlayer/jquery.jplayer.min.js
     jQueryUiMouseSlider = EXT:dlf/Resources/Public/JavaScript/jQueryUI/jquery-ui-mouse-slider-resizable-autocomplete.js
-  }
-
-  includeCSS {
-    gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack.min.css
   }
 
   includeJSFooter {
@@ -71,15 +68,16 @@ page {
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
     kitodo-pageView-teiParser = EXT:dlf/Resources/Public/JavaScript/PageView/TeiParser.js
+    kitodo-pageview-multiViewAddSource = EXT:dlf/Resources/Public/JavaScript/MultiView/MultViewAddSource.js
     kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
   }
 }
 
 [request && like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
 page.includeJSFooter {
-    # Gridstack
+    # MultiView plugin
     gridstack = EXT:dlf/Resources/Public/JavaScript/Gridstack/gridstack-all.js
-    gridstack-init = EXT:dlf/Resources/Public/JavaScript/PageView/Gridstack.js
+    kitodo-multiview = EXT:dlf/Resources/Public/JavaScript/MultiView/MultiView.js
 }
 [end]
 
