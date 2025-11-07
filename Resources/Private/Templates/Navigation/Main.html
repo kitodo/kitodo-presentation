@@ -10,6 +10,7 @@
 -->
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:comment>Render all navigation features in the given order.</f:comment>
@@ -26,18 +27,16 @@
             <f:if condition="{viewData.requestData.double}">
                 <f:then>
                     <div class="tx-dlf-navigation-single">
-                        <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[double]':'0','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                        <kitodo:link viewData="{viewData}" additionalParams="{'double':'0'}" excludedParams="{0: 'measure'}">
                             <f:translate key="doublePageOff"/>
-                        </f:link.action>
+                        </kitodo:link>
                     </div>
                     <div class="tx-dlf-navigation-double+">
                         <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
                             <f:then>
-                                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + 1}'}" excludedParams="{0: 'measure'}">
                                     <f:translate key="doublePage+1"/>
-                                </f:link.action>
+                                </kitodo:link>
                             </f:then>
                             <f:else>
                                 <span title="{f:translate(key: 'doublePage+1')}">
@@ -49,10 +48,9 @@
                 </f:then>
                 <f:else>
                     <div class="tx-dlf-navigation-double">
-                        <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[double]':'1','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                                       argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                        <kitodo:link viewData="{viewData}" additionalParams="{'double':'1'}" excludedParams="{0: 'measure'}">
                             <f:translate key="doublePageOn"/>
-                        </f:link.action>
+                        </kitodo:link>>
                     </div>
                 </f:else>
             </f:if>
@@ -72,10 +70,9 @@
     <div class="tx-dlf-navigation-first">
         <f:if condition="{viewData.requestData.page} > 1">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'1', 'tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                <kitodo:link viewData="{viewData}" additionalParams="{'page':'1'}" excludedParams="{0: 'measure'}">
                     <f:translate key="firstPage"/>
-                </f:link.action>
+                </kitodo:link>
             </f:then>
             <f:else>
                 <span title="{f:translate(key: 'firstPage')}">
@@ -90,10 +87,9 @@
     <div class="tx-dlf-navigation-back">
         <f:if condition="{viewData.requestData.page} > {pageSteps}">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - pageSteps}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page - pageSteps}'}" excludedParams="{0: 'measure'}">
                     <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
-                </f:link.action>
+                </kitodo:link>
             </f:then>
             <f:else>
                 <span title="{f:translate(key: 'backXPages', arguments: '{0: pageSteps}')}">
@@ -108,10 +104,9 @@
     <div class="tx-dlf-navigation-prev">
         <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page - 1 - viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                <kitodo:link additionalParams="{'page':'{viewData.requestData.page - 1 - viewData.requestData.double}'}" excludedParams="{0: 'measure'}">
                     <f:translate key="prevPage"/>
-                </f:link.action>
+                </kitodo:link>
             </f:then>
             <f:else>
                 <span title="{f:translate(key: 'prevPage')}">
@@ -150,10 +145,9 @@
     <div class="tx-dlf-navigation-next">
         <f:if condition="{viewData.requestData.page + viewData.requestData.double} < {numPages}">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + 1 + viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + 1 + viewData.requestData.double}'}" excludedParams="{0: 'measure'}">
                     <f:translate key="nextPage"/>
-                </f:link.action>
+                </kitodo:link>
             </f:then>
             <f:else>
                 <span title="{f:translate(key: 'nextPage')}">
@@ -168,10 +162,9 @@
         <div class="tx-dlf-navigation-fwd">
             <f:if condition="{viewData.requestData.page} <= {numPages - pageSteps}">
                 <f:then>
-                    <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{viewData.requestData.page + pageSteps}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                                   argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                    <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + pageSteps}'}" excludedParams="{0: 'measure'}">
                         <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
-                    </f:link.action>
+                    </kitodo:link>
                 </f:then>
                 <f:else>
                     <span title="{f:translate(key: 'forwardXPages', arguments: '{0: pageSteps}')}">
@@ -186,10 +179,9 @@
     <div class="tx-dlf-navigation-last">
         <f:if condition="{viewData.requestData.page} < {numPages - viewData.requestData.double}">
             <f:then>
-                <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[page]':'{numPages - viewData.requestData.double}','tx_dlf[id]':'{viewData.partlyEncodedId}'}"
-                               argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[measure]', 1: 'tx_dlf[id]'}">
+                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{numPages - viewData.requestData.double}'}" excludedParams="{0: 'measure'}">
                     <f:translate key="lastPage"/>
-                </f:link.action>
+                </kitodo:link>
             </f:then>
             <f:else>
                 <span title="{f:translate(key: 'lastPage')}">
@@ -260,9 +252,9 @@
                     <f:if condition="{currentMeasure} > 1">
                         <f:then>
                             <f:variable name="prevMeasure" value="{currentMeasure - 1}" />
-                            <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[measure]':'{currentMeasure - 1}', 'tx_dlf[page]':'{measurePages.{prevMeasure}}'}">
+                            <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{currentMeasure - 1}', 'page':'{measurePages.{prevMeasure}}'}">
                                 <f:translate key="prevMeasure"/>
-                            </f:link.action>
+                            </kitodo:link>
                         </f:then>
                         <f:else>
                             <span title="{f:translate(key: 'prevPage')}">
