@@ -66,7 +66,7 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
             $arguments['tx_dlf'][$key] = $value;
         }
 
-        $childContent = (string)$this->renderChildren();
+        $childContent = (string) $this->renderChildren();
 
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         // @phpstan-ignore-next-line
