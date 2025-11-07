@@ -85,7 +85,6 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
             $uri .= '#' . $this->arguments['section'];
         }
 
-        // @phpstan-ignore-next-line
         $tag = new static();
         $tag->tag->setTagName('a');
         $tag->tag->addAttribute('href', $uri);
