@@ -879,7 +879,7 @@ dlfViewer.prototype.init = function(controlNames) {
             var lonCk = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
               latCk = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
               zoomCk = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
-            if (!dlfUtils.isNullEmptyUndefinedOrNoNumber(lonCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(latCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoomCk)) {
+            if (!dlfUtils.isMultiViewEmbedded() && !dlfUtils.isNullEmptyUndefinedOrNoNumber(lonCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(latCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoomCk)) {
                 var lon = Number(lonCk),
                   lat = Number(latCk),
                   zoom = Number(zoomCk);

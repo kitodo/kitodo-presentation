@@ -56,30 +56,6 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       const pageToShow = tk.getPageWithElement(pagebeginning);
       const score = tk.renderToSVG(pageToShow);
 
-      /**
-       * Callback when player is stopped.
-       */
-      function onStop() {
-        $('body').removeClass('midi-active')
-      }
-
-      $("#player").midiPlayer({
-        onStop
-      });
-
-      $("#tx-dlf-tools-midi").click(
-        function () {
-          $("#player").midiPlayer.play('data:audio/midi;base64,' + tk.renderToMIDI());
-          $('body').addClass('midi-active');
-        });
-
-      $("#tx_dlf_mididownload").click(function () {
-        $(this).attr({
-          "href": 'data:audio/midi;base64,' + tk.renderToMIDI(),
-          "download": getMeiTitle(tk) + ".midi"
-        })
-      });
-
       if (score === undefined) {
         result.reject();
       } else {
@@ -417,7 +393,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
  * Add active / deactive behavior in case of click on control depending if the full text should be activated initially.
  */
 dlfViewerScoreControl.prototype.changeActiveBehaviour = function () {
-  if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled' && this.pagecount === 1) {
+  if (!dlfUtils.isMultiViewEmbedded() && dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled' && this.pagecount === 1) {
     this.addActiveBehaviourForSwitchOn();
   } else {
     this.addActiveBehaviourForSwitchOff();
@@ -469,7 +445,7 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function () {
   }
 
   // If score is activated via cookie than run activation method
-  if (dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled') {
+  if (!dlfUtils.isMultiViewEmbedded() && dlfUtils.getCookie("tx-dlf-pageview-score-select") === 'enabled') {
     // Activate the score behavior
     this.activate();
   }

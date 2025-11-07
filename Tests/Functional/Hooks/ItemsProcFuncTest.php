@@ -47,7 +47,7 @@ class ItemsProcFuncTest extends FunctionalTestCase
             'items' => [
                 ['Score', 'tx_dlf_scoretool'],
                 ['Fulltext', 'tx_dlf_fulltexttool'],
-                ['', 'tx_dlf_adddocumenttool'],
+                ['Add Multiview Source', 'tx_dlf_multiviewaddsourcetool'],
                 ['IIIF Annotations', 'tx_dlf_annotationtool'],
                 ['Fulltext Download', 'tx_dlf_fulltextdownloadtool'],
                 ['Image Download', 'tx_dlf_imagedownloadtool'],

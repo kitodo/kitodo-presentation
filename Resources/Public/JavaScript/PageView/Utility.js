@@ -588,6 +588,14 @@ dlfUtils.isFulltextDescriptor = function (obj) {
 };
 
 /**
+ * Check if body has the class 'multiviewembedded'
+ * @returns {boolean}
+ */
+dlfUtils.isMultiViewEmbedded = function () {
+  return document.body.classList.contains('multiviewembedded');
+};
+
+/**
  * @param {Element | null} element
  * @returns {Object}
  */

@@ -55,7 +55,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                 'tools' => [
                     'tx_dlf_scoretool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.scoretool',
                     'tx_dlf_fulltexttool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltexttool',
-                    'tx_dlf_adddocumenttool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.adddocumenttool',
+                    'tx_dlf_multiviewaddsourcetool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.multiviewaddsourcetool',
                     'tx_dlf_annotationtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.annotationtool',
                     'tx_dlf_fulltextdownloadtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltextdownloadtool',
                     'tx_dlf_imagedownloadtool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagedownloadtool',

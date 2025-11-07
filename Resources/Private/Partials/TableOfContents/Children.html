@@ -46,7 +46,7 @@
                 viewData="{viewData}"
                 pageUid="{settings.targetPid}"
                 additionalParams="{f:if(condition:'{child.id}', then:'{\'id\':child.id, \'page\':child.page}', else: '{\'page\':child.page}')}"
-                excludedParams="{0: 'measure'}"
+                excludedParams="{0: 'measure', 1: 'multiview'}"
                 section="{child.section}"
                 title="{f:if(condition:'{child.title}', then: '{child.title}', else: '{child.type}')}">
                     <f:render partial="TableOfContents/Title" arguments="{child: child}"/>
