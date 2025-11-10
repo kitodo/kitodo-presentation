@@ -63,13 +63,13 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
                 $tempData = [];
                 foreach ($data as $dataKey => $dataValue) {
                     if (!in_array($key . '[' . $dataKey . ']', $this->arguments['excludedParams'])) {
-                        $tempData[] = $data[$dataKey];
+                        $tempData[] = $dataValue;
                     }
                 }
                 if (count($tempData) > 0) {
                     $arguments['tx_dlf'][$key] = $tempData;
                 }
-            } else if (!in_array($key, $this->arguments['excludedParams'])) {
+            } elseif (!in_array($key, $this->arguments['excludedParams'])) {
                 $arguments['tx_dlf'][$key] = $data;
             }
         }
