@@ -48,22 +48,35 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
 
         $viewData = $this->arguments['viewData'];
 
-        // UriBuilder does not properly encode specified entities in URL parameter
-        // For more details, please see the following TYPO3 issue https://forge.typo3.org/issues/107026
-        if (isset($viewData['requestData']['id']) && GeneralUtility::isValidUrl($viewData['requestData']['id'])) {
-            $viewData['requestData']['id'] = str_replace("%2F", "%252F", $viewData['requestData']['id']);
-        }
-
-        $arguments = [];
-        foreach ($viewData['requestData'] as $key => $value) {
-            if (!in_array($key, $this->arguments['excludedParams'])) {
-                $arguments['tx_dlf'][$key] = $value;
+        $dlfArguments = [];
+        foreach ($viewData['requestData'] as $key => $data) {
+            if (is_array($data)) {
+                $tempData = [];
+                foreach ($data as $dataKey => $dataValue) {
+                    if (!in_array($key . '[' . $dataKey . ']', $this->arguments['excludedParams'])) {
+                        $tempData[] = $dataValue;
+                    }
+                }
+                if (count($tempData) > 0) {
+                    $dlfArguments[$key] = $tempData;
+                }
+            } elseif (!in_array($key, $this->arguments['excludedParams'])) {
+                $dlfArguments[$key] = $data;
             }
         }
 
         $additionalParams = $this->arguments['additionalParams'];
         foreach ($additionalParams as $key => $value) {
-            $arguments['tx_dlf'][$key] = $value;
+            $dlfArguments[$key] = $value;
+        }
+
+        // double replace encoding in URL value parameters
+        if (isset($dlfArguments['id'])) {
+            $dlfArguments['id'] = $this->doubleEncode($dlfArguments['id']);
+        }
+
+        if (isset($dlfArguments['multiViewSource']) && is_array($dlfArguments['multiViewSource'])) {
+            $dlfArguments['multiViewSource'] = array_map([$this, 'doubleEncode'], $dlfArguments['multiViewSource']);
         }
 
         $childContent = (string) $this->renderChildren();
@@ -77,7 +90,7 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
         }
 
         $uri = $uriBuilder
-            ->setArguments($arguments)
+            ->setArguments(['tx_dlf' => $dlfArguments])
             ->setArgumentPrefix('tx_dlf')
             ->uriFor('main');
 
@@ -91,5 +104,22 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
         $tag->tag->setContent($childContent);
 
         return $tag->tag->render();
+    }
+
+    /**
+     * Double encode specific characters in URL.
+     *
+     * UriBuilder does not properly encode specified entities in URL parameter
+     * For more details, please see the following TYPO3 issue https://forge.typo3.org/issues/107026
+     *
+     * @param string $url The URL in which specific characters should be encoded
+     * @return string The replaced URL
+     */
+    private function doubleEncode(string $url): string
+    {
+        if (GeneralUtility::isValidUrl($url)) {
+            $url = str_replace("%2F", "%252F", $url);
+        }
+        return $url;
     }
 }
