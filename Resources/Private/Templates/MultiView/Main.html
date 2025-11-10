@@ -10,6 +10,7 @@
 -->
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <div class="page-control">
@@ -45,9 +46,9 @@
                 <div class="gridstack-dragging-handle" title="{f:translate(key: 'multiview.dragging_label', extensionName: 'dfgviewer')}"></div>
                 <f:if condition="{document.sourceKey} >= 0">
                     <div class="removeDocument">
-                        <f:link.action addQueryString="untrusted" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[multiViewSource][{document.sourceKey}]', 1: 'tx_dlf[multiview]'}">
+                        <kitodo:link viewData="{viewData}" excludedParams="{0: 'multiViewSource[{document.sourceKey}]', 1: 'multiview'}">
                             <f:translate key="multiview.remove_document" extensionName="dfgviewer" />
-                        </f:link.action>
+                        </kitodo:link>
                     </div>
                 </f:if>
             </div>

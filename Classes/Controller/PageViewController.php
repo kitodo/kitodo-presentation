@@ -98,12 +98,15 @@ class PageViewController extends AbstractController
         $this->loadDocument();
 
         if ($this->isDocMissingOrEmpty()) {
-            // if document is empty and current document type is a multi document type redirect to multi view
+            // if document is empty and current document type is a multi document type then redirect to multi view
             if (!$this->isDocMissing() &&
                 $this->isMultiDocumentType($this->document->getCurrentDocument()->tableOfContents[0]['type'])) {
                 return $this->multiviewRedirect();
             }
             return $this->htmlResponse();
+        } elseif (array_key_exists('multiViewSource', $this->requestData)) {
+            // if request data contains multiViewSource parameter then redirect to multi view
+            return $this->multiviewRedirect();
         }
 
         $this->setPage();
@@ -521,6 +524,10 @@ class PageViewController extends AbstractController
             'tx_dlf[page]' => $this->requestData['page'],
             'tx_dlf[multiview]' => 1
         ];
+
+        if (array_key_exists('multiViewSource', $this->requestData)) {
+            $arguments['tx_dlf[multiViewSource]'] = $this->requestData['multiViewSource'];
+        }
 
         $uri = $this->uriBuilder
             ->reset()
