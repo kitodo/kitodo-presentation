@@ -47,18 +47,9 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
         $request = $renderingContext->getRequest();
 
         $viewData = $this->arguments['viewData'];
-        $requestData = $viewData['requestData'];
 
-        if (isset($requestData['id'])) {
-            $requestData['id'] = $this->doubleEncode($requestData['id']);
-        }
-
-        if (isset($requestData['multiViewSource']) && is_array($requestData['multiViewSource'])) {
-            $requestData['multiViewSource'] = array_map([$this, 'doubleEncode'], $requestData['multiViewSource']);
-        }
-
-        $arguments = [];
-        foreach ($requestData as $key => $data) {
+        $dlfArguments = [];
+        foreach ($viewData['requestData'] as $key => $data) {
             if (is_array($data)) {
                 $tempData = [];
                 foreach ($data as $dataKey => $dataValue) {
@@ -67,16 +58,25 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
                     }
                 }
                 if (count($tempData) > 0) {
-                    $arguments['tx_dlf'][$key] = $tempData;
+                    $dlfArguments[$key] = $tempData;
                 }
             } elseif (!in_array($key, $this->arguments['excludedParams'])) {
-                $arguments['tx_dlf'][$key] = $data;
+                $dlfArguments[$key] = $data;
             }
         }
 
         $additionalParams = $this->arguments['additionalParams'];
         foreach ($additionalParams as $key => $value) {
-            $arguments['tx_dlf'][$key] = $value;
+            $dlfArguments[$key] = $value;
+        }
+
+        // double replace encoding in URL value parameters
+        if (isset($dlfArguments['id'])) {
+            $dlfArguments['id'] = $this->doubleEncode($dlfArguments['id']);
+        }
+
+        if (isset($dlfArguments['multiViewSource']) && is_array($dlfArguments['multiViewSource'])) {
+            $dlfArguments['multiViewSource'] = array_map([$this, 'doubleEncode'], $dlfArguments['multiViewSource']);
         }
 
         $childContent = (string) $this->renderChildren();
@@ -90,7 +90,7 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
         }
 
         $uri = $uriBuilder
-            ->setArguments($arguments)
+            ->setArguments(['tx_dlf' => $dlfArguments])
             ->setArgumentPrefix('tx_dlf')
             ->uriFor('main');
 
