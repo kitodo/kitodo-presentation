@@ -89,6 +89,10 @@ class Embedded3dViewerController extends AbstractController
             $embedded3dViewerUrl .= '&' . http_build_query(['viewerParam' => $this->requestData['viewerParam']]);
         }
 
+        if (!empty($this->settings['queryString'])) {
+            $embedded3dViewerUrl .= '&' . $this->settings['queryString'];
+        }
+
         return $embedded3dViewerUrl;
     }
 
