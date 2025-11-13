@@ -39,13 +39,16 @@ class Embedded3dViewerController extends AbstractController
             return $this->htmlResponse();
         }
 
+        // when using the component
         if (!empty($this->settings['document'])) {
             $this->assignModelFromDocument($this->getDocumentByUrl($this->settings['document']));
-        } else {
-            $this->loadDocument();
-            if (!$this->isDocMissingOrEmpty()) {
-                $this->assignModelFromDocument($this->document->getCurrentDocument());
-            }
+            return $this->htmlResponse();
+        }
+
+        $this->loadDocument();
+
+        if (!$this->isDocMissingOrEmpty()) {
+            $this->assignModelFromDocument($this->document->getCurrentDocument());
         }
 
         return $this->htmlResponse();
@@ -81,6 +84,15 @@ class Embedded3dViewerController extends AbstractController
         if (!empty($viewer)) {
             $embedded3dViewerUrl .= '&viewer=' . $viewer;
         }
+
+        if (!empty($this->requestData['viewerParam'])) {
+            $embedded3dViewerUrl .= '&' . http_build_query(['viewerParam' => $this->requestData['viewerParam']]);
+        }
+
+        if (!empty($this->settings['queryString'])) {
+            $embedded3dViewerUrl .= '&' . $this->settings['queryString'];
+        }
+
         return $embedded3dViewerUrl;
     }
 

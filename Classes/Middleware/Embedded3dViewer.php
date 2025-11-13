@@ -123,7 +123,19 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
             return $this->warningResponse('Viewer "' . $viewer . '" does not support the model format "' . $modelFormat . '"', $request);
         }
 
-        $html = $this->getViewerHtml($config, $viewerConfigPath, $viewerFolder, $parameters['model'], $modelInfo);
+        if (isset($config["requiredParameters"]) && is_array($config["requiredParameters"]) && !empty($config["requiredParameters"])) {
+            if (empty($parameters["viewerParam"])) {
+                return $this->warningResponse('The required viewer parameters do not exist', $request);
+            }
+
+            foreach ($config["requiredParameters"] as $key) {
+                if (!array_key_exists($key, $parameters["viewerParam"])) {
+                    return $this->warningResponse('Required viewer parameter "' . $key . '" does not exist', $request);
+                }
+            }
+        }
+
+        $html = $this->getViewerHtml($config, $viewerConfigPath, $viewerFolder, $parameters, $modelInfo);
         return new HtmlResponse($html);
     }
 
@@ -193,15 +205,20 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
     /**
      * @param string $viewerUrl
      * @param string $html
-     * @param string $modelUrl
+     * @param array $parameters
      * @param array $modelInfo
      * @return string
      */
-    public function replacePlaceholders(string $viewerUrl, string $html, $modelUrl, array $modelInfo): string
+    public function replacePlaceholders(string $viewerUrl, string $html, array $parameters, array $modelInfo): string
     {
         $html = str_replace("{{viewerPath}}", $viewerUrl, $html);
-        $html = str_replace("{{modelUrl}}", $modelUrl, $html);
+        $html = str_replace("{{modelUrl}}", $parameters['model'], $html);
         $html = str_replace("{{modelPath}}", $modelInfo["dirname"], $html);
+        if (!empty($parameters["viewerParam"])) {
+            foreach ($parameters["viewerParam"] as $key => $value) {
+                $html = str_replace("{{viewerParam." . $key . "}}", $value, $html);
+            }
+        }
         return str_replace("{{modelResource}}", $modelInfo["basename"], $html);
     }
 
@@ -225,11 +242,11 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
      * @param array $config
      * @param string $viewerConfigPath
      * @param Folder $viewerFolder
-     * @param string $modelUrl
+     * @param array $parameters
      * @param array $modelInfo
      * @return string
      */
-    public function getViewerHtml(array $config, string $viewerConfigPath, Folder $viewerFolder, string $modelUrl, array $modelInfo): string
+    public function getViewerHtml(array $config, string $viewerConfigPath, Folder $viewerFolder, array $parameters, array $modelInfo): string
     {
         $htmlFile = "index.html";
         if (isset($config["base"]) && !empty($config["base"])) {
@@ -242,6 +259,6 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
         }
 
         $html = $viewerFolder->getFile($htmlFile)->getContents();
-        return $this->replacePlaceholders($viewerUrl, $html, $modelUrl, $modelInfo);
+        return $this->replacePlaceholders($viewerUrl, $html, $parameters, $modelInfo);
     }
 }
