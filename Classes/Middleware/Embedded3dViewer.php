@@ -86,6 +86,9 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
         }
 
         if (empty($viewer)) {
+            if (!in_array(strtolower($modelFormat), array('glb','gltf'))) {
+                return $this->warningResponse('The build-in model-viewer does not support the model format "' . $modelFormat . '"', $request);
+            }
             return $this->renderDefaultViewer($parameters['model']);
         }
 
@@ -229,7 +232,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
         /** @var ResourceFactory $resourceFactory */
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
         $html = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/Html/Embedded3dViewerStandalone.html')->getContents();
-        $file = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/JavaScript/Embedded3dViewer/model-viewer-3.5.0.min.js');
+        $file = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/JavaScript/Embedded3dViewer/model-viewer-4.1.0.min.js');
         $html = str_replace('{{modelViewerJS}}', $file->getPublicUrl(), $html);
         $html = str_replace("{{modelUrl}}", $model, $html);
         return new HtmlResponse($html);
