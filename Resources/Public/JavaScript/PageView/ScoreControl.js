@@ -77,7 +77,7 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
           if (event.detail.finished) {
             $body.removeClass('tx-dlf-score-midi-active')
           }
-        });
+        })
         $body.toggleClass('tx-dlf-score-midi-active')
         if ($body.hasClass('tx-dlf-score-midi-active')) {
           setTimeout(() => {
