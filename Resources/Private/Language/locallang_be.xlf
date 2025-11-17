@@ -485,6 +485,9 @@
             <trans-unit id="plugins.embedded3dviewer.flexform.viewer">
                 <source><![CDATA[Name of viewer]]></source>
             </trans-unit>
+			<trans-unit id="plugins.embedded3dviewer.flexform.queryString">
+				<source><![CDATA[Query string added to embedded viewer URL]]></source>
+			</trans-unit>
             <trans-unit id="plugins.annotation.title">
                 <source><![CDATA[Kitodo: Annotations]]></source>
             </trans-unit>

@@ -71,6 +71,10 @@ To configure the 3D viewer for Kitodo.Presentation, a ``dlf-3d-viewer.yml`` file
    - :field:                    supportedModelFormats (required)
      :description:              Specify single or multiple supported model formats of the viewer.
 
+   - :field:                    requiredParameters
+     :description:              Specify single or multiple required parameters of the viewer. (Viewer parameters are passed in URL using the array ``viewerParam`` e.g. ``viewerParam[parameterName]=parameterValue``)
+
+
 Example
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -82,6 +86,9 @@ Example
     supportedModelFormats:
       - glf
       - ply
+    requiredParameter:
+      - foo
+      - bar
 
 Placeholders
 -------
@@ -105,4 +112,7 @@ Placeholders can be used within the file which is define under the ``base`` key 
 
    - :field:                    modelResource
      :description:              Resource part of the ``modelUrl`` with the filename to be loaded from the endpoint. For example, if your resource is hosted at "https://example.com/my-model.glb", the value would be "my-model.glb".
+
+   - :field:                    viewerParam.``parameterName``
+     :description:              Value of URL parameter ``viewerParam[parameterName]`` (Please define the parameter as requiredParameter in ``dlf-3d-viewer.yml`` file)
 

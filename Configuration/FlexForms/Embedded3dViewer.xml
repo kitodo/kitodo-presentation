@@ -42,6 +42,14 @@
                             <eval>trim</eval>
                         </config>
                     </settings.viewer>
+                    <settings.queryString>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.flexform.queryString</label>
+                        <config>
+                            <type>input</type>
+                            <eval>trim</eval>
+                        </config>
+                    </settings.queryString>
                 </el>
             </ROOT>
         </sDEF>
