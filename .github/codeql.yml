@@ -16,4 +16,4 @@ paths-ignore:
   - Resources/Public/JavaScript/OpenLayers
   - Resources/Public/JavaScript/Toastify
   - Resources/Public/JavaScript/Verovio
-  - Resources/Public/JavaScript/WildWebMidi
+  - Resources/Public/JavaScript/HtmlMidiPlayer
