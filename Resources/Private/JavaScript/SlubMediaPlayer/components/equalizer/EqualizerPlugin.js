@@ -66,8 +66,45 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
    * @param {DlfMediaPlayer} player
    */
   async attachToPlayer(player) {
-    if (window.location.protocol !== "https:") {
-      console.error("Warning: The equalizer will probably fail without HTTPS");
+    // If the equalizer element is inside a hidden panel (e.g. parent has
+    // `hidden`), defer initialization until it becomes visible. This avoids
+    // initializing/resizing the canvas while the element has zero width.
+    const hostPanel = this.closest('[data-panel]');
+    const isHidden = hostPanel && hostPanel.hasAttribute('hidden');
+
+    if (isHidden && hostPanel instanceof HTMLElement) {
+      // Defer init and observe the host panel for attribute changes
+      const obs = new MutationObserver((records, observer) => {
+        for (const r of records) {
+          if (r.type === 'attributes' && r.attributeName === 'hidden') {
+            if (!hostPanel.hasAttribute('hidden')) {
+              observer.disconnect();
+              // Fire-and-forget initialization
+              this.initForPlayer(player).catch((e) => console.error('Equalizer init failed:', e));
+            }
+          }
+        }
+      });
+
+      obs.observe(hostPanel, { attributes: true });
+      return;
+    }
+
+    // Otherwise initialize immediately
+    await this.initForPlayer(player);
+  }
+
+  /**
+   * Initialize equalizer functionality for the given player. Separated from
+   * `attachToPlayer` so initialization can be deferred until the panel is
+   * visible.
+   *
+   * @private
+   * @param {DlfMediaPlayer} player
+   */
+  async initForPlayer(player) {
+    if (window.location.protocol !== 'https:') {
+      console.error('Warning: The equalizer will probably fail without HTTPS');
     }
 
     // Resume audio context (ensures this.context is available)
@@ -126,7 +163,16 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
     }
     this.innerHTML = '';
     this.append(this.eqView_.domElement);
-    this.eqView_.resize();
+    // Ensure resize runs after the element is laid out in the document
+    requestAnimationFrame(() => {
+      try {
+        if (this.eqView_ !== null) {
+          this.eqView_.resize();
+        }
+      } catch (err) {
+        console.error('EqualizerView.resize failed:', err);
+      }
+    });
   }
 
   /**
@@ -219,10 +265,6 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
       this.removeResumeHint_();
       this.markAsResumed();
     };
-
-    // Attach once-only handlers that will create/resume the context on first user interaction.
-    window.addEventListener('pointerdown', createAndResume, { once: true, capture: true });
-    window.addEventListener('keydown', createAndResume, { once: true, capture: true });
 
     // Also attempt to resume if the browser reports a running context later (edge case), but don't create it here.
     if (this.context !== null && this.context.state === 'running') {

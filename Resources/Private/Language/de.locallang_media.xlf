@@ -117,6 +117,18 @@
                 <source><![CDATA[Video Mode]]></source>
                 <target><![CDATA[Video-Ansicht]]></target>
             </trans-unit>
+            <trans-unit id="action.sound_tools.panel.audiolabelimage" approved="yes">
+                <source><![CDATA[Audio Label Image]]></source>
+                <target><![CDATA[Audio Cover Bild]]></target>
+            </trans-unit>
+            <trans-unit id="action.sound_tools.panel.equalizer" approved="yes">
+                <source><![CDATA[Equalizer]]></source>
+                <target><![CDATA[Equalizer]]></target>
+            </trans-unit>
+            <trans-unit id="action.sound_tools.panel.markertable" approved="yes">
+                <source><![CDATA[Marker Table]]></source>
+                <target><![CDATA[Gesetzte Markierungen]]></target>
+            </trans-unit>            
             <trans-unit id="action.theater.toggle" approved="yes">
                 <source><![CDATA[Toggle theater mode]]></source>
                 <target><![CDATA[Theater-Modus an / aus]]></target>

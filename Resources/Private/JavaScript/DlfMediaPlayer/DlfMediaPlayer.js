@@ -407,7 +407,23 @@ export default class DlfMediaPlayer extends HTMLElement {
         },
         execute: () => {
           this.ui.updatePlayerProperties({ mode: 'video' });
+          this.setToolActive(this.getToolboxIds().videomediaplayer);
         },
+      }),
+      'sound_tools.panel.audiolabelimage': action({
+        isAvailable: () => this.checkForAudioLabel(),
+        execute: () => {
+          this.ui.updatePlayerProperties({ mode: 'audio' });
+          requestAnimationFrame(() => this.setVisiblePanel('audiolabelimage'));
+        },
+      }),
+      'sound_tools.panel.equalizer': action(() => {
+        this.ui.updatePlayerProperties({ mode: 'audio' });
+        requestAnimationFrame(() => this.setVisiblePanel('equalizer'));
+      }),
+      'sound_tools.panel.markertable': action(() => {
+        this.ui.updatePlayerProperties({ mode: 'audio' });
+        requestAnimationFrame(() => this.setVisiblePanel('markertable'));
       }),
       'sound_tools.segments.add': action({
         execute: () => {
@@ -440,6 +456,240 @@ export default class DlfMediaPlayer extends HTMLElement {
    */
   addActions(actions) {
     Object.assign(this.actions, actions);
+  }
+
+  /**
+   * Central definition of toolbox IDs used by the Toolbox Fluid Template.
+   * @returns {dlf.media.ToolboxIdMapStrict}
+   */
+  getToolboxIds() {
+    /** @type {NodeListOf<HTMLElement>} */
+    const items = document.querySelectorAll('li.tx_dlf_audiovideotool[id]');
+
+    /** @type {dlf.media.ToolboxIdMap} */
+    const map = {};
+
+    items.forEach(li => {
+        const key = li.dataset.tool;
+        if (key) {
+            map[key] = li.id;
+        }
+    });
+
+    return map;
+  }
+
+  /**
+   * Return root/li/anchor nodes for a given toolbox id, or null if not found.
+   * @param {string | undefined} id
+   * @returns {{root: Element, li: Element|null, anchor: HTMLAnchorElement|null}|null}
+   */
+  getToolNodes(id) {
+    if (!id) return null;
+    const el = document.getElementById(id);
+    if (!el) return null;
+    const li = el.tagName.toLowerCase() === 'li' ? el : el.closest('li');
+    const anchor = /** @type {HTMLAnchorElement|null} */ (el.querySelector('a') || (el.tagName.toLowerCase() === 'a' ? el : null));
+    return { root: el, li, anchor };
+  }
+
+  /**
+   * Remove active classes from a single toolbox item.
+   * @param {string | undefined} id
+   */
+  unsetToolActive(id) {
+    if (!id) return;
+    const t = this.getToolNodes(id);
+    if (!t) return;
+    t.root.classList.remove('active');
+    if (t.li) t.li.classList.remove('active');
+    if (t.anchor) t.anchor.classList.remove('active');
+  }
+
+  /**
+   * Remove active classes from all known tool elements.
+   */
+  clearAllToolActive() {
+    const ids = Object.values(this.getToolboxIds());
+    ids.forEach(id => this.unsetToolActive(id));
+  }
+
+  /**
+   * Mark a particular toolbox item active (and clear others).
+   * @param {string | undefined} id
+   */
+  setToolActive(id) {
+    if (!id) return;
+    this.clearAllToolActive();
+    const t = this.getToolNodes(id);
+    if (!t) return;
+    if (t.li) t.li.classList.add('active');
+    if (t.anchor) t.anchor.classList.add('active');
+    t.root.classList.add('active');
+  }
+
+  /**
+   * Show panel element (make visible).
+   * @param {Element} p
+   */
+  showPanel(p) {
+    p.removeAttribute('hidden');
+    if (p instanceof HTMLElement) {
+      // Force reflow so transition starts
+      // eslint-disable-next-line no-unused-expressions
+      p.offsetHeight;
+    }
+    p.classList.add('visible');
+  }
+
+  /**
+   * Hide panel element with transition and fallback timeout.
+   * @param {Element} p
+   * @param {number} [fallbackMs=300]
+   */
+  hidePanelWithTransition(p, fallbackMs = 300) {
+    if (!p.classList.contains('visible')) {
+      p.setAttribute('hidden', '');
+      return;
+    }
+
+    p.classList.remove('visible');
+
+    const onTransitionEnd = /** @type {(ev: Event) => void} */ ((ev) => {
+      const tev = /** @type {TransitionEvent} */ (ev);
+      if (tev && tev.target !== p) return;
+      p.setAttribute('hidden', '');
+      p.removeEventListener('transitionend', onTransitionEnd);
+    });
+
+    p.addEventListener('transitionend', onTransitionEnd);
+
+    setTimeout(() => {
+      if (!p.classList.contains('visible')) {
+        p.setAttribute('hidden', '');
+        p.removeEventListener('transitionend', onTransitionEnd);
+      }
+    }, fallbackMs);
+  }
+
+  /**
+   * Show the requested panel and hide others with transition.
+   * @param {dlf.media.ToolboxTool} name
+   */
+  setVisiblePanel(name) {
+    const root = document.getElementById('combined-container');
+    if (!root) return;
+
+    const panels = root.querySelectorAll('[data-panel]');
+    panels.forEach(p => {
+      const pName = p.getAttribute('data-panel');
+      if (pName === name) {
+        this.showPanel(p);
+      } else {
+        this.hidePanelWithTransition(p);
+      }
+    });
+
+    const toolboxButtonId = this.getToolboxIds();
+    const activeToolId = toolboxButtonId[name] ?? null;
+    if (activeToolId) {
+      this.setToolActive(activeToolId);
+    } else {
+      this.clearAllToolActive();
+    }
+  }
+
+  /**
+   * Check if toolbox item exists.
+   * @param {dlf.media.ToolboxTool} toolName
+   * @returns {boolean}
+   */
+  hasTool(toolName) {
+    const tools = this.getToolboxIds();
+    return Boolean(tools[toolName]);
+  }
+
+  /**
+   * Check if audioLabelImage exists (Toolbox-Button or Panel)
+   * @returns {boolean}
+   */
+  checkForAudioLabel() {
+    return Boolean(
+      this.hasTool("audiolabelimage") 
+      || document.querySelector('[data-panel="audiolabelimage"]')
+    );
+  }
+
+  /**
+   * Decide which panel/tool to show/activate by default.
+   * - audio mode: prefer audiolabelimage if present, otherwise equalizer
+   * - video mode: activate videomediaplayer button
+   */
+  setDefaultPanel() {    
+    // @ts-ignore(TS2339)
+    const mode = this.ui.playerProperties?.mode;
+
+    if (mode === 'audio') {
+      if (this.checkForAudioLabel()) {
+        this.setVisiblePanel('audiolabelimage');
+      } else {
+        this.setVisiblePanel('equalizer');
+      }
+      return;
+    }
+
+    // video mode: do not show audio panels, mark video tool active
+    if (mode === 'video') {
+      this.setToolActive(this.getToolboxIds().videomediaplayer);
+      return;
+    }
+  }
+
+  /**
+   * Register toolbox click handlers and sync active classes.
+   */
+  registerToolboxHandlers() {
+    const toolEntries = Object.entries(this.getToolboxIds());
+
+    /**
+     * @param {{root: Element, li: Element|null, anchor: HTMLAnchorElement|null}|null} tool
+     * @param {string} panelName
+     */
+    const makeHandler = (tool, panelName) => {
+      if (!tool || !tool.root) return;
+      const clickable = tool.anchor || tool.root;
+
+      /** @param {Event} e */
+      const onClick = (e) => {
+        e.preventDefault();
+
+        // Map panel name to the corresponding player action.
+        const actionName = (panelName === 'videomediaplayer')
+          ? 'sound_tools.mode.video'
+          : `sound_tools.panel.${panelName}`;
+
+        const act = /** @type {dlf.media.PlayerAction|undefined} */ (/** @type {any} */ (this.actions)[actionName]);
+        if (!act) return;
+
+        // Only execute when available
+        if (typeof act.isAvailable === 'function' && !act.isAvailable()) {
+          return;
+        }
+
+        act.execute();
+      };
+
+      clickable.addEventListener('click', onClick);
+    };
+
+    // register handlers for all tools
+    toolEntries.forEach(([panelName, id]) => {
+      const tool = this.getToolNodes(id);
+      makeHandler(tool, panelName);
+    });
+
+    // Choose default panel and active tool according to current mode/availability
+    this.setDefaultPanel();
   }
 
   /**
@@ -705,6 +955,9 @@ export default class DlfMediaPlayer extends HTMLElement {
    */
   onDomContentLoaded() {
     // Override in child
+
+    // Register toolbox handlers and pick default panel
+    this.registerToolboxHandlers();     
   }
 
   onTick() {

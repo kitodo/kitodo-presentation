@@ -209,32 +209,49 @@
 		"keyup": true
 	},
 	{
-		"keys": ["F2"],
-		"repeat": false,
-		"action": "sound_tools.mode.audio",
-		"kind": "sound_tools",
-		"order": 0
-	},
-	{
 		"keys": ["F4"],
 		"repeat": false,
 		"action": "sound_tools.mode.video",
 		"kind": "sound_tools",
-		"order": 1
+		"order": 40
 	},
+	{
+		"keys": ["F6"],
+		"repeat": false,
+		"scope": "player",
+		"action": "sound_tools.panel.audiolabelimage",
+		"kind": "sound_tools",
+		"order": 41
+	},
+	{
+		"keys": ["F7"],
+		"repeat": false,
+		"scope": "player",
+		"action": "sound_tools.panel.equalizer",
+		"kind": "sound_tools",
+		"order": 42
+	},
+	{
+		"keys": ["F8"],
+		"repeat": false,
+		"scope": "player",
+		"action": "sound_tools.panel.markertable",
+		"kind": "sound_tools",
+		"order": 43
+	},	
 	{
 		"keys": ["<"],
 		"scope": "player",
 		"action": "sound_tools.segments.add",
 		"kind": "sound_tools",
-		"order": 2
+		"order": 44
 	},
 	{
 		"keys": [">"],
 		"scope": "player",
 		"action": "sound_tools.segments.close",
 		"kind": "sound_tools",
-		"order": 3
+		"order": 45
 	},
 	{
 		"keys": ["w"],
@@ -242,6 +259,6 @@
 		"scope": "player",
 		"action": "sound_tools.waveform.toggle",
 		"kind": "sound_tools",
-		"order": 4
+		"order": 46
 	}
 ]
