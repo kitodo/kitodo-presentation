@@ -57,6 +57,33 @@
         </f:then>
     </f:if>
 
+    <f:if condition="{renderAudioVideoTool}">
+        <f:if condition="{settings.isVideo}">
+            <li class="tx_dlf_audiovideotool tx-dlf-tools-videomediaplayer" id="tx-dlf-tools-videomediaplayer" data-tool="videomediaplayer">
+                <a href="#" class="button-videomediaplayer" title="{f:translate(key: 'tools.audiovideotool.videomediaplayer')}">
+                    <f:translate key="tools.audiovideotool.videomediaplayer"/>
+                </a>
+            </li>
+        </f:if>
+        <f:if condition="{settings.constants.showAudioLabelImage} == 1 && {settings.isAudio} && {hasAudioLabelImage}">
+            <li class="tx_dlf_audiovideotool tx-dlf-tools-audiolabelimage" id="tx-dlf-tools-audiolabelimage" data-tool="audiolabelimage">
+                <a href="#" class="button-audiolabelimage" title="{f:translate(key: 'tools.audiovideotool.audiolabelimage')}">
+                    <f:translate key="tools.audiovideotool.audiolabelimage"/>
+                </a>
+            </li>
+        </f:if>
+        <li class="tx_dlf_audiovideotool tx-dlf-tools-equalizer" id="tx-dlf-tools-equalizer" data-tool="equalizer">
+            <a href="#" class="button-equalizer" title="{f:translate(key: 'tools.audiovideotool.equalizer')}">
+                <f:translate key="tools.audiovideotool.equalizer"/>
+            </a>
+        </li>
+        <li class="tx_dlf_audiovideotool tx-dlf-tools-markertable" id="tx-dlf-tools-markertable" data-tool="markertable">
+            <a href="#" class="button-markertable" title="{f:translate(key: 'tools.audiovideotool.markertable')}">
+                <f:translate key="tools.audiovideotool.markertable"/>
+            </a>
+        </li>
+    </f:if>
+
     <f:if condition="{renderImageDownloadTool} && {imageDownload}">
         <f:then>
             <li>

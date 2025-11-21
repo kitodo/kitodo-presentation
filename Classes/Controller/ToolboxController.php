@@ -80,6 +80,7 @@ class ToolboxController extends AbstractController
                 match ($tool) {
                     'tx_dlf_adddocumenttool', 'adddocumenttool' => $this->renderToolByName('renderAddDocumentTool'),
                     'tx_dlf_annotationtool', 'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
+                    'tx_dlf_audiovideotool', 'audiovideotool' => $this->renderToolByName('renderAudioVideoTool'),
                     'tx_dlf_fulltextdownloadtool', 'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
                     'tx_dlf_fulltexttool', 'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
                     'tx_dlf_imagedownloadtool', 'imagedownloadtool' => $this->renderToolByName('renderImageDownloadTool'),
@@ -221,6 +222,34 @@ class ToolboxController extends AbstractController
             $this->view->assign('annotationTool', true);
         } else {
             $this->view->assign('annotationTool', false);
+        }
+    }
+
+    /**
+     * Renders the audio video tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderAudioVideoTool(): void
+    {        
+        if (
+            $this->isDocMissingOrEmpty()
+            || empty($this->useGroupsConfiguration->getImage())
+        ) {
+            // Quit without doing anything if required variables are not set.
+            return;
+        }
+        
+        $this->setPage();
+        $page = $this->requestData['page'] ?? 0;
+        $audioLabelImage = $this->getImage($page);
+
+        if (!empty($audioLabelImage) && Helper::filterFilesByMimeType($audioLabelImage, ['image'], ['JPG'])) {
+            // assign flag to view if Audio Label Image is available
+            $this->view->assign('hasAudioLabelImage', true);
         }
     }
 

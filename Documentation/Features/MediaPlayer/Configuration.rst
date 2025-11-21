@@ -133,6 +133,9 @@ For information on equalizer configuration, see :ref:`the equalizer subpage <eq_
          // Whether or not showing the Poster Image, if given, until playback is first started
          showPoster = 1
 
+         // Whether or not showing the Audio Label-Image in Audio mode inside the media-panel
+         showAudioLabelImage = 1
+
          // Template of filename used when downloading screenshot (without file extension)
          // Placeholders may be used
          screenshotFilenameTemplate = sachsen-digital-de_{title}_h{hh}m{mm}s{ss}f{ff}
