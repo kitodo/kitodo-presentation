@@ -58,14 +58,14 @@
     </f:if>
 
     <f:if condition="{renderAudioVideoTool}">
-        <f:if condition="{settings.isVideo}">
+        <f:if condition="{settings.isVideo} == 1">
             <li class="tx_dlf_audiovideotool tx-dlf-tools-videomediaplayer" id="tx-dlf-tools-videomediaplayer" data-tool="videomediaplayer">
                 <a href="#" class="button-videomediaplayer" title="{f:translate(key: 'tools.audiovideotool.videomediaplayer')}">
                     <f:translate key="tools.audiovideotool.videomediaplayer"/>
                 </a>
             </li>
         </f:if>
-        <f:if condition="{settings.constants.showAudioLabelImage} == 1 && {settings.isAudio} && {hasAudioLabelImage}">
+        <f:if condition="{settings.constants.showAudioLabelImage} == 1 && {settings.isAudio} == 1 && {hasAudioLabelImage}">
             <li class="tx_dlf_audiovideotool tx-dlf-tools-audiolabelimage" id="tx-dlf-tools-audiolabelimage" data-tool="audiolabelimage">
                 <a href="#" class="button-audiolabelimage" title="{f:translate(key: 'tools.audiovideotool.audiolabelimage')}">
                     <f:translate key="tools.audiovideotool.audiolabelimage"/>
