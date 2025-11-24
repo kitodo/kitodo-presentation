@@ -31,6 +31,7 @@ module.exports = (env, argv) => {
     output: {
       filename: 'JavaScript/DlfMediaPlayer/[name].js',
       path: PUBLIC_PATH,
+      assetModuleFilename: 'Assets/[name].[hash][ext]',
     },
     plugins: [
       new RemoveEmptyScriptsPlugin(),
@@ -84,7 +85,7 @@ module.exports = (env, argv) => {
         {
           test: /\.(png|svg|jpg|jpeg|gif)$/i,
           type: 'asset/resource',
-        },          
+        },
       ],
     },
     externals: {
@@ -118,7 +119,7 @@ module.exports = (env, argv) => {
       alias: {
         // __dirname will stands for your root directory level
         // path.resolve will concatenate your project folder location with
-        Images: path.resolve(PUBLIC_PATH, `Images/`),
+        Assets: path.resolve(PRIVATE_PATH, `Assets/`),
         lib: path.resolve(PRIVATE_PATH, `JavaScript/lib/`),
         DlfMediaPlayer: path.resolve(PRIVATE_PATH, `JavaScript/DlfMediaPlayer/`),
         SlubMediaPlayer: path.resolve(PRIVATE_PATH, `JavaScript/SlubMediaPlayer/`)

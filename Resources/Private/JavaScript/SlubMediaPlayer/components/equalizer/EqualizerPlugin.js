@@ -6,7 +6,7 @@ import DlfMediaPlugin from 'DlfMediaPlayer/DlfMediaPlugin';
 import Equalizer from 'SlubMediaPlayer/components/equalizer/Equalizer';
 import EqualizerView from 'SlubMediaPlayer/components/equalizer/EqualizerView';
 import registerMultiIirProcessor from 'SlubMediaPlayer/components/equalizer/MultiIirProcessor.no-babel';
-import eqPreviewImage from 'Images/equalizer-preview.png';
+import eqPreviewImage from 'Assets/Images/equalizer-preview.png';
 
 /**
  * @typedef {import('DlfMediaPlayer/DlfMediaPlayer').default} DlfMediaPlayer
