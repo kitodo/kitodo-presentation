@@ -81,6 +81,10 @@ module.exports = (env, argv) => {
             },
           ],
         },
+        {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/resource',
+        },          
       ],
     },
     externals: {
@@ -114,6 +118,7 @@ module.exports = (env, argv) => {
       alias: {
         // __dirname will stands for your root directory level
         // path.resolve will concatenate your project folder location with
+        Images: path.resolve(PUBLIC_PATH, `Images/`),
         lib: path.resolve(PRIVATE_PATH, `JavaScript/lib/`),
         DlfMediaPlayer: path.resolve(PRIVATE_PATH, `JavaScript/DlfMediaPlayer/`),
         SlubMediaPlayer: path.resolve(PRIVATE_PATH, `JavaScript/SlubMediaPlayer/`)
