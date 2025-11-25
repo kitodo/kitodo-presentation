@@ -3,10 +3,10 @@
 import { blobToDataURL, e, filterNonNull } from 'lib/util';
 import { parsePreset } from 'SlubMediaPlayer/components/equalizer/preset';
 import DlfMediaPlugin from 'DlfMediaPlayer/DlfMediaPlugin';
+import eqPreviewImage from 'Assets/Images/equalizer-preview.png';
 import Equalizer from 'SlubMediaPlayer/components/equalizer/Equalizer';
 import EqualizerView from 'SlubMediaPlayer/components/equalizer/EqualizerView';
 import registerMultiIirProcessor from 'SlubMediaPlayer/components/equalizer/MultiIirProcessor.no-babel';
-import eqPreviewImage from 'Assets/Images/equalizer-preview.png';
 
 /**
  * @typedef {import('DlfMediaPlayer/DlfMediaPlayer').default} DlfMediaPlayer
@@ -218,7 +218,7 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
    */
   async resumeAudioContext() {
     // Do NOT create or resume the AudioContext here synchronously.
-    // Instead show a resume UI and create/resume the context inside the user gesture handlers (pointerdown/keydown). 
+    // Instead show a resume UI and create/resume the context inside the user gesture handlers (pointerdown/keydown).
     // This avoids browsers blocking the action because it's not triggered by a user gesture.
 
     // If we already have a context and it's running, immediately resolve.
@@ -230,16 +230,16 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
 
     // Show resume hint once - accessible button
     if (!this.resumeHintEl_) {
-      // outer wrapper that holds the blurred background and an overlaid button
+      // Outer wrapper that holds the blurred background and an overlaid button
       const wrapper = e('div', { className: 'dlf-equalizer-resume', role: 'group', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, []);
-      // background element (will show via CSS var and be blurred)
+      // Background element (will show via CSS var and be blurred)
       const bgDiv = e('div', { className: 'dlf-equalizer-resume-bg', ariaHidden: 'true' }, []);
-      // visible button
+      // Visible button
       const btn = e('button', { className: 'dlf-equalizer-resume-btn', type: 'button', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, [
         this.env.t('control.sound_tools.equalizer.resume_context'),
       ]);
 
-      // set preview image from public images folder
+      // Set preview image from public images folder
       wrapper.style.setProperty('--equalizer-bg-url', `url("${eqPreviewImage}")`);
 
       // Clicking either wrapper or btn should resume
