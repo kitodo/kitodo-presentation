@@ -234,7 +234,7 @@ class ToolboxController extends AbstractController
      * @return void
      */
     private function renderAudioVideoTool(): void
-    {        
+    {
         if (
             $this->isDocMissingOrEmpty()
             || empty($this->useGroupsConfiguration->getImage())
@@ -242,7 +242,7 @@ class ToolboxController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return;
         }
-        
+
         $this->setPage();
         $page = $this->requestData['page'] ?? 0;
         $audioLabelImage = $this->getImage($page);

@@ -195,8 +195,8 @@ class MediaPlayerController extends AbstractController
 
         $showAudioLabelImage = $this->settings['constants']['showAudioLabelImage'] ?? null;
         $audioLabelImageFiles = $this->findFiles($doc, $pageNo, $imageUseGroups);
-        if (!empty($audioLabelImageFiles) 
-            && (int) $showAudioLabelImage === 1 
+        if (!empty($audioLabelImageFiles)
+            && (int) $showAudioLabelImage === 1
             && Helper::filterFilesByMimeType($audioLabelImageFiles[0], ['image'], ['JPG'], 'mimeType')
         ) {
             $videoUrl['audioLabelImage'] = $audioLabelImageFiles[0];
