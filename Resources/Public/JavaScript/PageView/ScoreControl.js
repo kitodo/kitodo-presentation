@@ -27,7 +27,7 @@ const verovioSettings = {
   breaks: 'encoded',
   mdivAll: true
 };
-const className = 'score-visible';
+const className = 'tx-dlf-score-visible';
 const scrollOffset = 100;
 var zoom = 40;
 var format = 'mei';
@@ -55,6 +55,43 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
       tk.renderData(jqXHR.responseText, verovioSettings);
       const pageToShow = tk.getPageWithElement(pagebeginning);
       const score = tk.renderToSVG(pageToShow);
+      const midi = tk.renderToMIDI();
+
+      $("#tx-dlf-tools-score-midi").click(function () {
+        const midiPlayer = document.getElementById("tx-dlf-score-midi-player");
+        let soundFont = null;
+        if($(this).is('[data-midi-player-sound-font]')) {
+          const soundFontSetting = $(this).data('midi-player-sound-font');
+          if (soundFontSetting === '' || soundFontSetting === 'build-in') {
+            soundFont = '';
+          } else if (soundFontSetting !== 'default') {
+            soundFont = soundFontSetting;
+          }
+        }
+
+        const $body = $('body');
+        midiPlayer.src = 'data:audio/midi;base64,' + midi;
+        midiPlayer.shadowRoot.querySelector('button[part="play-button"]').click();
+        midiPlayer.soundFont = soundFont;
+        midiPlayer.addEventListener('stop', (event) => {
+          if (event.detail.finished) {
+            $body.removeClass('tx-dlf-score-midi-active')
+          }
+        })
+        $body.toggleClass('tx-dlf-score-midi-active')
+        if ($body.hasClass('tx-dlf-score-midi-active')) {
+          setTimeout(() => {
+            midiPlayer.shadowRoot.querySelector('button[part="play-button"]').click();
+          }, 500);
+        }
+      });
+
+      $("#tx-dlf-score-midi-download").click(function () {
+        $(this).attr({
+          "href": 'data:audio/midi;base64,' + midi,
+          "download": getMeiTitle(tk) + ".midi"
+        })
+      });
 
       if (score === undefined) {
         result.reject();
@@ -303,7 +340,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
     })
   );
 
-  $("#tx_dlf_scoredownload").click(function () {
+  $("#tx-dlf-score-download").click(function () {
     if (typeof pdfBlob !== 'undefined') {
       saveAs(pdfBlob, getMeiTitle(tk));
 
@@ -502,8 +539,8 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 
   $('#tx-dlf-score-' + this.dlfViewer.counter).removeClass(className).hide();
   $('#tx-dfgviewer-map-' + this.dlfViewer.counter + ' .ol-overlaycontainer-stopevent').hide();
-  $('#tx-dfgviewer-map-' + this.dlfViewer.counter + ' ~ .score-tool #tx-dlf-tools-midi').hide();
-  $('.document-view:not(.multiview) .document-functions #tx-dlf-tools-midi').hide();
+  $('#tx-dfgviewer-map-' + this.dlfViewer.counter + ' ~ .score-tool #tx-dlf-tools-score-midi').hide();
+  $('.document-view:not(.multiview) .document-functions #tx-dlf-tools-score-midi').hide();
 
   $('body').removeClass(className);
 
@@ -538,7 +575,7 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
 
   $('body').addClass(className);
 
-  $('.document-view:not(.multiview) .document-functions #tx-dlf-tools-midi').show();
+  $('.document-view:not(.multiview) .document-functions #tx-dlf-tools-score-midi').show();
 
   this.scrollToPagebeginning();
 
