@@ -54,11 +54,13 @@ dlfValidationForms.forEach((validationForm) => {
     const data = {};
 
     // Convert submitted values to data
-    for (let [key, value] of formData.entries()) {
+    for (const [key, value] of formData.entries()) {
       // If key ends with [], treat as array
       if (key.endsWith('[]')) {
         const cleanKey = key.slice(0, -2);
-        if (!data[cleanKey]) data[cleanKey] = [];
+        if (!data[cleanKey]) {
+          data[cleanKey] = [];
+        }
         data[cleanKey].push(value);
       } else {
         data[key] = value;
