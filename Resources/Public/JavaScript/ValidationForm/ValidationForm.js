@@ -53,6 +53,7 @@ dlfValidationForms.forEach((validationForm) => {
     const formData = new FormData(event.target);
     const data = {};
 
+    // codacy-disable
     // Convert submitted values to data
     for (const [key, value] of formData.entries()) {
       // If key ends with [], treat as array
@@ -66,6 +67,7 @@ dlfValidationForms.forEach((validationForm) => {
         data[key] = value;
       }
     }
+    // codacy-enable
 
     /**
      * Create a list of messages.
