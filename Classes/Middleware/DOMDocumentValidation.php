@@ -165,7 +165,7 @@ class DOMDocumentValidation implements MiddlewareInterface
      *
      * @return \Closure
      */
-    private function getMessageText(): \Closure
+    protected function getMessageText(): \Closure
     {
         return function (Message $message): string {
             return $message->getMessage();
@@ -195,7 +195,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         return $validationConfiguration;
     }
 
-    private function getTranslation(string $key, ?array $arguments = null): string
+    protected function getTranslation(string $key, ?array $arguments = null): string
     {
         /** @var SiteLanguage $siteLanguage */
         $siteLanguage = $this->request->getAttribute('language') ?? $this->request->getAttribute('site')->getDefaultLanguage();
