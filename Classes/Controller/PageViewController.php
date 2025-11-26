@@ -136,8 +136,8 @@ class PageViewController extends AbstractController
         }
 
         $this->scores = $this->getScore($page);
+        $this->view->assign('scores', $this->scores);
         $this->measures = $this->getMeasures($page);
-
 
         $this->view->assign('images', $this->images);
         $this->addViewerJS();

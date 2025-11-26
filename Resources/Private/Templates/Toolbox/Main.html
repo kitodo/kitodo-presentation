@@ -172,7 +172,7 @@
                 </a>
             </li>
             <li class="score">
-                <a id="tx-dlf-tools-midi" >
+                <a id="tx-dlf-tools-score-midi" <f:if condition="{scoreMidiPlayerSoundFont}">data-midi-player-sound-font="{scoreMidiPlayerSoundFont}"</f:if>>
                     <f:translate key="tools.score.player"/>
                 </a>
             </li>
@@ -215,11 +215,11 @@
                 <span class="tx-dlf-tools-score">
                     <f:if condition="{scoreLinks}">
                         <f:then>
-                            <a href="#" id="tx_dlf_mididownload" class="download-document">
+                            <a href="#" id="tx-dlf-score-midi-download" class="download-document">
                                 <f:translate key="mididownload"/>
                                 (MIDI)
                             </a>
-                            <a href="#" id="tx_dlf_scoredownload" class="download-document">
+                            <a href="#" id="tx-dlf-score-download" class="download-document">
                                 <f:translate key="scoredownload"/>
                                 (PDF)
                             </a>

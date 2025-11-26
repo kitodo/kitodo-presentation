@@ -1007,6 +1007,7 @@ Toolbox
        * tx_dlf_pdfdownloadtool
        * tx_dlf_fulltextdownloadtool
        * tx_dlf_searchindocumenttool
+       * tx_dlf_scoretool
 
  - :Property:
        solrcore
@@ -1064,6 +1065,35 @@ Model download tool
 This tool makes it possible to extract the model URL from the METS file or use the provided model parameter to provide a download URL.
 
 :typoscript:`plugin.tx_dlf_modeldownloadtool.`
+
+Score tool
+^^^^^^^^^^^^^
+
+This tool extracts the score from the `SCORE` file group and visualizes the MEI score of current page using `Verovio <https://www.verovio.org/index.xhtml>`_.
+
+The provided MIDI output of `Verovio` is played using the `html-midi-player <https://cifkao.github.io/html-midi-player/>`_
+
+:typoscript:`plugin.tx_dlf_scoretool.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+       Property
+   :Data Type:
+       Data type
+   :Values:
+       Values
+
+ - :Property:
+       midiPlayerSoundFont
+   :Data Type:
+       :ref:`t3tsref:data-type-string`
+   :Values:
+        * `default` or if the property is not set, the MIDI player will use a simple oscillator synth
+        * `build-in` or if the property is empty, the build-in sound font (`https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`) of MIDI player is used
+        *  Custom URL to sound font e.g. `https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`
+
 
 Viewer selection tool
 ^^^^^^^^^^^^^
