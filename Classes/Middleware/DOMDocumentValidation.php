@@ -178,7 +178,7 @@ class DOMDocumentValidation implements MiddlewareInterface
      * If a validator in the configuration has the disabled flag set to true and its key does not exist in the enabledValidators parameter, it will be removed.
      *
      * @param array $parameters The parameters of the middleware.
-     * @param mixed $validationConfiguration The validation configuration to remove from
+     * @param array $validationConfiguration The validation configuration to remove from
      * @return array The validator configuration without the disabled validators
      */
     protected function removeDisabledValidators(array $parameters, array $validationConfiguration): array
