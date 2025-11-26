@@ -12,11 +12,15 @@
                 <f:format.raw><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.label' /></f:format.raw>
                 <input type="text" name="url" class="url" value="" required>
             </label>
+            <div class="disabled-validators">
+                <f:for each="{disabledValidators}" as="value" key="key" >
+                    <label title="{f:translate(key: value.shortdescription)}">
+                        <input type="checkbox" name="enableValidator[]" class="checkbox" value="{key}"/>
+                        {f:translate(key: value.title)}
+                    </label>
+                </f:for>
+            </div>
             <input type="submit" class="submit" value="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.validate'/>">
         </form>
-
-        <script>
-
-        </script>
     </div>
 </html>

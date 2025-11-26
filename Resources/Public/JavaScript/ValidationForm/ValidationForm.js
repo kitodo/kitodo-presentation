@@ -50,8 +50,26 @@ dlfValidationForms.forEach((validationForm) => {
   validationForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
+    const formData = new FormData(event.target);
+    const data = {};
+
     // Convert submitted values to data
-    const data = Object.fromEntries(new FormData(event.target).entries());
+    for (const [key, value] of formData.entries()) {
+      // If key ends with [], treat as array
+      if (key.endsWith('[]')) {
+        const cleanKey = key.slice(0, -2);
+        // eslint-disable-next-line
+        if (!data[cleanKey]) {
+          // eslint-disable-next-line
+          data[cleanKey] = [];
+        }
+        // eslint-disable-next-line
+        data[cleanKey].push(value);
+      } else {
+        // eslint-disable-next-line
+        data[key] = value;
+      }
+    }
 
     /**
      * Create a list of messages.
@@ -140,7 +158,12 @@ dlfValidationForms.forEach((validationForm) => {
     const loader = buildLoader(event.target);
     const form = event.target.parentElement;
 
-    getData(this.action + '&type=' + encodeURI(data.type) + '&url=' + encodeURI(data.url)).then(data => {
+    let dataUrl = this.action + '&type=' + encodeURIComponent(data.type) + '&url=' + encodeURIComponent(data.url);
+    if (data.enableValidator && Array.isArray(data.enableValidator)) {
+      dataUrl += '&enableValidators=' + encodeURIComponent(data.enableValidator.join(','));
+    }
+
+    getData(dataUrl).then(data => {
       let validation = form.querySelector('.validation');
       if (validation) {
         form.removeChild(validation);
