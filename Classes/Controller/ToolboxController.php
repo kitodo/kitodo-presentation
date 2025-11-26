@@ -86,7 +86,6 @@ class ToolboxController extends AbstractController
                     'tx_dlf_imagemanipulationtool', 'imagemanipulationtool' => $this->renderToolByName('renderImageManipulationTool'),
                     'tx_dlf_modeldownloadtool', 'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
                     'tx_dlf_pdfdownloadtool', 'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
-                    'tx_dlf_scoredownloadtool', 'scoredownloadtool' => $this->renderToolByName('renderScoreDownloadTool'),
                     'tx_dlf_scoretool', 'scoretool' => $this->renderToolByName('renderScoreTool'),
                     'tx_dlf_searchindocumenttool', 'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
                     'tx_dlf_viewerselectiontool', 'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
@@ -293,6 +292,9 @@ class ToolboxController extends AbstractController
             return;
         }
 
+        if (isset($this->settings['midiPlayerSoundFont'])) {
+            $this->view->assign('scoreMidiPlayerSoundFont', $this->settings['midiPlayerSoundFont']);
+        }
         $this->view->assign('score', !empty($this->getScoreFile()));
     }
 
