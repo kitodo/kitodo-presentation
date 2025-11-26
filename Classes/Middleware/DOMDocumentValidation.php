@@ -217,5 +217,4 @@ class DOMDocumentValidation implements MiddlewareInterface
         }
         return $languageService->sL($key);
     }
-
 }

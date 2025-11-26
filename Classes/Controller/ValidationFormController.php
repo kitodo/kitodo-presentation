@@ -64,5 +64,4 @@ class ValidationFormController extends AbstractController
         $this->view->assign("disabledValidators", $disabledValidators);
         return $this->htmlResponse();
     }
-
 }
