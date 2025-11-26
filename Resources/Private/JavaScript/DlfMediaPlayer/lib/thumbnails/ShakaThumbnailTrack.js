@@ -7,7 +7,7 @@ export default class ShakaThumbnailTrack {
   /**
    *
    * @param {shaka.Player} player
-   * @param {shaka.extern.Track} track Image track for thumbnails
+   * @param {shaka.extern.ImageTrack} track Image track for thumbnails
    */
   constructor(player, track) {
     /** @private */
