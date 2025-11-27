@@ -235,5 +235,26 @@ namespace dlf {
       readonly bandwidth: number;
       getThumb(position: number): Promise<ThumbnailOnTrack | null>;
     }
+
+    // dataset.tool Type
+    declare global {
+        interface DOMStringMap {
+            tool?: ToolboxTool;
+        }
+    }
+
+    // Audio/Video Toolbox types
+    type ToolboxTool =
+        | "videomediaplayer"
+        | "audiolabelimage"
+        | "equalizer"
+        | "markertable";
+
+    // Mapping-Types
+    interface ToolboxIdMap {
+        [key: string]: string;
+    }
+
+    type ToolboxIdMapStrict = Partial<Record<ToolboxTool, string>>;
   }
 }

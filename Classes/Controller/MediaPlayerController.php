@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\Helper;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -70,6 +71,8 @@ class MediaPlayerController extends AbstractController
      */
     protected function getVideoInfo(AbstractDocument $doc, int $pageNo): ?array
     {
+        // Get image file use groups
+        $imageUseGroups = $this->useGroupsConfiguration->getImage();
         // Get video file use groups
         $videoUseGroups = $this->useGroupsConfiguration->getVideo();
         $mainVideoUseGroup = $videoUseGroups[0] ?? '';
@@ -91,7 +94,7 @@ class MediaPlayerController extends AbstractController
         $videoChapters = $this->collectVideoChapters($doc);
 
         // Get additional video URLs
-        $videoUrl = $this->collectAdditionalVideoUrls($doc, $pageNo, $thumbnailUseGroups, $waveformUseGroups);
+        $videoUrl = $this->collectAdditionalVideoUrls($doc, $pageNo, $thumbnailUseGroups, $waveformUseGroups, $imageUseGroups);
 
         return [
             'start' => $videoChapters[$pageNo - 1]['timecode'] ?? '',
@@ -172,19 +175,33 @@ class MediaPlayerController extends AbstractController
      * @param int $pageNo The page number
      * @param array $thumbnailUseGroups An array of thumb file use groups
      * @param array $waveformUseGroups An array of waveform file use groups
+     * @param array $imageUseGroups An array of image file use groups
      * @return array An array containing additional video URLs like poster and waveform
      */
-    private function collectAdditionalVideoUrls(AbstractDocument $doc, int $pageNo, array $thumbnailUseGroups, array $waveformUseGroups): array
+    private function collectAdditionalVideoUrls(AbstractDocument $doc, int $pageNo, array $thumbnailUseGroups, array $waveformUseGroups, array $imageUseGroups): array
     {
         $videoUrl = [];
+
+        $showPoster = $this->settings['constants']['showPoster'] ?? null;
         $thumbFiles = $this->findFiles($doc, 0, $thumbnailUseGroups); // 0 = for whole video (not just chapter)
-        if (!empty($thumbFiles) && $this->settings['constants']['showPoster'] == 1) {
+        if (!empty($thumbFiles) && (int) $showPoster === 1) {
             $videoUrl['poster'] = $thumbFiles[0];
         }
+
         $waveformFiles = $this->findFiles($doc, $pageNo, $waveformUseGroups);
         if (!empty($waveformFiles)) {
             $videoUrl['waveform'] = $waveformFiles[0];
         }
+
+        $showAudioLabelImage = $this->settings['constants']['showAudioLabelImage'] ?? null;
+        $audioLabelImageFiles = $this->findFiles($doc, $pageNo, $imageUseGroups);
+        if (!empty($audioLabelImageFiles)
+            && (int) $showAudioLabelImage === 1
+            && Helper::filterFilesByMimeType($audioLabelImageFiles[0], ['image'], ['JPG'], 'mimeType')
+        ) {
+            $videoUrl['audioLabelImage'] = $audioLabelImageFiles[0];
+        }
+
         return $videoUrl;
     }
 

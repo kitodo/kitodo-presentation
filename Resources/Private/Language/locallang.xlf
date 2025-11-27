@@ -245,6 +245,18 @@
             <trans-unit id="tools.annotation.on">
                 <source><![CDATA[Display Annotations]]></source>
             </trans-unit>
+            <trans-unit id="tools.audiovideotool.audiolabelimage">
+                <source><![CDATA[Audio Label Image]]></source>
+            </trans-unit>
+            <trans-unit id="tools.audiovideotool.videomediaplayer">
+                <source><![CDATA[Video Mode]]></source>
+            </trans-unit>
+            <trans-unit id="tools.audiovideotool.equalizer">
+                <source><![CDATA[Equalizer]]></source>
+            </trans-unit>
+            <trans-unit id="tools.audiovideotool.markertable">
+                <source><![CDATA[Marker Table]]></source>
+            </trans-unit>
             <trans-unit id="tools.fulltext">
                 <source><![CDATA[Full text]]></source>
             </trans-unit>

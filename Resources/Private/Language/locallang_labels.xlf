@@ -425,6 +425,9 @@
             <trans-unit id="tx_dlf_toolbox.annotationtool">
                 <source>IIIF Annotations</source>
             </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.audiovideotool">
+                <source>Audio/Video Tool</source>
+            </trans-unit>
             <trans-unit id="tx_dlf_toolbox.fulltextdownloadtool">
                 <source>Fulltext Download</source>
             </trans-unit>
