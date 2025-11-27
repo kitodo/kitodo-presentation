@@ -166,6 +166,8 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
             $('#overlay').fadeIn(300);
           }
 
+          debugger;
+
           if (dlfViewer.verovioMeasureActive !== null) {
             dlfViewer.verovioMeasureActive.removeClass('active');
             dlfViewer.verovioMeasureActive = null;
@@ -180,8 +182,11 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
           dlfViewer.verovioMeasureActive.addClass('active');
           var measureId = $(this).parent().attr('id');
 
-          if (dlfViewer.measureIdLinks[measureId]) {
-            window.location.replace(dlfViewer.measureIdLinks[measureId]);
+          if (dlfViewer.measureIdToIndex[measureId]) {
+            const url = new URL(window.location.href);
+            url.searchParams.append("tx_dlf[measure]", dlfViewer.measureIdToIndex[measureId]);
+            // eslint-disable-next-line
+            window.location.href = url.toString();
           }
 
           // Show measure on facsimile
@@ -407,6 +412,8 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function () {
     const toggleScore = $.proxy(function (event) {
       event.preventDefault();
 
+      debugger;
+
       if ($(event.target).hasClass('active')) {
         this.deactivate();
         return;
@@ -431,6 +438,8 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function () {
   if (anchorEl.length > 0) {
     const toggleScore = $.proxy(function (event) {
       event.preventDefault();
+
+      debugger;
 
       if ($(event.target).hasClass('active')) {
         this.deactivate();
@@ -518,6 +527,8 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
  */
 dlfViewerScoreControl.prototype.enableScoreSelect = function () {
 
+  debugger;
+
   // Resize viewer to 50% width and add custom zoom control
   // eslint-disable-next-line
   $('#tx-dfgviewer-map-' + this.dlfViewer.counter).width('50%').append('<div class="custom-zoom">' + $('.view-functions ul li.zoom').html() + '</div>');
@@ -552,6 +563,8 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
  * Scroll to Element with given ID
  */
 dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
+  debugger;
+
   // Get current position of pb element
   if (this.pagebeginning) {
     const currentPosition = $('#tx-dlf-score-' + this.dlfViewer.counter + ' svg g#' + this.pagebeginning)?.parent()?.position()?.top ?? 0;

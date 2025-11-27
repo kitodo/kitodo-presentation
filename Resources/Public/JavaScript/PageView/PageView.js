@@ -37,7 +37,7 @@
  *  scores?: ScoreDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
  *  measureCoords?: MeasureDesc[] | [];
- *  measureIdLinks?: MeasureDesc[] | [];
+ *  measureIdToIndex?: MeasureDesc[] | [];
  * }} DlfViewerConfig
  */
 
@@ -95,7 +95,7 @@ var dlfViewer = function (settings) {
 
     this.measureCoords = dlfUtils.exists(settings.measureCoords) ? settings.measureCoords : [];
 
-    this.measureIdLinks =  dlfUtils.exists(settings.measureIdLinks) ? settings.measureIdLinks : [];
+    this.measureIdToIndex =  dlfUtils.exists(settings.measureIdToIndex) ? settings.measureIdToIndex : [];
 
     this.measureLayer = undefined;
 
@@ -565,8 +565,11 @@ dlfViewer.prototype.addCustomControls = function() {
 
                         context.facsimileMeasureActive = feature;
                         context.verovioMeasureActive = $('#tx-dlf-score-'+context.counter+' #' + feature.getId() + ' rect').addClass('active');
-                        if (context.measureIdLinks[feature.getId()]) {
-                            window.location.replace(context.measureIdLinks[feature.getId()]);
+                        if (context.measureIdToIndex[feature.getId()]) {
+                            const url = new URL(window.location.href);
+                            url.searchParams.append("tx_dlf[measure]", context.measureIdToIndex[feature.getId()]);
+                            // eslint-disable-next-line
+                            window.location.href = url.toString();
                         }
                         return true;
                     }

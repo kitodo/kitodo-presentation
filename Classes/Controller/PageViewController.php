@@ -135,12 +135,8 @@ class PageViewController extends AbstractController
             $this->annotationContainers[1] = $this->getAnnotationContainers($page + 1);
         }
 
-        $this->scores = $this->getScore($page);
-        $this->measures = $this->getMeasures($page);
-
-
         $this->view->assign('images', $this->images);
-        $this->addViewerJS();
+        $this->addViewerJS($page);
 
         return $this->htmlResponse();
     }
@@ -168,55 +164,28 @@ class PageViewController extends AbstractController
     /**
      * Get all measures from musical struct
      * @param int $page
-     * @param ?MetsDocument $specificDoc
-     * @param int|null $docNumber
      * @return array
      */
-    protected function getMeasures(int $page, ?MetsDocument $specificDoc = null, ?int $docNumber = null): array
+    protected function getMeasures(int $page): array
     {
-        if ($specificDoc) {
-            $doc = $specificDoc;
-        } else {
-            $doc = $this->document->getCurrentDocument();
-        }
+        $doc = $this->document->getCurrentDocument();
 
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
-        $measureLinks = [];
+        $measureIdToIndex = [];
         if (array_key_exists($page, $doc->physicalStructure)) {
             $currentPhysId = $doc->physicalStructure[$page];
             $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'] ?? null;
             if ($doc instanceof MetsDocument) {
                 if (isset($defaultFileId)) {
                     $musicalStruct = $doc->musicalStructureInfo;
-
                     $i = 0;
                     foreach ($musicalStruct as $measureData) {
                         if (isset($measureData['files'])
                             && $defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
                             $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
                             $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
-
-                            if ($specificDoc) {
-                                // build link for each measure
-                                $params = [
-                                    'tx_dlf' => $this->requestData,
-                                    'tx_dlf[docMeasure][' . $docNumber . ']' => $i
-                                ];
-                            } else {
-                                // build link for each measure
-                                $params = [
-                                    'tx_dlf' => $this->requestData,
-                                    'tx_dlf[measure]' => $i
-                                ];
-                            }
-                            $uriBuilder = $this->uriBuilder;
-                            $uri = $uriBuilder
-                                ->setArguments($params)
-                                ->setArgumentPrefix('tx_dlf')
-                                ->uriFor('main');
-                            $measureLinks[$measureData['files']['SCORE']['begin']] = $uri;
-
+                            $measureIdToIndex[$measureData['files']['SCORE']['begin']] = $i;
                         }
                         $i++;
                     }
@@ -226,7 +195,7 @@ class PageViewController extends AbstractController
         return [
             'measureCoordsCurrentSite' => $measureCoordsFromCurrentSite,
             'measureCounterToMeasureId' => $measureCounterToMeasureId,
-            'measureLinks' => $measureLinks
+            'measureIdToIndex' => $measureIdToIndex
         ];
     }
 
@@ -336,21 +305,17 @@ class PageViewController extends AbstractController
      *
      * @access protected
      *
+     * @param int $page Page number
      * @return void
      */
-    protected function addViewerJS(): void
+    protected function addViewerJS(int $page): void
     {
         $currentMeasureId = '';
-        $docPage = 0;
 
-        if (isset($this->requestData['page'])) {
-            $docPage = $this->requestData['page'];
-        }
-
-        $docMeasures = $this->getMeasures($docPage);
+        $measures = $this->getMeasures($page);
         if (isset($this->requestData['measure'])
-            && isset($docMeasures['measureCounterToMeasureId'][$this->requestData['measure']])) {
-            $currentMeasureId = $docMeasures['measureCounterToMeasureId'][$this->requestData['measure']];
+            && isset($measures['measureCounterToMeasureId'][$this->requestData['measure']])) {
+            $currentMeasureId = $measures['measureCounterToMeasureId'][$this->requestData['measure']];
         }
 
         $viewer = [
@@ -359,13 +324,13 @@ class PageViewController extends AbstractController
             'progressElementId' => $this->settings['progressElementId'] ?? 'tx-dlf-page-progress',
             'images' => $this->images,
             'fulltexts' => $this->fulltexts,
-            'score' => $this->scores,
+            'score' => $this->getScore($page),
             'annotationContainers' => $this->annotationContainers,
-            'measureCoords' => $docMeasures['measureCoordsCurrentSite'],
+            'measureCoords' => $measures['measureCoordsCurrentSite'],
             'useInternalProxy' => $this->settings['useInternalProxy'],
             'verovioAnnotations' => $this->verovioAnnotations,
             'currentMeasureId' => $currentMeasureId,
-            'measureIdLinks' => $docMeasures['measureLinks']
+            'measureIdToIndex' => $measures['measureIdToIndex']
         ];
 
         // Viewer configuration.
