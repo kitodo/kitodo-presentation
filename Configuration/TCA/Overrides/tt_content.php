@@ -280,7 +280,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'PageView',
-    $pluginsLabel . 'plugins.pageview.title',
+    $pluginsLabel . 'pageview.title',
     $iconsDirectory . 'tx-dlf-pageview.svg'
 );
 
