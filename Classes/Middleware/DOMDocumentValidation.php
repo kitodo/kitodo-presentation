@@ -1,7 +1,4 @@
 <?php
-
-namespace Kitodo\Dlf\Middleware;
-
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,6 +8,8 @@ namespace Kitodo\Dlf\Middleware;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
+namespace Kitodo\Dlf\Middleware;
 
 use DOMDocument;
 use InvalidArgumentException;
@@ -24,6 +23,7 @@ use TYPO3\CMS\Core\Http\ResponseFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -116,7 +116,8 @@ class DOMDocumentValidation implements MiddlewareInterface
             throw new InvalidArgumentException('Validation configuration type does not exist.', 1744373532);
         }
 
-        $validationConfiguration = $settings['domDocumentValidation'][$typeParam];
+        $validationConfiguration = $this->removeDisabledValidators($parameters, $settings['domDocumentValidation'][$typeParam]);
+
         $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
         // validate and return json response
         return $this->getJsonResponse($validationConfiguration, $validation->validate($document));
@@ -159,11 +160,45 @@ class DOMDocumentValidation implements MiddlewareInterface
         return $response;
     }
 
-    private function getTranslation(string $key, ?array $arguments = null): string
+    /**
+     * Get the message.
+     *
+     * @return \Closure
+     */
+    protected function getMessageText(): \Closure
     {
-        $language =
-            $this->request->getAttribute('language')
-            ?? $this->request->getAttribute('site')->getDefaultLanguage();
+        return function (Message $message): string {
+            return $message->getMessage();
+        };
+    }
+
+    /**
+     * Removes validators marked as disabled from the configuration.
+     *
+     * If a validator in the configuration has the disabled flag set to true and its key does not exist in the enabledValidators parameter, it will be removed.
+     *
+     * @param array $parameters The parameters of the middleware.
+     * @param array $validationConfiguration The validation configuration to remove from
+     * @return array The validator configuration without the disabled validators
+     */
+    protected function removeDisabledValidators(array $parameters, array $validationConfiguration): array
+    {
+        $enableValidators = [];
+        if (array_key_exists("enableValidators", $parameters)) {
+            $enableValidators = explode(",", $parameters['enableValidators']);
+        }
+        foreach ($validationConfiguration as $key => $value) {
+            if (isset($value['disabled']) && $value['disabled'] === "true" && !in_array($key, $enableValidators)) {
+                unset($validationConfiguration[$key]);
+            }
+        }
+        return $validationConfiguration;
+    }
+
+    protected function getTranslation(string $key, ?array $arguments = null): string
+    {
+        /** @var SiteLanguage $siteLanguage */
+        $siteLanguage = $this->request->getAttribute('language') ?? $this->request->getAttribute('site')->getDefaultLanguage();
 
         /** @var LanguageServiceFactory $languageServiceFactory */
         $languageServiceFactory = GeneralUtility::makeInstance(
@@ -172,7 +207,7 @@ class DOMDocumentValidation implements MiddlewareInterface
 
         /** @var LanguageService $languageService */
         $languageService = $languageServiceFactory
-            ->createFromSiteLanguage($language);
+            ->createFromSiteLanguage($siteLanguage);
 
         if (isset($arguments) && count($arguments) > 0) {
             return vsprintf(
@@ -181,17 +216,5 @@ class DOMDocumentValidation implements MiddlewareInterface
             );
         }
         return $languageService->sL($key);
-    }
-
-    /**
-     * Get the message.
-     *
-     * @return \Closure
-     */
-    private function getMessageText(): \Closure
-    {
-        return function (Message $message): string {
-            return $message->getMessage();
-        };
     }
 }

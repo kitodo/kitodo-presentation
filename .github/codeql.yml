@@ -9,6 +9,7 @@ query-filters:
         - note
 
 paths-ignore:
+  - Resources/Public/JavaScript/DlfMediaPlayer
   - Resources/Public/JavaScript/Gridstack
   - Resources/Public/JavaScript/jPlayer
   - Resources/Public/JavaScript/jQuery
@@ -16,4 +17,4 @@ paths-ignore:
   - Resources/Public/JavaScript/OpenLayers
   - Resources/Public/JavaScript/Toastify
   - Resources/Public/JavaScript/Verovio
-  - Resources/Public/JavaScript/WildWebMidi
+  - Resources/Public/JavaScript/HtmlMidiPlayer

@@ -45,8 +45,7 @@ page {
     kitodo-saveas = EXT:dlf/Resources/Public/JavaScript/Verovio/saveas.js
     kitodo-pdf= EXT:dlf/Resources/Public/JavaScript/Verovio/pdfkit.js
     kitodo-pdfkita = EXT:dlf/Resources/Public/JavaScript/Verovio/blobstream.js
-    kitodo-wildWebMidi = EXT:dlf/Resources/Public/JavaScript/WildWebMidi/wildwebmidi.js
-    kitodo-webAudioPlayer = EXT:dlf/Resources/Public/JavaScript/WildWebMidi/web_audio_player.js
+    kitodo-htmlmidiplayer = EXT:dlf/Resources/Public/JavaScript/HtmlMidiPlayer/combined-html-midi-player.min.js
 
     # PageView plugin
     kitodo-openLayers = EXT:dlf/Resources/Public/JavaScript/OpenLayers/openlayers.js
@@ -68,7 +67,7 @@ page {
     kitodo-pageView-searchInDocument = EXT:dlf/Resources/Public/JavaScript/PageView/SearchInDocument.js
     kitodo-pageView-pageView = EXT:dlf/Resources/Public/JavaScript/PageView/PageView.js
     kitodo-pageView-teiParser = EXT:dlf/Resources/Public/JavaScript/PageView/TeiParser.js
-    kitodo-pageview-multiViewAddSource = EXT:dlf/Resources/Public/JavaScript/MultiView/MultViewAddSource.js
+    kitodo-pageview-multiViewAddSource = EXT:dlf/Resources/Public/JavaScript/MultiView/MultiViewAddSource.js
     kitodo-search-suggest = EXT:dlf/Resources/Public/JavaScript/Search/Suggester.js
   }
 }
