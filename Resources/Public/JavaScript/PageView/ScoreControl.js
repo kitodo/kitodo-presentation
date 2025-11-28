@@ -217,8 +217,8 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
           dlfViewer.verovioMeasureActive.addClass('active');
           var measureId = $(this).parent().attr('id');
 
-          if (dlfViewer.measureIdLinks[measureId]) {
-            window.location.replace(dlfViewer.measureIdLinks[measureId]);
+          if (dlfViewer.measureIdToIndex[measureId]) {
+            dlfUtils.appendUrlParameterAndReload('measure', dlfViewer.measureIdToIndex[measureId]);
           }
 
           // Show measure on facsimile
@@ -544,10 +544,6 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 
   $('body').removeClass(className);
 
-  if (this.dlfViewer.measureLayer) {
-    this.dlfViewer.measureLayer.setVisible(false);
-  }
-
 };
 
 /**
@@ -589,6 +585,7 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
  * Scroll to Element with given ID
  */
 dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
+
   // Get current position of pb element
   if (this.pagebeginning) {
     const currentPosition = $('#tx-dlf-score-' + this.dlfViewer.counter + ' svg g#' + this.pagebeginning)?.parent()?.position()?.top ?? 0;
