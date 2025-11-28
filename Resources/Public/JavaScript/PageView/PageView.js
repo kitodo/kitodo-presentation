@@ -567,6 +567,8 @@ dlfViewer.prototype.addCustomControls = function() {
                         context.verovioMeasureActive = $('#tx-dlf-score-'+context.counter+' #' + feature.getId() + ' rect').addClass('active');
                         if (context.measureIdToIndex[feature.getId()]) {
                             const url = new URL(window.location.href);
+                            // Remove existing tx_dlf[measure] param if present
+                            url.searchParams.delete('tx_dlf[measure]');
                             url.searchParams.append("tx_dlf[measure]", context.measureIdToIndex[feature.getId()]);
                             // eslint-disable-next-line
                             window.location.href = url.toString();

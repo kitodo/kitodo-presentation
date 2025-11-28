@@ -134,8 +134,11 @@ class PageViewController extends AbstractController
             $this->fulltexts[1] = $this->getFulltext($page + 1);
             $this->annotationContainers[1] = $this->getAnnotationContainers($page + 1);
         }
-
         $this->view->assign('images', $this->images);
+
+        $this->scores = $this->getScore($page);
+        $this->view->assign('scores', $this->scores);
+
         $this->addViewerJS($page);
 
         return $this->htmlResponse();
@@ -324,7 +327,7 @@ class PageViewController extends AbstractController
             'progressElementId' => $this->settings['progressElementId'] ?? 'tx-dlf-page-progress',
             'images' => $this->images,
             'fulltexts' => $this->fulltexts,
-            'score' => $this->getScore($page),
+            'score' => $this->scores,
             'annotationContainers' => $this->annotationContainers,
             'measureCoords' => $measures['measureCoordsCurrentSite'],
             'useInternalProxy' => $this->settings['useInternalProxy'],

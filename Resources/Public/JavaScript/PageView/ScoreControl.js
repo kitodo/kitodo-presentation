@@ -221,6 +221,8 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
 
           if (dlfViewer.measureIdToIndex[measureId]) {
             const url = new URL(window.location.href);
+            // Remove existing tx_dlf[measure] param if present
+            url.searchParams.delete('tx_dlf[measure]');
             url.searchParams.append("tx_dlf[measure]", dlfViewer.measureIdToIndex[measureId]);
             // eslint-disable-next-line
             window.location.href = url.toString();
