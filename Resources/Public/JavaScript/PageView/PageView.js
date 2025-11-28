@@ -552,10 +552,15 @@ dlfViewer.prototype.addCustomControls = function() {
 
             map.on('singleclick', function (evt) {
                 if (context.facsimileMeasureActive !== null) {
-                    context.verovioMeasureActive.removeClass('active');
                     context.facsimileMeasureActive.setStyle(undefined);
                     context.facsimileMeasureActive = null;
                 }
+
+                if (context.verovioMeasureActive !== null) {
+                    context.verovioMeasureActive.removeClass('active');
+                    context.verovioMeasureActive = null;
+                }
+
                 map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
                     if (feature !== null) {
                         // show ajax spinner if exists
@@ -579,7 +584,7 @@ dlfViewer.prototype.addCustomControls = function() {
             });
 
             map.on('pointermove', function (e) {
-                if (context.facsimileMeasureHover !== null) {
+                if (typeof context !== 'undefined' && context.facsimileMeasureHover !== null) {
                     context.facsimileMeasureHover.setStyle(undefined);
                     context.facsimileMeasureHover = null;
                     context.verovioMeasureHover.removeClass('hover');

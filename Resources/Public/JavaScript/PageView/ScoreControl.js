@@ -203,8 +203,6 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
             $('#overlay').fadeIn(300);
           }
 
-          debugger;
-
           if (dlfViewer.verovioMeasureActive !== null) {
             dlfViewer.verovioMeasureActive.removeClass('active');
             dlfViewer.verovioMeasureActive = null;
@@ -451,8 +449,6 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOn = function () {
     const toggleScore = $.proxy(function (event) {
       event.preventDefault();
 
-      debugger;
-
       if ($(event.target).hasClass('active')) {
         this.deactivate();
         return;
@@ -477,8 +473,6 @@ dlfViewerScoreControl.prototype.addActiveBehaviourForSwitchOff = function () {
   if (anchorEl.length > 0) {
     const toggleScore = $.proxy(function (event) {
       event.preventDefault();
-
-      debugger;
 
       if ($(event.target).hasClass('active')) {
         this.deactivate();
@@ -555,18 +549,12 @@ dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 
   $('body').removeClass(className);
 
-  if (this.dlfViewer.measureLayer) {
-    this.dlfViewer.measureLayer.setVisible(false);
-  }
-
 };
 
 /**
  * Activate Score Features
  */
 dlfViewerScoreControl.prototype.enableScoreSelect = function () {
-
-  debugger;
 
   // Resize viewer to 50% width and add custom zoom control
   // eslint-disable-next-line
@@ -602,7 +590,6 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
  * Scroll to Element with given ID
  */
 dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
-  debugger;
 
   // Get current position of pb element
   if (this.pagebeginning) {
