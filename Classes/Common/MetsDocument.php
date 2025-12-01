@@ -288,12 +288,12 @@ final class MetsDocument extends AbstractDocument
      */
     public function getFileMimeType(string $id): string
     {
-        $mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/@MIMETYPE');
+        $mimetype = $this->fileInfos[$id]['mimetype'];
         if (
             !empty($id)
             && !empty($mimetype)
         ) {
-            return (string) $mimetype[0];
+            return (string) $mimetype;
         } else {
             $this->logger->warning('There is no file node with @ID "' . $id . '" or no MIME type specified');
             return '';
