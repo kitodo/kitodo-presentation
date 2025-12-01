@@ -34,6 +34,7 @@
     "ext-simplexml": "*",
     "typo3/cms-core": "^11.5|^12.4",
     "typo3/cms-extbase": "^11.5|^12.4",
+	"typo3/cms-reports": "^11.5|^12.4",
     "typo3/cms-scheduler": "^11.5|^12.4",
     "typo3/cms-tstemplate": "^11.5|^12.4",
     "caseyamcl/phpoaipmh": "^3.3",
