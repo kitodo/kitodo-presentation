@@ -247,15 +247,6 @@ final class MetsDocument extends AbstractDocument
     public function getFileInfo($id): ?array
     {
         $this->magicGetFileGrps();
-
-        if (isset($this->fileInfos[$id]) && empty($this->fileInfos[$id]['location'])) {
-            $this->fileInfos[$id]['location'] = $this->getFileLocation($id);
-        }
-
-        if (isset($this->fileInfos[$id]) && empty($this->fileInfos[$id]['mimeType'])) {
-            $this->fileInfos[$id]['mimeType'] = $this->getFileMimeType($id);
-        }
-
         return $this->fileInfos[$id] ?? null;
     }
 
@@ -264,12 +255,12 @@ final class MetsDocument extends AbstractDocument
      */
     public function getFileLocation(string $id): string
     {
-        $location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/mets:FLocat[@LOCTYPE="URL"]');
+        $location = $this->fileInfos[$id]['location'];
         if (
             !empty($id)
             && !empty($location)
         ) {
-            return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
+            return (string) $location;
         } else {
             $this->logger->warning('There is no file node with @ID "' . $id . '"');
             return '';
