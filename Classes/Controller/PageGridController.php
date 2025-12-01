@@ -86,7 +86,6 @@ class PageGridController extends AbstractController
     {
         $phys = $this->document->getCurrentDocument()->physicalStructure[$number];
         $entry = [];
-        
         // Set pagination.
         $entry['pagination'] = htmlspecialchars($this->document->getCurrentDocument()->physicalStructureInfo[$phys]['orderlabel']);
         $entry['page'] = $number;
