@@ -76,12 +76,12 @@ class DOMDocumentValidation implements MiddlewareInterface
         // check required parameters
         $urlParam = $parameters['url'];
         if (!isset($urlParam)) {
-            return $this->getJsonResponse('URL parameter is missing.', self::INTERNAL_SERVER_ERROR);
+            return $this->getJsonResponse('URL parameter is missing.', self::BAD_REQUEST);
         }
 
         $typeParam = $parameters['type'];
         if (!isset($typeParam)) {
-            return $this->getJsonResponse('Type parameter is missing.', self::INTERNAL_SERVER_ERROR);
+            return $this->getJsonResponse('Type parameter is missing.', self::BAD_REQUEST);
         }
         // load dom document from url
         if (!GeneralUtility::isValidUrl($urlParam)) {
@@ -100,7 +100,7 @@ class DOMDocumentValidation implements MiddlewareInterface
             }
         } catch (Exception $e) {
             $this->logger->debug($e->getMessage());
-            return $this->getJsonResponse("Content from the URL is not valid XML.", self::INTERNAL_SERVER_ERROR);
+            return $this->getJsonResponse("Content from the URL is not valid XML.", self::BAD_REQUEST);
         }
 
         // retrieve validation configuration from plugin.tx_dlf typoscript
@@ -131,7 +131,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         } catch (Exception $e) {
             $errorMessage = $e->getMessage();
             $this->logger->debug($errorMessage);
-            return $this->getJsonResponse(substr($errorMessage, 0, strrpos($errorMessage, ' in')), self::INTERNAL_SERVER_ERROR);
+            return $this->getJsonResponse(substr($errorMessage, 0, strrpos($errorMessage, ' in')), self::BAD_REQUEST);
         }
 
         // validate and return json response
