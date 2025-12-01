@@ -1393,12 +1393,15 @@ final class MetsDocument extends AbstractDocument
                     if (!empty($fileGrps)) {
                         foreach ($fileGrps as $fileGrp) {
                             foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
+                                $fLocat = $file->children('http://www.loc.gov/METS/')->FLocat;
                                 $fileId = (string) $file->attributes()->ID;
                                 $this->fileGrps[$fileId] = $useGroup;
                                 $this->fileInfos[$fileId] = [
                                     'fileGrp' => $useGroup,
                                     'admId' => (string) $file->attributes()->ADMID,
                                     'dmdId' => (string) $file->attributes()->DMDID,
+                                    'mimetype' => (string) $file->attributes()->MIMETYPE,
+                                    'location' => (string) $fLocat->attributes('http://www.w3.org/1999/xlink')->href,
                                 ];
                             }
                         }
