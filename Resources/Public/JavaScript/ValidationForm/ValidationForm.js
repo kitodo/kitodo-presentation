@@ -17,17 +17,13 @@ const dlfValidationForms = document.querySelectorAll('.tx-dlf-validationform for
  * @returns {Promise} the response as json
  */
 async function getData(url) {
-  try {
-    const response = await fetch(  url);
+  const response = await fetch(url);
+  const data = await response.json()
+  let success = true;
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      success = false;
     }
-    return await response.json();
-  } catch (error) {
-    // eslint-disable-next-line
-    console.error(error.message);
-  }
-  return Promise.resolve();
+  return {success: success, content: data};
 }
 
 /**
@@ -130,7 +126,7 @@ dlfValidationForms.forEach((validationForm) => {
       description.innerHTML = item.validator.description;
       entryContainer.appendChild(description);
 
-      if (item.results) {
+      if (item.results) {callout
         if("errors" in item.results) {
           // eslint-disable-next-line
           entryContainer.appendChild(createMessagesContainer('error', item.results.errors, validationForm.dataset.i18nHeadlineError));
@@ -163,18 +159,25 @@ dlfValidationForms.forEach((validationForm) => {
       dataUrl += '&enableValidators=' + encodeURIComponent(data.enableValidator.join(','));
     }
 
-    getData(dataUrl).then(data => {
-      let validation = form.querySelector('.validation');
-      if (validation) {
-        form.removeChild(validation);
-      }
-      validation = document.createElement('div');
-      validation.classList.add("validation");
-      data.forEach(item => {
-        validation.appendChild(createValidationEntry(item));
-      });
-      form.appendChild(validation);
-      loader.remove();
-    })
+    fetch(dataUrl)
+        .then(response => {
+          response.json().then(data => {
+            let validation = form.querySelector('.validation');
+            if (validation) {
+              form.removeChild(validation);
+            }
+            validation = document.createElement('div');
+            validation.classList.add("validation");
+            if (response.ok) {
+              data.forEach(item => {
+                validation.appendChild(createValidationEntry(item));
+              });
+            } else {
+              validation.appendChild(createMessagesContainer('error', [data], validationForm.dataset.i18nHeadlineError));
+            }
+            form.appendChild(validation);
+            loader.remove();
+          })
+        })
   });
 });
