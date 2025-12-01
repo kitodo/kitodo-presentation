@@ -126,7 +126,7 @@ dlfValidationForms.forEach((validationForm) => {
       description.innerHTML = item.validator.description;
       entryContainer.appendChild(description);
 
-      if (item.results) {callout
+      if (item.results) {
         if("errors" in item.results) {
           // eslint-disable-next-line
           entryContainer.appendChild(createMessagesContainer('error', item.results.errors, validationForm.dataset.i18nHeadlineError));
