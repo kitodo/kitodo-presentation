@@ -725,3 +725,20 @@ dlfUtils.searchFeatureCollectionForWords = function (featureCollection, word) {
     });
     return features.length > 0 ? features : undefined;
 };
+
+/**
+ * Append dlf url parameter and reload
+ * @param {string} parameterName Name of the dlf parameter
+ * @param {string} parameterValue Value of the dlf parameter
+ * @param {boolean} forceDelete Delete parameter before appending
+ */
+dlfUtils.appendUrlParameterAndReload = function (parameterName, parameterValue, forceDelete = true) {
+  const url = new URL(window.location.href);
+  if (forceDelete) {
+    url.searchParams.delete('tx_dlf[' + parameterName + ']');
+  }
+  url.searchParams.append('tx_dlf[' + parameterName + ']', parameterValue);
+  // eslint-disable-next-line
+  window.location.href = url.toString();
+};
+
