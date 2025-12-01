@@ -129,9 +129,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         try {
             $result = $validation->validate($document);
         } catch (Exception $e) {
-            $errorMessage = $e->getMessage();
-            $this->logger->debug($errorMessage);
-            return $this->getJsonResponse(substr($errorMessage, 0, strrpos($errorMessage, ' in')), self::BAD_REQUEST);
+            return $this->getJsonResponse($e->getMessage(), self::BAD_REQUEST);
         }
 
         // validate and return json response
