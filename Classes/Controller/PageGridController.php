@@ -103,7 +103,7 @@ class PageGridController extends AbstractController
         $entry['thumbnail'] = '';
 
         // Get thumbnail or placeholder.
-        foreach ($fileGrpsThumb as $thumb) {
+        foreach ($fileGrpThumbs as $thumb) {
             $fileId = $this->document->getCurrentDocument()->physicalStructureInfo[$phys]['files'][$thumb];
             if ($fileId) {
                 $entry['thumbnail'] = $this->document->getCurrentDocument()->getFileLocation($fileId);
