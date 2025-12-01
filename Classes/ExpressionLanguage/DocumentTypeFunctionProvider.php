@@ -111,8 +111,6 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             },
             function ($arguments, $storagePid)
             {
-                $pid = $arguments['page']['pid'] ?? $arguments['page'];
-
                 /** @var RequestWrapper $requestWrapper */
                 $requestWrapper = $arguments['request'];
                 $queryParams = $requestWrapper ? $requestWrapper->getQueryParams() : [];
@@ -134,6 +132,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 if (!isset($queryParams['tx_dlf']['id'])) {
                     return $type;
                 }
+
+                $pid = $arguments['page']['pid'] ?? $arguments['page'];
 
                 // Load document with current plugin parameters.
                 $this->loadDocument($queryParams['tx_dlf'], $storagePid, $pid);

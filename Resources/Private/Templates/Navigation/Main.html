@@ -273,15 +273,14 @@
                             <f:if condition="{currentMeasure} > 0">
                                 <f:then>
                                     <f:variable name="nextMeasure" value="{currentMeasure + 1}" />
-                                    <f:link.action addQueryString="untrusted" additionalParams="{'tx_dlf[measure]':'{currentMeasure + 1}', 'tx_dlf[page]':'{measurePages.{nextMeasure}}'}">
+                                    <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{currentMeasure + 1}', 'page':'{measurePages.{nextMeasure}}'}">
                                         <f:translate key="nextMeasure"/>
-                                    </f:link.action>
+                                    </kitodo:link>
                                 </f:then>
                                 <f:else>
-                                    <f:link.action
-                                        addQueryString="untrusted" additionalParams="{'tx_dlf[measure]':'1', 'tx_dlf[page]':'{measurePages.1}'}">
+                                    <kitodo:link viewData="{viewData}" additionalParams="{'measure':'1', 'page':'{measurePages.1}'}">
                                         <f:translate key="nextMeasure"/>
-                                    </f:link.action>
+                                    </kitodo:link>
                                 </f:else>
                             </f:if>
                         </f:then>
