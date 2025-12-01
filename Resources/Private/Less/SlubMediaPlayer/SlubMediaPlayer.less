@@ -68,7 +68,6 @@ body[data-has-video] {
         grid-row: 1;
         text-align: left;
         overflow-y: scroll;
-        min-height: 80vh;
         height: auto; /* allow growing with content */
 
         .panel-equalizer,
@@ -86,7 +85,8 @@ body[data-has-video] {
         display: block;
         position: relative;
         width: 100%;
-        // TODO: fix loading height of Image problem
+        // TODO: smarter fix loading height of Image problem
+        min-height: 70vh;
         height: 100%;
 
         #panel-audiolabelimage {
