@@ -229,7 +229,7 @@ class DOMDocumentValidation implements MiddlewareInterface
     /**
      * Get the json response.
      *
-     * @param array $payload The data to add in the body.
+     * @param mixed $payload The data to add in the body.
      * @return ResponseInterface The json response object.
      */
     public function getJsonResponse(mixed $payload, int $statusCode = 200): ResponseInterface
