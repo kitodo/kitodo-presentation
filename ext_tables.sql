@@ -101,7 +101,7 @@ CREATE TABLE tx_dlf_metadata (
     index_tokenized smallint(6) DEFAULT '0' NOT NULL,
     index_stored smallint(6) DEFAULT '0' NOT NULL,
     index_indexed smallint(6) DEFAULT '0' NOT NULL,
-    index_boost float(4,2) DEFAULT '1.00' NOT NULL,
+    index_boost float(4,2) DEFAULT '1' NOT NULL,
     is_sortable smallint(6) DEFAULT '0' NOT NULL,
     is_facet smallint(6) DEFAULT '0' NOT NULL,
     is_listed smallint(6) DEFAULT '0' NOT NULL,
