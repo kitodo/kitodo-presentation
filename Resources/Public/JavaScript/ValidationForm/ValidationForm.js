@@ -177,7 +177,7 @@ dlfValidationForms.forEach((validationForm) => {
             }
             form.appendChild(validation);
             loader.remove();
-          })
-        })
+          });
+        });
   });
 });
