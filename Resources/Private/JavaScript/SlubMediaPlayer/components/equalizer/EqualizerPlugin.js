@@ -3,6 +3,7 @@
 import { blobToDataURL, e, filterNonNull } from 'lib/util';
 import { parsePreset } from 'SlubMediaPlayer/components/equalizer/preset';
 import DlfMediaPlugin from 'DlfMediaPlayer/DlfMediaPlugin';
+import eqPreviewImage from 'Assets/Images/equalizer-preview.png';
 import Equalizer from 'SlubMediaPlayer/components/equalizer/Equalizer';
 import EqualizerView from 'SlubMediaPlayer/components/equalizer/EqualizerView';
 import registerMultiIirProcessor from 'SlubMediaPlayer/components/equalizer/MultiIirProcessor.no-babel';
@@ -66,8 +67,44 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
    * @param {DlfMediaPlayer} player
    */
   async attachToPlayer(player) {
-    if (window.location.protocol !== "https:") {
-      console.error("Warning: The equalizer will probably fail without HTTPS");
+    // If the equalizer element is inside a hidden panel (e.g. parent has `hidden`), defer initialization until it becomes visible.
+    // This avoids initializing/resizing the canvas while the element has zero width.
+    const hostPanel = this.closest('[data-panel]');
+    const isHidden = hostPanel && hostPanel.hasAttribute('hidden');
+
+    if (isHidden && hostPanel instanceof HTMLElement) {
+      // Defer init and observe the host panel for attribute changes
+      const obs = new MutationObserver((records, observer) => {
+        for (const r of records) {
+          if (r.type === 'attributes' && r.attributeName === 'hidden') {
+            if (!hostPanel.hasAttribute('hidden')) {
+              observer.disconnect();
+              // Fire-and-forget initialization
+              this.initForPlayer(player)["catch"]((e) => { console.error('Equalizer init failed:', e) });
+            }
+          }
+        }
+      });
+
+      obs.observe(hostPanel, { attributes: true });
+      return;
+    }
+
+    // Otherwise initialize immediately
+    await this.initForPlayer(player);
+  }
+
+  /**
+   * Initialize equalizer functionality for the given player. Separated from
+   * `attachToPlayer` so initialization can be deferred until the panel is
+   * visible.
+   *
+   * @private
+   * @param {DlfMediaPlayer} player
+   */
+  async initForPlayer(player) {
+    if (window.location.protocol !== 'https:') {
+      console.error('Warning: The equalizer will probably fail without HTTPS');
     }
 
     // Resume audio context (ensures this.context is available)
@@ -126,7 +163,16 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
     }
     this.innerHTML = '';
     this.append(this.eqView_.domElement);
-    this.eqView_.resize();
+    // Ensure resize runs after the element is laid out in the document
+    requestAnimationFrame(() => {
+      try {
+        if (this.eqView_ !== null) {
+          this.eqView_.resize();
+        }
+      } catch (err) {
+        console.error('EqualizerView.resize failed:', err);
+      }
+    });
   }
 
   /**
@@ -171,7 +217,7 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
    */
   async resumeAudioContext() {
     // Do NOT create or resume the AudioContext here synchronously.
-    // Instead show a resume UI and create/resume the context inside the user gesture handlers (pointerdown/keydown). 
+    // Instead show a resume UI and create/resume the context inside the user gesture handlers (pointerdown/keydown).
     // This avoids browsers blocking the action because it's not triggered by a user gesture.
 
     // If we already have a context and it's running, immediately resolve.
@@ -179,16 +225,6 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
       this.markAsResumed();
       await this.resumedPromise;
       return;
-    }
-
-    // Show resume hint once - accessible button
-    if (!this.resumeHintEl_) {
-      const btn = e('button', { className: 'dlf-equalizer-resume', type: 'button', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, [
-        this.env.t('control.sound_tools.equalizer.resume_context'),
-      ]);
-      btn.addEventListener('click', () => createAndResume());
-      this.resumeHintEl_ = btn;
-      this.append(btn);
     }
 
     const createAndResume = async () => {
@@ -220,11 +256,31 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
       this.markAsResumed();
     };
 
-    // Attach once-only handlers that will create/resume the context on first user interaction.
-    window.addEventListener('pointerdown', createAndResume, { once: true, capture: true });
-    window.addEventListener('keydown', createAndResume, { once: true, capture: true });
+    // Show resume hint once - accessible button
+    if (!this.resumeHintEl_) {
+      // Outer wrapper that holds the blurred background and an overlaid button
+      const wrapper = e('div', { className: 'dlf-equalizer-resume', role: 'group', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, []);
+      // Background element (will show via CSS var and be blurred)
+      const bgDiv = e('div', { className: 'dlf-equalizer-resume-bg', ariaHidden: 'true' }, []);
+      // Visible button
+      const btn = e('button', { className: 'dlf-equalizer-resume-btn', type: 'button', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, [
+        this.env.t('control.sound_tools.equalizer.resume_context'),
+      ]);
 
-    // Also attempt to resume if the browser reports a running context later (edge case), but don't create it here.
+      // Set preview image from public images folder
+      wrapper.style.setProperty('--equalizer-bg-url', `url("${eqPreviewImage}")`);
+
+      // Clicking either wrapper or btn should resume
+      wrapper.addEventListener('click', () => createAndResume());
+      btn.addEventListener('click', (ev) => { ev.stopPropagation(); createAndResume(); });
+
+      wrapper.append(bgDiv);
+      wrapper.append(btn);
+      this.resumeHintEl_ = wrapper;
+      this.append(wrapper);
+    }
+
+    // Also attempt to resume if the browser reports a running context later (edge case)
     if (this.context !== null && this.context.state === 'running') {
       this.removeResumeHint_();
       this.markAsResumed();

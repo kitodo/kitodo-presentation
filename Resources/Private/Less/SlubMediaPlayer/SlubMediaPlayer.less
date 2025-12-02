@@ -18,8 +18,6 @@ slub-media {
 
 body[data-has-video] {
     .page-control,
-    .document-view div.tx-dlf-pageview,
-    .document-view div.fulltext-container,
     .document-functions li.doublepage,
     .view-functions li.rotate,
     .view-functions li.zoom .in,
@@ -66,13 +64,123 @@ body[data-has-video] {
 
     .media-panel {
         grid-row: 1;
-        margin: 6em 1em;
         text-align: left;
         overflow-y: scroll;
+        height: auto; /* allow growing with content */
+
+        .panel-equalizer,
+        .panel-markertable {
+            margin: 6em 1em;
+        }
 
         h2 {
             margin-top: 0.4em;
             margin-bottom: 0.2em;
+        }
+    }
+
+    .media-panel-wrappers {
+        display: block;
+        position: relative;
+        width: 100%;
+        // TODO: smarter fix loading height of Image problem
+        min-height: 70vh;
+        height: 100%;
+
+        #panel-audiolabelimage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.5));
+            transition: opacity 240ms cubic-bezier(.2,.9,.2,1), transform 240ms cubic-bezier(.2,.9,.2,1);
+            box-sizing: border-box;
+
+            .audiolabelimage-inner {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                max-width: 92vmin; /* keep inside viewport */
+                max-height: 92vmin;
+                width: 62vmin;
+                height: 62vmin;
+                position: relative;
+            }
+
+            .audiolabelimage-art {
+                width: 100%;
+                height: 100%;
+                border-radius: 18px;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 18px 40px rgba(0,0,0,0.55), 0 6px 16px rgba(0,0,0,0.28);
+                background-color: #111;
+                border: 1px solid rgba(255,255,255,0.03);
+            }
+
+            /* the file-url as a blurry background */ 
+            .audiolabelimage-bg {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center center;
+                filter: blur(18px) saturate(110%);
+                opacity: 0.35;
+                transform: scale(1.06);
+                z-index: 0;
+            }
+
+            /* Image element inside art container */
+            .audiolabelimage-art img {
+                max-width: 90%;
+                max-height: 90%;
+                width: auto;
+                height: auto;
+                object-fit: contain; /* preserve original aspect ratio */
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: optimize-contrast;
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                display: block;
+                margin: 0 auto;
+                position: relative;
+                z-index: 2;
+            }
+        }
+
+        /* Panel stacking rules — use opacity/transform for smooth transitions (fade + scale) */
+        [data-panel] {
+            position: absolute;
+            inset: 0;
+            display: block; /* keep in layout so transitions run */
+            z-index: 0;
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 240ms cubic-bezier(.2,.9,.2,1), transform 240ms cubic-bezier(.2,.9,.2,1);
+            will-change: opacity, transform;
+        }
+
+        /* Explicitly hide panels that have the hidden attribute (defensive) */
+        [data-panel][hidden] {
+            display: none !important;
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        [data-panel].visible {
+            display: block;
+            z-index: 10;
+            pointer-events: auto;
+            visibility: visible;
+            opacity: 1;
+            transform: scale(1);
         }
     }
 
@@ -88,6 +196,7 @@ body[data-has-video] {
 
     .tx-dlf-view {
         position: relative;
+        z-index: 10;
     }
 
     .media-viewport {

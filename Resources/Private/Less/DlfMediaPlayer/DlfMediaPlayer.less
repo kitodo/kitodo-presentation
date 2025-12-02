@@ -57,6 +57,26 @@ dlf-media {
     visibility: hidden;
 }
 
+.shaka-tooltips-on {    
+  & > .shaka-tooltip,
+  & > .shaka-tooltip-status {
+    &:hover:after,
+    &:focus-visible:after,
+    &:active:after {
+      bottom: @material-icons-width + 24px;
+    }
+  }
+  &.shaka-tooltips-low-position {
+    & > .shaka-tooltip {
+      &:hover:after,
+      &:focus-visible:after,
+      &:active:after {
+        bottom: @material-icons-width;
+      }
+    }
+  }
+}
+
 .shaka-controls-button-panel {
     // Prefer showing play button rather than fullscreen/overflow menu buttons
     // on tiny screens

@@ -1001,6 +1001,7 @@ Toolbox
    :Values:
        * tx_dlf_multiviewaddsourcetool
        * tx_dlf_annotationtool
+       * tx_dlf_audiovideotool
        * tx_dlf_fulltexttool
        * tx_dlf_imagedownloadtool
        * tx_dlf_imagemanipulationtool
@@ -1058,6 +1059,13 @@ The default behavior is to show the fulltext after click on the toggle link. The
 The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
 
 **Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ must be configured appropriate on the providing webserver.
+
+Audio Video tool
+^^^^^^^^^^^^^
+
+This tool loads the Buttons for the Audiolabel-Image, Equalizer and Marker Table 
+
+:typoscript:`plugin.tx_dlf_audiovideotool.`
 
 Model download tool
 ^^^^^^^^^^^^^
