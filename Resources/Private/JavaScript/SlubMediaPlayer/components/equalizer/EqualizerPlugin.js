@@ -67,9 +67,8 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
    * @param {DlfMediaPlayer} player
    */
   async attachToPlayer(player) {
-    // If the equalizer element is inside a hidden panel (e.g. parent has
-    // `hidden`), defer initialization until it becomes visible. This avoids
-    // initializing/resizing the canvas while the element has zero width.
+    // If the equalizer element is inside a hidden panel (e.g. parent has `hidden`), defer initialization until it becomes visible.
+    // This avoids initializing/resizing the canvas while the element has zero width.
     const hostPanel = this.closest('[data-panel]');
     const isHidden = hostPanel && hostPanel.hasAttribute('hidden');
 
@@ -81,7 +80,7 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
             if (!hostPanel.hasAttribute('hidden')) {
               observer.disconnect();
               // Fire-and-forget initialization
-              this.initForPlayer(player).catch((e) => console.error('Equalizer init failed:', e));
+              this.initForPlayer(player)["catch"]((e) => { console.error('Equalizer init failed:', e) });
             }
           }
         }
@@ -228,30 +227,6 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
       return;
     }
 
-    // Show resume hint once - accessible button
-    if (!this.resumeHintEl_) {
-      // Outer wrapper that holds the blurred background and an overlaid button
-      const wrapper = e('div', { className: 'dlf-equalizer-resume', role: 'group', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, []);
-      // Background element (will show via CSS var and be blurred)
-      const bgDiv = e('div', { className: 'dlf-equalizer-resume-bg', ariaHidden: 'true' }, []);
-      // Visible button
-      const btn = e('button', { className: 'dlf-equalizer-resume-btn', type: 'button', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, [
-        this.env.t('control.sound_tools.equalizer.resume_context'),
-      ]);
-
-      // Set preview image from public images folder
-      wrapper.style.setProperty('--equalizer-bg-url', `url("${eqPreviewImage}")`);
-
-      // Clicking either wrapper or btn should resume
-      wrapper.addEventListener('click', () => createAndResume());
-      btn.addEventListener('click', (ev) => { ev.stopPropagation(); createAndResume(); });
-
-      wrapper.append(bgDiv);
-      wrapper.append(btn);
-      this.resumeHintEl_ = wrapper;
-      this.append(wrapper);
-    }
-
     const createAndResume = async () => {
       // Create AudioContext lazily if missing.
       if (this.context === null) {
@@ -281,7 +256,31 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
       this.markAsResumed();
     };
 
-    // Also attempt to resume if the browser reports a running context later (edge case), but don't create it here.
+    // Show resume hint once - accessible button
+    if (!this.resumeHintEl_) {
+      // Outer wrapper that holds the blurred background and an overlaid button
+      const wrapper = e('div', { className: 'dlf-equalizer-resume', role: 'group', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, []);
+      // Background element (will show via CSS var and be blurred)
+      const bgDiv = e('div', { className: 'dlf-equalizer-resume-bg', ariaHidden: 'true' }, []);
+      // Visible button
+      const btn = e('button', { className: 'dlf-equalizer-resume-btn', type: 'button', ariaLabel: this.env.t('control.sound_tools.equalizer.resume_context') }, [
+        this.env.t('control.sound_tools.equalizer.resume_context'),
+      ]);
+
+      // Set preview image from public images folder
+      wrapper.style.setProperty('--equalizer-bg-url', `url("${eqPreviewImage}")`);
+
+      // Clicking either wrapper or btn should resume
+      wrapper.addEventListener('click', () => createAndResume());
+      btn.addEventListener('click', (ev) => { ev.stopPropagation(); createAndResume(); });
+
+      wrapper.append(bgDiv);
+      wrapper.append(btn);
+      this.resumeHintEl_ = wrapper;
+      this.append(wrapper);
+    }
+
+    // Also attempt to resume if the browser reports a running context later (edge case)
     if (this.context !== null && this.context.state === 'running') {
       this.removeResumeHint_();
       this.markAsResumed();
