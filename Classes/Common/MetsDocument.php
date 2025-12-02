@@ -288,7 +288,7 @@ final class MetsDocument extends AbstractDocument
      */
     public function getFileMimeType(string $id): string
     {
-        $mimetype = $this->fileInfos[$id]['mimetype'];
+        $mimetype = $this->fileInfos[$id]['mimeType'];
         if (
             !empty($id)
             && !empty($mimetype)
@@ -1374,7 +1374,7 @@ final class MetsDocument extends AbstractDocument
                                     'fileGrp' => $useGroup,
                                     'admId' => (string) $file->attributes()->ADMID,
                                     'dmdId' => (string) $file->attributes()->DMDID,
-                                    'mimetype' => (string) $file->attributes()->MIMETYPE,
+                                    'mimeType' => (string) $file->attributes()->MIMETYPE,
                                     'location' => (string) $fLocat->attributes('http://www.w3.org/1999/xlink')->href,
                                 ];
                             }
