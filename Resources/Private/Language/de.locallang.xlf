@@ -429,6 +429,22 @@
                 <source><![CDATA[Display Annotations]]></source>
                 <target><![CDATA[Annotationen anzeigen]]></target>
             </trans-unit>
+            <trans-unit id="tools.audiovideotool.audiolabelimage" approved="yes">
+                <source><![CDATA[Audio Label Image]]></source>
+                <target><![CDATA[Audio Cover Bild]]></target>
+            </trans-unit>
+            <trans-unit id="tools.audiovideotool.videomediaplayer" approved="yes">
+                <source><![CDATA[Video Mode]]></source>
+                <target><![CDATA[Video Mode]]></target>
+            </trans-unit>
+            <trans-unit id="tools.audiovideotool.equalizer" approved="yes">
+                <source><![CDATA[Equalizer]]></source>
+                <target><![CDATA[Equalizer]]></target>
+            </trans-unit>
+            <trans-unit id="tools.audiovideotool.markertable" approved="yes">
+                <source><![CDATA[Marker Table]]></source>
+                <target><![CDATA[Gesetzte Markierungen]]></target>
+            </trans-unit>            
             <trans-unit id="tools.fulltext" approved="yes">
                 <source><![CDATA[Full text]]></source>
                 <target><![CDATA[Volltext]]></target>

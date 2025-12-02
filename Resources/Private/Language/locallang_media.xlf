@@ -89,6 +89,15 @@
             <trans-unit id="action.sound_tools.mode.video">
                 <source><![CDATA[Video Mode]]></source>
             </trans-unit>
+            <trans-unit id="action.sound_tools.panel.audiolabelimage">
+                <source><![CDATA[Audio Label Image]]></source>
+            </trans-unit>
+            <trans-unit id="action.sound_tools.panel.equalizer">
+                <source><![CDATA[Equalizer]]></source>
+            </trans-unit>
+            <trans-unit id="action.sound_tools.panel.markertable">
+                <source><![CDATA[Marker Table]]></source>
+            </trans-unit>
             <trans-unit id="action.theater.toggle">
                 <source><![CDATA[Toggle theater mode]]></source>
             </trans-unit>
