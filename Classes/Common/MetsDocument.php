@@ -256,14 +256,12 @@ final class MetsDocument extends AbstractDocument
     public function getFileLocation(string $id): string
     {
         $file = $this->getFileInfo($id);
-        if (!empty($file)) {
-            $location = $file['location'];
-        }
         if (
             !empty($id)
-            && !empty($location)
+            && !empty($file)
+            && !empty($file['location'])
         ) {
-            return (string) $location;
+            return (string) $file['location'];
         } else {
             $this->logger->warning('There is no file node with @ID "' . $id . '"');
             return '';
@@ -292,14 +290,12 @@ final class MetsDocument extends AbstractDocument
     public function getFileMimeType(string $id): string
     {
         $file = $this->getFileInfo($id);
-        if (!empty($file)) {
-            $mimetype = $file['mimeType'];
-        }
         if (
             !empty($id)
-            && !empty($mimetype)
+            && !empty($file)
+            && !empty($file['mimeType'])
         ) {
-            return (string) $mimetype;
+            return (string) $file['mimeType'];
         } else {
             $this->logger->warning('There is no file node with @ID "' . $id . '" or no MIME type specified');
             return '';
