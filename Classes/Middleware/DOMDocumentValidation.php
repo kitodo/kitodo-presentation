@@ -12,6 +12,7 @@
 namespace Kitodo\Dlf\Middleware;
 
 use DOMDocument;
+use Exception;
 use InvalidArgumentException;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
 use Psr\Http\Message\ResponseInterface;
@@ -42,6 +43,10 @@ class DOMDocumentValidation implements MiddlewareInterface
 {
     use LoggerAwareTrait;
 
+    const BAD_REQUEST = 400;
+    const NOT_FOUND = 404;
+    const INTERNAL_SERVER_ERROR = 500;
+
     private ServerRequestInterface $request;
 
     /**
@@ -71,30 +76,31 @@ class DOMDocumentValidation implements MiddlewareInterface
         // check required parameters
         $urlParam = $parameters['url'];
         if (!isset($urlParam)) {
-            throw new InvalidArgumentException('URL parameter is missing.', 1724334674);
+            return $this->getJsonResponse('URL parameter is missing.', self::BAD_REQUEST);
         }
 
         $typeParam = $parameters['type'];
         if (!isset($typeParam)) {
-            throw new InvalidArgumentException('Type parameter is missing.', 1744373423);
+            return $this->getJsonResponse('Type parameter is missing.', self::BAD_REQUEST);
         }
-
         // load dom document from url
         if (!GeneralUtility::isValidUrl($urlParam)) {
-            $this->logger->debug('Parameter "' . $urlParam . '" is not a valid url.');
-            throw new InvalidArgumentException('Value of url parameter is not a valid url.', 1724852611);
+            return $this->getJsonResponse('Parameter "' . $urlParam . '" is not a valid URL.', self::NOT_FOUND);
         }
 
         $content = GeneralUtility::getUrl($urlParam);
         if ($content === false) {
-            $this->logger->debug('Error while loading content of "' . $urlParam . '"');
-            throw new InvalidArgumentException('Error while loading content of url.', 1724420640);
+            return $this->getJsonResponse('Unable to load content from the URL.', self::NOT_FOUND);
         }
 
         $document = new DOMDocument();
-        if ($document->loadXML($content) === false) {
-            $this->logger->debug('Error converting content of "' . $urlParam . '" to xml.');
-            throw new InvalidArgumentException('Error converting content to xml.', 1724420648);
+        try {
+            if ($document->loadXML($content) === false) {
+                return $this->getJsonResponse('Failed to load XML.', self::NOT_FOUND);
+            }
+        } catch (Exception $e) {
+            $this->logger->debug($e->getMessage());
+            return $this->getJsonResponse("Content from the URL is not valid XML.", self::BAD_REQUEST);
         }
 
         // retrieve validation configuration from plugin.tx_dlf typoscript
@@ -108,26 +114,34 @@ class DOMDocumentValidation implements MiddlewareInterface
 
         if (!array_key_exists("domDocumentValidation", $settings)) {
             $this->logger->error('DOMDocumentValidation is not configured.');
-            throw new InvalidArgumentException('DOMDocumentValidation is not correctly.', 1724335601);
+            return $this->getJsonResponse('An internal server error occurred.', self::INTERNAL_SERVER_ERROR);
         }
 
         if (!array_key_exists($typeParam, $settings["domDocumentValidation"])) {
-            $this->logger->error('Validation configuration type in type parameter "' . $typeParam . '" does not exist.');
-            throw new InvalidArgumentException('Validation configuration type does not exist.', 1744373532);
+            $this->logger->debug('Validation configuration type in type parameter "' . $typeParam . '" does not exist.');
+            return $this->getJsonResponse('Type parameter does not exist.', self::NOT_FOUND);
         }
 
         $validationConfiguration = $this->removeDisabledValidators($parameters, $settings['domDocumentValidation'][$typeParam]);
 
         $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
+
+        try {
+            $result = $validation->validate($document);
+        } catch (Exception $e) {
+            return $this->getJsonResponse($e->getMessage(), self::BAD_REQUEST);
+        }
+
         // validate and return json response
-        return $this->getJsonResponse($validationConfiguration, $validation->validate($document));
+        $validationResults = $this->getValidationResults($validationConfiguration, $result);
+
+        return $this->getJsonResponse($validationResults);
     }
 
-    protected function getJsonResponse(array $configurations, ?Result $result): ResponseInterface
+    protected function getValidationResults(array $configurations, ?Result $result): array
     {
         $validationResults = [];
         $index = 0;
-
         if ($result != null) {
             foreach ($configurations as $configuration) {
                 $validationResult = [];
@@ -151,13 +165,7 @@ class DOMDocumentValidation implements MiddlewareInterface
                 $index++;
             }
         }
-
-        /** @var ResponseFactory $responseFactory */
-        $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
-        $response = $responseFactory->createResponse()
-            ->withHeader('Content-Type', 'application/json; charset=utf-8');
-        $response->getBody()->write(json_encode($validationResults));
-        return $response;
+        return $validationResults;
     }
 
     /**
@@ -216,5 +224,21 @@ class DOMDocumentValidation implements MiddlewareInterface
             );
         }
         return $languageService->sL($key);
+    }
+
+    /**
+     * Get the json response.
+     *
+     * @param mixed $payload The data to add in the body.
+     * @return ResponseInterface The json response object.
+     */
+    public function getJsonResponse(mixed $payload, int $statusCode = 200): ResponseInterface
+    {
+        /** @var ResponseFactory $responseFactory */
+        $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
+        $response = $responseFactory->createResponse($statusCode)
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $response->getBody()->write(json_encode($payload));
+        return $response;
     }
 }

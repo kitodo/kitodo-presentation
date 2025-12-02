@@ -247,15 +247,6 @@ final class MetsDocument extends AbstractDocument
     public function getFileInfo($id): ?array
     {
         $this->magicGetFileGrps();
-
-        if (isset($this->fileInfos[$id]) && empty($this->fileInfos[$id]['location'])) {
-            $this->fileInfos[$id]['location'] = $this->getFileLocation($id);
-        }
-
-        if (isset($this->fileInfos[$id]) && empty($this->fileInfos[$id]['mimeType'])) {
-            $this->fileInfos[$id]['mimeType'] = $this->getFileMimeType($id);
-        }
-
         return $this->fileInfos[$id] ?? null;
     }
 
@@ -264,29 +255,13 @@ final class MetsDocument extends AbstractDocument
      */
     public function getFileLocation(string $id): string
     {
-        $location = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/mets:FLocat[@LOCTYPE="URL"]');
+        $file = $this->getFileInfo($id);
         if (
             !empty($id)
-            && !empty($location)
+            && !empty($file)
+            && !empty($file['location'])
         ) {
-            return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
-        } else {
-            $this->logger->warning('There is no file node with @ID "' . $id . '"');
-            return '';
-        }
-    }
-
-    /**
-     * @see AbstractDocument::getFileLocationInUsegroup()
-     */
-    public function getFileLocationInUsegroup(string $id, string $useGroup): string
-    {
-        $location = $this->mets->xpath('./mets:fileSec/mets:fileGrp[@USE="' . $useGroup . '"]/mets:file[@ID="' . $id . '"]/mets:FLocat[@LOCTYPE="URL"]');
-        if (
-            !empty($id)
-            && !empty($location)
-        ) {
-            return (string) $location[0]->attributes('http://www.w3.org/1999/xlink')->href;
+            return (string) $file['location'];
         } else {
             $this->logger->warning('There is no file node with @ID "' . $id . '"');
             return '';
@@ -314,12 +289,13 @@ final class MetsDocument extends AbstractDocument
      */
     public function getFileMimeType(string $id): string
     {
-        $mimetype = $this->mets->xpath('./mets:fileSec/mets:fileGrp/mets:file[@ID="' . $id . '"]/@MIMETYPE');
+        $file = $this->getFileInfo($id);
         if (
             !empty($id)
-            && !empty($mimetype)
+            && !empty($file)
+            && !empty($file['mimeType'])
         ) {
-            return (string) $mimetype[0];
+            return (string) $file['mimeType'];
         } else {
             $this->logger->warning('There is no file node with @ID "' . $id . '" or no MIME type specified');
             return '';
@@ -1393,12 +1369,15 @@ final class MetsDocument extends AbstractDocument
                     if (!empty($fileGrps)) {
                         foreach ($fileGrps as $fileGrp) {
                             foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
+                                $fLocat = $file->children('http://www.loc.gov/METS/')->FLocat;
                                 $fileId = (string) $file->attributes()->ID;
                                 $this->fileGrps[$fileId] = $useGroup;
                                 $this->fileInfos[$fileId] = [
                                     'fileGrp' => $useGroup,
                                     'admId' => (string) $file->attributes()->ADMID,
                                     'dmdId' => (string) $file->attributes()->DMDID,
+                                    'mimeType' => (string) $file->attributes()->MIMETYPE,
+                                    'location' => (string) $fLocat->attributes('http://www.w3.org/1999/xlink')->href,
                                 ];
                             }
                         }
