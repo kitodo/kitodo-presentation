@@ -72,7 +72,7 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
 
         // double replace encoding in URL value parameters
         if (isset($dlfArguments['id'])) {
-            $dlfArguments['id'] = $this->doubleEncode($dlfArguments['id']);
+            $dlfArguments['id'] = $this->doubleEncode((string) $dlfArguments['id']);
         }
 
         if (isset($dlfArguments['multiViewSource']) && is_array($dlfArguments['multiViewSource'])) {
