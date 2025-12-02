@@ -256,7 +256,9 @@ final class MetsDocument extends AbstractDocument
     public function getFileLocation(string $id): string
     {
         $file = $this->getFileInfo($id);
-        $location = $file['location'];
+        if (!empty($file)) {
+            $location = $file['location'];
+        }
         if (
             !empty($id)
             && !empty($location)
@@ -290,7 +292,9 @@ final class MetsDocument extends AbstractDocument
     public function getFileMimeType(string $id): string
     {
         $file = $this->getFileInfo($id);
-        $mimetype = $file['mimeType'];
+        if (!empty($file)) {
+            $mimetype = $file['mimeType'];
+        }
         if (
             !empty($id)
             && !empty($mimetype)
