@@ -37,7 +37,7 @@
  *  scores?: ScoreDesc[] | [];
  *  controls?: ('OverviewMap' | 'ZoomPanel')[];
  *  measureCoords?: MeasureDesc[] | [];
- *  measureIdLinks?: MeasureDesc[] | [];
+ *  measureIdToIndex?: MeasureDesc[] | [];
  * }} DlfViewerConfig
  */
 
@@ -95,7 +95,7 @@ var dlfViewer = function (settings) {
 
     this.measureCoords = dlfUtils.exists(settings.measureCoords) ? settings.measureCoords : [];
 
-    this.measureIdLinks =  dlfUtils.exists(settings.measureIdLinks) ? settings.measureIdLinks : [];
+    this.measureIdToIndex =  dlfUtils.exists(settings.measureIdToIndex) ? settings.measureIdToIndex : [];
 
     this.measureLayer = undefined;
 
@@ -552,10 +552,15 @@ dlfViewer.prototype.addCustomControls = function() {
 
             map.on('singleclick', function (evt) {
                 if (context.facsimileMeasureActive !== null) {
-                    context.verovioMeasureActive.removeClass('active');
                     context.facsimileMeasureActive.setStyle(undefined);
                     context.facsimileMeasureActive = null;
                 }
+
+                if (context.verovioMeasureActive !== null) {
+                    context.verovioMeasureActive.removeClass('active');
+                    context.verovioMeasureActive = null;
+                }
+
                 map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
                     if (feature !== null) {
                         // show ajax spinner if exists
@@ -565,8 +570,8 @@ dlfViewer.prototype.addCustomControls = function() {
 
                         context.facsimileMeasureActive = feature;
                         context.verovioMeasureActive = $('#tx-dlf-score-'+context.counter+' #' + feature.getId() + ' rect').addClass('active');
-                        if (context.measureIdLinks[feature.getId()]) {
-                            window.location.replace(context.measureIdLinks[feature.getId()]);
+                        if (context.measureIdToIndex[feature.getId()]) {
+                            dlfUtils.appendUrlParameterAndReload('measure', context.measureIdToIndex[feature.getId()]);
                         }
                         return true;
                     }
@@ -574,7 +579,7 @@ dlfViewer.prototype.addCustomControls = function() {
             });
 
             map.on('pointermove', function (e) {
-                if (context.facsimileMeasureHover !== null) {
+                if (typeof context !== 'undefined' && context.facsimileMeasureHover !== null) {
                     context.facsimileMeasureHover.setStyle(undefined);
                     context.facsimileMeasureHover = null;
                     context.verovioMeasureHover.removeClass('hover');
