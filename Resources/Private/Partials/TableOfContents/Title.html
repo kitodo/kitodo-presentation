@@ -18,7 +18,7 @@
             <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false">{child.title}</f:format.htmlspecialchars></f:format.crop>
         </f:then>
         <f:else>
-            <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false">{child.type}</f:format.htmlspecialchars><f:if condition="{child.volume}"> &nbsp;<f:format.htmlspecialchars doubleEncode="false">{child.volume}</f:format.htmlspecialchars></f:if></f:format.crop>
+            <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{child.type}" /></f:format.htmlspecialchars><f:if condition="{child.volume}"> &nbsp;<f:format.htmlspecialchars doubleEncode="false">{child.volume}</f:format.htmlspecialchars></f:if></f:format.crop>
         </f:else>
     </f:if>
 </span>
