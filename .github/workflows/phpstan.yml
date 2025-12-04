@@ -18,6 +18,8 @@ jobs:
         uses: php-actions/composer@v6
         with:
           command: update
+          php_version: 8.4
+          args: --ignore-platform-reqs
 
       - name: PHPStan Static Analysis
         uses: php-actions/phpstan@v3
