@@ -259,55 +259,15 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * Loads the current document into $this->document
+     * Load the current Document to Globals Temp just once with Document Service - it will then be available for all controllers.
      *
      * @access protected
-     *
-     * @param string $documentId The document's UID or URL (id), fallback: record ID (recordId)
-     *
      * @return void
      */
-    protected function loadDocument(string $documentId = ''): void
+    protected function loadDocument(): void
     {
-        // Sanitize FlexForm settings to avoid later casting.
         $this->sanitizeSettings();
-
-        // Get document ID from request data if not passed as parameter.
-        if (!$documentId && !empty($this->requestData['id'])) {
-            $documentId = $this->requestData['id'];
-        }
-
-        // Try to get document format from database
-        if (!empty($documentId)) {
-
-
-            $doc = null;
-
-            if (MathUtility::canBeInterpretedAsInteger($documentId)) {
-                $doc = $this->getDocumentByUid((int) $documentId);
-            } elseif (GeneralUtility::isValidUrl($documentId)) {
-                $doc = $this->getDocumentByUrl($documentId);
-            }
-
-            if ($this->document !== null && $doc !== null) {
-                $this->document->setCurrentDocument($doc);
-            }
-
-        } elseif (!empty($this->requestData['recordId'])) {
-
-            $this->document = $this->documentRepository->findOneBy(['recordId' => $this->requestData['recordId']]);
-
-            if ($this->document !== null) {
-                $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
-                if ($doc !== null) {
-                    $this->document->setCurrentDocument($doc);
-                } else {
-                    $this->logger->error('Failed to load document with record ID "' . $this->requestData['recordId'] . '"');
-                }
-            }
-        } else {
-            $this->logger->error('Invalid ID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
-        }
+        $this->document = $this->documentService->getDocument($this->requestData['id'], $this->settings);
     }
 
     /**
