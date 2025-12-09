@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Configuration\UseGroupsConfiguration;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Service\DocumentService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -32,6 +33,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+
 
 /**
  * Abstract controller class for most of the plugin controller.
@@ -60,6 +62,17 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return void
      */
+
+    /**
+     * @access protected
+     * @var DocumentService
+     */
+    protected DocumentService $documentService;
+ 
+    public function injectDocumentService(DocumentService $service): void
+    {
+        $this->documentService = $service;
+    }
     public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
         $this->documentRepository = $documentRepository;
@@ -136,6 +149,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
 
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+
+        $this->documentService = GeneralUtility::makeInstance(DocumentService::class);
 
         $this->viewData = [
             'pageUid' => $this->pageUid ?? 0,

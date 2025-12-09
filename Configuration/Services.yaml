@@ -53,3 +53,6 @@ services:
 
   Kitodo\Dlf\Validation\XmlSchemesValidator:
     autowire: false
+
+  Kitodo\Dlf\Service\DocumentService:
+    public: true
