@@ -1,17 +1,58 @@
 .dlf-equalizer-resume {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    flex-direction: column;
-
+    position: relative;
     width: 80%;
     max-width: 1000px;
     height: 400px;
-    border: 1px solid black;
     margin-bottom: 1em;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 120%;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dfdfdf; /* fallback if no image */
+}
+
+/* Full-size blurred background layer (uses --equalizer-bg-url set by JS) */
+.dlf-equalizer-resume-bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--equalizer-bg-url);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(6px);
+    pointer-events: none;
+}
+
+/* White material-style button on top of the blur */
+.dlf-equalizer-resume-btn {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    color: rgba(0,0,0,0.87);
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.12);
+    cursor: pointer;
+    transition: box-shadow 120ms ease, transform 120ms ease;
+    outline: none;
+}
+
+.dlf-equalizer-resume:hover {
+    & .dlf-equalizer-resume-bg {
+        filter: blur(4px);
+    }    
+    
+    & .dlf-equalizer-resume-btn {
+        box-shadow: 0 8px 22px rgba(0,0,0,0.22);
+    }
+    
+    & .dlf-equalizer-resume-btn:focus {
+        box-shadow: 0 8px 22px rgba(0,0,0,0.28), 0 0 0 4px rgba(176, 176, 176, 0.16);
+    }    
 }
 
 .dlf-equalizer-view {

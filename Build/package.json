@@ -24,6 +24,7 @@
     "@babel/eslint-parser": "^7.24.7",
     "@babel/plugin-transform-runtime": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
+    "@babel/runtime": "^7.28.4",
     "@types/audioworklet": "^0.0.60",
     "@types/jest": "^27.5.2",
     "@types/jquery": "^3.5.30",
