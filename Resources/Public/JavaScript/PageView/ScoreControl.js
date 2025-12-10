@@ -405,6 +405,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
       adjustPageHeight: false,
       adjustPageWidth: false,
       breaks: "auto",
+      mdivAll: true,
       mmOutput: true,
       footer: "auto",
       pageHeight: pdfHeight,
