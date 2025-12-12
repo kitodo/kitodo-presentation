@@ -112,17 +112,18 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Get the URL of the model.
+     * Get the model.
      *
-     * Gets the URL of the model by parameter or from the configured file group of the document.
+     * Gets the model by parameter or from the configured file group of the document.
      *
      * @access private
      *
-     * @return string
+     * @return array
      */
-    private function getModelUrl(): string
+    private function getModel(): array
     {
         $modelUrl = '';
+        $mimeType = '';
         if (!empty($this->requestData['model'])) {
             $modelUrl = $this->requestData['model'];
         } elseif (!($this->isDocMissingOrEmpty() || empty($this->useGroupsConfiguration->getModel()))) {
@@ -130,9 +131,10 @@ class ToolboxController extends AbstractController
             if (isset($this->requestData['page'])) {
                 $file = $this->getFile($this->requestData['page'], $this->useGroupsConfiguration->getModel());
                 $modelUrl = $file['url'] ?? '';
+                $mimeType = Helper::getModelFormatOfMimeType($file['mimetype'] ?? '');
             }
         }
-        return $modelUrl;
+        return ['url' => $modelUrl, 'format' => $this->getModelFormat($modelUrl, $mimeType)];
     }
 
     /**
@@ -424,12 +426,12 @@ class ToolboxController extends AbstractController
      */
     private function renderModelDownloadTool(): void
     {
-        $modelUrl = $this->getModelUrl();
-        if ($modelUrl === '') {
+        $model = $this->getModel();
+        if ($model['url'] === '') {
             $this->logger->debug("Model URL could not be determined");
             return;
         }
-        $this->view->assign('modelUrl', $modelUrl);
+        $this->view->assign('modelUrl', $model['url']);
     }
 
 
@@ -445,14 +447,12 @@ class ToolboxController extends AbstractController
      */
     private function renderViewerSelectionTool(): void
     {
-        $model = $this->getModelUrl();
-        if (!$model) {
-            $this->logger->debug("Model URL could not be determined");
+        $model = $this->getModel();
+        if ($model['format'] === '') {
+            $this->logger->debug("Model format could not be determined");
             return;
         }
 
-        $pathInfo = PathUtility::pathinfo($model);
-        $modelFormat = strtolower($pathInfo["extension"]);
         $viewers = [];
         /** @var StorageRepository $storageRepository */
         $storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
@@ -466,7 +466,7 @@ class ToolboxController extends AbstractController
                     if ($viewerFolder->hasFile(Embedded3dViewer::VIEWER_CONFIG_YML)) {
                         $fileIdentifier = $viewerFolder->getFile(Embedded3dViewer::VIEWER_CONFIG_YML)->getIdentifier();
                         $viewerConfig = $yamlFileLoader->load($defaultStorage->getName() . $fileIdentifier)["viewer"];
-                        if (!empty($viewerConfig["supportedModelFormats"]) && in_array($modelFormat, array_map('strtolower', $viewerConfig["supportedModelFormats"]))) {
+                        if (!empty($viewerConfig["supportedModelFormats"]) && in_array($model['format'], array_map('strtolower', $viewerConfig["supportedModelFormats"]))) {
                             $viewers[] = (object) ['id' => $viewerFolder->getName(), 'name' => $viewerConfig["name"] ?? $viewerFolder->getName()];
                         }
                     }

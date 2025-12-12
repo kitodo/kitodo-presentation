@@ -788,4 +788,29 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         $this->settings = $settings;
     }
+
+    /**
+     * Get the model format.
+     *
+     * @param string $modelUrl The url of the model
+     * @param string $mimeType The mime type of the model file
+     * @return string The model format
+     */
+    public function getModelFormat(string $modelUrl, string $mimeType = ''): string
+    {
+        $modelFormat = '';
+        if (!empty($this->requestData['modelFormat'])) {
+            $modelFormat = $this->requestData['modelFormat'];
+        } elseif (!empty($this->settings['modelFormat'])) {
+            $modelFormat = $this->settings['modelFormat'];
+        } elseif (!empty($mimeType)) {
+            $modelFormat = Helper::getModelFormatOfMimeType($mimeType);
+        } else {
+            $modelInfo = PathUtility::pathinfo($modelUrl);
+            if (!empty($modelInfo['extension'])) {
+                $modelFormat = strtolower($modelInfo["extension"]);
+            }
+        }
+        return $modelFormat;
+    }
 }

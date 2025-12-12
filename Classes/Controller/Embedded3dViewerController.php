@@ -12,7 +12,9 @@
 namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\Helper;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Plugin 'Embedded3dViewer' for the 'dlf' extension
@@ -58,32 +60,22 @@ class Embedded3dViewerController extends AbstractController
      * Builds the embedded 3D viewer url.
      *
      * @param string $model The model url
+     * @param string $mimeType The mime type of the model
      * @return string The embedded 3D viewer url
      */
-    public function buildEmbedded3dViewerUrl(string $model = ''): string
+    public function buildEmbedded3dViewerUrl(string $model = '', string $mimeType = ''): string
     {
         $viewer = "";
         $embedded3dViewerUrl = self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX;
 
-        if (!empty($this->requestData['model'])) {
-            $model = $this->requestData['model'];
-        } elseif (!empty($this->settings['model'])) {
-            $model = $this->settings['model'];
+        $embedded3dViewerUrl .= $this->addQueryParameter('model', $model);
+
+        $modelFormat = $this->getModelFormat($mimeType, $model);
+        if (!empty($modelFormat)) {
+            $embedded3dViewerUrl .= '&' . http_build_query(['modelFormat' => $modelFormat]);
         }
 
-        if (!empty($model)) {
-            $embedded3dViewerUrl .= '&model=' . $model;
-        }
-
-        if (!empty($this->requestData['viewer'])) {
-            $viewer = $this->requestData['viewer'];
-        } elseif (!empty($this->settings['viewer'])) {
-            $viewer = $this->settings['viewer'];
-        }
-
-        if (!empty($viewer)) {
-            $embedded3dViewerUrl .= '&viewer=' . $viewer;
-        }
+        $embedded3dViewerUrl .= $this->addQueryParameter('viewer', $viewer);
 
         if (!empty($this->requestData['viewerParam'])) {
             $embedded3dViewerUrl .= '&' . http_build_query(['viewerParam' => $this->requestData['viewerParam']]);
@@ -104,8 +96,33 @@ class Embedded3dViewerController extends AbstractController
     public function assignModelFromDocument(AbstractDocument $document): void
     {
         if ($document->getToplevelMetadata()['type'][0] === 'object') {
-            $model = trim($document->getFileLocation($document->physicalStructureInfo[$document->physicalStructure[1]]['files']['DEFAULT']));
-            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model));
+            $fileId = $document->physicalStructureInfo[$document->physicalStructure[1]]['files']['DEFAULT'];
+            $mimeType = trim($document->getFileMimeType($fileId));
+            $model = trim($document->getFileLocation($fileId));
+            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model,Helper::getModelFormatOfMimeType($mimeType)));
         }
     }
+
+    /**
+     * @param mixed $model
+     * @param string $embedded3dViewerUrl
+     * @return string
+     */
+    public function addQueryParameter(string $name, string $value): string
+    {
+        if (!empty($this->requestData[$name])) {
+            $value = $this->requestData[$name];
+        } elseif (!empty($this->settings[$name])) {
+            $value = $this->settings[$name];
+        }
+
+        if (!empty($name)) {
+            return '&' . http_build_query([$name => $value]);
+        }
+        return '';
+    }
+
+
+
+
 }

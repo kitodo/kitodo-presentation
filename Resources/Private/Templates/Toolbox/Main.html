@@ -135,6 +135,9 @@
                 <f:if condition="{viewData.requestData.model}">
                     <f:form.hidden name="tx_dlf[model]" value="{viewData.requestData.model}"/>
                 </f:if>
+                <f:if condition="{viewData.requestData.modelFormat}">
+                    <f:form.hidden name="tx_dlf[modelFormat]" value="{viewData.requestData.modelFormat}"/>
+                </f:if>
                 <f:form.select id="tx-dlf-viewer-{viewData.uniqueId}" name="tx_dlf[viewer]"
                                options="{viewers}"
                                optionValueField="id"
