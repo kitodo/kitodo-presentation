@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Utility\MathUtility;
+
 /**
  * (Service For Abstract Controller) Service that decouples the loading of documents from each controller to only once.
  *
@@ -27,10 +28,10 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class DocumentService
 {
-     /**
-     * @access protected
-     * @var Document|null This holds the current document
-     */
+    /**
+    * @access protected
+    * @var Document|null This holds the current document
+    */
     protected ?Document $document = null;
     /**
      * @access protected
@@ -65,13 +66,11 @@ class DocumentService
      */
     public function getDocument($recordId, $settings)
     {
-        if (isset($GLOBALS['TX_DLF_TEMP_DOCUMENT'])) {
-            return $GLOBALS['TX_DLF_TEMP_DOCUMENT'];
-        } else {
+        if ($this->document === null)
+        {
             $this->serviceLoadDocument($recordId, $settings);
-            $GLOBALS['TX_DLF_TEMP_DOCUMENT'] = $this->document;
-            return $this->document;
         }
+        return $this->document;
     }
     /**
      * @access public
@@ -179,4 +178,3 @@ class DocumentService
         return $doc;
     }
 }
-?>

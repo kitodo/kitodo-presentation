@@ -69,9 +69,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected DocumentService $documentService;
  
-    public function injectDocumentService(DocumentService $service): void
+    public function injectDocumentService(DocumentService $documentService): void
     {
-        $this->documentService = $service;
+        $this->documentService = $documentService;
     }
     public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
@@ -149,8 +149,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
 
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-
-        $this->documentService = GeneralUtility::makeInstance(DocumentService::class);
 
         $this->viewData = [
             'pageUid' => $this->pageUid ?? 0,
