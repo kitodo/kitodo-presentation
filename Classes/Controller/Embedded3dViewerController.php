@@ -63,19 +63,19 @@ class Embedded3dViewerController extends AbstractController
      * @param string $mimeType The mime type of the model
      * @return string The embedded 3D viewer url
      */
-    public function buildEmbedded3dViewerUrl(string $model = '', string $mimeType = ''): string
+    protected function buildEmbedded3dViewerUrl(string $model = '', string $mimeType = ''): string
     {
         $viewer = "";
         $embedded3dViewerUrl = self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX;
 
-        $embedded3dViewerUrl .= $this->addQueryParameter('model', $model);
+        $embedded3dViewerUrl .= $this->getQueryPart('model', $model);
 
         $modelFormat = $this->getModelFormat($mimeType, $model);
         if (!empty($modelFormat)) {
             $embedded3dViewerUrl .= '&' . http_build_query(['modelFormat' => $modelFormat]);
         }
 
-        $embedded3dViewerUrl .= $this->addQueryParameter('viewer', $viewer);
+        $embedded3dViewerUrl .= $this->getQueryPart('viewer', $viewer);
 
         if (!empty($this->requestData['viewerParam'])) {
             $embedded3dViewerUrl .= '&' . http_build_query(['viewerParam' => $this->requestData['viewerParam']]);
@@ -93,7 +93,7 @@ class Embedded3dViewerController extends AbstractController
      *
      * @param AbstractDocument $document The document containing the model
      */
-    public function assignModelFromDocument(AbstractDocument $document): void
+    protected function assignModelFromDocument(AbstractDocument $document): void
     {
         if ($document->getToplevelMetadata()['type'][0] === 'object') {
             $fileId = $document->physicalStructureInfo[$document->physicalStructure[1]]['files']['DEFAULT'];
@@ -104,11 +104,16 @@ class Embedded3dViewerController extends AbstractController
     }
 
     /**
-     * @param mixed $model
-     * @param string $embedded3dViewerUrl
+     * Get the query part.
+     *
+     * Gets the query part including the separator, parameter name, and value.
+     * The value will be overwritten if the request data or settings contain the same name.
+     *
+     * @param mixed $name
+     * @param string $value
      * @return string
      */
-    public function addQueryParameter(string $name, string $value): string
+    protected function getQueryPart(string $name, string $value): string
     {
         if (!empty($this->requestData[$name])) {
             $value = $this->requestData[$name];
@@ -121,8 +126,4 @@ class Embedded3dViewerController extends AbstractController
         }
         return '';
     }
-
-
-
-
 }

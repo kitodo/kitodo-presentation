@@ -84,6 +84,10 @@ class Helper
      */
     protected static array $indexNameCache = [];
 
+    /**
+     * @access protected
+     * @var array Assignment of mime type to model format
+     */
     protected const MIME_TYPE_MODEL_FORMATS = [
         'application/vnd.autodesk.fbx' => 'fbx',
         'text/plain' => 'obj',
