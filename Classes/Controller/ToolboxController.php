@@ -131,7 +131,7 @@ class ToolboxController extends AbstractController
             if (isset($this->requestData['page'])) {
                 $file = $this->getFile($this->requestData['page'], $this->useGroupsConfiguration->getModel());
                 $modelUrl = $file['url'] ?? '';
-                $mimeType = Helper::getModelFormatOfMimeType($file['mimetype'] ?? '');
+                $mimeType = $file['mimetype'] ?? '';
             }
         }
         return ['url' => $modelUrl, 'format' => $this->getModelFormat($modelUrl, $mimeType)];
