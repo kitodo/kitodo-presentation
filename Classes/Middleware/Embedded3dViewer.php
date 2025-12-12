@@ -263,11 +263,13 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
     }
 
     /**
-     * @param array $parameters
-     * @param array $modelInfo
-     * @return string
+     * Get the model format from parameter or extension.
+     *
+     * @param array $parameters The model format parameter
+     * @param array $modelInfo The model info
+     * @return string Returns the model format or empty string
      */
-    public function getModelFormat(array $parameters, array $modelInfo): string
+    protected function getModelFormat(array $parameters, array $modelInfo): string
     {
         $modelFormat = '';
         if (!empty($parameters['modelFormat'])) {
