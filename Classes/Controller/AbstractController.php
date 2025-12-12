@@ -257,7 +257,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * Load the current Document to Globals Temp just once with Document Service - it will then be available for all controllers.
+     * Load the current Document to memory just once with DocumentService - it will then be available for all controllers.
      *
      * @access protected
      * @return void
