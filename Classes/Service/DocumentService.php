@@ -66,7 +66,7 @@ class DocumentService
      */
     public function getDocument($recordId, $settings)
     {
-        if ($this->document === null){
+        if ($this->document === null) {
             $this->serviceLoadDocument($recordId, $settings);
         }
         return $this->document;
