@@ -237,7 +237,7 @@ final class MetsDocument extends AbstractDocument
             // TODO CVT is an optional IIP server capability; in theory, capabilities should be determined in the object request with '&obj=IIP-server'
             return $baseURL . '&CVT=jpeg';
         }
-        return $file['location'] ?? null;
+        return $file['location'] ?? "";
     }
 
     /**
