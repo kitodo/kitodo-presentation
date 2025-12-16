@@ -29,9 +29,9 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 class DocumentService
 {
     /**
-    * @access protected
-    * @var Document|null This holds the current document
-    */
+     * @access protected
+     * @var Document|null This holds the current document
+     */
     protected ?Document $document = null;
     /**
      * @access protected
@@ -66,8 +66,7 @@ class DocumentService
      */
     public function getDocument($recordId, $settings)
     {
-        if ($this->document === null)
-        {
+        if ($this->document === null){
             $this->serviceLoadDocument($recordId, $settings);
         }
         return $this->document;
@@ -77,10 +76,9 @@ class DocumentService
      * @param int $recordId
      * @param array $settings
      */
-    private function serviceLoadDocument($recordId, $settings){
-       
+    private function serviceLoadDocument($recordId, $settings)
+    {
         $this->settings = $settings;
-
         // Get document ID from request data if not passed as parameter.
         if (!empty($recordId)) {
             $documentId = $recordId;

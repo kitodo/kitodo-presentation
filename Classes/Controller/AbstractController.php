@@ -56,14 +56,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected DocumentRepository $documentRepository;
 
     /**
-     * @access public
-     *
-     * @param DocumentRepository $documentRepository
-     *
-     * @return void
-     */
-
-    /**
      * @access protected
      * @var DocumentService
      */
