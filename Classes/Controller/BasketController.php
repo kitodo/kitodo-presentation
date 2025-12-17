@@ -111,7 +111,7 @@ class BasketController extends AbstractController
 
     /**
      * Different actions which depends on the chosen action (form)
-     * 
+     *
      * @access public
      *
      * @return ResponseInterface the response
@@ -232,7 +232,7 @@ class BasketController extends AbstractController
 
     /**
      * The basket data from user session.
-     * 
+     *
      * @access protected
      *
      * @return Basket The found data from user session.
@@ -337,24 +337,7 @@ class BasketController extends AbstractController
         $this->loadDocument($id);
         if (isset($this->document)) {
             // replace url param placeholder
-            // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
-            // @phpstan-ignore-next-line
-            $urlParams = str_replace("##page##", (int) ($data['page'] ?? ''), $this->settings['pdfparams']);
-            $urlParams = str_replace("##docId##", $this->document->getRecordId(), $urlParams);
-            // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
-            // @phpstan-ignore-next-line
-            $urlParams = str_replace("##startpage##", (int) $data['startpage'], $urlParams);
-            if ($data['startpage'] != $data['endpage']) {
-                $urlParams = str_replace("##endpage##", $data['endpage'] === "" ? "" : (int) $data['endpage'], $urlParams);
-            } else {
-                // remove parameter endpage
-                $urlParams = str_replace(",##endpage##", '', $urlParams);
-            }
-            $urlParams = str_replace("##startx##", $data['startX'] === "" ? "" : (int) $data['startX'], $urlParams);
-            $urlParams = str_replace("##starty##", $data['startY'] === "" ? "" : (int) $data['startY'], $urlParams);
-            $urlParams = str_replace("##endx##", $data['endX'] === "" ? "" : (int) $data['endX'], $urlParams);
-            $urlParams = str_replace("##endy##", $data['endY'] === "" ? "" : (int) $data['endY'], $urlParams);
-            $urlParams = str_replace("##rotation##", $data['rotation'] === "" ? "" : (int) $data['rotation'], $urlParams);
+            $urlParams = $this->getUrlParams($data);
 
             $downloadUrl = $this->settings['pdfgenerate'] . $urlParams;
 
@@ -392,6 +375,32 @@ class BasketController extends AbstractController
             ];
         }
         return false;
+    }
+
+    /**
+     * Get URL parameters by replacing placeholders.
+     *
+     * @param array $data
+     *
+     * @return string
+     */
+    private function getUrlParams(array $data): string
+    {
+        // replace url param placeholder
+        $urlParams = str_replace("##page##", $data['page'] ?? '', $this->settings['pdfparams']);
+        $urlParams = str_replace("##docId##", $this->document->getRecordId(), $urlParams);
+        $urlParams = str_replace("##startpage##", $data['startpage'], $urlParams);
+        if ($data['startpage'] != $data['endpage']) {
+            $urlParams = str_replace("##endpage##", $data['endpage'] ?? '', $urlParams);
+        } else {
+            // remove parameter endpage
+            $urlParams = str_replace(",##endpage##", '', $urlParams);
+        }
+        $urlParams = str_replace("##startx##", $data['startX']  ?? '', $urlParams);
+        $urlParams = str_replace("##starty##", $data['startY']  ?? '', $urlParams);
+        $urlParams = str_replace("##endx##", $data['endX']  ?? '', $urlParams);
+        $urlParams = str_replace("##endy##", $data['endY']  ?? '', $urlParams);
+        return str_replace("##rotation##", $data['rotation']  ?? '', $urlParams);
     }
 
     /**
@@ -458,23 +467,8 @@ class BasketController extends AbstractController
             // do not add more than one identical object
             if (!in_array($arrayKey, $items)) {
                 $items[$arrayKey] = $documentItem;
-                // replace url param placeholder
-                // TODO: Parameter #2 $replace of function str_replace expects array|string, int given.
-                // @phpstan-ignore-next-line
-                $pdfParams = str_replace("##startpage##", $documentItem['startpage'], $this->settings['pdfparams']);
-                $pdfParams = str_replace("##docId##", $this->document->getRecordId(), $pdfParams);
-                $pdfParams = str_replace("##startx##", $documentItem['startX'], $pdfParams);
-                $pdfParams = str_replace("##starty##", $documentItem['startY'], $pdfParams);
-                $pdfParams = str_replace("##endx##", $documentItem['endX'], $pdfParams);
-                $pdfParams = str_replace("##endy##", $documentItem['endY'], $pdfParams);
-                $pdfParams = str_replace("##rotation##", $documentItem['rotation'], $pdfParams);
-                if ($documentItem['startpage'] != $documentItem['endpage']) {
-                    $pdfParams = str_replace("##endpage##", $documentItem['endpage'], $pdfParams);
-                } else {
-                    // remove parameter endpage
-                    $pdfParams = str_replace(",##endpage##", '', $pdfParams);
-                }
-                $pdfGenerateUrl = $this->settings['pdfgenerate'] . $pdfParams;
+
+                $pdfGenerateUrl = $this->getPdfGenerationUrl($documentItem);
                 if ($this->settings['pregeneration']) {
                     // send ajax request to webapp
                     $output .= '
@@ -499,6 +493,33 @@ class BasketController extends AbstractController
         $this->view->assign('pregenerateJs', $output);
 
         return $basket;
+    }
+
+    /**
+     * Returns the PDF generation URL.
+     *
+     * @access private
+     *
+     * @param array $documentItem document item
+     *
+     * @return string PDF URL
+     */
+    private function getPdfGenerationUrl(array $documentItem): string
+    {
+        $pdfParams = str_replace("##startpage##", $documentItem['startpage'], $this->settings['pdfparams']);
+        $pdfParams = str_replace("##docId##", $this->document->getRecordId(), $pdfParams);
+        $pdfParams = str_replace("##startx##", $documentItem['startX'], $pdfParams);
+        $pdfParams = str_replace("##starty##", $documentItem['startY'], $pdfParams);
+        $pdfParams = str_replace("##endx##", $documentItem['endX'], $pdfParams);
+        $pdfParams = str_replace("##endy##", $documentItem['endY'], $pdfParams);
+        $pdfParams = str_replace("##rotation##", $documentItem['rotation'], $pdfParams);
+        if ($documentItem['startpage'] != $documentItem['endpage']) {
+            $pdfParams = str_replace("##endpage##", $documentItem['endpage'], $pdfParams);
+        } else {
+            // remove parameter endpage
+            $pdfParams = str_replace(",##endpage##", '', $pdfParams);
+        }
+        return $this->settings['pdfgenerate'] . $pdfParams;
     }
 
     /**
@@ -567,7 +588,7 @@ class BasketController extends AbstractController
                 $explodeId = explode("_", $docValue['id']);
                 $docData = $this->getDocumentData($explodeId[0], $docValue);
                 $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
-                $pages = (abs(intval($docValue['startpage']) - intval($docValue['endpage'])));
+                $pages = (abs((int) $docValue['startpage'] - (int) $docValue['endpage']));
                 if ($pages === 0) {
                     $numberOfPages = $numberOfPages + 1;
                 } else {
@@ -608,8 +629,8 @@ class BasketController extends AbstractController
 
         if ($this->isUserLoggedIn()) {
             // internal user
-            $newActionLog->setUserId($GLOBALS["TSFE"]->fe_user->user['uid']);
-            $newActionLog->setName($GLOBALS["TSFE"]->fe_user->user['username']);
+            $newActionLog->setUserId($this->request->getAttribute('frontend.user')->user['uid']);
+            $newActionLog->setName($this->request->getAttribute('frontend.user')->user['username']);
         } else {
             // external user
             $newActionLog->setUserId(0);
@@ -666,8 +687,8 @@ class BasketController extends AbstractController
 
         if ($this->isUserLoggedIn()) {
             // internal user
-            $actionLog->setUserId($GLOBALS["TSFE"]->fe_user->user['uid']);
-            $actionLog->setName($GLOBALS["TSFE"]->fe_user->user['username']);
+            $actionLog->setUserId($this->request->getAttribute('frontend.user')->user['uid']);
+            $actionLog->setName($this->request->getAttribute('frontend.user')->user['username']);
             $actionLog->setLabel('Print: ' . $printer->getLabel());
         } else {
             // external user
@@ -683,9 +704,9 @@ class BasketController extends AbstractController
 
     /**
      * Return true if the user is logged in.
-     * 
+     *
      * @access protected
-     * 
+     *
      * @return bool whether the user is logged in
      */
     protected function isUserLoggedIn(): bool
