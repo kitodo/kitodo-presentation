@@ -244,7 +244,7 @@ class NewTenantController extends AbstractController
         $metadataDefaults = $this->getRecords('Metadata');
 
         // load language file in own array
-        $metadataLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf', $this->siteLanguages[0]->getTypo3Language());
+        $metadataLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
 
         $insertedFormats = $this->formatRepository->findAll();
 
@@ -269,7 +269,7 @@ class NewTenantController extends AbstractController
 
             $data['tx_dlf_metadata'][uniqid('NEW')] = [
                 'pid' => $this->pid,
-                'label' => $this->getLLL('metadata.' . $indexName, $this->siteLanguages[0]->getTypo3Language(), $metadataLabels),
+                'label' => $this->getLLL('metadata.' . $indexName, $this->siteLanguages[0]->getLocale()->getLanguageCode(), $metadataLabels),
                 'index_name' => $indexName,
                 'format' => implode(',', $formatIds),
                 'default_value' => $values['default_value'],
@@ -309,7 +309,7 @@ class NewTenantController extends AbstractController
                     'pid' => $this->pid,
                     'sys_language_uid' => $siteLanguage->getLanguageId(),
                     'l18n_parent' => $id,
-                    'label' => $this->getLLL('metadata.' . $indexName, $siteLanguage->getTypo3Language(), $metadataLabels),
+                    'label' => $this->getLLL('metadata.' . $indexName, $siteLanguage->getLocale()->getLanguageCode(), $metadataLabels),
                 ];
             }
 
@@ -331,11 +331,11 @@ class NewTenantController extends AbstractController
         $doPersist = false;
 
         // load language file in own array
-        $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getTypo3Language());
+        $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
 
         if ($this->solrCoreRepository->findOneBy(['pid' => $this->pid]) === null) {
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
-            $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getTypo3Language(), $beLabels). ' (PID ' . $this->pid . ')');
+            $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getLocale()->getLanguageCode(), $beLabels). ' (PID ' . $this->pid . ')');
             $indexName = Solr::createCore('');
             if (!empty($indexName)) {
                 $newRecord->setIndexName($indexName);
@@ -368,14 +368,14 @@ class NewTenantController extends AbstractController
         $structureDefaults = $this->getRecords('Structure');
 
         // load language file in own array
-        $structureLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getTypo3Language());
+        $structureLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
 
         $data = [];
         foreach ($structureDefaults as $indexName => $values) {
             $data['tx_dlf_structures'][uniqid('NEW')] = [
                 'pid' => $this->pid,
                 'toplevel' => $values['toplevel'],
-                'label' => $this->getLLL('structure.' . $indexName, $this->siteLanguages[0]->getTypo3Language(), $structureLabels),
+                'label' => $this->getLLL('structure.' . $indexName, $this->siteLanguages[0]->getLocale()->getLanguageCode(), $structureLabels),
                 'index_name' => $indexName,
                 'oai_name' => $values['oai_name'],
                 'thumbnail' => 0,
@@ -402,7 +402,7 @@ class NewTenantController extends AbstractController
                     'pid' => $this->pid,
                     'sys_language_uid' => $siteLanguage->getLanguageId(),
                     'l18n_parent' => $id,
-                    'label' => $this->getLLL('structure.' . $indexName, $siteLanguage->getTypo3Language(), $structureLabels),
+                    'label' => $this->getLLL('structure.' . $indexName, $siteLanguage->getLocale()->getLanguageCode(), $structureLabels),
                 ];
             }
 
