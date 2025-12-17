@@ -104,7 +104,7 @@
     <div class="tx-dlf-navigation-prev">
         <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
             <f:then>
-                <kitodo:link additionalParams="{'page':'{viewData.requestData.page - 1 - viewData.requestData.double}'}" excludedParams="{0: 'measure'}">
+                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page - 1 - viewData.requestData.double}'}" excludedParams="{0: 'measure'}">
                     <f:translate key="prevPage"/>
                 </kitodo:link>
             </f:then>

@@ -567,30 +567,31 @@ class Indexer
     {
         // this variable holds all possible facet-values for the index names
         $facets = [];
-        // use the structlink information
-        foreach ($doc->smLinks['l2p'] as $logicalId => $physicalId) {
-            // find page in structlink
-            if (in_array($logicalId, $doc->metadataArray) && in_array($physicalUnit['id'], $physicalId)) {
-                // for each associated metadata of structlink
-                foreach ($doc->metadataArray[$logicalId] as $indexName => $data) {
-                    if (
-                        !empty($data)
-                        && substr($indexName, -8) !== '_sorting'
-                    ) {
-                        if (in_array($indexName, self::$fields['facets'])) {
-                            // Remove appended "valueURI" from authors' names for indexing.
-                            if ($indexName == 'author') {
-                                $data = self::removeAppendsFromAuthor($data);
-                            }
-                            // Add facets to facet-array and flatten the values
-                            if (is_array($data)) {
-                                foreach ($data as $value) {
-                                    if (!empty($value)) {
-                                        $facets[$indexName][] = $value;
-                                    }
+        // use the structlink information for physical pages
+        if ($physicalUnit['type'] == 'page') {
+            foreach ($doc->smLinks['p2l'][$physicalUnit['id']] as $logicalId) {
+                // make sure logical units for physical pages exist
+                if (isset($doc->metadataArray[$logicalId])) {
+                    foreach ($doc->metadataArray[$logicalId] as $indexName => $data) {
+                        if (
+                            !empty($data)
+                            && substr($indexName, -8) !== '_sorting'
+                        ) {
+                            if (in_array($indexName, self::$fields['facets'])) {
+                                // Remove appended "valueURI" from authors' names for indexing.
+                                if ($indexName == 'author') {
+                                    $data = self::removeAppendsFromAuthor($data);
                                 }
-                            } else {
-                                $facets[$indexName][] = $data;
+                                // Add facets to facet-array and flatten the values
+                                if (is_array($data)) {
+                                    foreach ($data as $value) {
+                                        if (!empty($value)) {
+                                            $facets[$indexName][] = $value;
+                                        }
+                                    }
+                                } else {
+                                    $facets[$indexName][] = $data;
+                                }
                             }
                         }
                     }
