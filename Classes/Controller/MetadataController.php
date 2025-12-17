@@ -314,7 +314,7 @@ class MetadataController extends AbstractController
         $buildUrl = [];
 
         foreach ($metadata as $i => $section) {
-            if ($this->settings['linkTitle'] && $section['_id'] && isset($section['title']) && !empty($section['title'])) {
+            if ($this->settings['linkTitle'] && $section['_id'] && !empty($section['title'])) {
                 $details = $this->currentDocument->getLogicalStructure($section['_id'][0]);
                 $buildUrl[$i]['title'] = [
                     'id' => $this->document->getUid(),
