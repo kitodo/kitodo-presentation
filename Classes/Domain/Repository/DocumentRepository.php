@@ -73,11 +73,11 @@ class DocumentRepository extends Repository
 
             $document = $this->findOneByIdAndSettings($parameters['id']);
 
-        } else if (isset($parameters['recordId'])) {
+        } elseif (isset($parameters['recordId'])) {
 
             $document = $this->findOneBy(['recordId' => $parameters['recordId']]);
 
-        } else if (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
+        } elseif (isset($parameters['location']) && GeneralUtility::isValidUrl($parameters['location'])) {
 
             $doc = AbstractDocument::getInstance($parameters['location']);
 
@@ -138,9 +138,11 @@ class DocumentRepository extends Repository
         $query->matching($query->equals('structure', $structure));
         $query->matching($query->equals('partof', $partOf));
 
-        $query->setOrderings([
+        $query->setOrderings(
+            [
             'mets_orderlabel' => QueryInterface::ORDER_ASCENDING
-        ]);
+            ]
+        );
 
         return $query->execute();
     }
@@ -275,8 +277,8 @@ class DocumentRepository extends Repository
                     )
                 )
                 ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
-                    $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($settings['storagePid'])),
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', (int) $settings['storagePid']),
+                    $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', (int) $settings['storagePid']),
                     $queryBuilder->expr()->eq('tx_dlf_documents.partof', 0),
                     $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
                     $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
@@ -320,8 +322,8 @@ class DocumentRepository extends Repository
                         )
                     )
                     ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', intval($settings['storagePid'])),
-                        $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', intval($settings['storagePid'])),
+                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', (int) $settings['storagePid']),
+                        $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', (int) $settings['storagePid']),
                         $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery),
                         $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
                         $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
@@ -362,7 +364,7 @@ class DocumentRepository extends Repository
                 ->count('uid')
                 ->from('tx_dlf_documents')
                 ->where(
-                    $queryBuilder->expr()->eq('pid', (int)$settings['storagePid']),
+                    $queryBuilder->expr()->eq('pid', (int) $settings['storagePid']),
                     $queryBuilder->expr()->notIn('uid', $subQuery)
                 )
                 ->executeQuery()
@@ -391,7 +393,7 @@ class DocumentRepository extends Repository
 
         $excludeOtherWhere = '';
         if ($settings['excludeOther'] ?? false) {
-            $excludeOtherWhere = 'tx_dlf_documents.pid=' . intval($settings['storagePid']);
+            $excludeOtherWhere = 'tx_dlf_documents.pid=' . (int) $settings['storagePid'];
         }
         // Check if there are any metadata to suggest.
         return $queryBuilder
@@ -415,8 +417,8 @@ class DocumentRepository extends Repository
             )
             ->from('tx_dlf_documents')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_documents.partof', intval($uid)),
-                $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', intval($pid)),
+                $queryBuilder->expr()->eq('tx_dlf_documents.partof', $uid),
+                $queryBuilder->expr()->eq('tx_dlf_structures_join.pid', $pid),
                 $excludeOtherWhere
             )
             ->getConcreteQueryBuilder()
@@ -596,7 +598,8 @@ class DocumentRepository extends Repository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ) {
+    ): SolrSearch
+    {
         return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -619,7 +622,8 @@ class DocumentRepository extends Repository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch {
+    ): SolrSearch
+    {
         return $this->findSolr($collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -640,7 +644,8 @@ class DocumentRepository extends Repository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch {
+    ): SolrSearch
+    {
         return $this->findSolr([], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -663,7 +668,8 @@ class DocumentRepository extends Repository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch {
+    ): SolrSearch
+    {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
