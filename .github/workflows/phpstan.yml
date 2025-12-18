@@ -15,7 +15,7 @@ jobs:
         variants: [ {typo3: 12.4, php: 8.2}, {typo3: 13.4, php: 8.4}  ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install dependencies
         uses: php-actions/composer@v6
