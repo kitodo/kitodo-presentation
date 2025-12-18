@@ -684,35 +684,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * Get document from repository by uid.
-     *
-     * @access private
-     *
-     * @param int $documentId The document's UID
-     *
-     * @return AbstractDocument
-     */
-    private function getDocumentByUid(int $documentId)
-    {
-        $doc = null;
-        $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
-
-        if ($this->document) {
-            $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
-            if ($doc !== null) {
-                $doc->configPid = $this->document->getPid();
-                $this->buildMultiViewDocuments($this->document->getLocation(), $doc);
-            }
-        }
-
-        if (!$this->document || $doc === null) {
-            $this->logger->error('Invalid UID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
-        }
-
-        return $doc;
-    }
-
-    /**
      * Get document by URL.
      *
      * @access protected
