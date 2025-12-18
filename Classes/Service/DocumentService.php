@@ -11,11 +11,11 @@
 
 namespace Kitodo\Dlf\Service;
 
+use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
