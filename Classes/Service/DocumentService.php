@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Service;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -28,6 +29,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class DocumentService
 {
+    use LoggerAwareTrait;
     /**
      * @access protected
      * @var Document|null This holds the current document
@@ -40,15 +42,12 @@ class DocumentService
     protected $settings;
     /**
      * @access protected
-     * @var array
+     * @var DocumentRepository
      */
-    protected $logger;
     protected DocumentRepository $documentRepository;
-
-    public function __construct()
+    public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
-        $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        $this->documentRepository = $documentRepository;
     }
 
     protected function init()
