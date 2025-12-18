@@ -254,10 +254,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      * @return void
      */
-    protected function loadDocument(): void
+    protected function loadDocument(string $documentId = ''): void
     {
         $this->sanitizeSettings();
-        $this->document = $this->documentService->getDocument($this->requestData['id'], $this->settings);
+        $this->document = $this->documentService->getDocument($documentId, $this->requestData['id'], $this->settings);
     }
 
     /**

@@ -64,10 +64,10 @@ class DocumentService
      * @param array $settings
      * @return ?Document
      */
-    public function getDocument($recordId, $settings)
+    public function getDocument($documentId, $recordId, $settings)
     {
         if ($this->document === null) {
-            $this->serviceLoadDocument($recordId, $settings);
+            $this->serviceLoadDocument($documentId, $recordId, $settings);
         }
         return $this->document;
     }
@@ -76,16 +76,17 @@ class DocumentService
      * @param int $recordId
      * @param array $settings
      */
-    private function serviceLoadDocument($recordId, $settings)
+    private function serviceLoadDocument($documentId, $recordId, $settings)
     {
         $this->settings = $settings;
         // Get document ID from request data if not passed as parameter.
-        if (!empty($recordId)) {
+        if (!$documentId && !empty($recordId)) {
             $documentId = $recordId;
         }
 
         // Try to get document format from database
         if (!empty($documentId)) {
+
 
             $doc = null;
 
