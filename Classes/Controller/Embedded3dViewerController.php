@@ -99,7 +99,7 @@ class Embedded3dViewerController extends AbstractController
             $fileId = $document->physicalStructureInfo[$document->physicalStructure[1]]['files']['DEFAULT'];
             $mimeType = trim($document->getFileMimeType($fileId));
             $model = trim($document->getFileLocation($fileId));
-            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model,Helper::getModelFormatOfMimeType($mimeType)));
+            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model, Helper::getModelFormatOfMimeType($mimeType)));
         }
     }
 

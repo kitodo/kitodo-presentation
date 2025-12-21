@@ -1116,7 +1116,7 @@ class Helper
     public static function getModelFormatOfMimeType(string $mimeType): string
     {
         $modelFormat = '';
-        if (array_key_exists($mimeType,self::MIME_TYPE_MODEL_FORMATS)) {
+        if (array_key_exists($mimeType, self::MIME_TYPE_MODEL_FORMATS)) {
             return self::MIME_TYPE_MODEL_FORMATS[$mimeType];
         }
         return $modelFormat;
