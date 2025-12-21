@@ -109,7 +109,7 @@ class Embedded3dViewerController extends AbstractController
      * Gets the query part including the separator, parameter name and value.
      * The value will be overwritten if the request data or settings contain the same name.
      *
-     * @param mixed $name
+     * @param string $name
      * @param string $value
      * @return string The query part with separator, parameter name and value
      */
