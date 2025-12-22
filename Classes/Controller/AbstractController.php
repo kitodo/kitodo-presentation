@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Configuration\UseGroupsConfiguration;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Pagination\PageGridPaginator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -24,6 +25,7 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Resource\Exception\InvalidFileException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -598,10 +600,13 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * build simple pagination
+     * Build simple pagination
+     *
+     * @access protected
      *
      * @param PaginationInterface $pagination
      * @param PaginatorInterface $paginator
+     *
      * @return array
      */
     //TODO: clean this function
@@ -634,7 +639,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $lastStartRecordNumberGrid = 0; // due to validity outside the loop
         foreach (range($firstPage, $lastPage) as $i) {
             // detect which pagination is active: ListView or GridView
-            if (get_class($pagination) == 'TYPO3\CMS\Core\Pagination\SimplePagination') {  // ListView
+            if ($pagination instanceof SimplePagination) {  // ListView
                 $lastStartRecordNumberGrid = $i; // save last $startRecordNumber for LastPage button
 
                 $pages[$i] = [
@@ -646,10 +651,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 // <f:for each="{pagination.pagesR}" as="page">
                 if (in_array($i, $aRange)) {
                     $pagesSect[] = ['label' => $i, 'startRecordNumber' => $i];
-                };
+                }
             } else { // GridView
                 // to calculate the values for generation the links for the pagination pages
-                /** @var \Kitodo\Dlf\Pagination\PageGridPaginator $paginator */
+                /** @var PageGridPaginator $paginator */
                 $itemsPerPage = $paginator->getPublicItemsPerPage();
 
                 $startRecordNumber = $itemsPerPage * $i;
@@ -673,12 +678,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 // Check if screen page is in range
                 if (in_array($i, $aRange)) {
                     $pagesSect[] = ['label' => $i, 'startRecordNumber' => $startRecordNumber];
-                };
-            };
-        };
+                }
+            }
+        }
 
         // check whether the last element from $aRange <= last screen page, if yes then points must be added
-        if ($aRange[array_key_last($aRange)] < $lastPage) {
+        if (end($aRange) < $lastPage) {
             $pagesSect[] = ['label' => '...', 'startRecordNumber' => '...'];
         }
 
