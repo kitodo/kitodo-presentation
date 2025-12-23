@@ -73,9 +73,9 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
         }
 
         $modelInfo = PathUtility::pathinfo($parameters['model']);
-        $modelFormat = $modelInfo["extension"];
+        $modelFormat = $this->getModelFormat($parameters, $modelInfo);
         if (empty($modelFormat)) {
-            return $this->warningResponse('Model path "' . $parameters['model'] . '" has no extension format', $request);
+            return $this->warningResponse('Model format is not provided.', $request);
         }
 
         if (empty($parameters['viewer'])) {
@@ -260,5 +260,23 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
 
         $html = $viewerFolder->getFile($htmlFile)->getContents();
         return $this->replacePlaceholders($viewerUrl, $html, $parameters, $modelInfo);
+    }
+
+    /**
+     * Get the model format from parameter or extension.
+     *
+     * @param array $parameters The model format parameter
+     * @param array $modelInfo The model info
+     * @return string Returns the model format or empty string
+     */
+    protected function getModelFormat(array $parameters, array $modelInfo): string
+    {
+        $modelFormat = '';
+        if (!empty($parameters['modelFormat'])) {
+            $modelFormat = $parameters['modelFormat'];
+        } elseif (!empty($modelInfo['extension'])) {
+            $modelFormat = $modelInfo['extension'];
+        }
+        return $modelFormat;
     }
 }

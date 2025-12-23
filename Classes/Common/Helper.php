@@ -85,6 +85,25 @@ class Helper
     protected static array $indexNameCache = [];
 
     /**
+     * @access protected
+     * @var array Assignment of mime type to model format
+     */
+    protected const MIME_TYPE_MODEL_FORMATS = [
+        'application/vnd.autodesk.fbx' => 'fbx',
+        'text/plain' => 'obj',
+        'model/vnd.collada+xml' => 'dae',
+        'application/octet-stream' => 'ply',
+        'application/x-3ds' => '3ds',
+        'application/x-ifc' => 'ifc',
+        'model/stl' => 'stl',
+        'model/gltf-binary' => 'glb',
+        'model/gltf+json' => 'gltf',
+        'application/json' => 'json',
+        'chemical/x-xyz' => 'xyz',
+        'text/html' => 'html'
+    ];
+
+    /**
      * Generates a flash message and adds it to a message queue.
      *
      * @access public
@@ -1086,5 +1105,20 @@ class Helper
     {
         $mimeTypeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
         return $mimeTypeDetector->getMimeTypesForFileExtension($fileExtension);
+    }
+
+    /**
+     * Get the assigned model format of mime type.
+     *
+     * @param string $mimeType The mime type of file
+     * @return string The model format
+     */
+    public static function getModelFormatOfMimeType(string $mimeType): string
+    {
+        $modelFormat = '';
+        if (array_key_exists($mimeType, self::MIME_TYPE_MODEL_FORMATS)) {
+            return self::MIME_TYPE_MODEL_FORMATS[$mimeType];
+        }
+        return $modelFormat;
     }
 }
