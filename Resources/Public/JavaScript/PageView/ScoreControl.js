@@ -42,23 +42,13 @@ dlfScoreUtil = dlfScoreUtil || {};
 dlfScoreUtil.fetchScoreDataFromServer = function (image, scoreUrl, pagebeginning) {
   const result = new $.Deferred();
   const tk = new verovio.toolkit();
-  if(image.width > image.height) {
-    options = {
-      pageHeight: image.height,
-      pageWidth: image.width,
-      adjustPageHeight: true,
-      adjustPageWidth: true,
-      scale: 40
-    };
-  } else {
-    options = {
-      pageHeight: image.height,
-      pageWidth: image.width,
-      adjustPageHeight: true,
-      adjustPageWidth: true,
-      scale: 80
-    };
-  }
+  options = {
+    pageHeight: image.height,
+    pageWidth: image.width,
+    adjustPageHeight: true,
+    adjustPageWidth: true,
+    scale: image.width > image.height ? 40 : 80
+  };
   tk.setOptions(options);
 
   if (scoreUrl === '') {
@@ -417,8 +407,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (image, scoreData, tk) 
 
 
     var pdfOptions = {
-      adjustPageHeight: true,
-      adjustPageWidth: true,
+      adjustPageHeight: false,
+      adjustPageWidth: false,
       breaks: "auto",
       mdivAll: true,
       mmOutput: true,
