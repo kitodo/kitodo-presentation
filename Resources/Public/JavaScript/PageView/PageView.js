@@ -339,7 +339,7 @@ dlfViewer.prototype.countPages = function () {
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
  * fulltext, score, and the image manipulation control
  */
-dlfViewer.prototype.addCustomControls = function() {
+dlfViewer.prototype.addCustomControls = function(image) {
     var fulltextControl = undefined,
         fulltextDownloadControl = undefined,
         annotationControl = undefined,
@@ -483,7 +483,7 @@ dlfViewer.prototype.addCustomControls = function() {
         var context = this;
         const scoreControl = new dlfViewerScoreControl(this, this.pagebeginning, this.imageUrls.length);
         this.scoresLoaded_.then(function (scoreData) {
-            scoreControl.loadScoreData(scoreData, tk);
+            scoreControl.loadScoreData(image, scoreData, context.tk);
 
             // Add synchronisation control
             context.syncControl = new dlfViewerSyncControl(context);
@@ -846,10 +846,10 @@ dlfViewer.prototype.init = function(controlNames) {
             // Initiate loading fulltexts
             this.initLoadFulltexts();
 
-            if (this.score !== '') {
-                // Initiate loading scores
-                this.initLoadScores();
-            }
+          if (this.score !== '') {
+            // Initiate loading scores
+            this.initLoadScores(this.images[0]);
+          }
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
@@ -896,7 +896,8 @@ dlfViewer.prototype.init = function(controlNames) {
                 }
             }
 
-            this.addCustomControls();
+
+          this.addCustomControls(this.images[0]);
 
             // highlight word in case a highlight field is registered
             this.displayHighlightWord();
@@ -972,10 +973,10 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
  *
  * @private
  */
-dlfViewer.prototype.initLoadScores = function () {
-  this.config = dlfScoreUtil.fetchScoreDataFromServer(this.score, this.pagebeginning);
-  this.scoresLoaded_ = this.config[0];
-  this.tk = this.config[1];
+dlfViewer.prototype.initLoadScores = function (image) {
+  this.config = dlfScoreUtil.fetchScoreDataFromServer(image, this.score, this.pagebeginning);
+  this.scoresLoaded_ = this.config.promise;
+  this.tk = this.config.toolkit;
 };
 
 /**

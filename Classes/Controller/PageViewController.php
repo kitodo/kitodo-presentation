@@ -185,6 +185,7 @@ class PageViewController extends AbstractController
                     $i = 0;
                     foreach ($musicalStruct as $measureData) {
                         if (isset($measureData['files'])
+                            && isset($measureData['files']['DEFAULT'])
                             && $defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
                             $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
                             $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
