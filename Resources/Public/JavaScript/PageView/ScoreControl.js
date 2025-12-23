@@ -8,7 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/*global ol, saveAs, dlfUtils, tx_dlf_viewer */
+/*global ol, saveAs, dlfUtils, tx_dlf_viewer, verovio */
 
 /**
  * Retrieve the title from the MEI head.
@@ -42,14 +42,13 @@ dlfScoreUtil = dlfScoreUtil || {};
 dlfScoreUtil.fetchScoreDataFromServer = function (image, scoreUrl, pagebeginning) {
   const result = new $.Deferred();
   const tk = new verovio.toolkit();
-  options = {
+  tk.setOptions({
     pageHeight: image.height,
     pageWidth: image.width,
     adjustPageHeight: true,
     adjustPageWidth: true,
     scale: image.width > image.height ? 40 : 80
-  };
-  tk.setOptions(options);
+  });
 
   if (scoreUrl === '') {
     result.reject();
