@@ -62,7 +62,7 @@ class DocumentService
      * @param array $settings
      * @return ?Document
      */
-    public function getDocument($documentId, $recordId, $settings)
+    public function getDocument(string $documentId,int $recordId,array $settings)
     {
         if ($this->document === null) {
             $this->serviceLoadDocument($documentId, $recordId, $settings);
