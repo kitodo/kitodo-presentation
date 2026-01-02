@@ -16,7 +16,7 @@ jobs:
         variants: [ {typo3: 12.4, php: 8.2}, {typo3: 12.4, php: 8.4}, {typo3: 13.4, php: 8.2}, {typo3: 13.4, php: 8.4}  ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install dependencies
         run: Build/Test/runTests.sh -s composerInstall -t ${{ matrix.variants.typo3 }} -p ${{ matrix.variants.php }}
