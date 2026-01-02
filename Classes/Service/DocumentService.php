@@ -71,10 +71,11 @@ class DocumentService
     }
     /**
      * @access public
+     * @param string $documentId
      * @param int $recordId
      * @param array $settings
      */
-    private function serviceLoadDocument($documentId, $recordId, $settings)
+    private function serviceLoadDocument(string $documentId,int $recordId,array $settings)
     {
         $this->settings = $settings;
         // Get document ID from request data if not passed as parameter.

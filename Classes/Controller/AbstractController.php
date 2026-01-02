@@ -252,6 +252,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * Load the current Document to memory just once with DocumentService - it will then be available for all controllers.
      *
      * @access protected
+     * @param string $documentId
      * @return void
      */
     protected function loadDocument(string $documentId = ''): void
