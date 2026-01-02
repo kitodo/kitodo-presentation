@@ -51,8 +51,8 @@ class StdWrapViewHelperTest extends FunctionalTestCase
         );
 
         // A fully filled array with correct values does not make any difference. The rendering result
-        // is not been influenced by the viewhelpers data parameter.
-        $view->assign('metaSectionCObj', [0 => ['tilte' => 'A test title']]);
+        // has not been influenced by the viewhelpers data parameter.
+        $view->assign('metaSectionConfigObject', [0 => ['tilte' => 'A test title']]);
 
         $view->setTemplateSource(
             '<html xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers">
