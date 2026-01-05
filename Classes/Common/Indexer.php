@@ -83,6 +83,13 @@ class Indexer
     /**
      * @access protected
      * @static
+     * @var array List of already processed structure paths
+     */
+    protected static array $processedStructurePaths = [];
+
+    /**
+     * @access protected
+     * @static
      * @var Solr Instance of Solr class
      */
     protected static Solr $solr;
@@ -371,6 +378,10 @@ class Indexer
                 $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->getToplevelId());
                 $solrDoc->setField('title', $metadata['title'][0]);
                 $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
+                // process structure path and flag paths that end in leaf node
+                self::$processedStructurePaths[$logicalUnit['id']]['is_leaf'] = self::isLeafNode($doc->tableOfContents, $logicalUnit['id']);
+                self::$processedStructurePaths[$logicalUnit['id']]['segments'] = self::buildStructurePathData($doc->tableOfContents, $logicalUnit['id'], $document->getCurrentDocument()->getToplevelId());
+                $solrDoc->setField('structure_path', json_encode(self::$processedStructurePaths[$logicalUnit['id']]['segments'], JSON_UNESCAPED_UNICODE));
                 // verify date formatting
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
@@ -465,6 +476,18 @@ class Indexer
             $solrDoc->setField('type', $physicalUnit['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->getToplevelId()]['collection']);
             $solrDoc->setField('location', $document->getLocation());
+            // pick only structure paths that end in leaf nodes
+            $leafStructurePaths = [];
+            foreach ($doc->smLinks['p2l'][$physicalUnit['id']] as $logicalId) {
+                if (
+                    empty(self::$processedStructurePaths[$logicalId])
+                    || !self::$processedStructurePaths[$logicalId]['is_leaf']
+                ) {
+                    continue;
+                }
+                $leafStructurePaths[] = json_encode(self::$processedStructurePaths[$logicalId]['segments'], JSON_UNESCAPED_UNICODE);
+            }
+            $solrDoc->setField('structure_path', $leafStructurePaths);
 
             $solrDoc->setField('fulltext', $fullText);
             if (is_array($doc->metadataArray[$doc->getToplevelId()])) {
@@ -726,6 +749,82 @@ class Indexer
             }
         }
         return $authors;
+    }
+
+    public static function findPath(array $nodes, $targetId, $path = []): array|bool
+    {
+        foreach ($nodes as $node) {
+            // remember where we came from
+            $currentPath = array_merge($path, [$node]);
+            if ($node['id'] == $targetId) {
+                return $currentPath;
+            }
+            if (!empty($node['children'])) {
+                $result = self::findPath($node['children'], $targetId, $currentPath);
+                if ($result) {
+                    return $result;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static function isLeafNode(array $tree, $targetId): bool
+    {
+        $path = self::findPath($tree, $targetId);
+        if (!$path) {
+            return false;
+        }
+        $node = end($path);
+        return empty($node['children']);
+    }
+
+    public static function buildStructurePathData(array $tree, $targetId, $cutoffId): array
+    {
+        $path = self::findPath($tree, $targetId);
+        if (!$path) {
+            return [];
+        }
+        // find cutoff index, so we dont list parents of the document itself
+        $cutoffIndex = array_search($cutoffId, array_column($path, 'id'));
+        if ($cutoffIndex !== false) {
+            // remove everything above and including cutoff index
+            $path = array_slice($path, $cutoffIndex + 1);
+        }
+        $segments = [];
+        foreach ($path as $node) {
+            $segments[] = self::buildStructurePathSegment($node);
+        }
+        return $segments;
+    }
+
+    public static function buildStructurePathSegment(array $node): array
+    {
+        if (!empty($node['label'])) {
+            return [
+                'label' => $node['label'],
+            ];
+        }
+        if (!empty($node['orderlabel'])) {
+            return [
+                'label' => $node['orderlabel'],
+            ];
+        }
+        if (!empty($node['volume'])) {
+            $value = !empty($node['year'])
+                ? $node['volume'] . ' ' . $node['year']
+                : $node['volume'];
+
+            return [
+                'label' => $value,
+            ];
+        }
+        if (!empty($node['type'])) {
+            return [
+                'type' => $node['type'],
+            ];
+        }
+        return ['label' => ''];
     }
 
     /**
