@@ -617,6 +617,9 @@
             <trans-unit id="config.solr.fields.volume">
                 <source>Solr Schema Field "volume" : Volume field is mandatory for identifying documents (default is "volume")</source>
             </trans-unit>
+            <trans-unit id="config.solr.fields.structure_path">
+                <source>Solr Schema Field "structure_path" : Field providing context about the location of a resource in the structure map (default is "structure_path")</source>
+            </trans-unit>
             <trans-unit id="config.solr.fields.date">
                 <source>Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (default is "date")</source>
             </trans-unit>
