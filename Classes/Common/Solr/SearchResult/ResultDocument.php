@@ -75,6 +75,12 @@ class ResultDocument
 
     /**
      * @access private
+     * @var array The JSON encoded structure path(s)
+     */
+    private array $structurePath = [];
+
+    /**
+     * @access private
      * @var Page[] All pages in which search phrase was found
      */
     private array $pages = [];
@@ -117,6 +123,7 @@ class ResultDocument
         $this->title = $record[$fields['title']];
         $this->toplevel = $record[$fields['toplevel']] ?? false;
         $this->type = $record[$fields['type']];
+        $this->structurePath = $record[$fields['structure_path']] ?? [];
 
         if (!empty($highlighting[$this->id])) {
             $highlightingForRecord = $highlighting[$this->id][$fields['fulltext']];
@@ -223,6 +230,18 @@ class ResultDocument
     public function getType(): ?string
     {
         return $this->type;
+    }
+
+    /**
+     * Get the structure path(s)
+     *
+     * @access public
+     *
+     * @return string|null
+     */
+    public function getStructurePath(): array
+    {
+        return $this->structurePath;
     }
 
     /**

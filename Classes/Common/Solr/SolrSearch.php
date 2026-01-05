@@ -487,7 +487,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $params['listMetadataRecords'] = [];
 
         // Restrict the fields to the required ones.
-        $params['fields'] = 'uid,id,page,title,thumbnail,partof,toplevel,type';
+        $params['fields'] = 'uid,id,page,title,thumbnail,partof,toplevel,type,structure_path';
 
         if ($this->listedMetadata) {
             foreach ($this->listedMetadata as $metadata) {
@@ -560,6 +560,31 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                             $searchResult['page'] = $doc['page'];
                             $searchResult['thumbnail'] = $doc['thumbnail'];
                             $searchResult['structure'] = $doc['type'];
+                            // create string(s) from structure path(s)
+                            $encodedStructurePaths = $doc['structure_path'] ?? [];
+                            if (!is_array($encodedStructurePaths)) {
+                                $encodedStructurePaths = [$encodedStructurePaths];
+                            }
+                            $structurePathStrings = [];
+                            foreach ($encodedStructurePaths as $jsonString) {
+                                if (!is_string($jsonString) || $jsonString === '') {
+                                    continue;
+                                }
+                                $segments = json_decode($jsonString, true);
+                                if ($segments === null && json_last_error() !== JSON_ERROR_NONE) {
+                                    continue;
+                                }
+                                $structurePathLabels = [];
+                                foreach ($segments as $currentSegment) {
+                                    if (isset($currentSegment['type'])) {
+                                        $structurePathLabels[] = Helper::translate($currentSegment['type'], 'tx_dlf_structures', $this->settings['storagePid']);
+                                    } elseif (!empty($currentSegment['label'])) {
+                                        $structurePathLabels[] = $currentSegment['label'];
+                                    }
+                                }
+                                $structurePathStrings[] = implode(' → ', $structurePathLabels);
+                            }
+                            $searchResult['structure_path'] = $structurePathStrings;
                             $searchResult['title'] = $doc['title'];
                             foreach ($params['listMetadataRecords'] as $indexName => $solrField) {
                                 if (isset($doc['metadata'][$indexName])) {
@@ -890,6 +915,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             'title' => $resultDocument->getTitle(),
             'toplevel' => $resultDocument->getToplevel(),
             'type' => $resultDocument->getType(),
+            'structure_path' => $resultDocument->getStructurePath(),
             'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
             'highlight' => $resultDocument->getHighlightsIds(),
         ];
