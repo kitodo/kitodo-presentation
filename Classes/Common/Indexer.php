@@ -83,9 +83,9 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var array List of already processed structure paths
+     * @var array List of already extracted structure nodes for structure path
      */
-    protected static array $processedStructurePaths = [];
+    protected static array $extractedStructurePathNodes = [];
 
     /**
      * @access protected
@@ -378,10 +378,10 @@ class Indexer
                 $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->getToplevelId());
                 $solrDoc->setField('title', $metadata['title'][0]);
                 $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
-                // process structure path and flag paths that end in leaf node
-                self::$processedStructurePaths[$logicalUnit['id']]['is_leaf'] = self::isLeafNode($doc->tableOfContents, $logicalUnit['id']);
-                self::$processedStructurePaths[$logicalUnit['id']]['segments'] = self::buildStructurePathData($doc->tableOfContents, $logicalUnit['id'], $document->getCurrentDocument()->getToplevelId());
-                $solrDoc->setField('structure_path', json_encode(self::$processedStructurePaths[$logicalUnit['id']]['segments'], JSON_UNESCAPED_UNICODE));
+                // extract structure path
+                self::$extractedStructurePathNodes[$logicalUnit['id']] = self::extractStructurePathNodes($doc->tableOfContents, $logicalUnit['id']);
+                $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $document->getCurrentDocument()->getToplevelId());
+                $solrDoc->setField('structure_path', json_encode($processedStructurePath, JSON_UNESCAPED_UNICODE));
                 // verify date formatting
                 if(strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
@@ -476,19 +476,21 @@ class Indexer
             $solrDoc->setField('type', $physicalUnit['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->getToplevelId()]['collection']);
             $solrDoc->setField('location', $document->getLocation());
-            // pick only structure paths that end in leaf nodes
-            $leafStructurePaths = [];
+            // pick only the deepest structure paths
+            $associatedPaths = [];
             foreach ($doc->smLinks['p2l'][$physicalUnit['id']] as $logicalId) {
-                if (
-                    empty(self::$processedStructurePaths[$logicalId])
-                    || !self::$processedStructurePaths[$logicalId]['is_leaf']
-                ) {
-                    continue;
+                $path = self::$extractedStructurePathNodes[$logicalId] ?? [];
+                if (!empty($path)) {
+                    $associatedPaths[$logicalId] = $path;
                 }
-                $leafStructurePaths[] = json_encode(self::$processedStructurePaths[$logicalId]['segments'], JSON_UNESCAPED_UNICODE);
             }
-            $solrDoc->setField('structure_path', $leafStructurePaths);
-
+            $deepestPaths = self::filterDeepestStructurePaths($associatedPaths);
+            $processedStructurePath = [];
+            foreach ($deepestPaths as $path) {
+                $segments = self::buildStructurePathData($path, $document->getCurrentDocument()->getToplevelId());
+                $processedStructurePath[] = json_encode($segments, JSON_UNESCAPED_UNICODE);
+            }
+            $solrDoc->setField('structure_path', $processedStructurePath);
             $solrDoc->setField('fulltext', $fullText);
             if (is_array($doc->metadataArray[$doc->getToplevelId()])) {
                 self::addFaceting($doc, $solrDoc, $physicalUnit);
@@ -751,7 +753,20 @@ class Indexer
         return $authors;
     }
 
-    public static function findPath(array $nodes, $targetId, $path = []): array|bool
+    /**
+     * Extract nodes alongside the structure map in direct line to the target id and return them as flattened array.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param array $nodes Tree or Sub-Tree, where the target id should be extracted from if present
+     * @param string $targetId The ID of the logical structure element to be found
+     * @param array $path An intermediate array that keeps track of the current branch that is being looked up
+     *
+     * @return array
+     */
+    private static function extractStructurePathNodes(array $nodes, string $targetId, array $path = []): array
     {
         foreach ($nodes as $node) {
             // remember where we came from
@@ -760,45 +775,97 @@ class Indexer
                 return $currentPath;
             }
             if (!empty($node['children'])) {
-                $result = self::findPath($node['children'], $targetId, $currentPath);
+                $result = self::extractStructurePathNodes($node['children'], $targetId, $currentPath);
                 if ($result) {
                     return $result;
                 }
             }
         }
-        return false;
+        return [];
     }
 
-    public static function isLeafNode(array $tree, $targetId): bool
+    /**
+     * Filters those structure path nodes that are the descending into the structure tree the most and removes any that resemble a "prefix" of another.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param array $paths The array containing all structure path nodes associated with a physical page
+     *
+     * @return array
+     */
+    private static function filterDeepestStructurePaths(array $paths): array
     {
-        $path = self::findPath($tree, $targetId);
-        if (!$path) {
-            return false;
+        if (count($paths) <= 1) {
+            return $paths;
         }
-        $node = end($path);
-        return empty($node['children']);
+
+        $deepestPath = [];
+        foreach ($paths as $currentLogicalId => $currentPath) {
+            $currentIds = array_column($currentPath, 'id');
+            $isPrefix = false;
+
+            foreach ($paths as $comparisonLogicalId => $comparisonPath) {
+                if ($currentLogicalId === $comparisonLogicalId) {
+                    continue;
+                }
+                $comparisonIds = array_column($comparisonPath, 'id');
+                // check if structure path is part/prefix of another structure path
+                if (
+                    count($currentIds) < count($comparisonIds)
+                    && array_slice($comparisonIds, 0, count($currentIds)) === $currentIds
+                ) {
+                    $isPrefix = true;
+                    break;
+                }
+            }
+
+            if (!$isPrefix) {
+                $deepestPath[$currentLogicalId] = $currentPath;
+            }
+        }
+        return $deepestPath;
     }
 
-    public static function buildStructurePathData(array $tree, $targetId, $cutoffId): array
+    /**
+     * Create the actual array with the required data for the structure path that will be JSON encoded and indexed.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param array $path The structure path nodes that shall be processed
+     * @param string $cutoffId The logical id at which ancestors and itself will not be part of the structure path data
+     *
+     * @return array
+     */
+    private static function buildStructurePathData(array $path, string $cutoffId): array
     {
-        $path = self::findPath($tree, $targetId);
-        if (!$path) {
-            return [];
-        }
-        // find cutoff index, so we dont list parents of the document itself
         $cutoffIndex = array_search($cutoffId, array_column($path, 'id'));
         if ($cutoffIndex !== false) {
-            // remove everything above and including cutoff index
             $path = array_slice($path, $cutoffIndex + 1);
         }
+
         $segments = [];
         foreach ($path as $node) {
-            $segments[] = self::buildStructurePathSegment($node);
+            $segments[] = self::buildStructurePathSegments($node);
         }
         return $segments;
     }
 
-    public static function buildStructurePathSegment(array $node): array
+    /**
+     * Gets the label or type of a structure path node with corresponding tag
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param array $node The current node that should be processed
+     *
+     * @return array
+     */
+    private static function buildStructurePathSegments(array $node): array
     {
         if (!empty($node['label'])) {
             return [
