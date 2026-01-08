@@ -826,7 +826,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         if (!empty($collectionsQueryString)) {
             $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ')';
             if (empty($query)) {
-                $collectionsQueryString .= ') AND toplevel:true AND partof:0';
+                $collectionsQueryString .= ' AND toplevel:true AND partof:0';
             }
             $collectionsQueryString .= ')';
         }
