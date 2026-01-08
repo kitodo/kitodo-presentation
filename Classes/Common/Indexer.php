@@ -252,7 +252,7 @@ class Indexer
     public static function getIndexFieldName(string $indexName, int $pid = 0): string
     {
         // Sanitize input.
-        $pid = max((int) $pid, 0);
+        $pid = max($pid, 0);
         if (!$pid) {
             Helper::error('Invalid PID ' . $pid . ' for metadata configuration');
             return '';
@@ -383,7 +383,7 @@ class Indexer
                 $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $document->getCurrentDocument()->getToplevelId());
                 $solrDoc->setField('structure_path', json_encode($processedStructurePath, JSON_UNESCAPED_UNICODE));
                 // verify date formatting
-                if(strtotime($metadata['date'][0])) {
+                if (strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
                 }
                 $solrDoc->setField('record_id', $metadata['record_id'][0] ?? '');
@@ -555,7 +555,7 @@ class Indexer
             // TODO: Include also subentries if available.
             if (
                 !empty($data)
-                && substr($indexName, -8) !== '_sorting'
+                && !str_ends_with($indexName, '_sorting')
             ) {
                 $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data);
                 if (in_array($indexName, self::$fields['sortables']) &&
@@ -600,7 +600,7 @@ class Indexer
                     foreach ($doc->metadataArray[$logicalId] as $indexName => $data) {
                         if (
                             !empty($data)
-                            && substr($indexName, -8) !== '_sorting'
+                            && !str_ends_with($indexName, '_sorting')
                         ) {
                             if (in_array($indexName, self::$fields['facets'])) {
                                 // Remove appended "valueURI" from authors' names for indexing.
@@ -634,7 +634,7 @@ class Indexer
             // Add sorting information to physical sub-elements if applicable.
             if (
                 !empty($data)
-                && substr($indexName, -8) == '_sorting'
+                && str_ends_with($indexName, '_sorting')
             ) {
                 $solrDoc->setField($indexName, $doc->metadataArray[$doc->getToplevelId()][$indexName]);
             }
@@ -714,16 +714,16 @@ class Indexer
     private static function getFormattedDate(string $date): string
     {
         if (
-            preg_match("/^[\d]{4}$/", $date)
-            || preg_match("/^[\d]{4}-[\d]{2}$/", $date)
-            || preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $date)
+            preg_match("/^\d{4}$/", $date)
+            || preg_match("/^\d{4}-\d{2}$/", $date)
+            || preg_match("/^\d{4}-\d{2}-\d{2}$/", $date)
         ) {
             return $date;
-        // change date YYYYMMDD to YYYY-MM-DD
-        } elseif (preg_match("/^[\d]{8}$/", $date)) {
+        } elseif (preg_match("/^\d{8}$/", $date)) {
+            // change date YYYYMMDD to YYYY-MM-DD
             return date("Y-m-d", strtotime($date));
-        // convert any datetime to proper ISO extended datetime format and timezone for SOLR
         } elseif (preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*$/", $date)) {
+            // convert any datetime to proper ISO extended datetime format and timezone for SOLR
             return date('Y-m-d\TH:i:s\Z', strtotime($date));
         }
         // date doesn't match any standard

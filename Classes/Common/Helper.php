@@ -134,90 +134,6 @@ class Helper
     }
 
     /**
-     * Check if given identifier is a valid identifier of the German National Library
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $id The identifier to check
-     * @param string $type What type is the identifier supposed to be? Possible values: PPN, IDN, PND, ZDB, SWD, GKD
-     *
-     * @return bool Is $id a valid GNL identifier of the given $type?
-     */
-    public static function checkIdentifier(string $id, string $type): bool
-    {
-        $digits = substr($id, 0, 8);
-        $checksum = self::getChecksum($digits);
-        switch (strtoupper($type)) {
-            case 'PPN':
-            case 'IDN':
-            case 'PND':
-                if ($checksum == 10) {
-                    $checksum = 'X';
-                }
-                if (!preg_match('/\d{8}[\dX]{1}/i', $id)) {
-                    return false;
-                } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
-                    return false;
-                }
-                break;
-            case 'ZDB':
-                if ($checksum == 10) {
-                    $checksum = 'X';
-                }
-                if (!preg_match('/\d{8}-[\dX]{1}/i', $id)) {
-                    return false;
-                } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
-                    return false;
-                }
-                break;
-            case 'SWD':
-                $checksum = 11 - $checksum;
-                if (!preg_match('/\d{8}-\d{1}/i', $id)) {
-                    return false;
-                } elseif ($checksum == 10) {
-                    return self::checkIdentifier(((int) $digits + 1) . substr($id, -2, 2), 'SWD');
-                } elseif (substr($id, -1, 1) != $checksum) {
-                    return false;
-                }
-                break;
-            case 'GKD':
-                $checksum = 11 - $checksum;
-                if ($checksum == 10) {
-                    $checksum = 'X';
-                }
-                if (!preg_match('/\d{8}-[\dX]{1}/i', $id)) {
-                    return false;
-                } elseif (strtoupper(substr($id, -1, 1)) != $checksum) {
-                    return false;
-                }
-                break;
-        }
-        return true;
-    }
-
-    /**
-     * Get checksum for given digits.
-     *
-     * @access private
-     *
-     * @static
-     *
-     * @param string $digits
-     *
-     * @return int
-     */
-    private static function getChecksum(string $digits): int
-    {
-        $checksum = 0;
-        for ($i = 0, $j = strlen($digits); $i < $j; $i++) {
-            $checksum += (9 - $i) * (int) substr($digits, $i, 1);
-        }
-        return (11 - ($checksum % 11)) % 11;
-    }
-
-    /**
      * Decrypt encrypted value with given control hash
      *
      * @access public
@@ -226,9 +142,9 @@ class Helper
      *
      * @param string $encrypted The encrypted value to decrypt
      *
-     * @return mixed The decrypted value or false on error
+     * @return false|string The decrypted value or false on error
      */
-    public static function decrypt(string $encrypted)
+    public static function decrypt(string $encrypted): false|string
     {
         if (
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
@@ -269,7 +185,7 @@ class Helper
      *
      * @return \SimpleXMLElement|false
      */
-    public static function getXmlFileAsString($content)
+    public static function getXmlFileAsString($content): \SimpleXMLElement|false
     {
         // Don't make simplexml_load_string throw (when $content is an array
         // or object)
@@ -348,9 +264,9 @@ class Helper
      *
      * @param string $string The string to encrypt
      *
-     * @return mixed Hashed string or false on error
+     * @return false|string Hashed string or false on error
      */
-    public static function digest(string $string)
+    public static function digest(string $string): false|string
     {
         if (!in_array(self::$hashAlgorithm, openssl_get_md_methods(true))) {
             self::error('OpenSSL library doesn\'t support hash algorithm');
@@ -369,9 +285,9 @@ class Helper
      *
      * @param string $string The string to encrypt
      *
-     * @return mixed Encrypted string or false on error
+     * @return false|string Encrypted string or false on error
      */
-    public static function encrypt(string $string)
+    public static function encrypt(string $string): false|string
     {
         if (
             !in_array(self::$cipherAlgorithm, openssl_get_cipher_methods(true))
@@ -394,29 +310,6 @@ class Helper
             $encrypted = base64_encode($iv . $encrypted);
         }
         return $encrypted;
-    }
-
-    /**
-     * Clean up a string to use in a URL.
-     *
-     * @access public
-     *
-     * @static
-     *
-     * @param string $string The string to clean up
-     *
-     * @return string The cleaned up string
-     */
-    public static function getCleanString(string $string): string
-    {
-        // Convert to lowercase.
-        $string = strtolower($string);
-        // Remove non-alphanumeric characters.
-        $string = preg_replace('/[^a-z\d_\s-]/', '', $string);
-        // Remove multiple dashes or whitespaces.
-        $string = preg_replace('/[\s-]+/', ' ', $string);
-        // Convert whitespaces and underscore to dash.
-        return preg_replace('/[\s_]/', '-', $string);
     }
 
     /**
@@ -509,8 +402,10 @@ class Helper
      * @access public
      *
      * @static
+     *
+     * @return void
      */
-    public static function resetIndexNameCache()
+    public static function resetIndexNameCache(): void
     {
         self::$indexNameCache = [];
     }
@@ -589,7 +484,7 @@ class Helper
     }
 
     /**
-     * Determine whether or not $url is a valid URL using HTTP or HTTPS scheme.
+     * Determine whether $url is a valid URL using HTTP or HTTPS scheme.
      *
      * @access public
      *
@@ -626,7 +521,7 @@ class Helper
      *
      * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
      */
-    public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], $reverseOrder = false, $cmdFirst = false)
+    public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], bool $reverseOrder = false, bool $cmdFirst = false): array
     {
         $context = GeneralUtility::makeInstance(Context::class);
 
@@ -783,7 +678,7 @@ class Helper
                 ->where(
                     $queryBuilder->expr()->eq($table . '.pid', $pid),
                     $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId),
+                    $queryBuilder->expr()->eq($table . '.sys_language_uid', $languageContentId),
                     self::whereExpression($table, true)
                 )
                 ->setMaxResults(1)
@@ -806,7 +701,7 @@ class Helper
                     $additionalWhere = $queryBuilder->expr()->and(
                         $queryBuilder->expr()->or(
                             $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', (int) $languageContentId)
+                            $queryBuilder->expr()->eq($table . '.sys_language_uid', $languageContentId)
                         ),
                         $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
                     );
@@ -926,9 +821,9 @@ class Helper
      *
      * @param string $url
      *
-     * @return string|bool
+     * @return bool|string
      */
-    public static function getUrl(string $url)
+    public static function getUrl(string $url): bool|string
     {
         if (!Helper::isValidHttpUrl($url)) {
             return false;
@@ -1010,7 +905,7 @@ class Helper
      *
      * @return mixed
      */
-    private static function getLocalConfigurationByPath(string $path)
+    private static function getLocalConfigurationByPath(string $path): mixed
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
 
