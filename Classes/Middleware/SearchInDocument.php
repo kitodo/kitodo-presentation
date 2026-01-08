@@ -19,6 +19,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Solarium\Core\Query\Result\ResultInterface;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -36,10 +37,10 @@ class SearchInDocument implements MiddlewareInterface
     /**
      * This holds the solr instance
      *
-     * @var \Kitodo\Dlf\Common\Solr\Solr
+     * @var Solr
      * @access private
      */
-    private $solr;
+    private Solr $solr;
 
     /**
      * This holds the solr fields
@@ -47,7 +48,7 @@ class SearchInDocument implements MiddlewareInterface
      * @var array
      * @access private
      */
-    private $fields;
+    private array $fields;
 
     /**
      * The process method of the middleware.
@@ -98,21 +99,25 @@ class SearchInDocument implements MiddlewareInterface
             // @phpstan-ignore-next-line
             foreach ($result as $record) {
                 $resultDocument = new ResultDocument($record, $highlighting, $this->fields);
+                $uid = !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'];
 
                 $url = (string) $site->getRouter()->generateUri(
                     $parameters['pid'],
                     [
-                        'tx_dlf[id]' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+                        'tx_dlf[id]' => $uid,
                         'tx_dlf[page]' => $resultDocument->getPage(),
-                        'tx_dlf[highlight_word]' => preg_replace('/^;|;$/', '',       // remove ; at beginning or end
-                                                    preg_replace('/;+/', ';',         // replace any multiple of ; with a single ;
-                                                    preg_replace('/[{~\d*}{\s+}{^=*\d+.*\d*}{\sAND\s}{\sOR\s}{\sNOT\s}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $parameters['q']))) // replace search operators and special characters with ;
+                        'tx_dlf[highlight_word]' => preg_replace(
+                            '/^;|;$/', '',       // remove ; at beginning or end
+                            preg_replace('/;+/', ';',         // replace any multiple of ; with a single ;
+                                preg_replace('/[{~\d*}{\s+}{^=*\d+.*\d*}{\sAND\s}{\sOR\s}{\sNOT\s}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $parameters['q'])
+                            )
+                        ) // replace search operators and special characters with ;
                     ]
                 );
 
                 $document = [
                     'id' => $resultDocument->getId(),
-                    'uid' => !empty($resultDocument->getUid()) ? $resultDocument->getUid() : $parameters['uid'],
+                    'uid' => $uid,
                     'page' => $resultDocument->getPage(),
                     'snippet' => $resultDocument->getSnippets(),
                     'highlight' => $resultDocument->getHighlightsIds(),
@@ -136,14 +141,14 @@ class SearchInDocument implements MiddlewareInterface
      *
      * @param array $parameters array of query parameters
      *
-     * @return \Solarium\Core\Query\Result\ResultInterface result
+     * @return ResultInterface result
      */
-    private function executeSolrQuery($parameters)
+    private function executeSolrQuery(array $parameters): ResultInterface
     {
         $query = $this->solr->service->createSelect();
         $query->setFields([$this->fields['id'], $this->fields['uid'], $this->fields['page']]);
         $query->setQuery($this->getQuery($parameters));
-        $query->setStart(intval($parameters['start']))->setRows(20);
+        $query->setStart((int) $parameters['start'])->setRows(20);
         $query->addSort($this->fields['page'], $query::SORT_ASC);
         $query->getHighlighting();
         $solrRequest = $this->solr->service->createRequest($query);
@@ -189,8 +194,8 @@ class SearchInDocument implements MiddlewareInterface
      *
      * @return int|string uid of the document
      */
-    private function getUid(string $uid)
+    private function getUid(string $uid): int|string
     {
-        return is_numeric($uid) ? intval($uid) : $uid;
+        return is_numeric($uid) ? (int) $uid : $uid;
     }
 }
