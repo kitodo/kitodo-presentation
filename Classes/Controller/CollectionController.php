@@ -196,8 +196,8 @@ class CollectionController extends AbstractController
         $search = $this->getParametersSafely('search');
 
         $collection = null;
-        if (!empty($search['collection']) && $search['collection']['__identity'] && MathUtility::canBeInterpretedAsInteger($search['collection']['__identity'])) {
-            $collection = $this->collectionRepository->findByUid($search['collection']['__identity']);
+        if (!empty($search['collection']) && $search['collection'] && MathUtility::canBeInterpretedAsInteger($search['collection'])) {
+            $collection = $this->collectionRepository->findByUid($search['collection']);
         }
 
         // output is done by show action
