@@ -40,7 +40,7 @@ page {
     kitodo-validationForm = EXT:dlf/Resources/Public/JavaScript/ValidationForm/ValidationForm.js
 
     # Verovio plugin
-    kitodo-verovio = EXT:dlf/Resources/Public/JavaScript/Verovio/verovio-toolkit.js
+    kitodo-verovio = EXT:dlf/Resources/Public/JavaScript/Verovio/verovio-toolkit-wasm.js
     kitodo-svgtopdfkit = EXT:dlf/Resources/Public/JavaScript/Verovio/svgtopdfkit.js
     kitodo-saveas = EXT:dlf/Resources/Public/JavaScript/Verovio/saveas.js
     kitodo-pdf= EXT:dlf/Resources/Public/JavaScript/Verovio/pdfkit.js
