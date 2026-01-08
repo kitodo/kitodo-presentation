@@ -8,7 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/*global ol, saveAs, dlfUtils, tx_dlf_viewer */
+/*global ol, saveAs, dlfUtils, tx_dlf_viewer, verovio */
 
 /**
  * Retrieve the title from the MEI head.
@@ -39,18 +39,23 @@ let pdfBlob;
 let dlfScoreUtil;
 dlfScoreUtil = dlfScoreUtil || {};
 
-
-
-dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
+dlfScoreUtil.fetchScoreDataFromServer = function (image, scoreUrl, pagebeginning) {
   const result = new $.Deferred();
-  tk = new verovio.toolkit();
+  const tk = new verovio.toolkit();
+  tk.setOptions({
+    pageHeight: image.height,
+    pageWidth: image.width,
+    adjustPageHeight: true,
+    adjustPageWidth: true,
+    scale: image.width > image.height ? 40 : 80
+  });
 
-  if (url === '') {
+  if (scoreUrl === '') {
     result.reject();
     return result;
   }
 
-  $.ajax({url}).done(function (data, status, jqXHR) {
+  $.ajax({url: scoreUrl}).done(function (data, status, jqXHR) {
     try {
       tk.renderData(jqXHR.responseText, verovioSettings);
       const pageToShow = tk.getPageWithElement(pagebeginning);
@@ -99,14 +104,13 @@ dlfScoreUtil.fetchScoreDataFromServer = function (url, pagebeginning) {
         result.resolve(score);
       }
 
-
     } catch (e) {
       console.error(e); // eslint-disable-line no-console
       result.reject();
     }
   });
 
-  return [result, tk];
+  return {promise: result, toolkit: tk};
 };
 
 
@@ -163,14 +167,13 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
     return el;
   }
 
-  this.showMeasures = function() {
+  this.drawMeasureBoxes = function() {
     //
     // Draw boxes for each measure
     //
     var dlfViewer = this.dlfViewer;
     var measureCoords = dlfViewer.measureCoords;
     if (!this.measuresLoaded) {
-      setTimeout(function() {
         $.each(measureCoords, function (key, value) {
 
           var bbox = $('#tx-dlf-score-' + dlfViewer.counter + ' #' + key)[0].getBBox();
@@ -181,7 +184,7 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
             width: bbox.width,
             height: bbox.height,
             stroke: 'none',
-            'stroke-width': 20,
+            'stroke-width': 0,
             fill: 'red',
             'fill-opacity': '0'
           });
@@ -257,11 +260,8 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
           }
         });
         this.measuresLoaded = true;
-      }, 2000);
     }
   };
-
-
 
   this.changeActiveBehaviour();
 };
@@ -269,11 +269,14 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
 /**
  * @param {ScoreFeature} scoreData
  */
-dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
+dlfViewerScoreControl.prototype.loadScoreData = function (image, scoreData, tk) {
   var target = document.getElementById('tx-dlf-score-' + this.dlfViewer.counter);
   // Const target = document.getElementById('tx-dlf-score');
 
-  var extent = [-2100, -2970, 2100, 2970];
+  const width = image.width;
+  const height = image.height;
+
+  var extent = [-width, -height, width, height];
   // [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0]
 
   var proj = new ol.proj.Projection({
@@ -308,42 +311,43 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
   var svgContainer = document.createElement('div');
   svgContainer.innerHTML = scoreData;
 
-  const width = 2100;
-  const height = 2970;
+
   svgContainer.style.width = width + 'px';
   svgContainer.style.height = height + 'px';
   svgContainer.style.transformOrigin = 'top left';
   svgContainer.className = 'svg-layer';
 
-  map.addLayer(
-    new ol.layer.Layer({
-      render: function (frameState) {
+  const svgLayer = new ol.layer.Layer({
+    render: function (frameState) {
 
-        const svgResolution = 1;
-        const scale = svgResolution / frameState.viewState.resolution;
-        const center = frameState.viewState.center;
-        const size = frameState.size;
-        const cssTransform = ol.transform.composeCssTransform(
-          size[0] / 2,
-          size[1] / 2,
-          scale,
-          scale,
-          frameState.viewState.rotation,
-          -center[0] / svgResolution - width / 2,
-          center[1] / svgResolution - height / 2
-        );
+      const svgResolution = 1;
+      const scale = svgResolution / frameState.viewState.resolution;
+      const center = frameState.viewState.center;
+      const size = frameState.size;
+      const cssTransform = ol.transform.composeCssTransform(
+        size[0] / 2,
+        size[1] / 2,
+        scale,
+        scale,
+        frameState.viewState.rotation,
+        -center[0] / svgResolution - width / 2,
+        center[1] / svgResolution - height / 2
+      );
 
-        svgContainer.style.transform = cssTransform;
-        svgContainer.style.opacity = this.getOpacity();
-        return svgContainer;
-      },
-    })
-  );
+      svgContainer.style.transform = cssTransform;
+      svgContainer.style.opacity = this.getOpacity();
+      return svgContainer;
+    },
+  });
+  map.addLayer(svgLayer);
+
+  map.once('rendercomplete', () => {
+    this.drawMeasureBoxes();
+  });
 
   $("#tx-dlf-score-download").click(function () {
     if (typeof pdfBlob !== 'undefined') {
       saveAs(pdfBlob, getMeiTitle(tk));
-
       return;
     }
 
@@ -355,7 +359,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
       pdfSize = [2500, 3530];
     }
 
-    var pdfOrientation = $("#pdfOrientation").val();
+    var pdfOrientation = width > height ? 'landscape' : '';
     var pdfLandscape = pdfOrientation === 'landscape';
     var pdfHeight = pdfLandscape ? pdfSize[0] : pdfSize[1];
     var pdfWidth = pdfLandscape ? pdfSize[1] : pdfSize[0];
@@ -405,11 +409,12 @@ dlfViewerScoreControl.prototype.loadScoreData = function (scoreData, tk) {
       adjustPageHeight: false,
       adjustPageWidth: false,
       breaks: "auto",
+      mdivAll: true,
       mmOutput: true,
       footer: "auto",
       pageHeight: pdfHeight,
       pageWidth: pdfWidth,
-      scale: 100
+      scale: pdfOrientation === 'landscape' ? 80 : 100
     };
 
     const pdf_tk = new verovio.toolkit();
@@ -578,7 +583,6 @@ dlfViewerScoreControl.prototype.enableScoreSelect = function () {
   if (this.dlfViewer.measureLayer) {
     this.dlfViewer.measureLayer.setVisible(true);
   }
-  this.showMeasures();
 };
 
 /**
