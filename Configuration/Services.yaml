@@ -56,3 +56,4 @@ services:
 
   Kitodo\Dlf\Service\DocumentService:
     public: true
+    

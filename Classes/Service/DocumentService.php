@@ -44,6 +44,7 @@ class DocumentService
      * @var DocumentRepository
      */
     protected DocumentRepository $documentRepository;
+    
     public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
         $this->documentRepository = $documentRepository;
@@ -53,13 +54,18 @@ class DocumentService
     {
         return true;
     }
+
     protected function reset()
     {
     }
+
     /**
-     * @access public
-     * @param int $recordId
-     * @param array $settings
+     * Method that is used by controllers. Check if Document is already loaded or not. If not, loads document
+     * @access public 
+     * @param string $documentId $documentId The document's UID or URL (id), 
+     * @param int $recordId fallback for $documentId: record ID (recordId)
+     * @param array $settings passed settings array for loading
+     * 
      * @return ?Document
      */
     public function getDocument(string $documentId, int $recordId, array $settings)
@@ -69,8 +75,10 @@ class DocumentService
         }
         return $this->document;
     }
+
     /**
-     * @access public
+     * Private method for loading the document
+     * @access private
      * @param string $documentId
      * @param int $recordId
      * @param array $settings
@@ -114,6 +122,7 @@ class DocumentService
             $this->logger->error('Invalid ID "' . $documentId . '" or PID "' . $this->settings['storagePid'] . '" for document loading');
         }
     }
+
     /**
      * Get document from repository by uid.
      *

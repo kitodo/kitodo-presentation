@@ -67,6 +67,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     {
         $this->documentService = $documentService;
     }
+    
     public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
         $this->documentRepository = $documentRepository;
@@ -254,7 +255,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * Load the current Document to memory just once with DocumentService - it will then be available for all controllers.
      *
      * @access protected
-     * @param string $documentId
+     * @param string $documentId $documentId The document's UID or URL (id), fallback: record ID (recordId)
      * @return void
      */
     protected function loadDocument(string $documentId = ''): void
