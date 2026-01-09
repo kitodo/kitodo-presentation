@@ -61,6 +61,7 @@ class DocumentService
 
     /**
      * Method that is used by controllers. Check if Document is already loaded or not. If not, loads document
+     * 
      * @access public 
      * @param string $documentId $documentId The document's UID or URL (id), 
      * @param int $recordId fallback for $documentId: record ID (recordId)
@@ -78,6 +79,7 @@ class DocumentService
 
     /**
      * Private method for loading the document
+     * 
      * @access private
      * @param string $documentId
      * @param int $recordId
