@@ -193,7 +193,7 @@ class IndexCommand extends BaseCommand
             $document->setCurrentDocument($doc);
 
             if ($io->isVerbose()) {
-                $io->section('Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
+                $io->section('Saving to database ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
             }
             $isSaved = $this->saveToDatabase($document, $input->getOption('softCommit'));
 
@@ -203,7 +203,11 @@ class IndexCommand extends BaseCommand
                 }
                 $isSaved = Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
             } else {
-                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on PID ' . $this->storagePid . '. There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
+                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be saved to database on PID ' . $this->storagePid . '. Check TYPO3 log for more details.');
+                $io->info('POSSIBLE REASONS');
+                $io->info('The SOLR core "' . $solrCoreUid . '" is not reachable.');
+                $io->info('The METS document could not be loaded.');
+                $io->info('There are missing mandatory fields (at least one of those: ' . $this->extConf['general']['requiredMetadataFields'] . ') in this document.');
                 return Command::FAILURE;
             }
 
