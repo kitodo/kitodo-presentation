@@ -237,7 +237,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string|null
+     * @return array
      */
     public function getStructurePath(): array
     {
