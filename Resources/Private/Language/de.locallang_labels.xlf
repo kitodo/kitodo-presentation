@@ -821,7 +821,7 @@
                 <target>Solr-Schema-Feld "volume" : Volume field is mandatory for identifying documents (Standard ist "volume")</target>
                 <source>Solr Schema Field "volume" : Volume field is mandatory for identifying documents (default is "volume")</source>
             </trans-unit>
-            <trans-unit id="config.solr.fields.structure_path">
+            <trans-unit id="config.solr.fields.structurePath">
                 <target>Solr-Schema-Feld "structure_path" : Field providing context about the location of a resource in the structure map (Standard ist "structure_path")</target>
                 <source>Solr Schema Field "structure_path" : Field providing context about the location of a resource in the structure map (default is "structure_path")</source>
             </trans-unit>
