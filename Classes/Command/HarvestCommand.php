@@ -54,10 +54,10 @@ class HarvestCommand extends BaseCommand
                 'If this option is set, the files will not actually be processed but the location URIs are shown.'
             )
             ->addOption(
-                'lib',
-                'l',
+                'owner',
+                'o',
                 InputOption::VALUE_REQUIRED,
-                'UID of the library to harvest.'
+                '[UID|index_name] of the library to harvest.'
             )
             ->addOption(
                 'pid',
@@ -149,9 +149,7 @@ class HarvestCommand extends BaseCommand
             return Command::FAILURE;
         }
 
-        if (MathUtility::canBeInterpretedAsInteger($input->getOption('lib'))) {
-            $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('lib'), 1));
-        }
+        $this->setOwner($input->getOption('owner'));
 
         if ($this->owner) {
             $baseUrl = $this->owner->getOaiBase();
@@ -160,7 +158,7 @@ class HarvestCommand extends BaseCommand
             return Command::FAILURE;
         }
         if (!GeneralUtility::isValidUrl($baseUrl)) {
-            $io->error('ERROR: No valid OAI Base URL set for library with given UID ("' . $input->getOption('lib') . '").');
+            $io->error('ERROR: No valid OAI Base URL set for library with given UID ("' . $input->getOption('owner') . '").');
             return Command::FAILURE;
         } else {
             try {
@@ -262,19 +260,18 @@ class HarvestCommand extends BaseCommand
      * @param InputInterface $input The input parameters
      * @param string $dateType The type of date to get (from|until)
      *
-     * @return string|null
+     * @return \DateTime|null
      */
-    private function getDate(InputInterface $input, string $dateType): string|null
+    private function getDate(InputInterface $input, string $dateType): \DateTime|null
     {
-        $date = null;
         if (
             !is_array($input->getOption($dateType))
             && preg_match('/^\d{4}-\d{2}-\d{2}$/', $input->getOption($dateType))
         ) {
-            $date= new \DateTime($input->getOption($dateType));
+            return new \DateTime($input->getOption($dateType));
         }
 
-        return $date;
+        return null;
     }
 
     /**
