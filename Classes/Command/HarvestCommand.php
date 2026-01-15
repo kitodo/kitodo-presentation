@@ -139,11 +139,10 @@ class HarvestCommand extends BaseCommand
                 }
                 if (empty($outputSolrCores)) {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return Command::FAILURE;
                 } else {
                     $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return Command::FAILURE;
                 }
+                return Command::FAILURE;
             }
         } else {
             $io->error('ERROR: Required parameter --solr|-s is missing or array.');
@@ -171,23 +170,8 @@ class HarvestCommand extends BaseCommand
             }
         }
 
-        if (
-            !is_array($input->getOption('from'))
-            && preg_match('/^\d{4}-\d{2}-\d{2}$/', $input->getOption('from'))
-        ) {
-            $from = new \DateTime($input->getOption('from'));
-        } else {
-            $from = null;
-        }
-
-        if (
-            !is_array($input->getOption('until'))
-            && preg_match('/^\d{4}-\d{2}-\d{2}$/', $input->getOption('until'))
-        ) {
-            $until = new \DateTime($input->getOption('until'));
-        } else {
-            $until = null;
-        }
+        $from = $this->getDate($input, 'from');
+        $until = $this->getDate($input, 'until');
 
         $set = null;
         if (
@@ -271,16 +255,39 @@ class HarvestCommand extends BaseCommand
     }
 
     /**
+     * Get date from input option.
+     *
+     * @access private
+     *
+     * @param InputInterface $input The input parameters
+     * @param string $dateType The type of date to get (from|until)
+     *
+     * @return string|null
+     */
+    private function getDate(InputInterface $input, string $dateType): string|null
+    {
+        $date = null;
+        if (
+            !is_array($input->getOption($dateType))
+            && preg_match('/^\d{4}-\d{2}-\d{2}$/', $input->getOption($dateType))
+        ) {
+            $date= new \DateTime($input->getOption($dateType));
+        }
+
+        return $date;
+    }
+
+    /**
      * Handles OAI errors
      *
-     * @access protected
+     * @access private
      *
      * @param BaseoaipmhException $exception Instance of exception thrown
      * @param SymfonyStyle $io
      *
      * @return void
      */
-    protected function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io): void
+    private function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io): void
     {
         $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $exception->getMessage());
     }

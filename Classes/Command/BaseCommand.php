@@ -148,7 +148,7 @@ class BaseCommand extends Command
      * @param array $solrCores array of the valid Solr cores
      * @param string|bool|null $inputSolrId possible uid or name of Solr core
      *
-     * @return int matching uid of Solr core
+     * @return ?int matching uid of Solr core
      */
     protected function getSolrCoreUid(array $solrCores, $inputSolrId): ?int
     {
@@ -330,7 +330,7 @@ class BaseCommand extends Command
      * Add collections.
      *
      * @access private
-     * 
+     *
      * @param Document &$document
      * @param array $collections
      *
@@ -353,9 +353,9 @@ class BaseCommand extends Command
                     // some more unreserved characters are not allowed.
                     // Convert whitespaces to dash.
                     $setSpec = $collection;
-                    $setSpec = preg_replace('/[\s]/', '-', $setSpec);
+                    $setSpec = preg_replace('/\s/', '-', $setSpec);
                     // Remove multiple dashes.
-                    $setSpec = preg_replace('/[-]{2,}/', '-', $setSpec);
+                    $setSpec = preg_replace('/-{2,}/', '-', $setSpec);
                     // Remove undesired characters.
                     $setSpec = preg_replace('/[^\w:-]/', '', $setSpec);
                     // A hierarchical setSpec consists of two or more
@@ -382,7 +382,7 @@ class BaseCommand extends Command
      * more than 255 characters.
      *
      * @access private
-     * 
+     *
      * @param array $metadataAuthor
      *
      * @return string
@@ -419,7 +419,7 @@ class BaseCommand extends Command
     }
 
     /**
-     * If owner is not set set but found by metadata, take it or take default library, if nothing found in database then create new owner.
+     * If owner is not set but found by metadata, take it or take default library, if nothing found in database then create new owner.
      *
      * @access private
      *
@@ -427,10 +427,10 @@ class BaseCommand extends Command
      *
      * @return void
      */
-    private function setOwner($owner): void
+    private function setOwner(?string $owner): void
     {
         if (empty($this->owner)) {
-            // owner is not set set but found by metadata --> take it or take default library
+            // owner is not set but found by metadata --> take it or take default library
             $owner = $owner ? : 'default';
             $this->owner = $this->libraryRepository->findOneBy(['indexName' => $owner]);
             if (empty($this->owner)) {
