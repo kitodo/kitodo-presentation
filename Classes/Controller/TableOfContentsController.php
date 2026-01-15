@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\MetsDocument;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -252,13 +253,18 @@ class TableOfContentsController extends AbstractController
         // If the menu entry points to the parent document,
         // resolve to the parent UID set on indexation.
         $doc = $this->document->getCurrentDocument();
-        if (
-            $doc instanceof MetsDocument
-            && ((array_key_exists('points', $entry) && $entry['points'] === $doc->parentHref) || $this->isMultiElement($entry['type']))
-            && !empty($this->document->getPartof())
-        ) {
-            unset($entry['points']);
-            $entry['targetUid'] = $this->document->getPartof();
+        if ($doc instanceof MetsDocument && array_key_exists('points', $entry)) {
+            if ($entry['points'] === $doc->parentHref || $this->isMultiElement($entry['type']) && !empty($this->document->getPartof())) {
+                unset($entry['points']);
+                $entry['targetUid'] = $this->document->getPartof();
+            } elseif (GeneralUtility::isValidUrl((string) $entry['points'])) {
+                // this case is for the newspaper issues pointing to the newspaper METS file (2 levels up)
+                $document = $this->documentRepository->findOneBy(['location' => $entry['points']]);
+                if ($document !== null) {
+                    unset($entry['points']);
+                    $entry['targetUid'] = $document->getUid();
+                }
+            }
         }
 
         return $entry;
