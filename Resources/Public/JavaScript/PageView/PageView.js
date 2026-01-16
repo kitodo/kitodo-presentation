@@ -255,7 +255,7 @@ var dlfViewer = function (settings) {
 
 /**
  *
- * @param {string | undefined}
+ * @param {string | undefined} progressElementId
  * @returns {LoadingIndicator}
  */
 dlfViewer.prototype.makeLoadingIndicator = function (progressElementId) {
@@ -749,6 +749,8 @@ dlfViewer.prototype.searchFeatures = function(stringFeatures, value) {
 
 /**
  * Displays highlight words
+ *
+ * @param {string} highlightWords
  */
 dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
     if(highlightWords != null) {
