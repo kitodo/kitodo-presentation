@@ -1,0 +1,51 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<li>
+    <f:if condition="{settings.searchUrl}">
+        <f:then>
+            <f:variable name="actionUrl" value="{settings.searchUrl}" />
+        </f:then>
+        <f:else>
+            <f:variable name="actionUrl" value="{f:uri.page(pageUid='{viewData.pageUid}')}" />
+        </f:else>
+    </f:if>
+    <form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="{actionUrl}" method="get" enctype="multipart/form-data">
+        <div>
+            <label for="tx-dlf-search-in-document-query">
+                <f:translate key="search.query"/>
+            </label>
+            <!-- Never change the @id of this input field! Otherwise search won't work! -->
+            <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{searchInDocument.labelQueryUrl}" />
+            <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
+            <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.labelStart}" value="0" />
+            <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.labelId}" value="{searchInDocument.documentId}" />
+            <input type="hidden" id="tx-dlf-search-in-document-pid" name="{searchInDocument.labelPid}" value="{viewData.pageUid}" />
+            <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.labelPageUrl}" />
+            <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.labelHighlightWord}" />
+            <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.labelEncrypted}" value="{searchInDocument.solrEncrypted}" />
+        </div>
+    </form>
+    <div id="tx-dlf-search-in-document-loading" style="display: none;"><f:translate key="tools.searchindocument.loading"/>...</div>
+    <div id="tx-dlf-search-in-document-clearing"><f:translate key="tools.searchindocument.deleteSearch"/>...</div>
+    <div id="tx-dlf-search-in-document-results"></div>
+    <div id="tx-dlf-search-in-document-labels" style="display:none;">
+        <span id="tx-dlf-search-in-document-label-next"><f:translate key="tools.searchindocument.next"/></span>
+        <span id="tx-dlf-search-in-document-label-previous"><f:translate key="tools.searchindocument.previous"/></span>
+        <span id="tx-dlf-search-in-document-label-page"><f:translate key="search.logicalPage"/></span>
+        <span id="tx-dlf-search-in-document-label-noresult"><f:translate key="tools.searchindocument.noresult"/></span>
+    </div>
+</li>
+
+</html>

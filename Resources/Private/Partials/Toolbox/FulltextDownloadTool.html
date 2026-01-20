@@ -1,0 +1,32 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<li>
+    <span class="tx-dlf-tools-fulltextdownload">
+        <f:if condition="{fulltextDownload}">
+            <f:then>
+                <a href="#" id="tx-dlf-tools-fulltextdownload" title="{f:translate(key: 'tools.fulltextdownload.download-current-page')}">
+                    <f:translate key="tools.fulltextdownload.download-current-page"/>
+                </a>
+            </f:then>
+            <f:else>
+                <span class="no-fulltext">
+                    <f:translate key="tools.fulltext.not-available"/>
+                </span>
+            </f:else>
+        </f:if>
+    </span>
+</li>
+
+</html>

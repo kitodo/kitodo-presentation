@@ -1,0 +1,41 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<li>
+    <span class="tx-dlf-tools-imagedownload">
+        <f:if condition="{double} === 0">
+            <f:then>
+                <f:link.external uri="{imageDownload.0.url}">
+                    <f:translate key="downloadSinglePage" /> {imageDownload.0.mimetypeLabel}
+                </f:link.external>
+            </f:then>
+            <f:else>
+                <f:link.external uri="{imageDownload.0.url}">
+                    <f:translate key="downloadLeftPage" /> {imageDownload.0.mimetypeLabel}
+                </f:link.external>
+                <f:if condition="{imageDownload.1}">
+                    <f:then>
+                        <span class="tx-dlf-tools-imagedownload">
+                            <f:link.external uri="{imageDownload.1.url}">
+                                <f:translate key="downloadRightPage" /> {imageDownload.1.mimetypeLabel}
+                            </f:link.external>
+                        </span>
+                    </f:then>
+                </f:if>
+            </f:else>
+        </f:if>
+    </span>
+</li>
+
+</html>

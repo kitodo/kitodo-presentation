@@ -14,289 +14,74 @@
 
 <f:if condition="{multiViewAddSourceTool}">
     <f:then>
-        <a href="#" title="{f:translate(key:'tools.multiviewaddsource.label', extensionName:'dlf')}">{f:translate(key:'tools.multiviewaddsource.label', extensionName:'dlf')}</a>
-        <form class="multiViewAddSource" >
-            <p class="add-document-description">{f:translate(key:'tools.multiviewaddsource.description', extensionName:'dlf')}</p>
-            <label for="location-field">{f:translate(key:'tools.multiviewaddsource.label', extensionName:'dlf')}</label>
-            <f:form.textfield property="location" id="location-field" placeholder="{f:translate(key:'tools.multiviewaddsource.placeholder', extensionName:'dlf')}" required="required" />
-            <f:form.button>{f:translate(key:'tools.multiviewaddsource.submit', extensionName:'dlf')}</f:form.button>
-        </form>
+        <f:render partial="Toolbox/MultiViewAddSourceTool" arguments="{_all}" />
     </f:then>
 </f:if>
 
 <ul>
     <f:if condition="{renderAnnotationTool}">
         <f:then>
-            <li>
-                <span class="tx-dlf-tools-annotations">
-                    <f:if condition="{annotationTool}">
-                        <f:then>
-                            <a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:{f:translate(key: 'tools.annotation.on')};annotations-off:{f:translate(key: 'tools.annotation.off')}">
-                                <f:format.html>&nbsp;</f:format.html>
-                            </a>
-                        </f:then>
-                        <f:else>
-                            <span class="no-annotations">
-                                <f:translate key="tools.annotation.not-available"/>
-                            </span>
-                        </f:else>
-                    </f:if>
-                </span>
-            </li>
+            <f:render partial="Toolbox/AnnotationTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderImageManipulationTool}">
         <f:then>
-            <li>
-                <span class="tx-dlf-tools-imagetools" id="tx-dlf-tools-imagetools"
-                        data-dic="imagemanipulation-on:{f:translate(key: 'tools.imagemanipulation.on')};imagemanipulation-off:{f:translate(key: 'tools.imagemanipulation.off')};reset:{f:translate(key: 'tools.imagemanipulation.reset')};saturation:{f:translate(key: 'tools.imagemanipulation.saturation')};hue:{f:translate(key: 'tools.imagemanipulation.hue')};contrast:{f:translate(key: 'tools.imagemanipulation.contrast')};brightness:{f:translate(key: 'tools.imagemanipulation.brightness')};invert:{f:translate(key: 'tools.imagemanipulation.invert')};parentContainer:{parentContainer}"
-                        title="{f:translate(key: 'tools.imagemanipulation.no-support')}">
-                </span>
-            </li>
+            <f:render partial="Toolbox/ImageManipulationTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderAudioVideoTool}">
-        <f:if condition="{settings.isVideo} == 1">
-            <li class="tx_dlf_audiovideotool tx-dlf-tools-videomediaplayer" id="tx-dlf-tools-videomediaplayer" data-tool="videomediaplayer">
-                <a href="#" class="button-videomediaplayer" title="{f:translate(key: 'tools.audiovideotool.videomediaplayer')}">
-                    <f:translate key="tools.audiovideotool.videomediaplayer"/>
-                </a>
-            </li>
-        </f:if>
-        <f:if condition="{settings.constants.showAudioLabelImage} == 1 && {settings.isAudio} == 1 && {hasAudioLabelImage}">
-            <li class="tx_dlf_audiovideotool tx-dlf-tools-audiolabelimage" id="tx-dlf-tools-audiolabelimage" data-tool="audiolabelimage">
-                <a href="#" class="button-audiolabelimage" title="{f:translate(key: 'tools.audiovideotool.audiolabelimage')}">
-                    <f:translate key="tools.audiovideotool.audiolabelimage"/>
-                </a>
-            </li>
-        </f:if>
-        <li class="tx_dlf_audiovideotool tx-dlf-tools-equalizer" id="tx-dlf-tools-equalizer" data-tool="equalizer">
-            <a href="#" class="button-equalizer" title="{f:translate(key: 'tools.audiovideotool.equalizer')}">
-                <f:translate key="tools.audiovideotool.equalizer"/>
-            </a>
-        </li>
-        <li class="tx_dlf_audiovideotool tx-dlf-tools-markertable" id="tx-dlf-tools-markertable" data-tool="markertable">
-            <a href="#" class="button-markertable" title="{f:translate(key: 'tools.audiovideotool.markertable')}">
-                <f:translate key="tools.audiovideotool.markertable"/>
-            </a>
-        </li>
+        <f:then>
+            <f:render partial="Toolbox/AudioVideoTool" arguments="{_all}" />
+        </f:then>
     </f:if>
 
     <f:if condition="{renderImageDownloadTool} && {imageDownload}">
         <f:then>
-            <li>
-                <span class="tx-dlf-tools-imagedownload">
-                    <f:if condition="{double} === 0">
-                        <f:then>
-                            <f:link.external uri="{imageDownload.0.url}">
-                                <f:translate key="downloadSinglePage" /> {imageDownload.0.mimetypeLabel}
-                            </f:link.external>
-                        </f:then>
-                        <f:else>
-                            <f:link.external uri="{imageDownload.0.url}">
-                                <f:translate key="downloadLeftPage" /> {imageDownload.0.mimetypeLabel}
-                            </f:link.external>
-                            <f:if condition="{imageDownload.1}">
-                                <f:then>
-                                    <span class="tx-dlf-tools-imagedownload">
-                                        <f:link.external uri="{imageDownload.1.url}">
-                                            <f:translate key="downloadRightPage" /> {imageDownload.1.mimetypeLabel}
-                                        </f:link.external>
-                                    </span>
-                                </f:then>
-                            </f:if>
-                        </f:else>
-                    </f:if>
-                </span>
-            </li>
+            <f:render partial="Toolbox/ImageDownloadTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderModelDownloadTool} && {modelUrl}">
         <f:then>
-            <li>
-            <span class="tx-dlf-tools-modeldownload">
-                <f:link.external uri="{modelUrl}">
-                    <f:translate key="downloadModel"/>
-                </f:link.external>
-            </span>
-            </li>
+            <f:render partial="Toolbox/ModelDownloadTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderViewerSelectionTool} && {viewers}">
         <f:then>
-            <form method="get" action="{f:uri.page(pageUid='{viewData.pageUid}')}">
-                <f:if condition="{viewData.requestData.id}">
-                    <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
-                </f:if>
-                <f:if condition="{viewData.requestData.model}">
-                    <f:form.hidden name="tx_dlf[model]" value="{viewData.requestData.model}"/>
-                </f:if>
-                <f:if condition="{viewData.requestData.modelFormat}">
-                    <f:form.hidden name="tx_dlf[modelFormat]" value="{viewData.requestData.modelFormat}"/>
-                </f:if>
-                <f:form.select id="tx-dlf-viewer-{viewData.uniqueId}" name="tx_dlf[viewer]"
-                               options="{viewers}"
-                               optionValueField="id"
-                               optionLabelField="name"
-                               value="{viewData.requestData.viewer}"
-                               additionalAttributes="{'onchange': 'javascript:this.form.submit();'}"
-                               prependOptionLabel="{f:translate(key: 'tools.viewerselection.default', extensionName: 'dlf')}">
-                </f:form.select>
-                <form>
+            <f:render partial="Toolbox/ViewerSelectionTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderFulltextTool}">
         <f:then>
-            <li>
-                <span class="tx-dlf-tools-fulltext">
-                    <f:if condition="{fulltext}">
-                        <f:then>
-                            <a class="select switchoff" id="tx-dlf-tools-fulltext" title=""
-                                data-dic="fulltext:{f:translate(key: 'tools.fulltext')};fulltext-loading:{f:translate(key: 'tools.fulltext.loading')};fulltext-on:{f:translate(key: 'tools.fulltext.on')};fulltext-off:{f:translate(key: 'tools.fulltext.off')};activate-full-text-initially:{activateFullTextInitially};full-text-scroll-element:{settings.fullTextScrollElement};search-hl-parameters:{settings.searchHlParameters}">
-                                &nbsp;
-                            </a>
-                        </f:then>
-                        <f:else>
-                            <span class="no-fulltext">
-                                <f:translate key="tools.fulltext.not-available"/>
-                            </span>
-                        </f:else>
-                    </f:if>
-                </span>
-            </li>
+            <f:render partial="Toolbox/FulltextTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderFulltextDownloadTool}">
         <f:then>
-            <li>
-                <span class="tx-dlf-tools-fulltextdownload">
-                    <f:if condition="{fulltextDownload}">
-                        <f:then>
-                            <a href="#" id="tx-dlf-tools-fulltextdownload"
-                                title="{f:translate(key: 'tools.fulltextdownload.download-current-page')}">
-                                <f:translate key="tools.fulltextdownload.download-current-page"/>
-                            </a>
-                        </f:then>
-                        <f:else>
-                            <span class="no-fulltext">
-                                <f:translate key="tools.fulltext.not-available"/>
-                            </span>
-                        </f:else>
-                    </f:if>
-                </span>
-            </li>
+            <f:render partial="Toolbox/FulltextDownloadTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderScoreTool} && {score}">
         <f:then>
-            <li class="score">
-                <a class="select switchoff" id="tx-dlf-tools-score-0" title="">
-                    <f:translate key="tools.score"/>
-                </a>
-            </li>
-            <li class="score">
-                <a id="tx-dlf-tools-score-midi" <f:if condition="{scoreMidiPlayerSoundFont}">data-midi-player-sound-font="{scoreMidiPlayerSoundFont}"</f:if>>
-                    <f:translate key="tools.score.player"/>
-                </a>
-            </li>
+            <f:render partial="Toolbox/ScoreTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderPdfDownloadTool}">
         <f:then>
-            <li>
-                <span class="tx-dlf-tools-pdf-page">
-                    <f:if condition="{double} === 0">
-                        <f:then>
-                            <f:link.external uri="{pageLinks.0}">
-                                <f:translate key="downloadSinglePage" /> (PDF)
-                            </f:link.external>
-                        </f:then>
-                        <f:else>
-                            <f:link.external uri="{pageLinks.0}">
-                                <f:translate key="downloadLeftPage" /> (PDF)
-                            </f:link.external>
-                            <f:if condition="{pageLinks.1}">
-                                <f:then>
-                                    <f:link.external uri="{pageLinks.1}">
-                                        <f:translate key="downloadRightPage" /> (PDF)
-                                    </f:link.external>
-                                </f:then>
-                            </f:if>
-                        </f:else>
-                    </f:if>
-                </span>
-                <span class="tx-dlf-tools-pdf-work">
-                    <f:if condition="{workLink}">
-                        <f:then>
-                            <f:link.external uri="{workLink}">
-                                <f:translate key="downloadWork"/> (PDF)
-                            </f:link.external>
-                        </f:then>
-                    </f:if>
-                </span>
-                <span class="tx-dlf-tools-score">
-                    <f:if condition="{scoreLinks}">
-                        <f:then>
-                            <a href="#" id="tx-dlf-score-midi-download" class="download-document">
-                                <f:translate key="mididownload"/>
-                                (MIDI)
-                            </a>
-                            <a href="#" id="tx-dlf-score-download" class="download-document">
-                                <f:translate key="scoredownload"/>
-                                (PDF)
-                            </a>
-                        </f:then>
-                    </f:if>
-                </span>
-            </li>
+            <f:render partial="Toolbox/PdfDownloadTool" arguments="{_all}" />
         </f:then>
     </f:if>
 
     <f:if condition="{renderSearchInDocumentTool} && {searchInDocument}">
         <f:then>
-            <li>
-                <f:if condition="{settings.searchUrl}">
-                    <f:then>
-                        <f:variable name="actionUrl" value="{settings.searchUrl}" />
-                    </f:then>
-                    <f:else>
-                        <f:variable name="actionUrl" value="{f:uri.page(pageUid='{viewData.pageUid}')}" />
-                    </f:else>
-                </f:if>
-                <form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="{actionUrl}" method="get" enctype="multipart/form-data">
-                    <div>
-                        <label for="tx-dlf-search-in-document-query">
-                            <f:translate key="search.query"/>
-                        </label>
-                        <!-- Never change the @id of this input field! Otherwise search won't work! -->
-                        <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{searchInDocument.labelQueryUrl}" />
-                        <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
-                        <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.labelStart}" value="0" />
-                        <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.labelId}" value="{searchInDocument.documentId}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-pid" name="{searchInDocument.labelPid}" value="{viewData.pageUid}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.labelPageUrl}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.labelHighlightWord}" />
-                        <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.labelEncrypted}" value="{searchInDocument.solrEncrypted}" />
-                    </div>
-                </form>
-                <div id="tx-dlf-search-in-document-loading" style="display: none;"><f:translate key="tools.searchindocument.loading"/>...</div>
-                <div id="tx-dlf-search-in-document-clearing"><f:translate key="tools.searchindocument.deleteSearch"/>...</div>
-                <div id="tx-dlf-search-in-document-results"></div>
-                <div id="tx-dlf-search-in-document-labels" style="display:none;">
-                    <span id="tx-dlf-search-in-document-label-next"><f:translate key="tools.searchindocument.next"/></span>
-                    <span id="tx-dlf-search-in-document-label-previous"><f:translate key="tools.searchindocument.previous"/></span>
-                    <span id="tx-dlf-search-in-document-label-page"><f:translate key="search.logicalPage"/></span>
-                    <span id="tx-dlf-search-in-document-label-noresult"><f:translate key="tools.searchindocument.noresult"/></span>
-                </div>
-            </li>
+            <f:render partial="Toolbox/SearchInDocument" arguments="{_all}" />
         </f:then>
     </f:if>
 </ul>
