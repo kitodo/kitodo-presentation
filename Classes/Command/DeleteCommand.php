@@ -148,7 +148,7 @@ class DeleteCommand extends BaseCommand
      *
      * @return void
      */
-    private function deleteFromDatabase($input, $io): void
+    private function deleteFromDatabase(InputInterface $input, SymfonyStyle $io): void
     {
         $document = $this->getDocument($input);
 
@@ -177,7 +177,7 @@ class DeleteCommand extends BaseCommand
      *
      * @return void
      */
-    private function deleteFromSolr($input, $io, $solrCoreUid): void
+    private function deleteFromSolr(InputInterface $input, SymfonyStyle $io, int $solrCoreUid): void
     {
         if ($io->isVerbose()) {
             $io->section('Deleting ' . $input->getOption('doc') . ' on Solr core ' . $solrCoreUid . '.');
@@ -210,7 +210,7 @@ class DeleteCommand extends BaseCommand
      *
      * @return ?Document
      */
-    private function getDocument($input): ?Document
+    private function getDocument(InputInterface $input): ?Document
     {
         $document = null;
 
