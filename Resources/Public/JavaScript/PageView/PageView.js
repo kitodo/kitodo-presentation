@@ -754,6 +754,8 @@ dlfViewer.prototype.searchFeatures = function(stringFeatures, value) {
 
 /**
  * Displays highlight words
+ *
+ * @param {string} highlightWords
  */
 dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
     if(highlightWords != null) {
