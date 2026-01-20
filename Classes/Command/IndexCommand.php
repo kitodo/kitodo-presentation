@@ -147,15 +147,7 @@ class IndexCommand extends BaseCommand
             return Command::FAILURE;
         }
 
-        if (!empty($input->getOption('owner'))) {
-            if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
-                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
-            } else {
-                $this->owner = $this->libraryRepository->findOneBy(['indexName' => (string) $input->getOption('owner')]);
-            }
-        } else {
-            $this->owner = null;
-        }
+        $this->setOwner($input->getOption('owner'));
 
         $document = null;
         $doc = null;
@@ -172,7 +164,7 @@ class IndexCommand extends BaseCommand
                 $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
             }
 
-        } else if (GeneralUtility::isValidUrl($input->getOption('doc'))) {
+        } elseif (GeneralUtility::isValidUrl($input->getOption('doc'))) {
             $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true);
 
             $document = $this->getDocumentFromUrl($doc, $input->getOption('doc'));

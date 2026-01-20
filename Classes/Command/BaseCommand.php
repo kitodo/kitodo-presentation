@@ -146,11 +146,11 @@ class BaseCommand extends Command
      * @access protected
      *
      * @param array $solrCores array of the valid Solr cores
-     * @param string|bool|null $inputSolrId possible uid or name of Solr core
+     * @param bool|string|null $inputSolrId possible uid or name of Solr core
      *
-     * @return int matching uid of Solr core
+     * @return ?int matching uid of Solr core
      */
-    protected function getSolrCoreUid(array $solrCores, $inputSolrId): ?int
+    protected function getSolrCoreUid(array $solrCores, bool|string|null $inputSolrId): ?int
     {
         if (MathUtility::canBeInterpretedAsInteger($inputSolrId)) {
             $solrCoreUid = MathUtility::forceIntegerInRange((int) $inputSolrId, 0);
@@ -191,6 +191,28 @@ class BaseCommand extends Command
         }
 
         return $solrCores;
+    }
+
+    /**
+     * Set owner based on input value.
+     *
+     * @access protected
+     *
+     * @param bool|string|null $owner input owner value
+     *
+     * @return void
+     */
+    protected function setOwner(bool|string|null $owner): void
+    {
+        if (!empty($owner)) {
+            if (MathUtility::canBeInterpretedAsInteger($owner)) {
+                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $owner, 1));
+            } else {
+                $this->owner = $this->libraryRepository->findOneBy(['indexName' => (string) $owner]);
+            }
+        } else {
+            $this->owner = null;
+        }
     }
 
     /**
@@ -253,7 +275,7 @@ class BaseCommand extends Command
             $document->setRightsInfo($metadata['rights_info'][0] ?? '');
             $document->setStatus(0);
 
-            $this->setOwner($metadata['owner'][0] ?? '');
+            $this->setNewOwner($metadata['owner'][0] ?? '');
             $document->setOwner($this->owner);
 
             // set volume data
@@ -330,7 +352,7 @@ class BaseCommand extends Command
      * Add collections.
      *
      * @access private
-     * 
+     *
      * @param Document &$document
      * @param array $collections
      *
@@ -353,9 +375,9 @@ class BaseCommand extends Command
                     // some more unreserved characters are not allowed.
                     // Convert whitespaces to dash.
                     $setSpec = $collection;
-                    $setSpec = preg_replace('/[\s]/', '-', $setSpec);
+                    $setSpec = preg_replace('/\s/', '-', $setSpec);
                     // Remove multiple dashes.
-                    $setSpec = preg_replace('/[-]{2,}/', '-', $setSpec);
+                    $setSpec = preg_replace('/-{2,}/', '-', $setSpec);
                     // Remove undesired characters.
                     $setSpec = preg_replace('/[^\w:-]/', '', $setSpec);
                     // A hierarchical setSpec consists of two or more
@@ -382,7 +404,7 @@ class BaseCommand extends Command
      * more than 255 characters.
      *
      * @access private
-     * 
+     *
      * @param array $metadataAuthor
      *
      * @return string
@@ -419,18 +441,18 @@ class BaseCommand extends Command
     }
 
     /**
-     * If owner is not set set but found by metadata, take it or take default library, if nothing found in database then create new owner.
+     * If owner is not set but found by metadata, take it or take default library, if nothing found in database then create new owner.
      *
      * @access private
      *
-     * @param ?string $owner
+     * @param string $owner
      *
      * @return void
      */
-    private function setOwner($owner): void
+    private function setNewOwner(string $owner): void
     {
         if (empty($this->owner)) {
-            // owner is not set set but found by metadata --> take it or take default library
+            // owner is not set but found by metadata --> take it or take default library
             $owner = $owner ? : 'default';
             $this->owner = $this->libraryRepository->findOneBy(['indexName' => $owner]);
             if (empty($this->owner)) {
