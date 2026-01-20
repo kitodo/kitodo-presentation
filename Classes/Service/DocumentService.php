@@ -29,22 +29,25 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 class DocumentService
 {
     use LoggerAwareTrait;
+
     /**
      * @access protected
      * @var Document|null This holds the current document
      */
     protected ?Document $document = null;
+
     /**
      * @access protected
      * @var array
      */
     protected $settings;
+
     /**
      * @access protected
      * @var DocumentRepository
      */
     protected DocumentRepository $documentRepository;
-    
+
     public function injectDocumentRepository(DocumentRepository $documentRepository): void
     {
         $this->documentRepository = $documentRepository;
@@ -61,9 +64,9 @@ class DocumentService
 
     /**
      * Method that is used by controllers. Check if Document is already loaded or not. If not, loads document
-     * 
-     * @access public 
-     * @param string $documentId $documentId The document's UID or URL (id), 
+     *
+     * @access public
+     * @param string $documentId $documentId The document's UID or URL (id),
      * @param int $recordId fallback for $documentId: record ID (recordId)
      * @param array $settings passed settings array for loading
      * 
