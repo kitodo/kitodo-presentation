@@ -36,7 +36,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
-
 /**
  * Abstract controller class for most of the plugin controller.
  *
