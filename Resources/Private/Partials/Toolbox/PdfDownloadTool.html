@@ -1,0 +1,62 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<li>
+    <span class="tx-dlf-tools-pdf-page">
+        <f:if condition="{double} === 0">
+            <f:then>
+                <f:link.external uri="{pageLinks.0}">
+                    <f:translate key="downloadSinglePage" /> (PDF)
+                </f:link.external>
+            </f:then>
+            <f:else>
+                <f:link.external uri="{pageLinks.0}">
+                    <f:translate key="downloadLeftPage" /> (PDF)
+                </f:link.external>
+                <f:if condition="{pageLinks.1}">
+                    <f:then>
+                        <f:link.external uri="{pageLinks.1}">
+                            <f:translate key="downloadRightPage" /> (PDF)
+                        </f:link.external>
+                    </f:then>
+                </f:if>
+            </f:else>
+        </f:if>
+    </span>
+    <span class="tx-dlf-tools-pdf-work">
+        <f:if condition="{workLink}">
+            <f:then>
+                <f:link.external uri="{workLink}">
+                    <f:translate key="downloadWork"/> (PDF)
+                </f:link.external>
+            </f:then>
+        </f:if>
+    </span>
+    <span class="tx-dlf-tools-score">
+        <f:if condition="{scoreLinks}">
+            <f:then>
+                <a href="#" id="tx-dlf-score-midi-download" class="download-document">
+                    <f:translate key="mididownload"/>
+                    (MIDI)
+                </a>
+                <a href="#" id="tx-dlf-score-download" class="download-document">
+                    <f:translate key="scoredownload"/>
+                    (PDF)
+                </a>
+            </f:then>
+        </f:if>
+    </span>
+</li>
+
+</html>

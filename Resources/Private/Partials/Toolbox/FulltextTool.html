@@ -1,0 +1,33 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<li>
+    <span class="tx-dlf-tools-fulltext">
+        <f:if condition="{fulltext}">
+            <f:then>
+                <a class="select switchoff" id="tx-dlf-tools-fulltext" title=""
+                   data-dic="fulltext:{f:translate(key: 'tools.fulltext')};fulltext-loading:{f:translate(key: 'tools.fulltext.loading')};fulltext-on:{f:translate(key: 'tools.fulltext.on')};fulltext-off:{f:translate(key: 'tools.fulltext.off')};activate-full-text-initially:{activateFullTextInitially};full-text-scroll-element:{settings.fullTextScrollElement};search-hl-parameters:{settings.searchHlParameters}">
+                    &nbsp;
+                </a>
+            </f:then>
+            <f:else>
+                <span class="no-fulltext">
+                    <f:translate key="tools.fulltext.not-available"/>
+                </span>
+            </f:else>
+        </f:if>
+    </span>
+</li>
+
+</html>

@@ -151,15 +151,7 @@ class ReindexCommand extends BaseCommand
             return Command::FAILURE;
         }
 
-        if (!empty($input->getOption('owner'))) {
-            if (MathUtility::canBeInterpretedAsInteger($input->getOption('owner'))) {
-                $this->owner = $this->libraryRepository->findByUid(MathUtility::forceIntegerInRange((int) $input->getOption('owner'), 1));
-            } else {
-                $this->owner = $this->libraryRepository->findOneBy(['indexName' => (string) $input->getOption('owner')]);
-            }
-        } else {
-            $this->owner = null;
-        }
+        $this->setOwner($input->getOption('owner'));
 
         if (!empty($input->getOption('all'))) {
             if (

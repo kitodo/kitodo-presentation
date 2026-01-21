@@ -126,7 +126,7 @@ function getCurrentQueryParams(baseUrl) {
  * Get navigation buttons.
  *
  * @param {int} start
- * @param {numFound} start
+ * @param {int} numFound
  *
  * @returns {string}
  */
@@ -174,10 +174,11 @@ function getCurrentPage() {
  * Add highlight to image.
  *
  * @param {array} data
+ * @param {string} word
  *
  * @returns void
  */
-function addImageHighlight(data) {
+function addImageHighlight(data, word) {
     var page = getCurrentPage();
 
     if (typeof tx_dlf_viewer !== 'undefined' && tx_dlf_viewer.map != null) { // eslint-disable-line camelcase
@@ -192,9 +193,9 @@ function addImageHighlight(data) {
             }
         });
 
-        tx_dlf_viewer.displayHighlightWord(encodeURIComponent(highlights.join(';'))); // eslint-disable-line camelcase
+        tx_dlf_viewer.displayHighlightWord(word); // eslint-disable-line camelcase
     } else {
-        setTimeout(addImageHighlight, 500, data);
+        setTimeout(addImageHighlight, 500, data, word);
     }
 }
 
@@ -263,7 +264,7 @@ $(document).ready(function() {
                         resultList += '<li>' + item + '</li>';
                     });
 
-                    addImageHighlight(data);
+                    addImageHighlight(data, $( "input[id='tx-dlf-search-in-document-query']" ).val());
                 } else {
                     resultList += '<li class="noresult"></li>';
                 }

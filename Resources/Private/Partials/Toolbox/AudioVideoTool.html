@@ -1,0 +1,40 @@
+<f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:if condition="{settings.isVideo} == 1">
+    <li class="tx_dlf_audiovideotool tx-dlf-tools-videomediaplayer" id="tx-dlf-tools-videomediaplayer" data-tool="videomediaplayer">
+        <a href="#" class="button-videomediaplayer" title="{f:translate(key: 'tools.audiovideotool.videomediaplayer')}">
+            <f:translate key="tools.audiovideotool.videomediaplayer"/>
+        </a>
+    </li>
+</f:if>
+<f:if condition="{settings.constants.showAudioLabelImage} == 1 && {settings.isAudio} == 1 && {hasAudioLabelImage}">
+    <li class="tx_dlf_audiovideotool tx-dlf-tools-audiolabelimage" id="tx-dlf-tools-audiolabelimage" data-tool="audiolabelimage">
+        <a href="#" class="button-audiolabelimage" title="{f:translate(key: 'tools.audiovideotool.audiolabelimage')}">
+            <f:translate key="tools.audiovideotool.audiolabelimage"/>
+        </a>
+    </li>
+</f:if>
+<li class="tx_dlf_audiovideotool tx-dlf-tools-equalizer" id="tx-dlf-tools-equalizer" data-tool="equalizer">
+    <a href="#" class="button-equalizer" title="{f:translate(key: 'tools.audiovideotool.equalizer')}">
+        <f:translate key="tools.audiovideotool.equalizer"/>
+    </a>
+</li>
+<li class="tx_dlf_audiovideotool tx-dlf-tools-markertable" id="tx-dlf-tools-markertable" data-tool="markertable">
+    <a href="#" class="button-markertable" title="{f:translate(key: 'tools.audiovideotool.markertable')}">
+        <f:translate key="tools.audiovideotool.markertable"/>
+    </a>
+</li>
+
+</html>
