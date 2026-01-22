@@ -102,14 +102,7 @@ class Helper
         'chemical/x-xyz' => 'xyz',
         'text/html' => 'html'
     ];
-    public static function getDocumentInstance($documentLocation, $settings)
-    {
-        static $doc;
-        if($doc === null){
-            $doc = AbstractDocument::getInstance($documentLocation, $settings);
-        }
-        return $doc;
-    }
+    
     /**
      * Generates a flash message and adds it to a message queue.
      *
@@ -209,6 +202,21 @@ class Helper
         // Reset libxml's error logging.
         libxml_use_internal_errors($libxmlErrors);
         return $xml;
+    }
+    
+    /**
+     * @param string $documentLocation The URL of XML file or the IRI of the IIIF resource
+     * @param array $settings
+     * 
+     * @return AbstractDocument
+     */
+    public static function getDocumentInstance($documentLocation, $settings): AbstractDocument|null
+    {
+        static $doc;
+        if($doc === null){
+            $doc = AbstractDocument::getInstance($documentLocation, $settings);
+        }
+        return $doc;
     }
 
     /**
