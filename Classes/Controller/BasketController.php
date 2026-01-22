@@ -274,7 +274,7 @@ class BasketController extends AbstractController
      *
      * @param bool|null|object $data DocumentData
      *
-     * @return array One basket entry
+     * @return mixed[] One basket entry
      */
     protected function getEntry($data): array
     {
@@ -327,9 +327,9 @@ class BasketController extends AbstractController
      * @access protected
      *
      * @param string $id Document id
-     * @param array $data DocumentData
+     * @param mixed[] $data DocumentData
      *
-     * @return array|false download url or false
+     * @return mixed[]|false download url or false
      */
     protected function getDocumentData(string $id, array $data)
     {
@@ -380,7 +380,7 @@ class BasketController extends AbstractController
     /**
      * Get URL parameters by replacing placeholders.
      *
-     * @param array $data
+     * @param mixed[] $data
      *
      * @return string
      */
@@ -408,7 +408,7 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $piVars piVars
+     * @param mixed[] $piVars piVars
      * @param Basket $basket basket object
      *
      * @return Basket|null Basket data
@@ -500,7 +500,7 @@ class BasketController extends AbstractController
      *
      * @access private
      *
-     * @param array $documentItem document item
+     * @param mixed[] $documentItem document item
      *
      * @return string PDF URL
      */
@@ -527,7 +527,7 @@ class BasketController extends AbstractController
      *
      * @access protected
      *
-     * @param array $piVars plugin variables
+     * @param mixed[] $piVars plugin variables
      * @param Basket $basket basket object
      *
      * @return Basket basket

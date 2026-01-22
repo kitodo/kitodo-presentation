@@ -30,7 +30,7 @@ class ThumbnailCustomElement extends AbstractFormElement
      *
      * @access public
      *
-     * @return array
+     * @return array<string, mixed[]|string>
      */
     public function render(): array
     {

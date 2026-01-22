@@ -134,7 +134,7 @@ class Metadata extends AbstractEntity
         $this->initStorageObjects();
     }
 
-    protected function initStorageObjects()
+    protected function initStorageObjects(): void
     {
         $this->format = new ObjectStorage();
     }

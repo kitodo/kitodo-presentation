@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Pagination\AbstractPaginator;
 final class PageGridPaginator extends AbstractPaginator
 {
     /**
-     * @var array
+     * @var mixed[]
      */
     private array $items;
 
@@ -29,10 +29,19 @@ final class PageGridPaginator extends AbstractPaginator
     public int $publicItemsPerPage;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     private array $paginatedItems = [];
 
+    /**
+     * @access public
+     *
+     * @param mixed[] $items
+     * @param int $currentPageNumber
+     * @param int $itemsPerPage
+     *
+     * @return void
+     */
     public function __construct(
         array $items,
         int $currentPageNumber = 1,
@@ -47,7 +56,7 @@ final class PageGridPaginator extends AbstractPaginator
     }
 
     /**
-     * @return iterable|array
+     * @return mixed[]
      */
     public function getPaginatedItems(): iterable
     {

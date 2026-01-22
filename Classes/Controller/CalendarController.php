@@ -49,7 +49,7 @@ class CalendarController extends AbstractController
 
     /**
      * @access protected
-     * @var array This holds all issues for the list view.
+     * @var mixed[] This holds all issues for the list view.
      */
     protected array $allIssues = [];
 
@@ -231,8 +231,8 @@ class CalendarController extends AbstractController
      *
      * @access protected
      *
-     * @param array $calendarData Output array containing the result calendar data that is passed to Fluid template
-     * @param array $calendarIssuesByMonth All issues sorted by month => day
+     * @param mixed[] $calendarData Output array containing the result calendar data that is passed to Fluid template
+     * @param mixed[] $calendarIssuesByMonth All issues sorted by month => day
      * @param int $year Gregorian year
      * @param int $firstMonth 1 for January, 2 for February, ... 12 for December
      * @param int $lastMonth 1 for January, 2 for February, ... 12 for December
@@ -304,10 +304,10 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array $day all issues for given day
+     * @param mixed[] $day all issues for given day
      * @param int $currentDayTime
      *
-     * @return array all issues for given day as text links
+     * @return array<int<0, max>, array<string, mixed>> all issues for given day as text links
      */
     private function getDayLinksText(array $day, int $currentDayTime): array
     {
@@ -334,10 +334,10 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array &$calendarData calendar passed by reference
+     * @param mixed[] &$calendarData calendar passed by reference
      * @param int $currentDayTime
      * @param string $dayLinks
-     * @param array $dayLinkDiv
+     * @param mixed[] $dayLinkDiv
      * @param int $firstDayOfWeek
      * @param int $k
      *
@@ -363,11 +363,11 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array &$calendarData calendar passed by reference
+     * @param mixed[] &$calendarData calendar passed by reference
      * @param int $currentDayTime
      * @param string $day
      * @param string $dayLinks
-     * @param array $dayLinkDiv
+     * @param mixed[] $dayLinkDiv
      *
      * @return void
      */
@@ -384,7 +384,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return array
+     * @return mixed[]
      */
     private function buildCalendar(): array
     {
@@ -422,7 +422,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return array
+     * @return mixed[]
      */
     private function getIssuesByYear(): array
     {
@@ -506,7 +506,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array|QueryResultInterface $documents to create issues
+     * @param array<int, Document>|QueryResultInterface<int, Document> $documents to create issues
      *
      * @return Generator
      */

@@ -61,7 +61,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * @var DocumentRepository
      */
-    protected $documentRepository;
+    protected DocumentRepository $documentRepository;
 
     /**
      * @param DocumentRepository $documentRepository
@@ -159,7 +159,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @access protected
      *
-     * @param array $requestData The request data
+     * @param mixed[] $requestData The request data
      * @param int $storagePid Storage Pid
      * @param int $pid the page id
      *

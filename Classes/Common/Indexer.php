@@ -51,7 +51,7 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var array Array of metadata fields' configuration
+     * @var array<string, mixed[]> Array of metadata fields' configuration
      *
      * @see loadIndexConf()
      */
@@ -76,7 +76,7 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var array List of already processed documents
+     * @var int[] List of already processed documents
      */
     protected static array $processedDocs = [];
 
@@ -335,7 +335,7 @@ class Indexer
      * @static
      *
      * @param Document $document The METS document
-     * @param array $logicalUnit Array of the logical unit to process
+     * @param mixed[] $logicalUnit Array of the logical unit to process
      *
      * @return bool true on success or false on failure
      */
@@ -439,7 +439,7 @@ class Indexer
      *
      * @param Document $document The METS document
      * @param int $page The page number
-     * @param array $physicalUnit Array of the physical unit to process
+     * @param mixed[] $physicalUnit Array of the physical unit to process
      *
      * @return bool true on success or false on failure
      */
@@ -518,10 +518,10 @@ class Indexer
      * @access private
      *
      * @param Document $document
-     * @param array $metadata
+     * @param mixed[] $metadata
      * @param QueryDocument &$solrDoc
      *
-     * @return array empty array or autocomplete values
+     * @return mixed[] empty array or autocomplete values
      */
     private static function processMetadata(Document $document, array $metadata, QueryDocument &$solrDoc): array
     {
@@ -559,7 +559,7 @@ class Indexer
      *
      * @param AbstractDocument $doc
      * @param QueryDocument &$solrDoc
-     * @param array $physicalUnit Array of the physical unit to process
+     * @param mixed[] $physicalUnit Array of the physical unit to process
      *
      * @return void
      */
@@ -652,7 +652,7 @@ class Indexer
      *
      * @param Query $updateQuery solarium query
      * @param Document $document The METS document
-     * @param array $unit Array of the logical or physical unit to process
+     * @param array<string, mixed> $unit Array of the logical or physical unit to process
      * @param string $fullText Text containing full text for indexing
      *
      * @return QueryDocument
@@ -712,9 +712,9 @@ class Indexer
      *
      * @static
      *
-     * @param array|string $authors Array or string containing author/authors
+     * @param mixed[]|string $authors Array or string containing author/authors
      *
-     * @return array|string
+     * @return mixed[]|string
      */
     private static function removeAppendsFromAuthor(array|string $authors): array|string
     {
