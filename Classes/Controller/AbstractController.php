@@ -230,7 +230,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         }
         if (isset($this->requestData['multiViewSource']) && is_array($this->requestData['multiViewSource'])) {
             foreach ($this->requestData['multiViewSource'] as $sourceKey => $documentUrl) {
-                $sourceDocument = AbstractDocument::getInstance($documentUrl, $this->settings);
+                $sourceDocument = Helper::getDocumentInstance($documentUrl, $this->settings);
+                //$sourceDocument = AbstractDocument::getInstance($documentUrl, $this->settings);
                 if ($sourceDocument !== null) {
                     if ($this->isMultiDocumentType($sourceDocument->tableOfContents[0]['type'])) {
                         $childDocuments = $sourceDocument->tableOfContents[0]['children'];
@@ -285,7 +286,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->document = $this->documentRepository->findOneBy(['recordId' => $this->requestData['recordId']]);
 
             if ($this->document !== null) {
-                $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
+                $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings);
+                //$doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
                 if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {
@@ -738,7 +740,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
 
         if ($this->document) {
-            $doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
+            $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings);
+            //$doc = AbstractDocument::getInstance($this->document->getLocation(), $this->settings);
             if ($doc !== null) {
                 $doc->configPid = $this->document->getPid();
                 $this->buildMultiViewDocuments($this->document->getLocation(), $doc);
@@ -763,8 +766,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function getDocumentByUrl(string $documentUrl)
     {
-        $doc = AbstractDocument::getInstance($documentUrl, $this->settings);
-
+        $doc = Helper::getDocumentInstance($documentUrl, $this->settings);
+        //$doc = AbstractDocument::getInstance($documentUrl, $this->settings);
         if ($doc !== null) {
             $this->buildMultiViewDocuments($documentUrl, $doc);
 

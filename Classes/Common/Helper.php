@@ -102,7 +102,14 @@ class Helper
         'chemical/x-xyz' => 'xyz',
         'text/html' => 'html'
     ];
-
+    public static function getDocumentInstance($documentLocation, $settings)
+    {
+        static $doc;
+        if($doc === null){
+            $doc = AbstractDocument::getInstance($documentLocation, $settings);
+        }
+        return $doc;
+    }
     /**
      * Generates a flash message and adds it to a message queue.
      *
