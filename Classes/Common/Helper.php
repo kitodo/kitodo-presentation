@@ -202,13 +202,11 @@ class Helper
         libxml_use_internal_errors($libxmlErrors);
         return $xml;
     }
-    
     /**
      * @param string $documentLocation The URL of XML file or the IRI of the IIIF resource
      * @param array $settings
      * 
      * @return AbstractDocument
-     *  
      */
     public static function getDocumentInstance($documentLocation, $settings): AbstractDocument|null
     {
