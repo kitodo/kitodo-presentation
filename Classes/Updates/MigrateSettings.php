@@ -22,7 +22,7 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Class MigrateSettings
- * 
+ *
  * @package TYPO3
  * @subpackage dlf
  *
@@ -171,17 +171,23 @@ class MigrateSettings implements UpgradeWizardInterface
     {
         $xml = simplexml_load_string($oldValue);
 
-        // get all field elements
-        $fields = $xml->xpath("//field");
+        if ($xml !== false) {
+            // get all field elements
+            $fields = $xml->xpath("//field");
 
-        foreach ($fields as $field) {
-            // change the index attribute if it doesn't start with 'settings.' yet
-            if (!str_contains($field['index'], 'settings.')) {
-                $field['index'] = 'settings.' . $field['index'];
+            if (!empty($fields)) {
+                foreach ($fields as $field) {
+                    // change the index attribute if it doesn't start with 'settings.' yet
+                    if (!str_contains($field['index'], 'settings.')) {
+                        $field['index'] = 'settings.' . $field['index']; // @phpstan-ignore-line
+                    }
+                }
             }
+
+            return $xml->asXML() ?: '';
         }
 
-        return $xml->asXML();
+        return $oldValue;
 
     }
 
@@ -195,6 +201,10 @@ class MigrateSettings implements UpgradeWizardInterface
     protected function checkForOldSettings(string $flexFormXml): bool
     {
         $xml = simplexml_load_string($flexFormXml);
+
+        if ($xml === false) {
+            return false;
+        }
 
         // get all field elements with value of attribute index not containing "settings."
         $fields = $xml->xpath("//field[not(starts-with(@index, 'settings.'))]");

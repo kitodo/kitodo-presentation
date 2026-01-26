@@ -41,7 +41,7 @@ class AnnotationRequest
     {
         $jsonld = Helper::getUrl($url);
 
-        if ($jsonld) {
+        if (is_string($jsonld)) {
             $annotationData = json_decode($jsonld, true);
 
             if ($annotationData) {
