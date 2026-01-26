@@ -189,7 +189,7 @@ class Generator
 
         // Integrate doc-comments from model class and its fields
         if ($className !== null) {
-            $reflection = new ReflectionClass($className);
+            $reflection = new ReflectionClass($className); // @phpstan-ignore-line
 
             $dataMap = $this->dataMapper->getDataMap($className);
 
@@ -202,13 +202,15 @@ class Generator
                     ? GeneralUtility::camelCaseToLowerCaseUnderscored($property->getName())
                     : $column->getColumnName();
 
-                if (isset($result->columns[$columnName])) {
+                if (isset($result->columns[$columnName]) && $property->getDocComment() !== false) {
                     $result->columns[$columnName]->fieldComment = $this->parsePropertyDocComment($property->getDocComment());
                 }
             }
 
             $result->modelClass = $className;
-            $result->classComment = $this->parseDocComment($reflection->getDocComment());
+            if ($reflection->getDocComment() !== false) {
+                $result->classComment = $this->parseDocComment($reflection->getDocComment());
+            }
         }
 
         return $result;

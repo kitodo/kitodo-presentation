@@ -198,6 +198,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
     protected function performUpdate(): bool
     {
         try {
+            /** @var mixed[] $records */
             $records = $this->getRecordsFromTable();
             foreach ($records as $record) {
                 $this->migrateField($record);

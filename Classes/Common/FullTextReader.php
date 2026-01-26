@@ -116,7 +116,9 @@ class FullTextReader
                 // Load XML from file.
                 $ocrTextXml = Helper::getXmlFileAsString($fileContent);
                 $obj->setPageId($id);
-                $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
+                if ($ocrTextXml !== false) {
+                    $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
+                }
             } else {
                 $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
             }

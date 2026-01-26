@@ -83,7 +83,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
         }
 
         $modelInfo = PathUtility::pathinfo($parameters['model']);
-        $modelFormat = $this->getModelFormat($parameters, $modelInfo);
+        $modelFormat = $this->getModelFormat($parameters, (array) $modelInfo);
         if (empty($modelFormat)) {
             return $this->warningResponse('Model format is not provided.', $request);
         }
@@ -145,7 +145,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
             }
         }
 
-        $html = $this->getViewerHtml($config, $viewerConfigPath, $viewerFolder, $parameters, $modelInfo);
+        $html = $this->getViewerHtml($config, $viewerConfigPath, $viewerFolder, $parameters, (array) $modelInfo);
         return new HtmlResponse($html);
     }
 
@@ -259,7 +259,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
     {
         /** @var ResourceFactory $resourceFactory */
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
-        $html = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/Html/Embedded3dViewerStandalone.html')->getContents();
+        $html = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/Html/Embedded3dViewerStandalone.html')->getContents(); // @phpstan-ignore-line
         $file = $resourceFactory->retrieveFileOrFolderObject('EXT:dlf/Resources/Public/JavaScript/Embedded3dViewer/model-viewer-4.1.0.min.js');
         $html = str_replace('{{modelViewerJS}}', $file->getPublicUrl(), $html);
         $html = str_replace("{{modelUrl}}", $model, $html);
@@ -273,7 +273,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
      * @param string $viewerConfigPath
      * @param Folder $viewerFolder
      * @param mixed[] $parameters
-     * @param mixed[] $modelInfo
+     * @param array<string> $modelInfo
      *
      * @return string
      */
@@ -299,7 +299,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
      * @access protected
      *
      * @param mixed[] $parameters The model format parameter
-     * @param array<string, string> $modelInfo The model info
+     * @param array<string> $modelInfo The model info
      *
      * @return string Returns the model format or empty string
      */

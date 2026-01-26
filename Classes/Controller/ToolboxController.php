@@ -660,10 +660,11 @@ class ToolboxController extends AbstractController
             $arr = explode('*', $this->settings['documentIdUrlSchema']);
 
             if (count($arr) == 2) {
+                /** @var non-empty-string $arr[0] */
                 $id = explode($arr[0], $id)[0];
             } else if (count($arr) == 3) {
                 $sub = substr($id, strpos($id, $arr[0]) + strlen($arr[0]), strlen($id));
-                $id = substr($sub, 0, strpos($sub, $arr[2]));
+                $id = substr($sub, 0, strpos($sub, $arr[2]) ?: null);
             }
         }
         return $id;
@@ -684,7 +685,7 @@ class ToolboxController extends AbstractController
         if (!empty($name)) {
             $name = Helper::encrypt($name);
         }
-        return $name;
+        return $name ?: '';
     }
 
     /**

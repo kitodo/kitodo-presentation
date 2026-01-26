@@ -89,7 +89,7 @@ class SearchController extends AbstractController
     public function searchAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
-        $this->search = $this->getParametersSafely('search', ['tx_dlf_collection', 'tx_dlf_listview']);
+        $this->search = $this->getArrayParameterSafely('search', ['tx_dlf_collection', 'tx_dlf_listview']);
 
         // output is done by main action
         return $this->redirect('main', null, null, ['search' => $this->search]);
@@ -118,7 +118,7 @@ class SearchController extends AbstractController
         $this->enableSuggester();
 
         // if search was triggered, get search parameters from POST variables
-        $this->search = $this->getParametersSafely('search');
+        $this->search = $this->getArrayParameterSafely('search');
 
         // if search was triggered by the ListView plugin, get the parameters from GET variables
         $listRequestData = $this->request->getQueryParams()['tx_dlf_listview'] ?? null;
@@ -154,8 +154,8 @@ class SearchController extends AbstractController
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
-        $currentPage = $this->getParametersSafely('page');
-        if (empty($currentPage)) {
+        $currentPage = $this->getIntParameterSafely('page');
+        if ($currentPage == 0) {
             $currentPage = 1;
         }
 
@@ -445,7 +445,7 @@ class SearchController extends AbstractController
      * @param mixed[] $search The parameters of the current search query
      * @param string &$state The state of the parent item
      *
-     * @return array<string, mixed[]> The array for the facet's menu entry
+     * @return array<string, array<int, mixed>|bool|int|string> The array for the facet's menu entry
      */
     private function getFacetsMenuEntry(string $field, string $value, int $count, array $search, string &$state): array
     {
@@ -496,7 +496,7 @@ class SearchController extends AbstractController
         if ($facet) {
             foreach ($facet as $field => $values) {
                 $entryArray = [];
-                $entryArray['field'] = substr($field, 0, strpos($field, '_faceting'));
+                $entryArray['field'] = substr($field, 0, strpos($field, '_faceting') ?: null);
                 $entryArray['count'] = 0;
                 $entryArray['_OVERRIDE_HREF'] = '';
                 $entryArray['ITEM_STATE'] = 'NO';

@@ -543,7 +543,7 @@ abstract class AbstractDocument
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
             $content = Helper::getUrl($location);
-            if ($content !== false) {
+            if (is_string($content)) {
                 $xml = Helper::getXmlFileAsString($content);
                 if ($xml !== false) {
                     $xml->registerXPathNamespace('mets', 'http://www.loc.gov/METS/');
@@ -561,7 +561,7 @@ abstract class AbstractDocument
             Helper::error('Invalid file location "' . $location . '" for document loading');
         }
 
-        if ($documentFormat == 'METS') {
+        if ($xml instanceof \SimpleXMLElement && $documentFormat == 'METS') {
             $instance = new MetsDocument($location, $xml, $settings);
         } elseif ($iiif instanceof IiifResourceInterface) {
             $instance = new IiifManifest($location, $iiif, $settings);

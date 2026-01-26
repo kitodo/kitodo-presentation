@@ -49,6 +49,6 @@ class MailRepository extends Repository
 
         $this->setDefaultQuerySettings($querySettings);
 
-        return $this->findAll();
+        return $this->findAll(); // @phpstan-ignore-line
     }
 }

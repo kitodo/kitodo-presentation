@@ -155,6 +155,10 @@ class Alto implements FulltextInterface
     {
         $namespace = $xml->getDocNamespaces();
 
+        if ($namespace === false) {
+            return;
+        }
+
         if (in_array('http://www.loc.gov/standards/alto/ns-v2#', $namespace, true)) {
             $xml->registerXPathNamespace('alto', 'http://www.loc.gov/standards/alto/ns-v2#');
         } elseif (in_array('http://www.loc.gov/standards/alto/ns-v3#', $namespace, true)) {
