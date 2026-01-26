@@ -18,7 +18,7 @@ parameters:
     -
       message: '#Access to constant EDIT on an unknown class TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
       path: ../Classes/Task/BaseAdditionalFieldProvider.php
-  level: 6
+  level: 7
   paths:
     - ../Classes/
   excludePaths:
