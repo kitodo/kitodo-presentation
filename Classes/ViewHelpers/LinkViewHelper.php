@@ -98,12 +98,10 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
             $uri .= '#' . $this->arguments['section'];
         }
 
-        $tag = new static();
-        $tag->tag->setTagName('a');
-        $tag->tag->addAttribute('href', $uri);
-        $tag->tag->setContent($childContent);
+        $this->tag->addAttribute('href', $uri);
+        $this->tag->setContent($childContent);
 
-        return $tag->tag->render();
+        return $this->tag->render();
     }
 
     /**
