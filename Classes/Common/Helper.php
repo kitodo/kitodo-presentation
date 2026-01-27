@@ -612,7 +612,10 @@ class Helper
 
         return $totalSeconds;
     }
-
+    public static function translate_contextId() {
+        $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
+        return $languageAspect->getContentId();
+    }
     public static function translate_test(string $table, string $pid): array
     {
         static $translations = [];
@@ -636,19 +639,19 @@ class Helper
             return $translations;
         }
     }
-    public static function translate_get(string $indexName, array $translations)
+    public static function translate_get(string $indexName, array $translations, $languageContentId)
     {
         $filtered_parent = array_filter($translations, function ($obj) use ($indexName) {
             return $obj['index_name'] == $indexName && $obj['l18n_parent'] != 0;
         });
-        $xkey = key($filtered_parent);
-        
-        $filtered_uid = array_filter($translations, function ($obj) use ($filtered_parent, $xkey) {
-            return $obj['uid'] == $filtered_parent[$xkey]['l18n_parent'];
+        $xKey = key($filtered_parent);
+        if($xKey == '')
+        {
+            return $indexName;
+        }
+        $filtered_uid = array_filter($translations, function ($obj) use ($filtered_parent, $xKey) {
+            return $obj['uid'] == $filtered_parent[$xKey]['l18n_parent'];
         });
-
-        $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
-        $languageContentId = $languageAspect->getContentId();
         $filtered_language = array_filter($filtered_uid, function($obj) use ($languageContentId) {
             return $obj['sys_language_uid'] == (int)$languageContentId;
         });

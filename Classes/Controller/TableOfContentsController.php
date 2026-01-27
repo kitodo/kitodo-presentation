@@ -35,6 +35,9 @@ class TableOfContentsController extends AbstractController
      */
     protected array $activeEntries = [];
 
+    protected array $translations;
+    protected string $languageContentId;
+
     /**
      * The main method of the plugin
      *
@@ -44,8 +47,11 @@ class TableOfContentsController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
+        $this->translations = Helper::translate_test('tx_dlf_structures', $this->settings['storagePid']);
+        $this->languageContentId = Helper::translate_contextId();
         // Load current document.
         $this->loadDocument();
+
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return $this->htmlResponse();
@@ -56,10 +62,7 @@ class TableOfContentsController extends AbstractController
         }
 
         $this->view->assign('viewData', $this->viewData);
-        $translations = Helper::translate_test('tx_dlf_structures', '2');
-        $this->view->assign('translations', $translations);
-        $result = Helper::translate_get('bookplate', $translations);
-        $this->view->assign('test_translation', $result);
+    
         return $this->htmlResponse();
     }
 
@@ -141,7 +144,7 @@ class TableOfContentsController extends AbstractController
         }
         $entryArray['year'] = $entry['year'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = $entry['type'];
+        $entryArray['type'] = $this->getTranslatedType($entry['type']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
@@ -319,7 +322,8 @@ class TableOfContentsController extends AbstractController
      */
     private function getTranslatedType(string $type): string
     {
-        return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
+        return Helper::translate_get($type, $this->translations, $this->languageContentId);
+        //return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
     }
 
     /**
