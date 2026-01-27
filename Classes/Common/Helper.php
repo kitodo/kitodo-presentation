@@ -613,6 +613,48 @@ class Helper
         return $totalSeconds;
     }
 
+    public static function translate_test(string $table, string $pid): array
+    {
+        static $translations = [];
+        if(empty($translations))
+        {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table);
+
+            $result = $queryBuilder
+                ->select(
+                    $table . '.uid AS uid',
+                    $table . '.l18n_parent AS l18n_parent',
+                    $table . '.label AS label',
+                    $table . '.index_name AS index_name',
+                    $table . '.sys_language_uid As sys_language_uid'
+                )
+                ->from($table)
+                ->executeQuery();
+
+            $translations = $result->fetchAllAssociative();
+            return $translations;
+        }
+    }
+    public static function translate_get(string $indexName, array $translations)
+    {
+        $filtered_parent = array_filter($translations, function ($obj) use ($indexName) {
+            return $obj['index_name'] == $indexName && $obj['l18n_parent'] != 0;
+        });
+        $xkey = key($filtered_parent);
+        
+        $filtered_uid = array_filter($translations, function ($obj) use ($filtered_parent, $xkey) {
+            return $obj['uid'] == $filtered_parent[$xkey]['l18n_parent'];
+        });
+
+        $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
+        $languageContentId = $languageAspect->getContentId();
+        $filtered_language = array_filter($filtered_uid, function($obj) use ($languageContentId) {
+            return $obj['sys_language_uid'] == (int)$languageContentId;
+        });
+        $yKey = key($filtered_language);
+        return $filtered_language[$yKey]['label'];
+    }
     /**
      * This translates an internal "index_name"
      *

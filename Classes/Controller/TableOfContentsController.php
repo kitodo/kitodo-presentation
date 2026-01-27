@@ -56,6 +56,10 @@ class TableOfContentsController extends AbstractController
         }
 
         $this->view->assign('viewData', $this->viewData);
+        $translations = Helper::translate_test('tx_dlf_structures', '2');
+        $this->view->assign('translations', $translations);
+        $result = Helper::translate_get('bookplate', $translations);
+        $this->view->assign('test_translation', $result);
         return $this->htmlResponse();
     }
 
