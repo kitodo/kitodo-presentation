@@ -104,6 +104,11 @@
                                     <f:if condition="{result.title}">
                                         <f:render partial="ListView/ResultsTitleMetadata" arguments="{title: result.title}" />
                                     </f:if>
+                                    <f:if condition="{settings.getStructurePath}">
+                                        <f:for each="{result.structure_path}" as="structure_path">
+                                            <f:render partial="ListView/ResultsStructurePathMetadata" arguments="{structure_path: structure_path}" />
+                                        </f:for>
+                                    </f:if>
                                     <f:if condition="{result.structure} != 'page'">
                                         <f:render partial="ListView/ResultsTypeMetadata" arguments="{type: result.structure}" />
                                     </f:if>
