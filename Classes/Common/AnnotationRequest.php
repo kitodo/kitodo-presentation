@@ -17,12 +17,12 @@ class AnnotationRequest
     /**
      * @var string
      */
-    protected $apiUrl = '';
+    protected string $apiUrl = '';
 
     /**
      * @param string $apiUrl The url of the annotation server api.
      */
-    public function __construct($apiUrl)
+    public function __construct(string $apiUrl)
     {
         $this->apiUrl =  trim($apiUrl, "/ ");
     }
@@ -31,10 +31,13 @@ class AnnotationRequest
     /**
      * Requests the annotation server
      *
+     * @access protected
+     *
      * @param string $url The annotation request url.
-     * @return array
+     *
+     * @return mixed[] Array of annotation data
      */
-    protected function requestAnnotions($url) : array
+    protected function requestAnnotations(string $url) : array
     {
         $jsonld = Helper::getUrl($url);
 
@@ -52,21 +55,24 @@ class AnnotationRequest
     /**
      * Returns all annotations of a document.
      *
+     * @access public
+     *
      * @param string $id Document id (purl)
-     * @return array
+     *
+     * @return mixed[] Array of annotations
      */
-    public function getAll($id)
+    public function getAll(string $id): array
     {
         $annotations = [];
 
-        $annotationData = $this->requestAnnotions($this->apiUrl . '?target=' . urlencode($id . '/*'));
+        $annotationData = $this->requestAnnotations($this->apiUrl . '?target=' . urlencode($id . '/*'));
 
         if (array_key_exists('first', $annotationData)) {
             $annotationPageData = $annotationData['first'];
             $annotations = array_merge($annotations, $annotationPageData["items"]);
 
             while (array_key_exists('next', $annotationPageData)) {
-                $annotationPageData = $this->requestAnnotions($annotationPageData['next']);
+                $annotationPageData = $this->requestAnnotations($annotationPageData['next']);
                 if (array_key_exists('items', $annotationPageData)) {
                     $annotations = array_merge($annotations, $annotationPageData["items"]);
                 }

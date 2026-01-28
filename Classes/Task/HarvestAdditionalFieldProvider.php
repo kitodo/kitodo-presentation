@@ -29,12 +29,15 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
     /**
      * Gets additional fields to render in the form to add/edit a task
      *
-     * @param array $taskInfo Values of the fields from the add/edit task form
+     * @access public
+     *
+     * @param mixed[] $taskInfo Values of the fields from the add/edit task form
      * @param BaseTask $task The task object being edited. Null when adding a task!
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
+     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     *
+     * @return array<string, array<string, string>> A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
      */
-    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
+    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule): array
     {
         /** @var BaseTask $task */
         if ($this->isEditAction($schedulerModule)) {
@@ -133,7 +136,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
      *
      * @param int $pid The UID of the storage page
      *
-     * @return array Array of libraries
+     * @return array<string, int> Array of libraries
      */
     private function getLibraries(int $pid): array
     {
@@ -144,7 +147,7 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
             ->from('tx_dlf_libraries')
             ->where(
                 $queryBuilder->expr()
-                    ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
+                    ->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
             )
             ->executeQuery();
 

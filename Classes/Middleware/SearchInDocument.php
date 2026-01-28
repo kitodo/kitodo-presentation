@@ -45,7 +45,7 @@ class SearchInDocument implements MiddlewareInterface
     /**
      * This holds the solr fields
      *
-     * @var array
+     * @var string[]
      * @access private
      */
     private array $fields;
@@ -139,7 +139,7 @@ class SearchInDocument implements MiddlewareInterface
      *
      * @access private
      *
-     * @param array $parameters array of query parameters
+     * @param mixed[] $parameters array of query parameters
      *
      * @return ResultInterface result
      */
@@ -175,7 +175,7 @@ class SearchInDocument implements MiddlewareInterface
      *
      * @access private
      *
-     * @param array $parameters parsed from request body
+     * @param mixed[] $parameters parsed from request body
      *
      * @return string SOLR query
      */

@@ -23,7 +23,7 @@ class SolrPaginator extends AbstractPaginator
     private SolrSearch $solrSearch;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     private array $paginatedItems = [];
 
@@ -55,6 +55,11 @@ class SolrPaginator extends AbstractPaginator
         return count($this->paginatedItems);
     }
 
+    /**
+     * @access public
+     *
+     * @return mixed[]
+     */
     public function getPaginatedItems(): iterable
     {
         return $this->paginatedItems;

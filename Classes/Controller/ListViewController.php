@@ -37,7 +37,7 @@ class ListViewController extends AbstractController
      * @access public
      *
      * @param CollectionRepository $collectionRepository
-     * 
+     *
      * @return void
      */
     public function injectCollectionRepository(CollectionRepository $collectionRepository): void
@@ -65,7 +65,7 @@ class ListViewController extends AbstractController
 
     /**
      * @access protected
-     * @var array of the current search parameters
+     * @var mixed[] of the current search parameters
      */
     protected $search;
 

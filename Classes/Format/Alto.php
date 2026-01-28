@@ -139,7 +139,7 @@ class Alto implements FulltextInterface
      */
     private function getCoordinates(\SimpleXMLElement $attributes): string
     {
-        return (string) $attributes['HPOS'] . ' ' . (string) $attributes['VPOS'] . ' ' . (string) $attributes['WIDTH'] . ' ' . (string) $attributes['HEIGHT'];
+        return $attributes['HPOS'] . ' ' . $attributes['VPOS'] . ' ' . $attributes['WIDTH'] . ' ' . $attributes['HEIGHT'];
     }
 
     /**
@@ -148,8 +148,10 @@ class Alto implements FulltextInterface
      * @access private
      *
      * @param \SimpleXMLElement &$xml: The XML to register the namespace for
+     *
+     * @return void
      */
-    private function registerAltoNamespace(\SimpleXMLElement &$xml)
+    private function registerAltoNamespace(\SimpleXMLElement &$xml): void
     {
         $namespace = $xml->getDocNamespaces();
 

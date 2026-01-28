@@ -81,7 +81,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @see __sleep() / __wakeup()
      */
-    protected string $asJson = '';
+    private string $asJson = '';
 
     /**
      * @access protected
@@ -93,23 +93,23 @@ final class IiifManifest extends AbstractDocument
      * @access protected
      * @var string 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif conforms to: IIIF Metadata API 1, IIIF Presentation API 2 or 3
      */
-    protected string $iiifVersion;
+    private string $iiifVersion;
 
     /**
      * @access protected
      * @var bool Document has already been analyzed if it contains fulltext for the Solr index
      */
-    protected bool $hasFulltextSet = false;
+    private bool $hasFulltextSet = false;
 
     /**
      * @access protected
-     * @var array This holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
+     * @var mixed[] This holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
      */
-    protected array $originalMetadataArray = [];
+    private array $originalMetadataArray = [];
 
     /**
      * @access protected
-     * @var array Holds the mime types of linked resources in the manifest (extracted during parsing) for later use
+     * @var mixed[] Holds the mime types of linked resources in the manifest (extracted during parsing) for later use
      */
     protected array $mimeTypes = [];
 
@@ -200,7 +200,7 @@ final class IiifManifest extends AbstractDocument
     {
         // Is there no physical structure array yet?
         if (!$this->physicalStructureLoaded) {
-            if ($this->iiif == null || !($this->iiif instanceof ManifestInterface)) {
+            if (!($this->iiif instanceof ManifestInterface)) {
                 return [];
             }
 
@@ -396,9 +396,9 @@ final class IiifManifest extends AbstractDocument
      *
      * @param IiifResourceInterface $resource IIIF resource, either a manifest or range.
      * @param bool $recursive Whether to include the child elements
-     * @param array $processedStructures IIIF resources that already have been processed
+     * @param mixed[] $processedStructures IIIF resources that already have been processed
      *
-     * @return array Logical structure array
+     * @return array<string, string> Logical structure array
      */
     protected function getLogicalStructureInfo(IiifResourceInterface $resource, bool $recursive = false, array &$processedStructures = []): array
     {
@@ -460,7 +460,7 @@ final class IiifManifest extends AbstractDocument
             } elseif ($resource instanceof RangeInterface) {
                 if (!empty($resource->getAllRanges())) {
                     foreach ($resource->getAllRanges() as $range) {
-                        if ((array_search($range->getId(), $processedStructures) == false)) {
+                        if (!array_search($range->getId(), $processedStructures)) {
                             $details['children'][] = $this->getLogicalStructureInfo($range, true, $processedStructures);
                         }
                     }
@@ -481,7 +481,7 @@ final class IiifManifest extends AbstractDocument
      * @param bool $withRights add attribution and license / rights and requiredStatement to the return value
      * @param bool $withRelated add related links / homepage to the return value
      *
-     * @return array
+     * @return mixed[]
      *
      * @todo This method is still in experimental; the method signature may change.
      */
@@ -838,10 +838,10 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @param array $annotationContainerIds
+     * @param mixed[] $annotationContainerIds
      * @param string $iiifId
      *
-     * @return array
+     * @return string[]
      */
     private function getAnnotationTexts(array $annotationContainerIds, string $iiifId): array
     {

@@ -32,25 +32,25 @@ class Mods implements MetadataInterface
      * @access private
      * @var \SimpleXMLElement The metadata XML
      **/
-    private $xml;
+    private \SimpleXMLElement $xml;
 
     /**
      * @access private
      * @var ModsReader The metadata XML
      **/
-    private $modsReader;
+    private ModsReader $modsReader;
 
     /**
      * @access private
-     * @var array The metadata array
+     * @var mixed[] The metadata array
      **/
-    private $metadata;
+    private array $metadata;
 
     /**
      * @access private
      * @var bool The metadata array
      **/
-    private $useExternalApis;
+    private bool $useExternalApis;
 
     /**
      * This extracts the essential MODS metadata from XML
@@ -58,7 +58,7 @@ class Mods implements MetadataInterface
      * @access public
      *
      * @param \SimpleXMLElement $xml The XML to extract the metadata from
-     * @param array &$metadata The metadata array to fill
+     * @param mixed[] &$metadata The metadata array to fill
      * @param bool $useExternalApis true if external APIs should be called, false otherwise
      *
      * @return void
@@ -114,7 +114,7 @@ class Mods implements MetadataInterface
      * @access private
      *
      * @param string $orcidId
-     * @param array $authors
+     * @param Name[] $authors
      * @param int $i
      *
      * @return void
@@ -139,7 +139,7 @@ class Mods implements MetadataInterface
      *
      * @access private
      *
-     * @param array $authors
+     * @param Name[] $authors
      * @param int $i
      *
      * @return void
@@ -238,7 +238,7 @@ class Mods implements MetadataInterface
      * @access private
      *
      * @param string $viafId
-     * @param array $holders
+     * @param Name[] $holders
      * @param int $i
      *
      * @return void
@@ -263,7 +263,7 @@ class Mods implements MetadataInterface
      *
      * @access private
      *
-     * @param array $holders
+     * @param Name[] $holders
      * @param int $i
      *
      * @return void
@@ -286,7 +286,7 @@ class Mods implements MetadataInterface
      *
      * @access private
      *
-     * @param array $holders
+     * @param Name[] $holders
      * @param int $i
      *
      * @return void

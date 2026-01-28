@@ -39,12 +39,15 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
     /**
      * Gets additional fields to render in the form to add/edit a task
      *
-     * @param array $taskInfo Values of the fields from the add/edit task form
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task The task object being edited. Null when adding a task!
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
+     * @access public
+     *
+     * @param mixed[] $taskInfo Values of the fields from the add/edit task form
+     * @param AbstractTask $task The task object being edited. Null when adding a task!
+     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     *
+     * @return array<string, array<string, string>> A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
      */
-    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
+    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule): array
     {
         return [];
     }
@@ -52,11 +55,14 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
     /**
      * Validates the additional fields' values
      *
-     * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     * @access public
+     *
+     * @param mixed[] $submittedData An array containing the data submitted by the add/edit task form
+     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     *
      * @return bool TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
      */
-    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
+    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule): bool
     {
         $fieldsValid = true;
 
@@ -140,11 +146,14 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
     /**
      * Takes care of saving the additional fields' values in the task's object
      *
-     * @param array $submittedData An array containing the data submitted by the add/edit task form
+     * @access public
+     *
+     * @param mixed[] $submittedData An array containing the data submitted by the add/edit task form
      * @param BaseTask $task Reference to the scheduler backend module
+     *
      * @return void
      */
-    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task): void
     {
         /** @var BaseTask $task */
         $task->setDryRun(!empty($submittedData['dryRun']));
@@ -190,7 +199,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @param bool $dryRun
      *
-     * @return array additional field dry run checkbox
+     * @return array<string, string> additional field dry run checkbox
      */
     protected function getDryRunField(bool $dryRun): array
     {
@@ -213,7 +222,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      * @param int $solr UID of the selected Solr core
      * @param int|null $pid UID of the selected storage page
      *
-     * @return array additional field solr dropdown
+     * @return array<string, string> additional field solr dropdown
      */
     protected function getSolrField(int $solr, ?int $pid = null): array
     {
@@ -236,13 +245,13 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
     }
 
     /**
-     * Return html for page dropdown
+     * Return HTML for page dropdown
      *
      * @access protected
      *
      * @param int $pid UID of the selected storage page
      *
-     * @return array additional field storage page dropdown
+     * @return array<string, string> additional field storage page dropdown
      */
     protected function getPidField(int $pid): array
     {
@@ -275,7 +284,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @param string $owner registered owner
      *
-     * @return array additional field owner text field
+     * @return array<string, string> additional field owner text field
      */
     protected function getOwnerField(string $owner): array
     {
@@ -297,7 +306,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @param int|null $pid UID of storage page
      *
-     * @return array Array of valid Solr cores
+     * @return mixed[] Array of valid Solr cores
      */
     private function getSolrCores(?int $pid = null): array
     {
@@ -328,7 +337,7 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @param bool $softCommit
      *
-     * @return array additional field soft commit checkbox
+     * @return array<string, string> additional field soft commit checkbox
      */
     protected function getSoftCommitField(bool $softCommit): array
     {

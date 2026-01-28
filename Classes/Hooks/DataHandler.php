@@ -44,7 +44,7 @@ class DataHandler implements LoggerAwareInterface
      * @param string $status 'new' or 'update'
      * @param string $table The destination table
      * @param int|string $id The uid of the record
-     * @param array &$fieldArray Array of field values
+     * @param array<string, string> &$fieldArray Array of field values
      *
      * @return void
      */
@@ -174,7 +174,7 @@ class DataHandler implements LoggerAwareInterface
      * @param string $status 'new' or 'update'
      * @param string $table The destination table
      * @param int|string $id The uid of the record
-     * @param array &$fieldArray Array of field values
+     * @param array<string, string> &$fieldArray Array of field values
      *
      * @return void
      */

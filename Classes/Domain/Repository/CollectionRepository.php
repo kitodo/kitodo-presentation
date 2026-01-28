@@ -30,6 +30,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @access public
  *
  * @method Collection|null findOneBy(array $criteria) Get a collection by criteria
+ *
+ * @extends Repository<Collection>
  */
 class CollectionRepository extends Repository
 {
@@ -48,9 +50,9 @@ class CollectionRepository extends Repository
      *
      * @access public
      *
-     * @param array $uids
+     * @param int[] $uids
      *
-     * @return QueryResultInterface
+     * @return QueryResultInterface<int, Collection>
      */
     public function findAllByUids(array $uids): QueryResultInterface
     {
@@ -71,9 +73,9 @@ class CollectionRepository extends Repository
      *
      * @access public
      *
-     * @param array $settings
+     * @param mixed[] $settings
      *
-     * @return QueryResultInterface
+     * @return QueryResultInterface<int, Collection>
      */
     public function findCollectionsBySettings(array $settings = []): QueryResultInterface
     {
@@ -118,12 +120,12 @@ class CollectionRepository extends Repository
      *
      * @access public
      *
-     * @param array $settings
+     * @param mixed[] $settings
      * @param mixed $set
      *
      * @return Result
      */
-    public function getIndexNameForSolr(array $settings, $set): Result
+    public function getIndexNameForSolr(array $settings, mixed $set): Result
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_collections');

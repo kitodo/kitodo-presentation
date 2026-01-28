@@ -25,6 +25,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @method Library|null findByUid(int|null $uid) Get a library by its UID
  * @method Library|null findOneBy(array $criteria) Get a library by criteria
+ *
+ * @extends Repository<Library>
  */
 class LibraryRepository extends Repository
 {

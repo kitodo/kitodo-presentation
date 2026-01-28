@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity;
 use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
 use Ubl\Iiif\Tools\IiifHelper;
 
@@ -78,13 +79,13 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @var array Additional information about files (e.g., ADMID), indexed by ID.
+     * @var mixed[] Additional information about files (e.g., ADMID), indexed by ID.
      */
     protected array $fileInfos = [];
 
     /**
      * @access protected
-     * @var array This holds the configuration for all supported metadata encodings
+     * @var array<string, array<string, string>> This holds the configuration for all supported metadata encodings
      *
      * @see loadFormats()
      */
@@ -123,13 +124,16 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @var array Last searched logical and physical page
+     * @var array<string, mixed> Last searched logical and physical page
      */
-    protected array $lastSearchedPhysicalPage = ['logicalPage' => null, 'physicalPage' => null];
+    protected array $lastSearchedPhysicalPage = [
+        'logicalPage' => null,
+        'physicalPage' => null
+    ];
 
     /**
      * @access protected
-     * @var array This holds the logical units
+     * @var mixed[] This holds the logical units
      */
     protected array $logicalUnits = [];
 
@@ -138,7 +142,7 @@ abstract class AbstractDocument
      * structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
      *
      * @access protected
-     * @var array
+     * @var array<mixed, array<string, mixed[]>>
      */
     protected array $metadataArray = [];
 
@@ -164,13 +168,13 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @var array This holds the physical structure
+     * @var mixed[] This holds the physical structure
      */
     protected array $physicalStructure = [];
 
     /**
      * @access protected
-     * @var array This holds the physical structure metadata
+     * @var mixed[] This holds the physical structure metadata
      */
     protected array $physicalStructureInfo = [];
 
@@ -193,7 +197,7 @@ abstract class AbstractDocument
      * structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
      *
      * @access protected
-     * @var array
+     * @var array<string, string>
      */
     protected array $rawTextArray = [];
 
@@ -225,9 +229,12 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @var array This holds the smLinks between logical and physical structMap
+     * @var array<string, mixed[]> This holds the smLinks between logical and physical structMap
      */
-    protected array $smLinks = ['l2p' => [], 'p2l' => []];
+    protected array $smLinks = [
+        'l2p' => [],
+        'p2l' => []
+    ];
 
     /**
      * @access protected
@@ -241,7 +248,7 @@ abstract class AbstractDocument
      * This holds the logical structure
      *
      * @access protected
-     * @var array
+     * @var array<int, mixed[]>
      */
     protected array $tableOfContents = [];
 
@@ -277,7 +284,7 @@ abstract class AbstractDocument
      * Holds the configured useGroups as array.
      *
      * @access protected
-     * @var \Kitodo\Dlf\Configuration\UseGroupsConfiguration
+     * @var UseGroupsConfiguration
      */
     protected UseGroupsConfiguration $useGroupsConfiguration;
 
@@ -309,9 +316,9 @@ abstract class AbstractDocument
      *
      * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
      *
-     * @return array|null The set of file information
+     * @return mixed[]|null The set of file information
      */
-    abstract public function getFileInfo($id): ?array;
+    abstract public function getFileInfo(string $id): ?array;
 
     /**
      * This gets the location of a file representing a physical page or track
@@ -365,7 +372,7 @@ abstract class AbstractDocument
      * the "@id" property of the Manifest / Range (IIIF)
      * @param bool $recursive Whether to include the child elements / resources
      *
-     * @return array Array of the element's id, label, type and physical page indexes/mptr link
+     * @return mixed[] Array of the element's id, label, type and physical page indexes/mptr link
      */
     abstract public function getLogicalStructure(string $id, bool $recursive = false): array;
 
@@ -379,7 +386,7 @@ abstract class AbstractDocument
      * @param string $id The "@ID" attribute of the logical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
      *
-     * @return array The logical structure node's / the IIIF resource's parsed metadata array
+     * @return mixed[] The logical structure node's / the IIIF resource's parsed metadata array
      */
     abstract public function getMetadata(string $id): array;
 
@@ -426,7 +433,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @return array Array of physical elements' id, type, label and file representations ordered
+     * @return mixed[] Array of physical elements' id, type, label and file representations ordered
      * by "@ORDER" attribute / IIIF Sequence's Canvases
      */
     abstract protected function magicGetPhysicalStructure(): array;
@@ -439,7 +446,7 @@ abstract class AbstractDocument
      *
      * @abstract
      *
-     * @return array The links between logical and physical nodes / Range, Manifest and Canvas
+     * @return mixed[] The links between logical and physical nodes / Range, Manifest and Canvas
      */
     abstract protected function magicGetSmLinks(): array;
 
@@ -473,7 +480,7 @@ abstract class AbstractDocument
      * @abstract
      *
      * @param string $location The location URL of the XML file to parse
-     * @param array $settings The extension settings
+     * @param mixed[] $settings The extension settings
      *
      * @return void
      */
@@ -511,7 +518,7 @@ abstract class AbstractDocument
      * @static
      *
      * @param string $location The URL of XML file or the IRI of the IIIF resource
-     * @param array $settings
+     * @param mixed[] $settings
      * @param bool $forceReload Force reloading the document instead of returning the cached instance
      *
      * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
@@ -659,7 +666,7 @@ abstract class AbstractDocument
      *
      * @access public
      *
-     * @return array The logical structure node's / resource's parsed metadata array
+     * @return mixed[] The logical structure node's / resource's parsed metadata array
      */
     public function getToplevelMetadata(): array
     {
@@ -685,14 +692,14 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @param array $structure logical structure array
+     * @param mixed[] $structure logical structure array
      * @param int $depth current tree depth
      * @param string $logId ID of the logical structure whose depth is requested
      *
      * @return int|bool false if structure with $logId is not a child of this substructure,
      * or the actual depth.
      */
-    protected function getTreeDepth(array $structure, int $depth, string $logId)
+    protected function getTreeDepth(array $structure, int $depth, string $logId): int|bool
     {
         foreach ($structure as $element) {
             if ($element['id'] == $logId) {
@@ -714,9 +721,9 @@ abstract class AbstractDocument
      *
      * @param string $logId The id of the logical structure element whose depth is requested
      *
-     * @return int|bool tree depth as integer or false if no element with $logId exists within the TOC.
+     * @return bool|int tree depth as integer or false if no element with $logId exists within the TOC.
      */
-    public function getStructureDepth(string $logId)
+    public function getStructureDepth(string $logId): bool|int
     {
         return $this->getTreeDepth($this->magicGetTableOfContents(), 1, $logId);
     }
@@ -767,12 +774,12 @@ abstract class AbstractDocument
      *
      * @static
      *
-     * @param string|array $resource IIIF resource. Can be an IRI, the JSON document as string
+     * @param mixed[]|string $resource IIIF resource. Can be an IRI, the JSON document as string
      * or a dictionary in form of a PHP associative array
      *
-     * @return NULL|\Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity An instance of the IIIF resource
+     * @return NULL|AbstractIiifEntity An instance of the IIIF resource
      */
-    protected static function loadIiifResource($resource): mixed
+    protected static function loadIiifResource(array|string $resource): mixed
     {
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'iiif');
         IiifHelper::setUrlReader(IiifUrlReader::getInstance());
@@ -817,7 +824,7 @@ abstract class AbstractDocument
      * @param string $format of the document eg. METS
      * @param bool $isAdministrative If true, the metadata is for administrative purposes and needs to have record_id
      *
-     * @return array
+     * @return array<string, mixed[]> Initialized metadata array
      */
     protected function initializeMetadata(string $format, bool $isAdministrative = false): array
     {
@@ -884,7 +891,7 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @return array Array of metadata with their corresponding logical structure node ID as key
+     * @return array<mixed, array<string, mixed[]>> Array of metadata with their corresponding logical structure node ID as key
      */
     protected function magicGetMetadataArray(): array
     {
@@ -933,7 +940,7 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @return array Array of elements' type, label and file representations ordered by "@ID" attribute / Canvas order
+     * @return mixed[] Array of elements' type, label and file representations ordered by "@ID" attribute / Canvas order
      */
     protected function magicGetPhysicalStructureInfo(): array
     {
@@ -993,7 +1000,7 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @return array Array of structure nodes' id, label, type and physical page indexes/mptr / Canvas link with original hierarchy preserved
+     * @return array<int, mixed[]> Array of structure nodes' id, label, type and physical page indexes/mptr / Canvas link with original hierarchy preserved
      */
     protected function magicGetTableOfContents(): array
     {
@@ -1031,6 +1038,7 @@ abstract class AbstractDocument
      * @param string $location The location URL of the XML file to parse
      * @param \SimpleXMLElement|IiifResourceInterface $preloadedDocument Either null or the \SimpleXMLElement
      * or IiifResourceInterface that has been loaded to determine the basic document format.
+     * @param mixed[] $settings The extension settings
      *
      * @return void
      */

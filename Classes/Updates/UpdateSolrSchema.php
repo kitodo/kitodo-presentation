@@ -141,7 +141,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
      *
      * @access private
      *
-     * @return array
+     * @return mixed[]
      */
     private function getAllAffectedSolrCores(): array
     {

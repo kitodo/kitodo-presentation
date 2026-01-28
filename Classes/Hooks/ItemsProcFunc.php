@@ -36,14 +36,14 @@ class ItemsProcFunc implements LoggerAwareInterface
      * @access protected
      * @var int
      */
-    protected $storagePid;
+    protected int $storagePid;
 
     /**
      * Helper to get flexform's items array for plugin "Toolbox"
      *
      * @access public
      *
-     * @param array &$params An array with parameters
+     * @param mixed[] &$params An array with parameters
      *
      * @return void
      */
@@ -57,11 +57,11 @@ class ItemsProcFunc implements LoggerAwareInterface
     }
 
     /**
-     * Extract typoScript configuration from site root to load storagePid
+     * Extract TypoScript configuration from site root to load storagePid
      *
      * @access public
      *
-     * @param array $params
+     * @param mixed[] $params
      *
      * @return void
      */
@@ -77,7 +77,7 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param array &$params An array with parameters
+     * @param mixed[] &$params An array with parameters
      *
      * @return void
      */
@@ -97,7 +97,7 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param array &$params An array with parameters
+     * @param mixed[] &$params An array with parameters
      */
     public function getFacetsList(array &$params): void
     {
@@ -115,7 +115,7 @@ class ItemsProcFunc implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param array &$params An array with parameters
+     * @param mixed[] &$params An array with parameters
      * @param string $fields Comma-separated list of fields to fetch
      * @param string $table Table name to fetch the items from
      * @param string $sorting Field to sort items by (optionally appended by 'ASC' or 'DESC')

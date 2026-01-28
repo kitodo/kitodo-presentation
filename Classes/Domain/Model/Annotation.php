@@ -17,20 +17,20 @@ class Annotation
     /**
      * The complete data of the annotation
      *
-     * @var array
+     * @var array<string, mixed>
      */
-    protected $data;
+    protected array $data;
 
     /**
-     * @var array
+     * @var mixed[]
      */
-    protected $targetPages;
+    protected array $targetPages;
 
 
     /**
-     * @param array $data
+     * @param array<string, mixed> $data
      */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->data = $data;
     }
@@ -38,9 +38,11 @@ class Annotation
     /**
      * Returns the full data of the annotation
      *
-     * @return array
+     * @access public
+     *
+     * @return array<string, mixed>
      */
-    public function getRawData()
+    public function getRawData(): array
     {
         return $this->data;
     }
@@ -48,9 +50,11 @@ class Annotation
     /**
      * Gets the annotation id
      *
+     * @access public
+     *
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->data['id'] ?? '';
     }
@@ -58,9 +62,11 @@ class Annotation
     /**
      * Gets the annotation title
      *
+     * @access public
+     *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->data['title'] ?? '';
     }
@@ -68,9 +74,11 @@ class Annotation
     /**
      * Gets the annotation body data
      *
-     * @return array
+     * @access public
+     *
+     * @return mixed[]
      */
-    public function getBody()
+    public function getBody(): array
     {
         $body = $this->data['body'] ?? '';
 
@@ -83,27 +91,36 @@ class Annotation
 
     /**
      * Gets the name of the annotation creator
+     *
+     * @access public
+     *
      * @return string
      */
-    public function getCreatorName()
+    public function getCreatorName(): string
     {
         return $this->data['creator']['displayName'] ?? '';
     }
 
     /**
      * Gets the creation date of the annotation
+     *
+     * @access public
+     *
      * @return string
      */
-    public function getCreated()
+    public function getCreated(): string
     {
         return $this->data['created'] ?? '';
     }
 
     /**
      * Gets the modification date of the annotation
+     *
+     * @access public
+     *
      * @return string
      */
-    public function getModified()
+    public function getModified(): string
     {
         return $this->data['modified'] ?? '';
     }
@@ -111,9 +128,11 @@ class Annotation
     /**
      * Gets the targets
      *
+     * @access public
+     *
      * @return AnnotationTarget[]
      */
-    public function getTargets()
+    public function getTargets(): array
     {
         if (is_string($this->data['target'])) {
             return [new AnnotationTarget($this->data['target'])];
@@ -130,10 +149,13 @@ class Annotation
     /**
      * Sets the target pages for which the annotation is relevant
      *
-     * @param array $targetPages
+     * @access public
+     *
+     * @param mixed[] $targetPages
+     *
      * @return void
      */
-    public function setTargetPages($targetPages)
+    public function setTargetPages(array $targetPages): void
     {
         $this->targetPages = $targetPages;
     }
@@ -141,9 +163,11 @@ class Annotation
     /**
      * Gets the target pages for which the annotation is relevant
      *
-     * @return array
+     * @access public
+     *
+     * @return mixed[]
      */
-    public function getTargetPages()
+    public function getTargetPages(): array
     {
         return $this->targetPages;
     }
@@ -151,9 +175,11 @@ class Annotation
     /**
      * Gets the page numbers for which the annotation is relevant
      *
-     * @return array
+     * @access public
+     *
+     * @return mixed[]
      */
-    public function getPageNumbers()
+    public function getPageNumbers(): array
     {
         $pages = [];
         if (is_array($this->targetPages)) {
@@ -168,9 +194,11 @@ class Annotation
     /**
      * Gets the annotation targets ordered by page numbers
      *
-     * @return array
+     * @access public
+     *
+     * @return mixed[]
      */
-    public function getPageTargets()
+    public function getPageTargets(): array
     {
         $pageTargets = [];
         if (is_array($this->targetPages)) {
@@ -187,9 +215,11 @@ class Annotation
     /**
      * Gets the audio ranges from the annotation targets ordered by page number
      *
-     * @return array
+     * @access public
+     *
+     * @return mixed[]
      */
-    public function getPageAudioRanges()
+    public function getPageAudioRanges(): array
     {
         $ranges = [];
         if (is_array($this->getPageTargets())) {
@@ -207,9 +237,11 @@ class Annotation
     /**
      * Gets the score ranges from the annotation targets ordered by page number
      *
-     * @return array
+     * @access public
+     *
+     * @return mixed[]
      */
-    public function getPageScoreRanges()
+    public function getPageScoreRanges(): array
     {
         $ranges = [];
         if (is_array($this->getPageTargets())) {
@@ -227,9 +259,11 @@ class Annotation
     /**
      * Gets the facsimile ranges from the annotation targets ordered by page number
      *
-     * @return array
+     * @access public
+     *
+     * @return mixed[]
      */
-    public function getPageFacsimileRanges()
+    public function getPageFacsimileRanges(): array
     {
         $ranges = [];
         if (is_array($this->getPageTargets())) {
@@ -248,9 +282,11 @@ class Annotation
     /**
      * Returns if the annotation is relevant for verovio
      *
+     * @access public
+     *
      * @return bool
      */
-    public function isVerovioRelevant()
+    public function isVerovioRelevant(): bool
     {
         foreach ($this->targetPages as $target) {
             if (array_key_exists('verovioRelevant', $target) && $target['verovioRelevant']) {
