@@ -444,6 +444,13 @@ List View
        0
 
  - :Property:
+        getStructurePath
+   :Data Type:
+        :ref:`t3tsref:data-type-boolean`
+   :Default:
+       0
+
+ - :Property:
        basketButton
    :Data Type:
        :ref:`t3tsref:data-type-boolean`
