@@ -179,6 +179,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                     'restrictions' => 'restrictions',
                     'root' => 'root',
                     'sid' => 'sid',
+                    'structurePath' => 'structure_path',
                     'terms' => 'terms',
                     'thumbnail' => 'thumbnail',
                     'timestamp' => 'timestamp',
