@@ -14,6 +14,12 @@
             <trans-unit id="flexform.excludeOtherCollections">
                 <source><![CDATA[Show only documents from the selected collection(s)]]></source>
             </trans-unit>
+            <trans-unit id="flexform.getStructurePath">
+                <source><![CDATA[Show breadcrumb/path to result location within the structure map]]></source>
+            </trans-unit>
+            <trans-unit id="flexform.getTitle">
+                <source><![CDATA[Show title of parent document if document has no title itself]]></source>
+            </trans-unit>
             <trans-unit id="flexform.library">
                 <source><![CDATA[Providing library]]></source>
             </trans-unit>
@@ -355,9 +361,6 @@
             </trans-unit>
             <trans-unit id="plugins.listview.flexform.limit">
                 <source><![CDATA[Documents per page]]></source>
-            </trans-unit>
-            <trans-unit id="flexform.getTitle">
-                <source><![CDATA[Show title of parent document if document has no title itself]]></source>
             </trans-unit>
             <trans-unit id="plugins.collection.title">
                 <source><![CDATA[Kitodo: Collection]]></source>
