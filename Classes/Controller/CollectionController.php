@@ -197,6 +197,7 @@ class CollectionController extends AbstractController
     {
         // if search was triggered, get search parameters from POST variables
         $search = $this->getParametersSafely('search');
+        $page = $this->getParametersSafely('page');
 
         $collection = null;
         if (!empty($search['collection']) && MathUtility::canBeInterpretedAsInteger($search['collection'])) {
@@ -204,7 +205,16 @@ class CollectionController extends AbstractController
         }
 
         // output is done by show action
-        return $this->redirect('show', null, null, ['search' => $search, 'collection' => $collection]);
+        return $this->redirect(
+            'show',
+            null,
+            null,
+            [
+                'page' => $page,
+                'search' => $search,
+                'collection' => $collection
+            ]
+        );
     }
 
     /**
