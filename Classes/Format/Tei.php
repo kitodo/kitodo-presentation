@@ -58,10 +58,15 @@ class Tei implements FulltextInterface, LoggerAwareInterface
         $this->registerTeiNamespace($xml);
 
         // Get all (presumed) words of the text.
-        $contentXml = $xml->xpath('./TEI:text')[0]->asXML();
+        $content = $xml->xpath('./TEI:text');
+        if (empty($content)) {
+            $this->logger->debug('The TEI document does not contain a <text> element.');
+            return '';
+        }
+        $contentXml = $content[0]->asXML();
 
         // Remove tags but keep their content
-        $contentXml = preg_replace('/<\/?(?:body|front|div|head|titlePage)[^>]*>/u', '', $contentXml);
+        $contentXml = preg_replace('/<\/?(?:body|front|div|head|titlePage)[^>]*>/u', '', $contentXml ?: '');
 
         // Replace linebreaks
         $contentXml = preg_replace('/<lb(?:\s[^>]*)?\/>/u', '', $contentXml);
@@ -120,12 +125,14 @@ class Tei implements FulltextInterface, LoggerAwareInterface
      * @access private
      *
      * @param \SimpleXMLElement &$xml: The XML to register the namespace for
+     *
+     * @return void
      */
-    private function registerTeiNamespace(\SimpleXMLElement $xml)
+    private function registerTeiNamespace(\SimpleXMLElement $xml): void
     {
         $namespace = $xml->getDocNamespaces();
 
-        if (in_array('http://www.tei-c.org/ns/1.0', $namespace, true)) {
+        if (is_array($namespace) && in_array('http://www.tei-c.org/ns/1.0', $namespace, true)) {
             $xml->registerXPathNamespace('TEI', 'http://www.tei-c.org/ns/1.0');
         }
     }

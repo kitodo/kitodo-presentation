@@ -3,22 +3,22 @@ parameters:
     - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
-    - 
+    -
       message: '#Class TYPO3\\CMS\\Core\\TypoScript\\FrontendTypoScriptFactory not found\.#'
       path: ../Classes/Common/TypoScriptHelper.php
-    - 
+    -
       message: '#Call to method createSettingsAndSetupConditions\(\) on an unknown class TYPO3\\CMS\\Core\\TypoScript\\FrontendTypoScriptFactory\.#'
       path: ../Classes/Common/TypoScriptHelper.php
-    - 
+    -
       message: '#Call to method createSetupConfigOrFullSetup\(\) on an unknown class TYPO3\\CMS\\Core\\TypoScript\\FrontendTypoScriptFactory\.#'
       path: ../Classes/Common/TypoScriptHelper.php
-    - 
+    -
       message: '#PHPDoc tag @var for variable \$action contains unknown class TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
       path: ../Classes/Task/BaseAdditionalFieldProvider.php
-    - 
+    -
       message: '#Access to constant EDIT on an unknown class TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
       path: ../Classes/Task/BaseAdditionalFieldProvider.php
-  level: 5
+  level: 7
   paths:
     - ../Classes/
   excludePaths:

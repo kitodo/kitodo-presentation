@@ -27,14 +27,14 @@ class FullTextReader
 
     /**
      * @access private
-     * @var array This holds all formats
+     * @var array<string, array<string, string>> This holds all formats
      */
     private array $formats;
 
     /**
      * Constructor
      *
-     * @param array $formats
+     * @param array<string, array<string, string>> $formats
      */
     public function __construct(array $formats)
     {
@@ -49,7 +49,7 @@ class FullTextReader
      *
      * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
-     * @param array $fileLocations The locations of the XML files
+     * @param mixed[] $fileLocations The locations of the XML files
      * @param mixed $physicalStructureNode The physical structure node (METS) or the Manifest / Range (IIIF)
      *
      * @return string The OCR full text
@@ -116,7 +116,9 @@ class FullTextReader
                 // Load XML from file.
                 $ocrTextXml = Helper::getXmlFileAsString($fileContent);
                 $obj->setPageId($id);
-                $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
+                if ($ocrTextXml !== false) {
+                    $textMiniOcr = $obj->getTextAsMiniOcr($ocrTextXml);
+                }
             } else {
                 $this->logger->warning('Invalid class/method "' . $class . '->getRawText()" for text format "' . $textFormat . '"');
             }
@@ -129,7 +131,9 @@ class FullTextReader
     /**
      * Get full text file groups from extension configuration.
      *
-     * @return array
+     * @access private
+     *
+     * @return string[] The full text file groups
      */
     private function getFullTextUseGroups(): array
     {

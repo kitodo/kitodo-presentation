@@ -28,17 +28,29 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
 {
     protected $escapeOutput = false;
 
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('id', 'string', 'ID of the generated player configuration', true);
         $this->registerArgument('settings', 'array', 'the settings array that is converted to JSON', true);
     }
 
+    /**
+     * @access public
+     *
+     * @static
+     *
+     * @param mixed[] $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     *
+     * @return string
+     */
     public static function renderStatic(
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): string
+    {
         $id = $arguments['id'];
         $inputSettings = $arguments['settings'];
 
@@ -97,7 +109,8 @@ CONFIG;
      *
      * @param SiteLanguage $language The site language Object
      * @param string $translationFile Path to the translation file
-     * @return array
+     *
+     * @return array<string , mixed>
      *
      * Keys of the result array:
      * - locale: Locale identifier of current site language

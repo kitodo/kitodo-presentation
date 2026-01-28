@@ -59,7 +59,7 @@ class Token extends AbstractEntity
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
     public function getOptions(): array
     {
@@ -67,7 +67,7 @@ class Token extends AbstractEntity
     }
 
     /**
-     * @param array $options
+     * @param mixed[] $options
      */
     public function setOptions(array $options): void
     {

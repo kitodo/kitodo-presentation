@@ -146,7 +146,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
      *
      * @access public
      *
-     * @return array|int
+     * @return mixed[]|int
      *
      * @throws RuntimeException
      */
@@ -198,6 +198,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
     protected function performUpdate(): bool
     {
         try {
+            /** @var mixed[] $records */
             $records = $this->getRecordsFromTable();
             foreach ($records as $record) {
                 $this->migrateField($record);
@@ -214,7 +215,7 @@ class FormatUpdater implements UpgradeWizardInterface, ChattyInterface, LoggerAw
      *
      * @access public
      *
-     * @param array $row
+     * @param mixed[] $row
      *
      * @return void
      *

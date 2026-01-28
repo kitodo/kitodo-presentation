@@ -30,6 +30,10 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
 {
     use LoggerAwareTrait;
 
+    /**
+     * @access protected
+     * @var mixed[] of validators in the validation stack.
+     */
     protected array $validators = [];
 
     public function __construct(string $valueClassName)
@@ -40,7 +44,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
     /**
      * Add validators by validation stack configuration to the internal validator stack.
      *
-     * @param array $configuration The configuration of validators
+     * @param mixed[] $configuration The configuration of validators
      *
      * @throws InvalidArgumentException
      *
@@ -61,7 +65,7 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
      * Add validator to the internal validator stack.
      *
      * @param string $className Class name of the validator which was derived from Kitodo\Dlf\Validation\AbstractDlfValidator
-     * @param array|null $configuration The configuration of validator
+     * @param mixed[]|null $configuration The configuration of validator
      *
      * @throws InvalidArgumentException
      *
@@ -70,9 +74,9 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
     protected function addValidator(string $className, ?array $configuration = null): void
     {
         if ($configuration === null) {
-            $validator = GeneralUtility::makeInstance($className);
+            $validator = GeneralUtility::makeInstance($className); // @phpstan-ignore-line
         } else {
-            $validator = GeneralUtility::makeInstance($className, $configuration);
+            $validator = GeneralUtility::makeInstance($className, $configuration); // @phpstan-ignore-line
         }
 
         if (!$validator instanceof AbstractDlfValidator) {
@@ -86,13 +90,13 @@ abstract class AbstractDlfValidationStack extends AbstractDlfValidator
     /**
      * Check if value is valid across all validation classes of validation stack.
      *
-     * @param $value The value of defined class name.
+     * @param mixed $value The value of defined class name.
      *
      * @throws InvalidArgumentException
      *
      * @return void
      */
-    protected function isValid($value): void
+    protected function isValid(mixed $value): void
     {
         if (!$value instanceof $this->valueClassName) {
             $this->logger->error('Value must be an instance of ' . $this->valueClassName . '.');

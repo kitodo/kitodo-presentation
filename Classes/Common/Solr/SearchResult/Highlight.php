@@ -58,7 +58,7 @@ class Highlight
      *
      * @access public
      *
-     * @param array $highlight: Array of found highlight properties
+     * @param mixed[] $highlight: Array of found highlight properties
      *
      * @return void
      */

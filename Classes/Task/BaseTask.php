@@ -52,7 +52,7 @@ class BaseTask extends AbstractTask
 
     /**
      * @access protected
-     * @var array
+     * @var mixed[]
      */
     protected array $coll = [];
 
@@ -189,7 +189,7 @@ class BaseTask extends AbstractTask
 
     /**
      *
-     * @return array
+     * @return mixed[]
      */
     public function getColl(): array
     {
@@ -198,7 +198,7 @@ class BaseTask extends AbstractTask
 
     /**
      *
-     * @param array $coll
+     * @param mixed[] $coll
      */
     public function setColl(array $coll): void
     {

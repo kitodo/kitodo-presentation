@@ -30,7 +30,7 @@ class TeiHeader implements MetadataInterface
      * @access public
      *
      * @param \SimpleXMLElement $xml The XML to extract the metadata from
-     * @param array &$metadata The metadata array to fill
+     * @param mixed[] &$metadata The metadata array to fill
      * @param bool $useExternalApis true if external APIs should be called, false otherwise
      *
      * @return void

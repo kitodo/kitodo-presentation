@@ -83,7 +83,7 @@ class BaseCommand extends Command
 
     /**
      * @access protected
-     * @var array
+     * @var mixed[]
      */
     protected array $extConf;
 
@@ -145,7 +145,7 @@ class BaseCommand extends Command
      *
      * @access protected
      *
-     * @param array $solrCores array of the valid Solr cores
+     * @param array<string, int> $solrCores array of the valid Solr cores
      * @param bool|string|null $inputSolrId possible uid or name of Solr core
      *
      * @return ?int matching uid of Solr core
@@ -167,7 +167,7 @@ class BaseCommand extends Command
      *
      * @param int $pageId The UID of the Solr core or 0 to disable indexing
      *
-     * @return array Array of valid Solr cores
+     * @return array<string, int> Array of valid Solr cores
      */
     protected function getSolrCores(int $pageId): array
     {
@@ -354,7 +354,7 @@ class BaseCommand extends Command
      * @access private
      *
      * @param Document &$document
-     * @param array $collections
+     * @param array<string> $collections
      *
      * @return void
      */
@@ -405,7 +405,7 @@ class BaseCommand extends Command
      *
      * @access private
      *
-     * @param array $metadataAuthor
+     * @param array<int, mixed> $metadataAuthor
      *
      * @return string
      */

@@ -33,7 +33,7 @@ class AudioVideoMD implements MetadataInterface
      * @access public
      *
      * @param \SimpleXMLElement $xml The XML to extract the metadata from
-     * @param array &$metadata The metadata array to fill
+     * @param mixed[] &$metadata The metadata array to fill
      * @param bool $useExternalApis true if external APIs should be called, false otherwise
      *
      * @return void
@@ -43,21 +43,21 @@ class AudioVideoMD implements MetadataInterface
         $xml->registerXPathNamespace('audiomd', 'http://www.loc.gov/audioMD/');
         $xml->registerXPathNamespace('videomd', 'http://www.loc.gov/videoMD/');
 
-        $audioDuration = (string) $xml->xpath('./audiomd:audioInfo/audiomd:duration')[0];
-        if (!empty($audioDuration)) {
-            $metadata['audio_duration'] = [$audioDuration];
+        $audioDuration = $xml->xpath('./audiomd:audioInfo/audiomd:duration');
+        if (!empty($audioDuration) && !empty($audioDuration[0])) {
+            $metadata['audio_duration'] = [(string) $audioDuration[0]];
         }
 
-        $videoDuration = (string) $xml->xpath('./videomd:videoInfo/videomd:duration')[0];
-        if (!empty($videoDuration)) {
-            $metadata['video_duration'] = [$videoDuration];
+        $videoDuration = $xml->xpath('./videomd:videoInfo/videomd:duration');
+        if (!empty($videoDuration) && !empty($videoDuration[0])) {
+            $metadata['video_duration'] = [(string) $videoDuration[0]];
         }
 
         $metadata['duration'] = $metadata['video_duration'] ?: $metadata['audio_duration'] ?: [];
 
-        $videoFrameRate = (string) $xml->xpath('./videomd:fileData/videomd:frameRate[@mode="Fixed"]')[0];
-        if (!empty($videoFrameRate)) {
-            $metadata['video_frame_rate'] = [$videoFrameRate];
+        $videoFrameRate = $xml->xpath('./videomd:fileData/videomd:frameRate[@mode="Fixed"]');
+        if (!empty($videoFrameRate) && !empty($videoFrameRate[0])) {
+            $metadata['video_frame_rate'] = [(string) $videoFrameRate[0]];
         }
 
         if ($useExternalApis) {

@@ -23,15 +23,25 @@ namespace Kitodo\Dlf\Command\DbDocs;
 class RstSection
 {
     /** @var string */
-    protected $header = '';
+    protected string $header = '';
 
     /** @var string */
-    protected $text = '';
+    protected string $text = '';
 
     /** @var RstSection[] */
-    protected $subsections = [];
+    protected array $subsections = [];
 
-    public static function format(string $text, array $format = [])
+    /**
+     * Format text with given format options.
+     *
+     * @access public
+     *
+     * @param string $text
+     * @param array<string, bool> $format
+     *
+     * @return string
+     */
+    public static function format(string $text, array $format = []): string
     {
         if (!empty($text)) {
             if ($format['bold'] ?? false) {
@@ -44,7 +54,16 @@ class RstSection
         return $text;
     }
 
-    public static function paragraphs(array $paragraphs)
+    /**
+     * Join paragraphs with double new lines.
+     *
+     * @access public
+     *
+     * @param mixed[] $paragraphs
+     *
+     * @return string
+     */
+    public static function paragraphs(array $paragraphs): string
     {
         $paragraphs = array_values(array_filter($paragraphs, function ($entry) {
             return !empty($entry);
@@ -53,26 +72,61 @@ class RstSection
         return implode("\n\n", $paragraphs);
     }
 
-    public function subsection()
+    /**
+     * Create and return a new subsection.
+     *
+     * @access public
+     *
+     * @return RstSection
+     */
+    public function subsection(): RstSection
     {
         $section = new self();
         $this->subsections[] = $section;
         return $section;
     }
 
-    public function setHeader(string $text)
+    /**
+     * Set header text.
+     *
+     * @access public
+     *
+     * @param string $text
+     *
+     * @return void
+     */
+    public function setHeader(string $text): void
     {
         $this->header = $text;
     }
 
-    public function addText(string $text)
+    /**
+     * Add text to section.
+     *
+     * @access public
+     *
+     * @param string $text
+     *
+     * @return void
+     */
+    public function addText(string $text): void
     {
         if (!empty($text)) {
             $this->text .= $text . "\n\n";
         }
     }
 
-    public function addTable(array $rows, array $headerRows)
+    /**
+     * Add a field list table to section.
+     *
+     * @access public
+     *
+     * @param array<array<string, string>> $rows
+     * @param array<array<string, string>> $headerRows
+     *
+     * @return void
+     */
+    public function addTable(array $rows, array $headerRows): void
     {
         $numHeaderRows = count($headerRows);
 
@@ -115,7 +169,16 @@ RST;
         $this->addText($tableRst);
     }
 
-    public function render(int $level = 0)
+    /**
+     * Render section and its subsections recursively.
+     *
+     * @access public
+     *
+     * @param int $level
+     *
+     * @return string
+     */
+    public function render(int $level = 0): string
     {
         $result = '';
 
@@ -130,7 +193,16 @@ RST;
         return $result;
     }
 
-    protected function renderHeader(int $level)
+    /**
+     * Render header of given level.
+     *
+     * @access protected
+     *
+     * @param int $level
+     *
+     * @return string
+     */
+    protected function renderHeader(int $level): string
     {
         $result = '';
 

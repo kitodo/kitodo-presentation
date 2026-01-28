@@ -73,20 +73,13 @@ class Helper
     /**
      * @access protected
      * @static
-     * @var array The locallang array for flash messages
-     */
-    protected static array $messages = [];
-
-    /**
-     * @access protected
-     * @static
-     * @var array A cache remembering which Solr core uid belongs to which index name
+     * @var mixed[]  A cache remembering which Solr core uid belongs to which index name
      */
     protected static array $indexNameCache = [];
 
     /**
      * @access protected
-     * @var array Assignment of mime type to model format
+     * @var array<string, string> Assignment of mime type to model format
      */
     protected const MIME_TYPE_MODEL_FORMATS = [
         'application/vnd.autodesk.fbx' => 'fbx',
@@ -157,18 +150,22 @@ class Helper
             self::error('No encryption key set in TYPO3 configuration');
             return false;
         }
+
+        $length = openssl_cipher_iv_length(self::$cipherAlgorithm);
+
         if (
             empty($encrypted)
-            || strlen($encrypted) < openssl_cipher_iv_length(self::$cipherAlgorithm)
+            || strlen($encrypted) < $length
         ) {
             self::error('Invalid parameters given for decryption');
             return false;
         }
         // Split initialisation vector and encrypted data.
         $binary = base64_decode($encrypted);
-        $iv = substr($binary, 0, openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $data = substr($binary, openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
+        /** @var int $length */
+        $iv = substr($binary, 0, $length);
+        $data = substr($binary, $length);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true) ?: '';
         // Decrypt data.
         return openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
     }
@@ -301,8 +298,8 @@ class Helper
             return false;
         }
         // Generate random initialization vector.
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm) ?: 0);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true) ?: '';
         // Encrypt data.
         $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
         // Merge initialization vector and encrypted data.
@@ -321,13 +318,14 @@ class Helper
      *
      * @param string $scriptRelPath The path to the class file
      *
-     * @return array Array of hook objects for the class
+     * @return mixed[] Array of hook objects for the class
      */
     public static function getHookObjects(string $scriptRelPath): array
     {
         $hookObjects = [];
         if (is_array(self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] ?? null)) {
             foreach (self::getOptions()[self::$extKey . '/' . $scriptRelPath]['hookClass'] as $classRef) {
+                // @phpstan-ignore-next-line
                 $hookObjects[] = GeneralUtility::makeInstance($classRef);
             }
         }
@@ -451,7 +449,7 @@ class Helper
      *
      * @param int $pid Get the "index_name" from this page only
      *
-     * @return array
+     * @return mixed[]
      */
     public static function getDocumentStructures(int $pid = -1): array
     {
@@ -514,12 +512,12 @@ class Helper
      *
      * @access public
      *
-     * @param array $data Data map
-     * @param array $cmd Command map
+     * @param mixed[] $data Data map
+     * @param mixed[] $cmd Command map
      * @param bool $reverseOrder Should the data map be reversed?
      * @param bool $cmdFirst Should the command map be processed first?
      *
-     * @return array Array of substituted "NEW..." identifiers and their actual UIDs.
+     * @return mixed[] Array of substituted "NEW..." identifiers and their actual UIDs.
      */
     public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], bool $reverseOrder = false, bool $cmdFirst = false): array
     {
@@ -873,7 +871,7 @@ class Helper
      *
      * @static
      *
-     * @return array
+     * @return mixed[]
      */
     private static function getOptions(): array
     {
@@ -909,7 +907,7 @@ class Helper
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
 
-        if (array_key_exists(strtok($path, '/'), $configurationManager->getLocalConfiguration())) {
+        if (array_key_exists(strtok($path, '/') ?: '', $configurationManager->getLocalConfiguration())) {
             return $configurationManager->getLocalConfigurationValueByPath($path);
         }
 
@@ -922,9 +920,11 @@ class Helper
      * This method checks if the provided file array contains a specified mimetype key and
      * verifies if the mimetype belongs to any of the allowed mimetypes or matches any of the additional custom mimetypes.
      *
+     * @access public
+     *
      * @param mixed $file The file array to filter
-     * @param array $allowedCategories The allowed MIME type categories to filter by (e.g., ['audio'], ['video'] or ['image', 'application'])
-     * @param null|bool|array $dlfMimeTypes Optional array of custom dlf mimetype keys to filter by. Default is null.
+     * @param mixed[] $allowedCategories The allowed MIME type categories to filter by (e.g., ['audio'], ['video'] or ['image', 'application'])
+     * @param null|bool|mixed[] $dlfMimeTypes Optional array of custom dlf mimetype keys to filter by. Default is null.
      *                      - null: use no custom dlf mimetypes
      *                      - true: use all custom dlf mimetypes
      *                      - array: use only specific types - Accepted values: 'IIIF', 'IIP', 'ZOOMIFY', 'JPG'
@@ -981,8 +981,13 @@ class Helper
     /**
      * Get file extensions for a given MIME type
      *
+     * @access public
+     *
+     * @static
+     *
      * @param string $mimeType
-     * @return array
+     *
+     * @return string[]
      */
     public static function getFileExtensionsForMimeType(string $mimeType): array
     {
@@ -993,8 +998,11 @@ class Helper
     /**
      * Get MIME types for a given file extension
      *
+     * @access public
+     *
      * @param string $fileExtension
-     * @return array
+     *
+     * @return string[]
      */
     public static function getMimeTypesForFileExtension(string $fileExtension): array
     {
@@ -1005,7 +1013,12 @@ class Helper
     /**
      * Get the assigned model format of mime type.
      *
+     * @access public
+     *
+     * @static
+     *
      * @param string $mimeType The mime type of file
+     *
      * @return string The model format
      */
     public static function getModelFormatOfMimeType(string $mimeType): string

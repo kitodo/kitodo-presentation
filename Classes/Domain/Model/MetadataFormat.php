@@ -59,7 +59,7 @@ class MetadataFormat extends AbstractEntity
     /**
      * Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry.
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Kitodo\Dlf\Domain\Model\MetadataSubentry>
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<MetadataSubentry>
      * @Extbase\ORM\Lazy
      * @Extbase\ORM\Cascade("remove")
      */
@@ -82,7 +82,7 @@ class MetadataFormat extends AbstractEntity
         $this->initStorageObjects();
     }
 
-    protected function initStorageObjects()
+    protected function initStorageObjects(): void
     {
         $this->subentries = new ObjectStorage();
     }
@@ -151,11 +151,17 @@ class MetadataFormat extends AbstractEntity
         $this->xpathSorting = $xpathSorting;
     }
 
-    public function getSubentries()
+    /**
+     * @return ObjectStorage<MetadataSubentry>
+     */
+    public function getSubentries(): ObjectStorage
     {
         return $this->subentries;
     }
 
+    /**
+     * @param ObjectStorage<MetadataSubentry> $subentries
+     */
     public function setSubentries(ObjectStorage $subentries): void
     {
         $this->subentries = $subentries;
@@ -164,7 +170,7 @@ class MetadataFormat extends AbstractEntity
     /**
      * Adds a Subentry
      *
-     * @param \Kitodo\Dlf\Domain\Model\MetadataSubentry $subentry
+     * @param MetadataSubentry $subentry
      *
      * @return void
      */
@@ -176,7 +182,7 @@ class MetadataFormat extends AbstractEntity
     /**
      * Removes a Subentry
      *
-     * @param \Kitodo\Dlf\Domain\Model\MetadataSubentry $subentryToRemove
+     * @param MetadataSubentry $subentryToRemove
      *
      * @return void
      */

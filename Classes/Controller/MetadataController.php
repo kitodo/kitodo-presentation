@@ -146,7 +146,7 @@ class MetadataController extends AbstractController
      *
      * @access protected
      *
-     * @param array $metadata The metadata array
+     * @param mixed[] $metadata The metadata array
      *
      * @return void
      */
@@ -185,9 +185,9 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param array $metadata The metadata array
+     * @param mixed[] $metadata The metadata array
      *
-     * @return array The IIIF data array ready for output
+     * @return mixed[] The IIIF data array ready for output
      */
     private function buildIiifData(array $metadata): array
     {
@@ -227,7 +227,7 @@ class MetadataController extends AbstractController
      * @param string $label The label string
      * @param string $value The value string
      *
-     * @return array The IIIF data array ready for output
+     * @return mixed[] The IIIF data array ready for output
      */
     private function buildIiifDataGroup(string $label, string $value): array
     {
@@ -254,9 +254,9 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param array $metadata The metadata array
+     * @param mixed[] $metadata The metadata array
      *
-     * @return array The raw metadata array ready for output
+     * @return mixed[] The raw metadata array ready for output
      */
     private function buildMetaConfigObjectData(array $metadata): array
     {
@@ -281,7 +281,7 @@ class MetadataController extends AbstractController
      * @access private
      *
      * @param string $separator Glue to put between array elements
-     * @param array $items Array with items to concatenate
+     * @param mixed[] $items Array with items to concatenate
      *
      * @return string All items concatenated and linked by separator
      */
@@ -305,9 +305,9 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param array $metadata The metadata array
+     * @param mixed[] $metadata The metadata array
      *
-     * @return array URLs
+     * @return mixed[] URLs
      */
     private function buildUrlFromMetadata(array $metadata): array
     {
@@ -332,9 +332,9 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param array $metadata The metadata array
+     * @param mixed[] $metadata The metadata array
      *
-     * @return array of true values for metadata sections with external URLs
+     * @return mixed[] of true values for metadata sections with external URLs
      */
     private function hasExternalUrlForMetadata(array $metadata): array
     {
@@ -365,7 +365,7 @@ class MetadataController extends AbstractController
      * @param int $i The index of metadata array
      * @param string $name The name of section in metadata array
      * @param mixed $value The value of section in metadata array
-     * @param array $metadata The metadata array passed as reference
+     * @param mixed[] $metadata The metadata array passed as reference
      *
      * @return void
      */
@@ -403,7 +403,7 @@ class MetadataController extends AbstractController
      *
      * @param int $i The index of metadata array
      * @param mixed $value The value of section in metadata array
-     * @param array $metadata The metadata array passed as reference
+     * @param mixed[] $metadata The metadata array passed as reference
      *
      * @return void
      */
@@ -423,7 +423,7 @@ class MetadataController extends AbstractController
      * @access private
      *
      * @param int $i The index of metadata array
-     * @param array $metadata The metadata array passed as reference
+     * @param mixed[] $metadata The metadata array passed as reference
      *
      * @return void
      */
@@ -441,7 +441,7 @@ class MetadataController extends AbstractController
      * @access private
      *
      * @param int $i The index of metadata array
-     * @param array $metadata The metadata array passed as reference
+     * @param mixed[] $metadata The metadata array passed as reference
      *
      * @return void
      */
@@ -460,7 +460,7 @@ class MetadataController extends AbstractController
      *
      * @param int $i The index of metadata array
      * @param mixed $value The value of section in metadata array
-     * @param array $metadata The metadata array passed as reference
+     * @param mixed[] $metadata The metadata array passed as reference
      *
      * @return void
      */
@@ -481,7 +481,7 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @return array metadata
+     * @return mixed[] metadata
      */
     private function getMetadata(): array
     {
@@ -520,10 +520,10 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param array $id An array with ids
-     * @param array $metadata An array with metadata
+     * @param mixed[] $id An array with ids
+     * @param mixed[] $metadata An array with metadata
      *
-     * @return array metadata
+     * @return mixed[] metadata
      */
     private function getMetadataForIds(array $id, array $metadata): array
     {
@@ -545,10 +545,13 @@ class MetadataController extends AbstractController
     /**
      * Recursively remove empty entries.
      *
-     * @param $metadata
-     * @return array
+     * @access private
+     *
+     * @param mixed[] $metadata
+     *
+     * @return mixed[]
      */
-    private function removeEmptyEntries($metadata): array
+    private function removeEmptyEntries(array $metadata): array
     {
         foreach ($metadata as $key => $value) {
             if (is_array($value)) {

@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Kitodo\Dlf\Domain\Model\Mail;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -24,6 +25,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @extends Repository<Mail>
  */
 class MailRepository extends Repository
 {
@@ -34,8 +37,8 @@ class MailRepository extends Repository
      * @access public
      *
      * @param int $pid
-     * 
-     * @return array|QueryResultInterface
+     *
+     * @return array<Mail>|QueryResultInterface<int, Mail>
      */
     public function findAllWithPid(int $pid): array|QueryResultInterface
     {
@@ -46,6 +49,6 @@ class MailRepository extends Repository
 
         $this->setDefaultQuerySettings($querySettings);
 
-        return $this->findAll();
+        return $this->findAll(); // @phpstan-ignore-line
     }
 }
