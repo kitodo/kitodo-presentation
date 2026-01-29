@@ -631,8 +631,8 @@ class Helper
 
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
         $languageId = $languageAspect->getContentId();
-        static $translationsArray = [];
-        if(empty($translationsArray[$table][$pid]))
+        static $translations = [];
+        if(empty($translations[$table][$pid]))
         {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table);
@@ -655,14 +655,14 @@ class Helper
                     $indexName = $row['index_name'];
                     $languageId = (int)$row['sys_language_uid'];
             
-                    $translationsArray[$table][$pid][$indexName][$languageId] = [
+                    $translations[$table][$pid][$indexName][$languageId] = [
                         'uid' => (int)$row['uid'],
                         'l18n_parent' => (int)$row['l18n_parent'],
                         'label' => $row['label'],
                     ];
                 }
         }
-        return empty($translationsArray[$table][$pid][$indexName][$languageId]) ? $indexName : $translationsArray[$table][$pid][$indexName][$languageId]['label'];
+        return empty($translations[$table][$pid][$indexName][$languageId]) ? $indexName : $translations[$table][$pid][$indexName][$languageId]['label'];
     }
     
     /**
