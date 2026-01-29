@@ -102,6 +102,14 @@ class Helper
         'chemical/x-xyz' => 'xyz',
         'text/html' => 'html'
     ];
+
+    /**
+     * @access protected
+     * @static
+     * @var array A list of loaded documents which can be accessed uniquely through a hash
+     */
+    protected static array $docs = [];
+
     /**
      * Generates a flash message and adds it to a message queue.
      *
@@ -202,7 +210,10 @@ class Helper
         libxml_use_internal_errors($libxmlErrors);
         return $xml;
     }
+
     /**
+     * This method checks if a unique document (through hash) is already loaded and returns it. If not loaded yet it will load it into the list 
+     * 
      * @param string $documentLocation The URL of XML file or the IRI of the IIIF resource
      * @param array $settings
      *
@@ -210,11 +221,11 @@ class Helper
      */
     public static function getDocumentInstance($documentLocation, $settings): AbstractDocument|null
     {
-        static $doc;
-        if ($doc === null) {
-            $doc = AbstractDocument::getInstance($documentLocation, $settings);
+        $hash = md5($documentLocation);
+        if (!isset(static::$docs[$hash])) {
+            static::$docs[$hash] = AbstractDocument::getInstance($documentLocation, $settings);
         }
-        return $doc;
+        return static::$docs[$hash];
     }
 
     /**
