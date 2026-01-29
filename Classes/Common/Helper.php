@@ -212,8 +212,8 @@ class Helper
     }
 
     /**
-     * This method checks if a unique document (through hash) is already loaded and returns it. If not loaded yet it will load it into the list 
-     * 
+     * This method checks if a unique document (through hash) is already loaded and returns it. If not loaded yet it will load it into the list
+     *
      * @param string $documentLocation The URL of XML file or the IRI of the IIIF resource
      * @param array $settings
      *
@@ -221,7 +221,7 @@ class Helper
      */
     public static function getDocumentInstance($documentLocation, $settings): AbstractDocument|null
     {
-        $hash = md5($documentLocation);
+        $hash = hash('sha256', $documentLocation);
         if (!isset(static::$docs[$hash])) {
             static::$docs[$hash] = AbstractDocument::getInstance($documentLocation, $settings);
         }
