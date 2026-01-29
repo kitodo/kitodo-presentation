@@ -75,7 +75,7 @@ class ResultDocument
 
     /**
      * @access private
-     * @var array The JSON encoded structure path(s)
+     * @var mixed[] The JSON encoded structure path(s)
      */
     private array $structurePath = [];
 
@@ -141,7 +141,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string The result's record identifier
+     * @return string|null The result's record identifier
      */
     public function getId(): ?string
     {
@@ -237,7 +237,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return array
+     * @return mixed[]
      */
     public function getStructurePath(): array
     {

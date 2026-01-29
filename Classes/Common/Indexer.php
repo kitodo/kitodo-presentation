@@ -83,7 +83,7 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var array List of already extracted structure nodes for structure path
+     * @var mixed[] List of already extracted structure nodes for structure path
      */
     protected static array $extractedStructurePathNodes = [];
 
@@ -760,11 +760,11 @@ class Indexer
      *
      * @static
      *
-     * @param array $nodes Tree or Sub-Tree, where the target id should be extracted from if present
+     * @param mixed[] $nodes Tree or Sub-Tree, where the target id should be extracted from if present
      * @param string $targetId The ID of the logical structure element to be found
-     * @param array $path An intermediate array that keeps track of the current branch that is being looked up
+     * @param mixed[] $path An intermediate array that keeps track of the current branch that is being looked up
      *
-     * @return array
+     * @return mixed[]
      */
     private static function extractStructurePathNodes(array $nodes, string $targetId, array $path = []): array
     {
@@ -791,9 +791,9 @@ class Indexer
      *
      * @static
      *
-     * @param array $paths The array containing all structure path nodes associated with a physical page
+     * @param mixed[] $paths The array containing all structure path nodes associated with a physical page
      *
-     * @return array
+     * @return mixed[]
      */
     private static function filterDeepestStructurePaths(array $paths): array
     {
@@ -835,10 +835,10 @@ class Indexer
      *
      * @static
      *
-     * @param array $path The structure path nodes that shall be processed
+     * @param mixed[] $path The structure path nodes that shall be processed
      * @param string $cutoffId The logical id at which ancestors and itself will not be part of the structure path data
      *
-     * @return array
+     * @return mixed[]
      */
     private static function buildStructurePathData(array $path, string $cutoffId): array
     {
@@ -861,9 +861,9 @@ class Indexer
      *
      * @static
      *
-     * @param array $node The current node that should be processed
+     * @param mixed[] $node The current node that should be processed
      *
-     * @return array
+     * @return mixed[]
      */
     private static function buildStructurePathSegments(array $node): array
     {
