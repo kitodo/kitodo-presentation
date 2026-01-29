@@ -256,6 +256,7 @@ class Solr implements LoggerAwareInterface
             self::$fields['type'] = $solrFields['type'];
             self::$fields['title'] = $solrFields['title'];
             self::$fields['volume'] = $solrFields['volume'];
+            self::$fields['structure_path'] = $solrFields['structurePath'];
             self::$fields['date'] = $solrFields['date'] ?? null;
             self::$fields['thumbnail'] = $solrFields['thumbnail'];
             self::$fields['default'] = $solrFields['default'];
