@@ -616,6 +616,16 @@ class Helper
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
         return $languageAspect->getContentId();
     }
+
+    /**
+     * Queries the Backend Repo for the given parameter table with the matching 
+     * PID (now not used because only run on the table structures where all PID are the same)
+     * 
+     * @param string $table
+     * @param string $pid
+     * 
+     * @return array
+     */
     public static function translate_test(string $table, string $pid): array
     {
         static $translations = [];
@@ -639,6 +649,17 @@ class Helper
             return $translations;
         }
     }
+    
+    /**
+     * This method searches in the translation array which is an excerpt from the backend table for matching parents and than checks 
+     * for the language Id and translates the given parameter indexName
+     * 
+     * @param string $indexName
+     * @param array $translations
+     * @param mixed $languageContentId
+     * 
+     * @return string The translated index name or the index name if no translation found
+     */
     public static function translate_get(string $indexName, array $translations, $languageContentId)
     {
         $filtered_parent = array_filter($translations, function ($obj) use ($indexName) {

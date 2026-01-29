@@ -35,8 +35,8 @@ class TableOfContentsController extends AbstractController
      */
     protected array $activeEntries = [];
 
-    protected array $translations;
-    protected string $languageContentId;
+    //protected array $translations;
+    //protected string $languageContentId;
 
     /**
      * The main method of the plugin
@@ -47,8 +47,8 @@ class TableOfContentsController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
-        $this->translations = Helper::translate_test('tx_dlf_structures', $this->settings['storagePid']);
-        $this->languageContentId = Helper::translate_contextId();
+        //$this->translations = Helper::translate_test('tx_dlf_structures', $this->settings['storagePid']);
+        //$this->languageContentId = Helper::translate_contextId();
         // Load current document.
         $this->loadDocument();
 
@@ -322,8 +322,8 @@ class TableOfContentsController extends AbstractController
      */
     private function getTranslatedType(string $type): string
     {
-        return Helper::translate_get($type, $this->translations, $this->languageContentId);
-        //return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
+        //return Helper::translate_get($type, $this->translations, $this->languageContentId);
+        return Helper::translate($type, 'tx_dlf_structures', $this->settings['storagePid']);
     }
 
     /**
