@@ -612,73 +612,7 @@ class Helper
 
         return $totalSeconds;
     }
-    public static function translate_contextId() {
-        $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
-        return $languageAspect->getContentId();
-    }
 
-    /**
-     * Queries the Backend Repo for the given parameter table with the matching 
-     * PID (now not used because only run on the table structures where all PID are the same)
-     * 
-     * @param string $table
-     * @param string $pid
-     * 
-     * @return array
-     */
-    public static function translate_test(string $table, string $pid): array
-    {
-        static $translations = [];
-        if(empty($translations))
-        {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable($table);
-
-            $result = $queryBuilder
-                ->select(
-                    $table . '.uid AS uid',
-                    $table . '.l18n_parent AS l18n_parent',
-                    $table . '.label AS label',
-                    $table . '.index_name AS index_name',
-                    $table . '.sys_language_uid As sys_language_uid'
-                )
-                ->from($table)
-                ->executeQuery();
-
-            $translations = $result->fetchAllAssociative();
-            return $translations;
-        }
-    }
-    
-    /**
-     * This method searches in the translation array which is an excerpt from the backend table for matching parents and than checks 
-     * for the language Id and translates the given parameter indexName
-     * 
-     * @param string $indexName
-     * @param array $translations
-     * @param mixed $languageContentId
-     * 
-     * @return string The translated index name or the index name if no translation found
-     */
-    public static function translate_get(string $indexName, array $translations, $languageContentId)
-    {
-        $filtered_parent = array_filter($translations, function ($obj) use ($indexName) {
-            return $obj['index_name'] == $indexName && $obj['l18n_parent'] != 0;
-        });
-        $xKey = key($filtered_parent);
-        if($xKey == '')
-        {
-            return $indexName;
-        }
-        $filtered_uid = array_filter($translations, function ($obj) use ($filtered_parent, $xKey) {
-            return $obj['uid'] == $filtered_parent[$xKey]['l18n_parent'];
-        });
-        $filtered_language = array_filter($filtered_uid, function($obj) use ($languageContentId) {
-            return $obj['sys_language_uid'] == (int)$languageContentId;
-        });
-        $yKey = key($filtered_language);
-        return $filtered_language[$yKey]['label'];
-    }
     /**
      * This translates an internal "index_name"
      *
@@ -694,122 +628,43 @@ class Helper
      */
     public static function translate(string $indexName, string $table, string $pid): string
     {
-        // Load labels into static variable for future use.
-        static $labels = [];
-        // Sanitize input.
-        $pid = max((int) $pid, 0);
-        if (!$pid) {
-            self::warning('Invalid PID ' . $pid . ' for translation');
-            return $indexName;
-        }
-        /** @var PageRepository $pageRepository */
-        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
-        $languageContentId = $languageAspect->getContentId();
+        $languageId = $languageAspect->getContentId();
+        static $translationsArray = [];
+        if(empty($translationsArray[$table][$pid]))
+        {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table);
 
-        // Check if "index_name" is a UID.
-        if (MathUtility::canBeInterpretedAsInteger($indexName)) {
-            $indexName = self::getIndexNameFromUid((int) $indexName, $table, $pid);
-        }
-        /* $labels already contains the translated content element, but with the index_name of the translated content element itself
-         * and not with the $indexName of the original that we receive here. So we have to determine the index_name of the
-         * associated translated content element. E.g. $labels['title0'] != $indexName = title. */
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
-
-        // First fetch the uid of the received index_name
-        $result = $queryBuilder
-            ->select(
-                $table . '.uid AS uid',
-                $table . '.l18n_parent AS l18n_parent'
-            )
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq($table . '.pid', $pid),
-                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($indexName)),
-                self::whereExpression($table, true)
-            )
-            ->setMaxResults(1)
-            ->executeQuery();
-
-        $row = $result->fetchAssociative();
-
-        if ($row) {
-            // Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
-            $result = $queryBuilder
-                ->select($table . '.index_name AS index_name')
-                ->from($table)
-                ->where(
-                    $queryBuilder->expr()->eq($table . '.pid', $pid),
-                    $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', $languageContentId),
-                    self::whereExpression($table, true)
+            $rows = $queryBuilder
+                ->select(
+                    $table . '.uid AS uid',
+                    $table . '.l18n_parent AS l18n_parent',
+                    $table . '.label AS label',
+                    $table . '.index_name AS index_name',
+                    $table . '.sys_language_uid As sys_language_uid'
                 )
-                ->setMaxResults(1)
-                ->executeQuery();
-
-            $row = $result->fetchAssociative();
-
-            if ($row) {
-                // If there is a translated content element, overwrite the received $indexName.
-                $indexName = $row['index_name'];
-            }
-        }
-
-        // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$languageContentId][$indexName])) {
-            // Check if this table is allowed for translation.
-            if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
-                $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
-                if ($languageContentId > 0) {
-                    $additionalWhere = $queryBuilder->expr()->and(
-                        $queryBuilder->expr()->or(
-                            $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', $languageContentId)
-                        ),
-                        $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
-                    );
-                }
-
-                // Get labels from database.
-                $result = $queryBuilder
-                    ->select('*')
-                    ->from($table)
-                    ->where(
-                        $queryBuilder->expr()->eq($table . '.pid', $pid),
-                        $additionalWhere,
-                        self::whereExpression($table, true)
+                ->where(
+                    $queryBuilder->expr()->eq($table . '.pid', $pid)
                     )
-                    ->setMaxResults(10000)
-                    ->executeQuery();
-
-                if ($result->rowCount() > 0) {
-                    while ($resArray = $result->fetchAssociative()) {
-                        // Overlay localized labels if available.
-                        if ($languageContentId > 0) {
-                            $resArray = $pageRepository->getLanguageOverlay($table, $resArray, $languageAspect);
-                        }
-                        if ($resArray) {
-                            $labels[$table][$pid][$languageContentId][$resArray['index_name']] = $resArray['label'];
-                        }
-                    }
-                } else {
-                    self::notice('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible');
+                ->from($table)
+                ->executeQuery()
+                ->fetchAllAssociative();
+            foreach ($rows as $row) {
+                    $indexName = $row['index_name'];
+                    $languageId = (int)$row['sys_language_uid'];
+            
+                    $translationsArray[$table][$pid][$indexName][$languageId] = [
+                        'uid' => (int)$row['uid'],
+                        'l18n_parent' => (int)$row['l18n_parent'],
+                        'label' => $row['label'],
+                    ];
                 }
-            } else {
-                self::warning('No translations available for table "' . $table . '"');
-            }
         }
-
-        if (!empty($labels[$table][$pid][$languageContentId][$indexName])) {
-            return $labels[$table][$pid][$languageContentId][$indexName];
-        } else {
-            return $indexName;
-        }
+        return empty($translationsArray[$table][$pid][$indexName][$languageId]) ? $indexName : $translationsArray[$table][$pid][$indexName][$languageId]['label'];
     }
-
+    
     /**
      * This returns the additional WHERE expression of a table based on its TCA configuration
      *
