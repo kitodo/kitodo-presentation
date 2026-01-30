@@ -75,7 +75,7 @@ class ResultDocument
 
     /**
      * @access private
-     * @var mixed[] The JSON encoded structure path(s)
+     * @var array<string> The JSON encoded structure path(s)
      */
     private array $structurePath = [];
 
@@ -237,7 +237,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return mixed[]
+     * @return array<string>
      */
     public function getStructurePath(): array
     {
