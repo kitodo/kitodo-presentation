@@ -508,19 +508,10 @@ class PageViewController extends AbstractController
                         'measureIdLinks' => $docMeasures['measureLinks']
                     ];
 
-                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer(' . json_encode($viewer) . ');
-                            ';
+                    $jsViewer .= 'tx_dlf_viewer[' . $i . '] = new dlfViewer(' . json_encode($viewer) . ');';
                     $i++;
                 }
             }
-
-            // Viewer configuration.
-            $viewerConfiguration = '$(document).ready(function() {
-                    if (dlfUtils.exists(dlfViewer)) {
-                        ' . $jsViewer . '
-                        viewerCount = ' . ($i - 1) . ';
-                    }
-                });';
         } else {
             $currentMeasureId = '';
             $docPage = 0;
@@ -551,12 +542,30 @@ class PageViewController extends AbstractController
             ];
 
             // Viewer configuration.
-            $viewerConfiguration = '$(document).ready(function() {
-                    if (dlfUtils.exists(dlfViewer)) {
-                        tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');
-                    }
-                });';
+            $jsViewer = 'tx_dlf_viewer = new dlfViewer(' . json_encode($viewer) . ');';
         }
+
+        // Viewer configuration.
+        $viewerConfiguration = '
+        (function () {
+            let docController = null;
+
+            window.addEventListener("tx-dlf-documentLoaded", e => {
+                docController = e.detail.docController;
+                if (typeof tx_dlf_viewer !== "undefined") {
+                    tx_dlf_viewer.setDocController(docController);
+                }
+            });
+
+            $(document).ready(function() {
+                if (dlfUtils.exists(dlfViewer)) {
+                    ' . $jsViewer . '
+                }
+                tx_dlf_viewer.setDocController(docController);
+                }
+            });
+        })();';
+
         $this->view->assign('viewerConfiguration', $viewerConfiguration);
     }
 

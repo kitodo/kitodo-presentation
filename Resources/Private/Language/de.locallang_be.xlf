@@ -169,6 +169,18 @@
                 <source><![CDATA[Kitodo: Collection]]></source>
                 <target><![CDATA[Kitodo: Kollektion]]></target>
             </trans-unit>
+            <trans-unit id="plugins.document.title" approved="yes">
+                <source><![CDATA[Kitodo: Document]]></source>
+                <target><![CDATA[Kitodo: Dokument]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.document.description" approved="yes">
+                <source><![CDATA[Document Plugin for Kitodo.Presentation]]></source>
+                <target><![CDATA[Dokument-Plugin für Kitodo.Presentation]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.document.flexform.targetPidMetadata" approved="yes">
+                <source><![CDATA[Page to render metadata snippet]]></source>
+                <target><![CDATA[Seite, um Metadaten-Ausschnitt nachzuladen]]></target>
+            </trans-unit>
             <trans-unit id="plugins.feeds.description" approved="yes">
                 <source><![CDATA[Feeds Plugin for Kitodo.Presentation]]></source>
                 <target><![CDATA[Feeds Plugin für Kitodo.Presentation]]></target>
@@ -296,6 +308,10 @@
             <trans-unit id="plugins.metadata.flexform.showFull" approved="yes">
                 <source><![CDATA[Show all available metadata]]></source>
                 <target><![CDATA[Alle verfügbaren Metadaten anzeigen]]></target>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.prerenderAllSections" approved="yes">
+                <source><![CDATA[Pre-render all metadata sections for client-side toggling]]></source>
+                <target><![CDATA[Alle Metadaten-Sektionen ausgeben (für clientseitiges Umschalten)]]></target>
             </trans-unit>
             <trans-unit id="plugins.metadata.title" approved="yes">
                 <source><![CDATA[Kitodo: Metadata]]></source>

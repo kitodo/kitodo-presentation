@@ -386,6 +386,15 @@
             <trans-unit id="plugins.collection.flexform.randomize">
                 <source><![CDATA[Randomize sorting?]]></source>
             </trans-unit>
+            <trans-unit id="plugins.document.title">
+                <source><![CDATA[Kitodo: Document]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.document.description">
+                <source><![CDATA[Document Plugin for Kitodo.Presentation]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.document.flexform.targetPidMetadata">
+                <source><![CDATA[Page to render metadata snippet]]></source>
+            </trans-unit>
             <trans-unit id="flexform.targetPidFeed">
                 <source><![CDATA[Target page (with "Kitodo: Feeds" plugin)]]></source>
             </trans-unit>
@@ -442,6 +451,9 @@
             </trans-unit>
             <trans-unit id="plugins.metadata.flexform.showFull">
                 <source><![CDATA[Show all available metadata]]></source>
+            </trans-unit>
+            <trans-unit id="plugins.metadata.flexform.prerenderAllSections">
+                <source><![CDATA[Pre-render all metadata sections for client-side toggling]]></source>
             </trans-unit>
             <trans-unit id="plugins.metadata.flexform.rootline">
                 <source><![CDATA[Show metadata of superior structures]]></source>
