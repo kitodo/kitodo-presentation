@@ -53,7 +53,7 @@ class Page
      * @access public
      *
      * @param int $id: Id of found page properties
-     * @param array $page: Array of found page properties
+     * @param mixed[] $page: Array of found page properties
      *
      * @return void
      */

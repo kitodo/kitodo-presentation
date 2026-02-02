@@ -138,6 +138,16 @@ class DOMDocumentValidation implements MiddlewareInterface
         return $this->getJsonResponse($validationResults);
     }
 
+    /**
+     * Get the validation results.
+     *
+     * @access protected
+     *
+     * @param mixed[] $configurations The validation configurations.
+     * @param Result|null $result The validation result.
+     *
+     * @return mixed[] The validation results.
+     */
     protected function getValidationResults(array $configurations, ?Result $result): array
     {
         $validationResults = [];
@@ -185,9 +195,12 @@ class DOMDocumentValidation implements MiddlewareInterface
      *
      * If a validator in the configuration has the disabled flag set to true and its key does not exist in the enabledValidators parameter, it will be removed.
      *
-     * @param array $parameters The parameters of the middleware.
-     * @param array $validationConfiguration The validation configuration to remove from
-     * @return array The validator configuration without the disabled validators
+     * @access protected
+     *
+     * @param mixed[] $parameters The parameters of the middleware.
+     * @param mixed[] $validationConfiguration The validation configuration to remove from
+     *
+     * @return mixed[] The validator configuration without the disabled validators
      */
     protected function removeDisabledValidators(array $parameters, array $validationConfiguration): array
     {
@@ -203,6 +216,16 @@ class DOMDocumentValidation implements MiddlewareInterface
         return $validationConfiguration;
     }
 
+    /**
+     * Get the translation for a given key.
+     *
+     * @access protected
+     *
+     * @param string $key The localization key.
+     * @param mixed[]|null $arguments The arguments for the translation.
+     *
+     * @return string The translated string.
+     */
     protected function getTranslation(string $key, ?array $arguments = null): string
     {
         /** @var SiteLanguage $siteLanguage */
@@ -213,7 +236,6 @@ class DOMDocumentValidation implements MiddlewareInterface
             LanguageServiceFactory::class,
         );
 
-        /** @var LanguageService $languageService */
         $languageService = $languageServiceFactory
             ->createFromSiteLanguage($siteLanguage);
 
@@ -227,10 +249,14 @@ class DOMDocumentValidation implements MiddlewareInterface
     }
 
     /**
-     * Get the json response.
+     * Get the JSON response.
+     *
+     * @access protected
      *
      * @param mixed $payload The data to add in the body.
-     * @return ResponseInterface The json response object.
+     * @param int $statusCode The status code of the response.
+     *
+     * @return ResponseInterface The JSON response object.
      */
     public function getJsonResponse(mixed $payload, int $statusCode = 200): ResponseInterface
     {

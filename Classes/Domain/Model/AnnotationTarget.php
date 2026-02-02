@@ -17,29 +17,29 @@ class AnnotationTarget
     /**
      * @var string
      */
-    protected $url;
+    protected string $url;
 
     /**
      * @var string
      */
-    protected $objectId;
+    protected string $objectId;
 
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $rangeParameterName;
+    protected string $rangeParameterName;
 
     /**
      * @var string
      */
-    protected $rangeValue;
+    protected string $rangeValue;
 
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->url = $url;
 
@@ -65,7 +65,7 @@ class AnnotationTarget
     /**
      * @return string
      */
-    public function getObjectId()
+    public function getObjectId(): string
     {
         return $this->objectId;
     }
@@ -73,7 +73,7 @@ class AnnotationTarget
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -81,7 +81,7 @@ class AnnotationTarget
     /**
      * @return string
      */
-    public function getRangeParameterName()
+    public function getRangeParameterName(): string
     {
         return $this->rangeParameterName;
     }
@@ -89,7 +89,7 @@ class AnnotationTarget
     /**
      * @return string
      */
-    public function getRangeValue()
+    public function getRangeValue(): string
     {
         return $this->rangeValue;
     }
@@ -97,7 +97,7 @@ class AnnotationTarget
     /**
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
         if (empty($this->getObjectId())) {
             return false;
@@ -113,7 +113,7 @@ class AnnotationTarget
     /**
      * @return bool
      */
-    public function isValidRange()
+    public function isValidRange(): bool
     {
         if (empty($this->rangeParameterName) && empty($this->rangeValue)) {
             return true;
@@ -131,7 +131,7 @@ class AnnotationTarget
     /**
      * @return bool
      */
-    public function isScoreRange()
+    public function isScoreRange(): bool
     {
         return $this->getRangeParameterName() === 'measureRanges';
     }
@@ -139,7 +139,7 @@ class AnnotationTarget
     /**
      * @return bool
      */
-    public function isAudioRange()
+    public function isAudioRange(): bool
     {
         return $this->getRangeParameterName() === 't';
     }
@@ -147,7 +147,7 @@ class AnnotationTarget
     /**
      * @return bool
      */
-    public function isFacsimileRange()
+    public function isFacsimileRange(): bool
     {
         return $this->getRangeParameterName() === 'xywh';
     }

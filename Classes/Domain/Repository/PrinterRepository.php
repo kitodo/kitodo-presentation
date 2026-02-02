@@ -24,6 +24,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @access public
  *
  * @method Printer|null findOneBy(array $criteria) Get a printer by criteria
+ *
+ * @extends Repository<Printer>
  */
 class PrinterRepository extends Repository
 {
