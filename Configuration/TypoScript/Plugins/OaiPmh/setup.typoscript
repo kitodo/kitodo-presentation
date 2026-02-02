@@ -1,12 +1,13 @@
 plugin.tx_dlf_oaipmh {
-	view {
-		templateRootPaths {
-			0 = EXT:dlf/Resources/Private/Templates/OaiPmh
-			1 = {$plugin.tx_dlf.oaipmh.templateRootPath}
-		}
-	}
+  view {
+    templateRootPaths {
+      0 = EXT:dlf/Resources/Private/Templates/OaiPmh
+      1 = {$plugin.tx_dlf.oaipmh.templateRootPath}
+    }
+  }
   settings {
     title =
+    storagePid = {$plugin.tx_dlf.persistence.storagePid}
   }
 }
 

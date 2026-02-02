@@ -83,7 +83,7 @@ class Region
      * @access public
      *
      * @param int $id: Id of found region properties
-     * @param array $region: Array of found region properties
+     * @param mixed[] $region: Array of found region properties
      *
      * @return void
      */

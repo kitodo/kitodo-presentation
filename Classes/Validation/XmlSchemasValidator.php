@@ -30,8 +30,21 @@ class XmlSchemasValidator extends AbstractDlfValidator
 {
     use LibXmlTrait;
 
+    /**
+     * @access protected
+     * @var mixed[] of schemas to validate against
+     */
     private array $schemas;
 
+    /**
+     * Constructs XmlSchemasValidator instance.
+     *
+     * @access public
+     *
+     * @param mixed[] $configuration The configuration of schemas
+     *
+     * @return void
+     */
     public function __construct(array $configuration = [])
     {
         parent::__construct(DOMDocument::class);
@@ -41,7 +54,10 @@ class XmlSchemasValidator extends AbstractDlfValidator
     /**
      * Combines the schemes to one schema and validates the DOMDocument against this.
      *
-     * @param $value DOMDocument The value to validate
+     * @access protected
+     *
+     * @param DOMDocument $value The value to validate
+     *
      * @return bool True if is valid
      */
     protected function isSchemeValid(DOMDocument $value): bool
@@ -58,7 +74,16 @@ class XmlSchemasValidator extends AbstractDlfValidator
         return $value->schemaValidateSource($xsd);
     }
 
-    protected function isValid($value): void
+    /**
+     * Validates the given DOMDocument against the combined schema.
+     *
+     * @access protected
+     *
+     * @param mixed $value The value to validate
+     *
+     * @return void
+     */
+    protected function isValid(mixed $value): void
     {
         $this->enableErrorBuffer();
         if (!$this->isSchemeValid($value)) {

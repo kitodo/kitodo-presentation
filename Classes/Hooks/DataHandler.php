@@ -44,7 +44,7 @@ class DataHandler implements LoggerAwareInterface
      * @param string $status 'new' or 'update'
      * @param string $table The destination table
      * @param int|string $id The uid of the record
-     * @param array &$fieldArray Array of field values
+     * @param array<string, string> &$fieldArray Array of field values
      *
      * @return void
      */
@@ -92,7 +92,7 @@ class DataHandler implements LoggerAwareInterface
                         $fieldArray['label'] = $fieldArray['index_name'];
                     }
                     // Ensure that index names don't get mixed up with sorting values.
-                    if (!empty($fieldArray['index_name']) && str_ends_with($fieldArray['index_name'], '_sorting')) {
+                    if (!empty($fieldArray['index_name']) && str_ends_with((string) $fieldArray['index_name'], '_sorting')) {
                         $fieldArray['index_name'] .= '0';
                     }
                     break;
@@ -174,7 +174,7 @@ class DataHandler implements LoggerAwareInterface
      * @param string $status 'new' or 'update'
      * @param string $table The destination table
      * @param int|string $id The uid of the record
-     * @param array &$fieldArray Array of field values
+     * @param array<string, string> &$fieldArray Array of field values
      *
      * @return void
      */

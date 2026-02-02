@@ -36,14 +36,14 @@ class DocumentAnnotation
     private static $instance;
 
     /**
-     * @var array
+     * @var mixed[]
      */
-    protected $annotationData;
+    protected array $annotationData;
 
     /**
      * @var Document
      */
-    protected $document;
+    protected Document $document;
 
     /**
      * @access protected
@@ -52,10 +52,10 @@ class DocumentAnnotation
     protected Logger $logger;
 
     /**
-     * @param array $annotationData
+     * @param mixed[] $annotationData
      * @param Document $document
      */
-    private function __construct($annotationData, $document)
+    private function __construct(array $annotationData, Document $document)
     {
         $this->annotationData = $annotationData;
         $this->document = $document;
@@ -65,9 +65,11 @@ class DocumentAnnotation
     /**
      * Returns all annotations with valid targets.
      *
+     * @access public
+     *
      * @return Annotation[]|array
      */
-    public function getAnnotations()
+    public function getAnnotations(): array
     {
         if (empty($this->annotationData)) {
             return [];
@@ -165,10 +167,13 @@ class DocumentAnnotation
     /**
      * Gets the logicalId related page numbers
      *
+     * @access protected
+     *
      * @param string $logicalId
-     * @return array
+     *
+     * @return mixed[]
      */
-    protected function getPagesByLogicalId($logicalId)
+    protected function getPagesByLogicalId(string $logicalId): array
     {
         $pages = [];
         if (
@@ -190,10 +195,14 @@ class DocumentAnnotation
 
     /**
      * Gets the physicalId related page numbers
+     *
+     * @access protected
+     *
      * @param string $physicalId
-     * @return array
+     *
+     * @return mixed[]
      */
-    protected function getPagesByPhysicalId($physicalId)
+    protected function getPagesByPhysicalId(string $physicalId): array
     {
         $pages = [];
         foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
@@ -214,10 +223,13 @@ class DocumentAnnotation
     /**
      * Gets the fileId related page numbers
      *
+     * @access protected
+     *
      * @param string $fileId
-     * @return array
+     *
+     * @return mixed[]
      */
-    protected function getPagesByFileId($fileId)
+    protected function getPagesByFileId(string $fileId): array
     {
         $pages = [];
         foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
@@ -239,11 +251,14 @@ class DocumentAnnotation
     /**
      * Gets the fileId and audio related page numbers
      *
+     * @access protected
+     *
      * @param string $fileId
-     * @param string $range
-     * @return array
+     * @param ?string $range
+     *
+     * @return mixed[]
      */
-    protected function getAudioPagesByFileId($fileId, $range = null)
+    protected function getAudioPagesByFileId(string $fileId, $range = null): array
     {
         $tracks = [];
         foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
@@ -296,10 +311,11 @@ class DocumentAnnotation
      * Gets the fileId and measure range related page numbers from the musical structMap
      *
      * @param string $fileId
-     * @param string $range
-     * @return array
+     * @param ?string $range
+     *
+     * @return mixed[]
      */
-    protected function getMeasurePagesByFileId($fileId, $range = null)
+    protected function getMeasurePagesByFileId(string $fileId, $range = null): array
     {
         // Get all measures referencing the fileid
         $measures = [];
@@ -353,12 +369,14 @@ class DocumentAnnotation
     /**
      * Returns the raw data of all annotations with a valid verovio target
      *
-     * @return array
+     * @access public
+     *
+     * @return mixed[]
      */
-    public function getVerovioRelevantAnnotations()
+    public function getVerovioRelevantAnnotations(): array
     {
         $annotations = [];
-        /** @var Annotation $annotation */
+
         foreach ($this->getAnnotations() as $annotation) {
             if ($annotation->isVerovioRelevant()) {
                 $annotations[] = $annotation->getRawData();
@@ -370,16 +388,19 @@ class DocumentAnnotation
     /**
      * Loads all annotation data from the annotation server
      *
+     * @access protected
+     *
      * @param Document $document
-     * @return array
+     *
+     * @return mixed[]
      */
-    protected static function loadData($document)
+    protected static function loadData(Document $document): array
     {
         $annotationData = [];
         $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
         $apiBaseUrl = $conf['annotationServerUrl'] ?? null;
         if ($apiBaseUrl && $document->getCurrentDocument() instanceof MetsDocument) {
-            $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
+            $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]') ?: [];
             if (count($purl) > 0) {
                 $annotationRequest = new AnnotationRequest($apiBaseUrl);
                 $annotationData = $annotationRequest->getAll((string) $purl[0]);
@@ -389,11 +410,15 @@ class DocumentAnnotation
     }
 
     /**
-     * @param $document
-     * @return DocumentAnnotation|null
+     * Returns the singleton instance of DocumentAnnotation
      *
+     * @access public
+     *
+     * @param Document $document
+     *
+     * @return DocumentAnnotation|null
      */
-    public static function getInstance($document)
+    public static function getInstance(Document $document): ?DocumentAnnotation
     {
         if (self::$instance == null) {
             $annotationData = self::loadData($document);

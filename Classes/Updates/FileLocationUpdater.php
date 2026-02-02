@@ -55,7 +55,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
 
     /**
      * @access protected
-     * @var array Array with table and fields to migrate
+     * @var array<string, string> Array with table and fields to migrate
      */
     protected array $fieldsToMigrate = [
         'tx_dlf_collections' => 'thumbnail'
@@ -97,7 +97,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      */
     public function updateNecessary(): bool
     {
-        /** @var int */
+        /** @var int $numRecords */
         $numRecords = $this->getRecordsFromTable(true);
         if ($numRecords > 0) {
             return true;
@@ -140,7 +140,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
     {
         $result = true;
         try {
-            /** @var int */
+            /** @var int $numRecords */
             $numRecords = $this->getRecordsFromTable(true);
             if ($numRecords > 0) {
                 $this->performUpdate();
@@ -160,11 +160,11 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      *
      * @access public
      *
-     * @return array|int
+     * @return mixed[]|int
      *
      * @throws \RuntimeException
      */
-    protected function getRecordsFromTable(bool $countOnly = false)
+    protected function getRecordsFromTable(bool $countOnly = false): array|int
     {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         $allResults = [];
@@ -227,6 +227,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
             $storages = GeneralUtility::makeInstance(StorageRepository::class)->findAll();
             $this->storage = $storages[0];
 
+            /** @var mixed[]  $records */
             $records = $this->getRecordsFromTable();
             foreach ($records as $table => $recordsInTable) {
                 foreach ($recordsInTable as $record) {
@@ -246,7 +247,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
      * @access public
      *
      * @param string $table
-     * @param array $row
+     * @param mixed[] $row
      *
      * @return void
      *

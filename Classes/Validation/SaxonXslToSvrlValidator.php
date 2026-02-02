@@ -36,6 +36,17 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
 
     private string $xsl;
 
+    /**
+     * Constructs SaxonXslToSvrlValidator instance.
+     *
+     * @access public
+     *
+     * @param mixed[] $configuration
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     */
     public function __construct(array $configuration)
     {
         parent::__construct(DOMDocument::class);
@@ -51,18 +62,31 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
         }
     }
 
-    protected function isValid($value): void
+    /**
+     * Validate the given value.
+     *
+     * @access protected
+     *
+     * @param mixed $value
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function isValid(mixed $value): void
     {
         $svrl = $this->process($value);
         $this->addErrorsOfSvrl($svrl);
     }
 
     /**
+     * @access protected
+     *
      * @param mixed $value
      *
-     * @throws InvalidArgumentException
-     *
      * @return string
+     *
+     * @throws InvalidArgumentException
      */
     protected function process(mixed $value): string
     {
@@ -92,8 +116,10 @@ class SaxonXslToSvrlValidator extends AbstractDlfValidator implements LoggerAwar
             $xml = new SimpleXMLElement($svrl);
             $results = $xml->xpath("/svrl:schematron-output/svrl:failed-assert/svrl:text");
 
-            foreach ($results as $error) {
-                $this->addError($error->__toString(), 1724405095);
+            if (!empty($results)) {
+                foreach ($results as $error) {
+                    $this->addError($error->__toString(), 1724405095);
+                }
             }
         } catch (Exception $e) {
             throw new InvalidArgumentException('Schematron output XML could not be parsed.', 1724754882);

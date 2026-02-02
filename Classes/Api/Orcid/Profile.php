@@ -66,7 +66,7 @@ class Profile
      *
      * @access public
      *
-     * @return array|false
+     * @return array<string, mixed>|false
      **/
     public function getData(): array|false
     {
@@ -95,11 +95,13 @@ class Profile
         $this->getRaw('address');
         if (!empty($this->raw)) {
             $this->raw->registerXPathNamespace('address', 'http://www.orcid.org/ns/address');
-            return (string) $this->raw->xpath('./address:address/address:country')[0];
-        } else {
-            $this->logger->warning('No address found for given ORCID');
-            return false;
+            $address = $this->raw->xpath('./address:address/address:country');
+            if (!empty($address)) {
+                return (string) $address[0];
+            }
         }
+        $this->logger->warning('No address found for given ORCID');
+        return false;
     }
 
     /**
@@ -114,11 +116,13 @@ class Profile
         $this->getRaw('email');
         if (!empty($this->raw)) {
             $this->raw->registerXPathNamespace('email', 'http://www.orcid.org/ns/email');
-            return (string) $this->raw->xpath('./email:email/email:email')[0];
-        } else {
-            $this->logger->warning('No email found for given ORCID');
-            return false;
+            $email = $this->raw->xpath('./email:email/email:email');
+            if (!empty($email)) {
+                return (string) $email[0];
+            }
         }
+        $this->logger->warning('No email found for given ORCID');
+        return false;
     }
 
     /**
@@ -135,11 +139,16 @@ class Profile
             $this->raw->registerXPathNamespace('personal-details', 'http://www.orcid.org/ns/personal-details');
             $givenNames = $this->raw->xpath('./personal-details:name/personal-details:given-names');
             $familyName = $this->raw->xpath('./personal-details:name/personal-details:family-name');
-            return (string) $givenNames[0] . ' ' . (string) $familyName[0];
-        } else {
-            $this->logger->warning('No name found for given ORCID');
-            return false;
+            if (!empty($givenNames) && !empty($familyName)) {
+                return $givenNames[0] . ' ' . $familyName[0];
+            } elseif (!empty($givenNames)) {
+                return (string) $givenNames[0];
+            } elseif (!empty($familyName)) {
+                return (string) $familyName[0];
+            }
         }
+        $this->logger->warning('No name found for given ORCID');
+        return false;
     }
 
     /**
@@ -155,7 +164,7 @@ class Profile
     {
         $this->client->setEndpoint($endpoint);
         $data = $this->client->getData();
-        if ($data != false) {
+        if ($data !== false) {
             $this->raw = Helper::getXmlFileAsString($data);
         }
     }

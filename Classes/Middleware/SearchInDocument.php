@@ -45,7 +45,7 @@ class SearchInDocument implements MiddlewareInterface
     /**
      * This holds the solr fields
      *
-     * @var array
+     * @var string[]
      * @access private
      */
     private array $fields;
@@ -64,7 +64,7 @@ class SearchInDocument implements MiddlewareInterface
     {
         $response = $handler->handle($request);
         // Get input parameters and decrypt core name.
-        $parameters = $request->getParsedBody();
+        $parameters = (array) $request->getParsedBody();
         // Return if not this middleware
         if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/search-in-document')) {
             return $response;
@@ -130,7 +130,7 @@ class SearchInDocument implements MiddlewareInterface
         // Create response object.
         /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);
-        $response->getBody()->write(json_encode($output));
+        $response->getBody()->write(json_encode($output) ?: '');
         return $response;
     }
 
@@ -139,7 +139,7 @@ class SearchInDocument implements MiddlewareInterface
      *
      * @access private
      *
-     * @param array $parameters array of query parameters
+     * @param mixed[] $parameters array of query parameters
      *
      * @return ResultInterface result
      */
@@ -175,7 +175,7 @@ class SearchInDocument implements MiddlewareInterface
      *
      * @access private
      *
-     * @param array $parameters parsed from request body
+     * @param mixed[] $parameters parsed from request body
      *
      * @return string SOLR query
      */
