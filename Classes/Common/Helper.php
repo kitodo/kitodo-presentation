@@ -208,7 +208,7 @@ class Helper
      * This method checks if a unique document (through hash) is already loaded and returns it. If not loaded yet it will load it into the list
      *
      * @param string $documentLocation The URL of XML file or the IRI of the IIIF resource
-     * @param array $settings
+     * @param mixed[] $settings
      *
      * @return AbstractDocument
      */
