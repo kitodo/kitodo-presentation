@@ -46,7 +46,6 @@ class TableOfContentsController extends AbstractController
     {
         // Load current document.
         $this->loadDocument();
-
         if ($this->isDocMissing()) {
             // Quit without doing anything if required variables are not set.
             return $this->htmlResponse();
@@ -57,7 +56,6 @@ class TableOfContentsController extends AbstractController
         }
 
         $this->view->assign('viewData', $this->viewData);
-    
         return $this->htmlResponse();
     }
 
