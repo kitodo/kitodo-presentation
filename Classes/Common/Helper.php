@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Exception;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
@@ -628,29 +629,37 @@ class Helper
      */
     public static function translate(string $indexName, string $table, string $pid): string
     {
-
+        //Get LanguageId (sys_language_uid in Backend) from context
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
         $languageId = $languageAspect->getContentId();
+        //static Array to save all already queried Translations
         static $translations = [];
+        //Query Backend for translations for one table and PID combination - only query if not yet done
         if(empty($translations[$table][$pid]))
         {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable($table);
+            try {
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable($table);
 
-            $rows = $queryBuilder
-                ->select(
-                    $table . '.uid AS uid',
-                    $table . '.l18n_parent AS l18n_parent',
-                    $table . '.label AS label',
-                    $table . '.index_name AS index_name',
-                    $table . '.sys_language_uid As sys_language_uid'
-                )
-                ->where(
-                    $queryBuilder->expr()->eq($table . '.pid', $pid)
+                $rows = $queryBuilder
+                    ->select(
+                        $table . '.uid AS uid',
+                        $table . '.l18n_parent AS l18n_parent',
+                        $table . '.label AS label',
+                        $table . '.index_name AS index_name',
+                        $table . '.sys_language_uid As sys_language_uid'
                     )
-                ->from($table)
-                ->executeQuery()
-                ->fetchAllAssociative();
+                    ->where(
+                        $queryBuilder->expr()->eq($table . '.pid', $pid)
+                        )
+                    ->from($table)
+                    ->executeQuery()
+                    ->fetchAllAssociative();
+            }
+            catch (Exception $e)
+            {
+                self::error('Error querying backend pool: ' . $e->getMessage());
+            }
             foreach ($rows as $row) {
                     $indexName = $row['index_name'];
                     $languageId = (int)$row['sys_language_uid'];
@@ -662,6 +671,7 @@ class Helper
                     ];
                 }
         }
+        //return translation based on parameters table, PID, indexName and languageId, else return indexName
         return empty($translations[$table][$pid][$indexName][$languageId]) ? $indexName : $translations[$table][$pid][$indexName][$languageId]['label'];
     }
     
