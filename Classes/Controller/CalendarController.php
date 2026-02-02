@@ -16,6 +16,7 @@ use Generator;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Localization\DateFormatter;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -484,14 +485,9 @@ class CalendarController extends AbstractController
                 foreach ($year['children'] as $month) {
                     foreach ($month['children'] as $day) {
                         foreach ($day['children'] as $issue) {
-                            $title = $issue['label'] ?: $issue['orderlabel'];
-                            if (strtotime($title) !== false) {
-                                $title = strftime('%x', strtotime($title));
-                            }
-
                             yield [
                                 'uid' => $issue['points'] ?? null,
-                                'title' => $title,
+                                'title' => $this->getTitle($issue['label'], $issue['orderlabel']),
                                 'year' => $day['orderlabel'],
                             ];
                         }
@@ -518,10 +514,7 @@ class CalendarController extends AbstractController
             if (!empty($document->getTitle())) {
                 $title = $document->getTitle();
             } else {
-                $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
-                if (strtotime($title) !== false) {
-                    $title = strftime('%x', strtotime($title));
-                }
+                $title = $this->getTitle($document->getMetsLabel(), $document->getMetsOrderlabel());
             }
             yield [
                 'uid' => $document->getUid(),
@@ -529,5 +522,26 @@ class CalendarController extends AbstractController
                 'year' => $document->getYear()
             ];
         }
+    }
+
+    /**
+     * Get title from label or orderlabel, format date if applicable.
+     *
+     * @access private
+     *
+     * @param string|null $label
+     * @param string|null $orderLabel
+     *
+     * @return string
+     */
+    private function getTitle(?string $label, ?string $orderLabel): string
+    {
+        $title = $label ?: $orderLabel;
+        $date = strtotime($title);
+        if ($date !== false) {
+            $dateFormatter = new DateFormatter();
+            $title = $dateFormatter->strftime('%x', $date);
+        }
+        return $title;
     }
 }
