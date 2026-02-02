@@ -35,55 +35,46 @@ class PageViewController extends AbstractController
 {
     /**
      * @access protected
-     * @var array Holds the controls to add to the map
+     * @var mixed[] Holds the controls to add to the map
      */
     protected array $controls = [];
 
     /**
      * @access protected
-     * @var array Holds the current images' URLs and MIME types
+     * @var mixed[] Holds the current images' URLs and MIME types
      */
     protected array $images = [];
 
     /**
-     * Holds the current scores' URL, MIME types and the
-     * id of the current page
-     *
-     * @var array
      * @access protected
+     * @var mixed[] Holds the current scores' URL, MIME types and the id of the current page
      */
-    protected $scores = [];
+    protected array $scores = [];
 
     /**
-     * @var array
      * @access protected
+     * @var mixed[]
      */
-    protected $measures = [];
+    protected array $measures = [];
 
     /**
-     * Holds the current fulltexts' URLs
-     *
-     * @var array
      * @access protected
-     * @var array Holds the current full texts' URLs
+     * @var mixed[] Holds the current full texts' URLs
      */
     protected array $fulltexts = [];
 
     /**
-     * Holds the current AnnotationLists / AnnotationPages
-     *
      * @access protected
-     * @var array Holds the current AnnotationLists / AnnotationPages
+     * @var mixed[] Holds the current AnnotationLists / AnnotationPages
      */
     protected array $annotationContainers = [];
 
 
     /**
-     * Holds the verovio relevant annotations
-     *
-     * @var array
+     * @access protected
+     * @var mixed[] Holds the verovio relevant annotations
      */
-    protected $verovioAnnotations = [];
+    protected array $verovioAnnotations = [];
 
     /**
      * The main method of the plugin
@@ -146,12 +137,16 @@ class PageViewController extends AbstractController
 
     /**
      * Converts either measure into page or page into measure
-     * @param $document
-     * @param $measure
-     * @param $page
+     *
+     * @access public
+     *
+     * @param MetsDocument $document
+     * @param mixed $measure
+     * @param mixed $page
+     *
      * @return false|int|mixed|string|null
      */
-    public function convertMeasureOrPage($document, $measure = null, $page = null)
+    public function convertMeasureOrPage(MetsDocument $document, $measure = null, $page = null)
     {
         $return = null;
         $measure2Page = array_column($document->musicalStructure, 'page');
@@ -166,8 +161,12 @@ class PageViewController extends AbstractController
 
     /**
      * Get all measures from musical struct
+     *
+     * @access protected
+     *
      * @param int $page
-     * @return array
+     *
+     * @return array<string, mixed[]>
      */
     protected function getMeasures(int $page): array
     {
@@ -184,9 +183,7 @@ class PageViewController extends AbstractController
                     $musicalStruct = $doc->musicalStructureInfo;
                     $i = 0;
                     foreach ($musicalStruct as $measureData) {
-                        if (isset($measureData['files'])
-                            && isset($measureData['files']['DEFAULT'])
-                            && $defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
+                        if (isset($measureData['files']['DEFAULT']) && $defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
                             $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
                             $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
                             $measureIdToIndex[$measureData['files']['SCORE']['begin']] = $i;
@@ -211,9 +208,9 @@ class PageViewController extends AbstractController
      * @param int $page: Page number
      * @param ?MetsDocument $specificDoc
      *
-     * @return array URL and MIME type of fulltext file
+     * @return array<string, string> URL and MIME type of score
      */
-    protected function getScore(int $page, ?MetsDocument $specificDoc = null)
+    protected function getScore(int $page, ?MetsDocument $specificDoc = null): array
     {
         $score = [];
         $loc = '';
@@ -273,7 +270,7 @@ class PageViewController extends AbstractController
      *
      * @param int $page Page number
      *
-     * @return array URL and MIME type of fulltext file
+     * @return array<string, string> URL and MIME type of fulltext file
      */
     protected function getFulltext(int $page): array
     {
@@ -353,7 +350,8 @@ class PageViewController extends AbstractController
      * @access protected
      *
      * @param int $page Page number
-     * @return array An array containing the IRIs of the AnnotationLists / AnnotationPages as well as some information about the canvas.
+     *
+     * @return array<string, mixed[]> An array containing the IRIs of the AnnotationLists / AnnotationPages as well as some information about the canvas.
      */
     protected function getAnnotationContainers(int $page): array
     {
@@ -410,7 +408,7 @@ class PageViewController extends AbstractController
      * @param int $page Page number
      * @param ?MetsDocument $specificDoc
      *
-     * @return array URL and MIME type of image file
+     * @return array<string, string> URL and MIME type of image file
      */
     protected function getImage(int $page, ?MetsDocument $specificDoc = null): array
     {
@@ -452,7 +450,7 @@ class PageViewController extends AbstractController
      * @param string $fileGrpImages File group
      * @param ?MetsDocument $specificDoc Optional specific document
      *
-     * @return array|null File info array or null if not found
+     * @return mixed[]|null File info array or null if not found
      */
     private function fetchFileInfo(int $page, string $fileGrpImages, ?MetsDocument $specificDoc): ?array
     {

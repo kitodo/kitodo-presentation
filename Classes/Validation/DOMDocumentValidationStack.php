@@ -24,6 +24,15 @@ namespace Kitodo\Dlf\Validation;
  */
 class DOMDocumentValidationStack extends AbstractDlfValidationStack
 {
+    /**
+     * Constructor for DOMDocumentValidationStack.
+     *
+     * @access public
+     *
+     * @param mixed[] $configuration Configuration array for validators
+     *
+     * @return void
+     */
     public function __construct(array $configuration)
     {
         parent::__construct(\DOMDocument::class);

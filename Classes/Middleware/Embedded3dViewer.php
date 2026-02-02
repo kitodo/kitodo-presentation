@@ -21,9 +21,14 @@ use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
+use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Log\LogManager;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderReadPermissionsException;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\StorageRepository;
@@ -55,6 +60,11 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
      * @param RequestHandlerInterface $handler for processing
      *
      * @return ResponseInterface
+     *
+     * @throws InternalServerErrorException
+     * @throws PageNotFoundException
+     * @throws ResourceDoesNotExistException
+     * @throws InsufficientFolderReadPermissionsException|InsufficientFolderAccessPermissionsException
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -115,7 +125,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
         $viewerConfigPath = $defaultStorage->getName() . "/" . self::VIEWER_FOLDER . "/" . $viewer . "/";
         $config = $yamlFileLoader->load($viewerConfigPath . self::VIEWER_CONFIG_YML)["viewer"];
 
-        if (!isset($config["supportedModelFormats"]) || empty($config["supportedModelFormats"])) {
+        if (empty($config["supportedModelFormats"])) {
             return $this->errorResponse('Required key "supportedModelFormats" does not exist in the file "' . self::VIEWER_CONFIG_YML . '" of viewer "' . $viewer . '" or has no value', $request);
         }
 
@@ -123,7 +133,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
             return $this->warningResponse('Viewer "' . $viewer . '" does not support the model format "' . $modelFormat . '"', $request);
         }
 
-        if (isset($config["requiredParameters"]) && is_array($config["requiredParameters"]) && !empty($config["requiredParameters"])) {
+        if (!empty($config["requiredParameters"]) && is_array($config["requiredParameters"])) {
             if (empty($parameters["viewerParam"])) {
                 return $this->warningResponse('The required viewer parameters do not exist', $request);
             }
@@ -144,10 +154,14 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
      *
      * Logs the given message as error and return internal error response.
      *
+     * @access public
+     *
      * @param string $message
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
-     * @throws \TYPO3\CMS\Core\Error\Http\InternalServerErrorException
+     *
+     * @throws InternalServerErrorException
      */
     public function errorResponse(string $message, ServerRequestInterface $request): ResponseInterface
     {
@@ -162,10 +176,14 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
      *
      * Logs the given message as warning and return page not found response.
      *
+     * @access public
+     *
      * @param string $message
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
-     * @throws \TYPO3\CMS\Core\Error\Http\PageNotFoundException
+     *
+     * @throws PageNotFoundException
      */
     public function warningResponse(string $message, ServerRequestInterface $request): ResponseInterface
     {
@@ -178,7 +196,10 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
     /**
      * Determines the viewer based on the extension configuration and the given model format.
      *
+     * @access private
+     *
      * @param $modelFormat string The model format
+     *
      * @return string The 3D viewer
      */
     private function getViewerByExtensionConfiguration(string $modelFormat): string
@@ -203,10 +224,13 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
     }
 
     /**
+     * @access protected
+     *
      * @param string $viewerUrl
      * @param string $html
-     * @param array $parameters
-     * @param array $modelInfo
+     * @param mixed[] $parameters
+     * @param string[] $modelInfo
+     *
      * @return string
      */
     public function replacePlaceholders(string $viewerUrl, string $html, array $parameters, array $modelInfo): string
@@ -223,11 +247,15 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
     }
 
     /**
-     * @param $model
+     * @access protected
+     *
+     * @param string $model
+     *
      * @return HtmlResponse
-     * @throws \TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException
+     *
+     * @throws ResourceDoesNotExistException
      */
-    public function renderDefaultViewer($model): HtmlResponse
+    public function renderDefaultViewer(string $model): HtmlResponse
     {
         /** @var ResourceFactory $resourceFactory */
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
@@ -239,22 +267,25 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
     }
 
     /**
-     * @param array $config
+     * @access protected
+     *
+     * @param mixed[] $config
      * @param string $viewerConfigPath
      * @param Folder $viewerFolder
-     * @param array $parameters
-     * @param array $modelInfo
+     * @param mixed[] $parameters
+     * @param mixed[] $modelInfo
+     *
      * @return string
      */
     public function getViewerHtml(array $config, string $viewerConfigPath, Folder $viewerFolder, array $parameters, array $modelInfo): string
     {
         $htmlFile = "index.html";
-        if (isset($config["base"]) && !empty($config["base"])) {
+        if (!empty($config["base"])) {
             $htmlFile = $config["base"];
         }
 
         $viewerUrl = $viewerConfigPath;
-        if (isset($config["url"]) && !empty($config["url"])) {
+        if (!empty($config["url"])) {
             $viewerUrl = rtrim($config["url"]);
         }
 
@@ -265,8 +296,11 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
     /**
      * Get the model format from parameter or extension.
      *
-     * @param array $parameters The model format parameter
-     * @param array $modelInfo The model info
+     * @access protected
+     *
+     * @param mixed[] $parameters The model format parameter
+     * @param array<string, string> $modelInfo The model info
+     *
      * @return string Returns the model format or empty string
      */
     protected function getModelFormat(array $parameters, array $modelInfo): string

@@ -51,7 +51,7 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var array Array of metadata fields' configuration
+     * @var array<string, mixed[]> Array of metadata fields' configuration
      *
      * @see loadIndexConf()
      */
@@ -76,9 +76,16 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var array List of already processed documents
+     * @var int[] List of already processed documents
      */
     protected static array $processedDocs = [];
+
+    /**
+     * @access protected
+     * @static
+     * @var array<string, array<mixed[]>> List of already extracted structure nodes for structure path
+     */
+    protected static array $extractedStructurePathNodes = [];
 
     /**
      * @access protected
@@ -335,7 +342,7 @@ class Indexer
      * @static
      *
      * @param Document $document The METS document
-     * @param array $logicalUnit Array of the logical unit to process
+     * @param mixed[] $logicalUnit Array of the logical unit to process
      *
      * @return bool true on success or false on failure
      */
@@ -371,6 +378,10 @@ class Indexer
                 $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->getToplevelId());
                 $solrDoc->setField('title', $metadata['title'][0]);
                 $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
+                // extract structure path
+                self::$extractedStructurePathNodes[$logicalUnit['id']] = self::extractStructurePathNodes($doc->tableOfContents, $logicalUnit['id']);
+                $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $document->getCurrentDocument()->getToplevelId());
+                $solrDoc->setField('structure_path', json_encode($processedStructurePath, JSON_UNESCAPED_UNICODE));
                 // verify date formatting
                 if (strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
@@ -439,7 +450,7 @@ class Indexer
      *
      * @param Document $document The METS document
      * @param int $page The page number
-     * @param array $physicalUnit Array of the physical unit to process
+     * @param mixed[] $physicalUnit Array of the physical unit to process
      *
      * @return bool true on success or false on failure
      */
@@ -465,7 +476,21 @@ class Indexer
             $solrDoc->setField('type', $physicalUnit['type']);
             $solrDoc->setField('collection', $doc->metadataArray[$doc->getToplevelId()]['collection']);
             $solrDoc->setField('location', $document->getLocation());
-
+            // pick only the deepest structure paths
+            $associatedPaths = [];
+            foreach ($doc->smLinks['p2l'][$physicalUnit['id']] as $logicalId) {
+                $path = self::$extractedStructurePathNodes[$logicalId] ?? [];
+                if (!empty($path)) {
+                    $associatedPaths[$logicalId] = $path;
+                }
+            }
+            $deepestPaths = self::filterDeepestStructurePaths($associatedPaths);
+            $processedStructurePath = [];
+            foreach ($deepestPaths as $path) {
+                $segments = self::buildStructurePathData($path, $document->getCurrentDocument()->getToplevelId());
+                $processedStructurePath[] = json_encode($segments, JSON_UNESCAPED_UNICODE);
+            }
+            $solrDoc->setField('structure_path', $processedStructurePath);
             $solrDoc->setField('fulltext', $fullText);
             if (is_array($doc->metadataArray[$doc->getToplevelId()])) {
                 self::addFaceting($doc, $solrDoc, $physicalUnit);
@@ -518,10 +543,10 @@ class Indexer
      * @access private
      *
      * @param Document $document
-     * @param array $metadata
+     * @param mixed[] $metadata
      * @param QueryDocument &$solrDoc
      *
-     * @return array empty array or autocomplete values
+     * @return mixed[] empty array or autocomplete values
      */
     private static function processMetadata(Document $document, array $metadata, QueryDocument &$solrDoc): array
     {
@@ -559,7 +584,7 @@ class Indexer
      *
      * @param AbstractDocument $doc
      * @param QueryDocument &$solrDoc
-     * @param array $physicalUnit Array of the physical unit to process
+     * @param mixed[] $physicalUnit Array of the physical unit to process
      *
      * @return void
      */
@@ -652,7 +677,7 @@ class Indexer
      *
      * @param Query $updateQuery solarium query
      * @param Document $document The METS document
-     * @param array $unit Array of the logical or physical unit to process
+     * @param array<string, mixed> $unit Array of the logical or physical unit to process
      * @param string $fullText Text containing full text for indexing
      *
      * @return QueryDocument
@@ -712,9 +737,9 @@ class Indexer
      *
      * @static
      *
-     * @param array|string $authors Array or string containing author/authors
+     * @param mixed[]|string $authors Array or string containing author/authors
      *
-     * @return array|string
+     * @return mixed[]|string
      */
     private static function removeAppendsFromAuthor(array|string $authors): array|string
     {
@@ -726,6 +751,147 @@ class Indexer
             }
         }
         return $authors;
+    }
+
+    /**
+     * Extract nodes alongside the structure map in direct line to the target id and return them as flattened array.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param mixed[] $nodes Tree or Sub-Tree, where the target id should be extracted from if present
+     * @param string $targetId The ID of the logical structure element to be found
+     * @param array<mixed[]> $path An intermediate array that keeps track of the current branch that is being looked up
+     *
+     * @return array<mixed[]> The array containing all structure path nodes associated with a physical page
+     */
+    private static function extractStructurePathNodes(array $nodes, string $targetId, array $path = []): array
+    {
+        foreach ($nodes as $node) {
+            // remember where we came from
+            $currentPath = array_merge($path, [$node]);
+            if ($node['id'] == $targetId) {
+                return $currentPath;
+            }
+            if (!empty($node['children'])) {
+                $result = self::extractStructurePathNodes($node['children'], $targetId, $currentPath);
+                if ($result) {
+                    return $result;
+                }
+            }
+        }
+        return [];
+    }
+
+    /**
+     * Filters those structure path nodes that are the descending into the structure tree the most and removes any that resemble a "prefix" of another.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param array<string, mixed[]> $paths The array containing all structure path nodes associated with a physical page
+     *
+     * @return array<string, mixed[]>
+     */
+    private static function filterDeepestStructurePaths(array $paths): array
+    {
+        if (count($paths) <= 1) {
+            return $paths;
+        }
+
+        $deepestPath = [];
+        foreach ($paths as $currentLogicalId => $currentPath) {
+            $currentIds = array_column($currentPath, 'id');
+            $isPrefix = false;
+
+            foreach ($paths as $comparisonLogicalId => $comparisonPath) {
+                if ($currentLogicalId === $comparisonLogicalId) {
+                    continue;
+                }
+                $comparisonIds = array_column($comparisonPath, 'id');
+                // check if structure path is part/prefix of another structure path
+                if (
+                    count($currentIds) < count($comparisonIds)
+                    && array_slice($comparisonIds, 0, count($currentIds)) === $currentIds
+                ) {
+                    $isPrefix = true;
+                    break;
+                }
+            }
+
+            if (!$isPrefix) {
+                $deepestPath[$currentLogicalId] = $currentPath;
+            }
+        }
+        return $deepestPath;
+    }
+
+    /**
+     * Create the actual array with the required data for the structure path that will be JSON encoded and indexed.
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param array<mixed[]> $path The structure path nodes that shall be processed
+     * @param string $cutoffId The logical id at which ancestors and itself will not be part of the structure path data
+     *
+     * @return array<array<string, string>>
+     */
+    private static function buildStructurePathData(array $path, string $cutoffId): array
+    {
+        $cutoffIndex = array_search($cutoffId, array_column($path, 'id'));
+        if ($cutoffIndex !== false) {
+            $path = array_slice($path, $cutoffIndex + 1);
+        }
+
+        $segments = [];
+        foreach ($path as $node) {
+            $segments[] = self::buildStructurePathSegments($node);
+        }
+        return $segments;
+    }
+
+    /**
+     * Gets the label or type of a structure path node with corresponding tag
+     *
+     * @access private
+     *
+     * @static
+     *
+     * @param mixed[] $node The current node that should be processed
+     *
+     * @return array<string, string>
+     */
+    private static function buildStructurePathSegments(array $node): array
+    {
+        if (!empty($node['label'])) {
+            return [
+                'label' => $node['label'],
+            ];
+        }
+        if (!empty($node['orderlabel'])) {
+            return [
+                'label' => $node['orderlabel'],
+            ];
+        }
+        if (!empty($node['volume'])) {
+            $value = !empty($node['year'])
+                ? $node['volume'] . ' ' . $node['year']
+                : $node['volume'];
+
+            return [
+                'label' => $value,
+            ];
+        }
+        if (!empty($node['type'])) {
+            return [
+                'type' => $node['type'],
+            ];
+        }
+        return ['label' => ''];
     }
 
     /**

@@ -27,7 +27,7 @@ class ResultDocument
 
     /**
      * @access private
-     * @var string The identifier
+     * @var string|null The identifier
      */
     private ?string $id;
 
@@ -75,6 +75,12 @@ class ResultDocument
 
     /**
      * @access private
+     * @var array<string> The JSON encoded structure path(s)
+     */
+    private array $structurePath = [];
+
+    /**
+     * @access private
      * @var Page[] All pages in which search phrase was found
      */
     private array $pages = [];
@@ -93,7 +99,7 @@ class ResultDocument
 
     /**
      * @access private
-     * @var array The snippets for given record
+     * @var mixed[] The snippets for given record
      */
     private array $snippetsForRecord = [];
 
@@ -103,8 +109,8 @@ class ResultDocument
      * @access public
      *
      * @param Document $record found document record
-     * @param array $highlighting array of found highlight elements
-     * @param array $fields array of fields used for search
+     * @param mixed[] $highlighting array of found highlight elements
+     * @param mixed[] $fields array of fields used for search
      *
      * @return void
      */
@@ -117,6 +123,7 @@ class ResultDocument
         $this->title = $record[$fields['title']];
         $this->toplevel = $record[$fields['toplevel']] ?? false;
         $this->type = $record[$fields['type']];
+        $this->structurePath = $record[$fields['structure_path']] ?? [];
 
         if (!empty($highlighting[$this->id])) {
             $highlightingForRecord = $highlighting[$this->id][$fields['fulltext']];
@@ -134,7 +141,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string The result's record identifier
+     * @return string|null The result's record identifier
      */
     public function getId(): ?string
     {
@@ -223,6 +230,18 @@ class ResultDocument
     public function getType(): ?string
     {
         return $this->type;
+    }
+
+    /**
+     * Get the structure path(s)
+     *
+     * @access public
+     *
+     * @return array<string>
+     */
+    public function getStructurePath(): array
+    {
+        return $this->structurePath;
     }
 
     /**
@@ -362,7 +381,7 @@ class ResultDocument
      *
      * @param string $index: Name of field for which array is going be created
      *
-     * @return array
+     * @return mixed[]
      */
     private function getArrayByIndex(string $index): array
     {

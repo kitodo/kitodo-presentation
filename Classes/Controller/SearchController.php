@@ -75,7 +75,7 @@ class SearchController extends AbstractController
 
     /**
      * @access protected
-     * @var array of the current search parameters
+     * @var mixed[] of the current search parameters
      */
     protected ?array $search;
 
@@ -247,9 +247,9 @@ class SearchController extends AbstractController
      *
      * @access private
      *
-     * @param array $facets
+     * @param mixed[] $facets
      *
-     * @return array HMENU array
+     * @return mixed[] HMENU array
      */
     private function makeFacetsMenuArray(array $facets): array
     {
@@ -442,10 +442,10 @@ class SearchController extends AbstractController
      * @param string $field The facet's index_name
      * @param string $value The facet's value
      * @param int $count Number of hits for this facet
-     * @param array $search The parameters of the current search query
+     * @param mixed[] $search The parameters of the current search query
      * @param string &$state The state of the parent item
      *
-     * @return array The array for the facet's menu entry
+     * @return array<string, mixed[]> The array for the facet's menu entry
      */
     private function getFacetsMenuEntry(string $field, string $value, int $count, array $search, string &$state): array
     {
@@ -484,12 +484,12 @@ class SearchController extends AbstractController
      * @access private
      *
      * @param FacetSet|null $facet
-     * @param array $facetCollectionArray
-     * @param array $search
+     * @param mixed[] $facetCollectionArray
+     * @param mixed[] $search
      *
-     * @return array menu array
+     * @return array<int, mixed[]> menu array
      */
-    private function processResults($facet, array $facetCollectionArray, array $search): array
+    private function processResults(?FacetSet $facet, array $facetCollectionArray, array $search): array
     {
         $menuArray = [];
 
@@ -586,7 +586,7 @@ class SearchController extends AbstractController
     {
         // Add uHash parameter to suggest parameter to make a basic protection of this form.
         if ($this->settings['suggest'] ?? true) {
-            $this->view->assign('uHash', GeneralUtility::hmac((string) (new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'));
+            $this->view->assign('uHash', GeneralUtility::hmac(new Typo3Version() . Environment::getExtensionsPath(), 'SearchSuggest'));
         }
     }
 }

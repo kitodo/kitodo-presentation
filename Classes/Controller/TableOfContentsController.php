@@ -31,7 +31,7 @@ class TableOfContentsController extends AbstractController
      * This holds the active entries according to the currently selected page
      *
      * @access protected
-     * @var array This holds the active entries according to the currently selected page
+     * @var mixed[] This holds the active entries according to the currently selected page
      */
     protected array $activeEntries = [];
 
@@ -66,7 +66,7 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @return array HMENU array
+     * @return array<int, mixed> HMENU array
      */
     private function makeMenuArray(): array
     {
@@ -117,10 +117,10 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array $entry The entry's array from AbstractDocument->getLogicalStructure
+     * @param array<string, mixed> $entry The entry's array from AbstractDocument->getLogicalStructure
      * @param bool $recursive Whether to include the child entries
      *
-     * @return array HMENU array for menu entry
+     * @return array<string, mixed> HMENU array for menu entry
      */
     private function getMenuEntry(array $entry, bool $recursive = false): array
     {
@@ -187,14 +187,14 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array &$entryArray passed by reference
+     * @param array<string, mixed> &$entryArray passed by reference
      * @param mixed $id
      * @param mixed $points
      * @param mixed $targetUid
      *
      * @return void
      */
-    private function buildMenuLinks(array &$entryArray, $id, $points, $targetUid): void
+    private function buildMenuLinks(array &$entryArray, mixed $id, mixed $points, mixed $targetUid): void
     {
         if (
             !empty($points)
@@ -222,12 +222,15 @@ class TableOfContentsController extends AbstractController
     /**
      * Set basket if basket is included in settings.
      *
-     * @param array $entryArray passed by reference
+     * @access private
+     *
+     * @param array<string, mixed> $entryArray passed by reference
      * @param mixed $id
      * @param mixed $startPage
+     *
      * @return void
      */
-    private function setBasket(array &$entryArray, $id, $startPage): void
+    private function setBasket(array &$entryArray, mixed $id, mixed $startPage): void
     {
         if (isset($this->settings['basketButton'])) {
             $entryArray['basketButton'] = [
@@ -246,9 +249,9 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array $entry
+     * @param array<string, mixed> $entry
      *
-     * @return array
+     * @return array<string, mixed> updated $entry
      */
     private function resolveMenuEntry(array $entry): array
     {
@@ -345,7 +348,7 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array $entry
+     * @param array<string, mixed> $entry
      *
      * @return string
      */
@@ -379,7 +382,7 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array &$menu
+     * @param array<int, mixed[]> &$menu
      *
      * @return void
      */
@@ -398,7 +401,7 @@ class TableOfContentsController extends AbstractController
      *
      * @access private
      *
-     * @param array &$menu
+     * @param array<int, mixed[]> &$menu
      *
      * @return void
      */

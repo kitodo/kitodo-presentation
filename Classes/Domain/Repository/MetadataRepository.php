@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -24,6 +24,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @extends Repository<Metadata>
  */
 class MetadataRepository extends Repository
 {
@@ -32,9 +34,9 @@ class MetadataRepository extends Repository
      *
      * @access public
      *
-     * @param array $settings
+     * @param array<string, mixed> $settings
      *
-     * @return QueryResultInterface
+     * @return QueryResultInterface<int, Metadata>
      */
     public function findBySettings(array $settings = []): QueryResultInterface
     {
@@ -42,7 +44,7 @@ class MetadataRepository extends Repository
 
         $constraints = [];
 
-        if (isset($settings['is_listed']) && $settings['is_listed'] == true) {
+        if (isset($settings['is_listed']) && $settings['is_listed']) {
             $constraints[] = $query->equals('is_listed', 1);
         }
 

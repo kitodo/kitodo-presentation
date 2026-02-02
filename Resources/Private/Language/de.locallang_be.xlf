@@ -17,6 +17,10 @@
                 <source><![CDATA[Show only documents from the selected collection(s)]]></source>
                 <target><![CDATA[Nur Dokumente der ausgewählten Kollektion(en) berücksichtigen]]></target>
             </trans-unit>
+            <trans-unit id="flexform.getStructurePath" approved="yes">
+                <source><![CDATA[Show breadcrumb/path to result location within the structure map]]></source>
+                <target><![CDATA[Breadcrumb/Pfad des Treffers innerhalb des Strukturbaums anzeigen]]></target>
+            </trans-unit>
             <trans-unit id="flexform.getTitle" approved="yes">
                 <source><![CDATA[Show title of parent document if document has no title itself]]></source>
                 <target><![CDATA[Bei Bedarf Titel des übergeordneten Dokuments anzeigen]]></target>

@@ -48,7 +48,7 @@ class Solr implements LoggerAwareInterface
 
     /**
      * @access protected
-     * @var array This holds the Solr configuration
+     * @var mixed[] This holds the Solr configuration
      */
     protected array $config = [];
 
@@ -74,7 +74,7 @@ class Solr implements LoggerAwareInterface
     /**
      * @access public
      * @static
-     * @var array The fields for SOLR index
+     * @var string[] The fields for SOLR index
      */
     public static array $fields = [];
 
@@ -92,7 +92,7 @@ class Solr implements LoggerAwareInterface
 
     /**
      * @access protected
-     * @var array This holds the additional query parameters
+     * @var mixed[] This holds the additional query parameters
      */
     protected array $params = [];
 
@@ -238,7 +238,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @return array fields
+     * @return string[] fields
      */
     public static function getFields(): array
     {
@@ -256,6 +256,7 @@ class Solr implements LoggerAwareInterface
             self::$fields['type'] = $solrFields['type'];
             self::$fields['title'] = $solrFields['title'];
             self::$fields['volume'] = $solrFields['volume'];
+            self::$fields['structure_path'] = $solrFields['structurePath'];
             self::$fields['date'] = $solrFields['date'] ?? null;
             self::$fields['thumbnail'] = $solrFields['thumbnail'];
             self::$fields['default'] = $solrFields['default'];
@@ -378,9 +379,9 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param array $parameters Additional search parameters
+     * @param mixed[] $parameters Additional search parameters
      *
-     * @return array The Apache Solr Documents that were fetched
+     * @return mixed[] The Apache Solr Documents that were fetched
      */
     public function searchRaw(array $parameters = []): array
     {
@@ -500,7 +501,7 @@ class Solr implements LoggerAwareInterface
      *
      * @access protected
      *
-     * @param array $value The query parameters
+     * @param mixed[] $value The query parameters
      *
      * @return void
      */

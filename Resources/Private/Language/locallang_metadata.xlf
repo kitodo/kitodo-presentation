@@ -68,6 +68,12 @@
             <trans-unit id="metadata.rights_info">
                 <source><![CDATA[Rights Information]]></source>
             </trans-unit>
+            <trans-unit id="metadata.shelfmark">
+                <source><![CDATA[Shelfmark]]></source>
+            </trans-unit>
+            <trans-unit id="metadata.structure_path">
+                <source><![CDATA[Structure Path]]></source>
+            </trans-unit>
             <trans-unit id="metadata.terms">
                 <source><![CDATA[Terms of Use]]></source>
             </trans-unit>
@@ -94,9 +100,6 @@
             </trans-unit>
             <trans-unit id="metadata.year">
                 <source><![CDATA[Year of Publication]]></source>
-            </trans-unit>
-            <trans-unit id="metadata.shelfmark">
-                <source><![CDATA[Shelfmark]]></source>
             </trans-unit>
         </body>
     </file>

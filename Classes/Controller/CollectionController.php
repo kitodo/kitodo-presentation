@@ -194,6 +194,7 @@ class CollectionController extends AbstractController
     {
         // if search was triggered, get search parameters from POST variables
         $search = $this->getParametersSafely('search');
+        $page = $this->getParametersSafely('page');
 
         $collection = null;
         if (!empty($search['collection']) && MathUtility::canBeInterpretedAsInteger($search['collection'])) {
@@ -201,7 +202,16 @@ class CollectionController extends AbstractController
         }
 
         // output is done by show action
-        return $this->redirect('show', null, null, ['search' => $search, 'collection' => $collection]);
+        return $this->redirect(
+            'show',
+            null,
+            null,
+            [
+                'page' => $page,
+                'search' => $search,
+                'collection' => $collection
+            ]
+        );
     }
 
     /**
@@ -209,10 +219,10 @@ class CollectionController extends AbstractController
      *
      * @access private
      *
-     * @param QueryResultInterface|array|object $collections to be processed
+     * @param QueryResultInterface<Collection>|array<Collection>|object $collections to be processed
      * @param Solr $solr for query
      *
-     * @return array
+     * @return mixed[]
      */
     private function processCollections($collections, Solr $solr): array
     {
