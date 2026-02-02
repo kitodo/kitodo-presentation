@@ -411,11 +411,8 @@ class OaiPmhController extends AbstractController
             // Provide a fallback timestamp if no document is found
             $oaiIdentifyInfo['earliestDatestamp'] = '0000-00-00T00:00:00Z';
 
-            // access storagePid from TypoScript
-            $pageSettings = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-            $storagePid = $pageSettings["plugin."]["tx_dlf."]["persistence."]["storagePid"];
-            if ($storagePid > 0) {
-                $this->logger->notice('No records found with PID ' . $storagePid);
+            if ($this->settings['storagePid'] > 0) {
+                $this->logger->notice('No records found with PID ' . $this->settings['storagePid']);
             } else {
                 $this->logger->notice('No records found');
             }
@@ -460,22 +457,16 @@ class OaiPmhController extends AbstractController
         try {
             $documentSet = $this->fetchDocumentSet();
         } catch (\Exception $exception) {
+            $this->logger->error('Error fetching document set: ' . $exception->getErrorMessage());
             $this->error = 'idDoesNotExist';
             return;
         }
-        // create new and empty document list
-        $resultSet = [];
-        if (is_array($documentSet)) {
-            $resultSet['elements'] = $documentSet;
-            $resultSet['metadata'] = [
-                'cursor' => 0,
-                'completeListSize' => count($documentSet),
-                'metadataPrefix' => $this->parameters['metadataPrefix'],
-            ];
+
+        if (count($documentSet) == 0) {
+            return;
         }
 
-        $listIdentifiers = $this->generateOutputForDocumentList($resultSet);
-        $this->view->assign('listIdentifiers', $listIdentifiers);
+        $this->view->assign('listIdentifiers', $this->generateResultSet($documentSet));
     }
 
     /**
@@ -550,21 +541,15 @@ class OaiPmhController extends AbstractController
         try {
             $documentSet = $this->fetchDocumentSet();
         } catch (\Exception $exception) {
+            $this->logger->error('Error fetching document set: ' . $exception->getErrorMessage());
             $this->error = 'idDoesNotExist';
             return;
         }
-        $resultSet = [];
-        if (count($documentSet) > 0) {
-            $resultSet['elements'] = $documentSet;
-            $resultSet['metadata'] = [
-                'cursor' => 0,
-                'completeListSize' => count($documentSet),
-                'metadataPrefix' => $this->parameters['metadataPrefix'],
-            ];
+        if (count($documentSet) == 0) {
+            return;
         }
 
-        $resultSet = $this->generateOutputForDocumentList($resultSet);
-        $this->view->assign('listRecords', $resultSet);
+        $this->view->assign('listRecords', $this->generateResultSet($documentSet));
     }
 
     /**
@@ -771,6 +756,28 @@ class OaiPmhController extends AbstractController
                 $this->error = 'badArgument';
             }
         }
+    }
+
+    /**
+     * Generate result set
+     *
+     * @access private
+     *
+     * @param mixed[] $documentSet
+     *
+     * @return array
+     */
+    private function generateResultSet(array $documentSet): array
+    {
+        // create new and empty document list
+        $resultSet = [];
+        $resultSet['elements'] = $documentSet;
+        $resultSet['metadata'] = [
+            'cursor' => 0,
+            'completeListSize' => count($documentSet),
+            'metadataPrefix' => $this->parameters['metadataPrefix'],
+        ];
+        return $this->generateOutputForDocumentList($resultSet);
     }
 
     /**
