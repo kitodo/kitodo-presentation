@@ -231,13 +231,13 @@ class Document extends AbstractEntity
         $this->initStorageObjects();
     }
 
-    protected function initStorageObjects()
+    protected function initStorageObjects(): void
     {
         $this->collections = new ObjectStorage();
     }
 
     /**
-     * @return AbstractDocument
+     * @return AbstractDocument|null
      */
     public function getCurrentDocument(): ?AbstractDocument
     {

@@ -41,27 +41,27 @@ class Generator
     /**
      * @var LanguageService
      */
-    protected $languageService;
+    protected LanguageService $languageService;
 
     /**
      * @var DataMapper
      */
-    protected $dataMapper;
+    protected DataMapper $dataMapper;
 
     /**
      * @var SqlReader
      */
-    protected $sqlReader;
+    protected SqlReader $sqlReader;
 
     /**
      * @var ConfigurationManager
      */
-    protected $configurationManager;
+    protected ConfigurationManager $configurationManager;
 
     /**
      * @param DataMapper $dataMapper
      */
-    public function injectDataMapper(DataMapper $dataMapper)
+    public function injectDataMapper(DataMapper $dataMapper): void
     {
         $this->dataMapper = $dataMapper;
     }
@@ -69,7 +69,7 @@ class Generator
     /**
      * @param SqlReader $sqlReader
      */
-    public function injectSqlReader(SqlReader $sqlReader)
+    public function injectSqlReader(SqlReader $sqlReader): void
     {
         $this->sqlReader = $sqlReader;
     }
@@ -77,7 +77,7 @@ class Generator
     /**
      * @param ConfigurationManager $configurationManager
      */
-    public function injectConfigurationManager(ConfigurationManager $configurationManager)
+    public function injectConfigurationManager(ConfigurationManager $configurationManager): void
     {
         $this->configurationManager = $configurationManager;
     }
@@ -90,6 +90,8 @@ class Generator
     /**
      * Collect information about relevant tables from `ext_tables.sql` and the
      * Extbase classmap.
+     *
+     * @return mixed[] Array of objects with table information
      */
     public function collectTables(): array
     {
@@ -119,6 +121,8 @@ class Generator
 
     /**
      * Get a map from database table names to their domain model class names.
+     *
+     * @return mixed[] Map from table name to fully qualified class name
      */
     public function getTableClassMap(): array
     {
@@ -146,6 +150,8 @@ class Generator
      *
      * @param Table $table The table to be analyzed
      * @param string|null $className Fully qualified name of the domain model class
+     *
+     * @return object Object with table information
      */
     protected function getTableInfo(Table $table, ?string $className): object
     {
@@ -208,7 +214,7 @@ class Generator
         return $result;
     }
 
-    protected function parsePropertyDocComment($docComment)
+    protected function parsePropertyDocComment(string $docComment): string
     {
         $lines = explode("\n", $docComment);
         foreach ($lines as $line) {
@@ -222,7 +228,7 @@ class Generator
         return '';
     }
 
-    protected function parseDocComment($docComment)
+    protected function parseDocComment(string $docComment): string
     {
         // TODO: Consider using phpDocumentor (though that splits the docblock into summary and description)
 
@@ -240,15 +246,18 @@ class Generator
             // which is not included.
             $text .= preg_replace('#\\s*/?[*/]*\\s?(.*)$#', '$1', $line) . "\n";
         }
-        $text = trim($text);
 
-        return $text;
+        return trim($text);
     }
 
     /**
      * Transform table structure into .rst page.
+     *
+     * @param mixed[] $tables Array of table information objects
+     *
+     * @return RstSection The generated .rst page
      */
-    public function generatePage(array $tables)
+    public function generatePage(array $tables): RstSection
     {
         $page = new RstSection();
         $page->setHeader('Database Tables');
