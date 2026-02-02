@@ -514,7 +514,7 @@ class CalendarController extends AbstractController
             if (!empty($document->getTitle())) {
                 $title = $document->getTitle();
             } else {
-                $title = $this->getTitle($document->getMetsLabel(),$document->getMetsOrderlabel());
+                $title = $this->getTitle($document->getMetsLabel(), $document->getMetsOrderlabel());
             }
             yield [
                 'uid' => $document->getUid(),
