@@ -31,7 +31,7 @@ class EditInProductionWarning extends AbstractNode
      *
      * @access public
      *
-     * @return array As defined in initializeResultArray() of AbstractNode
+     * @return array<string, mixed[]|string> As defined in initializeResultArray() of AbstractNode
      */
     public function render(): array
     {

@@ -22,6 +22,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @subpackage dlf
  *
  * @access public
+ *
+ * @extends Repository<SolrCore>
  */
 class SolrCoreRepository extends Repository
 {

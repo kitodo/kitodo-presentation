@@ -16,6 +16,7 @@ use Generator;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Localization\DateFormatter;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -49,7 +50,7 @@ class CalendarController extends AbstractController
 
     /**
      * @access protected
-     * @var array This holds all issues for the list view.
+     * @var mixed[] This holds all issues for the list view.
      */
     protected array $allIssues = [];
 
@@ -231,8 +232,8 @@ class CalendarController extends AbstractController
      *
      * @access protected
      *
-     * @param array $calendarData Output array containing the result calendar data that is passed to Fluid template
-     * @param array $calendarIssuesByMonth All issues sorted by month => day
+     * @param mixed[] $calendarData Output array containing the result calendar data that is passed to Fluid template
+     * @param mixed[] $calendarIssuesByMonth All issues sorted by month => day
      * @param int $year Gregorian year
      * @param int $firstMonth 1 for January, 2 for February, ... 12 for December
      * @param int $lastMonth 1 for January, 2 for February, ... 12 for December
@@ -304,10 +305,10 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array $day all issues for given day
+     * @param mixed[] $day all issues for given day
      * @param int $currentDayTime
      *
-     * @return array all issues for given day as text links
+     * @return array<int<0, max>, array<string, mixed>> all issues for given day as text links
      */
     private function getDayLinksText(array $day, int $currentDayTime): array
     {
@@ -334,10 +335,10 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array &$calendarData calendar passed by reference
+     * @param mixed[] &$calendarData calendar passed by reference
      * @param int $currentDayTime
      * @param string $dayLinks
-     * @param array $dayLinkDiv
+     * @param mixed[] $dayLinkDiv
      * @param int $firstDayOfWeek
      * @param int $k
      *
@@ -363,11 +364,11 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array &$calendarData calendar passed by reference
+     * @param mixed[] &$calendarData calendar passed by reference
      * @param int $currentDayTime
      * @param string $day
      * @param string $dayLinks
-     * @param array $dayLinkDiv
+     * @param mixed[] $dayLinkDiv
      *
      * @return void
      */
@@ -384,7 +385,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return array
+     * @return mixed[]
      */
     private function buildCalendar(): array
     {
@@ -422,7 +423,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return array
+     * @return mixed[]
      */
     private function getIssuesByYear(): array
     {
@@ -484,14 +485,9 @@ class CalendarController extends AbstractController
                 foreach ($year['children'] as $month) {
                     foreach ($month['children'] as $day) {
                         foreach ($day['children'] as $issue) {
-                            $title = $issue['label'] ?: $issue['orderlabel'];
-                            if (strtotime($title) !== false) {
-                                $title = strftime('%x', strtotime($title));
-                            }
-
                             yield [
                                 'uid' => $issue['points'] ?? null,
-                                'title' => $title,
+                                'title' => $this->getTitle($issue['label'], $issue['orderlabel']),
                                 'year' => $day['orderlabel'],
                             ];
                         }
@@ -506,7 +502,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @param array|QueryResultInterface $documents to create issues
+     * @param array<int, Document>|QueryResultInterface<int, Document> $documents to create issues
      *
      * @return Generator
      */
@@ -518,10 +514,7 @@ class CalendarController extends AbstractController
             if (!empty($document->getTitle())) {
                 $title = $document->getTitle();
             } else {
-                $title = !empty($document->getMetsLabel()) ? $document->getMetsLabel() : $document->getMetsOrderlabel();
-                if (strtotime($title) !== false) {
-                    $title = strftime('%x', strtotime($title));
-                }
+                $title = $this->getTitle($document->getMetsLabel(), $document->getMetsOrderlabel());
             }
             yield [
                 'uid' => $document->getUid(),
@@ -529,5 +522,26 @@ class CalendarController extends AbstractController
                 'year' => $document->getYear()
             ];
         }
+    }
+
+    /**
+     * Get title from label or orderlabel, format date if applicable.
+     *
+     * @access private
+     *
+     * @param string|null $label
+     * @param string|null $orderLabel
+     *
+     * @return string
+     */
+    private function getTitle(?string $label, ?string $orderLabel): string
+    {
+        $title = $label ?: $orderLabel;
+        $date = strtotime($title);
+        if ($date !== false) {
+            $dateFormatter = new DateFormatter();
+            $title = $dateFormatter->strftime('%x', $date);
+        }
+        return $title;
     }
 }
