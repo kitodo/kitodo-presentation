@@ -75,25 +75,25 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
     /**
      * @access protected
-     * @var array
+     * @var mixed[]
      */
-    protected $multiViewDocuments = [];
+    protected array $multiViewDocuments = [];
 
     /**
      * @access protected
-     * @var array
+     * @var mixed[]
      */
     protected array $extConf;
 
     /**
      * @access protected
-     * @var array This holds the request parameter
+     * @var mixed[] This holds the request parameter
      */
     protected array $requestData;
 
     /**
      * @access protected
-     * @var array This holds some common data for the fluid view
+     * @var mixed[] This holds some common data for the fluid view
      */
     protected array $viewData;
 
@@ -107,7 +107,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * Holds the configured useGroups as array.
      *
      * @access protected
-     * @var \Kitodo\Dlf\Configuration\UseGroupsConfiguration
+     * @var UseGroupsConfiguration
      */
     protected UseGroupsConfiguration $useGroupsConfiguration;
 
@@ -145,8 +145,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             'requestData' => $this->requestData
         ];
 
-
-
         try {
             $this->viewData['publicResourcePath'] = PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public');
         } catch (InvalidFileException) {
@@ -158,7 +156,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     /**
      * Get the multiview plugin configuration.
      *
-     * @return array|null The configuration
+     * @return mixed[]|null The configuration
      */
     public function getMultiViewPluginConfig(): ?array
     {
@@ -375,9 +373,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @access protected
      *
      * @param string $parameterName
-     * @param array $pluginNames
+     * @param string[] $pluginNames
      *
-     * @return null|string|array
+     * @return null|string|mixed[]
      */
     protected function getParametersSafely(string $parameterName, array $pluginNames = [])
     {
@@ -415,9 +413,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * Safely gets plugin parameters from argument if they exist
      *
      * @param string $parameterName
-     * @param array $pluginNames
+     * @param string[] $pluginNames
      *
-     * @return null|string|array
+     * @return null|string|mixed[]
      */
     private function getPluginParameterFromArgument(string $parameterName, array $pluginNames)
     {
@@ -436,9 +434,10 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * Safely gets parameters from request if they exist
      *
      * @param string $parameterName
-     * @param array $pluginNames
+     * @param mixed[] $requestData
+     * @param string[] $pluginNames
      *
-     * @return null|string|array
+     * @return null|string|mixed[]
      */
     private function getParameterFromRequestData(string $parameterName, array $requestData, array $pluginNames)
     {
@@ -607,7 +606,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param PaginationInterface $pagination
      * @param PaginatorInterface $paginator
      *
-     * @return array
+     * @return mixed[]
      */
     //TODO: clean this function
     protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator): array
@@ -787,8 +786,14 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
     /**
      * For testing purposes only.
+     *
+     * @access public
+     *
+     * @param mixed[] $settings The settings to set
+     *
+     * @return void
      */
-    public function setSettingsForTest($settings)
+    public function setSettingsForTest(array $settings): void
     {
         $this->settings = $settings;
     }

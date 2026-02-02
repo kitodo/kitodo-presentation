@@ -43,7 +43,7 @@ class JsFooterViewHelper extends AbstractViewHelper
      *
      * @static
      *
-     * @param array $arguments
+     * @param mixed[] $arguments
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      */

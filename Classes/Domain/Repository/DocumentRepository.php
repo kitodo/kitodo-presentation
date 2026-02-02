@@ -18,12 +18,12 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
+use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Model\Structure;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -38,12 +38,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @method Document|null findByUid(int|null $uid) Get a document by its UID
  * @method Document|null findOneBy(array $criteria) Get a document by criteria
+ *
+ * @extends Repository<Document>
  */
 class DocumentRepository extends Repository
 {
     /**
      * @access protected
-     * @var array The controller settings passed to the repository for some special actions.
+     * @var mixed[] The controller settings passed to the repository for some special actions.
      */
     protected array $settings;
 
@@ -60,7 +62,7 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $parameters
+     * @param array<string, mixed> $parameters
      *
      * @return Document|null
      */
@@ -129,7 +131,7 @@ class DocumentRepository extends Repository
      * @param int|null $partOf
      * @param Structure $structure
      *
-     * @return array|QueryResultInterface
+     * @return array<Document>|QueryResultInterface<int, Document>
      */
     public function getChildrenOfYearAnchor(?int $partOf, Structure $structure): array|QueryResultInterface
     {
@@ -153,7 +155,7 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param int $uid
-     * @param array $settings
+     * @param array<string, mixed> $settings
      *
      * @return Document|null
      */
@@ -169,9 +171,9 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $settings
+     * @param array<string, mixed> $settings
      *
-     * @return array|QueryResultInterface
+     * @return array<Document>|QueryResultInterface<int, Document>
      */
     public function findDocumentsBySettings(array $settings = []): array|QueryResultInterface
     {
@@ -201,11 +203,11 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $collections
+     * @param mixed[] $collections
      * @param int $limit
      * @param int $offset
      *
-     * @return array|QueryResultInterface
+     * @return array<Document>|QueryResultInterface<int, Document>
      */
     public function findAllByCollectionsLimited(array $collections, int $limit = 50, int $offset = 0): array|QueryResultInterface
     {
@@ -244,9 +246,9 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $settings
+     * @param array<string, mixed> $settings
      *
-     * @return array
+     * @return array<string, int>
      */
     public function getStatisticsForSelectedCollection(array $settings): array
     {
@@ -381,7 +383,7 @@ class DocumentRepository extends Repository
      *
      * @param int $uid
      * @param int $pid
-     * @param array $settings
+     * @param array<string, mixed> $settings
      *
      * @return Result
      */
@@ -432,10 +434,10 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $settings
-     * @param array $parameters
+     * @param array<string, mixed> $settings
+     * @param mixed[] $parameters
      *
-     * @return array The found document object
+     * @return mixed[] The found document object
      */
     public function getOaiRecord(array $settings, array $parameters): array
     {
@@ -475,7 +477,7 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $documentsToProcess
+     * @param mixed[] $documentsToProcess
      *
      * @return Result The found document objects
      */
@@ -510,10 +512,10 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $uids
+     * @param int[] $uids
      * @param bool $checkPartof Whether to also match $uids against partof.
      *
-     * @return array
+     * @return mixed[] The found document objects
      */
     public function findAllByUids(array $uids, bool $checkPartof = false): array
     {
@@ -562,9 +564,9 @@ class DocumentRepository extends Repository
     /**
      * @access public
      *
-     * @param array $uids
+     * @param int[] $uids
      *
-     * @return array
+     * @return mixed[] The found document objects grouped by their parent uid
      */
     public function findChildrenOfEach(array $uids): array
     {
@@ -585,10 +587,10 @@ class DocumentRepository extends Repository
      * @access public
      *
      * @param Collection $collection
-     * @param array $settings
-     * @param array $searchParams
-     * @param ?QueryResultInterface $listedMetadata
-     * @param ?QueryResultInterface $indexedMetadata
+     * @param array<string, mixed> $settings
+     * @param mixed[] $searchParams
+     * @param ?QueryResultInterface<int, Metadata> $listedMetadata
+     * @param ?QueryResultInterface<int, Metadata> $indexedMetadata
      *
      * @return SolrSearch
      */
@@ -608,11 +610,11 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array|QueryResultInterface $collections
-     * @param array $settings
-     * @param array $searchParams
-     * @param ?QueryResultInterface $listedMetadata
-     * @param ?QueryResultInterface $indexedMetadata
+     * @param array<Collection>|QueryResultInterface<int, Collection> $collections
+     * @param array<string, mixed> $settings
+     * @param mixed[] $searchParams
+     * @param ?QueryResultInterface<int, Metadata> $listedMetadata
+     * @param ?QueryResultInterface<int, Metadata> $indexedMetadata
      *
      * @return SolrSearch
      */
@@ -632,10 +634,10 @@ class DocumentRepository extends Repository
      *
      * @access public
      *
-     * @param array $settings
-     * @param array $searchParams
-     * @param ?QueryResultInterface $listedMetadata
-     * @param ?QueryResultInterface $indexedMetadata
+     * @param array<string, mixed> $settings
+     * @param mixed[] $searchParams
+     * @param ?QueryResultInterface<int, Metadata> $listedMetadata
+     * @param ?QueryResultInterface<int, Metadata> $indexedMetadata
      *
      * @return SolrSearch
      */
@@ -654,11 +656,11 @@ class DocumentRepository extends Repository
      *
      * @access private
      *
-     * @param array|QueryResultInterface $collections
-     * @param array $settings
-     * @param array $searchParams
-     * @param ?QueryResultInterface $listedMetadata
-     * @param ?QueryResultInterface $indexedMetadata
+     * @param array<Collection>|QueryResultInterface<int, Collection> $collections
+     * @param array<string, mixed> $settings
+     * @param mixed[] $searchParams
+     * @param ?QueryResultInterface<int, Metadata> $listedMetadata
+     * @param ?QueryResultInterface<int, Metadata> $indexedMetadata
      *
      * @return SolrSearch
      */

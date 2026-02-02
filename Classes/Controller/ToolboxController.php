@@ -118,7 +118,7 @@ class ToolboxController extends AbstractController
      *
      * @access private
      *
-     * @return array
+     * @return array<string, string> Array with model URL and format.
      */
     private function getModel(): array
     {
@@ -171,7 +171,7 @@ class ToolboxController extends AbstractController
      *
      * @param int $page Page number
      *
-     * @return array Array of image information's.
+     * @return array<string, string> Array of image information's.
      */
     private function getImage(int $page): array
     {
@@ -373,8 +373,9 @@ class ToolboxController extends AbstractController
      * @access private
      *
      * @param int $page Page number
+     * @param string[] $fileGrps Array of file groups
      *
-     * @return array Array of file information
+     * @return array<string, string> Array of file information
      */
     private function getFile(int $page, array $fileGrps): array
     {
@@ -509,7 +510,7 @@ class ToolboxController extends AbstractController
      *
      * @access private
      *
-     * @return array Link to downloadable page
+     * @return array<int, string> Link to downloadable page
      */
     private function getPageLink(): array
     {
