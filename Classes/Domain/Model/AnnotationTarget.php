@@ -45,8 +45,8 @@ class AnnotationTarget
 
         $path = parse_url($url, PHP_URL_PATH);
         $fragment = parse_url($url, PHP_URL_FRAGMENT);
-        list($objectId, $id) = explode('/', trim($path, '/'));
-        list($rangeParameterName, $rangeValue) = explode('=', $fragment);
+        list($objectId, $id) = explode('/', trim($path ?: '', '/'));
+        list($rangeParameterName, $rangeValue) = explode('=', $fragment ?: '');
 
         $this->objectId = $objectId;
         $this->id = $id;

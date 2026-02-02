@@ -733,7 +733,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $cache = null;
         // Calculate cache identifier.
         if ($enableCache === true) {
-            $cacheIdentifier = Helper::digest($solr->core . print_r($parameters, true));
+            $cacheIdentifier = Helper::digest($solr->core . print_r($parameters, true)) ?: '';
             $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
         }
         $resultSet = [

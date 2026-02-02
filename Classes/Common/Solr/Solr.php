@@ -389,7 +389,7 @@ class Solr implements LoggerAwareInterface
         $parameters['start'] = 0;
         $parameters['rows'] = $this->limit;
         // Calculate cache identifier.
-        $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true));
+        $cacheIdentifier = Helper::digest($this->core . print_r(array_merge($this->params, $parameters), true)) ?: '';
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_dlf_solr');
         $resultSet = [];
         $entry = $cache->get($cacheIdentifier);

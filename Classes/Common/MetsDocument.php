@@ -17,6 +17,7 @@ use \DOMElement;
 use \DOMNode;
 use \DOMNodeList;
 use \DOMXPath;
+use Kitodo\Dlf\Hooks\KitodoProductionHacks;
 use \SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -215,6 +216,7 @@ final class MetsDocument extends AbstractDocument
         // Apply hooks.
         foreach ($hookObjects as $hookObj) {
             if (method_exists($hookObj, 'postProcessRecordId')) {
+                /** @var KitodoProductionHacks $hookObj */
                 $hookObj->postProcessRecordId($this->xml, $this->recordId);
             }
         }
@@ -1276,36 +1278,42 @@ final class MetsDocument extends AbstractDocument
         if (!$this->mdSecLoaded) {
             $this->loadFormats();
 
-            foreach ($this->mets->xpath('./mets:dmdSec') as $dmdSecTag) {
-                $dmdSec = $this->processMdSec($dmdSecTag);
+            $dmdSecXml = $this->mets->xpath('./mets:dmdSec');
+            if (!empty($dmdSecXml)) {
+                foreach ($dmdSecXml as $dmdSecTag) {
+                    $dmdSec = $this->processMdSec($dmdSecTag);
 
-                if ($dmdSec !== null) {
-                    $this->mdSec[$dmdSec['id']] = $dmdSec;
-                    $this->dmdSec[$dmdSec['id']] = $dmdSec;
+                    if ($dmdSec !== null) {
+                        $this->mdSec[$dmdSec['id']] = $dmdSec;
+                        $this->dmdSec[$dmdSec['id']] = $dmdSec;
+                    }
                 }
             }
 
-            foreach ($this->mets->xpath('./mets:amdSec') as $amdSecTag) {
-                $childIds = [];
+            $amdSecXml = $this->mets->xpath('./mets:amdSec');;
+            if (!empty($amdSecXml)) {
+                foreach ($amdSecXml as $amdSecTag) {
+                    $childIds = [];
 
-                foreach ($amdSecTag->children('http://www.loc.gov/METS/') as $mdSecTag) {
-                    if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
-                        continue;
+                    foreach ($amdSecTag->children('http://www.loc.gov/METS/') as $mdSecTag) {
+                        if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
+                            continue;
+                        }
+
+                        // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
+                        $mdSec = $this->processMdSec($mdSecTag);
+
+                        if ($mdSec !== null) {
+                            $this->mdSec[$mdSec['id']] = $mdSec;
+
+                            $childIds[] = $mdSec['id'];
+                        }
                     }
 
-                    // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
-                    $mdSec = $this->processMdSec($mdSecTag);
-
-                    if ($mdSec !== null) {
-                        $this->mdSec[$mdSec['id']] = $mdSec;
-
-                        $childIds[] = $mdSec['id'];
+                    $amdSecId = (string)$amdSecTag->attributes()->ID;
+                    if (!empty($amdSecId)) {
+                        $this->amdSecChildIds[$amdSecId] = $childIds;
                     }
-                }
-
-                $amdSecId = (string) $amdSecTag->attributes()->ID;
-                if (!empty($amdSecId)) {
-                    $this->amdSecChildIds[$amdSecId] = $childIds;
                 }
             }
 
@@ -1449,20 +1457,22 @@ final class MetsDocument extends AbstractDocument
                 $fileUse = $this->magicGetFileGrps();
                 // Get the physical sequence's metadata.
                 $physicalNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
-                $firstNode = $physicalNodes[0];
-                $id = (string) $firstNode['ID'];
-                $this->physicalStructureInfo[$id]['id'] = $id;
-                $this->physicalStructureInfo[$id]['dmdId'] = $this->getAttribute($firstNode['DMDID']);
-                $this->physicalStructureInfo[$id]['admId'] = $this->getAttribute($firstNode['ADMID']);
-                $this->physicalStructureInfo[$id]['order'] = $this->getAttribute($firstNode['ORDER']);
-                $this->physicalStructureInfo[$id]['label'] = $this->getAttribute($firstNode['LABEL']);
-                $this->physicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($firstNode['ORDERLABEL']);
-                $this->physicalStructureInfo[$id]['type'] = (string) $firstNode['TYPE'];
-                $this->physicalStructureInfo[$id]['contentIds'] = $this->getAttribute($firstNode['CONTENTIDS']);
+                if (!empty($physicalNodes)) {
+                    $firstNode = $physicalNodes[0];
+                    $id = (string) $firstNode['ID'];
+                    $this->physicalStructureInfo[$id]['id'] = $id;
+                    $this->physicalStructureInfo[$id]['dmdId'] = $this->getAttribute($firstNode['DMDID']);
+                    $this->physicalStructureInfo[$id]['admId'] = $this->getAttribute($firstNode['ADMID']);
+                    $this->physicalStructureInfo[$id]['order'] = $this->getAttribute($firstNode['ORDER']);
+                    $this->physicalStructureInfo[$id]['label'] = $this->getAttribute($firstNode['LABEL']);
+                    $this->physicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($firstNode['ORDERLABEL']);
+                    $this->physicalStructureInfo[$id]['type'] = (string) $firstNode['TYPE'];
+                    $this->physicalStructureInfo[$id]['contentIds'] = $this->getAttribute($firstNode['CONTENTIDS']);
 
-                $this->getFileRepresentation($id, $firstNode);
+                    $this->getFileRepresentation($id, $firstNode);
 
-                $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
+                    $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
+                }
             }
             $this->physicalStructureLoaded = true;
 
@@ -1734,7 +1744,7 @@ final class MetsDocument extends AbstractDocument
     public function __sleep(): array
     {
         // SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
-        $this->asXML = $this->xml->asXML();
+        $this->asXML = $this->xml->asXML() ?: '';
         return ['configPid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asXML'];
     }
 
@@ -1750,7 +1760,7 @@ final class MetsDocument extends AbstractDocument
         $xml = new DOMDocument('1.0', 'utf-8');
         $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), true));
         $xml->formatOutput = true;
-        return $xml->saveXML();
+        return $xml->saveXML() ?: '';
     }
 
     /**
@@ -1797,58 +1807,23 @@ final class MetsDocument extends AbstractDocument
 
                 // Get the musical sequence's metadata.
                 $musicalNode = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]');
-                $id = (string) $musicalNode[0]['ID'];
-                $musicalSeq[0] = $id;
-                $this->musicalStructureInfo[$id]['id'] = $id;
-                $this->musicalStructureInfo[$id]['dmdId'] = $this->getAttribute($musicalNode[0]['DMDID']);
-                $this->musicalStructureInfo[$id]['order'] = $this->getAttribute($musicalNode[0]['ORDER']);
-                $this->musicalStructureInfo[$id]['label'] = $this->getAttribute($musicalNode[0]['LABEL']);
-                $this->musicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($musicalNode[0]['ORDERLABEL']);
-                $this->musicalStructureInfo[$id]['type'] = (string) $musicalNode[0]['TYPE'];
-                $this->musicalStructureInfo[$id]['contentIds'] = $this->getAttribute($musicalNode[0]['CONTENTIDS']);
-                // Get the file representations from fileSec node.
-                // TODO: Do we need this for the measurement container element? Can it have any files?
-                foreach ($musicalNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
-                    // Check if file has valid @USE attribute.
-                    if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                        $this->musicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
-                            'fileid' => (string) $fptr->area->attributes()->FILEID,
-                            'begin' => (string) $fptr->area->attributes()->BEGIN,
-                            'end' => (string) $fptr->area->attributes()->END,
-                            'type' => (string) $fptr->area->attributes()->BETYPE,
-                            'shape' => (string) $fptr->area->attributes()->SHAPE,
-                            'coords' => (string) $fptr->area->attributes()->COORDS
-                        ];
-                    }
-
-                    if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
-                        $this->musicalStructureInfo[$id]['begin'] = (string) $fptr->area->attributes()->BEGIN;
-                        $this->musicalStructureInfo[$id]['end'] = (string) $fptr->area->attributes()->END;
-                    }
-                }
-
-                $elements = [];
-
-                // Build the physical elements' array from the physical structMap node.
-                foreach ($elementNodes as $elementNode) {
-                    $id = (string) $elementNode['ID'];
-                    $order = (int) $elementNode['ORDER'];
-                    $elements[$order] = $id;
+                if (!empty($musicalNode)) {
+                    $id = (string) $musicalNode[0]['ID'];
+                    $musicalSeq[0] = $id;
                     $this->musicalStructureInfo[$id]['id'] = $id;
-                    $this->musicalStructureInfo[$id]['dmdId'] = $this->getAttribute($elementNode['DMDID']);
-                    $this->musicalStructureInfo[$id]['order'] = $this->getAttribute($elementNode['ORDER']);
-                    $this->musicalStructureInfo[$id]['label'] = $this->getAttribute($elementNode['LABEL']);
-                    $this->musicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($elementNode['ORDERLABEL']);
-                    $this->musicalStructureInfo[$id]['type'] = (string) $elementNode['TYPE'];
-                    $this->musicalStructureInfo[$id]['contentIds'] = $this->getAttribute($elementNode['CONTENTIDS']);
+                    $this->musicalStructureInfo[$id]['dmdId'] = $this->getAttribute($musicalNode[0]['DMDID']);
+                    $this->musicalStructureInfo[$id]['order'] = $this->getAttribute($musicalNode[0]['ORDER']);
+                    $this->musicalStructureInfo[$id]['label'] = $this->getAttribute($musicalNode[0]['LABEL']);
+                    $this->musicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($musicalNode[0]['ORDERLABEL']);
+                    $this->musicalStructureInfo[$id]['type'] = (string) $musicalNode[0]['TYPE'];
+                    $this->musicalStructureInfo[$id]['contentIds'] = $this->getAttribute($musicalNode[0]['CONTENTIDS']);
                     // Get the file representations from fileSec node.
-
-                    foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                    // TODO: Do we need this for the measurement container element? Can it have any files?
+                    foreach ($musicalNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
                         // Check if file has valid @USE attribute.
-                        $fieldId = (string) $fptr->area->attributes()->FILEID;
-                        if (!empty($fileUse[$fieldId])) {
-                            $this->musicalStructureInfo[$id]['files'][$fileUse[$fieldId]] = [
-                                'fileid' => $fieldId,
+                        if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
+                            $this->musicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
+                                'fileid' => (string) $fptr->area->attributes()->FILEID,
                                 'begin' => (string) $fptr->area->attributes()->BEGIN,
                                 'end' => (string) $fptr->area->attributes()->END,
                                 'type' => (string) $fptr->area->attributes()->BETYPE,
@@ -1862,36 +1837,70 @@ final class MetsDocument extends AbstractDocument
                             $this->musicalStructureInfo[$id]['end'] = (string) $fptr->area->attributes()->END;
                         }
                     }
-                }
 
-                // Sort array by keys (= @ORDER).
-                ksort($elements);
-                // Set total number of measures.
-                $this->numMeasures = count($elements);
+                    $elements = [];
 
-                // Get the track/page info (begin and extent time).
-                $this->musicalStructure = [];
-                $measurePages = [];
-                foreach ($this->magicGetPhysicalStructureInfo() as $physicalId => $page) {
-                    if (isset($page['files']) && isset($page['files']['DEFAULT'])) {
-                        $measurePages[$physicalId] = $page['files']['DEFAULT'];
+                    // Build the physical elements' array from the physical structMap node.
+                    foreach ($elementNodes as $elementNode) {
+                        $id = (string) $elementNode['ID'];
+                        $order = (int) $elementNode['ORDER'];
+                        $elements[$order] = $id;
+                        $this->musicalStructureInfo[$id]['id'] = $id;
+                        $this->musicalStructureInfo[$id]['dmdId'] = $this->getAttribute($elementNode['DMDID']);
+                        $this->musicalStructureInfo[$id]['order'] = $this->getAttribute($elementNode['ORDER']);
+                        $this->musicalStructureInfo[$id]['label'] = $this->getAttribute($elementNode['LABEL']);
+                        $this->musicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($elementNode['ORDERLABEL']);
+                        $this->musicalStructureInfo[$id]['type'] = (string) $elementNode['TYPE'];
+                        $this->musicalStructureInfo[$id]['contentIds'] = $this->getAttribute($elementNode['CONTENTIDS']);
+                        // Get the file representations from fileSec node.
+
+                        foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                            // Check if file has valid @USE attribute.
+                            $fieldId = (string) $fptr->area->attributes()->FILEID;
+                            if (!empty($fileUse[$fieldId])) {
+                                $this->musicalStructureInfo[$id]['files'][$fileUse[$fieldId]] = [
+                                    'fileid' => $fieldId,
+                                    'begin' => (string) $fptr->area->attributes()->BEGIN,
+                                    'end' => (string) $fptr->area->attributes()->END,
+                                    'type' => (string) $fptr->area->attributes()->BETYPE,
+                                    'shape' => (string) $fptr->area->attributes()->SHAPE,
+                                    'coords' => (string) $fptr->area->attributes()->COORDS
+                                ];
+                            }
+
+                            if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
+                                $this->musicalStructureInfo[$id]['begin'] = (string) $fptr->area->attributes()->BEGIN;
+                                $this->musicalStructureInfo[$id]['end'] = (string) $fptr->area->attributes()->END;
+                            }
+                        }
                     }
-                }
-                // Build final musicalStructure: assign pages to measures.
-                foreach ($this->musicalStructureInfo as $measureId => $measureInfo) {
-                    foreach ($measurePages as $physicalId => $file) {
-                        if (isset($measureInfo['files'])
-                            && isset($measureInfo['files']['DEFAULT'])
-                             && $measureInfo['files']['DEFAULT']['fileid'] === $file) {
-                            $this->musicalStructure[$measureInfo['order']] = [
-                                'measureid' => $measureId,
-                                'physicalid' => $physicalId,
-                                'page' => array_search($physicalId, $this->physicalStructure)
-                            ];
+
+                    // Sort array by keys (= @ORDER).
+                    ksort($elements);
+                    // Set total number of measures.
+                    $this->numMeasures = count($elements);
+
+                    // Get the track/page info (begin and extent time).
+                    $this->musicalStructure = [];
+                    $measurePages = [];
+                    foreach ($this->magicGetPhysicalStructureInfo() as $physicalId => $page) {
+                        if (isset($page['files']['DEFAULT'])) {
+                            $measurePages[$physicalId] = $page['files']['DEFAULT'];
+                        }
+                    }
+                    // Build final musicalStructure: assign pages to measures.
+                    foreach ($this->musicalStructureInfo as $measureId => $measureInfo) {
+                        foreach ($measurePages as $physicalId => $file) {
+                            if (isset($measureInfo['files']['DEFAULT']) && $measureInfo['files']['DEFAULT']['fileid'] === $file) {
+                                $this->musicalStructure[$measureInfo['order']] = [
+                                    'measureid' => $measureId,
+                                    'physicalid' => $physicalId,
+                                    'page' => array_search($physicalId, $this->physicalStructure)
+                                ];
+                            }
                         }
                     }
                 }
-
             }
             $this->musicalStructureLoaded = true;
         }
