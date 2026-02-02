@@ -212,7 +212,7 @@ class Helper
      *
      * @return AbstractDocument
      */
-    public static function getDocumentInstance($documentLocation, $settings): AbstractDocument|null
+    public static function getDocumentInstance(string $documentLocation, array $settings): AbstractDocument|null
     {
         $hash = hash('sha256', $documentLocation);
         if (!isset(static::$docs[$hash])) {
