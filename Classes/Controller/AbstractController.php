@@ -179,7 +179,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $index = count($this->multiViewDocuments);
         $this->multiViewDocuments[$index]['url'] = $url;
         $this->multiViewDocuments[$index]['encodedUrl'] = urlencode($this->multiViewDocuments[$index]['url']);
-        if (strpos($url, '#') !== false) {
+        if (str_contains($url, '#')) {
             $page = (int) explode('#', $url)[1];
         }
         $this->multiViewDocuments[$index]['page'] = $page;
@@ -368,6 +368,44 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
+     * Safely gets integer parameters from request if they exist, otherwise returns 0.
+     *
+     * @access protected
+     *
+     * @param string $parameterName
+     * @param string[] $pluginNames
+     *
+     * @return mixed[]
+     */
+    protected function getArrayParameterSafely(string $parameterName, array $pluginNames = []): array
+    {
+        $parameter = $this->getParametersSafely($parameterName, $pluginNames);
+        if (empty($parameter) || is_string($parameter)) {
+            return [];
+        }
+        return $parameter;
+    }
+
+    /**
+     * Safely gets integer parameters from request if they exist, otherwise returns 0.
+     *
+     * @access protected
+     *
+     * @param string $parameterName
+     * @param string[] $pluginNames
+     *
+     * @return int
+     */
+    protected function getIntParameterSafely(string $parameterName, array $pluginNames = []): int
+    {
+        $parameter = $this->getParametersSafely($parameterName, $pluginNames);
+        if (empty($parameter) || is_array($parameter)) {
+            return 0;
+        }
+        return (int) $parameter;
+    }
+
+    /**
      * Safely gets parameters from request if they exist
      *
      * @access protected
@@ -377,7 +415,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return null|string|mixed[]
      */
-    protected function getParametersSafely(string $parameterName, array $pluginNames = [])
+    protected function getParametersSafely(string $parameterName, array $pluginNames = []): array|string|null
     {
         if ($this->request->hasArgument($parameterName)) {
             return $this->request->getArgument($parameterName);
@@ -392,7 +430,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         $parsedBody = $this->request->getParsedBody();
         if ($parsedBody) {
-            $bodyParameter = $this->getParameterFromRequestData($parameterName, $parsedBody, $pluginNames);
+            $bodyParameter = $this->getParameterFromRequestData($parameterName, (array) $parsedBody, $pluginNames);
             if ($bodyParameter !== null) {
                 return $bodyParameter;
             }
@@ -417,7 +455,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return null|string|mixed[]
      */
-    private function getPluginParameterFromArgument(string $parameterName, array $pluginNames)
+    private function getPluginParameterFromArgument(string $parameterName, array $pluginNames): array|string|null
     {
         foreach ($pluginNames as $pluginName) {
             if ($this->request->hasArgument($pluginName)) {
@@ -439,7 +477,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @return null|string|mixed[]
      */
-    private function getParameterFromRequestData(string $parameterName, array $requestData, array $pluginNames)
+    private function getParameterFromRequestData(string $parameterName, array $requestData, array $pluginNames): array|string|null
     {
         if (array_key_exists($parameterName, $requestData)) {
             return $requestData[$parameterName];

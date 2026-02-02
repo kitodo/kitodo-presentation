@@ -47,7 +47,7 @@ final class PageGridPagination implements PaginationInterface
 
     public function getNextPageNumber(): ?int
     {
-        $nextPage = (int) ($this->paginator->getCurrentPageNumber() * count($this->paginator->getPaginatedItems()) + 1);
+        $nextPage = (int) ($this->paginator->getCurrentPageNumber() * iterator_count($this->paginator->getPaginatedItems()) + 1);
 
         return $nextPage <= $this->paginator->getNumberOfPages()
             ? $nextPage

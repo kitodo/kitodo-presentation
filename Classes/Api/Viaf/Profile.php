@@ -93,11 +93,13 @@ class Profile
     {
         $this->getRaw();
         if ($this->raw !== false && !empty($this->raw->asXML())) {
-            return (string) $this->raw->xpath('./ns1:nationalityOfEntity/ns1:data/ns1:text')[0];
-        } else {
-            $this->logger->warning('No address found for given VIAF URL');
-            return false;
+            $address = $this->raw->xpath('./ns1:nationalityOfEntity/ns1:data/ns1:text');
+            if (!empty($address)) {
+                return (string) $address[0];
+            }
         }
+        $this->logger->warning('No address found for given VIAF URL');
+        return false;
     }
 
     /**
@@ -112,12 +114,13 @@ class Profile
         $this->getRaw();
         if ($this->raw !== false && !empty($this->raw->asXML())) {
             $rawName = $this->raw->xpath('./ns1:mainHeadings/ns1:data/ns1:text');
-            $name = (string) $rawName[0];
-            return trim(trim(trim($name), ','), '.');
-        } else {
-            $this->logger->warning('No name found for given VIAF URL');
-            return false;
+            if (!empty($rawName)) {
+                $name = (string) $rawName[0];
+                return trim(trim(trim($name), ','), '.');
+            }
         }
+        $this->logger->warning('No name found for given VIAF URL');
+        return false;
     }
 
     /**
@@ -130,7 +133,7 @@ class Profile
     private function getRaw(): void
     {
         $data = $this->client->getData();
-        if ($data != false) {
+        if ($data !== false) {
             $this->raw = Helper::getXmlFileAsString($data);
             if ($this->raw !== false && !empty($this->raw->asXML())) {
                 $this->raw->registerXPathNamespace('ns1', 'http://viaf.org/viaf/terms#');
