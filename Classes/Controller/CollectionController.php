@@ -219,10 +219,10 @@ class CollectionController extends AbstractController
      *
      * @access private
      *
-     * @param QueryResultInterface|array|object $collections to be processed
+     * @param QueryResultInterface<Collection>|array<Collection>|object $collections to be processed
      * @param Solr $solr for query
      *
-     * @return array
+     * @return mixed[]
      */
     private function processCollections($collections, Solr $solr): array
     {

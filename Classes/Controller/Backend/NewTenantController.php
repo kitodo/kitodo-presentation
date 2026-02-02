@@ -55,13 +55,13 @@ class NewTenantController extends AbstractController
 
     /**
      * @access protected
-     * @var array
+     * @var mixed[]
      */
     protected array $pageInfo;
 
     /**
      * @access protected
-     * @var array All configured site languages
+     * @var mixed[] All configured site languages
      */
     protected array $siteLanguages;
 
@@ -145,13 +145,13 @@ class NewTenantController extends AbstractController
 
     /**
      * Returns a response object with either the given html string or the current rendered view as content.
-     * 
+     *
      * @access protected
-     * 
+     *
      * @param bool $isError whether to render the non-error or error template
-     * 
-     * @param array $extraData extra view data used to render the template (in addition to $viewData of AbstractController)
-     * 
+     *
+     * @param mixed[] $extraData extra view data used to render the template (in addition to $viewData of AbstractController)
+     *
      * @return ResponseInterface the response
      */
     protected function templateResponse(bool $isError, array $extraData): ResponseInterface
@@ -453,9 +453,8 @@ class NewTenantController extends AbstractController
      *
      * @access public
      *
-     * @return void
+     * @return ResponseInterface
      */
-    // @phpstan-ignore-next-line
     public function errorAction(): ResponseInterface
     {
         return $this->templateResponse(true, []);
@@ -463,12 +462,12 @@ class NewTenantController extends AbstractController
 
     /**
      * Get language label for given key and language.
-     * 
+     *
      * @access private
      *
      * @param string $index
      * @param string $lang
-     * @param array $langArray
+     * @param mixed[] $langArray
      *
      * @return string
      */
@@ -490,7 +489,7 @@ class NewTenantController extends AbstractController
      *
      * @param string $recordType
      *
-     * @return array
+     * @return mixed[]
      */
     private function getRecords(string $recordType): array
     {

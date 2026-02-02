@@ -37,13 +37,13 @@ class DocumentValidator
 
     /**
      * @access private
-     * @var array
+     * @var mixed[]
      */
     private array $metadata;
 
     /**
      * @access private
-     * @var array
+     * @var mixed[]
      */
     private array $requiredMetadataFields;
 
@@ -58,8 +58,9 @@ class DocumentValidator
      *
      * @access public
      *
-     * @param array $metadata
-     * @param array $requiredMetadataFields
+     * @param mixed[] $metadata
+     * @param mixed[] $requiredMetadataFields
+     * @param ?\SimpleXMLElement $xml
      *
      * @return void
      */
@@ -95,7 +96,7 @@ class DocumentValidator
      * Check if xml contains at least one logical structure with given type.
      *
      * @access public
-     * 
+     *
      * @param string $type e.g. documentary, newspaper or object
      *
      * @return bool
