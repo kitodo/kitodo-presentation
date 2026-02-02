@@ -90,13 +90,13 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * @access protected
-     * @var array This maps the ID of each amdSec to the IDs of its children (techMD etc.). When an ADMID references an amdSec instead of techMD etc., this is used to iterate the child elements.
+     * @var mixed[] This maps the ID of each amdSec to the IDs of its children (techMD etc.). When an ADMID references an amdSec instead of techMD etc., this is used to iterate the child elements.
      */
     protected array $amdSecChildIds = [];
 
     /**
      * @access protected
-     * @var array Associative array of METS metadata sections indexed by their IDs.
+     * @var mixed[] Associative array of METS metadata sections indexed by their IDs.
      */
     protected array $mdSec = [];
 
@@ -110,13 +110,13 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * @access protected
-     * @var array Subset of $mdSec storing only the dmdSec entries; kept for compatibility.
+     * @var mixed[] Subset of $mdSec storing only the dmdSec entries; kept for compatibility.
      */
     protected array $dmdSec = [];
 
     /**
      * @access protected
-     * @var array This holds the file ID -> USE concordance
+     * @var array<string, string> This holds the file ID -> USE concordance
      *
      * @see magicGetFileGrps()
      */
@@ -144,14 +144,14 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * @access protected
-     * @var array the extension settings
+     * @var mixed[] the extension settings
      */
     protected array $settings = [];
 
     /**
      * This holds the musical structure
      *
-     * @var array
+     * @var mixed[]
      * @access protected
      */
     protected array $musicalStructure = [];
@@ -159,7 +159,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * This holds the musical structure metadata
      *
-     * @var array
+     * @var mixed[]
      * @access protected
      */
     protected array $musicalStructureInfo = [];
@@ -186,7 +186,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access public
      *
-     * @param array &$metadata The metadata array to extend
+     * @param mixed[] &$metadata The metadata array to extend
      * @param string $id The "@ID" attribute of the logical structure node
      *
      * @return void
@@ -270,8 +270,15 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * This gets the measure beginning of a page
+     *
+     * @access public
+     *
+     * @param string $pageId The page ID
+     * @param string $fileId The file ID
+     *
+     * @return string The measure beginning
      */
-    public function getPageBeginning($pageId, $fileId)
+    public function getPageBeginning(string $pageId, string $fileId): string
     {
         $mets = $this->mets
             ->xpath(
@@ -344,7 +351,7 @@ final class MetsDocument extends AbstractDocument
      * @param SimpleXMLElement $structure The logical structure node
      * @param bool $recursive Whether to include the child elements
      *
-     * @return array Array of the element's id, label, type and physical page indexes/mptr link
+     * @return mixed[] Array of the element's id, label, type and physical page indexes/mptr link
      */
     protected function getLogicalStructureInfo(SimpleXMLElement $structure, bool $recursive = false): array
     {
@@ -408,6 +415,9 @@ final class MetsDocument extends AbstractDocument
     /**
      * Get the files this structure element is pointing at.
      *
+     * @access private
+     *
+     * @param mixed[] $details passed as reference
      * @param ?SimpleXMLElement $filePointers
      *
      * @return void
@@ -431,7 +441,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param array $details passed as reference
+     * @param mixed[] $details passed as reference
      * @param ?SimpleXMLElement $metsPointers
      *
      * @return void
@@ -470,8 +480,11 @@ final class MetsDocument extends AbstractDocument
      *    This is for convenience when passing `fileIds` in a Fluid template or similar.
      * - `timecode`: Time code specified in first matching `<mets:area>`
      *
-     * @param array $logInfo
-     * @return ?array
+     * @access protected
+     *
+     * @param mixed[] $logInfo
+     *
+     * @return ?mixed[]
      */
     protected function getTimecode(array $logInfo): ?array
     {
@@ -522,7 +535,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @return ?string thumbnail or null if not found
      */
-    private function getThumbnail(string $id = '')
+    private function getThumbnail(string $id = ''): ?string
     {
         $useGroups = $this->useGroupsConfiguration->getThumbnail();
         $thumbnail = null;
@@ -573,7 +586,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @param string $id
      *
-     * @return array
+     * @return array<string, mixed[]>
      */
     private function getMetadataFromArray(string $id): array
     {
@@ -599,9 +612,9 @@ final class MetsDocument extends AbstractDocument
      * @access private
      *
      * @param string $id
-     * @param array $metadata
+     * @param mixed[] $metadata
      *
-     * @return array
+     * @return mixed[]
      */
     private function processMetadataSections(string $id, array $metadata): array
     {
@@ -641,12 +654,15 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @param array $allSubentries
+     * @access private
+     *
+     * @param mixed[] $allSubentries
      * @param string $parentIndex
      * @param DOMNode $parentNode
-     * @return array|false
+     *
+     * @return false|mixed[]
      */
-    private function getSubentries($allSubentries, string $parentIndex, DOMNode $parentNode)
+    private function getSubentries(array $allSubentries, string $parentIndex, DOMNode $parentNode): false|array
     {
         $domXPath = new DOMXPath($parentNode->ownerDocument);
         $this->registerNamespaces($domXPath);
@@ -673,11 +689,14 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @param $values
-     * @param $subentry
-     * @return array
+     * @access private
+     *
+     * @param mixed $values
+     * @param mixed[] $subentry
+     *
+     * @return mixed[]
      */
-    private function getSubentryValue($values, $subentry)
+    private function getSubentryValue(mixed $values, array $subentry): array
     {
         $theseSubentries = [];
         if (
@@ -707,7 +726,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @param string $id
      *
-     * @return array
+     * @return mixed[]
      */
     private function getLogicalUnitType(string $id): array
     {
@@ -729,8 +748,8 @@ final class MetsDocument extends AbstractDocument
      *
      * @param string $dmdId
      * @param string $mdSectionType
-     * @param array $metadata
-     * @param array $metadataSections
+     * @param mixed[] $metadata
+     * @param mixed[] $metadataSections
      *
      * @return boolean
      */
@@ -762,7 +781,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param array $metadataSections
+     * @param mixed[] $metadataSections
      * @param string $currentMetadataSection
      * @param string $searchedMetadataSection
      *
@@ -778,10 +797,10 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param array $additionalMetadata
+     * @param mixed[] $additionalMetadata
      * @param DOMXPath $domXPath
      * @param DOMElement $domNode
-     * @param array $metadata
+     * @param mixed[] $metadata
      *
      * @return void
      */
@@ -804,11 +823,11 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param array $resArray
+     * @param mixed[] $resArray
      * @param DOMXPath $domXPath
      * @param DOMElement $domNode
-     * @param array $metadata
-     * @param array $subentryResults
+     * @param mixed[] $metadata
+     * @param mixed[] $subentryResults
      *
      * @return void
      */
@@ -839,8 +858,8 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param array $resArray
-     * @param array $metadata
+     * @param mixed[] $resArray
+     * @param mixed[] $metadata
      *
      * @return void
      */
@@ -856,10 +875,10 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param array $resArray
-     * @param  $domXPath
+     * @param mixed[] $resArray
+     * @param DOMXPath $domXPath
      * @param DOMElement $domNode
-     * @param array $metadata
+     * @param mixed[] $metadata
      *
      * @return void
      */
@@ -892,9 +911,9 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param array $metadata
+     * @param mixed[] $metadata
      *
-     * @return array
+     * @return mixed[]
      */
     private function setDefaultTitleAndDate(array $metadata): array
     {
@@ -924,11 +943,11 @@ final class MetsDocument extends AbstractDocument
      *
      * @param string $dmdId descriptive metadata id
      * @param string $mdSectionType metadata section type
-     * @param array &$metadata
+     * @param mixed[] &$metadata
      *
      * @return bool true if extraction successful, false otherwise
      */
-    private function extractMetadataIfTypeSupported(string $dmdId, string $mdSectionType, array &$metadata)
+    private function extractMetadataIfTypeSupported(string $dmdId, string $mdSectionType, array &$metadata): bool
     {
         // Is this metadata format supported?
         if (!empty($this->formats[$this->mdSec[$dmdId]['type']])) {
@@ -958,7 +977,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @param string $dmdId descriptive metadata id
      *
-     * @return array additional metadata data queried from database
+     * @return mixed[] additional metadata data queried from database
      */
     private function getAdditionalMetadataFromDatabase(string $dmdId): array
     {
@@ -1085,7 +1104,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @param string $id The "@ID" attribute of the file node
      *
-     * @return array
+     * @return mixed[]
      */
     protected function getMetadataIds(string $id): array
     {
@@ -1174,7 +1193,7 @@ final class MetsDocument extends AbstractDocument
     /**
      * @see AbstractDocument::getStructureDepth()
      */
-    public function getStructureDepth(string $logId)
+    public function getStructureDepth(string $logId): bool|int
     {
         $ancestors = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*');
         if (!empty($ancestors)) {
@@ -1250,7 +1269,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @return array Array of metadata sections with their IDs as array key
+     * @return mixed[] Array of metadata sections with their IDs as array key
      */
     protected function magicGetMdSec(): array
     {
@@ -1300,7 +1319,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @return array Array of metadata sections with their IDs as array key
+     * @return mixed[] Array of metadata sections with their IDs as array key
      */
     protected function magicGetDmdSec(): array
     {
@@ -1315,7 +1334,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @param SimpleXMLElement $element
      *
-     * @return array|null The processed metadata section
+     * @return mixed[]|null The processed metadata section
      */
     protected function processMdSec(SimpleXMLElement $element): ?array
     {
@@ -1357,12 +1376,12 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @return array Array of file use groups with file IDs
+     * @return mixed[] Array of file use groups with file IDs
      */
     protected function magicGetFileGrps(): array
     {
         if (!$this->fileGrpsLoaded) {
-            foreach (array_values($this->useGroupsConfiguration->get()) as $useGroups) {
+            foreach ($this->useGroupsConfiguration->get() as $useGroups) {
                 foreach ($useGroups as $useGroup) {
                     // Perform XPath query for each configured USE attribute
                     $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
@@ -1484,10 +1503,10 @@ final class MetsDocument extends AbstractDocument
      *
      * @access private
      *
-     * @param array $elementNodes
-     * @param array $fileUse
+     * @param mixed[] $elementNodes
+     * @param mixed[] $fileUse
      *
-     * @return array
+     * @return mixed[]
      */
     private function getPhysicalElements(array $elementNodes, array $fileUse): array
     {
@@ -1761,7 +1780,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @return array Array of musical elements' id, type, label and file representations ordered
+     * @return mixed[] Array of musical elements' id, type, label and file representations ordered
      * by "@ORDER" attribute
      */
     protected function magicGetMusicalStructure(): array
@@ -1885,7 +1904,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @return array Array of elements' type, label and file representations ordered by "@ID" attribute
+     * @return mixed[] Array of elements' type, label and file representations ordered by "@ID" attribute
      */
     protected function magicGetMusicalStructureInfo(): array
     {

@@ -67,7 +67,8 @@ class MediaPlayerController extends AbstractController
      *
      * @param AbstractDocument $doc
      * @param int $pageNo
-     * @return ?array The video data, or `null` if no video source is found
+     *
+     * @return ?mixed[] The video data, or `null` if no video source is found
      */
     protected function getVideoInfo(AbstractDocument $doc, int $pageNo): ?array
     {
@@ -111,8 +112,9 @@ class MediaPlayerController extends AbstractController
      *
      * @param AbstractDocument $doc The document object to collect video sources from
      * @param int $pageNo The page number to collect video sources for
-     * @param array $videoUseGroups The array of video use groups to search for video sources
-     * @return array An array of video sources with details like MIME type, URL, file ID, and frame rate
+     * @param string[] $videoUseGroups The array of video use groups to search for video sources
+     *
+     * @return mixed[] An array of video sources with details like MIME type, URL, file ID, and frame rate
      */
     private function collectVideoSources(AbstractDocument $doc, int $pageNo, array $videoUseGroups): array
     {
@@ -137,8 +139,9 @@ class MediaPlayerController extends AbstractController
     /**
      * Determine the initial mode (video or audio) based on the provided video sources and the main video use group.
      *
-     * @param array $videoSources An array of video sources with details like MIME type, URL, file ID, and frame rate
+     * @param mixed[] $videoSources An array of video sources with details like MIME type, URL, file ID, and frame rate
      * @param string $mainVideoUseGroup The main video use group to prioritize
+     *
      * @return string The initial mode ('video' or 'audio')
      */
     private function determineInitialMode(array $videoSources, string $mainVideoUseGroup): string
@@ -157,7 +160,8 @@ class MediaPlayerController extends AbstractController
      * Collects all video chapters for chapter markers from the given AbstractDocument.
      *
      * @param AbstractDocument $doc The AbstractDocument object to collect video chapters from
-     * @return array An array of video chapters with details like file IDs, page numbers, titles, and timecodes
+     *
+     * @return mixed[] An array of video chapters with details like file IDs, page numbers, titles, and timecodes
      */
     private function collectVideoChapters(AbstractDocument $doc): array
     {
@@ -173,10 +177,11 @@ class MediaPlayerController extends AbstractController
      *
      * @param AbstractDocument $doc The document object
      * @param int $pageNo The page number
-     * @param array $thumbnailUseGroups An array of thumb file use groups
-     * @param array $waveformUseGroups An array of waveform file use groups
-     * @param array $imageUseGroups An array of image file use groups
-     * @return array An array containing additional video URLs like poster and waveform
+     * @param string[] $thumbnailUseGroups An array of thumb file use groups
+     * @param string[] $waveformUseGroups An array of waveform file use groups
+     * @param string[] $imageUseGroups An array of image file use groups
+     *
+     * @return mixed[] An array containing additional video URLs like poster and waveform
      */
     private function collectAdditionalVideoUrls(AbstractDocument $doc, int $pageNo, array $thumbnailUseGroups, array $waveformUseGroups, array $imageUseGroups): array
     {
@@ -211,6 +216,7 @@ class MediaPlayerController extends AbstractController
      * @param AbstractDocument $doc
      * @param int $pageNo
      * @param string[] $fileGrps
+     *
      * @return array{fileGrp: string, fileId: string, url: string, mimeType: string}[]
      */
     protected function findFiles(AbstractDocument $doc, int $pageNo, array $fileGrps): array
@@ -235,8 +241,15 @@ class MediaPlayerController extends AbstractController
 
     /**
      * Recursively push chapters in given logical structure to $outChapters.
+     *
+     * @access protected
+     *
+     * @param mixed[] $logInfo The logical structure entry to process
+     * @param mixed[] $outChapters The output array to collect chapters
+     *
+     * @return void
      */
-    protected function recurseChapters(array $logInfo, array &$outChapters)
+    protected function recurseChapters(array $logInfo, array &$outChapters): void
     {
         if (empty($logInfo['children']) && isset($logInfo['videoChapter'])) {
             $outChapters[] = [
@@ -257,9 +270,10 @@ class MediaPlayerController extends AbstractController
      * Check if the given MIME type corresponds to a media file.
      *
      * @param string $mimeType The MIME type to check
+     *
      * @return bool True if the MIME type corresponds to a media file, false otherwise
      */
-    protected function isMediaMime(string $mimeType)
+    protected function isMediaMime(string $mimeType): bool
     {
         return (
             str_starts_with($mimeType, 'audio/')

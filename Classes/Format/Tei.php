@@ -120,8 +120,10 @@ class Tei implements FulltextInterface, LoggerAwareInterface
      * @access private
      *
      * @param \SimpleXMLElement &$xml: The XML to register the namespace for
+     *
+     * @return void
      */
-    private function registerTeiNamespace(\SimpleXMLElement $xml)
+    private function registerTeiNamespace(\SimpleXMLElement $xml): void
     {
         $namespace = $xml->getDocNamespaces();
 

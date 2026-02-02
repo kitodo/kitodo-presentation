@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Query;
  * @property int $limit
  * @property int $offset
  */
-class SolrSearchQuery extends Query
+class SolrSearchQuery extends Query // @phpstan-ignore-line
 {
     /**
      * @access private
@@ -48,7 +48,7 @@ class SolrSearchQuery extends Query
      *
      * @param bool $returnRawQueryResult
      *
-     * @return array
+     * @return mixed[]
      */
     // TODO: Return type (array) of method SolrSearchQuery::execute() should be compatible with return type (iterable<object>&TYPO3\CMS\Extbase\Persistence\QueryResultInterface) of method TYPO3\CMS\Extbase\Persistence\QueryInterface::execute()
     public function execute($returnRawQueryResult = false)
