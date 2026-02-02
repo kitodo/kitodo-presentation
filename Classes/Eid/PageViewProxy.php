@@ -44,7 +44,7 @@ class PageViewProxy
 
     /**
      * @access protected
-     * @var array
+     * @var mixed[]
      */
     protected array $extConf;
 
@@ -92,7 +92,7 @@ class PageViewProxy
      *
      * @param ResponseInterface $fromResponse
      * @param ResponseInterface $toResponse
-     * @param array $headerNames
+     * @param string[] $headerNames
      *
      * @return ResponseInterface
      */

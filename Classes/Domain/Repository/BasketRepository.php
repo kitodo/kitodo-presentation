@@ -24,6 +24,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @access public
  *
  * @method Basket|null findOneBy(array $criteria) Get a basket by criteria
+ *
+ * @extends Repository<Basket>
  */
 class BasketRepository extends Repository
 {

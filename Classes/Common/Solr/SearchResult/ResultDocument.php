@@ -27,7 +27,7 @@ class ResultDocument
 
     /**
      * @access private
-     * @var string The identifier
+     * @var string|null The identifier
      */
     private ?string $id;
 
@@ -75,7 +75,7 @@ class ResultDocument
 
     /**
      * @access private
-     * @var array The JSON encoded structure path(s)
+     * @var array<string> The JSON encoded structure path(s)
      */
     private array $structurePath = [];
 
@@ -99,7 +99,7 @@ class ResultDocument
 
     /**
      * @access private
-     * @var array The snippets for given record
+     * @var mixed[] The snippets for given record
      */
     private array $snippetsForRecord = [];
 
@@ -109,8 +109,8 @@ class ResultDocument
      * @access public
      *
      * @param Document $record found document record
-     * @param array $highlighting array of found highlight elements
-     * @param array $fields array of fields used for search
+     * @param mixed[] $highlighting array of found highlight elements
+     * @param mixed[] $fields array of fields used for search
      *
      * @return void
      */
@@ -141,7 +141,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string The result's record identifier
+     * @return string|null The result's record identifier
      */
     public function getId(): ?string
     {
@@ -237,7 +237,7 @@ class ResultDocument
      *
      * @access public
      *
-     * @return array
+     * @return array<string>
      */
     public function getStructurePath(): array
     {
@@ -381,7 +381,7 @@ class ResultDocument
      *
      * @param string $index: Name of field for which array is going be created
      *
-     * @return array
+     * @return mixed[]
      */
     private function getArrayByIndex(string $index): array
     {

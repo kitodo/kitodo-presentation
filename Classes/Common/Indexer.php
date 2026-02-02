@@ -51,7 +51,7 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var array Array of metadata fields' configuration
+     * @var array<string, mixed[]> Array of metadata fields' configuration
      *
      * @see loadIndexConf()
      */
@@ -76,14 +76,14 @@ class Indexer
     /**
      * @access protected
      * @static
-     * @var array List of already processed documents
+     * @var int[] List of already processed documents
      */
     protected static array $processedDocs = [];
 
     /**
      * @access protected
      * @static
-     * @var array List of already extracted structure nodes for structure path
+     * @var array<string, array<mixed[]>> List of already extracted structure nodes for structure path
      */
     protected static array $extractedStructurePathNodes = [];
 
@@ -342,7 +342,7 @@ class Indexer
      * @static
      *
      * @param Document $document The METS document
-     * @param array $logicalUnit Array of the logical unit to process
+     * @param mixed[] $logicalUnit Array of the logical unit to process
      *
      * @return bool true on success or false on failure
      */
@@ -450,7 +450,7 @@ class Indexer
      *
      * @param Document $document The METS document
      * @param int $page The page number
-     * @param array $physicalUnit Array of the physical unit to process
+     * @param mixed[] $physicalUnit Array of the physical unit to process
      *
      * @return bool true on success or false on failure
      */
@@ -543,10 +543,10 @@ class Indexer
      * @access private
      *
      * @param Document $document
-     * @param array $metadata
+     * @param mixed[] $metadata
      * @param QueryDocument &$solrDoc
      *
-     * @return array empty array or autocomplete values
+     * @return mixed[] empty array or autocomplete values
      */
     private static function processMetadata(Document $document, array $metadata, QueryDocument &$solrDoc): array
     {
@@ -584,7 +584,7 @@ class Indexer
      *
      * @param AbstractDocument $doc
      * @param QueryDocument &$solrDoc
-     * @param array $physicalUnit Array of the physical unit to process
+     * @param mixed[] $physicalUnit Array of the physical unit to process
      *
      * @return void
      */
@@ -677,7 +677,7 @@ class Indexer
      *
      * @param Query $updateQuery solarium query
      * @param Document $document The METS document
-     * @param array $unit Array of the logical or physical unit to process
+     * @param array<string, mixed> $unit Array of the logical or physical unit to process
      * @param string $fullText Text containing full text for indexing
      *
      * @return QueryDocument
@@ -737,9 +737,9 @@ class Indexer
      *
      * @static
      *
-     * @param array|string $authors Array or string containing author/authors
+     * @param mixed[]|string $authors Array or string containing author/authors
      *
-     * @return array|string
+     * @return mixed[]|string
      */
     private static function removeAppendsFromAuthor(array|string $authors): array|string
     {
@@ -760,11 +760,11 @@ class Indexer
      *
      * @static
      *
-     * @param array $nodes Tree or Sub-Tree, where the target id should be extracted from if present
+     * @param mixed[] $nodes Tree or Sub-Tree, where the target id should be extracted from if present
      * @param string $targetId The ID of the logical structure element to be found
-     * @param array $path An intermediate array that keeps track of the current branch that is being looked up
+     * @param array<mixed[]> $path An intermediate array that keeps track of the current branch that is being looked up
      *
-     * @return array
+     * @return array<mixed[]> The array containing all structure path nodes associated with a physical page
      */
     private static function extractStructurePathNodes(array $nodes, string $targetId, array $path = []): array
     {
@@ -791,9 +791,9 @@ class Indexer
      *
      * @static
      *
-     * @param array $paths The array containing all structure path nodes associated with a physical page
+     * @param array<string, mixed[]> $paths The array containing all structure path nodes associated with a physical page
      *
-     * @return array
+     * @return array<string, mixed[]>
      */
     private static function filterDeepestStructurePaths(array $paths): array
     {
@@ -835,10 +835,10 @@ class Indexer
      *
      * @static
      *
-     * @param array $path The structure path nodes that shall be processed
+     * @param array<mixed[]> $path The structure path nodes that shall be processed
      * @param string $cutoffId The logical id at which ancestors and itself will not be part of the structure path data
      *
-     * @return array
+     * @return array<array<string, string>>
      */
     private static function buildStructurePathData(array $path, string $cutoffId): array
     {
@@ -861,9 +861,9 @@ class Indexer
      *
      * @static
      *
-     * @param array $node The current node that should be processed
+     * @param mixed[] $node The current node that should be processed
      *
-     * @return array
+     * @return array<string, string>
      */
     private static function buildStructurePathSegments(array $node): array
     {

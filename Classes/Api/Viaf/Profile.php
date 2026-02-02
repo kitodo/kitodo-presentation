@@ -66,7 +66,7 @@ class Profile
      *
      * @access public
      *
-     * @return array|false
+     * @return array<string, mixed>|false
      **/
     public function getData(): array|false
     {

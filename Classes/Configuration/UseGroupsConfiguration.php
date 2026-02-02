@@ -30,11 +30,11 @@ class UseGroupsConfiguration
      * @access private
      * @var ?UseGroupsConfiguration The instance of singleton.
      */
-    private static $instance = null;
+    private static ?UseGroupsConfiguration $instance = null;
 
     /**
      * @access private
-     * @var array The array of configured USE groups.
+     * @var array<string, string[]> The array of configured USE groups.
      */
     private array $useGroups = [];
 
@@ -90,7 +90,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getAudio(): array
     {
@@ -102,7 +102,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getDownload(): array
     {
@@ -114,7 +114,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getFulltext(): array
     {
@@ -126,7 +126,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getImage(): array
     {
@@ -138,7 +138,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getModel(): array
     {
@@ -150,7 +150,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getScore(): array
     {
@@ -162,7 +162,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getThumbnail(): array
     {
@@ -174,7 +174,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getVideo(): array
     {
@@ -186,7 +186,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return string[]
      */
     public function getWaveform(): array
     {
@@ -198,7 +198,7 @@ class UseGroupsConfiguration
      *
      * @access public
      *
-     * @return array
+     * @return array<string, string[]>
      */
     public function get(): array
     {
@@ -212,7 +212,7 @@ class UseGroupsConfiguration
      *
      * @param string $useType possible values: 'Audio', 'Download', 'Fulltext', 'Image', 'Score', 'Thumbnail', 'Video', 'Waveform', 'Model'
      *
-     * @return array
+     * @return string[]
      */
     //TODO: replace $useType with enum after dropping PHP 7.x support
     private function getByType(string $useType): array
