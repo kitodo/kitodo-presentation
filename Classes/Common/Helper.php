@@ -99,7 +99,7 @@ class Helper
     /**
      * @access protected
      * @static
-     * @var array A list of loaded documents which can be accessed uniquely through a hash
+     * @var array<string, AbstractDocument> A list of loaded documents which can be accessed uniquely through a hash
      */
     protected static array $docs = [];
 
