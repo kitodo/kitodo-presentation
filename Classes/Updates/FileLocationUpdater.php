@@ -227,6 +227,7 @@ class FileLocationUpdater implements UpgradeWizardInterface, ChattyInterface, Lo
             $storages = GeneralUtility::makeInstance(StorageRepository::class)->findAll();
             $this->storage = $storages[0];
 
+            /** @var mixed[]  $records */
             $records = $this->getRecordsFromTable();
             foreach ($records as $table => $recordsInTable) {
                 foreach ($recordsInTable as $record) {

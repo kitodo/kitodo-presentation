@@ -264,7 +264,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         $responseFactory = GeneralUtility::makeInstance(ResponseFactory::class);
         $response = $responseFactory->createResponse($statusCode)
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
-        $response->getBody()->write(json_encode($payload));
+        $response->getBody()->write(json_encode($payload) ?: '');
         return $response;
     }
 }

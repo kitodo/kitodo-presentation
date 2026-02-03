@@ -1,0 +1,120 @@
+f:comment>
+<!--
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+-->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:form action="search" controller="Search" name="search" method="get" class="tx-dlf-search-form">
+    <label for="tx-dlf-search-query">
+        <f:if condition="{lastSearch.query}">
+            <f:then>{lastSearch.query -> f:format.htmlspecialchars()}</f:then>
+            <f:else><f:translate key="search.query"/></f:else>
+        </f:if>
+    </label>
+
+    <f:comment><!-- Never change the @id of this input field! Otherwise, search suggestions won't work! --></f:comment>
+    <f:form.textfield id="tx-dlf-search-query" property="query" value="{lastSearch.query}" />
+
+    <f:if condition="{showLogicalPageField}">
+        <f:then>
+            <!-- Logical page -->
+            <label for="tx-dlf-search-logical-page"><f:translate key="search.logicalPage"/>: </label>
+            <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" name="logicalPage" />
+        </f:then>
+    </f:if>
+
+    <f:comment><!-- The following element is needed for auto-completion! --></f:comment>
+    <div id="tx-dlf-search-suggest"></div>
+
+    <f:form.submit value="{f:translate(key: 'search.submit')}" />
+
+    <!-- Fulltext switch -->
+    <f:if condition="{settings.fulltext}">
+        <f:comment><!-- needs to be written like this, to check if fulltext searchparam == NULL --></f:comment>
+        <f:if condition="{lastSearch.fulltext} ==">
+            <f:then>
+                <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{settings.fulltextPreselect} == 0" />
+                <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
+                <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{settings.fulltextPreselect} == 1" />
+                <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+            </f:then>
+            <f:comment><!-- as soon we have a user preference, we use it instead --></f:comment>
+            <f:else>
+                <f:form.radio property="fulltext" value="0" id="tx-dlf-search-fulltext-no-{viewData.uniqueId}" class="tx-dlf-search-fulltext" checked="{lastSearch.fulltext} == 0" />
+                <label for="tx-dlf-search-fulltext-no-{viewData.uniqueId}"><f:translate key="search.inMetadata"/></label>
+                <f:form.radio property="fulltext" value="1" id="tx-dlf-search-fulltext-yes-{viewData.uniqueId}" class="tx-dlf-search-fulltext-yes" checked="{lastSearch.fulltext} == 1" />
+                <label for="tx-dlf-search-fulltext-yes-{viewData.uniqueId}"><f:translate key="search.inFulltext"/></label>
+            </f:else>
+        </f:if>
+    </f:if>
+
+    <f:comment><!-- Add list of collections as parameter when configured in search plugin --></f:comment>
+    <f:if condition="{settings.searchIn} == 'collection' || {settings.searchIn} == 'all'">
+        <f:form.hidden property="collection" value="{settings.collections}" />
+    </f:if>
+
+    <f:if condition="{settings.searchIn} == 'document' || {settings.searchIn} == 'all'">
+        <f:form.hidden property="documentId" value="{currentDocument.uid}" />
+        <input type="hidden" name="tx_dlf[id]" value="{currentDocument.uid}" />
+    </f:if>
+
+    <f:comment><!-- Add current collection(s) if using on collection single view or collections-search --></f:comment>
+    <f:if condition="{lastSearch.collection}">
+        <f:then>
+            <f:form.hidden property="collection" value="{lastSearch.collection}" />
+        </f:then>
+    </f:if>
+
+    <f:if condition="{extendedSlotCount}">
+        <div class="tx-dlf-search-extended">
+            <f:for each="{extendedSlotCount}" as="slot" iteration="slot_iterator">
+                <f:form.select property="extOperator.{slot_iterator.index}" value="{lastSearch.extOperator}" class="tx-dlf-search-operator tx-dlf-search-operator-{slot_iterator.index}">
+                    <f:for each="{operators}" as="operator">
+                        <f:form.select.option value="{operator}" class="tx-dlf-search-operator-option tx-dlf-search-operator-{operator}">
+                            <f:translate key="search.operator.{operator}" />
+                        </f:form.select.option>
+                    </f:for>
+                </f:form.select>
+                <f:form.select property="extField.{slot_iterator.index}" value="{lastSearch.extField}" class="tx-dlf-search-field-option tx-dlf-search-field-{slot_iterator.index}">
+                    <f:for each="{searchFields}" as="searchField">
+                        <f:form.select.option value="{searchField}" class="tx-dlf-search-field-option tx-dlf-search-field-{searchField}">
+                            <f:translate key="LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{searchField}" />
+                        </f:form.select.option>
+                    </f:for>
+                </f:form.select>
+                <f:form.textfield
+                    property="extQuery.{slot_iterator.index}"
+                    class="tx-dlf-search-query tx-dlf-search-query-{slot_iterator.index}"
+                    value="{lastSearch.extQuery.{slot_iterator.index}}" />
+            </f:for>
+        </div>
+    </f:if>
+
+    <f:if condition="{settings.datesearch}">
+        <div class="tx-dlf-search-date">
+            <label for="tx-dlf-search-dateFrom"><f:translate key="search.dateFrom"/>: </label>
+            <f:form.textfield type="date" property="dateFrom" value="{lastSearch.dateFrom}" class="tx-dlf-search-datesearch" id="tx-dlf-search-dateFrom"/>
+            <label for="tx-dlf-search-dateTo"><f:translate key="search.dateTo"/>: </label>
+            <f:form.textfield type="date" property="dateTo" value="{lastSearch.dateTo}" class="tx-dlf-search-datesearch" id="tx-dlf-search-dateTo"/>
+        </div>
+    </f:if>
+
+    <f:form.hidden property="orderBy" value="{lastSearch.orderBy}" />
+    <f:form.hidden property="order" value="{lastSearch.order}" />
+
+    <f:if condition="{settings.suggest}">
+        <f:form.hidden name="solrcore" value="{settings.solrcore}" />
+        <f:form.hidden name="uHash" value="{uHash}" />
+    </f:if>
+
+</f:form>
+
+</html>

@@ -395,7 +395,7 @@ class Indexer
                 $solrDoc->setField('restrictions', $metadata['restrictions']);
                 $coordinates = json_decode($metadata['coordinates'][0] ?? '');
                 if (is_object($coordinates)) {
-                    $feature = (array) $coordinates->features[0];
+                    $feature = (array) $coordinates->features[0]; // @phpstan-ignore-line
                     $geometry = (array) $feature['geometry'];
                     krsort($geometry);
                     $feature['geometry'] = $geometry;
@@ -721,10 +721,10 @@ class Indexer
             return $date;
         } elseif (preg_match("/^\d{8}$/", $date)) {
             // change date YYYYMMDD to YYYY-MM-DD
-            return date("Y-m-d", strtotime($date));
+            return date("Y-m-d", strtotime($date) ?: null);
         } elseif (preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*$/", $date)) {
             // convert any datetime to proper ISO extended datetime format and timezone for SOLR
-            return date('Y-m-d\TH:i:s\Z', strtotime($date));
+            return date('Y-m-d\TH:i:s\Z', strtotime($date) ?: null);
         }
         // date doesn't match any standard
         return '';

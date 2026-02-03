@@ -158,18 +158,22 @@ class Helper
             self::error('No encryption key set in TYPO3 configuration');
             return false;
         }
+
+        $length = openssl_cipher_iv_length(self::$cipherAlgorithm);
+
         if (
             empty($encrypted)
-            || strlen($encrypted) < openssl_cipher_iv_length(self::$cipherAlgorithm)
+            || strlen($encrypted) < $length
         ) {
             self::error('Invalid parameters given for decryption');
             return false;
         }
         // Split initialisation vector and encrypted data.
         $binary = base64_decode($encrypted);
-        $iv = substr($binary, 0, openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $data = substr($binary, openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
+        /** @var int $length */
+        $iv = substr($binary, 0, $length);
+        $data = substr($binary, $length);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true) ?: '';
         // Decrypt data.
         return openssl_decrypt($data, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
     }
@@ -319,8 +323,8 @@ class Helper
             return false;
         }
         // Generate random initialization vector.
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm));
-        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true);
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(self::$cipherAlgorithm) ?: 0);
+        $key = openssl_digest(self::getEncryptionKey(), self::$hashAlgorithm, true) ?: '';
         // Encrypt data.
         $encrypted = openssl_encrypt($string, self::$cipherAlgorithm, $key, OPENSSL_RAW_DATA, $iv);
         // Merge initialization vector and encrypted data.
@@ -855,7 +859,7 @@ class Helper
     {
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
 
-        if (array_key_exists(strtok($path, '/'), $configurationManager->getLocalConfiguration())) {
+        if (array_key_exists(strtok($path, '/') ?: '', $configurationManager->getLocalConfiguration())) {
             return $configurationManager->getLocalConfigurationValueByPath($path);
         }
 

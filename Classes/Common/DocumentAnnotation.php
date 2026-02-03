@@ -43,7 +43,7 @@ class DocumentAnnotation
     /**
      * @var Document
      */
-    protected $document;
+    protected Document $document;
 
     /**
      * @access protected
@@ -400,7 +400,7 @@ class DocumentAnnotation
         $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
         $apiBaseUrl = $conf['annotationServerUrl'] ?? null;
         if ($apiBaseUrl && $document->getCurrentDocument() instanceof MetsDocument) {
-            $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]');
+            $purl = $document->getCurrentDocument()->mets->xpath('//mods:mods/mods:identifier[@type="purl"]') ?: [];
             if (count($purl) > 0) {
                 $annotationRequest = new AnnotationRequest($apiBaseUrl);
                 $annotationData = $annotationRequest->getAll((string) $purl[0]);

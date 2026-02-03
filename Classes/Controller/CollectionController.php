@@ -14,12 +14,13 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\SolrPaginator;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\Collection;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use Kitodo\Dlf\Domain\Repository\CollectionRepository;
-use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Controller class for the plugin 'Collection'.
@@ -83,8 +84,6 @@ class CollectionController extends AbstractController
             return $this->htmlResponse();
         }
 
-        $collections = [];
-
         // Sort collections according to order in plugin flexform configuration
         if ($this->settings['collections']) {
             $sortedCollections = [];
@@ -96,10 +95,11 @@ class CollectionController extends AbstractController
             $collections = $this->collectionRepository->findAll();
         }
 
-        if (count($collections) == 1 && empty($this->settings['dont_show_single']) && is_array($collections)) {
+        if (iterator_count($collections) == 1 && empty($this->settings['dont_show_single']) && is_array($collections)) {
             return $this->redirect('show', null, null, ['collection' => array_pop($collections)]);
         }
 
+        /** @var array<Collection> $collections */
         $processedCollections = $this->processCollections($collections, $solr);
 
         // Randomize sorting?
@@ -123,7 +123,7 @@ class CollectionController extends AbstractController
      */
     public function showAction(Collection $collection): ResponseInterface
     {
-        $search = $this->getParametersSafely('search');
+        $search = $this->getArrayParameterSafely('search');
 
         // Instantiate the Solr. Without Solr present, we can't do anything.
         $solr = Solr::getInstance($this->settings['solrcore']);
@@ -133,8 +133,8 @@ class CollectionController extends AbstractController
         }
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
-        $currentPage = $this->getParametersSafely('page');
-        if (empty($currentPage)) {
+        $currentPage = $this->getIntParameterSafely('page');
+        if ($currentPage == 0) {
             $currentPage = 1;
         }
 
@@ -160,17 +160,14 @@ class CollectionController extends AbstractController
         $sortableMetadata = $this->metadataRepository->findBy(['isSortable' => true]);
 
         // get all documents of given collection
-        $solrResults = null;
-        if (is_array($search) && !empty($search)) {
-            $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $search, $listedMetadata, $indexedMetadata);
+        $solrResults = $this->documentRepository->findSolrByCollection($collection, $this->settings, $search, $listedMetadata, $indexedMetadata);
 
-            $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'] ?? 25;
-            $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
-            $simplePagination = new SimplePagination($solrPaginator);
+        $itemsPerPage = $this->settings['list']['paginate']['itemsPerPage'] ?? 25;
+        $solrPaginator = new SolrPaginator($solrResults, $currentPage, $itemsPerPage);
+        $simplePagination = new SimplePagination($solrPaginator);
 
-            $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
-            $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
-        }
+        $pagination = $this->buildSimplePagination($simplePagination, $solrPaginator);
+        $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
 
         $this->view->assign('viewData', $this->viewData);
         $this->view->assign('documents', $solrResults);
@@ -193,8 +190,8 @@ class CollectionController extends AbstractController
     public function showSortedAction(): ResponseInterface
     {
         // if search was triggered, get search parameters from POST variables
-        $search = $this->getParametersSafely('search');
-        $page = $this->getParametersSafely('page');
+        $search = $this->getArrayParameterSafely('search');
+        $page = $this->getIntParameterSafely('page');
 
         $collection = null;
         if (!empty($search['collection']) && MathUtility::canBeInterpretedAsInteger($search['collection'])) {
@@ -219,12 +216,12 @@ class CollectionController extends AbstractController
      *
      * @access private
      *
-     * @param QueryResultInterface<Collection>|array<Collection>|object $collections to be processed
+     * @param array<Collection> $collections to be processed
      * @param Solr $solr for query
      *
      * @return mixed[]
      */
-    private function processCollections($collections, Solr $solr): array
+    private function processCollections(array$collections, Solr $solr): array
     {
         $processedCollections = [];
 
