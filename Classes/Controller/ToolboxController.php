@@ -205,6 +205,7 @@ class ToolboxController extends AbstractController
      *
      * @return void
      */
+    // TODO(client-side)
     private function renderAnnotationTool(): void
     {
         if ($this->isDocMissingOrEmpty()) {
@@ -353,6 +354,7 @@ class ToolboxController extends AbstractController
         }
 
         $this->view->assign('imageDownload', $imageArray);
+        $this->view->assign('fileGrpsImageDownload', $this->useGroupsConfiguration->getImage());
     }
 
     /**
@@ -361,6 +363,7 @@ class ToolboxController extends AbstractController
      * @access private
      *
      * @param int $page Page number
+     * @param string[] $fileGrps File groups to consider
      *
      * @return array Array of file information
      */
@@ -399,6 +402,8 @@ class ToolboxController extends AbstractController
 
         $this->view->assign('imageManipulation', true);
         $this->view->assign('parentContainer', $parentContainer);
+        // activate it here as it is the most common used tool
+        $this->view->assign('activateToolbox', true);
     }
 
     /**
@@ -501,46 +506,22 @@ class ToolboxController extends AbstractController
      */
     private function getPageLink(): array
     {
-        $firstPageLink = '';
-        $secondPageLink = '';
-        $pageLinkArray = [];
-        $pageNumber = $this->requestData['page'] ?? 0;
-        $useGroups = $this->useGroupsConfiguration->getDownload();
-        // Get image link.
-        while ($useGroup = array_shift($useGroups)) {
-            $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$useGroup] ?? [];
-            if (!empty($firstFileGroupDownload)) {
-                $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
-                // Get second page, too, if double page view is activated.
-                $nextPage = $pageNumber + 1;
-                $secondFileGroupDownload = '';
-                if ( array_key_exists($nextPage, $this->currentDocument->physicalStructure) ) {
-                    $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$nextPage]]['files'][$useGroup];
-                }
-                if (
-                    $this->requestData['double']
-                    && $pageNumber < $this->currentDocument->numPages
-                    && !empty($secondFileGroupDownload)
-                ) {
-                    $secondPageLink = $this->currentDocument->getFileLocation($secondFileGroupDownload);
-                }
-                break;
-            }
+        $pageNumber = $this->requestData['page'];
+        $pageLinks = [
+            $this->currentDocument->getPageLink($pageNumber),
+        ];
+        // Get second page, too, if double page view is activated.
+        if ($this->requestData['double'] && $pageNumber < $this->currentDocument->numPages) {
+            $pageLinks[1] = $this->currentDocument->getPageLink($pageNumber + 1);
         }
         if (
-            empty($firstPageLink)
-            && empty($secondPageLink)
+            empty($pageLinks[0])
+            && empty($pageLinks[1])
         ) {
             $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
         }
 
-        if (!empty($firstPageLink)) {
-            $pageLinkArray[0] = $firstPageLink;
-        }
-        if (!empty($secondPageLink)) {
-            $pageLinkArray[1] = $secondPageLink;
-        }
-        return $pageLinkArray;
+        return $pageLinks;
     }
 
     /**
