@@ -682,12 +682,7 @@ class Helper
                 self::error('Error querying backend pool: ' . $e->getMessage());
             }
             foreach ($rows as $row) {
-                    $indexNameFromTable = $row['index_name'];
-                    $languageIdFromTable = (int)$row['sys_language_uid'];
-            
-                    $translations[$table][$pid][$indexNameFromTable][$languageIdFromTable] = [
-                        'label' => $row['label']
-                    ];
+                    $translations[$table][$pid][$row['index_name']][(int)$row['sys_language_uid']] = ['label' => $row['label']];
                 }
         }
         //return translation based on parameters table, PID, indexName and languageId, else return indexName
