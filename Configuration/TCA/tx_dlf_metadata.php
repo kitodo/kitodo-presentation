@@ -82,7 +82,7 @@ return [
         ],
         'index_name' => [
             'exclude' => 1,
-            'l10n_mode' => '',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_metadata.index_name',
             'config' => [
                 'type' => 'input',
