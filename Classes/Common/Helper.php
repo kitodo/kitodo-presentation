@@ -631,7 +631,7 @@ class Helper
 
         return $totalSeconds;
     }
-
+    
     /**
      * This translates an internal "index_name"
      *
@@ -668,7 +668,8 @@ class Helper
                         $table . '.sys_language_uid As sys_language_uid'
                     )
                     ->where(
-                        $queryBuilder->expr()->eq($table . '.pid', $pid)
+                        $queryBuilder->expr()->eq($table . '.pid', $pid),
+                        $queryBuilder->expr()->eq($table . '.deleted', 0)
                         )
                     ->from($table)
                     ->executeQuery()
@@ -679,10 +680,10 @@ class Helper
                 self::error('Error querying backend pool: ' . $e->getMessage());
             }
             foreach ($rows as $row) {
-                    $indexName = $row['index_name'];
-                    $languageId = (int)$row['sys_language_uid'];
+                    $indexNameFromTable = $row['index_name'];
+                    $languageIdFromTable = (int)$row['sys_language_uid'];
             
-                    $translations[$table][$pid][$indexName][$languageId] = [
+                    $translations[$table][$pid][$indexNameFromTable][$languageIdFromTable] = [
                         'uid' => (int)$row['uid'],
                         'l18n_parent' => (int)$row['l18n_parent'],
                         'label' => $row['label'],
@@ -690,7 +691,7 @@ class Helper
                 }
         }
         //return translation based on parameters table, PID, indexName and languageId, else return indexName
-        return empty($translations[$table][$pid][$indexName][$languageId]) ? $indexName : $translations[$table][$pid][$indexName][$languageId]['label'];
+        return isset($translations[$table][$pid][$indexName][$languageId]) ? $translations[$table][$pid][$indexName][$languageId]['label'] : $indexName;
     }
     
     /**
