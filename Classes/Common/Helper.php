@@ -631,7 +631,7 @@ class Helper
 
         return $totalSeconds;
     }
-    
+
     /**
      * This translates an internal "index_name"
      *
@@ -661,8 +661,6 @@ class Helper
 
                 $rows = $queryBuilder
                     ->select(
-                        $table . '.uid AS uid',
-                        $table . '.l18n_parent AS l18n_parent',
                         $table . '.label AS label',
                         $table . '.index_name AS index_name',
                         $table . '.sys_language_uid As sys_language_uid'
@@ -684,9 +682,7 @@ class Helper
                     $languageIdFromTable = (int)$row['sys_language_uid'];
             
                     $translations[$table][$pid][$indexNameFromTable][$languageIdFromTable] = [
-                        'uid' => (int)$row['uid'],
-                        'l18n_parent' => (int)$row['l18n_parent'],
-                        'label' => $row['label'],
+                        'label' => $row['label']
                     ];
                 }
         }
