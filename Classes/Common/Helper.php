@@ -661,8 +661,7 @@ class Helper
         //static Array to save all already queried Translations
         static $translations = [];
         //Query Backend for translations for one table and PID combination - only query if not yet done
-        if(empty($translations[$table][$pid]))
-        {
+        if(empty($translations[$table][$pid])) {
             try {
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable($table);
@@ -680,14 +679,14 @@ class Helper
                     ->from($table)
                     ->executeQuery()
                     ->fetchAllAssociative();
+                foreach ($rows as $row) {
+                    $translations[$table][$pid][$row['index_name']][(int) $row['sys_language_uid']] = ['label' => $row['label']];
+                }
             }
             catch (Exception $e)
             {
                 self::error('Error querying backend pool: ' . $e->getMessage());
             }
-            foreach ($rows as $row) {
-                    $translations[$table][$pid][$row['index_name']][(int)$row['sys_language_uid']] = ['label' => $row['label']];
-                }
         }
         //return translation based on parameters table, PID, indexName and languageId, else return indexName
         return isset($translations[$table][$pid][$indexName][$languageId]) ? $translations[$table][$pid][$indexName][$languageId]['label'] : $indexName;
