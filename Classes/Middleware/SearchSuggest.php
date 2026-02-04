@@ -44,12 +44,11 @@ class SearchSuggest implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $handler->handle($request);
         // Get input parameters and decrypt core name.
         $parameters = (array) $request->getParsedBody();
         // Return if not this middleware
         if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/search-suggest')) {
-            return $response;
+            return $handler->handle($request);
         }
 
         $output = [];
