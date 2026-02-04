@@ -661,7 +661,7 @@ class Helper
         //static Array to save all already queried Translations
         static $translations = [];
         //Query Backend for translations for one table and PID combination - only query if not yet done
-        if(empty($translations[$table][$pid])) {
+        if (empty($translations[$table][$pid])) {
             try {
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getQueryBuilderForTable($table);
@@ -675,7 +675,7 @@ class Helper
                     ->where(
                         $queryBuilder->expr()->eq($table . '.pid', $pid),
                         $queryBuilder->expr()->eq($table . '.deleted', 0)
-                        )
+                    )
                     ->from($table)
                     ->executeQuery()
                     ->fetchAllAssociative();
@@ -691,7 +691,7 @@ class Helper
         //return translation based on parameters table, PID, indexName and languageId, else return indexName
         return isset($translations[$table][$pid][$indexName][$languageId]) ? $translations[$table][$pid][$indexName][$languageId]['label'] : $indexName;
     }
-    
+
     /**
      * This returns the additional WHERE expression of a table based on its TCA configuration
      *
