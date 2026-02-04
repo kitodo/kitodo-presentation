@@ -65,12 +65,12 @@ class DOMDocumentValidation implements MiddlewareInterface
     {
         $this->request = $request;
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-        $response = $handler->handle($request);
+
         $parameters = $request->getQueryParams();
 
         // Return if not this middleware
         if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/domDocumentValidation')) {
-            return $response;
+            return $handler->handle($request);
         }
 
         // check required parameters

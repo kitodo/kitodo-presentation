@@ -68,12 +68,11 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $handler->handle($request);
         // parameters are sent by POST --> use getParsedBody() instead of getQueryParams()
         $parameters = $request->getQueryParams();
         // Return if not this middleware
         if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/embedded3dviewer')) {
-            return $response;
+            return $handler->handle($request);
         }
 
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
@@ -96,7 +95,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
         }
 
         if (empty($viewer)) {
-            if (!in_array(strtolower($modelFormat), array('glb','gltf'))) {
+            if (!in_array(strtolower($modelFormat), ['glb','gltf'])) {
                 return $this->warningResponse('The build-in model-viewer does not support the model format "' . $modelFormat . '"', $request);
             }
             return $this->renderDefaultViewer($parameters['model']);

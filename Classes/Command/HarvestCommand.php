@@ -117,8 +117,7 @@ class HarvestCommand extends BaseCommand
         $this->initializeRepositories((int) $input->getOption('pid'));
 
         if ($this->storagePid == 0) {
-            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return Command::FAILURE;
+            return $this->handlePidError($io);
         }
 
         if (
@@ -133,20 +132,10 @@ class HarvestCommand extends BaseCommand
             }
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
-                $outputSolrCores = [];
-                foreach ($allSolrCores as $indexName => $uid) {
-                    $outputSolrCores[] = $uid . ' : ' . $indexName;
-                }
-                if (empty($outputSolrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                }
-                return Command::FAILURE;
+                return $this->handleSolrError($allSolrCores, $input->getOption('solr'), $io);
             }
         } else {
-            $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return Command::FAILURE;
+            return $this->handleSolrMissingError($io);
         }
 
         $this->setOwner($input->getOption('owner'));
@@ -154,11 +143,11 @@ class HarvestCommand extends BaseCommand
         if ($this->owner) {
             $baseUrl = $this->owner->getOaiBase();
         } else {
-            $io->error('ERROR: Required parameter --lib|-l is not a valid UID.');
+            $io->error('Required parameter --lib|-l is not a valid UID.');
             return Command::FAILURE;
         }
         if (!GeneralUtility::isValidUrl($baseUrl)) {
-            $io->error('ERROR: No valid OAI Base URL set for library with given UID ("' . $input->getOption('owner') . '").');
+            $io->error('No valid OAI Base URL set for library with given UID ("' . $input->getOption('owner') . '").');
             return Command::FAILURE;
         } else {
             try {
@@ -185,7 +174,7 @@ class HarvestCommand extends BaseCommand
                 }
             }
             if (empty($set)) {
-                $io->error('ERROR: OAI interface does not provide a set with given setSpec ("' . $input->getOption('set') . '").');
+                $io->error('OAI interface does not provide a set with given setSpec ("' . $input->getOption('set') . '").');
                 return Command::FAILURE;
             }
         }
@@ -196,7 +185,7 @@ class HarvestCommand extends BaseCommand
             if (!empty($oai)) {
                 $identifiers = $oai->listIdentifiers('mets', $from, $until, $set);
             } else {
-                $io->error('ERROR: OAI interface does not exist.');
+                $io->error('OAI interface does not exist.');
             }
         } catch (BaseoaipmhException $exception) {
             $this->handleOaiError($exception, $io);
@@ -286,6 +275,6 @@ class HarvestCommand extends BaseCommand
      */
     private function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io): void
     {
-        $io->error('ERROR: Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $exception->getMessage());
+        $io->error('Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $exception->getMessage());
     }
 }
