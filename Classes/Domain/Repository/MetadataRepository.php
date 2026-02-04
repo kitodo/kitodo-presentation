@@ -60,7 +60,7 @@ class MetadataRepository extends Repository
 
         // order by oai_name
         $query->setOrderings(
-            array('sorting' => QueryInterface::ORDER_ASCENDING)
+            ['sorting' => QueryInterface::ORDER_ASCENDING]
         );
 
         return $query->execute();

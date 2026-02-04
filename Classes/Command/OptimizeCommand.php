@@ -78,12 +78,12 @@ class OptimizeCommand extends Command
         $io->title($this->getDescription());
 
         if (empty($input->getOption('solr')) || is_array($input->getOption('solr'))) {
-                $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-                return Command::FAILURE;
+            $io->error('Required parameter --solr|-s is missing or array.');
+            return Command::FAILURE;
         }
 
         if (empty($input->getOption('commit')) && empty($input->getOption('optimize'))) {
-            $io->error('ERROR: Parameter --commit or --optimize is missing.');
+            $io->error('Parameter --commit or --optimize is missing.');
             return Command::FAILURE;
         }
 
@@ -91,12 +91,12 @@ class OptimizeCommand extends Command
         $solr = Solr::getInstance($input->getOption('solr'));
         // Connect to Solr server.
         if (!$solr->ready) {
-            $io->error('ERROR: Connection to Solr core ("' . $input->getOption('solr') . '") not possible \n');
+            $io->error('Connection to Solr core ("' . $input->getOption('solr') . '") not possible \n');
             return Command::FAILURE;
         }
 
         if (!$solr->optimize($input->getOption('commit'), $input->getOption('optimize'))) {
-            $io->error('ERROR: Optimizing the Solr core ("' . $input->getOption('solr') . '") not possible \n');
+            $io->error('Optimizing the Solr core ("' . $input->getOption('solr') . '") not possible \n');
             return Command::FAILURE;
         }
 

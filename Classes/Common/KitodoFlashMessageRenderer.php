@@ -14,7 +14,6 @@ namespace Kitodo\Dlf\Common;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\Renderer\FlashMessageRendererInterface;
-use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * A class representing a bootstrap flash messages.
@@ -32,7 +31,7 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
 {
     /**
      * Render method
-     * 
+     *
      * @access public
      *
      * @param FlashMessage[] $flashMessages
@@ -56,20 +55,6 @@ class KitodoFlashMessageRenderer implements FlashMessageRendererInterface
     protected function getClass(FlashMessage $flashMessage): string
     {
         return 'alert-' . $flashMessage->getSeverity()->getCssClass();
-    }
-
-    /**
-     * Gets the message severity icon name
-     *
-     * @access public
-     *
-     * @param FlashMessage $flashMessage
-     *
-     * @return string The message severity icon name
-     */
-    protected function getIconName(FlashMessage $flashMessage): string
-    {
-        return $flashMessage->getSeverity()->getIconIdentifier();
     }
 
     /**
