@@ -163,7 +163,7 @@ class DocumentRepository extends Repository
     {
         $settings['documentSets'] = $uid;
 
-        return $this->findDocumentsBySettings($settings)->getFirst();
+        return $this->findDocumentsBySettings($settings)->getFirst(); // @phpstan-ignore-line
     }
 
     /**
@@ -437,9 +437,9 @@ class DocumentRepository extends Repository
      * @param array<string, mixed> $settings
      * @param mixed[] $parameters
      *
-     * @return mixed[] The found document object
+     * @return array<string, mixed>|false The found document object
      */
-    public function getOaiRecord(array $settings, array $parameters): array
+    public function getOaiRecord(array $settings, array $parameters): array|false
     {
         $where = '';
 

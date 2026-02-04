@@ -423,7 +423,7 @@ class NewTenantController extends AbstractController
     {
         $recordInfos = [];
 
-        $this->pageInfo = BackendUtility::readPageAccess($this->pid, $GLOBALS['BE_USER']->getPagePermsClause(1));
+        $this->pageInfo = BackendUtility::readPageAccess($this->pid, $GLOBALS['BE_USER']->getPagePermsClause(1)) ?: [];
 
         if (!isset($this->pageInfo['doktype']) || $this->pageInfo['doktype'] != 254) {
             return $this->redirect('error');
@@ -496,10 +496,12 @@ class NewTenantController extends AbstractController
         $filePath = GeneralUtility::getFileAbsFileName('EXT:dlf/Resources/Private/Data/' . $recordType . 'Defaults.json');
         if (file_exists($filePath)) {
             $fileContents = file_get_contents($filePath);
-            $records = json_decode($fileContents, true);
+            if (is_string($fileContents)) {
+                $records = json_decode($fileContents, true);
 
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $records;
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    return $records;
+                }
             }
         }
         return [];

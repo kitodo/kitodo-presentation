@@ -28,7 +28,7 @@
             },
             {
                 "format_root": "teiHeader",
-                "xpath": "./teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:note[@type=\"caption\"]",
+                "xpath": "./teihdr:fileDesc/teihdr:titleStmt/teihdr:title | ./teihdr:fileDesc/teihdr:sourceDesc/teihdr:msDesc/teihdr:head/teihdr:title",
                 "xpath_sorting": ""
             },
             {

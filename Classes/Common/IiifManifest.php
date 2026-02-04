@@ -371,17 +371,16 @@ final class IiifManifest extends AbstractDocument
         } else {
             $logUnits[] = $this->iiif;
         }
-        // TODO: Variable $logUnits in empty() always exists and is not falsy.
-        // @phpstan-ignore-next-line
-        if (!empty($logUnits)) {
+
+        if (!empty($logUnits[0])) {
             if (!$recursive) {
-                $details = $this->getLogicalStructureInfo($logUnits[0]);
+                $details = $this->getLogicalStructureInfo($logUnits[0]); // @phpstan-ignore-line
             } else {
                 // cache the ranges - they might occur multiple times in the structures "tree" - with full data as well as referenced as id
                 $processedStructures = [];
                 foreach ($logUnits as $logUnit) {
-                    if (array_search($logUnit->getId(), $processedStructures) == false) {
-                        $this->tableOfContents[] = $this->getLogicalStructureInfo($logUnit, true, $processedStructures);
+                    if (!array_search($logUnit->getId(), $processedStructures)) { // @phpstan-ignore-line
+                        $this->tableOfContents[] = $this->getLogicalStructureInfo($logUnit, true, $processedStructures); // @phpstan-ignore-line
                     }
                 }
             }
@@ -953,7 +952,7 @@ final class IiifManifest extends AbstractDocument
     {
         // TODO implement serialization in IIIF library
         $jsonArray = $this->iiif->getOriginalJsonArray();
-        $this->asJson = json_encode($jsonArray);
+        $this->asJson = json_encode($jsonArray) ?: '';
         return ['configPid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asJson'];
     }
 }

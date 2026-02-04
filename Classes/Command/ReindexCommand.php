@@ -159,7 +159,7 @@ class ReindexCommand extends BaseCommand
                 && $input->getOption('index-begin') >= 0
             ) {
                 // Get all documents for given limit and start.
-                $documents = $this->documentRepository->findAll()
+                $documents = $this->documentRepository->findAll() // @phpstan-ignore-line
                     ->getQuery()
                     ->setLimit((int) $input->getOption('index-limit'))
                     ->setOffset((int) $input->getOption('index-begin'))
@@ -205,10 +205,10 @@ class ReindexCommand extends BaseCommand
             }
 
             if ($dryRun) {
-                $io->writeln('DRY RUN: Would index ' . ($id + 1) . '/' . count($documents) . '  with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+                $io->writeln('DRY RUN: Would index ' . ($id + 1) . '/' . iterator_count($documents) . '  with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
             } else {
                 if ($io->isVerbose()) {
-                    $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . ($id + 1) . '/' . count($documents) . ' with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
+                    $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . ($id + 1) . '/' . iterator_count($documents) . ' with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 $document->setCurrentDocument($doc);
                 // save to database
