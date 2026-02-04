@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
@@ -24,6 +23,7 @@ use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
 use Kitodo\Dlf\Validation\DocumentValidator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -346,6 +346,61 @@ class BaseCommand extends Command
         }
 
         return 0;
+    }
+
+    /**
+     * Handle PID error output.
+     *
+     * @access protected
+     *
+     * @param SymfonyStyle $io
+     *
+     * @return int
+     */
+    protected function handlePidError(SymfonyStyle $io): int
+    {
+        $io->error('No valid PID (' . $this->storagePid . ') given.');
+        return Command::FAILURE;
+    }
+
+    /**
+     * Handle Solr error output.
+     *
+     * @access protected
+     *
+     * @param array<string, int> $allSolrCores array of the valid Solr cores
+     * @param mixed $solr input Solr core value
+     * @param SymfonyStyle $io
+     *
+     * @return int
+     */
+    protected function handleSolrError(array $allSolrCores, mixed $solr, SymfonyStyle $io): int
+    {
+        $outputSolrCores = [];
+        foreach ($allSolrCores as $indexName => $uid) {
+            $outputSolrCores[] = $uid . ' : ' . $indexName;
+        }
+        if (empty($outputSolrCores)) {
+            $io->error('No valid Solr core ("' . $solr . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
+        } else {
+            $io->error('No valid Solr core ("' . $solr . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
+        }
+        return Command::FAILURE;
+    }
+
+    /**
+     * Handle Solr missing output.
+     *
+     * @access protected
+     *
+     * @param SymfonyStyle $io
+     *
+     * @return int
+     */
+    protected function handleSolrMissingError(SymfonyStyle $io): int
+    {
+        $io->error('Required parameter --solr|-s is missing or array.');
+        return Command::FAILURE;
     }
 
     /**

@@ -121,8 +121,7 @@ class ReindexCommand extends BaseCommand
         $this->initializeRepositories((int) $input->getOption('pid'));
 
         if ($this->storagePid == 0) {
-            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return Command::FAILURE;
+            return $this->handlePidError($io);
         }
 
         if (
@@ -134,21 +133,10 @@ class ReindexCommand extends BaseCommand
 
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
-                $outputSolrCores = [];
-                foreach ($allSolrCores as $indexName => $uid) {
-                    $outputSolrCores[] = $uid . ' : ' . $indexName;
-                }
-                if (empty($outputSolrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                    return Command::FAILURE;
-                } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                    return Command::FAILURE;
-                }
+                return $this->handleSolrError($allSolrCores, $input->getOption('solr'), $io);
             }
         } else {
-            $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return Command::FAILURE;
+            return $this->handleSolrMissingError($io);
         }
 
         $this->setOwner($input->getOption('owner'));
@@ -176,7 +164,7 @@ class ReindexCommand extends BaseCommand
             $collections = GeneralUtility::intExplode(',', $input->getOption('coll'), true);
             // "coll" may be a single integer or a comma-separated list of integers.
             if (empty(array_filter($collections))) {
-                $io->error('ERROR: Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
+                $io->error('Parameter --coll|-c is not a valid comma-separated list of collection UIDs.');
                 return Command::FAILURE;
             }
 
@@ -192,7 +180,7 @@ class ReindexCommand extends BaseCommand
                 $documents = $this->documentRepository->findAllByCollectionsLimited($collections, 0);
             }
         } else {
-            $io->error('ERROR: One of parameters --all|-a or --coll|-c must be given.');
+            $io->error('One of parameters --all|-a or --coll|-c must be given.');
             return Command::FAILURE;
         }
 
