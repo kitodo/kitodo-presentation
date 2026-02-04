@@ -105,8 +105,7 @@ class IndexCommand extends BaseCommand
         $this->initializeRepositories((int) $input->getOption('pid'));
 
         if ($this->storagePid == 0) {
-            $io->error('ERROR: No valid PID (' . $this->storagePid . ') given.');
-            return Command::FAILURE;
+            return $this->handlePidError($io);
         }
 
         if (
@@ -118,21 +117,10 @@ class IndexCommand extends BaseCommand
 
             // Abort if solrCoreUid is empty or not in the array of allowed solr cores.
             if (empty($solrCoreUid) || !in_array($solrCoreUid, $allSolrCores)) {
-                $outputSolrCores = [];
-                foreach ($allSolrCores as $indexName => $uid) {
-                    $outputSolrCores[] = $uid . ' : ' . $indexName;
-                }
-
-                if (empty($outputSolrCores)) {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. No valid cores found on PID ' . $this->storagePid . ".\n");
-                } else {
-                    $io->error('ERROR: No valid Solr core ("' . $input->getOption('solr') . '") given. ' . "Valid cores are (<uid>:<index_name>):\n" . implode("\n", $outputSolrCores) . "\n");
-                }
-                return Command::FAILURE;
+                return $this->handleSolrError($allSolrCores, $input->getOption('solr'), $io);
             }
         } else {
-            $io->error('ERROR: Required parameter --solr|-s is missing or array.');
-            return Command::FAILURE;
+            return $this->handleSolrMissingError($io);
         }
 
         if (
@@ -143,7 +131,7 @@ class IndexCommand extends BaseCommand
                 && !GeneralUtility::isValidUrl($input->getOption('doc'))
             )
         ) {
-            $io->error('ERROR: Required parameter --doc|-d is not a valid document UID or URL.');
+            $io->error('Required parameter --doc|-d is not a valid document UID or URL.');
             return Command::FAILURE;
         }
 
@@ -158,7 +146,7 @@ class IndexCommand extends BaseCommand
             $document = $this->documentRepository->findByUid($input->getOption('doc'));
 
             if ($document === null) {
-                $io->error('ERROR: Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
+                $io->error('Document with UID "' . $input->getOption('doc') . '" could not be found on PID ' . $this->storagePid . ' .');
                 return Command::FAILURE;
             } else {
                 $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
@@ -171,7 +159,7 @@ class IndexCommand extends BaseCommand
         }
 
         if ($doc === null) {
-            $io->error('ERROR: Document "' . $input->getOption('doc') . '" could not be loaded.');
+            $io->error('Document "' . $input->getOption('doc') . '" could not be loaded.');
             return Command::FAILURE;
         }
 
@@ -195,7 +183,7 @@ class IndexCommand extends BaseCommand
                 }
                 $isSaved = Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
             } else {
-                $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be saved to database on PID ' . $this->storagePid . '. Check TYPO3 log for more details.');
+                $io->error('Document with UID "' . $document->getUid() . '" could not be saved to database on PID ' . $this->storagePid . '. Check TYPO3 log for more details.');
                 $io->info('POSSIBLE REASONS');
                 $io->info('The SOLR core "' . $solrCoreUid . '" is not reachable.');
                 $io->info('The METS document could not be loaded.');
@@ -210,8 +198,8 @@ class IndexCommand extends BaseCommand
                 return Command::SUCCESS;
             }
 
-            $io->error('ERROR: Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . '. Check TYPO3 log for more details.');
-            $io->info('INFO: Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
+            $io->error('Document with UID "' . $document->getUid() . '" could not be indexed on Solr core ' . $solrCoreUid . '. Check TYPO3 log for more details.');
+            $io->info('Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
             return Command::FAILURE;
         }
     }

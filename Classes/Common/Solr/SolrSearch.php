@@ -12,6 +12,8 @@ use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Solarium\QueryType\Select\Result\Document;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -70,6 +72,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
     /**
      * @access private
+     * @var Logger This holds the logger
+     */
+    private Logger $logger;
+
+    /**
+     * @access private
      * @var mixed[]
      */
     private array $params;
@@ -114,6 +122,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $this->searchParams = $searchParams;
         $this->listedMetadata = $listedMetadata;
         $this->indexedMetadata = $indexedMetadata;
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
     }
 
     /**
@@ -635,15 +644,19 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
                                     foreach ($batch as $docChild) {
                                         // We need only a few fields from the children, but we need them as an array.
-                                        $childDocument = [
-                                            'thumbnail' => $docChild['thumbnail'],
-                                            'title' => $docChild['title'],
-                                            'structure' => $docChild['structure'],
-                                            'metsOrderlabel' => $docChild['metsOrderlabel'],
-                                            'uid' => $docChild['uid'],
-                                            'metadata' => $metadataOf[$docChild['uid']],
-                                        ];
-                                        $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
+                                        if (array_key_exists($docChild['uid'], $metadataOf)) {
+                                            $childDocument = [
+                                                'thumbnail' => $docChild['thumbnail'],
+                                                'title' => $docChild['title'],
+                                                'structure' => $docChild['structure'],
+                                                'metsOrderlabel' => $docChild['metsOrderlabel'],
+                                                'uid' => $docChild['uid'],
+                                                'metadata' => $metadataOf[$docChild['uid']],
+                                            ];
+                                            $documents[$doc['uid']]['children'][$docChild['uid']] = $childDocument;
+                                        } else {
+                                            $this->logger->warning("Child with UID " . $docChild['uid'] . " could not be fetched from Solr");
+                                        }
                                     }
                                 }
                             }
