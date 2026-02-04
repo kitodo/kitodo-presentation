@@ -651,6 +651,10 @@ class Helper
      */
     public static function translate(string $indexName, string $table, string $pid): string
     {
+        //Check if this table is allowed for translation.
+        if (!in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
+            return $indexName;
+        }
         //Get LanguageId (sys_language_uid in Backend) from context
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
         $languageId = $languageAspect->getContentId();
