@@ -94,7 +94,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         $response = $controller->processRequest($request);
         $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
-        $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,Beigefügte Quellenbeschreibung,</html>';
+        $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,</html>';
         $this->assertEquals($expected, $actual);
 
     }
