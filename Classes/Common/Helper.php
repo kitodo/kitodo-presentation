@@ -682,9 +682,7 @@ class Helper
                 foreach ($rows as $row) {
                     $translations[$table][$pid][$row['index_name']][(int) $row['sys_language_uid']] = ['label' => $row['label']];
                 }
-            }
-            catch (Exception $e)
-            {
+            } catch (Exception $e) {
                 self::error('Error querying backend pool: ' . $e->getMessage());
             }
         }
