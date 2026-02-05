@@ -22,312 +22,79 @@
 
 <f:comment>One section for each feature.</f:comment>
 <f:section name="render.doublePage">
-    <f:if condition="{numPages} > 0">
-        <f:then>
-            <f:if condition="{viewData.requestData.double}">
-                <f:then>
-                    <div class="tx-dlf-navigation-single">
-                        <kitodo:link viewData="{viewData}" additionalParams="{'double':'0'}" excludedParams="{0: 'measure'}">
-                            <f:translate key="doublePageOff"/>
-                        </kitodo:link>
-                    </div>
-                    <div class="tx-dlf-navigation-double+">
-                        <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
-                            <f:then>
-                                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + 1}'}" excludedParams="{0: 'measure'}">
-                                    <f:translate key="doublePage+1"/>
-                                </kitodo:link>
-                            </f:then>
-                            <f:else>
-                                <span title="{f:translate(key: 'doublePage+1')}">
-                                    <f:translate key="doublePage+1"/>
-                                </span>
-                            </f:else>
-                        </f:if>
-                    </div>
-                </f:then>
-                <f:else>
-                    <div class="tx-dlf-navigation-double">
-                        <kitodo:link viewData="{viewData}" additionalParams="{'double':'1'}" excludedParams="{0: 'measure'}">
-                            <f:translate key="doublePageOn"/>
-                        </kitodo:link>>
-                    </div>
-                </f:else>
-            </f:if>
-        </f:then>
-        <f:else>
-            <f:comment>No pages available, therefore actually no double page view possible</f:comment>
-            <div class="tx-dlf-navigation-double disabled">
-                <span title="{f:translate(key: 'doublePageOn')}">
-                    <f:translate key="doublePageOn"/>
-                </span>
-            </div>
-        </f:else>
-    </f:if>
+    <f:render partial="Navigation/DoublePage" arguments="{_all}" />
+</f:section>
+
+<f:section name="render.pagesBackward">
+    <div class="tx-dlf-navigation-backward">
+        <f:render partial="Navigation/PageFirst" arguments="{_all}" />
+        <f:render partial="Navigation/PageStepBack" arguments="{_all}" />
+        <f:render partial="Navigation/PageBack" arguments="{_all}" />
+    </div>
 </f:section>
 
 <f:section name="render.pageFirst">
-    <div class="tx-dlf-navigation-first">
-        <f:if condition="{viewData.requestData.page} > 1">
-            <f:then>
-                <kitodo:link viewData="{viewData}" additionalParams="{'page':'1'}" excludedParams="{0: 'measure'}">
-                    <f:translate key="firstPage"/>
-                </kitodo:link>
-            </f:then>
-            <f:else>
-                <span title="{f:translate(key: 'firstPage')}">
-                    <f:translate key="firstPage"/>
-                </span>
-            </f:else>
-        </f:if>
-    </div>
+    <f:render partial="Navigation/PageFirst" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.pageStepBack">
-    <div class="tx-dlf-navigation-back">
-        <f:if condition="{viewData.requestData.page} > {pageSteps}">
-            <f:then>
-                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page - pageSteps}'}" excludedParams="{0: 'measure'}">
-                    <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
-                </kitodo:link>
-            </f:then>
-            <f:else>
-                <span title="{f:translate(key: 'backXPages', arguments: '{0: pageSteps}')}">
-                    <f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/>
-                </span>
-            </f:else>
-        </f:if>
-    </div>
+    <f:render partial="Navigation/PageStepBack" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.pageBack">
-    <div class="tx-dlf-navigation-prev">
-        <f:if condition="{viewData.requestData.page} > {viewData.requestData.double + 1}">
-            <f:then>
-                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page - 1 - viewData.requestData.double}'}" excludedParams="{0: 'measure'}">
-                    <f:translate key="prevPage"/>
-                </kitodo:link>
-            </f:then>
-            <f:else>
-                <span title="{f:translate(key: 'prevPage')}">
-                    <f:translate key="prevPage"/>
-                </span>
-            </f:else>
-        </f:if>
-    </div>
+    <f:render partial="Navigation/PageBack" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.pageSelect">
-    <li class="pages">
-        <f:form method="post" action="pageSelect" controller="Navigation" name="pageSelectForm" object="{pageSelectForm}" addQueryString="untrusted">
-            <f:if condition="{viewData.requestData.id}">
-                <f:form.hidden property="id" value="{viewData.requestData.id}"/>
-            </f:if>
-            <f:if condition="{viewData.requestData.recordId}">
-                <f:form.hidden property="recordId" value="{viewData.requestData.recordId}"/>
-            </f:if>
-            <f:if condition="{viewData.requestData.double}">
-                <f:form.hidden property="double" value="{viewData.requestData.double}"/>
-            </f:if>
-            <f:if condition="{viewData.requestData.multiviewembedded} == 1">
-                <f:form.hidden name="tx_dlf[multiviewembedded]" value="{viewData.requestData.multiviewembedded}"/>
-            </f:if>
-            <label for="tx-dlf-page-{viewData.uniqueId}">
-                <f:translate key="selectPage"/>
-            </label>
-            <f:form.select id="tx-dlf-page-{viewData.uniqueId}" property="page"
-                options="{pageOptions}"
-                value="{viewData.requestData.page}"
-                additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
-            </f:form.select>
-        </f:form>
-    </li>
+    <f:render partial="Navigation/PageSelect" arguments="{_all}" />
+</f:section>
+
+<f:section name="render.pagesForward">
+    <div class="tx-dlf-navigation-forward">
+        <f:render partial="Navigation/PageForward" arguments="{_all}" />
+        <f:render partial="Navigation/PageStepForward" arguments="{_all}" />
+        <f:render partial="Navigation/PageLast" arguments="{_all}" />
+    </div>
 </f:section>
 
 <f:section name="render.pageForward">
-    <div class="tx-dlf-navigation-next">
-        <f:if condition="{viewData.requestData.page + viewData.requestData.double} < {numPages}">
-            <f:then>
-                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + 1 + viewData.requestData.double}'}" excludedParams="{0: 'measure'}">
-                    <f:translate key="nextPage"/>
-                </kitodo:link>
-            </f:then>
-            <f:else>
-                <span title="{f:translate(key: 'nextPage')}">
-                    <f:translate key="nextPage"/>
-                </span>
-            </f:else>
-        </f:if>
-    </div>
+    <f:render partial="Navigation/PageForward" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.pageStepForward">
-        <div class="tx-dlf-navigation-fwd">
-            <f:if condition="{viewData.requestData.page} <= {numPages - pageSteps}">
-                <f:then>
-                    <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + pageSteps}'}" excludedParams="{0: 'measure'}">
-                        <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
-                    </kitodo:link>
-                </f:then>
-                <f:else>
-                    <span title="{f:translate(key: 'forwardXPages', arguments: '{0: pageSteps}')}">
-                        <f:translate key="forwardXPages" arguments="{0: '{pageSteps}'}"/>
-                    </span>
-                </f:else>
-            </f:if>
-        </div>
+    <f:render partial="Navigation/PageStepForward" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.pageLast">
-    <div class="tx-dlf-navigation-last">
-        <f:if condition="{viewData.requestData.page} < {numPages - viewData.requestData.double}">
-            <f:then>
-                <kitodo:link viewData="{viewData}" additionalParams="{'page':'{numPages - viewData.requestData.double}'}" excludedParams="{0: 'measure'}">
-                    <f:translate key="lastPage"/>
-                </kitodo:link>
-            </f:then>
-            <f:else>
-                <span title="{f:translate(key: 'lastPage')}">
-                    <f:translate key="lastPage"/>
-                </span>
-            </f:else>
-        </f:if>
-    </div>
+    <f:render partial="Navigation/PageLast" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.listView">
-        <div class="tx-dlf-navigation-listview">
-            <f:link.page pageUid="{settings.targetPid}" additionalParams="{lastSearch}">
-                <f:translate key="linkToList"/>
-            </f:link.page>
-        </div>
+    <f:render partial="Navigation/ListView" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.zoom">
-    <div class="tx-dlf-navigation-zoom-in">
-        <a href="#" title="{f:translate(key: 'zoomIn')}" onclick="tx_dlf_viewer.map.zoomIn();">
-            <f:translate key="zoomIn"/>
-        </a>
-    </div>
-    <div class="tx-dlf-navigation-zoom-out">
-        <a href="#" title="{f:translate(key: 'zoomOut')}" onclick="tx_dlf_viewer.map.zoomOut();">
-            <f:translate key="zoomOut"/>
-        </a>
-    </div>
-    <div class="tx-dlf-navigation-fullscreen">
-        <a href="#" title="{f:translate(key: 'zoomFullscreen')}">
-            <f:translate key="zoomFullscreen"/>
-        </a>
-    </div>
+    <f:render partial="Navigation/Zoom" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.rotation">
-    <div class="tx-dlf-navigation-rotate-left">
-        <a href="#" title="{f:translate(key: 'rotateLeft')}" onclick="tx_dlf_viewer.map.rotateLeft();">
-            <f:translate key="rotateLeft"/>
-        </a>
-    </div>
-    <div class="tx-dlf-navigation-rotate-right">
-        <a href="#" title="{f:translate(key: 'rotateRight')}" onclick="tx_dlf_viewer.map.rotateRight();">
-            <f:translate key="rotateRight"/>
-        </a>
-    </div>
-    <div class="tx-dlf-navigation-rotate-reset">
-        <a href="#" title="{f:translate(key: 'rotateReset')}" onclick="tx_dlf_viewer.map.resetRotation();">
-            <f:translate key="rotateReset"/>
-        </a>
-    </div>
+    <f:render partial="Navigation/Rotation" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.measureBack">
-    <f:if condition="{numMeasures} > 0 && {double} != 1">
-        <f:then>
-            <div class="measureBacks">
-                <span class="prev">
-                    <f:if condition="{currentMeasure} > 1">
-                        <f:then>
-                            <f:variable name="prevMeasure" value="{currentMeasure - 1}" />
-                            <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{currentMeasure - 1}', 'page':'{measurePages.{prevMeasure}}'}">
-                                <f:translate key="prevMeasure"/>
-                            </kitodo:link>
-                        </f:then>
-                        <f:else>
-                            <span title="{f:translate(key: 'prevPage')}">
-                                <f:translate key="prevMeasure"/>
-                            </span>
-                        </f:else>
-                    </f:if>
-                </span>
-            </div>
-        </f:then>
-    </f:if>
+    <f:render partial="Navigation/MeasureBack" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.measureForward">
-    <f:if condition="{numMeasures} > 0 && {double} != 1">
-        <f:then>
-            <div class="measureFwds">
-                <span class="next">
-                    <f:if condition="{currentMeasure} < {numMeasures}">
-                        <f:then>
-                            <f:if condition="{currentMeasure} > 0">
-                                <f:then>
-                                    <f:variable name="nextMeasure" value="{currentMeasure + 1}" />
-                                    <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{currentMeasure + 1}', 'page':'{measurePages.{nextMeasure}}'}">
-                                        <f:translate key="nextMeasure"/>
-                                    </kitodo:link>
-                                </f:then>
-                                <f:else>
-                                    <kitodo:link viewData="{viewData}" additionalParams="{'measure':'1', 'page':'{measurePages.1}'}">
-                                        <f:translate key="nextMeasure"/>
-                                    </kitodo:link>
-                                </f:else>
-                            </f:if>
-                        </f:then>
-                        <f:else>
-                            <span title="{f:translate(key: 'nextMeasure')}">
-                                <f:translate key="nextMeasure"/>
-                            </span>
-                        </f:else>
-                    </f:if>
-                </span>
-            </div>
-        </f:then>
-    </f:if>
+    <f:render partial="Navigation/MeasureForward" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.documentBack">
-    <div class="tx-dlf-navigation-documentBack">
-        <f:if condition="{documentBack}">
-            <f:then>
-                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'1', 'tx_dlf[id]': '{documentBack}'}" title="{f:translate(key: 'navigation.documentBack')}">
-                    <f:translate key="navigation.documentBack"/>
-                </f:link.action>
-            </f:then>
-            <f:else>
-                <span title="{f:translate(key: 'navigation.documentBack')}">
-                    <f:translate key="navigation.documentBack"/>
-                </span>
-            </f:else>
-        </f:if>
-    </div>
+    <f:render partial="Navigation/DocumentBack" arguments="{_all}" />
 </f:section>
 
 <f:section name="render.documentForward">
-    <div class="tx-dlf-navigation-documentForward">
-        <f:if condition="{documentForward}">
-            <f:then>
-                <f:link.action addQueryString="1" addQueryStringMethod="GET" additionalParams="{'tx_dlf[page]':'1', 'tx_dlf[id]': '{documentForward}'}" title="{f:translate(key: 'navigation.documentForward')}">
-                    <f:translate key="navigation.documentForward"/>
-                </f:link.action>
-            </f:then>
-            <f:else>
-                <span title="{f:translate(key: 'navigation.documentForward')}">
-                    <f:translate key="navigation.documentForward"/>
-                </span>
-            </f:else>
-        </f:if>
-    </div>
+    <f:render partial="Navigation/DocumentForward" arguments="{_all}" />
 </f:section>
 
 </html>
