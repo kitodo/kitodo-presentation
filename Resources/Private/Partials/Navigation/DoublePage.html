@@ -1,0 +1,49 @@
+<f:comment>
+    <!--
+     * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+     *
+     * This file is part of the Kitodo and TYPO3 projects.
+     *
+     * @license GNU General Public License version 3 or later.
+     * For the full copyright and license information, please read the
+     * LICENSE.txt file that was distributed with this source code.
+    -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:if condition="{numPages} > 0">
+    <f:then>
+        <f:if condition="{viewData.requestData.double}">
+            <f:then>
+                <div class="tx-dlf-navigation-single">
+                    <kitodo:link viewData="{viewData}" additionalParams="{'double':'0'}" excludedParams="{0: 'measure'}"><f:translate key="doublePageOff"/></kitodo:link>
+                </div>
+                <div class="tx-dlf-navigation-double+">
+                    <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
+                        <f:then>
+                            <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + 1}'}" excludedParams="{0: 'measure'}"><f:translate key="doublePage+1"/></kitodo:link>
+                        </f:then>
+                        <f:else>
+                            <span title="{f:translate(key: 'doublePage+1')}"><f:translate key="doublePage+1"/></span>
+                        </f:else>
+                    </f:if>
+                </div>
+            </f:then>
+            <f:else>
+                <div class="tx-dlf-navigation-double">
+                    <kitodo:link viewData="{viewData}" additionalParams="{'double':'1'}" excludedParams="{0: 'measure'}"><f:translate key="doublePageOn"/></kitodo:link>>
+                </div>
+            </f:else>
+        </f:if>
+    </f:then>
+    <f:else>
+        <f:comment>No pages available, therefore actually no double page view possible</f:comment>
+        <div class="tx-dlf-navigation-double disabled">
+            <span title="{f:translate(key: 'doublePageOn')}"><f:translate key="doublePageOn"/></span>
+        </div>
+    </f:else>
+</f:if>
+
+</html>
