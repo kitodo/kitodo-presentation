@@ -77,10 +77,8 @@ class CollectionController extends AbstractController
      */
     public function listAction(): ResponseInterface
     {
-        $solr = Solr::getInstance($this->settings['solrcore']);
-
-        if (!$solr->ready) {
-            $this->logger->error('Apache Solr not available');
+        $solr = $this->getSolr();
+        if (!$solr) {
             return $this->htmlResponse();
         }
 
@@ -125,10 +123,8 @@ class CollectionController extends AbstractController
     {
         $search = $this->getArrayParameterSafely('search');
 
-        // Instantiate the Solr. Without Solr present, we can't do anything.
-        $solr = Solr::getInstance($this->settings['solrcore']);
-        if (!$solr->ready) {
-            $this->logger->error('Apache Solr not available');
+        $solr = $this->getSolr();
+        if (!$solr) {
             return $this->htmlResponse();
         }
 

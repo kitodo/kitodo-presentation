@@ -108,8 +108,8 @@ class SearchController extends AbstractController
     {
         $listViewSearch = false;
         // Quit without doing anything if required variables are not set.
-        if (empty($this->settings['solrcore'])) {
-            $this->logger->warning('Incomplete plugin configuration');
+        if (empty($this->settings['solrcore'] && empty($this->settings['solrCoreUid']))) {
+            $this->logger->warning('Incomplete plugin end extension configuration for Solr core UID');
             return $this->htmlResponse();
         }
 
@@ -329,9 +329,8 @@ class SearchController extends AbstractController
         }
 
         // Get applicable facets.
-        $solr = Solr::getInstance($this->settings['solrcore']);
-        if (!$solr->ready) {
-            $this->logger->error('Apache Solr not available');
+        $solr = $this->getSolr();
+        if (!$solr) {
             return [];
         }
 
