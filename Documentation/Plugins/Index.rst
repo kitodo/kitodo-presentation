@@ -562,6 +562,9 @@ Metadata
 Navigation
 ----------
 
+This plugin adds a navigation to the page view for navigating through the pages of a document.
+Features `pagesBackward` and `pagesForward` offer adding multiple navigation buttons grouped together.
+
 :typoscript:`plugin.tx_dlf_navigation.`
 
 .. t3-field-list-table::
@@ -1070,7 +1073,7 @@ The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-ful
 Audio Video tool
 ^^^^^^^^^^^^^
 
-This tool loads the Buttons for the Audiolabel-Image, Equalizer and Marker Table 
+This tool loads the Buttons for the Audiolabel-Image, Equalizer and Marker Table
 
 :typoscript:`plugin.tx_dlf_audiovideotool.`
 
