@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Common;
 
+use Exception;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
@@ -650,120 +651,43 @@ class Helper
      */
     public static function translate(string $indexName, string $table, string $pid): string
     {
-        // Load labels into static variable for future use.
-        static $labels = [];
-        // Sanitize input.
-        $pid = max((int) $pid, 0);
-        if (!$pid) {
-            self::warning('Invalid PID ' . $pid . ' for translation');
+        //Check if this table is allowed for translation.
+        if (!in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
             return $indexName;
         }
-        /** @var PageRepository $pageRepository */
-        $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
-
+        //Get LanguageId (sys_language_uid in Backend) from context
         $languageAspect = GeneralUtility::makeInstance(Context::class)->getAspect('language');
-        $languageContentId = $languageAspect->getContentId();
+        $languageId = $languageAspect->getContentId();
+        //static Array to save all already queried Translations
+        static $translations = [];
+        //Query Backend for translations for one table and PID combination - only query if not yet done
+        if (empty($translations[$table][$pid])) {
+            try {
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable($table);
 
-        // Check if "index_name" is a UID.
-        if (MathUtility::canBeInterpretedAsInteger($indexName)) {
-            $indexName = self::getIndexNameFromUid((int) $indexName, $table, $pid);
-        }
-        /* $labels already contains the translated content element, but with the index_name of the translated content element itself
-         * and not with the $indexName of the original that we receive here. So we have to determine the index_name of the
-         * associated translated content element. E.g. $labels['title0'] != $indexName = title. */
-
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable($table);
-
-        // First fetch the uid of the received index_name
-        $result = $queryBuilder
-            ->select(
-                $table . '.uid AS uid',
-                $table . '.l18n_parent AS l18n_parent'
-            )
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq($table . '.pid', $pid),
-                $queryBuilder->expr()->eq($table . '.index_name', $queryBuilder->expr()->literal($indexName)),
-                self::whereExpression($table, true)
-            )
-            ->setMaxResults(1)
-            ->executeQuery();
-
-        $row = $result->fetchAssociative();
-
-        if ($row) {
-            // Now we use the uid of the l18_parent to fetch the index_name of the translated content element.
-            $result = $queryBuilder
-                ->select($table . '.index_name AS index_name')
-                ->from($table)
-                ->where(
-                    $queryBuilder->expr()->eq($table . '.pid', $pid),
-                    $queryBuilder->expr()->eq($table . '.uid', $row['l18n_parent']),
-                    $queryBuilder->expr()->eq($table . '.sys_language_uid', $languageContentId),
-                    self::whereExpression($table, true)
-                )
-                ->setMaxResults(1)
-                ->executeQuery();
-
-            $row = $result->fetchAssociative();
-
-            if ($row) {
-                // If there is a translated content element, overwrite the received $indexName.
-                $indexName = $row['index_name'];
-            }
-        }
-
-        // Check if we already got a translation.
-        if (empty($labels[$table][$pid][$languageContentId][$indexName])) {
-            // Check if this table is allowed for translation.
-            if (in_array($table, ['tx_dlf_collections', 'tx_dlf_libraries', 'tx_dlf_metadata', 'tx_dlf_metadatasubentries', 'tx_dlf_structures'])) {
-                $additionalWhere = $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]);
-                if ($languageContentId > 0) {
-                    $additionalWhere = $queryBuilder->expr()->and(
-                        $queryBuilder->expr()->or(
-                            $queryBuilder->expr()->in($table . '.sys_language_uid', [-1, 0]),
-                            $queryBuilder->expr()->eq($table . '.sys_language_uid', $languageContentId)
-                        ),
-                        $queryBuilder->expr()->eq($table . '.l18n_parent', 0)
-                    );
-                }
-
-                // Get labels from database.
-                $result = $queryBuilder
-                    ->select('*')
-                    ->from($table)
+                $rows = $queryBuilder
+                    ->select(
+                        $table . '.label AS label',
+                        $table . '.index_name AS index_name',
+                        $table . '.sys_language_uid As sys_language_uid'
+                    )
                     ->where(
                         $queryBuilder->expr()->eq($table . '.pid', $pid),
-                        $additionalWhere,
-                        self::whereExpression($table, true)
+                        $queryBuilder->expr()->eq($table . '.deleted', 0)
                     )
-                    ->setMaxResults(10000)
-                    ->executeQuery();
-
-                if ($result->rowCount() > 0) {
-                    while ($resArray = $result->fetchAssociative()) {
-                        // Overlay localized labels if available.
-                        if ($languageContentId > 0) {
-                            $resArray = $pageRepository->getLanguageOverlay($table, $resArray, $languageAspect);
-                        }
-                        if ($resArray) {
-                            $labels[$table][$pid][$languageContentId][$resArray['index_name']] = $resArray['label'];
-                        }
-                    }
-                } else {
-                    self::notice('No translation with PID ' . $pid . ' available in table "' . $table . '" or translation not accessible');
+                    ->from($table)
+                    ->executeQuery()
+                    ->fetchAllAssociative();
+                foreach ($rows as $row) {
+                    $translations[$table][$pid][$row['index_name']][(int) $row['sys_language_uid']] = ['label' => $row['label']];
                 }
-            } else {
-                self::warning('No translations available for table "' . $table . '"');
+            } catch (Exception $e) {
+                self::error('Error querying backend pool: ' . $e->getMessage());
             }
         }
-
-        if (!empty($labels[$table][$pid][$languageContentId][$indexName])) {
-            return $labels[$table][$pid][$languageContentId][$indexName];
-        } else {
-            return $indexName;
-        }
+        //return translation based on parameters table, PID, indexName and languageId, else return indexName
+        return isset($translations[$table][$pid][$indexName][$languageId]) ? $translations[$table][$pid][$indexName][$languageId]['label'] : $indexName;
     }
 
     /**
