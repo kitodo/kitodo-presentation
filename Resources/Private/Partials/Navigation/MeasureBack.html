@@ -1,0 +1,34 @@
+<f:comment>
+    <!--
+     * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+     *
+     * This file is part of the Kitodo and TYPO3 projects.
+     *
+     * @license GNU General Public License version 3 or later.
+     * For the full copyright and license information, please read the
+     * LICENSE.txt file that was distributed with this source code.
+    -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:if condition="{numMeasures} > 0 && {double} != 1">
+    <f:then>
+        <div class="measureBacks">
+            <span class="prev">
+                <f:if condition="{currentMeasure} > 1">
+                    <f:then>
+                        <f:variable name="prevMeasure" value="{currentMeasure - 1}" />
+                        <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{currentMeasure - 1}', 'page':'{measurePages.{prevMeasure}}'}"><f:translate key="prevMeasure"/></kitodo:link>
+                    </f:then>
+                    <f:else>
+                        <span title="{f:translate(key: 'prevPage')}"><f:translate key="prevMeasure"/></span>
+                    </f:else>
+                </f:if>
+            </span>
+        </div>
+    </f:then>
+</f:if>
+
+</html>
