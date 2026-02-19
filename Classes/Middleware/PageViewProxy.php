@@ -10,12 +10,14 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Eid;
+namespace Kitodo\Dlf\Middleware;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\StdOutStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -23,7 +25,7 @@ use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * eID image proxy for plugin 'Page View' of the 'dlf' extension
+ * Image proxy Middleware for plugin 'Page View' of the 'dlf' extension
  *
  * Supported query parameters:
  * - `url` (mandatory): The URL to be proxied
@@ -34,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @access public
  */
-class PageViewProxy
+class PageViewProxy implements MiddlewareInterface
 {
     /**
      * @access protected
@@ -59,6 +61,35 @@ class PageViewProxy
     {
         $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
+    }
+
+    /**
+     * The process method of the middleware.
+     *
+     * @access public
+     *
+     * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $handler
+     *
+     * @return ResponseInterface
+     */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        // Get input parameters and decrypt core name.
+        $parameters = $request->getQueryParams();
+
+        // Return if not this middleware
+        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/page-view-proxy')) {
+            return $handler->handle($request);
+        }
+
+        return match ($request->getMethod()) {
+            'OPTIONS' => $this->handleOptions($request),
+            'GET' => $this->handleGet($request),
+            'HEAD' => $this->handleHead($request),
+            default => GeneralUtility::makeInstance(Response::class)
+                ->withStatus(405),
+        };
     }
 
     /**
@@ -222,25 +253,5 @@ class PageViewProxy
         ]);
 
         return $this->withCorsResponseHeaders($clientResponse, $request);
-    }
-
-    /**
-     * The main method of the eID script
-     *
-     * @access public
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
-     */
-    public function main(ServerRequestInterface $request): ResponseInterface
-    {
-        return match ($request->getMethod()) {
-            'OPTIONS' => $this->handleOptions($request),
-            'GET' => $this->handleGet($request),
-            'HEAD' => $this->handleHead($request),
-            default => GeneralUtility::makeInstance(Response::class)
-                ->withStatus(405),
-        };
     }
 }
