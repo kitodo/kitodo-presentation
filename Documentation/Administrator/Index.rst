@@ -226,11 +226,22 @@ d. Reindex all documents. This can be done by the kitodo:reindex CLI command wit
 Furthermore version 5.1 supports the use of Solr Managed Schemas to update the schemas automatically during the update of the extension.
 To use this feature you have to change the schemaFactory within solrconfig.xml from "ClassicIndexSchemaFactory" to "ManagedIndexSchemaFactory".
 
+Version 5.x -> 6.0
+==================
+
+Plugin Collection
+-----------------
+
+The Collection plugin can now be used to display a list of collections or overview of a single collection. The list of collections will be
+displayed if more than one collection is inserted to the :code:`collections` setting in the FlexForm. There exists possibility to still
+display the list of collections even if only one collection is inserted, by checking the FlexForm setting :code:`dont_show_single`.
+
 Version 5.1 & Version 6.0 -> 7.0
 ==================
 
-Version 7.0 introduces a new Solr field :code:`structure_path`, that provides context in the ListView about where search results appear in the structure tree. Indexing requires 
-the field to be present in your running Solr instance, thus making the update of the schema.xml mandatory.
+Version 7.0 introduces a new Solr field :code:`structure_path`, that provides context in the ListView about where search results appear in
+the structure tree.
+Indexing requires the field to be present in your running Solr instance, thus making the update of the schema.xml mandatory.
 
 Steps to Update your Solr schema.xml
 ---------------
@@ -241,10 +252,10 @@ c. Reindex all documents in order to profit from the new field. This can be done
 Plugin ListView
 ---------------
 
-The ListView plugin has now a new setting 'Show breadcrumb/path to result location within the structure map', which is deactivated by default. When activated the 
-search results will display a string similar to a breadcrumb, that shows the label or type of the parents structures up to but excluding the toplevel structure. The 
-structure path will always be generated during indexing, the plugin settings toggles wether it will be displayed or not. Documents that not have been reindexed yet 
-will not display a structure path.
+The ListView plugin has now a new setting 'Show breadcrumb/path to result location within the structure map', which is deactivated by default.
+When activated the search results will display a string similar to a breadcrumb, that shows the label or type of the parents structures up to
+but excluding the toplevel structure. The structure path will always be generated during indexing, the plugin settings toggles whether
+it will be displayed or not. Documents that not have been reindexed yet will not display a structure path.
 
 *******
 Logging
