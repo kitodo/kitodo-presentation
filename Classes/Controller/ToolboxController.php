@@ -603,7 +603,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocOrFulltextMissingOrEmpty()
-            || empty($this->settings['solrcore'])
+            || (empty($this->settings['solrcore'] && empty($this->settings['solrCoreUid'])))
         ) {
             // Quit without doing anything if required variables are not set.
             return;

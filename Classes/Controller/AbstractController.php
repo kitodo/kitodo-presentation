@@ -13,6 +13,7 @@ namespace Kitodo\Dlf\Controller;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Configuration\UseGroupsConfiguration;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
@@ -365,6 +366,33 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
+    }
+
+    /**
+     * Gets SOLR instance by its UID configured in the plugin or extension.
+     *
+     * @access protected
+     *
+     * @return Solr|false
+     */
+    protected function getSolr(): Solr|false
+    {
+        $solrCoreUid = $this->settings['solrcore'] ?? false;
+        if (!$solrCoreUid) {
+            $this->logger->error('Solr core not configured in the plugin settings. Fallback on main Solr core UID if available.');
+            $solrCoreUid = $this->settings['solrCoreUid'] ?? false;
+            if (!$solrCoreUid) {
+                $this->logger->error('No Solr core UID configured in the extension settings.');
+                return false;
+            }
+        }
+
+        $solr = Solr::getInstance($solrCoreUid);
+        if (!$solr->ready) {
+            $this->logger->error('Apache Solr not available for given core UID: ' . $solrCoreUid);
+            return false;
+        }
+        return $solr;
     }
 
     /**
