@@ -12,7 +12,7 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<span class="tx-dlf-toc-title">
+<span class="tx-dlf-tableofcontents-title">
     <f:if condition="{child.title}">
         <f:then>
             <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false">{child.title}</f:format.htmlspecialchars></f:format.crop>
@@ -23,4 +23,4 @@
     </f:if>
 </span>
 
-<span class="tx-dlf-toc-pagination"><f:format.htmlspecialchars doubleEncode="false">{child.pagination}</f:format.htmlspecialchars></span>
+<span class="tx-dlf-tableofcontents-pagination"><f:format.htmlspecialchars doubleEncode="false">{child.pagination}</f:format.htmlspecialchars></span>
