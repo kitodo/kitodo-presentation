@@ -12,15 +12,15 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<span class="tx-dlf-toc-title">
+<span class="tx-dlf-tableofcontents-title">
     <f:if condition="{child.title}">
         <f:then>
             <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false">{child.title}</f:format.htmlspecialchars></f:format.crop>
         </f:then>
         <f:else>
-            <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false"><f:translate key="LLL:EXT:dlf/Resources/Private/Language/locallang_structure.xlf:structure.{child.type}" /></f:format.htmlspecialchars><f:if condition="{child.volume}"> &nbsp;<f:format.htmlspecialchars doubleEncode="false">{child.volume}</f:format.htmlspecialchars></f:if></f:format.crop>
+            <f:format.crop maxCharacters="55" append="&nbsp;..."><f:format.htmlspecialchars doubleEncode="false">{child.translatedType}</f:format.htmlspecialchars><f:if condition="{child.volume}"> &nbsp;<f:format.htmlspecialchars doubleEncode="false">{child.volume}</f:format.htmlspecialchars></f:if></f:format.crop>
         </f:else>
     </f:if>
 </span>
 
-<span class="tx-dlf-toc-pagination"><f:format.htmlspecialchars doubleEncode="false">{child.pagination}</f:format.htmlspecialchars></span>
+<span class="tx-dlf-tableofcontents-pagination"><f:format.htmlspecialchars doubleEncode="false">{child.pagination}</f:format.htmlspecialchars></span>

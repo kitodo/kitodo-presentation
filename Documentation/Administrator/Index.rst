@@ -240,8 +240,7 @@ Version 5.1 & Version 6.0 -> 7.0
 ==================
 
 Version 7.0 introduces a new Solr field :code:`structure_path`, that provides context in the ListView about where search results appear in
-the structure tree.
-Indexing requires the field to be present in your running Solr instance, thus making the update of the schema.xml mandatory.
+the structure tree. Indexing requires the field to be present in your running Solr instance, thus making the update of the schema.xml mandatory.
 
 Steps to Update your Solr schema.xml
 ---------------
@@ -249,13 +248,19 @@ a. Copy the updated schema.xml to your Solr configsets in $SOLR_HOME/configsets/
 b. Restart Solr.
 c. Reindex all documents in order to profit from the new field. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
 
+Set the Solr Core UID
+---------------------
+
+The Kitodo.Presentation default SOLR Core UID must be set by TypoScript constant `plugin.tx_dlf.persistence.solrCoreUid` now.
+This setting is available for all plugins in the page tree.
+
 Plugin ListView
 ---------------
 
 The ListView plugin has now a new setting 'Show breadcrumb/path to result location within the structure map', which is deactivated by default.
 When activated the search results will display a string similar to a breadcrumb, that shows the label or type of the parents structures up to
-but excluding the toplevel structure. The structure path will always be generated during indexing, the plugin settings toggles whether
-it will be displayed or not. Documents that not have been reindexed yet will not display a structure path.
+but excluding the toplevel structure. The structure path will always be generated during indexing, the plugin settings toggle whether it will
+be displayed or not. Documents that not have been reindexed yet will not display a structure path.
 
 *******
 Logging
