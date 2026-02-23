@@ -1109,7 +1109,7 @@ The provided MIDI output of `Verovio` is played using the `html-midi-player <htt
        :ref:`t3tsref:data-type-string`
    :Values:
         * `default` or if the property is not set, the MIDI player will use a simple oscillator synth
-        * `build-in` or if the property is empty, the build-in sound font (`https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`) of MIDI player is used
+        * `built-in` or if the property is empty, the built-in sound font (`https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`) of MIDI player is used
         *  Custom URL to sound font e.g. `https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`
 
 
