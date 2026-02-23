@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -137,7 +138,8 @@ class TableOfContentsController extends AbstractController
         }
         $entryArray['year'] = $entry['year'];
         $entryArray['orderlabel'] = $entry['orderlabel'];
-        $entryArray['type'] = $this->getTranslatedType($entry['type']);
+        $entryArray['type'] = $entry['type'];
+        $entryArray['translatedType'] = $this->getTranslatedType($entry['type']);
         $entryArray['pagination'] = htmlspecialchars($entry['pagination']);
         $entryArray['_OVERRIDE_HREF'] = '';
         $entryArray['doNotLinkIt'] = 1;
