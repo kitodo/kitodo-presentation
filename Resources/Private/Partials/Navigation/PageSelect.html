@@ -1,0 +1,40 @@
+<f:comment>
+    <!--
+     * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+     *
+     * This file is part of the Kitodo and TYPO3 projects.
+     *
+     * @license GNU General Public License version 3 or later.
+     * For the full copyright and license information, please read the
+     * LICENSE.txt file that was distributed with this source code.
+    -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<li class="tx-dlf-navigation-pages">
+    <f:form method="post" action="pageSelect" controller="Navigation" name="pageSelectForm" object="{pageSelectForm}" addQueryString="untrusted">
+        <f:if condition="{viewData.requestData.id}">
+            <f:form.hidden property="id" value="{viewData.requestData.id}"/>
+        </f:if>
+        <f:if condition="{viewData.requestData.recordId}">
+            <f:form.hidden property="recordId" value="{viewData.requestData.recordId}"/>
+        </f:if>
+        <f:if condition="{viewData.requestData.double}">
+            <f:form.hidden property="double" value="{viewData.requestData.double}"/>
+        </f:if>
+        <f:if condition="{viewData.requestData.multiviewembedded} == 1">
+            <f:form.hidden name="tx_dlf[multiviewembedded]" value="{viewData.requestData.multiviewembedded}"/>
+        </f:if>
+        <label for="tx-dlf-page-{viewData.uniqueId}">
+            <f:translate key="selectPage"/>
+        </label>
+        <f:form.select id="tx-dlf-page-{viewData.uniqueId}" property="page"
+                       options="{pageOptions}"
+                       value="{viewData.requestData.page}"
+                       additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
+        </f:form.select>
+    </f:form>
+</li>
+
+</html>
