@@ -238,7 +238,7 @@ a. Copy the updated schema.xml to your Solr configsets in $SOLR_HOME/configsets/
 b. Restart Solr.
 c. Reindex all documents in order to profit from the new field. This can be done by the kitodo:reindex CLI command with the '-a' (all) flag. See: :ref:`reindex_collections`.
 
-Set the SOLR Core UID
+Set the Solr Core UID
 ---------------------
 
 The Kitodo.Presentation default SOLR Core UID must be set by TypoScript constant `plugin.tx_dlf.persistence.solrCoreUid` now.
