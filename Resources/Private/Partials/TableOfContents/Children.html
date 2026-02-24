@@ -16,22 +16,22 @@
 <f:for each="{children}" as="child">
     <f:switch expression="{child.ITEM_STATE}">
         <f:case value="ACT">
-            <li class="tx-dlf-toc-act">
+            <li class="tx-dlf-tableofcontents-active">
         </f:case>
         <f:case value="CUR">
-            <li class="tx-dlf-toc-cur">
+            <li class="tx-dlf-tableofcontents-current">
         </f:case>
         <f:case value="ACTIFSUB">
-            <li class="tx-dlf-toc-act tx-dlf-toc-ifsub">
+            <li class="tx-dlf-tableofcontents-active tx-dlf-tableofcontents-submenu">
         </f:case>
         <f:case value="CURIFSUB">
-            <li class="tx-dlf-toc-cur tx-dlf-toc-ifsub">
+            <li class="tx-dlf-tableofcontents-current tx-dlf-tableofcontents-submenu">
         </f:case>
         <f:case value="IFSUB">
-            <li class="tx-dlf-toc-no tx-dlf-toc-ifsub">
+            <li class="tx-dlf-tableofcontents-no tx-dlf-tableofcontents-submenu">
         </f:case>
         <f:defaultCase>
-            <li class="tx-dlf-toc-no">
+            <li class="tx-dlf-tableofcontents-no">
         </f:defaultCase>
     </f:switch>
 
