@@ -24,11 +24,9 @@
     <f:form.textfield id="tx-dlf-search-query" property="query" value="{lastSearch.query}" />
 
     <f:if condition="{showLogicalPageField}">
-        <f:then>
-            <!-- Logical page -->
-            <label for="tx-dlf-search-logical-page"><f:translate key="search.logicalPage"/>: </label>
-            <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" name="logicalPage" />
-        </f:then>
+        <!-- Logical page -->
+        <label for="tx-dlf-search-logical-page"><f:translate key="search.logicalPage"/>: </label>
+        <f:form.textfield class="tx-dlf-search-logical-page" id="tx-dlf-search-logical-page" name="logicalPage" />
     </f:if>
 
     <f:comment><!-- The following element is needed for auto-completion! --></f:comment>
@@ -68,9 +66,7 @@
 
     <f:comment><!-- Add current collection(s) if using on collection single view or collections-search --></f:comment>
     <f:if condition="{lastSearch.collection}">
-        <f:then>
-            <f:form.hidden property="collection" value="{lastSearch.collection}" />
-        </f:then>
+        <f:form.hidden property="collection" value="{lastSearch.collection}" />
     </f:if>
 
     <f:if condition="{extendedSlotCount}">
