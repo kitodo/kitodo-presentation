@@ -27,5 +27,4 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class FormatRepository extends Repository
 {
-
 }

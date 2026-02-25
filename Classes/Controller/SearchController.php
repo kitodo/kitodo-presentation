@@ -168,7 +168,8 @@ class SearchController extends AbstractController
                 [
                     'search' => $this->search,
                     'page' => $currentPage
-                ], $this->settings['targetPid']
+                ],
+                $this->settings['targetPid']
             );
         }
 

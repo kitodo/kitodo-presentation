@@ -145,8 +145,10 @@ class CollectionRepository extends Repository
             ->from('tx_dlf_collections')
             ->where(
                 $queryBuilder->expr()->eq('pid', intval($settings['storagePid'])),
-                $queryBuilder->expr()->eq('oai_name',
-                    $queryBuilder->expr()->literal($set)),
+                $queryBuilder->expr()->eq(
+                    'oai_name',
+                    $queryBuilder->expr()->literal($set)
+                ),
                 $where,
                 Helper::whereExpression('tx_dlf_collections')
             )

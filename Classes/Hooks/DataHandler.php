@@ -52,7 +52,7 @@ class DataHandler implements LoggerAwareInterface
     {
         if ($status == 'new') {
             switch ($table) {
-                    // Field post-processing for table "tx_dlf_documents".
+                // Field post-processing for table "tx_dlf_documents".
                 case 'tx_dlf_documents':
                     // Set sorting field if empty.
                     if (
@@ -74,6 +74,7 @@ class DataHandler implements LoggerAwareInterface
                         $fieldArray['index_indexed'] = 1;
                     }
                     // Field post-processing for tables "tx_dlf_metadata", "tx_dlf_collections", "tx_dlf_libraries" and "tx_dlf_structures".
+                    // no break
                 case 'tx_dlf_collections':
                 case 'tx_dlf_libraries':
                 case 'tx_dlf_structures':
@@ -279,6 +280,7 @@ class DataHandler implements LoggerAwareInterface
                         if ($command == 'delete') {
                             break;
                         }
+                        // no break
                     case 'undelete':
                         $this->reindexDocument($id);
                         break;
