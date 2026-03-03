@@ -35,7 +35,7 @@ export default class ShakaThumbnailTrack {
     return {
       track: this,
       ...thumb,
-      // TODO: Make this more flexible than just accomodating ffmpeg's fps filter
+      // TODO: Make this more flexible than just accommodating ffmpeg's fps filter
       imageTime: thumb.startTime + thumb.duration / 2 - 0.00001,
       bandwidth: this.track.bandwidth,
     };
