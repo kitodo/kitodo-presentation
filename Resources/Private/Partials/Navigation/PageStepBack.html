@@ -10,18 +10,14 @@
     -->
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<div class="tx-dlf-navigation-back">
-    <f:if condition="{viewData.requestData.page} > {pageSteps}">
-        <f:then>
-            <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page - pageSteps}'}" excludedParams="{0: 'measure'}"><f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/></kitodo:link>
-        </f:then>
-        <f:else>
-            <span title="{f:translate(key: 'backXPages', arguments: '{0: pageSteps}')}"><f:translate key="backXPages" arguments="{0: '{pageSteps}'}"/></span>
-        </f:else>
-    </f:if>
-</div>
+<f:variable name="condition" value="{f:if(condition: '{{viewData.requestData.page + 0} > {pageSteps}}', then: 1, else: 0)}" />
+<f:variable name="page" value="{viewData.requestData.page - pageSteps}" />
+<f:if condition="{page} < 1">
+    <f:variable name="page" value="1" />
+</f:if>
+
+<f:render partial="Navigation/PageStep" arguments="{class: 'tx-dlf-navigation-back', condition: condition, page: page, pageSteps: pageSteps, value: 'backXPages', viewData: viewData}" />
 
 </html>
