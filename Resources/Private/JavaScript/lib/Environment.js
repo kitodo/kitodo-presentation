@@ -190,7 +190,7 @@ export default class Environment {
    * @param {string} key
    * @param {Record<string, string | number>} values
    * @param {(() => string) | undefined} fallback (Optional) Function to
-   * generate fallback string when {@link key} is not fonud.
+   * generate fallback string when {@link key} is not found.
    * @returns {string}
    */
   t(key, values = {}, fallback = undefined) {

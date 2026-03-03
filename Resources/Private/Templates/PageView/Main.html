@@ -21,26 +21,20 @@
 
 <f:if condition="{settings.basketButton} && {settings.targetBasket}">
     <f:if condition="{settings.basket.crop}">
-        <f:then>
-            <div class="tx-dlf-navigation-edit">
-                <a href="javascript: tx_dlf_viewer.activateSelection();" title="{f:translate(key: 'basket.editMode')}">
-                    <f:translate key="basket.editMode"/>
-                </a>
-            </div>
-            <div class="tx-dlf-navigation-editRemove">
-                <a href="javascript: tx_dlf_viewer.resetCropSelection();" title="{f:translate(key: 'basket.editRemove')}">
-                    <f:translate key="basket.editRemove"/>
-                </a>
-            </div>
-        </f:then>
+        <div class="tx-dlf-navigation-edit">
+            <a href="javascript: tx_dlf_viewer.activateSelection();" title="{f:translate(key: 'basket.editMode')}">
+                <f:translate key="basket.editMode"/>
+            </a>
+        </div>
+        <div class="tx-dlf-navigation-editRemove">
+            <a href="javascript: tx_dlf_viewer.resetCropSelection();" title="{f:translate(key: 'basket.editRemove')}">
+                <f:translate key="basket.editRemove"/>
+            </a>
+        </div>
     </f:if>
     <f:if condition="{settings.basket.magnifier}">
         <div class="tx-dlf-navigation-magnifier">
-            <f:then>
-                <a href="javascript: tx_dlf_viewer.activateMagnifier();" title="{f:translate(key: 'basket.magnifier')}">
-                    <f:translate key="basket.magnifier"/>
-                </a>
-            </f:then>
+            <a href="javascript: tx_dlf_viewer.activateMagnifier();" title="{f:translate(key: 'basket.magnifier')}"><f:translate key="basket.magnifier"/></a>
         </div>
     </f:if>
 
