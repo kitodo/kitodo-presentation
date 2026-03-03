@@ -236,7 +236,7 @@ Collection
 ----------
 
 The collection plugin shows one collection, all collections or selected collections. It can be used to display the list
-of collections or the overview of single collection. The plugin is configured in the TypoScript and in the FlexForm.
+of collections or the contents of a single collection. The plugin is configured in the TypoScript and in the FlexForm.
 
 TypoScript Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^
