@@ -16,14 +16,14 @@
     <span class="tx-dlf-tools-pdf-page">
         <f:if condition="{double} === 0">
             <f:then>
-                <f:link.external uri="{pageLinks.0}">
-                    <f:translate key="downloadSinglePage" /> (PDF)
-                </f:link.external>
+                <f:if condition="{pageLinks.0}">
+                    <f:link.external uri="{pageLinks.0}"><f:translate key="downloadSinglePage" /> (PDF)</f:link.external>
+                </f:if>
             </f:then>
             <f:else>
-                <f:link.external uri="{pageLinks.0}">
-                    <f:translate key="downloadLeftPage" /> (PDF)
-                </f:link.external>
+                <f:if condition="{pageLinks.0}">
+                    <f:link.external uri="{pageLinks.0}"><f:translate key="downloadLeftPage" /> (PDF)</f:link.external>
+                </f:if>
                 <f:if condition="{pageLinks.1}">
                     <f:link.external uri="{pageLinks.1}"><f:translate key="downloadRightPage" /> (PDF)</f:link.external>
                 </f:if>
