@@ -78,5 +78,5 @@ Sample call:
 .. code-block:: shell
 
    # 8 bit, 1024 samples/pixel
-   # (at 44800 Hz, this correponds to a maximum resolution of 43.75 pixels/second)
+   # (at 44800 Hz, this corresponds to a maximum resolution of 43.75 pixels/second)
    audiowaveform -i input.mp3 -o output.dat -b 8 -z 1024
