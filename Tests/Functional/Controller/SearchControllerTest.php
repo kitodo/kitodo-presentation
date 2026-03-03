@@ -101,7 +101,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
-            lastSearch:dateFrom:1800,dateTo:NOW,
+            lastSearch:dateFrom:1800,dateTo:*,
             currentDocument:1001
             searchFields:field1,field2,field3,
         </html>';
