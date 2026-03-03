@@ -25,13 +25,11 @@
                     <f:translate key="downloadLeftPage" /> {imageDownload.0.mimetypeLabel}
                 </f:link.external>
                 <f:if condition="{imageDownload.1}">
-                    <f:then>
-                        <span class="tx-dlf-tools-imagedownload">
-                            <f:link.external uri="{imageDownload.1.url}">
-                                <f:translate key="downloadRightPage" /> {imageDownload.1.mimetypeLabel}
-                            </f:link.external>
-                        </span>
-                    </f:then>
+                    <span class="tx-dlf-tools-imagedownload">
+                        <f:link.external uri="{imageDownload.1.url}">
+                            <f:translate key="downloadRightPage" /> {imageDownload.1.mimetypeLabel}
+                        </f:link.external>
+                    </span>
                 </f:if>
             </f:else>
         </f:if>

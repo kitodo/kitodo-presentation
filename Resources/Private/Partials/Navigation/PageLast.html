@@ -10,18 +10,11 @@
     -->
 </f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<div class="tx-dlf-navigation-last">
-    <f:if condition="{viewData.requestData.page} < {numPages - viewData.requestData.double}">
-        <f:then>
-            <kitodo:link viewData="{viewData}" additionalParams="{'page':'{numPages - viewData.requestData.double}'}" excludedParams="{0: 'measure'}"><f:translate key="lastPage"/></kitodo:link>
-        </f:then>
-        <f:else>
-            <span title="{f:translate(key: 'lastPage')}"><f:translate key="lastPage"/></span>
-        </f:else>
-    </f:if>
-</div>
+<f:variable name="condition" value="{f:if(condition: '{{viewData.requestData.page + 0} < {numPages - viewData.requestData.double}}', then: 1, else: 0)}" />
+<f:variable name="page" value="{numPages - viewData.requestData.double}" />
+
+<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-last', condition: condition, page: page, value: 'lastPage', viewData: viewData}" />
 
 </html>
