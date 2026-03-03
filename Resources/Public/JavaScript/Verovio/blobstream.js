@@ -2096,7 +2096,7 @@ function ReadableState(options, stream) {
   this.calledRead = false;
 
   // a flag to be able to tell if the onwrite cb is called immediately,
-  // or on a later tick.  We set this to true at first, becuase any
+  // or on a later tick.  We set this to true at first, because any
   // actions that shouldn't happen until "later" should generally also
   // not happen before the first write call.
   this.sync = true;
@@ -3307,7 +3307,7 @@ function WritableState(options, stream) {
   this.writing = false;
 
   // a flag to be able to tell if the onwrite cb is called immediately,
-  // or on a later tick.  We set this to true at first, becuase any
+  // or on a later tick.  We set this to true at first, because any
   // actions that shouldn't happen until "later" should generally also
   // not happen before the first write call.
   this.sync = true;
@@ -4209,7 +4209,7 @@ exports.debuglog = function(set) {
 
 
 /**
- * Echos the value of a value. Trys to print the value out
+ * Echos the value of a value. Tries to print the value out
  * in the best way possible given the different types.
  *
  * @param {Object} obj The object to print out.

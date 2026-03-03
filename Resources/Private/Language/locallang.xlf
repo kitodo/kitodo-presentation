@@ -198,7 +198,7 @@
                 <source><![CDATA[Rotate Right]]></source>
             </trans-unit>
             <trans-unit id="prevMeasure">
-                <source><![CDATA[Previus Measure]]></source>
+                <source><![CDATA[Previous Measure]]></source>
             </trans-unit>
             <trans-unit id="nextMeasure">
                 <source><![CDATA[Next Measure]]></source>
