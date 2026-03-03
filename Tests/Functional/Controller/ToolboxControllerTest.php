@@ -79,8 +79,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canImagedownloadtool()
     {
         $settings = [
-            'tools' => 'tx_dlf_imagedownloadtool',
-            'fileGrpsImageDownload' => 'MAX'
+            'tools' => 'tx_dlf_imagedownloadtool'
         ];
         $templateHtml = '<html>imageDownload:<f:for each="{imageDownload}" as="image">
             {image.url}{image.mimetypeLabel}</f:for>
