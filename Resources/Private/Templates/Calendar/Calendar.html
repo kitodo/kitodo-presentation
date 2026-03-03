@@ -37,11 +37,7 @@
 
         <f:for each="{calendarData}" as="month">
             <f:if condition="{month.CALYEAR}">
-                <f:then>
-                    <div class="year">
-                        {month.CALYEAR}
-                    </div>
-                </f:then>
+                <div class="year">{month.CALYEAR}</div>
             </f:if>
             <div class="month">
                 <table>

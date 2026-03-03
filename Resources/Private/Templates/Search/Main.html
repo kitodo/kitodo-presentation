@@ -36,46 +36,44 @@
                     <f:translate key="LLL:EXT:dlf/Resources/Private/Language/locallang_metadata.xlf:metadata.{facet.field}" />
                 </span>
                 <f:if condition="{facet._SUB_MENU}">
-                    <f:then>
-                        <ul>
-                            <f:for each="{facet._SUB_MENU}" as="values">
-                                <f:if condition="{values.resetFacet}">
-                                    <f:then>
-                                        <li class="tx-dlf-search-cur">
-                                            <f:if condition="{lastSearch.dateFrom} || {lastSearch.dateTo}">
-                                                <f:then>
-                                                    <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[search][fq]':'{values.queryColumn}', 'tx_dlf_search[search][query]':'{lastSearch.query}', 'tx_dlf_search[search][collection]':'{lastSearch.collection}', 'tx_dlf_search[search][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[search][order]':'{lastSearch.order}', 'tx_dlf_search[search][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[search][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[search][extField]':'{lastSearch.extField}', 'tx_dlf_search[search][extOperator]':'{lastSearch.extField}', 'tx_dlf_search[search][dateFrom]':'{lastSearch.dateFrom}', 'tx_dlf_search[search][dateTo]':'{lastSearch.dateTo}'}">
-                                                        {values.title} ({values.count})
-                                                    </f:link.action>
-                                                </f:then>
-                                                <f:else>
-                                                    <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[search][fq]':'{values.queryColumn}', 'tx_dlf_search[search][query]':'{lastSearch.query}', 'tx_dlf_search[search][collection]':'{lastSearch.collection}', 'tx_dlf_search[search][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[search][order]':'{lastSearch.order}', 'tx_dlf_search[search][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[search][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[search][extField]':'{lastSearch.extField}', 'tx_dlf_search[search][extOperator]':'{lastSearch.extField}'}">
-                                                        {values.title} ({values.count})
-                                                    </f:link.action>
-                                                </f:else>
-                                            </f:if>
-                                        </li>
-                                    </f:then>
-                                    <f:else>
-                                        <li class="tx-dlf-search-no">
-                                            <f:if condition="{lastSearch.dateFrom} || {lastSearch.dateTo}">
-                                                <f:then>
-                                                    <f:link.action additionalParams="{'tx_dlf_search[search][fq]':'{values.queryColumn}', 'tx_dlf_search[search][query]':'{lastSearch.query}', 'tx_dlf_search[search][collection]':'{lastSearch.collection}', 'tx_dlf_search[search][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[search][order]':'{lastSearch.order}', 'tx_dlf_search[search][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[search][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[search][extField]':'{lastSearch.extField}', 'tx_dlf_search[search][extOperator]':'{lastSearch.extField}', 'tx_dlf_search[search][dateFrom]':'{lastSearch.dateFrom}', 'tx_dlf_search[search][dateTo]':'{lastSearch.dateTo}'}">
-                                                        {values.title} ({values.count})
-                                                    </f:link.action>
-                                                </f:then>
-                                                <f:else>
-                                                    <f:link.action additionalParams="{'tx_dlf_search[search][fq]':'{values.queryColumn}', 'tx_dlf_search[search][query]':'{lastSearch.query}', 'tx_dlf_search[search][collection]':'{lastSearch.collection}', 'tx_dlf_search[search][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[search][order]':'{lastSearch.order}', 'tx_dlf_search[search][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[search][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[search][extField]':'{lastSearch.extField}', 'tx_dlf_search[search][extOperator]':'{lastSearch.extField}'}">
-                                                        {values.title} ({values.count})
-                                                    </f:link.action>
-                                                </f:else>
-                                            </f:if>
-                                        </li>
-                                    </f:else>
-                                </f:if>
-                            </f:for>
-                        </ul>
-                    </f:then>
+                    <ul>
+                        <f:for each="{facet._SUB_MENU}" as="values">
+                            <f:if condition="{values.resetFacet}">
+                                <f:then>
+                                    <li class="tx-dlf-search-cur">
+                                        <f:if condition="{lastSearch.dateFrom} || {lastSearch.dateTo}">
+                                            <f:then>
+                                                <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[search][fq]':'{values.queryColumn}', 'tx_dlf_search[search][query]':'{lastSearch.query}', 'tx_dlf_search[search][collection]':'{lastSearch.collection}', 'tx_dlf_search[search][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[search][order]':'{lastSearch.order}', 'tx_dlf_search[search][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[search][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[search][extField]':'{lastSearch.extField}', 'tx_dlf_search[search][extOperator]':'{lastSearch.extField}', 'tx_dlf_search[search][dateFrom]':'{lastSearch.dateFrom}', 'tx_dlf_search[search][dateTo]':'{lastSearch.dateTo}'}">
+                                                    {values.title} ({values.count})
+                                                </f:link.action>
+                                            </f:then>
+                                            <f:else>
+                                                <f:link.action title="{f:translate(key:'search.resetFacet', arguments:{0: '{values.title}'})}" additionalParams="{'tx_dlf_search[search][fq]':'{values.queryColumn}', 'tx_dlf_search[search][query]':'{lastSearch.query}', 'tx_dlf_search[search][collection]':'{lastSearch.collection}', 'tx_dlf_search[search][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[search][order]':'{lastSearch.order}', 'tx_dlf_search[search][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[search][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[search][extField]':'{lastSearch.extField}', 'tx_dlf_search[search][extOperator]':'{lastSearch.extField}'}">
+                                                    {values.title} ({values.count})
+                                                </f:link.action>
+                                            </f:else>
+                                        </f:if>
+                                    </li>
+                                </f:then>
+                                <f:else>
+                                    <li class="tx-dlf-search-no">
+                                        <f:if condition="{lastSearch.dateFrom} || {lastSearch.dateTo}">
+                                            <f:then>
+                                                <f:link.action additionalParams="{'tx_dlf_search[search][fq]':'{values.queryColumn}', 'tx_dlf_search[search][query]':'{lastSearch.query}', 'tx_dlf_search[search][collection]':'{lastSearch.collection}', 'tx_dlf_search[search][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[search][order]':'{lastSearch.order}', 'tx_dlf_search[search][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[search][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[search][extField]':'{lastSearch.extField}', 'tx_dlf_search[search][extOperator]':'{lastSearch.extField}', 'tx_dlf_search[search][dateFrom]':'{lastSearch.dateFrom}', 'tx_dlf_search[search][dateTo]':'{lastSearch.dateTo}'}">
+                                                    {values.title} ({values.count})
+                                                </f:link.action>
+                                            </f:then>
+                                            <f:else>
+                                                <f:link.action additionalParams="{'tx_dlf_search[search][fq]':'{values.queryColumn}', 'tx_dlf_search[search][query]':'{lastSearch.query}', 'tx_dlf_search[search][collection]':'{lastSearch.collection}', 'tx_dlf_search[search][fulltext]':'{lastSearch.fulltext}', 'tx_dlf_search[search][order]':'{lastSearch.order}', 'tx_dlf_search[search][orderBy]':'{lastSearch.orderBy}', 'tx_dlf_search[search][extQuery]':'{lastSearch.extQuery}', 'tx_dlf_search[search][extField]':'{lastSearch.extField}', 'tx_dlf_search[search][extOperator]':'{lastSearch.extField}'}">
+                                                    {values.title} ({values.count})
+                                                </f:link.action>
+                                            </f:else>
+                                        </f:if>
+                                    </li>
+                                </f:else>
+                            </f:if>
+                        </f:for>
+                    </ul>
                 </f:if>
             </li>
         </ul>

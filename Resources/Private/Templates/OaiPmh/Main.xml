@@ -107,9 +107,38 @@
 
 <f:section name="ListIdentifiers">
     <f:if condition="{listIdentifiers -> f:count()} >= 1 ">
-        <f:then>
-            <ListIdentifiers>
-                <f:for each="{listIdentifiers}" as="record">
+        <ListIdentifiers>
+            <f:for each="{listIdentifiers}" as="record">
+                <f:if condition="{record.deleted} || {record.hidden}">
+                    <f:then>
+                        <header status="deleted">
+                            <identifier>{record.record_id}</identifier>
+                            <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                        </header>
+                    </f:then>
+                    <f:else>
+                        <header>
+                            <identifier>{record.record_id}</identifier>
+                            <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
+                            <f:for each="{record.collections}" as="collection">
+                                <f:if condition="{collection}">
+                                    <setSpec>{collection}</setSpec>
+                                </f:if>
+                            </f:for>
+                        </header>
+                    </f:else>
+                </f:if>
+            </f:for>
+            <f:render section="resumptionToken" arguments="{resumptionToken: resumptionToken}" />
+        </ListIdentifiers>
+    </f:if>
+</f:section>
+
+<f:section name="ListRecords">
+    <f:if condition="{listRecords -> f:count()} >= 1 ">
+        <ListRecords>
+            <f:for each="{listRecords}" as="record">
+                <record>
                     <f:if condition="{record.deleted} || {record.hidden}">
                         <f:then>
                             <header status="deleted">
@@ -127,64 +156,29 @@
                                     </f:if>
                                 </f:for>
                             </header>
+                            <metadata>
+                                <f:render section="recordMetadata" arguments="{record: record, parameters: parameters}" />
+                            </metadata>
                         </f:else>
                     </f:if>
-                </f:for>
-                <f:render section="resumptionToken" arguments="{resumptionToken: resumptionToken}" />
-            </ListIdentifiers>
-        </f:then>
-    </f:if>
-</f:section>
-
-<f:section name="ListRecords">
-    <f:if condition="{listRecords -> f:count()} >= 1 ">
-        <f:then>
-            <ListRecords>
-                <f:for each="{listRecords}" as="record">
-                    <record>
-                        <f:if condition="{record.deleted} || {record.hidden}">
-                            <f:then>
-                                <header status="deleted">
-                                    <identifier>{record.record_id}</identifier>
-                                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
-                                </header>
-                            </f:then>
-                            <f:else>
-                                <header>
-                                    <identifier>{record.record_id}</identifier>
-                                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
-                                    <f:for each="{record.collections}" as="collection">
-                                        <f:if condition="{collection}">
-                                            <setSpec>{collection}</setSpec>
-                                        </f:if>
-                                    </f:for>
-                                </header>
-                                <metadata>
-                                    <f:render section="recordMetadata" arguments="{record: record, parameters: parameters}" />
-                                </metadata>
-                            </f:else>
-                        </f:if>
-                    </record>
-                </f:for>
-                <f:render section="resumptionToken" arguments="{resumptionToken: resumptionToken}" />
-            </ListRecords>
-        </f:then>
+                </record>
+            </f:for>
+            <f:render section="resumptionToken" arguments="{resumptionToken: resumptionToken}" />
+        </ListRecords>
     </f:if>
 </f:section>
 
 <f:section name="ListMetadataFormats">
     <f:if condition="{metadataFormats -> f:count()} >= 1 ">
-        <f:then>
-            <ListMetadataFormats>
-                <f:for each="{metadataFormats}" as="record">
-                    <metadataFormat>
-                        <metadataPrefix>{record.prefix}</metadataPrefix>
-                        <schema>{record.schema}</schema>
-                        <metadataNamespace>{record.namespace}</metadataNamespace>
-                    </metadataFormat>
-                </f:for>
-            </ListMetadataFormats>
-        </f:then>
+        <ListMetadataFormats>
+            <f:for each="{metadataFormats}" as="record">
+                <metadataFormat>
+                    <metadataPrefix>{record.prefix}</metadataPrefix>
+                    <schema>{record.schema}</schema>
+                    <metadataNamespace>{record.namespace}</metadataNamespace>
+                </metadataFormat>
+            </f:for>
+        </ListMetadataFormats>
     </f:if>
 </f:section>
 

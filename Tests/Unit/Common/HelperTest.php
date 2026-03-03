@@ -342,7 +342,7 @@ XML;
         ), 'IIP should be accepted when all DLF types are enabled'
         );
 
-        // Test: Spezific DLF MIME Types
+        // Test: Specific DLF MIME Types
         self::assertTrue(Helper::filterFilesByMimeType(
             $iiifFile,
             ['image'],
