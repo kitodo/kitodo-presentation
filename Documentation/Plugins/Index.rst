@@ -52,7 +52,7 @@ In this example, you place the customized fluid template into this file::
 
 
 Audio Player
------------
+------------
 
 The audioplayer plugin is only active if the selected document has valid audio file use groups (useGroupsAudio).
 
@@ -65,20 +65,20 @@ TypoScript Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-        Default
+      Default
    :Description:
       Description
 
  - :Property:
-        excludeOther
+      excludeOther
    :Data Type:
-        :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-        1
+      1
    :Description:
       Show only documents from the selected page.
 
@@ -87,7 +87,7 @@ TypoScript Configuration
    :Data Type:
       :ref:`t3tsref:data-type-string`
    :Default:
-        tx-dlf-audio
+      tx-dlf-audio
    :Description:
       ID value of the HTML element for the audio player.
 
@@ -100,67 +100,67 @@ Basket
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-        Default
+      Default
 
  - :Property:
-       pregeneration
+      pregeneration
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-       pdfgenerate
+      pdfgenerate
    :Data Type:
-       :ref:`t3tsref:data-type-string`
-   :Default:
-
- - :Property:
-       pdfdownload
-   :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
 
  - :Property:
-       pdfprint
+      pdfdownload
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
 
  - :Property:
-       pdfparams
+      pdfprint
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       ##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##
 
  - :Property:
-       pdfparamseparator
+      pdfparams
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       `*`
+      ##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##
 
  - :Property:
-       basketGoToButton
+      pdfparamseparator
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       0
+      `*`
 
  - :Property:
-       targetBasket
+      basketGoToButton
    :Data Type:
-       `t3tsref:data-type-page-id`
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      0
+
+ - :Property:
+      targetBasket
+   :Data Type:
+      `t3tsref:data-type-page-id`
    :Default:
 
 
 Calendar
----------
+--------
 
 The calendar plugin may be used with newspaper and ephemeras (periodical
 published media). The plugin shows itself an overview of all available
@@ -205,31 +205,31 @@ now.
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-        Default
+      Default
 
  - :Property:
-       initialDocument
+      initialDocument
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
 
  - :Property:
-       showEmptyYears
+      showEmptyYears
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-       showEmptyMonths
+      showEmptyMonths
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       1
+      1
 
 
 Collection
@@ -247,49 +247,48 @@ TypoScript Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
    :Description:
-       Description
-
+      Description
 
  - :Property:
-       itemsPerPage
+      itemsPerPage
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
       25
 
  - :Property:
-       insertAbove
+      insertAbove
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
       1
 
  - :Property:
-       insertBelow
+      insertBelow
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
-       1
+      1
 
  - :Property:
-       maximumNumberOfLinks
+      maximumNumberOfLinks
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
-       10
+      10
 
  - :Property:
-       section
+      section
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       showResults
+      showResults
 
 FlexForm Configuration
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -304,45 +303,45 @@ FlexForm Configuration
    :Default:
 
  - :Property:
-       solrcore
+      solrcore
    :Data Type:
-       `t3tsref:data-type-list`
+      `t3tsref:data-type-list`
    :Default:
 
  - :Property:
-       show_userdefined
+      show_userdefined
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
 
  - :Property:
-       dont_show_single
+      dont_show_single
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-       randomize
+      randomize
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-       targetPid
+      targetPid
    :Data Type:
-       `t3tsref:data-type-page-id`
+      `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
-       targetFeed
+      targetFeed
    :Data Type:
-       `t3tsref:data-type-page-id`
+      `t3tsref:data-type-page-id`
    :Default:
 
 Embedded 3D Viewer
------------
+------------------
 
 The embedded3dviewer plugin renders an iFrame in which the configured 3D viewer displays the model.
 
@@ -355,33 +354,32 @@ FlexForm Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Description:
-       Description
+      Description
 
  - :Property:
-        document
+      document
    :Data Type:
-        :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Description:
-        The URL of the XML document which contains the model.
+      The URL of the XML document which contains the model.
 
  - :Property:
-       model
+      model
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Description:
-        The URL of the 3D model.
+      The URL of the 3D model.
 
  - :Property:
-       viewer
+      viewer
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Description:
       Override the default viewer from the extension configuration (see :ref:`Embedded 3D Viewer Configuration`) with a supported viewer (from the "dlf_3d_viewers" directory).
-
 
 Feeds
 -----
@@ -402,63 +400,62 @@ The TypoScript part is necessary to switch the page rendering to a different pag
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
 
  - :Property:
-       collections
+      collections
    :Data Type:
-       `t3tsref:data-type-list`
-   :Default:
-
- - :Property:
-       excludeOtherCollections
-   :Data Type:
-        :ref:`t3tsref:data-type-boolean`
-   :Default:
-       0
-
- - :Property:
-       library
-   :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      `t3tsref:data-type-list`
    :Default:
 
  - :Property:
-       limit
+      excludeOtherCollections
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       50
+      0
 
  - :Property:
-        prependSuperiorTitle
+      library
    :Data Type:
-        :ref:`t3tsref:data-type-boolean`
-   :Default:
-       0
-
- - :Property:
-       targetPid
-   :Data Type:
-       `t3tsref:data-type-page-id`
+      :ref:`t3tsref:data-type-integer`
    :Default:
 
  - :Property:
-       title
+      limit
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-integer`
+   :Default:
+      50
+
+ - :Property:
+      prependSuperiorTitle
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      0
+
+ - :Property:
+      targetPid
+   :Data Type:
+      `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
-       description
+      title
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
 
+ - :Property:
+      description
+   :Data Type:
+      :ref:`t3tsref:data-type-string`
+   :Default:
 
 List View
 ---------
@@ -520,52 +517,51 @@ FlexForm Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
 
  - :Property:
-       limit
+      limit
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
-       25
+      25
 
  - :Property:
-       targetPid
+      targetPid
    :Data Type:
-       `t3tsref:data-type-page-id`
+      `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
-        getTitle
+      getTitle
    :Data Type:
-        :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-        getStructurePath
+      getStructurePath
    :Data Type:
-        :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-       basketButton
+      basketButton
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-       targetBasket
+      targetBasket
    :Data Type:
-       `t3tsref:data-type-page-id`
+      `t3tsref:data-type-page-id`
    :Default:
-
 
 Media Player
 ------------
@@ -587,20 +583,20 @@ The MediaPlayer plugin is only active if the selected document has valid video f
       Description
 
  - :Property:
-        excludeOther
+      excludeOther
    :Data Type:
-        :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-        1
+      1
    :Description:
       Show only documents from the selected page.
 
  - :Property:
-       elementId
+      elementId
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-        tx-dlf-video
+      tx-dlf-video
    :Description:
       ID value of the HTML element for the media player.
 
@@ -613,11 +609,11 @@ Metadata
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
    :Description:
       Description
 
@@ -639,9 +635,9 @@ Metadata
    :Description:
 
  - :Property:
-       targetPid
+      targetPid
    :Data Type:
-       `t3tsref:data-type-page-id`
+      `t3tsref:data-type-page-id`
    :Default:
 
    :Description:
@@ -675,7 +671,7 @@ Metadata
    :Data Type:
       :ref:`t3tsref:data-type-string`
    :Default:
-       `#`
+      `#`
    :Description:
 
 Navigation
@@ -693,52 +689,51 @@ TypoScript Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
    :Values:
-       Values
+      Values
 
  - :Property:
-       features
+      features
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
       By default all features are activated. The selection is stored as comma separated list.
 
-       doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation,measureForward,measureBack
+      doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation,measureForward,measureBack
    :Values:
-       * doublePage
-       * listView
-       * measureBack
-       * measureForward
-       * pageBack
-       * pageFirst
-       * pageForward
-       * pageLast
-       * pageSelect
-       * pageStepBack
-       * pageStepForward
-       * pagesBackward
-       * pagesForward
-       * zoom
-       * rotation
+      * doublePage
+      * listView
+      * measureBack
+      * measureForward
+      * pageBack
+      * pageFirst
+      * pageForward
+      * pageLast
+      * pageSelect
+      * pageStepBack
+      * pageStepForward
+      * pagesBackward
+      * pagesForward
+      * rotation
+      * zoom
 
  - :Property:
-       pageStep
+      pageStep
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
-       5
+      5
 
  - :Property:
-       targetPid
+      targetPid
    :Data Type:
-       `t3tsref:data-type-page-id`
+      `t3tsref:data-type-page-id`
    :Default:
-
 
 OAI-PMH
 -------
@@ -752,46 +747,45 @@ TypoScript Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
 
  - :Property:
-       library
+      library
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
 
  - :Property:
-       limit
+      limit
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
-       5
+      5
 
  - :Property:
-       expired
+      expired
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
-       1800
+      1800
 
  - :Property:
-       show_userdefined
+      show_userdefined
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-       stylesheet
+      stylesheet
    :Data Type:
-       :ref:`t3tsref:data-type-resource`
+      :ref:`t3tsref:data-type-resource`
    :Default:
-       0
-
+      0
 
 Page Grid
 ---------
@@ -843,85 +837,85 @@ TypoScript Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
    :Description:
       Description
 
  - :Property:
-       excludeOther
+      excludeOther
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       1
+      1
    :Description:
       Show only documents from the selected page.
 
  - :Property:
-       features
+      features
    :Data Type:
-       `t3tsref:data-type-list`
+      `t3tsref:data-type-list`
    :Default:
 
    :Description:
 
  - :Property:
-       elementId
+      elementId
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       tx-dlf-map
+      tx-dlf-map
    :Description:
       ID value of the HTML element for the document images.
 
  - :Property:
-       progressElementId
+      progressElementId
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       tx-dlf-page-progress
+      tx-dlf-page-progress
    :Description:
       ID value of the HTML element for the page progress bar.
 
  - :Property:
-       crop
+      crop
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
    :Description:
 
  - :Property:
-       useInternalProxy
+      useInternalProxy
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
    :Description:
 
  - :Property:
-       magnifier
+      magnifier
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
    :Description:
 
  - :Property:
-       basketButton
+      basketButton
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
    :Description:
 
  - :Property:
-       targetBasket
+      targetBasket
    :Data Type:
-       `t3tsref:data-type-page-id`
+      `t3tsref:data-type-page-id`
    :Default:
 
    :Description:
@@ -945,23 +939,23 @@ TypoScript Configuration
       Default
 
  - :Property:
-        itemsPerPage
+      itemsPerPage
    :Data Type:
       :ref:`t3tsref:data-type-integer`
    :Default:
       25
 
  - :Property:
-        insertAbove
+      insertAbove
    :Data Type:
-        :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
-       1
+      1
 
  - :Property:
-        insertBelow
+      insertBelow
    :Data Type:
-        :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
       1
 
@@ -978,7 +972,6 @@ TypoScript Configuration
       :ref:`t3tsref:data-type-string`
    :Default:
       showResults
-
 
 FlexForm Configuration
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -1116,24 +1109,23 @@ TypoScript Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
 
  - :Property:
-       collections
+      collections
    :Data Type:
-       `t3tsref:data-type-list`
+      `t3tsref:data-type-list`
    :Default:
 
  - :Property:
-       description
+      description
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-
 
 Table Of Contents
 -----------------
@@ -1150,53 +1142,53 @@ TypoScript Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
    :Description:
-       Description
+      Description
 
  - :Property:
-        excludeOther
+      excludeOther
    :Data Type:
-        :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-        1
+      1
    :Description:
       Show only documents from the selected page.
 
  - :Property:
-       basketButton
+      basketButton
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-        showFull
+      showFull
    :Data Type:
-        :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-       0
+      0
 
  - :Property:
-       targetBasket
+      targetBasket
    :Data Type:
-       `t3tsref:data-type-page-id`
-   :Default:
-
- - :Property:
-       targetPid
-   :Data Type:
-       `t3tsref:data-type-page-id`
+      `t3tsref:data-type-page-id`
    :Default:
 
  - :Property:
-       titleReplacement
+      targetPid
    :Data Type:
-       `t3tsref:data-type-list`
+      `t3tsref:data-type-page-id`
+   :Default:
+
+ - :Property:
+      titleReplacement
+   :Data Type:
+      `t3tsref:data-type-list`
    :Default:
       0 {
          type = issue
@@ -1207,9 +1199,9 @@ TypoScript Configuration
          fields = type,volume
       }
    :Description:
-       List containing types for which title should be replaced
-       when the label is empty. The defined fields are used for
-       replacement.
+      List containing types for which title should be replaced
+      when the label is empty. The defined fields are used for
+      replacement.
 
 Toolbox
 -------
@@ -1227,38 +1219,37 @@ TypoScript Configuration
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
    :Values:
-       Values
+      Values
 
  - :Property:
-       tools
+      tools
    :Data Type:
-       `t3tsref:data-type-string`
+      `t3tsref:data-type-string`
    :Default:
    :Values:
-       * annotationtool
-       * audiovideotool
-       * fulltextdownloadtool
-       * fulltexttool
-       * imagedownloadtool
-       * imagemanipulationtool
-       * modeldownloadtool
-       * multiviewaddsourcetool
-       * pdfdownloadtool
-       * searchindocumenttool
-       * scoretool
+      * annotationtool
+      * audiovideotool
+      * fulltextdownloadtool
+      * fulltexttool
+      * imagedownloadtool
+      * imagemanipulationtool
+      * modeldownloadtool
+      * multiviewaddsourcetool
+      * pdfdownloadtool
+      * searchindocumenttool
+      * scoretool
 
  - :Property:
-       solrCoreUid
+      solrCoreUid
    :Data Type:
-       :ref:`t3tsref:data-type-integer`
+      :ref:`t3tsref:data-type-integer`
    :Default:
-
 
 Tools
 ^^^^^
@@ -1291,31 +1282,30 @@ The default behavior is to show the fulltext after click on the toggle link. The
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
    :Values:
-       Values
+      Values
 
  - :Property:
-       activateFullTextInitially
+      activateFullTextInitially
    :Data Type:
-       :ref:`t3tsref:data-type-boolean`
+      :ref:`t3tsref:data-type-boolean`
    :Default:
-        0
+      0
    :Values:
-        0: show fulltext after click on toggle link
-        1: show fulltext on document load
+      0: show fulltext after click on toggle link
+      1: show fulltext on document load
 
  - :Property:
-       fullTextScrollElement
+      fullTextScrollElement
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-        html, body
-
+      html, body
 
 The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
 
@@ -1361,20 +1351,20 @@ The provided MIDI output of `Verovio` is played using the `html-midi-player <htt
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Values:
-       Values
+      Values
 
  - :Property:
-       midiPlayerSoundFont
+      midiPlayerSoundFont
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Values:
-        * `default` or if the property is not set, the MIDI player will use a simple oscillator synth
-        * `built-in` or if the property is empty, the built-in sound font (`https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`) of MIDI player is used
-        *  Custom URL to sound font e.g. `https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`
+      * `default` or if the property is not set, the MIDI player will use a simple oscillator synth
+      * `built-in` or if the property is empty, the built-in sound font (`https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`) of MIDI player is used
+      *  Custom URL to sound font e.g. `https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus`
 
 ..  code-block:: typoscript
     :caption: Example configuration for Score Tool
@@ -1396,70 +1386,70 @@ This plugin adds a possibility to search all appearances of the phrase in curren
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Default:
-       Default
+      Default
    :Values:
-       Values
+      Values
 
  - :Property:
-       searchUrl
+      searchUrl
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
 
  - :Property:
-       documentIdUrlSchema
+      documentIdUrlSchema
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-        empty
+      empty
    :Values:
-        https://host.de/items/*id*/record - example value
+      https://host.de/items/*id*/record - example value
 
  - :Property:
-       idInputName
+      idInputName
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       tx_dlf[id]
+      tx_dlf[id]
 
  - :Property:
-       queryInputName
+      queryInputName
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       tx_dlf[query]
+      tx_dlf[query]
 
  - :Property:
-       startInputName
+      startInputName
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       tx_dlf[start]
+      tx_dlf[start]
 
  - :Property:
-       pageInputName
+      pageInputName
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       tx_dlf[page]
+      tx_dlf[page]
 
  - :Property:
-       highlightWordInputName
+      highlightWordInputName
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       tx_dlf[highlight_word]
+      tx_dlf[highlight_word]
 
  - :Property:
-       encryptedInputName
+      encryptedInputName
    :Data Type:
-       :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Default:
-       tx_dlf[encrypted]
+      tx_dlf[encrypted]
 
 ..  code-block:: typoscript
     :caption: Example configuration for Search In Document Tool
@@ -1508,15 +1498,15 @@ The plugin renders an input field where a METS URL can be entered. After submiss
  :header-rows: 1
 
  - :Property:
-       Property
+      Property
    :Data Type:
-       Data type
+      Data type
    :Description:
-       Description
+      Description
 
  - :Property:
-        type
+      type
    :Data Type:
-        :ref:`t3tsref:data-type-string`
+      :ref:`t3tsref:data-type-string`
    :Description:
-        Validation configuration type for DOMDocument validation
+      Validation configuration type for DOMDocument validation
