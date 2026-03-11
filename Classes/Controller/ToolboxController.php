@@ -78,18 +78,20 @@ class ToolboxController extends AbstractController
 
             foreach ($tools as $tool) {
                 match ($tool) {
-                    'tx_dlf_multiviewaddsourcetool', 'multiviewaddsourcetool' => $this->renderToolByName('renderMultiViewAddSourceTool'),
-                    'tx_dlf_annotationtool', 'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
-                    'tx_dlf_audiovideotool', 'audiovideotool' => $this->renderToolByName('renderAudioVideoTool'),
-                    'tx_dlf_fulltextdownloadtool', 'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
-                    'tx_dlf_fulltexttool', 'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
-                    'tx_dlf_imagedownloadtool', 'imagedownloadtool' => $this->renderToolByName('renderImageDownloadTool'),
-                    'tx_dlf_imagemanipulationtool', 'imagemanipulationtool' => $this->renderToolByName('renderImageManipulationTool'),
-                    'tx_dlf_modeldownloadtool', 'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
-                    'tx_dlf_pdfdownloadtool', 'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
-                    'tx_dlf_scoretool', 'scoretool' => $this->renderToolByName('renderScoreTool'),
-                    'tx_dlf_searchindocumenttool', 'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
-                    'tx_dlf_viewerselectiontool', 'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
+                    'multiviewaddsourcetool' => $this->renderToolByName('renderMultiViewAddSourceTool'),
+                    'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
+                    'audiovideotool' => $this->renderToolByName('renderAudioVideoTool'),
+                    'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
+                    'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
+                    'imagedownloadtool' => $this->renderToolByName('renderImageDownloadTool'),
+                    'imagemanipulationtool' => $this->renderToolByName('renderImageManipulationTool'),
+                    'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
+                    'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
+                    'rotationtool' => $this->renderToolByName('renderRotationTool'),
+                    'scoretool' => $this->renderToolByName('renderScoreTool'),
+                    'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
+                    'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
+                    'zoomtool' => $this->renderToolByName('renderZoomTool'),
                     default => $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.')
                 };
             }
@@ -707,5 +709,31 @@ class ToolboxController extends AbstractController
             }
         }
         return true;
+    }
+
+    /**
+     * Renders the rotation tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderRotationTool(): void
+    {
+        // Empty function, no view arguments needed
+    }
+
+    /**
+     * Renders the zoom tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderZoomTool(): void
+    {
+        // Empty function, no view arguments needed
     }
 }
