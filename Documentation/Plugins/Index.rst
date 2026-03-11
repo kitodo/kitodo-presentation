@@ -704,7 +704,7 @@ TypoScript Configuration
    :Default:
       By default all features are activated. The selection is stored as comma separated list.
 
-      doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation,measureForward,measureBack
+      doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,measureForward,measureBack
    :Values:
       * doublePage
       * listView
@@ -719,8 +719,6 @@ TypoScript Configuration
       * pageStepForward
       * pagesBackward
       * pagesForward
-      * rotation
-      * zoom
 
  - :Property:
       pageStep
@@ -1242,8 +1240,20 @@ TypoScript Configuration
       * modeldownloadtool
       * multiviewaddsourcetool
       * pdfdownloadtool
+      * rotationtool
       * searchindocumenttool
       * scoretool
+      * zooomtool
+
+ - :Property:
+      showAsList
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      0
+   :Values:
+      0: show tools as single <li> elements
+      1: show tools as list inside the <ul> element
 
  - :Property:
       solrCoreUid

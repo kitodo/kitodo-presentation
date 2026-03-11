@@ -87,9 +87,11 @@ class ToolboxController extends AbstractController
                     'tx_dlf_imagemanipulationtool', 'imagemanipulationtool' => $this->renderToolByName('renderImageManipulationTool'),
                     'tx_dlf_modeldownloadtool', 'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
                     'tx_dlf_pdfdownloadtool', 'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
+                    'tx_dlf_rotationtool', 'rotationtool' => $this->renderToolByName('renderRotationTool'),
                     'tx_dlf_scoretool', 'scoretool' => $this->renderToolByName('renderScoreTool'),
                     'tx_dlf_searchindocumenttool', 'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
                     'tx_dlf_viewerselectiontool', 'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
+                    'tx_dlf_zoomtool', 'zoomtool' => $this->renderToolByName('renderZoomTool'),
                     default => $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.')
                 };
             }
@@ -707,5 +709,31 @@ class ToolboxController extends AbstractController
             }
         }
         return true;
+    }
+
+    /**
+     * Renders the rotation tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderRotationTool(): void
+    {
+        // Empty function, no view arguments needed
+    }
+
+    /**
+     * Renders the zoom tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderZoomTool(): void
+    {
+        // Empty function, no view arguments needed
     }
 }
