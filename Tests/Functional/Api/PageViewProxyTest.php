@@ -55,7 +55,7 @@ class PageViewProxyTest extends FunctionalTestCase
     protected function queryProxy(array $query, string $method = 'GET'): ResponseInterface
     {
         $request = (new InternalRequest($this->baseUrl))->withQueryParameters(
-            array_merge([ 'eID' => 'tx_dlf_pageview_proxy' ], $query)
+            array_merge([ 'middleware' => 'dlf/page-view-proxy' ], $query)
         )->withMethod($method);
 
         return $this->executeInternalRequest($request);
