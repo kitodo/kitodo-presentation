@@ -22,7 +22,6 @@ namespace Kitodo\Dlf\Common\Solr\SearchResult;
  */
 class Highlight
 {
-
     /**
      * @access private
      * @var string The identifier in form 'w_h_x_y'

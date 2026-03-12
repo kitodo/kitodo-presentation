@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -407,7 +408,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseParentTitle(int $i, $value, array &$metadata) : void
+    private function parseParentTitle(int $i, $value, array &$metadata): void
     {
         if (empty(implode('', $value)) && $this->settings['getTitle'] && $this->document->getPartof()) {
             $superiorTitle = AbstractDocument::getTitle($this->document->getPartof(), true);
@@ -427,7 +428,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseOwner(int $i, array &$metadata) : void
+    private function parseOwner(int $i, array &$metadata): void
     {
         $library = $this->document->getOwner();
         if ($library) {
@@ -445,7 +446,7 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseType(int $i, array &$metadata) : void
+    private function parseType(int $i, array &$metadata): void
     {
         $structure = $this->structureRepository->findOneBy(['indexName' => $metadata[$i]['type'][0]]);
         if ($structure) {
@@ -464,13 +465,13 @@ class MetadataController extends AbstractController
      *
      * @return void
      */
-    private function parseCollections(int $i, $value, array &$metadata) : void
+    private function parseCollections(int $i, $value, array &$metadata): void
     {
         $j = 0;
         foreach ($value as $entry) {
             $collection = $this->collectionRepository->findOneBy(['indexName' => $entry]);
             if ($collection) {
-                $metadata[$i]['collection'][$j] = $collection->getLabel() ? : '';
+                $metadata[$i]['collection'][$j] = $collection->getLabel() ?: '';
                 $j++;
             }
         }

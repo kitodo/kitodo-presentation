@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -26,8 +27,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class Embedded3dViewerController extends AbstractController
 {
-
-    const MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX = '/?middleware=dlf/embedded3dviewer';
+    public const MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX = '/?middleware=dlf/embedded3dviewer';
 
     /**
      * @access public

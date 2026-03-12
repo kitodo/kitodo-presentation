@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -11,12 +12,12 @@
 
 namespace Kitodo\Dlf\ViewHelpers;
 
-use \RuntimeException;
+use RuntimeException;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Standard wrapper view helper
- * 
+ *
  * @package TYPO3
  * @subpackage dlf
  *

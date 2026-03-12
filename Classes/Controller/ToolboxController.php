@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -32,7 +33,6 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class ToolboxController extends AbstractController
 {
-
     /**
      * @access private
      * @var AbstractDocument This holds the current document
@@ -625,7 +625,7 @@ class ToolboxController extends AbstractController
             'labelHighlightWord' => $this->settings['highlightWordInputName'],
             'labelEncrypted' => $this->settings['encryptedInputName'],
             'documentId' => $this->getCurrentDocumentId(),
-            'solrEncrypted' => $this->getEncryptedCoreName() ? : ''
+            'solrEncrypted' => $this->getEncryptedCoreName() ?: ''
         ];
 
         $this->view->assign('searchInDocument', $viewArray);
@@ -662,7 +662,7 @@ class ToolboxController extends AbstractController
             if (count($arr) == 2) {
                 /** @var non-empty-string $arr[0] */
                 $id = explode($arr[0], $id)[0];
-            } else if (count($arr) == 3) {
+            } elseif (count($arr) == 3) {
                 $sub = substr($id, strpos($id, $arr[0]) + strlen($arr[0]), strlen($id));
                 $id = substr($sub, 0, strpos($sub, $arr[2]) ?: null);
             }

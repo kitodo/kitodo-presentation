@@ -29,10 +29,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DocumentValidator
 {
-     /**
-     * @access protected
-     * @var Logger This holds the logger
-     */
+    /**
+    * @access protected
+    * @var Logger This holds the logger
+    */
     protected Logger $logger;
 
     /**

@@ -105,12 +105,10 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     {
         return new ExpressionFunction(
             'getDocumentType',
-            function()
-            {
+            function () {
                 // Not implemented, we only use the evaluator
             },
-            function ($arguments, $storagePid)
-            {
+            function ($arguments, $storagePid) {
                 /** @var RequestWrapper $requestWrapper */
                 $requestWrapper = $arguments['request'];
                 $queryParams = $requestWrapper ? $requestWrapper->getQueryParams() : [];
@@ -151,7 +149,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                     $type = $metadata['type'][0];
                 }
                 return $type;
-            });
+            }
+        );
     }
 
     /**
@@ -175,7 +174,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
                 // find document from repository by uid
                 $this->document = $this->documentRepository->findOneByIdAndSettings(
-                    (int) $requestData['id'], ['storagePid' => $storagePid]
+                    (int) $requestData['id'],
+                    ['storagePid' => $storagePid]
                 );
                 if ($this->document) {
                     $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid]);

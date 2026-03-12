@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -15,7 +16,6 @@ use Kitodo\Dlf\Controller\StatisticsController;
 
 class StatisticsControllerTest extends AbstractControllerTestCase
 {
-
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv',
