@@ -11,13 +11,12 @@
 </f:comment>
 
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<ul class="annotation-list">
+<ul class="tx-dlf-annotation-list">
     <f:for each="{annotations}" as="annotation">
         <f:if condition="{kitodo:isInArray(needle: currentPage, haystack: annotation.pageNumbers)}">
-            <li class="annotation-list-item">
+            <li class="tx-dlf-annotation-list-item">
                 <f:render partial="Annotation/SingleAnnotation" arguments="{annotation: annotation, currentPage: currentPage}" />
             </li>
         </f:if>
