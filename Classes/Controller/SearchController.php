@@ -137,19 +137,16 @@ class SearchController extends AbstractController
         $this->search = is_array($this->search) ? $this->search : [];
 
         // sanitize date search input
-        if (array_key_exists('dateFrom', $this->search) || array_key_exists('dateTo', $this->search)) {
-            if (!array_key_exists('dateFrom', $this->search) && array_key_exists('dateTo', $this->search)) {
+        $dateFrom = $this->search['dateFrom'] ?? false;
+        $dateTo = $this->search['dateTo'] ?? false;
+        if ($dateFrom || $dateTo) {
+            if (!$dateFrom && $dateTo) {
                 $this->search['dateFrom'] = '*';
-            }
-
-            if (!array_key_exists('dateTo', $this->search) && array_key_exists('dateFrom', $this->search)) {
-                $this->search['dateTo'] = 'NOW';
-            }
-
-            if ($this->search['dateFrom'] > $this->search['dateTo']) {
-                $tmpDate = $this->search['dateFrom'];
-                $this->search['dateFrom'] = $this->search['dateTo'];
-                $this->search['dateTo'] = $tmpDate;
+            } elseif ($dateFrom && !$dateTo) {
+                $this->search['dateTo'] = '*';
+            } elseif ($dateFrom > $dateTo) {
+                $this->search['dateFrom'] = $dateTo;
+                $this->search['dateTo'] = $dateFrom;
             }
         }
 

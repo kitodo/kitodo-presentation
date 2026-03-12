@@ -39,9 +39,7 @@
                             {entry.BASKETDATA.title}
                         </f:link.typolink>
                         <f:if condition="{entry.BASKETDATA.info}">
-                            <f:then>
-                                ({entry.BASKETDATA.info})
-                            </f:then>
+                            ({entry.BASKETDATA.info})
                         </f:if>
                     </dt>
                     <dd>
@@ -78,13 +76,11 @@
 </f:format.raw>
 
 <f:if condition="{settings.basketGoToButton}">
-    <f:then>
-        <div class="tx-dlf-goto-basket">
-            <f:link.page pageUid="{settings.targetBasket}">
-                <f:translate key="basket.goBasket"/>
-            </f:link.page>
-        </div>
-    </f:then>
+    <div class="tx-dlf-goto-basket">
+        <f:link.page pageUid="{settings.targetBasket}">
+            <f:translate key="basket.goBasket"/>
+        </f:link.page>
+    </div>
 </f:if>
 
 </html>

@@ -96,7 +96,7 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
 
         if (empty($viewer)) {
             if (!in_array(strtolower($modelFormat), ['glb','gltf'])) {
-                return $this->warningResponse('The build-in model-viewer does not support the model format "' . $modelFormat . '"', $request);
+                return $this->warningResponse('The built-in model-viewer does not support the model format "' . $modelFormat . '"', $request);
             }
             return $this->renderDefaultViewer($parameters['model']);
         }

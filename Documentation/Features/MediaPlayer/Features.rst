@@ -72,7 +72,7 @@ Wide/narrow seek:
 
 *  *Wide*: In video mode, the thumbnail/chapter preview area can be used for seeking.
 *  *Narrow*: In audio mode, only the timeline can be used for seeking.
-   (This is so that the chapter/timecode box doesn't interfer with other controls shown in the main panel.)
+   (This is so that the chapter/timecode box doesn't interfere with other controls shown in the main panel.)
 
 .. note::
 
@@ -120,7 +120,7 @@ When adding a thumbnail adaptation set, it must contain the same role ascription
 Other roles may be used:
 
 *  ``dlf:label=TEXT``: Specify TEXT as a label that is shown to the user. If no label is given, the track ID is shown instead.
-*  ``dlf:label_XX=TEXT``: Localized label, where ``XX`` is replaced by the two-letter ISO code of the langauge.
+*  ``dlf:label_XX=TEXT``: Localized label, where ``XX`` is replaced by the two-letter ISO code of the language.
 
 - Using ``prefix#group`` to match streams to video tracks
 - WIP/TODO: Using ``<Label>`` and ``dlf:label`` role to set label of video track. (multiple languages?)

@@ -14,28 +14,26 @@
       data-namespace-typo3-fluid="true">
 
 <f:if condition="{numMeasures} > 0 && {double} != 1">
-    <f:then>
-        <div class="measureFwds">
-            <span class="next">
-                <f:if condition="{currentMeasure} < {numMeasures}">
-                    <f:then>
-                        <f:if condition="{currentMeasure} > 0">
-                            <f:then>
-                                <f:variable name="nextMeasure" value="{currentMeasure + 1}" />
-                                <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{nextMeasure}', 'page':'{measurePages.{nextMeasure}}'}"><f:translate key="nextMeasure"/></kitodo:link>
-                            </f:then>
-                            <f:else>
-                                <kitodo:link viewData="{viewData}" additionalParams="{'measure':'1', 'page':'{measurePages.1}'}"><f:translate key="nextMeasure"/></kitodo:link>
-                            </f:else>
-                        </f:if>
-                    </f:then>
-                    <f:else>
-                        <span title="{f:translate(key: 'nextMeasure')}"><f:translate key="nextMeasure"/></span>
-                    </f:else>
-                </f:if>
-            </span>
-        </div>
-    </f:then>
+    <div class="measureFwds">
+        <span class="next">
+            <f:if condition="{currentMeasure} < {numMeasures}">
+                <f:then>
+                    <f:if condition="{currentMeasure} > 0">
+                        <f:then>
+                            <f:variable name="nextMeasure" value="{currentMeasure + 1}" />
+                            <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{nextMeasure}', 'page':'{measurePages.{nextMeasure}}'}"><f:translate key="nextMeasure"/></kitodo:link>
+                        </f:then>
+                        <f:else>
+                            <kitodo:link viewData="{viewData}" additionalParams="{'measure':'1', 'page':'{measurePages.1}'}"><f:translate key="nextMeasure"/></kitodo:link>
+                        </f:else>
+                    </f:if>
+                </f:then>
+                <f:else>
+                    <span title="{f:translate(key: 'nextMeasure')}"><f:translate key="nextMeasure"/></span>
+                </f:else>
+            </f:if>
+        </span>
+    </div>
 </f:if>
 
 </html>
