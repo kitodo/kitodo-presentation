@@ -11,36 +11,43 @@ services:
     tags:
       - name: console.command
         command: 'kitodo:dbdocs'
+        description: 'Generate database rst file.'
 
   Kitodo\Dlf\Command\DeleteCommand:
     tags:
       - name: console.command
         command: 'kitodo:delete'
+        description: 'Delete single document from database and Solr.'
 
   Kitodo\Dlf\Command\HarvestCommand:
     tags:
       - name: console.command
         command: 'kitodo:harvest'
+        description: 'Harvest OAI-PMH contents into database and Solr.'
 
   Kitodo\Dlf\Command\IndexCommand:
     tags:
       - name: console.command
         command: 'kitodo:index'
+        description: 'Index single document into database and Solr.'
 
   Kitodo\Dlf\Command\ReindexCommand:
     tags:
       - name: console.command
         command: 'kitodo:reindex'
+        description: 'Reindex a collection into database and Solr.'
 
   Kitodo\Dlf\Command\OptimizeCommand:
     tags:
       - name: console.command
         command: 'kitodo:optimize'
+        description: 'Sending the commit and/or optimize command to the index.'
 
   Kitodo\Dlf\Command\SuggestBuildCommand:
     tags:
       - name: console.command
         command: 'kitodo:suggestBuild'
+        description: 'Sending the suggest.build=true command to the index.'
 
   Kitodo\Dlf\Common\TypoScriptHelper:
     public: true
