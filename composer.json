@@ -47,7 +47,7 @@
   },
   "require-dev": {
     "fluidtypo3/vhs": "^7.1",
-	"friendsofphp/php-cs-fixer": "^3.94.2",
+	"friendsofphp/php-cs-fixer": "^3.94",
     "phpstan/phpstan": "^1.12",
     "phpunit/phpunit": "^10.5",
     "spatie/phpunit-watcher": "^1.24",
