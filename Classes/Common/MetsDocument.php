@@ -1291,7 +1291,6 @@ final class MetsDocument extends AbstractDocument
             }
 
             $amdSecXml = $this->mets->xpath('./mets:amdSec');
-            ;
             if (!empty($amdSecXml)) {
                 foreach ($amdSecXml as $amdSecTag) {
                     $childIds = [];
