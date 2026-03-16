@@ -47,6 +47,7 @@
   },
   "require-dev": {
     "fluidtypo3/vhs": "^7.1",
+	"friendsofphp/php-cs-fixer": "^3.94.2",
     "phpstan/phpstan": "^1.12",
     "phpunit/phpunit": "^10.5",
     "spatie/phpunit-watcher": "^1.24",
@@ -120,6 +121,12 @@
 	  	"@composer docs:build",
 	  	"@composer docs:start"
 	],
+    "php-cs-fixer:check": [
+        "@php vendor/bin/php-cs-fixer check"
+    ],
+    "php-cs-fixer:fix": [
+        "@php vendor/bin/php-cs-fixer fix"
+    ],
 	"phpstan": [
 		"@php vendor/bin/phpstan --configuration=\".github/phpstan_13.4.neon\""
 	]
