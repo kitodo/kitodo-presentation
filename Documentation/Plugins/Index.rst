@@ -51,46 +51,6 @@ In this example, you place the customized fluid template into this file::
    EXT:example/Resources/Private/Plugins/Kitodo/Partials/Navigation/Main.html
 
 
-Audio Player
-------------
-
-The audioplayer plugin is only active if the selected document has valid audio file use groups (useGroupsAudio).
-
-TypoScript Configuration
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-:typoscript:`plugin.tx_dlf_audioplayer.`
-
-.. t3-field-list-table::
- :header-rows: 1
-
- - :Property:
-      Property
-   :Data Type:
-      Data type
-   :Default:
-      Default
-   :Description:
-      Description
-
- - :Property:
-      excludeOther
-   :Data Type:
-      :ref:`t3tsref:data-type-boolean`
-   :Default:
-      1
-   :Description:
-      Show only documents from the selected page.
-
- - :Property:
-      elementId
-   :Data Type:
-      :ref:`t3tsref:data-type-string`
-   :Default:
-      tx-dlf-audio
-   :Description:
-      ID value of the HTML element for the audio player.
-
 Basket
 ------
 
