@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
-use \Exception;
+use Exception;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use Phpoaipmh\ClientInterface;
 use Phpoaipmh\Exception\OaipmhException;
@@ -28,7 +28,6 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  */
 class OaiPmhTypo3Client implements ClientInterface
 {
-
     /**
      * The base url of the Typo3 server used for functional tests
      */

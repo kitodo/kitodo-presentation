@@ -33,7 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DbDocsCommand extends Command
 {
-
     protected Generator $generator;
 
     public function __construct(Generator $generator)

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Kitodo\Dlf\ViewHelpers;
@@ -24,7 +25,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
  */
 final class LinkViewHelper extends AbstractTagBasedViewHelper
 {
-
     /**
      * @var string
      */
