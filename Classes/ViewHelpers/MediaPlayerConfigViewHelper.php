@@ -136,10 +136,8 @@ CONFIG;
                 // - Pass $languageKey to ensure that translation matches ISO code
                 $phrases[$translationKey] = LocalizationUtility::translate(
                     "LLL:$translationFile:$translationKey",
-                    /* extensionName= */
-                    null,
-                    /* arguments= */
-                    null,
+                    null, // extensionName
+                    null, // arguments
                     $languageKey
                 );
             }

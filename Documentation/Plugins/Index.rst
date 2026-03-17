@@ -526,7 +526,7 @@ FlexForm Configuration
 Media Player
 ------------
 
-The MediaPlayer plugin is only active if the selected document has valid video file use groups (useGroupsVideo).
+The MediaPlayer plugin is only active if the selected document has valid audio or video file use groups (useGroupsAudio, useGroupsVideo).
 
 :typoscript:`plugin.tx_dlf_mediaplayer.settings.`
 
@@ -556,7 +556,7 @@ The MediaPlayer plugin is only active if the selected document has valid video f
    :Data Type:
       :ref:`t3tsref:data-type-string`
    :Default:
-      tx-dlf-video
+      tx-dlf-media
    :Description:
       ID value of the HTML element for the media player.
 

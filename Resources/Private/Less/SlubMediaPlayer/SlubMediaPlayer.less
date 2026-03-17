@@ -16,7 +16,8 @@ slub-media {
     }
 }
 
-body[data-has-video] {
+// hide irrelevant controls when a/v mediaplayer is present (e.g. doublepage, rotate, zoom)
+body[mediaplayer] {
     .page-control,
     .document-functions li.doublepage,
     .view-functions li.rotate,
