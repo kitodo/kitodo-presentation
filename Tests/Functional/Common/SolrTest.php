@@ -19,7 +19,6 @@ use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 
 class SolrTest extends FunctionalTestCase
 {
-
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Common/documents_1.csv',
         __DIR__ . '/../../Fixtures/Common/pages.csv',

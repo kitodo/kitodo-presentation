@@ -24,7 +24,6 @@ namespace Kitodo\Dlf\Common;
  */
 interface FulltextInterface
 {
-
     /**
      * Set the page identifier.
      *

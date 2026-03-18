@@ -17,7 +17,6 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 
 class CalendarControllerTest extends AbstractControllerTestCase
 {
-
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
         __DIR__ . '/../../Fixtures/Controller/documents_calendar.csv',

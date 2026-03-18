@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -284,7 +285,7 @@ class OaiPmhController extends AbstractController
             'GetRecord' => $this->verbGetRecord(),
             'Identify' => $this->verbIdentify(),
             'ListIdentifiers' => $this->verbListIdentifiers(),
-            'ListMetadataFormats'=> $this->verbListMetadataFormats(),
+            'ListMetadataFormats' => $this->verbListMetadataFormats(),
             'ListRecords' => $this->verbListRecords(),
             'ListSets' => $this->verbListSets(),
             default => $this->error = 'badVerb'

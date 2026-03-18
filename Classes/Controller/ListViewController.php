@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -83,7 +84,7 @@ class ListViewController extends AbstractController
         // extract collection(s) from collection parameter
         $collections = [];
         if (array_key_exists('collection', $this->search)) {
-            foreach(explode(',', $this->search['collection']) as $collectionEntry) {
+            foreach (explode(',', $this->search['collection']) as $collectionEntry) {
                 $collections[] = $this->collectionRepository->findByUid((int) $collectionEntry);
             }
         }
