@@ -452,9 +452,6 @@
             <trans-unit id="tx_dlf_toolbox.scoretool">
                 <source>Score</source>
             </trans-unit>
-            <trans-unit id="tt_content.dlf_audioplayer">
-                <source>DLF: Audio Player</source>
-            </trans-unit>
             <trans-unit id="tt_content.dlf_basket">
                 <source>DLF: Basket</source>
             </trans-unit>
