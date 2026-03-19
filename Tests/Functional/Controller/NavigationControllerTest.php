@@ -19,7 +19,6 @@ use TYPO3\TestingFramework\Core\SystemEnvironmentBuilder;
 
 class NavigationControllerTest extends AbstractControllerTestCase
 {
-
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/documents.csv',
         __DIR__ . '/../../Fixtures/Controller/pages.csv',

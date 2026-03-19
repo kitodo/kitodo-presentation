@@ -29,7 +29,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class OptimizeCommand extends Command
 {
-
     /**
      * Configure the command by defining the name, options and arguments
      *

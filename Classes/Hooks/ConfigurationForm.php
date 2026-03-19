@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
  */
 class ConfigurationForm
 {
-    const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
+    public const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
 
     /**
      * Check if a connection to a Solr server could be established with the given credentials.

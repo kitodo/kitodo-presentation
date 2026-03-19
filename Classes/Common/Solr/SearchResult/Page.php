@@ -22,7 +22,6 @@ namespace Kitodo\Dlf\Common\Solr\SearchResult;
  */
 class Page
 {
-
     /**
      * @access private
      * @var int The identifier of the page

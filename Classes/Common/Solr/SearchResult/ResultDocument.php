@@ -24,7 +24,6 @@ use Solarium\QueryType\Select\Result\Document;
  */
 class ResultDocument
 {
-
     /**
      * @access private
      * @var string|null The identifier
