@@ -105,6 +105,13 @@ class Helper
     protected static array $docs = [];
 
     /**
+     * @access protected
+     * @static
+     * @var string[]|null Cached result of MimeTypeCollection::getMimeTypes()
+     */
+    protected static ?array $cachedMimeTypes = null;
+
+    /**
      * Generates a flash message and adds it to a message queue.
      *
      * @access public
@@ -886,10 +893,18 @@ class Helper
             return false;
         }
 
-        // Retrieves MIME types from the TYPO3 Core MimeTypeCollection
-        $mimeTypeCollection = GeneralUtility::makeInstance(MimeTypeCollection::class);
+        // Retrieves MIME types from the TYPO3 Core MimeTypeCollection and cache them for the request
+        if (self::$cachedMimeTypes === null) {
+            $mimeTypeCollection = GeneralUtility::makeInstance(MimeTypeCollection::class);
+            /** @var string[] $mimeTypes */
+            $mimeTypes = $mimeTypeCollection->getMimeTypes();
+            self::$cachedMimeTypes = $mimeTypes;
+        } else {
+            $mimeTypes = self::$cachedMimeTypes;
+        }
+
         $allowedMimeTypes = array_filter(
-            $mimeTypeCollection->getMimeTypes(),
+            $mimeTypes,
             function ($mimeType) use ($allowedCategories) {
                 foreach ($allowedCategories as $category) {
                     if (str_starts_with($mimeType, $category . '/')) {
