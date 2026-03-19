@@ -44,9 +44,9 @@ class DOMDocumentValidation implements MiddlewareInterface
 {
     use LoggerAwareTrait;
 
-    public const BAD_REQUEST = 400;
-    public const NOT_FOUND = 404;
-    public const INTERNAL_SERVER_ERROR = 500;
+    private const BAD_REQUEST = 400;
+    private const NOT_FOUND = 404;
+    private const INTERNAL_SERVER_ERROR = 500;
 
     private ServerRequestInterface $request;
 

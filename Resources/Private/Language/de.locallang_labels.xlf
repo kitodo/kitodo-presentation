@@ -601,10 +601,6 @@
                 <target>Notentext</target>
                 <source>Score</source>
             </trans-unit>
-            <trans-unit id="tt_content.dlf_audioplayer">
-                <source>DLF: Audio Player</source>
-                <target>DLF: Audioplayer</target>
-            </trans-unit>
             <trans-unit id="tt_content.dlf_basket">
                 <source>DLF: Basket</source>
                 <target>DLF: Warenkorb</target>
