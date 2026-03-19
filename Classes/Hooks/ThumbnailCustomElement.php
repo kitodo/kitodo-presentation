@@ -24,7 +24,6 @@ use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
  */
 class ThumbnailCustomElement extends AbstractFormElement
 {
-
     /**
      * Renders thumbnail custom element.
      *

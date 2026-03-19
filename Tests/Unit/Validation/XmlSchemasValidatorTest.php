@@ -28,7 +28,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class XmlSchemasValidatorTest extends UnitTestCase
 {
-    const METS = <<<METS
+    public const METS = <<<METS
         <mets:mets
             xmlns:mets="http://www.loc.gov/METS/"
             xmlns:mods="http://www.loc.gov/mods/v3" >
@@ -43,7 +43,7 @@ class XmlSchemasValidatorTest extends UnitTestCase
         </mets:mets>
     METS;
 
-    const METS_MODS = <<<METS_MODS
+    public const METS_MODS = <<<METS_MODS
         <mets:mets
             xmlns:mets="http://www.loc.gov/METS/"
             xmlns:mods="http://www.loc.gov/mods/v3" >

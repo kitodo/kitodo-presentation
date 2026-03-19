@@ -16,18 +16,18 @@
 <ul class="tx-dlf-pagination">
     <f:if condition="{pagination.previousPageNumberG} && {pagination.previousPageNumberG} >= {pagination.firstPageNumber}">
         <f:then>
-            <li class="first">
+            <li class="tx-dlf-pagination-first">
                 <f:link.action action="{action}" addQueryString="untrusted" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': 1, 'tx_dlf[id]': docUid}" arguments="{page: 1, search: lastSearch}" title="1">1</f:link.action>
             </li>
-            <li class="previous">
+            <li class="tx-dlf-pagination-previous">
                 <f:link.action action="{action}" addQueryString="untrusted" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.previousPageNumber, 'tx_dlf[id]': docUid}" arguments="{page: pagination.previousPageNumber, search: lastSearch}" title="{f:translate(key: 'pagination.previous')}">{f:translate(key: 'prevPage')}</f:link.action>
             </li>
         </f:then>
         <f:else>
-            <li class="first disabled">
+            <li class="tx-dlf-pagination-first disabled">
                 <span>1</span>
             </li>
-            <li class="previous disabled">
+            <li class="tx-dlf-pagination-previous disabled">
                 <span>{f:translate(key: 'prevPage')}</span>
             </li>
         </f:else>
@@ -66,18 +66,18 @@
     </f:for>
     <f:if condition="{pagination.nextPageNumberG} && {pagination.nextPageNumberG} <= {pagination.lastPageNumber}">
         <f:then>
-            <li class="next">
+            <li class="tx-dlf-pagination-next">
                 <f:link.action action="{action}" addQueryString="untrusted" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.nextPageNumber, 'tx_dlf[id]': docUid}" arguments="{page: pagination.nextPageNumber, search: lastSearch}" title="{f:translate(key: 'nextPage')}">{f:translate(key: 'nextPage')}</f:link.action>
             </li>
-            <li class="last">
+            <li class="tx-dlf-pagination-last">
                 <f:link.action action="{action}" addQueryString="untrusted" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': pagination.lastPageNumberG, 'tx_dlf[id]': docUid}" arguments="{page: pagination.lastPageNumberG, search: lastSearch}" title="{pagination.lastPageNumber}">{pagination.lastPageNumber}</f:link.action>
             </li>
         </f:then>
         <f:else>
-            <li class="next disabled">
+            <li class="tx-dlf-pagination-next disabled">
                 <span>{f:translate(key: 'nextPage')}</span>
             </li>
-            <li class="last disabled">
+            <li class="tx-dlf-pagination-last disabled">
                 <span>{pagination.lastPageNumber}</span>
             </li>
         </f:else>

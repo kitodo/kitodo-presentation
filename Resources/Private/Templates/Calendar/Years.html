@@ -13,29 +13,29 @@
       data-namespace-typo3-fluid="true">
 
     <div class="tx-dlf-calendar-years">
-        <div class="meta-header">
-            <div class="year-anchor">
+        <div class="tx-dlf-calendar-meta-header">
+            <div class="tx-dlf-calendar-year-anchor">
                 <f:link.page additionalParams="{'tx_dlf[id]': documentId}">
                     <f:translate key="calendar.allYears" /> {allYearDocTitle}
                 </f:link.page>
             </div>
-            <div class="meta-hint-year">
+            <div class="tx-dlf-calendar-meta-hint-year">
                 <f:translate key="calendar.please_choose_year" />
             </div>
         </div>
-        <div class="year-view">
+        <div class="tx-dlf-calendar-year-view">
             <ul>
                 <f:for each="{yearName}" as="yearEntry">
                     <f:if condition="{yearEntry.documentId}">
                         <f:then>
-                            <li class="year">
+                            <li class="tx-dlf-calendar-year">
                                 <f:link.page additionalParams="{'tx_dlf[id]': yearEntry.documentId}">
                                     {yearEntry.title}
                                 </f:link.page>
                             </li>
                         </f:then>
                         <f:else>
-                            <li class="year-empty">
+                            <li class="tx-dlf-calendar-year-empty">
                                 <p>{yearEntry.title}</p>
                             </li>
                         </f:else>

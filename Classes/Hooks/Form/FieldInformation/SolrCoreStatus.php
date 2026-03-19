@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
  */
 class SolrCoreStatus extends AbstractNode
 {
-    const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
+    public const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
 
     /**
      * Shows Solr core status for given 'index_name'

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -26,7 +27,6 @@ use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
  */
 class MultiViewController extends AbstractController
 {
-
     /**
      * The main method of the plugin
      *

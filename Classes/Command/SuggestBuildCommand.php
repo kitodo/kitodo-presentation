@@ -29,7 +29,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class SuggestBuildCommand extends Command
 {
-
     /**
      * Configure the command by defining the name, options and arguments
      *

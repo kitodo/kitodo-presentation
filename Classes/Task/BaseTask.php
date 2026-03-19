@@ -9,6 +9,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
 namespace Kitodo\Dlf\Task;
 
 use Kitodo\Dlf\Common\Helper;
@@ -25,7 +26,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class BaseTask extends AbstractTask
 {
-
     /**
      * @access protected
      * @var bool
