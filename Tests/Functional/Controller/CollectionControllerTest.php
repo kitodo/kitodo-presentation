@@ -17,7 +17,6 @@ use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 
 class CollectionControllerTest extends AbstractControllerTestCase
 {
-
     private static array $databaseFixtures = [
         __DIR__ . '/../../Fixtures/Controller/pages.csv',
         __DIR__ . '/../../Fixtures/Controller/solrcores.csv'

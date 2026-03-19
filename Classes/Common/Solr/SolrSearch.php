@@ -605,11 +605,15 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                                 $searchResult['snippet'] = $doc['snippet'];
                                 $searchResult['highlight'] = $doc['highlight'];
                                 $searchResult['highlight_word'] = preg_replace(
-                                    '/^;|;$/', '',  // remove ; at beginning or end
+                                    '/^;|;$/',
+                                    '',  // remove ; at beginning or end
                                     preg_replace(
-                                        '/;+/', ';',  // replace any multiple of ; with a single ;
+                                        '/;+/',
+                                        ';',  // replace any multiple of ; with a single ;
                                         preg_replace(
-                                            '/[{~\d*}{\s+}{^=*\d+.*\d*}{\sAND\s}{\sOR\s}{\sNOT\s}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $this->searchParams['query']
+                                            '/[{~\d*}{\s+}{^=*\d+.*\d*}{\sAND\s}{\sOR\s}{\sNOT\s}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/',
+                                            ';',
+                                            $this->searchParams['query']
                                         )
                                     )
                                 ); // replace search operators and special characters with ;
@@ -845,7 +849,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return string
      */
-    private function getCollectionFilterQuery(string $query) : string
+    private function getCollectionFilterQuery(string $query): string
     {
         $collectionsQueryString = '';
         $virtualCollectionsQueryString = '';
@@ -889,7 +893,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     private function filterCollections(): void
     {
         if (is_array($this->collections)) {
-            array_filter($this->collections, fn($value) => $value !== null);
+            array_filter($this->collections, fn ($value) => $value !== null);
         }
     }
 
@@ -900,7 +904,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return array<string, string>
      */
-    private function getSort() : array
+    private function getSort(): array
     {
         if (!empty($this->searchParams['orderBy'])) {
             return [
@@ -947,7 +951,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         foreach ($parameters['listMetadataRecords'] as $indexName => $solrField) {
             if (!empty($record->$solrField)) {
-                    $document['metadata'][$indexName] = $record->$solrField;
+                $document['metadata'][$indexName] = $record->$solrField;
             }
         }
 

@@ -9,6 +9,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+
 namespace Kitodo\Dlf\Task;
 
 use TYPO3\CMS\Core\Core\Environment;
