@@ -76,7 +76,7 @@ class PageViewProxy
         ResponseInterface $response,
         ServerRequestInterface $request
     ): ResponseInterface {
-        $origin = $request->getHeaderLine('Origin') ? : '*';
+        $origin = $request->getHeaderLine('Origin') ?: '*';
 
         return $response
             ->withHeader('Access-Control-Allow-Methods', 'GET, OPTIONS, HEAD')

@@ -106,8 +106,11 @@ class SearchInDocument implements MiddlewareInterface
                         'tx_dlf[id]' => $uid,
                         'tx_dlf[page]' => $resultDocument->getPage(),
                         'tx_dlf[highlight_word]' => preg_replace(
-                            '/^;|;$/', '',       // remove ; at beginning or end
-                            preg_replace('/;+/', ';',         // replace any multiple of ; with a single ;
+                            '/^;|;$/',
+                            '',       // remove ; at beginning or end
+                            preg_replace(
+                                '/;+/',
+                                ';',         // replace any multiple of ; with a single ;
                                 preg_replace('/[{~\d*}{\s+}{^=*\d+.*\d*}{\sAND\s}{\sOR\s}{\sNOT\s}`~!@#$%\^&*()_|+-=?;:\'",.<>\{\}\[\]\\\]/', ';', $parameters['q'])
                             )
                         ) // replace search operators and special characters with ;
@@ -158,7 +161,7 @@ class SearchInDocument implements MiddlewareInterface
         // field for which highlighting is going to be performed,
         // is required if you want to have OCR highlighting
         $solrRequest->addParam('hl.ocr.fl', $this->fields['fulltext']);
-         // return the coordinates of highlighted search as absolute coordinates
+        // return the coordinates of highlighted search as absolute coordinates
         $solrRequest->addParam('hl.ocr.absoluteHighlights', 'on');
         // max amount of snippets for a single page
         $solrRequest->addParam('hl.snippets', '40');

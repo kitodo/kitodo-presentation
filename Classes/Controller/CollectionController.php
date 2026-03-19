@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -138,11 +139,14 @@ class CollectionController extends AbstractController
         // If a targetPid is given, the results will be shown by ListView on the target page.
         if (!empty($this->settings['targetPid'])) {
             return $this->redirect(
-                'main', 'ListView', null,
+                'main',
+                'ListView',
+                null,
                 [
                     'search' => $search,
                     'page' => $currentPage
-                ], $this->settings['targetPid']
+                ],
+                $this->settings['targetPid']
             );
         }
 

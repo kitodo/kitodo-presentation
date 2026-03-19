@@ -46,7 +46,7 @@ class Indexer
     /**
      * Prefix for translation keys.
      */
-    const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
+    public const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
 
     /**
      * @access protected

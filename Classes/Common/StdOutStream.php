@@ -37,7 +37,7 @@ class StdOutStream implements StreamInterface, SelfEmittableStreamInterface
 
     /**
      * @access public
-     * 
+     *
      * @return void
      */
     public function emit()
