@@ -349,7 +349,7 @@ class BasketController extends AbstractController
 
             $title = $this->document->getTitle();
             if (empty($title)) {
-                $title = LocalizationUtility::translate('basket.noTitle', 'dlf') ? : '';
+                $title = LocalizationUtility::translate('basket.noTitle', 'dlf') ?: '';
             }
 
             // Set page and cutout information

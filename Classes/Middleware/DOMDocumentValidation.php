@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -43,9 +44,9 @@ class DOMDocumentValidation implements MiddlewareInterface
 {
     use LoggerAwareTrait;
 
-    const BAD_REQUEST = 400;
-    const NOT_FOUND = 404;
-    const INTERNAL_SERVER_ERROR = 500;
+    public const BAD_REQUEST = 400;
+    public const NOT_FOUND = 404;
+    public const INTERNAL_SERVER_ERROR = 500;
 
     private ServerRequestInterface $request;
 
@@ -242,7 +243,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         if (isset($arguments) && count($arguments) > 0) {
             return vsprintf(
                 $languageService->sL($key),
-                array_map(fn($value) => str_starts_with($value, 'EXT:') ? PathUtility::getPublicResourceWebPath($value) : $value, $arguments)
+                array_map(fn ($value) => str_starts_with($value, 'EXT:') ? PathUtility::getPublicResourceWebPath($value) : $value, $arguments)
             );
         }
         return $languageService->sL($key);

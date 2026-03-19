@@ -38,7 +38,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canFulltextdownloadtool()
     {
         $settings = [
-            'tools' => 'tx_dlf_fulltextdownloadtool'
+            'tools' => 'fulltextdownloadtool'
         ];
         $templateHtml = '<html>fulltextDownload:{fulltextDownload}</html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
@@ -58,7 +58,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canFulltexttool()
     {
         $settings = [
-            'tools' => 'tx_dlf_fulltexttool',
+            'tools' => 'fulltexttool',
             'activateFullTextInitially' => 1
         ];
         $templateHtml = '<html>fulltext:{fulltext},activateFullTextInitially:{activateFullTextInitially}</html>';
@@ -79,7 +79,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canImagedownloadtool()
     {
         $settings = [
-            'tools' => 'tx_dlf_imagedownloadtool'
+            'tools' => 'imagedownloadtool'
         ];
         $templateHtml = '<html>imageDownload:<f:for each="{imageDownload}" as="image">
             {image.url}{image.mimetypeLabel}</f:for>
@@ -104,7 +104,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canImagemanipulationtool()
     {
         $settings = [
-            'tools' => 'tx_dlf_imagemanipulationtool',
+            'tools' => 'imagemanipulationtool',
             'parentContainer' => '.parent-container'
         ];
         $templateHtml = '<html>imageManipulation:{imageManipulation},parentContainer:{parentContainer}</html>';
@@ -127,7 +127,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
         $settings = [
             'solrcore' => self::$solrCoreId,
             'library' => 1,
-            'tools' => 'tx_dlf_annotationtool',
+            'tools' => 'annotationtool',
             'limit' => 1
         ];
         $templateHtml = '<html>double:{double}</html>';
@@ -149,7 +149,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canPdfdownloadtool()
     {
         $settings = [
-            'tools' => 'tx_dlf_pdfdownloadtool'
+            'tools' => 'pdfdownloadtool'
         ];
         $templateHtml = '<html>pageLinks:<f:for each="{pageLinks}" as="link">
             {link}</f:for>
@@ -177,7 +177,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     {
         $settings = [
             'solrcore' => self::$solrCoreId,
-            'tools' => 'tx_dlf_searchindocumenttool',
+            'tools' => 'searchindocumenttool',
             'queryInputName' => 'queryInputName',
             'startInputName' => 'startInputName',
             'idInputName' => 'idInputName',

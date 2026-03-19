@@ -10,21 +10,17 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Domain\Repository;
+namespace PhpCsFixer;
 
-use Kitodo\Dlf\Domain\Model\Format;
-use TYPO3\CMS\Extbase\Persistence\Repository;
+$finder = Finder::create()
+    ->in([
+        __DIR__ . '/Classes',
+        __DIR__ . '/Configuration',
+        __DIR__ . '/Tests',
+    ]);
 
-/**
- * Format repository.
- *
- * @package TYPO3
- * @subpackage dlf
- *
- * @access public
- *
- * @extends Repository<Format>
- */
-class FormatRepository extends Repository
-{
-}
+return (new Config())
+    ->setRules([
+        '@PSR12' => true,
+    ])
+    ->setFinder($finder);

@@ -47,9 +47,9 @@ class Embedded3dViewer implements LoggerAwareInterface, MiddlewareInterface
 {
     use LoggerAwareTrait;
 
-    const VIEWER_FOLDER = "dlf_3d_viewers";
-    const VIEWER_CONFIG_YML = "dlf-3d-viewer.yml";
-    const EXT_KEY = "dlf";
+    public const VIEWER_FOLDER = "dlf_3d_viewers";
+    public const VIEWER_CONFIG_YML = "dlf-3d-viewer.yml";
+    public const EXT_KEY = "dlf";
 
     /**
      * The main method of the middleware.

@@ -22,3 +22,4 @@
 _build
 venv
 *.map
+.php-cs-fixer.cache

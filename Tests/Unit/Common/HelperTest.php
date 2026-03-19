@@ -313,48 +313,60 @@ XML;
         $iipFile = ['mimetype' => 'application/vnd.netfpx'];
 
         // Test: No DLF MIME Types (only Standard-Types)
-        self::assertTrue(Helper::filterFilesByMimeType(
-            $imageFile,
-            ['image'],
-            null
-        ), 'Standard image type should be accepted when DLF types are null'
+        self::assertTrue(
+            Helper::filterFilesByMimeType(
+                $imageFile,
+                ['image'],
+                null
+            ),
+            'Standard image type should be accepted when DLF types are null'
         );
 
-        self::assertFalse(Helper::filterFilesByMimeType(
-            $iiifFile,
-            ['image'],
-            null
-        ), 'DLF type should be rejected when DLF types are null'
+        self::assertFalse(
+            Helper::filterFilesByMimeType(
+                $iiifFile,
+                ['image'],
+                null
+            ),
+            'DLF type should be rejected when DLF types are null'
         );
 
         // Test: All DLF MIME Types
-        self::assertTrue(Helper::filterFilesByMimeType(
-            $iiifFile,
-            ['image'],
-            true
-        ), 'IIIF should be accepted when all DLF types are enabled'
+        self::assertTrue(
+            Helper::filterFilesByMimeType(
+                $iiifFile,
+                ['image'],
+                true
+            ),
+            'IIIF should be accepted when all DLF types are enabled'
         );
 
-        self::assertTrue(Helper::filterFilesByMimeType(
-            $iipFile,
-            ['image'],
-            true
-        ), 'IIP should be accepted when all DLF types are enabled'
+        self::assertTrue(
+            Helper::filterFilesByMimeType(
+                $iipFile,
+                ['image'],
+                true
+            ),
+            'IIP should be accepted when all DLF types are enabled'
         );
 
         // Test: Specific DLF MIME Types
-        self::assertTrue(Helper::filterFilesByMimeType(
-            $iiifFile,
-            ['image'],
-            ['IIIF']
-        ), 'IIIF should be accepted when specifically allowed'
+        self::assertTrue(
+            Helper::filterFilesByMimeType(
+                $iiifFile,
+                ['image'],
+                ['IIIF']
+            ),
+            'IIIF should be accepted when specifically allowed'
         );
 
-        self::assertFalse(Helper::filterFilesByMimeType(
-            $iipFile,
-            ['image'],
-            ['IIIF']
-        ), 'IIP should be rejected when not in allowed DLF types'
+        self::assertFalse(
+            Helper::filterFilesByMimeType(
+                $iipFile,
+                ['image'],
+                ['IIIF']
+            ),
+            'IIP should be rejected when not in allowed DLF types'
         );
     }
 }

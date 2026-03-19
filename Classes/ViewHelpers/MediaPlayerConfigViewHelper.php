@@ -1,4 +1,5 @@
 <?php
+
 namespace Kitodo\Dlf\ViewHelpers;
 
 /**
@@ -49,8 +50,7 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ): string
-    {
+    ): string {
         $id = $arguments['id'];
         $inputSettings = $arguments['settings'];
 
@@ -136,8 +136,10 @@ CONFIG;
                 // - Pass $languageKey to ensure that translation matches ISO code
                 $phrases[$translationKey] = LocalizationUtility::translate(
                     "LLL:$translationFile:$translationKey",
-                    /* extensionName= */null,
-                    /* arguments= */null,
+                    /* extensionName= */
+                    null,
+                    /* arguments= */
+                    null,
                     $languageKey
                 );
             }

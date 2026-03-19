@@ -22,7 +22,6 @@ namespace Kitodo\Dlf\Common\Solr\SearchResult;
  */
 class Region
 {
-
     /**
      * @access private
      * @var int The identifier of the region
