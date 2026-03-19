@@ -17,7 +17,6 @@ namespace Kitodo\Dlf\Pagination;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 
-
 final class PageGridPagination implements PaginationInterface
 {
     /**
@@ -42,7 +41,7 @@ final class PageGridPagination implements PaginationInterface
         return $previousPage >= $this->getFirstPageNumber()
             ? $previousPage
             : null
-            ;
+        ;
     }
 
     public function getNextPageNumber(): ?int
@@ -52,7 +51,7 @@ final class PageGridPagination implements PaginationInterface
         return $nextPage <= $this->paginator->getNumberOfPages()
             ? $nextPage
             : null
-            ;
+        ;
     }
 
     public function getFirstPageNumber(): int

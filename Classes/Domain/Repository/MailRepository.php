@@ -30,7 +30,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class MailRepository extends Repository
 {
-
     /**
      * Find all mails by pid.
      *

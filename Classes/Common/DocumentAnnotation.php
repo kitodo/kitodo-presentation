@@ -86,7 +86,8 @@ class DocumentAnnotation
                             if ($this->document->getCurrentDocument() instanceof MetsDocument) {
                                 if (
                                     $meiTargetPages = $this->getMeasurePagesByFileId(
-                                        $annotationTarget->getId(), $annotationTarget->getRangeValue()
+                                        $annotationTarget->getId(),
+                                        $annotationTarget->getRangeValue()
                                     )
                                 ) {
                                     $targetPages[] = [
@@ -96,7 +97,8 @@ class DocumentAnnotation
                                     ];
                                 } elseif (
                                     $audioTargetPages = $this->getAudioPagesByFileId(
-                                        $annotationTarget->getId(), $annotationTarget->getRangeValue()
+                                        $annotationTarget->getId(),
+                                        $annotationTarget->getRangeValue()
                                     )
                                 ) {
                                     $targetPages[] = [
@@ -132,11 +134,11 @@ class DocumentAnnotation
                             );
                         }
                     } elseif ($annotationTarget->getObjectId()) {
-                         $objectTargetPages = [];
+                        $objectTargetPages = [];
                         foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physInfo) {
-                             $order = $physInfo['order'];
+                            $order = $physInfo['order'];
                             if ($order) {
-                                 $objectTargetPages[] = $order;
+                                $objectTargetPages[] = $order;
                             }
                         }
                         if ($objectTargetPages) {
