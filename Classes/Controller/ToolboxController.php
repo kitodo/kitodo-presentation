@@ -77,24 +77,15 @@ class ToolboxController extends AbstractController
             $tools = explode(',', $this->settings['tools']);
 
             foreach ($tools as $tool) {
-                match ($tool) {
-                    'multiviewaddsourcetool' => $this->renderToolByName('renderMultiViewAddSourceTool'),
-                    'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
-                    'audiovideotool' => $this->renderToolByName('renderAudioVideoTool'),
-                    'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
-                    'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
-                    'imagedownloadtool' => $this->renderToolByName('renderImageDownloadTool'),
-                    'imagemanipulationtool' => $this->renderToolByName('renderImageManipulationTool'),
-                    'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
-                    'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
-                    'rotationtool' => $this->renderToolByName('renderRotationTool'),
-                    'scoretool' => $this->renderToolByName('renderScoreTool'),
-                    'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
-                    'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
-                    'zoomtool' => $this->renderToolByName('renderZoomTool'),
-                    default => $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.')
-                };
+                $this->renderToolByName($tool);
             }
+
+            $toolsToRender = [];
+            foreach ($tools as $tool) {
+                $toolsToRender[$tool] = true;
+            }
+
+            $this->view->assign('tools', $toolsToRender);
         }
     }
 
@@ -109,8 +100,15 @@ class ToolboxController extends AbstractController
      */
     private function renderToolByName(string $tool): void
     {
-        $this->$tool();
-        $this->view->assign($tool, true);
+        $functionName = 'render' . ucfirst($tool);
+        if (!method_exists($this, $functionName)) {
+            if ($functionName != 'rotationTool' && $functionName != 'zoomTool') {
+                // rotation and zoom tool do not need a function, because they only render the buttons, no view arguments are needed
+                $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
+            }
+            return;
+        }
+        $this->$functionName();
     }
 
     /**

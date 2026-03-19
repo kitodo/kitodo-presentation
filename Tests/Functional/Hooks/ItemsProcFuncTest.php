@@ -45,16 +45,16 @@ class ItemsProcFuncTest extends FunctionalTestCase
         $itemsProcFunc->toolList($params);
         $expected = [
             'items' => [
-                ['Score', 'scoretool'],
-                ['Fulltext', 'fulltexttool'],
-                ['Add Multiview Source', 'multiviewaddsourcetool'],
-                ['IIIF Annotations', 'annotationtool'],
-                ['Fulltext Download', 'fulltextdownloadtool'],
-                ['Image Download', 'imagedownloadtool'],
-                ['Image Manipulation', 'imagemanipulationtool'],
-                ['Model Download', 'modeldownloadtool'],
-                ['PDF Download', 'pdfdownloadtool'],
-                ['Search in Document', 'searchindocumenttool']
+                ['Score', 'scoreTool'],
+                ['Fulltext', 'fulltextTool'],
+                ['Add Multiview Source', 'multiViewAddSourceTool'],
+                ['IIIF Annotations', 'annotationTool'],
+                ['Fulltext Download', 'fulltextDownloadTool'],
+                ['Image Download', 'imageDownloadTool'],
+                ['Image Manipulation', 'imageManipulationTool'],
+                ['Model Download', 'modelDownloadTool'],
+                ['PDF Download', 'pdfDownloadTool'],
+                ['Search in Document', 'searchInDocumentTool']
             ]
         ];
         $this->assertEquals($expected, $params);
