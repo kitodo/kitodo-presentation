@@ -664,7 +664,7 @@ TypoScript Configuration
    :Default:
       By default all features are activated. The selection is stored as comma separated list.
 
-      doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation,measureForward,measureBack
+      doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,measureForward,measureBack
    :Values:
       * doublePage
       * listView
@@ -679,8 +679,6 @@ TypoScript Configuration
       * pageStepForward
       * pagesBackward
       * pagesForward
-      * rotation
-      * zoom
 
  - :Property:
       pageStep
@@ -1193,17 +1191,29 @@ TypoScript Configuration
       `t3tsref:data-type-string`
    :Default:
    :Values:
-      * annotationtool
-      * audiovideotool
-      * fulltextdownloadtool
-      * fulltexttool
-      * imagedownloadtool
-      * imagemanipulationtool
-      * modeldownloadtool
-      * multiviewaddsourcetool
-      * pdfdownloadtool
-      * searchindocumenttool
-      * scoretool
+      * annotationTool
+      * audioVideoTool
+      * fulltextDownloadTool
+      * fulltextTool
+      * imageDownloadTool
+      * imageManipulationTool
+      * modelDownloadTool
+      * multiViewAddSourceTool
+      * pdfDownloadTool
+      * rotationtTool
+      * searchIndocumentTool
+      * scoreTool
+      * zooomTool
+
+ - :Property:
+      showAsList
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      0
+   :Values:
+      0: show tools as single <li> elements
+      1: show tools as list inside the <ul> element
 
  - :Property:
       solrCoreUid
@@ -1226,7 +1236,7 @@ This tool loads the Buttons for the Audiolabel-Image, Equalizer and Marker Table
 
     plugin.tx_dlf_audiovideotool {
        settings {
-          tools = audiovideotool
+          tools = audioVideoTool
        }
     }
 
@@ -1276,9 +1286,24 @@ The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-ful
 
     plugin.tx_dlf_fulltexttool {
         settings {
-            tools = fulltexttool
+            tools = fulltextTool
             activateFullTextInitially = 0
             fullTextScrollElement = html, body
+            showAsList = 0
+        }
+    }
+
+Image Tool
+~~~~~~~~~~~~~~~~~~~~~~
+This tool adds buttons for rotating, zooming and manipulating the image to the toolbox and display them as list of elements.
+
+..  code-block:: typoscript
+    :caption: Example configuration for Image Tool
+
+    plugin.tx_dlf_imagetool {
+        settings {
+            tools = rotationTool,zoomTool,imageManipulationTool
+            showAsList = 1
         }
     }
 
@@ -1294,7 +1319,7 @@ This tool makes it possible to extract the model URL from the METS file or use t
 
     plugin.tx_dlf_modeldownloadtool {
         settings {
-            tools = modeldownloadtool
+            tools = modelDownloadTool
         }
     }
 
@@ -1331,7 +1356,7 @@ The provided MIDI output of `Verovio` is played using the `html-midi-player <htt
 
     plugin.tx_dlf_scoretool {
         settings {
-            tools = scoretool
+            tools = scoreTool
             midiPlayerSoundFont = default
         }
     }
@@ -1416,7 +1441,7 @@ This plugin adds a possibility to search all appearances of the phrase in curren
 
     plugin.tx_dlf_searchindocumenttool {
         settings {
-            tools = searchindocumenttool
+            tools = searchInDocumentTool
             idInputName = tx_dlf[id]
             pidInputName = tx_dlf[pid]
             queryInputName = tx_dlf[query]
@@ -1441,7 +1466,7 @@ The model URL is extracted from the METS file or taken from the provided model p
 
     plugin.tx_dlf_viewerselectiontool {
         settings {
-            tools = viewerselectiontool
+            tools = viewerSelectionTool
         }
     }
 

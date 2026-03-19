@@ -19,11 +19,6 @@ if (!defined('TYPO3')) {
     'Configuration/TypoScript/',
     'Basic Configuration'
 );
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'dlf',
-    'Configuration/TypoScript/Toolbox/',
-    'Toolbox Default Tool Templates'
-);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
