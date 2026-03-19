@@ -21,10 +21,6 @@
         <f:render partial="Toolbox/AnnotationTool" arguments="{_all}" />
     </f:if>
 
-    <f:if condition="{renderImageManipulationTool}">
-        <f:render partial="Toolbox/ImageManipulationTool" arguments="{_all}" />
-    </f:if>
-
     <f:if condition="{renderAudioVideoTool}">
         <f:render partial="Toolbox/AudioVideoTool" arguments="{_all}" />
     </f:if>
@@ -33,32 +29,44 @@
         <f:render partial="Toolbox/ImageDownloadTool" arguments="{_all}" />
     </f:if>
 
-    <f:if condition="{renderModelDownloadTool} && {modelUrl}">
-        <f:render partial="Toolbox/ModelDownloadTool" arguments="{_all}" />
-    </f:if>
-
-    <f:if condition="{renderViewerSelectionTool} && {viewers}">
-        <f:render partial="Toolbox/ViewerSelectionTool" arguments="{_all}" />
-    </f:if>
-
-    <f:if condition="{renderFulltextTool}">
-        <f:render partial="Toolbox/FulltextTool" arguments="{_all}" />
+    <f:if condition="{renderImageManipulationTool}">
+        <f:render partial="Toolbox/ImageManipulationTool" arguments="{_all}" />
     </f:if>
 
     <f:if condition="{renderFulltextDownloadTool}">
         <f:render partial="Toolbox/FulltextDownloadTool" arguments="{_all}" />
     </f:if>
 
-    <f:if condition="{renderScoreTool} && {score}">
-        <f:render partial="Toolbox/ScoreTool" arguments="{_all}" />
+    <f:if condition="{renderFulltextTool}">
+        <f:render partial="Toolbox/FulltextTool" arguments="{_all}" />
+    </f:if>
+
+    <f:if condition="{renderModelDownloadTool} && {modelUrl}">
+        <f:render partial="Toolbox/ModelDownloadTool" arguments="{_all}" />
     </f:if>
 
     <f:if condition="{renderPdfDownloadTool}">
         <f:render partial="Toolbox/PdfDownloadTool" arguments="{_all}" />
     </f:if>
 
+    <f:if condition="{renderRotationTool}">
+        <f:render partial="Toolbox/RotationTool" arguments="{_all}" />
+    </f:if>
+
+    <f:if condition="{renderScoreTool} && {score}">
+        <f:render partial="Toolbox/ScoreTool" arguments="{_all}" />
+    </f:if>
+
     <f:if condition="{renderSearchInDocumentTool} && {searchInDocument}">
         <f:render partial="Toolbox/SearchInDocumentTool" arguments="{_all}" />
+    </f:if>
+
+    <f:if condition="{renderViewerSelectionTool} && {viewers}">
+        <f:render partial="Toolbox/ViewerSelectionTool" arguments="{_all}" />
+    </f:if>
+
+    <f:if condition="{renderZoomTool}">
+        <f:render partial="Toolbox/ZoomTool" arguments="{_all}" />
     </f:if>
 </ul>
 
