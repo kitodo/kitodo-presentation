@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class Embedded3dViewerController extends AbstractController
 {
-    public const MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX = '/?middleware=dlf/embedded3dviewer';
+    private const MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX = '/?middleware=dlf/embedded3dviewer';
 
     /**
      * @access public

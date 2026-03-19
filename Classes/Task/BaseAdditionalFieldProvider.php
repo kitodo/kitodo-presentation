@@ -35,7 +35,7 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  */
 class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
-    public const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:';
+    private const LANG_PREFIX = 'LLL:EXT:dlf/Resources/Private/Language/locallang_tasks.xlf:';
 
     /**
      * Gets additional fields to render in the form to add/edit a task
