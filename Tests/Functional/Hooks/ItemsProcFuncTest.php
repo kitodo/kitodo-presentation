@@ -36,7 +36,7 @@ class ItemsProcFuncTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function canToollist()
+    public function canToolList()
     {
         $this->initLanguageService('default');
         $itemsProcFunc = new ItemsProcFunc();
@@ -45,16 +45,16 @@ class ItemsProcFuncTest extends FunctionalTestCase
         $itemsProcFunc->toolList($params);
         $expected = [
             'items' => [
-                ['Score', 'tx_dlf_scoretool'],
-                ['Fulltext', 'tx_dlf_fulltexttool'],
-                ['Add Multiview Source', 'tx_dlf_multiviewaddsourcetool'],
-                ['IIIF Annotations', 'tx_dlf_annotationtool'],
-                ['Fulltext Download', 'tx_dlf_fulltextdownloadtool'],
-                ['Image Download', 'tx_dlf_imagedownloadtool'],
-                ['Image Manipulation', 'tx_dlf_imagemanipulationtool'],
-                ['Model Download', 'tx_dlf_modeldownloadtool'],
-                ['PDF Download', 'tx_dlf_pdfdownloadtool'],
-                ['Search in Document', 'tx_dlf_searchindocumenttool']
+                ['Score', 'scoreTool'],
+                ['Fulltext', 'fulltextTool'],
+                ['Add Multiview Source', 'multiViewAddSourceTool'],
+                ['IIIF Annotations', 'annotationTool'],
+                ['Fulltext Download', 'fulltextDownloadTool'],
+                ['Image Download', 'imageDownloadTool'],
+                ['Image Manipulation', 'imageManipulationTool'],
+                ['Model Download', 'modelDownloadTool'],
+                ['PDF Download', 'pdfDownloadTool'],
+                ['Search in Document', 'searchInDocumentTool']
             ]
         ];
         $this->assertEquals($expected, $params);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -32,7 +33,6 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class ToolboxController extends AbstractController
 {
-
     /**
      * @access private
      * @var AbstractDocument This holds the current document
@@ -77,22 +77,15 @@ class ToolboxController extends AbstractController
             $tools = explode(',', $this->settings['tools']);
 
             foreach ($tools as $tool) {
-                match ($tool) {
-                    'tx_dlf_multiviewaddsourcetool', 'multiviewaddsourcetool' => $this->renderToolByName('renderMultiViewAddSourceTool'),
-                    'tx_dlf_annotationtool', 'annotationtool' => $this->renderToolByName('renderAnnotationTool'),
-                    'tx_dlf_audiovideotool', 'audiovideotool' => $this->renderToolByName('renderAudioVideoTool'),
-                    'tx_dlf_fulltextdownloadtool', 'fulltextdownloadtool' => $this->renderToolByName('renderFulltextDownloadTool'),
-                    'tx_dlf_fulltexttool', 'fulltexttool' => $this->renderToolByName('renderFulltextTool'),
-                    'tx_dlf_imagedownloadtool', 'imagedownloadtool' => $this->renderToolByName('renderImageDownloadTool'),
-                    'tx_dlf_imagemanipulationtool', 'imagemanipulationtool' => $this->renderToolByName('renderImageManipulationTool'),
-                    'tx_dlf_modeldownloadtool', 'modeldownloadtool' => $this->renderToolByName('renderModelDownloadTool'),
-                    'tx_dlf_pdfdownloadtool', 'pdfdownloadtool' => $this->renderToolByName('renderPdfDownloadTool'),
-                    'tx_dlf_scoretool', 'scoretool' => $this->renderToolByName('renderScoreTool'),
-                    'tx_dlf_searchindocumenttool', 'searchindocumenttool' => $this->renderToolByName('renderSearchInDocumentTool'),
-                    'tx_dlf_viewerselectiontool', 'viewerselectiontool' => $this->renderToolByName('renderViewerSelectionTool'),
-                    default => $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.')
-                };
+                $this->renderToolByName($tool);
             }
+
+            $toolsToRender = [];
+            foreach ($tools as $tool) {
+                $toolsToRender[$tool] = true;
+            }
+
+            $this->view->assign('tools', $toolsToRender);
         }
     }
 
@@ -107,8 +100,15 @@ class ToolboxController extends AbstractController
      */
     private function renderToolByName(string $tool): void
     {
-        $this->$tool();
-        $this->view->assign($tool, true);
+        $functionName = 'render' . ucfirst($tool);
+        if (!method_exists($this, $functionName)) {
+            if ($functionName != 'rotationTool' && $functionName != 'zoomTool') {
+                // rotation and zoom tool do not need a function, because they only render the buttons, no view arguments are needed
+                $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
+            }
+            return;
+        }
+        $this->$functionName();
     }
 
     /**
@@ -625,7 +625,7 @@ class ToolboxController extends AbstractController
             'labelHighlightWord' => $this->settings['highlightWordInputName'],
             'labelEncrypted' => $this->settings['encryptedInputName'],
             'documentId' => $this->getCurrentDocumentId(),
-            'solrEncrypted' => $this->getEncryptedCoreName() ? : ''
+            'solrEncrypted' => $this->getEncryptedCoreName() ?: ''
         ];
 
         $this->view->assign('searchInDocument', $viewArray);
@@ -662,7 +662,7 @@ class ToolboxController extends AbstractController
             if (count($arr) == 2) {
                 /** @var non-empty-string $arr[0] */
                 $id = explode($arr[0], $id)[0];
-            } else if (count($arr) == 3) {
+            } elseif (count($arr) == 3) {
                 $sub = substr($id, strpos($id, $arr[0]) + strlen($arr[0]), strlen($id));
                 $id = substr($sub, 0, strpos($sub, $arr[2]) ?: null);
             }
@@ -707,5 +707,31 @@ class ToolboxController extends AbstractController
             }
         }
         return true;
+    }
+
+    /**
+     * Renders the rotation tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderRotationTool(): void
+    {
+        // Empty function, no view arguments needed
+    }
+
+    /**
+     * Renders the zoom tool (used in template)
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function renderZoomTool(): void
+    {
+        // Empty function, no view arguments needed
     }
 }

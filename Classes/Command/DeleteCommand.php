@@ -33,7 +33,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class DeleteCommand extends BaseCommand
 {
-
     /**
      * Configure the command by defining the name, options and arguments
      *

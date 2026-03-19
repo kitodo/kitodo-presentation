@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -27,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FeedsController extends AbstractController
 {
-
     /**
      * @access protected
      * @var LibraryRepository
@@ -105,7 +105,7 @@ class FeedsController extends AbstractController
                 }
                 // Set default title if empty.
                 if (empty($title)) {
-                    $title = LocalizationUtility::translate('noTitle', 'dlf') ? : '';
+                    $title = LocalizationUtility::translate('noTitle', 'dlf') ?: '';
                 }
                 // Append volume information.
                 if (!empty($document->getVolume())) {

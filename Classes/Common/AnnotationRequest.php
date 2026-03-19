@@ -37,7 +37,7 @@ class AnnotationRequest
      *
      * @return mixed[] Array of annotation data
      */
-    protected function requestAnnotations(string $url) : array
+    protected function requestAnnotations(string $url): array
     {
         $jsonld = Helper::getUrl($url);
 

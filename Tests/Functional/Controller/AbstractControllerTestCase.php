@@ -28,7 +28,6 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 
 abstract class AbstractControllerTestCase extends FunctionalTestCase
 {
-
     protected static $solrCoreId = 1;
     protected static $storagePid = 2;
 
