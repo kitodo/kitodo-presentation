@@ -290,7 +290,7 @@ class Annotation
     {
         foreach ($this->targetPages as $target) {
             if (array_key_exists('verovioRelevant', $target) && $target['verovioRelevant']) {
-                    return true;
+                return true;
             }
         }
 

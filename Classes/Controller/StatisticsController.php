@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
  *
@@ -38,13 +39,15 @@ class StatisticsController extends AbstractController
         // Set replacements.
         $args['###TITLES###'] = $foundNumbers['titles'] . ' ' . htmlspecialchars(
             LocalizationUtility::translate(
-                ($foundNumbers['titles'] > 1 ? 'titles' : 'title'), 'dlf'
+                ($foundNumbers['titles'] > 1 ? 'titles' : 'title'),
+                'dlf'
             )
         );
 
         $args['###VOLUMES###'] = $foundNumbers['volumes'] . ' ' . htmlspecialchars(
             LocalizationUtility::translate(
-                ($foundNumbers['volumes'] > 1 ? 'volumes' : 'volume'), 'dlf'
+                ($foundNumbers['volumes'] > 1 ? 'volumes' : 'volume'),
+                'dlf'
             )
         );
 

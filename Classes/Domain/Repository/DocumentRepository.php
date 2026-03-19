@@ -288,50 +288,50 @@ class DocumentRepository extends Repository
                 ->executeQuery()
                 ->fetchFirstColumn();
 
-                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
-                $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getQueryBuilderForTable('tx_dlf_documents');
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
+            $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable('tx_dlf_documents');
 
-                $subQuery = $subQueryBuilder
-                    ->select('tx_dlf_documents.partof')
-                    ->from('tx_dlf_documents')
-                    ->where(
-                        $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
-                    )
-                    ->groupBy('tx_dlf_documents.partof')
-                    ->getSQL();
+            $subQuery = $subQueryBuilder
+                ->select('tx_dlf_documents.partof')
+                ->from('tx_dlf_documents')
+                ->where(
+                    $subQueryBuilder->expr()->neq('tx_dlf_documents.partof', 0)
+                )
+                ->groupBy('tx_dlf_documents.partof')
+                ->getSQL();
 
-                $countVolumes = $queryBuilder
-                    ->count('tx_dlf_documents.uid')
-                    ->from('tx_dlf_documents')
-                    ->innerJoin(
-                        'tx_dlf_documents',
-                        'tx_dlf_relations',
-                        'tx_dlf_relations_joins',
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_relations_joins.uid_local',
-                            'tx_dlf_documents.uid'
-                        )
+            $countVolumes = $queryBuilder
+                ->count('tx_dlf_documents.uid')
+                ->from('tx_dlf_documents')
+                ->innerJoin(
+                    'tx_dlf_documents',
+                    'tx_dlf_relations',
+                    'tx_dlf_relations_joins',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_relations_joins.uid_local',
+                        'tx_dlf_documents.uid'
                     )
-                    ->innerJoin(
-                        'tx_dlf_relations_joins',
-                        'tx_dlf_collections',
-                        'tx_dlf_collections_join',
-                        $queryBuilder->expr()->eq(
-                            'tx_dlf_relations_joins.uid_foreign',
-                            'tx_dlf_collections_join.uid'
-                        )
+                )
+                ->innerJoin(
+                    'tx_dlf_relations_joins',
+                    'tx_dlf_collections',
+                    'tx_dlf_collections_join',
+                    $queryBuilder->expr()->eq(
+                        'tx_dlf_relations_joins.uid_foreign',
+                        'tx_dlf_collections_join.uid'
                     )
-                    ->where(
-                        $queryBuilder->expr()->eq('tx_dlf_documents.pid', (int) $settings['storagePid']),
-                        $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', (int) $settings['storagePid']),
-                        $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery),
-                        $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
-                        $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
-                    )
-                    ->executeQuery()
-                    ->fetchFirstColumn();
+                )
+                ->where(
+                    $queryBuilder->expr()->eq('tx_dlf_documents.pid', (int) $settings['storagePid']),
+                    $queryBuilder->expr()->eq('tx_dlf_collections_join.pid', (int) $settings['storagePid']),
+                    $queryBuilder->expr()->notIn('tx_dlf_documents.uid', $subQuery),
+                    $queryBuilder->expr()->in('tx_dlf_collections_join.uid', $queryBuilder->createNamedParameter(GeneralUtility::intExplode(',', $settings['collections']), Connection::PARAM_INT_ARRAY)),
+                    $queryBuilder->expr()->eq('tx_dlf_relations_joins.ident', $queryBuilder->createNamedParameter('docs_colls'))
+                )
+                ->executeQuery()
+                ->fetchFirstColumn();
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -600,8 +600,7 @@ class DocumentRepository extends Repository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch
-    {
+    ): SolrSearch {
         return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -624,8 +623,7 @@ class DocumentRepository extends Repository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch
-    {
+    ): SolrSearch {
         return $this->findSolr($collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -646,8 +644,7 @@ class DocumentRepository extends Repository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch
-    {
+    ): SolrSearch {
         return $this->findSolr([], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -670,8 +667,7 @@ class DocumentRepository extends Repository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch
-    {
+    ): SolrSearch {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;

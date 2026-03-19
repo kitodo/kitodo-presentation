@@ -35,7 +35,8 @@ class JsFooterViewHelperTest extends FunctionalTestCase
         $pageRendererProphecy = $this->getMockBuilder(PageRenderer::class)->disableOriginalConstructor()->getMock();
 
         $pageRendererProphecy->expects(self::once())->method('addJsFooterInlineCode')->with(
-            'js-dlf-inline-footer', '$(document).ready(function() {});'
+            'js-dlf-inline-footer',
+            '$(document).ready(function() {});'
         );
 
         GeneralUtility::setSingletonInstance(PageRenderer::class, $pageRendererProphecy);

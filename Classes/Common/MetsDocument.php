@@ -12,13 +12,13 @@
 
 namespace Kitodo\Dlf\Common;
 
-use \DOMDocument;
-use \DOMElement;
-use \DOMNode;
-use \DOMNodeList;
-use \DOMXPath;
+use DOMDocument;
+use DOMElement;
+use DOMNode;
+use DOMNodeList;
+use DOMXPath;
 use Kitodo\Dlf\Hooks\KitodoProductionHacks;
-use \SimpleXMLElement;
+use SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
@@ -1290,7 +1290,7 @@ final class MetsDocument extends AbstractDocument
                 }
             }
 
-            $amdSecXml = $this->mets->xpath('./mets:amdSec');;
+            $amdSecXml = $this->mets->xpath('./mets:amdSec');
             if (!empty($amdSecXml)) {
                 foreach ($amdSecXml as $amdSecTag) {
                     $childIds = [];

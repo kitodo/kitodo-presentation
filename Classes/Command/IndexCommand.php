@@ -34,7 +34,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class IndexCommand extends BaseCommand
 {
-
     /**
      * Configure the command by defining the name, options and arguments
      *
