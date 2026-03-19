@@ -1246,6 +1246,16 @@ TypoScript Configuration
       * zooomtool
 
  - :Property:
+      showAsList
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      0
+   :Values:
+      0: show tools as single <li> elements
+      1: show tools as list inside the <ul> element
+
+ - :Property:
       solrCoreUid
    :Data Type:
       :ref:`t3tsref:data-type-integer`

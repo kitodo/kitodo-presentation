@@ -16,7 +16,10 @@
     <f:render partial="Toolbox/MultiViewAddSourceTool" arguments="{_all}" />
 </f:if>
 
-<ul>
+<f:if condition="{settings.showAsList}">
+    <ul>
+</f:if>
+
     <f:if condition="{renderAnnotationTool}">
         <f:render partial="Toolbox/AnnotationTool" arguments="{_all}" />
     </f:if>
@@ -68,6 +71,9 @@
     <f:if condition="{renderZoomTool}">
         <f:render partial="Toolbox/ZoomTool" arguments="{_all}" />
     </f:if>
-</ul>
+
+<f:if condition="{settings.showAsList}">
+    </ul>
+</f:if>
 
 </html>
