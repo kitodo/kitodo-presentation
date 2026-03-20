@@ -19,7 +19,7 @@
     </f:if>
 </f:for>
 
-<f:section name="{render.multiViewAddSourceTool}">
+<f:section name="render.multiViewAddSourceTool">
     <f:render partial="Toolbox/MultiViewAddSourceTool" arguments="{_all}" />
 </f:section>
 
@@ -27,65 +27,65 @@
     <ul>
 </f:if>
 
-<f:section name="{render.annotationTool}">
+<f:section name="render.annotationTool">
     <f:render partial="Toolbox/AnnotationTool" arguments="{_all}" />
 </f:section>
 
-<f:section name="{render.audioVideoTool}">
+<f:section name="render.audioVideoTool">
     <f:render partial="Toolbox/AudioVideoTool" arguments="{_all}" />
 </f:section>
 
-<f:section name="{render.imageDownloadTool}">
+<f:section name="render.imageDownloadTool">
     <f:if condition="{imageDownload}">
         <f:render partial="Toolbox/ImageDownloadTool" arguments="{_all}" />
     </f:if>
 </f:section>
 
-<f:section name="{render.imageManipulationTool}">
+<f:section name="render.imageManipulationTool">
     <f:render partial="Toolbox/ImageManipulationTool" arguments="{_all}" />
 </f:section>
 
-<f:section name="{render.fulltextDownloadTool}">
+<f:section name="render.fulltextDownloadTool">
     <f:render partial="Toolbox/FulltextDownloadTool" arguments="{_all}" />
 </f:section>
 
-<f:section name="{render.fulltextTool}">
+<f:section name="render.fulltextTool">
     <f:render partial="Toolbox/FulltextTool" arguments="{_all}" />
 </f:section>
 
-<f:section name="{render.modelDownloadTool}">
+<f:section name="render.modelDownloadTool">
     <f:if condition="{modelUrl}">
         <f:render partial="Toolbox/ModelDownloadTool" arguments="{_all}" />
     </f:if>
 </f:section>
 
-<f:section name="{render.pdfDownloadTool}">
+<f:section name="render.pdfDownloadTool">
     <f:render partial="Toolbox/PdfDownloadTool" arguments="{_all}" />
 </f:section>
 
-<f:section name="{render.rotationTool}">
+<f:section name="render.rotationTool">
     <f:render partial="Toolbox/RotationTool" arguments="{_all}" />
 </f:section>
 
-<f:section name="{render.scoreTool}">
+<f:section name="render.scoreTool">
     <f:if condition="{score}">
         <f:render partial="Toolbox/ScoreTool" arguments="{_all}" />
     </f:if>
 </f:section>
 
-<f:section name="{render.searchInDocumentTool}">
+<f:section name="render.searchInDocumentTool">
     <f:if condition="{searchInDocument}">
         <f:render partial="Toolbox/SearchInDocumentTool" arguments="{_all}" />
     </f:if>
 </f:section>
 
-<f:section name="{render.viewerSelectionTool}">
+<f:section name="render.viewerSelectionTool">
     <f:if condition="{viewers}">
         <f:render partial="Toolbox/ViewerSelectionTool" arguments="{_all}" />
     </f:if>
 </f:section>
 
-<f:section name="{render.zoomTool}">
+<f:section name="render.zoomTool">
     <f:render partial="Toolbox/ZoomTool" arguments="{_all}" />
 </f:section>
 
