@@ -410,7 +410,7 @@ class ToolboxController extends AbstractController
     private function renderImageManipulationTool(): void
     {
         // Set parent element for initialization.
-        $parentContainer = !empty($this->settings['parentContainer']) ? $this->settings['parentContainer'] : '.tx-dlf-imagemanipulationtool';
+        $parentContainer = !empty($this->settings['parentContainer']) ? $this->settings['parentContainer'] : '.tx-dlf-tools-imagemanipulation';
 
         $this->view->assign('imageManipulation', true);
         $this->view->assign('parentContainer', $parentContainer);
