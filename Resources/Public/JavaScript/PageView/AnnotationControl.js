@@ -40,8 +40,8 @@ function DlfAnnotationControl(map, image, annotationContainers) {
 
     this.annotationData = undefined;
 
-    this.dic = $('#tx-dlf-tools-annotations').length > 0 && $('#tx-dlf-tools-annotations').attr('data-dic') ?
-        dlfUtils.parseDataDic($('#tx-dlf-tools-annotations')) :
+    this.dic = $('#tx-dlf-tools-annotation').length > 0 && $('#tx-dlf-tools-annotation').attr('data-dic') ?
+        dlfUtils.parseDataDic($('#tx-dlf-tools-annotation')) :
         {'annotations-on':'Display Annotations','annotations-off':'Hide Annotations'};
 
     this.layers_ = {
@@ -184,7 +184,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
             }, this)
     };
 
-    var anchorEl = $('#tx-dlf-tools-annotations');
+    var anchorEl = $('#tx-dlf-tools-annotation');
     if (anchorEl.length > 0){
         var toogleAnnotations = $.proxy(function(event) {
                 event.preventDefault();
@@ -204,7 +204,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
     this.selectedFeature_ = undefined;
 
     // set initial title of annotation element
-    $("#tx-dlf-tools-annotations")
+    $("#tx-dlf-tools-annotation")
         .text(this.dic['annotations-on'])
         .attr('title', this.dic['annotations-on']);
 
@@ -241,7 +241,7 @@ DlfAnnotationControl.prototype.showAnnotationText = function(featuresParam) {
 
 DlfAnnotationControl.prototype.activate = function() {
 
-    var controlEl = $('#tx-dlf-tools-annotations');
+    var controlEl = $('#tx-dlf-tools-annotation');
 
     // Fetch annotation lists from server if the method is called for the first time
     if (this.annotationData === undefined)  {
@@ -272,7 +272,7 @@ DlfAnnotationControl.prototype.activate = function() {
 };
 
 DlfAnnotationControl.prototype.deactivate = function() {
-    var controlEl = $('#tx-dlf-tools-annotations');
+    var controlEl = $('#tx-dlf-tools-annotation');
     // deactivate annotations
     this.disableAnnotationSelect();
     dlfUtils.setCookie("tx-dlf-pageview-annotation-select", 'disabled', "lax");
@@ -292,7 +292,7 @@ DlfAnnotationControl.prototype.disableAnnotationSelect = function() {
         }
     }
     var className = 'fulltext-visible';
-    $("#tx-dlf-tools-annotations").removeClass(className)
+    $("#tx-dlf-tools-annotation").removeClass(className)
         .text(this.dic['annotations-on'])
         .attr('title', this.dic['annotations-on']);
 
@@ -314,7 +314,7 @@ DlfAnnotationControl.prototype.enableAnnotationSelect = function(textBlockFeatur
     }
     // show annotation container
     var className = 'fulltext-visible';
-    $("#tx-dlf-tools-annotations").addClass(className)
+    $("#tx-dlf-tools-annotation").addClass(className)
         .text(this.dic['annotations-off'])
         .attr('title', this.dic['annotations-off']);
 
