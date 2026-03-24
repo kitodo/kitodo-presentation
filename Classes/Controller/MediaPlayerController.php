@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Service\MediaPlayerService;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -29,6 +30,10 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class MediaPlayerController extends AbstractController
 {
+    public function __construct(
+        protected readonly MediaPlayerService $mediaPlayerService
+    ) {}
+
     /**
      * The main method of the plugin
      *
@@ -72,13 +77,9 @@ class MediaPlayerController extends AbstractController
      */
     protected function getMediaplayerInfo(AbstractDocument $doc, int $pageNo): ?array
     {
-        // Get audio file use groups
-        $audioUseGroups = $this->useGroupsConfiguration->getAudio();
         // Get video file use groups
         $videoUseGroups = $this->useGroupsConfiguration->getVideo();
         $mainVideoUseGroup = $videoUseGroups[0] ?? '';
-        // Merge audio and video file use groups without duplicates
-        $mediaplayerUseGroups = array_unique([...$audioUseGroups, ...$videoUseGroups]);
 
         // Get thumbnail file use groups
         $thumbnailUseGroups = $this->useGroupsConfiguration->getThumbnail();
@@ -89,7 +90,7 @@ class MediaPlayerController extends AbstractController
 
         // Collect audio/video-media file source URLs
         // TODO: This is for multiple sources (MPD, HLS, MP3, ...) - revisit, make sure it's ordered by preference!
-        $mediaplayerSources = $this->collectMediaSources($doc, $pageNo, $mediaplayerUseGroups);
+        $mediaplayerSources = $this->mediaPlayerService->getMediaplayerSources($doc, $pageNo);
         if (empty($mediaplayerSources)) {
             return null;
         }
@@ -102,7 +103,7 @@ class MediaPlayerController extends AbstractController
 
         return [
             'start' => $mediaChapters[$pageNo - 1]['timecode'] ?? '',
-            'mode' => $this->determineInitialMode($mediaplayerSources, $mainVideoUseGroup),
+            'mode' => $this->mediaPlayerService->determineInitialMode($mediaplayerSources, $mainVideoUseGroup),
             'chapters' => $mediaChapters,
             'metadata' => $doc->getToplevelMetadata(),
             'sources' => $mediaplayerSources,
@@ -110,54 +111,6 @@ class MediaPlayerController extends AbstractController
         ];
     }
 
-    /**
-     * Collects Audio/Video-Media sources for the given document.
-     *
-     * @param AbstractDocument $doc The document object to collect media sources from
-     * @param int $pageNo The page number to collect media sources for
-     * @param string[] $mediaplayerUseGroups The array of mediaplayer use groups to search for media sources
-     *
-     * @return mixed[] An array of media sources with details like MIME type, URL, file ID, and frame rate
-     */
-    private function collectMediaSources(AbstractDocument $doc, int $pageNo, array $mediaplayerUseGroups): array
-    {
-        $mediaplayerSources = [];
-        $mediaFiles = $this->findFiles($doc, $pageNo, $mediaplayerUseGroups);
-        foreach ($mediaFiles as $mediaFile) {
-            if ($this->isMediaMime($mediaFile['mimeType'])) {
-                $fileMetadata = $doc->getMetadata($mediaFile['fileId']);
-
-                $mediaplayerSources[] = [
-                    'fileGrp' => $mediaFile['fileGrp'],
-                    'mimeType' => $mediaFile['mimeType'],
-                    'url' => $mediaFile['url'],
-                    'fileId' => $mediaFile['fileId'],
-                    'frameRate' => $fileMetadata['video_frame_rate'][0] ?? '',
-                ];
-            }
-        }
-        return $mediaplayerSources;
-    }
-
-    /**
-     * Determine the initial mode (video or audio) based on the provided audio/video-media sources and the main video use group.
-     *
-     * @param mixed[] $mediaplayerSources An array of media sources with details like MIME type, URL, file ID, and frame rate
-     * @param string $mainVideoUseGroup The main video use group to prioritize
-     *
-     * @return string The initial mode ('video' or 'audio')
-     */
-    private function determineInitialMode(array $mediaplayerSources, string $mainVideoUseGroup): string
-    {
-        foreach ($mediaplayerSources as $mediaplayerSource) {
-            // TODO: Better guess of initial mode?
-            //       Perhaps we could look for VIDEOMD/AUDIOMD in METS
-            if ($mediaplayerSource['fileGrp'] === $mainVideoUseGroup || str_starts_with($mediaplayerSource['mimeType'], 'video/')) {
-                return 'video';
-            }
-        }
-        return 'audio';
-    }
 
     /**
      * Collects all audio/video-media chapters for chapter markers from the given AbstractDocument.
@@ -191,55 +144,28 @@ class MediaPlayerController extends AbstractController
         $mediaUrl = [];
 
         $showPoster = $this->settings['constants']['showPoster'] ?? null;
-        $thumbFiles = $this->findFiles($doc, 0, $thumbnailUseGroups); // 0 = for whole video (not just chapter)
+        $thumbFiles = $this->mediaPlayerService->findFiles($doc, 0, $thumbnailUseGroups); // 0 = for whole video (not just chapter)
         if (!empty($thumbFiles) && (int) $showPoster === 1) {
             $mediaUrl['poster'] = $thumbFiles[0];
         }
 
-        $waveformFiles = $this->findFiles($doc, $pageNo, $waveformUseGroups);
+        $waveformFiles = $this->mediaPlayerService->findFiles($doc, $pageNo, $waveformUseGroups);
         if (!empty($waveformFiles)) {
             $mediaUrl['waveform'] = $waveformFiles[0];
         }
 
         $showAudioLabelImage = $this->settings['constants']['showAudioLabelImage'] ?? null;
-        $audioLabelImageFiles = $this->findFiles($doc, $pageNo, $imageUseGroups);
-        if (!empty($audioLabelImageFiles)
-            && (int) $showAudioLabelImage === 1
-            && Helper::filterFilesByMimeType($audioLabelImageFiles[0], ['image'], ['JPG'], 'mimeType')
-        ) {
-            $mediaUrl['audioLabelImage'] = $audioLabelImageFiles[0];
+        $audioLabelImageFiles = $this->mediaPlayerService->findFiles($doc, $pageNo, $imageUseGroups);
+        if (!empty($audioLabelImageFiles) && (int) $showAudioLabelImage === 1) {
+            foreach ($audioLabelImageFiles as $imagefile) {
+                if (Helper::filterFilesByMimeType($imagefile, ['image'], ['JPG'], 'mimeType')) {
+                    $mediaUrl['audioLabelImage'] = $imagefile;
+                    break;
+                }
+            }
         }
 
         return $mediaUrl;
-    }
-
-    /**
-     * Find files of the given file use groups that are referenced on a page.
-     *
-     * @param AbstractDocument $doc
-     * @param int $pageNo
-     * @param string[] $fileGrps
-     *
-     * @return array{fileGrp: string, fileId: string, url: string, mimeType: string}[]
-     */
-    protected function findFiles(AbstractDocument $doc, int $pageNo, array $fileGrps): array
-    {
-        $pagePhysKey = $doc->physicalStructure[$pageNo];
-        $pageFiles = $doc->physicalStructureInfo[$pagePhysKey]['all_files'] ?? [];
-        $filesInGrp = array_intersect_key($pageFiles, array_flip($fileGrps));
-
-        $result = [];
-        foreach ($filesInGrp as $fileGrp => $fileIds) {
-            foreach ($fileIds as $fileId) {
-                $result[] = [
-                    'fileGrp' => $fileGrp,
-                    'fileId' => $fileId,
-                    'url' => $doc->getFileLocation($fileId),
-                    'mimeType' => $doc->getFileMimeType($fileId),
-                ];
-            }
-        }
-        return $result;
     }
 
     /**
@@ -267,24 +193,6 @@ class MediaPlayerController extends AbstractController
         foreach ($logInfo['children'] ?? [] as $child) {
             $this->recurseChapters($child, $outChapters);
         }
-    }
-
-    /**
-     * Check if the given MIME type corresponds to a media file.
-     *
-     * @param string $mimeType The MIME type to check
-     *
-     * @return bool True if the MIME type corresponds to a media file, false otherwise
-     */
-    protected function isMediaMime(string $mimeType): bool
-    {
-        return (
-            str_starts_with($mimeType, 'audio/')
-            || str_starts_with($mimeType, 'video/')
-            || $mimeType == 'application/dash+xml'
-            || $mimeType == 'application/x-mpegurl'
-            || $mimeType == 'application/vnd.apple.mpegurl'
-        );
     }
 
     /**
