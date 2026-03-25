@@ -69,18 +69,6 @@
                 <source><![CDATA[Template file]]></source>
                 <target><![CDATA[HTML-Template]]></target>
             </trans-unit>
-            <trans-unit id="plugins.audioplayer.description" approved="yes">
-                <source><![CDATA[Audio Player Plugin for Kitodo.Presentation]]></source>
-                <target><![CDATA[Audio Player Plugin für Kitodo.Presentation]]></target>
-            </trans-unit>
-            <trans-unit id="plugins.audioplayer.flexform.elementId" approved="yes">
-                <source><![CDATA[@ID value of the HTML element for the audio player]]></source>
-                <target><![CDATA[@ID-Wert des HTML-Elements für den Audioplayer]]></target>
-            </trans-unit>
-            <trans-unit id="plugins.audioplayer.title" approved="yes">
-                <source><![CDATA[Kitodo: Audio Player]]></source>
-                <target><![CDATA[Kitodo: Audio Player]]></target>
-            </trans-unit>
             <trans-unit id="plugins.basket.description" approved="yes">
                 <source><![CDATA[Basket Plugin for Kitodo.Presentation]]></source>
                 <target><![CDATA[Warenkorb Plugin für Kitodo.Presentation]]></target>

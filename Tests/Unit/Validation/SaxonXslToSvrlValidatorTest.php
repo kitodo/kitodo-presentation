@@ -31,7 +31,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class SaxonXslToSvrlValidatorTest extends UnitTestCase
 {
-    public const SVRL = <<<SVRL
+    private const SVRL = <<<SVRL
         <svrl:schematron-output
             xmlns:svrl="http://purl.oclc.org/dsdl/schematron">
             <svrl:failed-assert

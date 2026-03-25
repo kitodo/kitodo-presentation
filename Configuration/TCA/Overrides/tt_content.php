@@ -28,24 +28,6 @@ $pluginsLabel = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins
     $pluginsLabel . 'annotation.title',
 );
 
-// Plugin "audioplayer".
-$plugin = 'dlf_audioplayer';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'AudioPlayer.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'AudioPlayer',
-    $pluginsLabel . 'audioplayer.title',
-    $iconsDirectory . 'tx-dlf-audioplayer.svg'
-);
-
 // Plugin "basket".
 $plugin = 'dlf_basket';
 
