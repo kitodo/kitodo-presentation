@@ -213,13 +213,13 @@ class MediaPlayerService
     }
 
     /**
-     * Filters sources based on use group configuration and media type.
+     * Filters sources based on useGroups configuration and media type.
      *
-     * @param array  $sources
-     * @param array  $useGroups
+     * @param mixed[] $sources
+     * @param string[] $useGroups
      * @param string $mediaType 'audio' or 'video'
      *
-     * @return array
+     * @return mixed[] The filtered array of sources matching the media type and use group criteria
      */
     private function filterSources(array $sources, array $useGroups, string $mediaType): array
     {
@@ -258,7 +258,7 @@ class MediaPlayerService
      * A default scenario is met when 'DEFAULT' exists in the configured use groups
      * and the provided file group is also 'DEFAULT'.
      *
-     * @param array $configuredUseGroups List of configured use group identifiers.
+     * @param string[] $configuredUseGroups List of configured use group identifiers.
      * @param string $fileGrp The file group to check.
      *
      * @return bool True if the default use group scenario applies, otherwise false.

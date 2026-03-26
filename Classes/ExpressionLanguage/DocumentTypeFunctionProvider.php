@@ -141,6 +141,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     /**
      * Load and return the AbstractDocument from request arguments
      *
+     * @access protected
+     * 
+     * @param mixed[] $arguments The request arguments
+     * @param int $storagePid Storage Pid
+     *
      * @return AbstractDocument|null
      */
     protected function loadDocumentFromArguments(array $arguments, int $storagePid): ?AbstractDocument
