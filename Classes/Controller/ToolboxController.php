@@ -74,7 +74,7 @@ class ToolboxController extends AbstractController
         if (!empty($this->settings['tools'])) {
 
             $tools = explode(',', $this->settings['tools']);
-
+            $toolsToRender = [];
             foreach ($tools as $tool) {
                 $this->renderToolByName($tool);
                 $toolsToRender[$tool] = true;
