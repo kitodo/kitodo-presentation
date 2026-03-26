@@ -142,7 +142,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      * Load and return the AbstractDocument from request arguments
      *
      * @access protected
-     * 
+     *
      * @param mixed[] $arguments The request arguments
      * @param int $storagePid Storage Pid
      *
@@ -175,7 +175,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
 
         // Set PID for metadata definitions.
         $this->document->getCurrentDocument()->configPid = $storagePid;
-        
+
         return $this->document->getCurrentDocument();
     }
 

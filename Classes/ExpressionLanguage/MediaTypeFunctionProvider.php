@@ -24,14 +24,16 @@ class MediaTypeFunctionProvider extends DocumentTypeFunctionProvider
     public function getFunctions(): array
     {
         $functions = parent::getFunctions();
-        
-        $functions[] = $this->createMediaFunction('isAudio', 
-            fn($service, $doc, $page) => $service->hasAudioSources($doc, $page)
+
+        $functions[] = $this->createMediaFunction(
+            'isAudio',
+            fn ($service, $doc, $page) => $service->hasAudioSources($doc, $page)
         );
-        $functions[] = $this->createMediaFunction('isVideo', 
-            fn($service, $doc, $page) => $service->hasVideoSources($doc, $page)
+        $functions[] = $this->createMediaFunction(
+            'isVideo',
+            fn ($service, $doc, $page) => $service->hasVideoSources($doc, $page)
         );
-        
+
         return $functions;
     }
 
@@ -45,7 +47,8 @@ class MediaTypeFunctionProvider extends DocumentTypeFunctionProvider
     {
         return new ExpressionFunction(
             $name,
-            function () { /* Not implemented, we only use the evaluator */ },
+            function () { /* Not implemented, we only use the evaluator */
+            },
             function ($arguments, $storagePid) use ($checker) {
                 $doc = $this->loadDocumentFromArguments($arguments, $storagePid);
                 if ($doc === null) {
@@ -54,7 +57,7 @@ class MediaTypeFunctionProvider extends DocumentTypeFunctionProvider
 
                 $page = (int)(($arguments['request']?->getQueryParams()['tx_dlf']['page']) ?? 1);
                 $mediaService = GeneralUtility::makeInstance(MediaPlayerService::class);
-                
+
                 return $checker($mediaService, $doc, $page);
             }
         );

@@ -21,7 +21,8 @@
  *	 isNewspaper.value = newspaper_anchor
  *  }
  * [END]
- * 
+ *
+ *
  * Example Audio/Video Mediaplayer:
  *
  * page.10.variables {
@@ -30,11 +31,11 @@
  *     isVideo = TEXT
  *     isVideo.value = 0
  * }
- * 
+ *
  * [isAudio({$plugin.tx_dlf.persistence.storagePid})]
  *     page.10.variables.isAudio.value = 1
  * [END]
- * 
+ *
  * [isVideo({$plugin.tx_dlf.persistence.storagePid})]
  *     page.10.variables.isVideo.value = 1
  * [END]
