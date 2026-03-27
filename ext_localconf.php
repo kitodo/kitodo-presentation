@@ -16,7 +16,6 @@ if (!defined('TYPO3')) {
 
 // Register plugin icons.
 $iconArray = [
-    'tx-dlf-audioplayer' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-audioplayer.svg',
     'tx-dlf-basket' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-basket.svg',
     'tx-dlf-calendar' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-calendar.svg',
     'tx-dlf-collection' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-collection.svg',
@@ -207,18 +206,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\NavigationController::class => 'pageSelect',
-    ]
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-    'Dlf',
-    'AudioPlayer',
-    [
-        \Kitodo\Dlf\Controller\AudioPlayerController::class => 'main',
-    ],
-    // non-cacheable actions
-    [
-        \Kitodo\Dlf\Controller\AudioPlayerController::class => '',
     ]
 );
 

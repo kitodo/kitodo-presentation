@@ -13,7 +13,7 @@
       data-namespace-typo3-fluid="true">
 
 <f:if condition="{day}">
-    <div class="issues">
+    <div class="tx-dlf-calendar-issues">
         <f:if condition="{day.issues}">
             <f:then>
                 <h4>{day.dayValue -> f:format.html()}</h4>
@@ -22,7 +22,7 @@
                 {day.dayValue -> f:format.html()}
             </f:else>
         </f:if>
-        <div class="dayLinkList">
+        <div class="tx-dlf-calendar-day-link-list">
             <f:if condition="{day.issues}">
                 <ul>
                     <f:for each="{day.issues}" as="item">

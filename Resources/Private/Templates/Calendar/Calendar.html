@@ -13,33 +13,33 @@
       data-namespace-typo3-fluid="true">
 
 <div class="tx-dlf-calendar">
-    <div class="meta-header">
-        <div class="year-anchor">
+    <div class="tx-dlf-calendar-meta-header">
+        <div class="tx-dlf-calendar-year-anchor">
             <f:link.page additionalParams="{'tx_dlf[id]': parentDocumentId}">
                 <f:translate key="calendar.allYears" /> {allYearDocTitle}
             </f:link.page>
         </div>
-        <div class="year">
+        <div class="tx-dlf-calendar-year">
             <f:link.page additionalParams="{'tx_dlf[id]': documentId}">
                 {yearLinkTitle}
             </f:link.page>
         </div>
-        <div class="calendar-list-selection">
-            <a class="select-calendar-view {f:if(condition:'calendarData->f:count() > 5', then : 'active')}">
+        <div class="tx-dlf-calendar-list-selection">
+            <a class="tx-dlf-calendar-select-calendar-view {f:if(condition:'calendarData->f:count() > 5', then : 'active')}">
                 <f:translate key="calendar.view_calendar" />
             </a>
-            <a class="select-list-view {f:if(condition:'calendarData->f:count() < 6', then : 'active')}">
+            <a class="tx-dlf-calendar-select-list-view {f:if(condition:'calendarData->f:count() < 6', then : 'active')}">
                 <f:translate key="calendar.view_list" />
             </a>
         </div>
     </div>
-    <div class="calendar-view">
+    <div class="tx-dlf-calendar-calendar-view">
 
         <f:for each="{calendarData}" as="month">
             <f:if condition="{month.CALYEAR}">
-                <div class="year">{month.CALYEAR}</div>
+                <div class="tx-dlf-calendar-year">{month.CALYEAR}</div>
             </f:if>
-            <div class="month">
+            <div class="tx-dlf-calendar-month">
                 <table>
                     <caption>{month.MONTHNAME}</caption>
                     <tr>
@@ -82,11 +82,11 @@
         </f:for>
     </div>
 
-    <div class="list-view">
+    <div class="tx-dlf-calendar-list-view">
         <ul>
             <f:for each="{issueData}" as="issueDay">
                 <li>
-                    <span class="listview-date">{issueDay.dateString}</span>
+                    <span class="tx-dlf-calendar-list-view-date">{issueDay.dateString}</span>
                     <f:for each="{issueDay.items}" as="item">
                         <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
                             {item.text}

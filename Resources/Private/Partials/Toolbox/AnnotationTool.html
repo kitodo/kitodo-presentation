@@ -13,15 +13,15 @@
       data-namespace-typo3-fluid="true">
 
 <li>
-    <span class="tx-dlf-tools-annotations">
+    <span class="tx-dlf-tools-annotation">
         <f:if condition="{annotationTool}">
             <f:then>
-                <a class="select switchoff" id="tx-dlf-tools-annotations" title="" data-dic="annotations-on:{f:translate(key: 'tools.annotation.on')};annotations-off:{f:translate(key: 'tools.annotation.off')}">
+                <a class="select switchoff" id="tx-dlf-tools-annotation" title="" data-dic="annotations-on:{f:translate(key: 'tools.annotation.on')};annotations-off:{f:translate(key: 'tools.annotation.off')}">
                     <f:format.html>&nbsp;</f:format.html>
                 </a>
             </f:then>
             <f:else>
-                <span class="no-annotations">
+                <span class="tx-dlf-tools-annotation-not-available">
                     <f:translate key="tools.annotation.not-available"/>
                 </span>
             </f:else>
