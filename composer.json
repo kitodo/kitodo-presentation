@@ -87,49 +87,49 @@
       "@test:unit",
       "@test:func"
     ],
-	"install-via-docker": [
-		"Build/Test/runTests.sh -s composerInstall"
-	],
+    "install-via-docker": [
+      "Build/Test/runTests.sh -s composerInstall"
+    ],
     "test:unit": [
-		"Build/Test/runTests.sh -s unit"
-	],
+      "Build/Test/runTests.sh -s unit"
+    ],
     "test:unit:local": [
-		"phpunit -c Build/Test/UnitTests.xml"
-	],
+      "phpunit -c Build/Test/UnitTests.xml"
+    ],
     "test:unit:watch": [
-		"phpunit-watcher watch -c Build/Test/UnitTests.xml"
-	],
+      "phpunit-watcher watch -c Build/Test/UnitTests.xml"
+    ],
     "test:func": [
-		"Build/Test/runTests.sh -s functional"
-	],
+      "Build/Test/runTests.sh -s functional"
+    ],
     "test:func:watch": [
-		"@test:func -w"
-	],
-  	"docs:build": [
-	  	"rm -Rf ./Documentation-GENERATED-temp",
-	  	"docker run --user=$(id -u):$(id -g) --rm -v ./:/project -it ghcr.io/typo3-documentation/render-guides:latest --config ./Documentation",
-	  	"cp ./Build/Documentation/index.html ./Documentation-GENERATED-temp"
-  	],
-	"docs:start": [
-		"docker run -d --name dlf_docs --rm -v ./Documentation-GENERATED-temp:/serve -p 9000:8000 jdkelley/simple-http-server:latest"
-	],
-	"docs:stop": [
-		"docker stop dlf_docs"
-	],
-	"docs:rebuild": [
-	  	"@composer docs:stop",
-	  	"@composer docs:build",
-	  	"@composer docs:start"
-	],
+      "@test:func -w"
+    ],
+    "docs:build": [
+      "rm -Rf ./Documentation-GENERATED-temp",
+      "docker run --user=$(id -u):$(id -g) --rm -v ./:/project -it ghcr.io/typo3-documentation/render-guides:latest --config ./Documentation",
+      "cp ./Build/Documentation/index.html ./Documentation-GENERATED-temp"
+    ],
+    "docs:start": [
+      "docker run -d --name dlf_docs --rm -v ./Documentation-GENERATED-temp:/serve -p 9000:8000 jdkelley/simple-http-server:latest"
+    ],
+    "docs:stop": [
+      "docker stop dlf_docs"
+    ],
+    "docs:rebuild": [
+      "@composer docs:stop",
+      "@composer docs:build",
+      "@composer docs:start"
+    ],
     "php-cs-fixer:check": [
-        "@php vendor/bin/php-cs-fixer check"
+      "@php vendor/bin/php-cs-fixer check"
     ],
     "php-cs-fixer:fix": [
-        "@php vendor/bin/php-cs-fixer fix"
+      "@php vendor/bin/php-cs-fixer fix"
     ],
-	"phpstan": [
-		"@php vendor/bin/phpstan --configuration=\".github/phpstan_13.4.neon\""
-	]
+    "phpstan": [
+      "@php vendor/bin/phpstan --configuration=\".github/phpstan_13.4.neon\""
+    ]
   },
   "config": {
     "allow-plugins": {
