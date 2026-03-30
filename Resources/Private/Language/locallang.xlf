@@ -41,7 +41,7 @@
             <trans-unit id="search.resetFacet">
                 <source><![CDATA[Reset selection (%s)]]></source>
             </trans-unit>
-            <trans-unit id="backXPages">
+            <trans-unit id="navigation.backXPages">
                 <source><![CDATA[Back %s Pages]]></source>
             </trans-unit>
             <trans-unit id="basket.addBasket">
@@ -107,17 +107,17 @@
             <trans-unit id="calendar.view_list">
                 <source><![CDATA[List View]]></source>
             </trans-unit>
-            <trans-unit id="doublePage+1">
+            <trans-unit id="navigation.doublePage.rectoVerso">
                 <source><![CDATA[Adjust recto/verso]]></source>
             </trans-unit>
-            <trans-unit id="doublePageOff">
+            <trans-unit id="navigation.doublePage.singlePageView">
                 <source><![CDATA[Show single page]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.doublePage.doublePageView">
+                <source><![CDATA[Show double pages]]></source>
             </trans-unit>
             <trans-unit id="downloadModel">
                 <source><![CDATA[Download model]]></source>
-            </trans-unit>
-            <trans-unit id="doublePageOn">
-                <source><![CDATA[Show double pages]]></source>
             </trans-unit>
             <trans-unit id="downloadLeftPage">
                 <source><![CDATA[Download left page]]></source>
@@ -137,19 +137,19 @@
             <trans-unit id="scoredownload">
                 <source><![CDATA[Download score pdf file]]></source>
             </trans-unit>
-            <trans-unit id="firstPage">
+            <trans-unit id="navigation.firstPage">
                 <source><![CDATA[First Page]]></source>
             </trans-unit>
-            <trans-unit id="forwardXPages">
+            <trans-unit id="navigation.forwardXPages">
                 <source><![CDATA[Forward %s Pages]]></source>
             </trans-unit>
-            <trans-unit id="lastPage">
+            <trans-unit id="navigation.lastPage">
                 <source><![CDATA[Last Page]]></source>
             </trans-unit>
             <trans-unit id="linkToList">
                 <source><![CDATA[Return to list view]]></source>
             </trans-unit>
-            <trans-unit id="nextPage">
+            <trans-unit id="navigation.nextPage">
                 <source><![CDATA[Next Page]]></source>
             </trans-unit>
             <trans-unit id="noTitle">
@@ -185,7 +185,7 @@
             <trans-unit id="plugins.validationform.validate">
                 <source><![CDATA[validate]]></source>
             </trans-unit>
-            <trans-unit id="prevPage">
+            <trans-unit id="navigation.prevPage">
                 <source><![CDATA[Previous Page]]></source>
             </trans-unit>
             <trans-unit id="rotateLeft">

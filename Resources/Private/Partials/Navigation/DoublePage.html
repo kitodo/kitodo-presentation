@@ -18,22 +18,22 @@
         <f:if condition="{viewData.requestData.double}">
             <f:then>
                 <div class="tx-dlf-navigation-single">
-                    <kitodo:link viewData="{viewData}" additionalParams="{'double':'0'}" excludedParams="{0: 'measure'}"><f:translate key="doublePageOff"/></kitodo:link>
+                    <kitodo:link viewData="{viewData}" additionalParams="{'double':'0'}" excludedParams="{0: 'measure'}"><f:translate key="navigation.doublePage.singlePageView"/></kitodo:link>
                 </div>
                 <div class="tx-dlf-navigation-double+">
                     <f:if condition="{viewData.requestData.double} && ({viewData.requestData.page} < {numPages})">
                         <f:then>
-                            <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + 1}'}" excludedParams="{0: 'measure'}"><f:translate key="doublePage+1"/></kitodo:link>
+                            <kitodo:link viewData="{viewData}" additionalParams="{'page':'{viewData.requestData.page + 1}'}" excludedParams="{0: 'measure'}"><f:translate key="navigation.doublePage.rectoVerso"/></kitodo:link>
                         </f:then>
                         <f:else>
-                            <span title="{f:translate(key: 'doublePage+1')}"><f:translate key="doublePage+1"/></span>
+                            <span title="{f:translate(key: 'navigation.doublePage.rectoVerso')}"><f:translate key="navigation.doublePage.rectoVerso"/></span>
                         </f:else>
                     </f:if>
                 </div>
             </f:then>
             <f:else>
                 <div class="tx-dlf-navigation-double">
-                    <kitodo:link viewData="{viewData}" additionalParams="{'double':'1'}" excludedParams="{0: 'measure'}"><f:translate key="doublePageOn"/></kitodo:link>>
+                    <kitodo:link viewData="{viewData}" additionalParams="{'double':'1'}" excludedParams="{0: 'measure'}"><f:translate key="navigation.doublePage.doublePageView"/></kitodo:link>>
                 </div>
             </f:else>
         </f:if>
@@ -41,7 +41,7 @@
     <f:else>
         <f:comment>No pages available, therefore actually no double page view possible</f:comment>
         <div class="tx-dlf-navigation-double disabled">
-            <span title="{f:translate(key: 'doublePageOn')}"><f:translate key="doublePageOn"/></span>
+            <span title="{f:translate(key: 'navigation.doublePage.doublePageView')}"><f:translate key="navigation.doublePage.doublePageView"/></span>
         </div>
     </f:else>
 </f:if>

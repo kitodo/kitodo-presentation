@@ -5,7 +5,7 @@
             <generator>LFEditor</generator>
         </header>
         <body>
-            <trans-unit id="backXPages" approved="yes">
+            <trans-unit id="navigation.backXPages" approved="yes">
                 <source><![CDATA[Back %s Pages]]></source>
                 <target><![CDATA[%s Seiten zurück]]></target>
             </trans-unit>
@@ -101,15 +101,15 @@
                 <source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
                 <target><![CDATA[Abonnieren Sie den RSS-Feed dieser Kollektion!]]></target>
             </trans-unit>
-            <trans-unit id="doublePage+1" approved="yes">
+            <trans-unit id="navigation.doublePage.rectoVerso" approved="yes">
                 <source><![CDATA[Adjust recto/verso]]></source>
                 <target><![CDATA[Recto/Verso korrigieren]]></target>
             </trans-unit>
-            <trans-unit id="doublePageOff" approved="yes">
+            <trans-unit id="navigation.doublePage.singlePageView" approved="yes">
                 <source><![CDATA[Show single page]]></source>
                 <target><![CDATA[Einzelseitenansicht]]></target>
             </trans-unit>
-            <trans-unit id="doublePageOn" approved="yes">
+            <trans-unit id="navigation.doublePage.doublePageView" approved="yes">
                 <source><![CDATA[Show double pages]]></source>
                 <target><![CDATA[Doppelseitenansicht]]></target>
             </trans-unit>
@@ -141,15 +141,15 @@
                 <source><![CDATA[Download score pdf file]]></source>
                 <target><![CDATA[Notentext herunterladen]]></target>
             </trans-unit>
-            <trans-unit id="firstPage" approved="yes">
+            <trans-unit id="navigation.firstPage" approved="yes">
                 <source><![CDATA[First Page]]></source>
                 <target><![CDATA[Erste Seite]]></target>
             </trans-unit>
-            <trans-unit id="forwardXPages" approved="yes">
+            <trans-unit id="navigation.forwardXPages" approved="yes">
                 <source><![CDATA[Forward %s Pages]]></source>
                 <target><![CDATA[%s Seiten weiter]]></target>
             </trans-unit>
-            <trans-unit id="lastPage" approved="yes">
+            <trans-unit id="navigation.lastPage" approved="yes">
                 <source><![CDATA[Last Page]]></source>
                 <target><![CDATA[Letzte Seite]]></target>
             </trans-unit>
@@ -209,7 +209,7 @@
                 <source><![CDATA[...]]></source>
                 <target><![CDATA[...]]></target>
             </trans-unit>
-            <trans-unit id="nextPage" approved="yes">
+            <trans-unit id="navigation.nextPage" approved="yes">
                 <source><![CDATA[Next Page]]></source>
                 <target><![CDATA[Nächste Seite]]></target>
             </trans-unit>
@@ -293,7 +293,7 @@
                 <source><![CDATA[validate]]></source>
                 <target><![CDATA[Validieren]]></target>
             </trans-unit>
-            <trans-unit id="prevPage" approved="yes">
+            <trans-unit id="navigation.prevPage" approved="yes">
                 <source><![CDATA[Previous Page]]></source>
                 <target><![CDATA[Vorherige Seite]]></target>
             </trans-unit>
@@ -444,7 +444,7 @@
             <trans-unit id="tools.audiovideotool.markertable" approved="yes">
                 <source><![CDATA[Marker Table]]></source>
                 <target><![CDATA[Gesetzte Markierungen]]></target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="tools.fulltext" approved="yes">
                 <source><![CDATA[Full text]]></source>
                 <target><![CDATA[Volltext]]></target>
