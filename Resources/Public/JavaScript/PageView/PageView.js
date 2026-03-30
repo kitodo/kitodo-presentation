@@ -615,17 +615,17 @@ dlfViewer.prototype.addCustomControls = function(image) {
         }
     }
     else {
-        $('#tx-dlf-tools-annotations').remove();
+        $('#tx-dlf-tools-annotation').remove();
     }
 
     //
     // Add image manipulation tool if container is added.
     //
-    if ($('#tx-dlf-tools-imagetools').length > 0) {
+    if ($('#tx-dlf-tools-imagemanipulation').length > 0) {
 
         // Should be called if CORS is enabled
         imageManipulationControl = new dlfViewerImageManipulationControl({
-            controlTarget: $('.tx-dlf-tools-imagetools')[this.counter],
+            controlTarget: $('#tx-dlf-tools-imagemanipulation')[this.counter],
             map: this.map,
             counter: this.counter,
         });
