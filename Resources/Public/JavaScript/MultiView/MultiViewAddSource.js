@@ -8,9 +8,9 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-const multiViewAddSource = document.querySelector('.multiViewAddSource');
+const multiViewAddSource = document.querySelector('.tx-dlf-tools-multiviewaddsource');
 if (multiViewAddSource) {
-  document.querySelector('.multiViewAddSource').addEventListener('submit', function (e) {
+  document.querySelector('.tx-dlf-tools-multiviewaddsource').addEventListener('submit', function (e) {
     e.preventDefault();
     const url = new URL(window.location.href);
     const params = [...url.searchParams.keys()];
@@ -20,7 +20,7 @@ if (multiViewAddSource) {
     }
     const multiViewSources = params.filter(p => p.startsWith("tx_dlf[multiViewSource]["));
     const nextIndex = multiViewSources.length;
-    const urlValue = document.getElementById('location-field').value.trim();
+    const urlValue = document.getElementById('tx-dlf-tools-multiviewaddsource-location-field').value.trim();
     url.searchParams.append(`tx_dlf[multiViewSource][${nextIndex}]`, urlValue);
     // eslint-disable-next-line
     window.location.href = url.toString();
