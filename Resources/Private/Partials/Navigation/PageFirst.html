@@ -12,8 +12,6 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:variable name="condition" value="{f:if(condition: '{{viewData.requestData.page + 0} > 1}', then: 1, else: 0)}" />
-
-<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-first', condition: condition, page: '1', value: 'firstPage', viewData: viewData}" />
+<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-first', condition: pageFirstActive, page: '1', value: 'firstPage', viewData: viewData}" />
 
 </html>
