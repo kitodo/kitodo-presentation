@@ -95,10 +95,13 @@ class NavigationController extends AbstractController
             $this->view->assign('documentForward', '');
         }
 
-        // Steps for X pages backward / forward. Double page view uses double steps.
-        $pageSteps = $this->settings['pageStep'] * ($this->requestData['double'] + 1);
-
-        $this->view->assign('pageSteps', $pageSteps);
+        $this->view->assign('pageBackActive', $this->isPageBackActive());
+        $this->view->assign('pageFirstActive', $this->isPageFirstActive());
+        $this->view->assign('pageForwardActive', $this->isPageForwardActive());
+        $this->view->assign('pageLastActive', $this->isPageLastActive());
+        $this->view->assign('pageStepBackActive', $this->isPageStepBackActive());
+        $this->view->assign('pageStepForwardActive', $this->isPageStepForwardActive());
+        $this->view->assign('pageSteps', $this->getPageSteps());
         $this->view->assign('numPages', $this->document->getCurrentDocument()->numPages);
         $this->view->assign('viewData', $this->viewData);
 
@@ -160,5 +163,96 @@ class NavigationController extends AbstractController
         $this->view->assign('multiview', $this->requestData['multiview'] ?? null);
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * Get page steps.
+     * Steps for X pages backward / forward. Double page view uses double steps.
+     *
+     * @access private
+     *
+     * @return int
+     */
+    private function getPageSteps(): int
+    {
+        return $this->settings['pageStep'] * ($this->requestData['double'] + 1);
+    }
+
+    /**
+     * Condition for activating the page back button.
+     * Active if current page is greater than double page view + 1.
+     *
+     * @access private
+     *
+     * @return bool
+     */
+    private function isPageBackActive(): bool
+    {
+        return $this->requestData['page'] > $this->requestData['double'] + 1;
+    }
+
+    /**
+     * Condition for activating the page first button.
+     * Active if current page is greater than 1.
+     *
+     * @access private
+     *
+     * @return bool
+     */
+    private function isPageFirstActive(): bool
+    {
+        return $this->requestData['page'] > 1;
+    }
+
+    /**
+     * Condition for activating the page forward button.
+     * Active if current page + double page view is smaller than total number of pages.
+     *
+     * @access private
+     *
+     * @return bool
+     */
+    private function isPageForwardActive(): bool
+    {
+        return (int) ($this->requestData['page'] + $this->requestData['double']) < $this->document->getCurrentDocument()->numPages;
+    }
+
+    /**
+     * Condition for activating the page last button.
+     * Active if current page is smaller than total number of pages - double page view.
+     *
+     * @access private
+     *
+     * @return bool
+     */
+    private function isPageLastActive(): bool
+    {
+        return $this->requestData['page'] < ($this->document->getCurrentDocument()->numPages - $this->requestData['double']);
+    }
+
+    /**
+     * Condition for activating the page step back button.
+     * Active if current page is greater than steps for X pages backward.
+     *
+     * @access private
+     *
+     * @return bool
+     */
+    private function isPageStepBackActive(): bool
+    {
+        return $this->requestData['page'] > $this->getPageSteps();
+    }
+
+    /**
+     * Condition for activating the page step forward button.
+     * Active if current page + steps for X pages forward is smaller than total number of pages.
+     *
+     * @access private
+     *
+     * @return bool
+     */
+    private function isPageStepForwardActive(): bool
+    {
+        return $this->requestData['page'] <= ($this->document->getCurrentDocument()->numPages - $this->getPageSteps());
     }
 }
