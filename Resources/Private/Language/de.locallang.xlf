@@ -201,31 +201,31 @@
                 <source><![CDATA[Show single page]]></source>
                 <target><![CDATA[Einzelseitenansicht]]></target>
             </trans-unit>
-            <trans-unit id="navigation.backXPages" approved="yes">
+            <trans-unit id="navigation.page.backXPages" approved="yes">
                 <source><![CDATA[Back %s Pages]]></source>
                 <target><![CDATA[%s Seiten zurück]]></target>
             </trans-unit>
-            <trans-unit id="navigation.firstPage" approved="yes">
+            <trans-unit id="navigation.page.firstPage" approved="yes">
             <source><![CDATA[First Page]]></source>
             <target><![CDATA[Erste Seite]]></target>
             </trans-unit>
-            <trans-unit id="navigation.forwardXPages" approved="yes">
+            <trans-unit id="navigation.page.forwardXPages" approved="yes">
                 <source><![CDATA[Forward %s Pages]]></source>
                 <target><![CDATA[%s Seiten weiter]]></target>
             </trans-unit>
-            <trans-unit id="navigation.lastPage" approved="yes">
+            <trans-unit id="navigation.page.lastPage" approved="yes">
                 <source><![CDATA[Last Page]]></source>
                 <target><![CDATA[Letzte Seite]]></target>
             </trans-unit>
-            <trans-unit id="navigation.nextPage" approved="yes">
+            <trans-unit id="navigation.page.nextPage" approved="yes">
                 <source><![CDATA[Next Page]]></source>
                 <target><![CDATA[Nächste Seite]]></target>
             </trans-unit>
-            <trans-unit id="navigation.prevPage" approved="yes">
+            <trans-unit id="navigation.page.prevPage" approved="yes">
                 <source><![CDATA[Previous Page]]></source>
                 <target><![CDATA[Vorherige Seite]]></target>
             </trans-unit>
-            <trans-unit id="navigation.selectPage" approved="yes">
+            <trans-unit id="navigation.page.selectPage" approved="yes">
                 <source><![CDATA[Page]]></source>
                 <target><![CDATA[Seite]]></target>
             </trans-unit>

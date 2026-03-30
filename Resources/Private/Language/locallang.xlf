@@ -143,25 +143,25 @@
             <trans-unit id="navigation.doublePage.singlePageView">
                 <source><![CDATA[Show single page]]></source>
             </trans-unit>
-            <trans-unit id="navigation.backXPages">
+            <trans-unit id="navigation.page.backXPages">
                 <source><![CDATA[Back %s Pages]]></source>
             </trans-unit>
-            <trans-unit id="navigation.firstPage">
+            <trans-unit id="navigation.page.firstPage">
                 <source><![CDATA[First Page]]></source>
             </trans-unit>
-            <trans-unit id="navigation.forwardXPages">
+            <trans-unit id="navigation.page.forwardXPages">
                 <source><![CDATA[Forward %s Pages]]></source>
             </trans-unit>
-            <trans-unit id="navigation.lastPage">
+            <trans-unit id="navigation.page.lastPage">
                 <source><![CDATA[Last Page]]></source>
             </trans-unit>
-            <trans-unit id="navigation.nextPage">
+            <trans-unit id="navigation.page.nextPage">
                 <source><![CDATA[Next Page]]></source>
             </trans-unit>
-            <trans-unit id="navigation.prevPage">
+            <trans-unit id="navigation.page.prevPage">
                 <source><![CDATA[Previous Page]]></source>
             </trans-unit>
-            <trans-unit id="navigation.selectPage">
+            <trans-unit id="navigation.page.selectPage">
                 <source><![CDATA[Page]]></source>
             </trans-unit>
             <trans-unit id="noTitle">
