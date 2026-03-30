@@ -21,7 +21,6 @@ use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsExcepti
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Controller class for plugin 'Toolbox'.
@@ -75,16 +74,11 @@ class ToolboxController extends AbstractController
         if (!empty($this->settings['tools'])) {
 
             $tools = explode(',', $this->settings['tools']);
-
-            foreach ($tools as $tool) {
-                $this->renderToolByName($tool);
-            }
-
             $toolsToRender = [];
             foreach ($tools as $tool) {
+                $this->renderToolByName($tool);
                 $toolsToRender[$tool] = true;
             }
-
             $this->view->assign('tools', $toolsToRender);
         }
     }
@@ -102,7 +96,7 @@ class ToolboxController extends AbstractController
     {
         $functionName = 'render' . ucfirst($tool);
         if (!method_exists($this, $functionName)) {
-            if ($functionName != 'rotationTool' && $functionName != 'zoomTool') {
+            if ($functionName != 'renderRotationTool' && $functionName != 'renderZoomTool') {
                 // rotation and zoom tool do not need a function, because they only render the buttons, no view arguments are needed
                 $this->logger->warning('Incorrect tool configuration: "' . $this->settings['tools'] . '". Tool "' . $tool . '" does not exist.');
             }
