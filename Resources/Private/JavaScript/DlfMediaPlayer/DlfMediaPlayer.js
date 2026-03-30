@@ -464,7 +464,7 @@ export default class DlfMediaPlayer extends HTMLElement {
    */
   getToolboxIds() {
     /** @type {NodeListOf<HTMLElement>} */
-    const items = document.querySelectorAll('li.tx_dlf_audiovideotool[id]');
+    const items = document.querySelectorAll('li.tx-dlf-tools-audiovideo[id]');
 
     /** @type {dlf.media.ToolboxIdMap} */
     const map = {};
@@ -615,7 +615,7 @@ export default class DlfMediaPlayer extends HTMLElement {
    */
   checkForAudioLabel() {
     return Boolean(
-      this.hasTool("audiolabelimage") 
+      this.hasTool("audiolabelimage")
       || document.querySelector('[data-panel="audiolabelimage"]')
     );
   }
@@ -625,7 +625,7 @@ export default class DlfMediaPlayer extends HTMLElement {
    * - audio mode: prefer audiolabelimage if present, otherwise equalizer
    * - video mode: activate videomediaplayer button
    */
-  setDefaultPanel() {    
+  setDefaultPanel() {
     // @ts-ignore(TS2339)
     const mode = this.ui.playerProperties?.mode;
 
@@ -957,7 +957,7 @@ export default class DlfMediaPlayer extends HTMLElement {
     // Override in child
 
     // Register toolbox handlers and pick default panel
-    this.registerToolboxHandlers();     
+    this.registerToolboxHandlers();
   }
 
   onTick() {
@@ -1324,10 +1324,10 @@ export default class DlfMediaPlayer extends HTMLElement {
       console.error('Error from Shaka player', error.code, error);
     }
   }
-  
+
   /**
    * Returns the active segment if it exists and has a valid endTime.
-   * 
+   *
    * @private
    * @typedef {import('./Markers.js').Segment & { endTime: number }} SegmentWithEnd
    * @returns {SegmentWithEnd | null}
@@ -1342,7 +1342,7 @@ export default class DlfMediaPlayer extends HTMLElement {
 
   /**
    * Checks whether the active segment has reached or passed its end time and deactivates it.
-   * 
+   *
    * @private
    * @returns {boolean}
    */
@@ -1365,7 +1365,7 @@ export default class DlfMediaPlayer extends HTMLElement {
 
   /**
    * Checks whether playback has reached the active segment’s end time and pauses the video.
-   * 
+   *
    * @private
    * @returns {boolean}
    */
