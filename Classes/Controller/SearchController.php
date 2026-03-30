@@ -108,7 +108,7 @@ class SearchController extends AbstractController
     {
         $listViewSearch = false;
         // Quit without doing anything if required variables are not set.
-        if (empty($this->settings['solrcore'] && empty($this->settings['solrCoreUid']))) {
+        if (empty($this->settings['solrcore']) && empty($this->settings['solrCoreUid'])) {
             $this->logger->warning('Incomplete plugin end extension configuration for Solr core UID');
             return $this->htmlResponse();
         }

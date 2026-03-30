@@ -12,17 +12,19 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<form method="get" action="{f:uri.page(pageUid='{viewData.pageUid}')}">
-    <f:if condition="{viewData.requestData.id}">
-        <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
-    </f:if>
-    <f:if condition="{viewData.requestData.model}">
-        <f:form.hidden name="tx_dlf[model]" value="{viewData.requestData.model}"/>
-    </f:if>
-    <f:if condition="{viewData.requestData.modelFormat}">
-        <f:form.hidden name="tx_dlf[modelFormat]" value="{viewData.requestData.modelFormat}"/>
-    </f:if>
-    <f:form.select id="tx-dlf-tools-viewer-{viewData.uniqueId}" name="tx_dlf[viewer]" options="{viewers}" optionValueField="id" optionLabelField="name" value="{viewData.requestData.viewer}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}" prependOptionLabel="{f:translate(key: 'tools.viewerselection.default', extensionName: 'dlf')}"/>
-</form>
+<li class="tx-dlf-tools-viewerselection">
+    <form method="get" action="{f:uri.page(pageUid='{viewData.pageUid}')}">
+        <f:if condition="{viewData.requestData.id}">
+            <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
+        </f:if>
+        <f:if condition="{viewData.requestData.model}">
+            <f:form.hidden name="tx_dlf[model]" value="{viewData.requestData.model}"/>
+        </f:if>
+        <f:if condition="{viewData.requestData.modelFormat}">
+            <f:form.hidden name="tx_dlf[modelFormat]" value="{viewData.requestData.modelFormat}"/>
+        </f:if>
+        <f:form.select id="tx-dlf-tools-viewer-{viewData.uniqueId}" name="tx_dlf[viewer]" options="{viewers}" optionValueField="id" optionLabelField="name" value="{viewData.requestData.viewer}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}" prependOptionLabel="{f:translate(key: 'tools.viewerselection.default', extensionName: 'dlf')}"/>
+    </form>
+</li>
 
 </html>
