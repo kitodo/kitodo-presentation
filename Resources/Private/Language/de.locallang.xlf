@@ -225,6 +225,10 @@
                 <source><![CDATA[Previous Page]]></source>
                 <target><![CDATA[Vorherige Seite]]></target>
             </trans-unit>
+            <trans-unit id="navigation.selectPage" approved="yes">
+                <source><![CDATA[Page]]></source>
+                <target><![CDATA[Seite]]></target>
+            </trans-unit>
             <trans-unit id="noTitle" approved="yes">
                 <source><![CDATA[[no title]]]></source>
                 <target><![CDATA[[kein Titel]]]></target>
@@ -380,10 +384,6 @@
             <trans-unit id="search.submit" approved="yes">
                 <source><![CDATA[Search]]></source>
                 <target><![CDATA[Suchen]]></target>
-            </trans-unit>
-            <trans-unit id="selectPage" approved="yes">
-                <source><![CDATA[Page]]></source>
-                <target><![CDATA[Seite]]></target>
             </trans-unit>
             <trans-unit id="thumbnail" approved="yes">
                 <source><![CDATA[Thumbnail]]></source>

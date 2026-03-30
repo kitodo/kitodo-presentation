@@ -161,6 +161,9 @@
             <trans-unit id="navigation.prevPage">
                 <source><![CDATA[Previous Page]]></source>
             </trans-unit>
+            <trans-unit id="navigation.selectPage">
+                <source><![CDATA[Page]]></source>
+            </trans-unit>
             <trans-unit id="noTitle">
                 <source><![CDATA[[no title]]]></source>
             </trans-unit>
@@ -208,9 +211,6 @@
             </trans-unit>
             <trans-unit id="nextMeasure">
                 <source><![CDATA[Next Measure]]></source>
-            </trans-unit>
-            <trans-unit id="selectPage">
-                <source><![CDATA[Page]]></source>
             </trans-unit>
             <trans-unit id="thumbnail">
                 <source><![CDATA[Thumbnail]]></source>
