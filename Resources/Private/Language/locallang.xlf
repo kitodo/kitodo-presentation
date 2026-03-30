@@ -128,10 +128,10 @@
             <trans-unit id="linkToList">
                 <source><![CDATA[Return to list view]]></source>
             </trans-unit>
-            <trans-unit id="navigation.documentBack">
+            <trans-unit id="navigation.document.back">
                 <source><![CDATA[Previous document]]></source>
             </trans-unit>
-            <trans-unit id="navigation.documentForward">
+            <trans-unit id="navigation.document.forward">
                 <source><![CDATA[Next document]]></source>
             </trans-unit>
             <trans-unit id="navigation.doublePage.doublePageView">

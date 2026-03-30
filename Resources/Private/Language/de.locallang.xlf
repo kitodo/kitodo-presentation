@@ -181,11 +181,11 @@
                 <source><![CDATA[...]]></source>
                 <target><![CDATA[...]]></target>
             </trans-unit>
-            <trans-unit id="navigation.documentBack" approved="yes">
+            <trans-unit id="navigation.document.back" approved="yes">
                 <source><![CDATA[Previous document]]></source>
                 <target><![CDATA[Vorheriges Dokument]]></target>
             </trans-unit>
-            <trans-unit id="navigation.documentForward" approved="yes">
+            <trans-unit id="navigation.document.forward" approved="yes">
                 <source><![CDATA[Next document]]></source>
                 <target><![CDATA[Nächstes Dokument]]></target>
             </trans-unit>
