@@ -12,6 +12,10 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
+<f:if condition="{settings.showAsList}">
+    <ul>
+</f:if>
+
 <f:comment>Render all toolbox tools in the given order.</f:comment>
 <f:for each="{tools}" key="tool" as="enabled">
     <f:if condition="{tool}">
@@ -19,13 +23,13 @@
     </f:if>
 </f:for>
 
+<f:if condition="{settings.showAsList}">
+    </ul>
+</f:if>
+
 <f:section name="render.multiViewAddSourceTool">
     <f:render partial="Toolbox/MultiViewAddSourceTool" arguments="{_all}" />
 </f:section>
-
-<f:if condition="{settings.showAsList}">
-    <ul>
-</f:if>
 
 <f:section name="render.annotationTool">
     <f:render partial="Toolbox/AnnotationTool" arguments="{_all}" />
@@ -88,9 +92,5 @@
 <f:section name="render.zoomTool">
     <f:render partial="Toolbox/ZoomTool" arguments="{_all}" />
 </f:section>
-
-<f:if condition="{settings.showAsList}">
-    </ul>
-</f:if>
 
 </html>
