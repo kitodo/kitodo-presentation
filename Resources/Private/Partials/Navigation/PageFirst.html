@@ -12,14 +12,7 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:if condition="{viewData.requestData.page} && {viewData.requestData.page} > 1">
-    <f:then>
-        <f:variable name="condition" value="1" />
-    </f:then>
-    <f:else>
-        <f:variable name="condition" value="0" />
-    </f:else>
-</f:if>
+<f:variable name="condition" value="{f:if(condition: '{viewData.requestData.page} > 1', then: 1, else: 0)}" />
 
 <f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-first', condition: condition, page: '1', value: 'firstPage', viewData: viewData}" />
 
