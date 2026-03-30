@@ -5,10 +5,6 @@
             <generator>LFEditor</generator>
         </header>
         <body>
-            <trans-unit id="navigation.backXPages" approved="yes">
-                <source><![CDATA[Back %s Pages]]></source>
-                <target><![CDATA[%s Seiten zurück]]></target>
-            </trans-unit>
             <trans-unit id="basket.addBasket" approved="yes">
                 <source><![CDATA[Add to basket]]></source>
                 <target><![CDATA[Zum Warenkorb hinzufügen]]></target>
@@ -101,18 +97,6 @@
                 <source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
                 <target><![CDATA[Abonnieren Sie den RSS-Feed dieser Kollektion!]]></target>
             </trans-unit>
-            <trans-unit id="navigation.doublePage.rectoVerso" approved="yes">
-                <source><![CDATA[Adjust recto/verso]]></source>
-                <target><![CDATA[Recto/Verso korrigieren]]></target>
-            </trans-unit>
-            <trans-unit id="navigation.doublePage.singlePageView" approved="yes">
-                <source><![CDATA[Show single page]]></source>
-                <target><![CDATA[Einzelseitenansicht]]></target>
-            </trans-unit>
-            <trans-unit id="navigation.doublePage.doublePageView" approved="yes">
-                <source><![CDATA[Show double pages]]></source>
-                <target><![CDATA[Doppelseitenansicht]]></target>
-            </trans-unit>
             <trans-unit id="downloadModel" approved="yes">
                 <source><![CDATA[Download model]]></source>
                 <target><![CDATA[Model herunterladen]]></target>
@@ -140,18 +124,6 @@
             <trans-unit id="scoredownload" approved="yes">
                 <source><![CDATA[Download score pdf file]]></source>
                 <target><![CDATA[Notentext herunterladen]]></target>
-            </trans-unit>
-            <trans-unit id="navigation.firstPage" approved="yes">
-                <source><![CDATA[First Page]]></source>
-                <target><![CDATA[Erste Seite]]></target>
-            </trans-unit>
-            <trans-unit id="navigation.forwardXPages" approved="yes">
-                <source><![CDATA[Forward %s Pages]]></source>
-                <target><![CDATA[%s Seiten weiter]]></target>
-            </trans-unit>
-            <trans-unit id="navigation.lastPage" approved="yes">
-                <source><![CDATA[Last Page]]></source>
-                <target><![CDATA[Letzte Seite]]></target>
             </trans-unit>
             <trans-unit id="linkToList" approved="yes">
                 <source><![CDATA[Return to list view]]></source>
@@ -209,9 +181,49 @@
                 <source><![CDATA[...]]></source>
                 <target><![CDATA[...]]></target>
             </trans-unit>
+            <trans-unit id="navigation.documentBack" approved="yes">
+                <source><![CDATA[Previous document]]></source>
+                <target><![CDATA[Vorheriges Dokument]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.documentForward" approved="yes">
+                <source><![CDATA[Next document]]></source>
+                <target><![CDATA[Nächstes Dokument]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.doublePage.doublePageView" approved="yes">
+                <source><![CDATA[Show double pages]]></source>
+                <target><![CDATA[Doppelseitenansicht]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.doublePage.rectoVerso" approved="yes">
+                <source><![CDATA[Adjust recto/verso]]></source>
+                <target><![CDATA[Recto/Verso korrigieren]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.doublePage.singlePageView" approved="yes">
+                <source><![CDATA[Show single page]]></source>
+                <target><![CDATA[Einzelseitenansicht]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.backXPages" approved="yes">
+                <source><![CDATA[Back %s Pages]]></source>
+                <target><![CDATA[%s Seiten zurück]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.firstPage" approved="yes">
+            <source><![CDATA[First Page]]></source>
+            <target><![CDATA[Erste Seite]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.forwardXPages" approved="yes">
+                <source><![CDATA[Forward %s Pages]]></source>
+                <target><![CDATA[%s Seiten weiter]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.lastPage" approved="yes">
+                <source><![CDATA[Last Page]]></source>
+                <target><![CDATA[Letzte Seite]]></target>
+            </trans-unit>
             <trans-unit id="navigation.nextPage" approved="yes">
                 <source><![CDATA[Next Page]]></source>
                 <target><![CDATA[Nächste Seite]]></target>
+            </trans-unit>
+            <trans-unit id="navigation.prevPage" approved="yes">
+                <source><![CDATA[Previous Page]]></source>
+                <target><![CDATA[Vorherige Seite]]></target>
             </trans-unit>
             <trans-unit id="noTitle" approved="yes">
                 <source><![CDATA[[no title]]]></source>
@@ -293,10 +305,6 @@
                 <source><![CDATA[validate]]></source>
                 <target><![CDATA[Validieren]]></target>
             </trans-unit>
-            <trans-unit id="navigation.prevPage" approved="yes">
-                <source><![CDATA[Previous Page]]></source>
-                <target><![CDATA[Vorherige Seite]]></target>
-            </trans-unit>
             <trans-unit id="rotateLeft" approved="yes">
                 <source><![CDATA[Rotate Left]]></source>
                 <target><![CDATA[Ansicht nach links drehen]]></target>
@@ -316,14 +324,6 @@
             <trans-unit id="nextMeasure">
                 <source><![CDATA[Next Measure]]></source>
                 <target><![CDATA[Nächster Takt]]></target>
-            </trans-unit>
-            <trans-unit id="navigation.documentBack" approved="yes">
-                <source><![CDATA[Previous document]]></source>
-                <target><![CDATA[Vorheriges Dokument]]></target>
-            </trans-unit>
-            <trans-unit id="navigation.documentForward" approved="yes">
-                <source><![CDATA[Next document]]></source>
-                <target><![CDATA[Nächstes Dokument]]></target>
             </trans-unit>
             <trans-unit id="search.dateFrom" approved="yes">
                 <source><![CDATA[From]]></source>
