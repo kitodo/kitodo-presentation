@@ -12,8 +12,8 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:variable name="page" value="{viewData.requestData.page - 1 - viewData.requestData.double}" />
+<f:variable name="navigationPage" value="{viewData.requestData.page - 1 - viewData.requestData.double}" />
 
-<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-prev', condition: pageBackActive, page: page, value: 'prevPage', viewData: viewData}" />
+<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-prev', condition: pageBackActive, navigationPage: navigationPage, value: 'prevPage', viewData: viewData}" />
 
 </html>
