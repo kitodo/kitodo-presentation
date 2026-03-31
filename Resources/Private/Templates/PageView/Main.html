@@ -14,10 +14,10 @@
       data-namespace-typo3-fluid="true">
 
 <div id="tx-dlf-map" class="tx-dlf-map" data-dic="overview-map:{f:translate(key: 'pageview.overview-map')}">
-    <div id="tx-dlf-fulltextselection"></div>
     <div id="tx-dlf-annotationselection"></div>
 </div>
 <div id="ov_map"></div>
+<f:render partial="PageView/FulltextContainer" arguments="{_all}" />
 
 <f:if condition="{settings.basketButton} && {settings.targetBasket}">
     <f:if condition="{settings.basket.crop}">
