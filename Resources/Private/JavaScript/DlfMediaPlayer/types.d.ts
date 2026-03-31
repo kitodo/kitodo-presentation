@@ -11,7 +11,7 @@ interface HTMLElementTagNameMap {
   "dlf-waveform": import("DlfMediaPlayer/components/waveform").WaveForm;
 }
 
-declare module "shaka-player/dist/shaka-player.ui" {
+declare module 'shaka-player/dist/shaka-player.ui.d' {
   export = shaka;
 }
 

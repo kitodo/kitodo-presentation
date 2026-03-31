@@ -4,7 +4,7 @@ import { e } from 'lib/util';
 import ControlPanelButton from 'DlfMediaPlayer/controls/ControlPanelButton';
 
 /**
- * @typedef {import('shaka-player/dist/shaka-player.ui').ui.Controls} ShakaControls
+ * @typedef {import('shaka-player/dist/shaka-player.ui').default.ui.Controls} ShakaControls
  * @typedef Config
  * @property {dlf.media.PlayerAction} onClickAction
  */

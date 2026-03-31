@@ -1,5 +1,7 @@
 // @ts-check
 
+import shaka from 'shaka-player/dist/shaka-player.ui';
+
 /**
  * @implements {dlf.media.ThumbnailTrack}
  */

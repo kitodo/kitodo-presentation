@@ -33,6 +33,7 @@ export default class FrequencyResponse {
    * @param {Float32Array} frequencies
    */
   setFrequencies(frequencies) {
+    /** @type {Float32Array<ArrayBufferLike>} */
     this.frequencies_ = frequencies;
   }
 
@@ -47,11 +48,11 @@ export default class FrequencyResponse {
 
     for (const node of nodes) {
       if (node instanceof BiquadFilterNode) {
-        node.getFrequencyResponse(
-          this.frequencies_,
-          this.bufMagnitude_,
-          this.bufPhase_,
-        );
+      node.getFrequencyResponse(
+        /** @type {Float32Array<ArrayBuffer>} */ (this.frequencies_),
+        /** @type {Float32Array<ArrayBuffer>} */ (this.bufMagnitude_),
+        /** @type {Float32Array<ArrayBuffer>} */ (this.bufPhase_),
+      );
       } else {
         // Manual IIR filter
         // https://www.earlevel.com/main/2016/12/01/evaluating-filter-frequency-response/

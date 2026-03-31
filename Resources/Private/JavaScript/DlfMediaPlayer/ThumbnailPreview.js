@@ -10,6 +10,7 @@ import {
 
 import buildTimeString from 'DlfMediaPlayer/lib/buildTimeString';
 import sanitizeThumbnail from 'DlfMediaPlayer/lib/thumbnails/sanitizeThumbnail';
+import shaka from 'shaka-player/dist/shaka-player.ui';
 
 /**
  * @typedef {import('DlfMediaPlayer/Chapters').default} Chapters
