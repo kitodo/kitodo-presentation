@@ -145,3 +145,21 @@ end of the building command.
 ```bash
 [...] --config ./Documentation --output="My_Documentation_Directory"
 ```
+
+## QA / Analysis
+
+### Composer Scripts
+
+Run PHPStan:
+```bash
+composer phpstan
+```
+
+PHP CS Fixer:
+```bash
+# Check code style
+composer php-cs-fixer:check
+
+# Fix code style
+composer php-cs-fixer:fix
+```
