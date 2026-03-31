@@ -32,7 +32,7 @@
                         <config>
                             <type>input</type>
                             <eval>required,alphanum_x,nospace</eval>
-                            <default>tx-dlf-video</default>
+                            <default>tx-dlf-media</default>
                         </config>
                     </settings.elementId>
                     <settings.shareButtons>

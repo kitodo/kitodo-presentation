@@ -464,15 +464,15 @@ export default class DlfMediaPlayer extends HTMLElement {
    */
   getToolboxIds() {
     /** @type {NodeListOf<HTMLElement>} */
-    const items = document.querySelectorAll('li.tx-dlf-tools-audiovideo[id]');
+    const items = document.querySelectorAll('[data-tools-audiovideo][id]');
 
     /** @type {dlf.media.ToolboxIdMap} */
     const map = {};
 
     items.forEach(li => {
-        const key = li.dataset.tool;
-        if (key) {
-            map[key] = li.id;
+        const tool = li.dataset.toolsAudiovideo;
+        if (tool) {
+            map[tool] = li.id;
         }
     });
 

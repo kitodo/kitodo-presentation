@@ -34,7 +34,8 @@ class DocumentTypeProvider extends AbstractProvider
     public function __construct()
     {
         $this->expressionLanguageProviders = [
-            DocumentTypeFunctionProvider::class
+            DocumentTypeFunctionProvider::class,
+            MediaTypeFunctionProvider::class
         ];
     }
 }

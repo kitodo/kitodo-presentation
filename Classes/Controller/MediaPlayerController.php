@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Service\MediaPlayerService;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -29,6 +30,11 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class MediaPlayerController extends AbstractController
 {
+    public function __construct(
+        protected readonly MediaPlayerService $mediaPlayerService
+    ) {
+    }
+
     /**
      * The main method of the plugin
      *
@@ -50,130 +56,81 @@ class MediaPlayerController extends AbstractController
 
         $doc = $this->document->getCurrentDocument();
         $pageNo = $this->requestData['page'];
-        $video = $this->getVideoInfo($doc, $pageNo);
-        if ($video === null) {
+        $media = $this->getMediaplayerInfo($doc, $pageNo);
+        if ($media === null) {
             return $this->htmlResponse();
         }
 
         $this->addPlayerAssets();
 
-        $this->view->assign('video', $video);
+        $this->view->assign('media', $media);
 
         return $this->htmlResponse();
     }
 
     /**
-     * Build video info to be passed to the player template.
+     * Build Mediaplayer info to be passed to the player template.
      *
      * @param AbstractDocument $doc
      * @param int $pageNo
      *
-     * @return ?mixed[] The video data, or `null` if no video source is found
+     * @return ?mixed[] The Mediaplayer data, or `null` if no audio/video-media source is found
      */
-    protected function getVideoInfo(AbstractDocument $doc, int $pageNo): ?array
+    protected function getMediaplayerInfo(AbstractDocument $doc, int $pageNo): ?array
     {
-        // Get image file use groups
-        $imageUseGroups = $this->useGroupsConfiguration->getImage();
         // Get video file use groups
         $videoUseGroups = $this->useGroupsConfiguration->getVideo();
         $mainVideoUseGroup = $videoUseGroups[0] ?? '';
 
         // Get thumbnail file use groups
         $thumbnailUseGroups = $this->useGroupsConfiguration->getThumbnail();
-
         // Get waveform file use groups
         $waveformUseGroups = $this->useGroupsConfiguration->getWaveform();
+        // Get image file use groups
+        $imageUseGroups = $this->useGroupsConfiguration->getImage();
 
-        // Collect video file source URLs
+        // Collect audio/video-media file source URLs
         // TODO: This is for multiple sources (MPD, HLS, MP3, ...) - revisit, make sure it's ordered by preference!
-        $videoSources = $this->collectVideoSources($doc, $pageNo, $videoUseGroups);
-        if (empty($videoSources)) {
+        $mediaplayerSources = $this->mediaPlayerService->getMediaplayerSources($doc, $pageNo);
+        if (empty($mediaplayerSources)) {
             return null;
         }
 
         // List all chapters for chapter markers
-        $videoChapters = $this->collectVideoChapters($doc);
+        $mediaChapters = $this->collectMediaChapters($doc);
 
-        // Get additional video URLs
-        $videoUrl = $this->collectAdditionalVideoUrls($doc, $pageNo, $thumbnailUseGroups, $waveformUseGroups, $imageUseGroups);
+        // Get additional audio/video-media URLs
+        $mediaUrl = $this->collectAdditionalMediaUrls($doc, $pageNo, $thumbnailUseGroups, $waveformUseGroups, $imageUseGroups);
 
         return [
-            'start' => $videoChapters[$pageNo - 1]['timecode'] ?? '',
-            'mode' => $this->determineInitialMode($videoSources, $mainVideoUseGroup),
-            'chapters' => $videoChapters,
+            'start' => $mediaChapters[$pageNo - 1]['timecode'] ?? '',
+            'mode' => $this->mediaPlayerService->determineInitialMode($mediaplayerSources, $mainVideoUseGroup),
+            'chapters' => $mediaChapters,
             'metadata' => $doc->getToplevelMetadata(),
-            'sources' => $videoSources,
-            'url' => $videoUrl,
+            'sources' => $mediaplayerSources,
+            'url' => $mediaUrl,
         ];
     }
 
-    /**
-     * Collects video sources for the given document.
-     *
-     * @param AbstractDocument $doc The document object to collect video sources from
-     * @param int $pageNo The page number to collect video sources for
-     * @param string[] $videoUseGroups The array of video use groups to search for video sources
-     *
-     * @return mixed[] An array of video sources with details like MIME type, URL, file ID, and frame rate
-     */
-    private function collectVideoSources(AbstractDocument $doc, int $pageNo, array $videoUseGroups): array
-    {
-        $videoSources = [];
-        $videoFiles = $this->findFiles($doc, $pageNo, $videoUseGroups);
-        foreach ($videoFiles as $videoFile) {
-            if ($this->isMediaMime($videoFile['mimeType'])) {
-                $fileMetadata = $doc->getMetadata($videoFile['fileId']);
-
-                $videoSources[] = [
-                    'fileGrp' => $videoFile['fileGrp'],
-                    'mimeType' => $videoFile['mimeType'],
-                    'url' => $videoFile['url'],
-                    'fileId' => $videoFile['fileId'],
-                    'frameRate' => $fileMetadata['video_frame_rate'][0] ?? '',
-                ];
-            }
-        }
-        return $videoSources;
-    }
 
     /**
-     * Determine the initial mode (video or audio) based on the provided video sources and the main video use group.
+     * Collects all audio/video-media chapters for chapter markers from the given AbstractDocument.
      *
-     * @param mixed[] $videoSources An array of video sources with details like MIME type, URL, file ID, and frame rate
-     * @param string $mainVideoUseGroup The main video use group to prioritize
+     * @param AbstractDocument $doc The AbstractDocument object to collect media chapters from
      *
-     * @return string The initial mode ('video' or 'audio')
+     * @return mixed[] An array of media chapters with details like file IDs, page numbers, titles, and timecodes
      */
-    private function determineInitialMode(array $videoSources, string $mainVideoUseGroup): string
+    private function collectMediaChapters(AbstractDocument $doc): array
     {
-        foreach ($videoSources as $videoSource) {
-            // TODO: Better guess of initial mode?
-            //       Perhaps we could look for VIDEOMD/AUDIOMD in METS
-            if ($videoSource['fileGrp'] === $mainVideoUseGroup || str_starts_with($videoSource['mimeType'], 'video/')) {
-                return 'video';
-            }
-        }
-        return 'audio';
-    }
-
-    /**
-     * Collects all video chapters for chapter markers from the given AbstractDocument.
-     *
-     * @param AbstractDocument $doc The AbstractDocument object to collect video chapters from
-     *
-     * @return mixed[] An array of video chapters with details like file IDs, page numbers, titles, and timecodes
-     */
-    private function collectVideoChapters(AbstractDocument $doc): array
-    {
-        $videoChapters = [];
+        $mediaChapters = [];
         foreach ($doc->tableOfContents as $entry) {
-            $this->recurseChapters($entry, $videoChapters);
+            $this->recurseChapters($entry, $mediaChapters);
         }
-        return $videoChapters;
+        return $mediaChapters;
     }
 
     /**
-     * Collects additional video URLs like poster and waveform for a given document, page number, thumb file use groups, and waveform file use groups.
+     * Collects additional audio/video-media URLs like poster and waveform for a given document, page number, thumb file use groups, and waveform file use groups.
      *
      * @param AbstractDocument $doc The document object
      * @param int $pageNo The page number
@@ -181,62 +138,35 @@ class MediaPlayerController extends AbstractController
      * @param string[] $waveformUseGroups An array of waveform file use groups
      * @param string[] $imageUseGroups An array of image file use groups
      *
-     * @return mixed[] An array containing additional video URLs like poster and waveform
+     * @return mixed[] An array containing additional audio/video-media URLs like poster and waveform
      */
-    private function collectAdditionalVideoUrls(AbstractDocument $doc, int $pageNo, array $thumbnailUseGroups, array $waveformUseGroups, array $imageUseGroups): array
+    private function collectAdditionalMediaUrls(AbstractDocument $doc, int $pageNo, array $thumbnailUseGroups, array $waveformUseGroups, array $imageUseGroups): array
     {
-        $videoUrl = [];
+        $mediaUrl = [];
 
         $showPoster = $this->settings['constants']['showPoster'] ?? null;
-        $thumbFiles = $this->findFiles($doc, 0, $thumbnailUseGroups); // 0 = for whole video (not just chapter)
+        $thumbFiles = $this->mediaPlayerService->findFiles($doc, 0, $thumbnailUseGroups); // 0 = for whole video (not just chapter)
         if (!empty($thumbFiles) && (int) $showPoster === 1) {
-            $videoUrl['poster'] = $thumbFiles[0];
+            $mediaUrl['poster'] = $thumbFiles[0];
         }
 
-        $waveformFiles = $this->findFiles($doc, $pageNo, $waveformUseGroups);
+        $waveformFiles = $this->mediaPlayerService->findFiles($doc, $pageNo, $waveformUseGroups);
         if (!empty($waveformFiles)) {
-            $videoUrl['waveform'] = $waveformFiles[0];
+            $mediaUrl['waveform'] = $waveformFiles[0];
         }
 
         $showAudioLabelImage = $this->settings['constants']['showAudioLabelImage'] ?? null;
-        $audioLabelImageFiles = $this->findFiles($doc, $pageNo, $imageUseGroups);
-        if (!empty($audioLabelImageFiles)
-            && (int) $showAudioLabelImage === 1
-            && Helper::filterFilesByMimeType($audioLabelImageFiles[0], ['image'], ['JPG'], 'mimeType')
-        ) {
-            $videoUrl['audioLabelImage'] = $audioLabelImageFiles[0];
-        }
-
-        return $videoUrl;
-    }
-
-    /**
-     * Find files of the given file use groups that are referenced on a page.
-     *
-     * @param AbstractDocument $doc
-     * @param int $pageNo
-     * @param string[] $fileGrps
-     *
-     * @return array{fileGrp: string, fileId: string, url: string, mimeType: string}[]
-     */
-    protected function findFiles(AbstractDocument $doc, int $pageNo, array $fileGrps): array
-    {
-        $pagePhysKey = $doc->physicalStructure[$pageNo];
-        $pageFiles = $doc->physicalStructureInfo[$pagePhysKey]['all_files'] ?? [];
-        $filesInGrp = array_intersect_key($pageFiles, array_flip($fileGrps));
-
-        $result = [];
-        foreach ($filesInGrp as $fileGrp => $fileIds) {
-            foreach ($fileIds as $fileId) {
-                $result[] = [
-                    'fileGrp' => $fileGrp,
-                    'fileId' => $fileId,
-                    'url' => $doc->getFileLocation($fileId),
-                    'mimeType' => $doc->getFileMimeType($fileId),
-                ];
+        $audioLabelImageFiles = $this->mediaPlayerService->findFiles($doc, $pageNo, $imageUseGroups);
+        if (!empty($audioLabelImageFiles) && (int) $showAudioLabelImage === 1) {
+            foreach ($audioLabelImageFiles as $imagefile) {
+                if (Helper::filterFilesByMimeType($imagefile, ['image'], ['JPG'], 'mimeType')) {
+                    $mediaUrl['audioLabelImage'] = $imagefile;
+                    break;
+                }
             }
         }
-        return $result;
+
+        return $mediaUrl;
     }
 
     /**
@@ -264,24 +194,6 @@ class MediaPlayerController extends AbstractController
         foreach ($logInfo['children'] ?? [] as $child) {
             $this->recurseChapters($child, $outChapters);
         }
-    }
-
-    /**
-     * Check if the given MIME type corresponds to a media file.
-     *
-     * @param string $mimeType The MIME type to check
-     *
-     * @return bool True if the MIME type corresponds to a media file, false otherwise
-     */
-    protected function isMediaMime(string $mimeType): bool
-    {
-        return (
-            str_starts_with($mimeType, 'audio/')
-            || str_starts_with($mimeType, 'video/')
-            || $mimeType == 'application/dash+xml'
-            || $mimeType == 'application/x-mpegurl'
-            || $mimeType == 'application/vnd.apple.mpegurl'
-        );
     }
 
     /**
