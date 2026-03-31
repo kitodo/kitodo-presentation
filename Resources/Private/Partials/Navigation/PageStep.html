@@ -16,7 +16,7 @@
 <div class="{class}">
     <f:if condition="{condition}">
         <f:then>
-            <kitodo:link viewData="{viewData}" additionalParams="{'page':'{page}'}" excludedParams="{0: 'measure'}"><f:translate key="{value}" arguments="{0: '{pageSteps}'}"/></kitodo:link>
+            <kitodo:link viewData="{viewData}" additionalParams="{'page':'{navigationPage}'}" excludedParams="{0: 'measure'}"><f:translate key="{value}" arguments="{0: '{pageSteps}'}"/></kitodo:link>
         </f:then>
         <f:else>
             <span title="{f:translate(key: '{value}', arguments: '{0: pageSteps}')}"><f:translate key="{value}" arguments="{0: '{pageSteps}'}"/></span>

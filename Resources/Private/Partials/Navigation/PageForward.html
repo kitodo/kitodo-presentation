@@ -12,10 +12,9 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:variable name="condition" value="{f:if(condition: '{{viewData.requestData.page + viewData.requestData.double} < {numPages}}', then: 1, else: 0)}" />
-<f:variable name="page" value="{viewData.requestData.page + 1 + viewData.requestData.double}" />
+<f:variable name="navigationPage" value="{viewData.requestData.page + 1 + viewData.requestData.double}" />
 
-<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-next', condition: condition, page: page, value: 'nextPage', viewData: viewData}" />
+<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-next', condition: pageForwardActive, navigationPage: navigationPage, value: 'nextPage', viewData: viewData}" />
 
 </html>
 
