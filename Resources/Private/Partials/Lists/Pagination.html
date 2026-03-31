@@ -56,7 +56,7 @@
                         </li>
                     </f:case>
                     <f:defaultCase>
-                        <li class="{f:if(condition: '{page.label} == {paginator.currentPageNumber}', then:'current')}">
+                        <li class="{f:if(condition: '{page.label} == {paginator.currentPageNumber}', then:'tx-dlf-pagination-current')}">
                             <f:link.action action="{action}" addQueryString="untrusted" argumentsToBeExcludedFromQueryString="{0: 'tx_dlf[page]'}" additionalParams="{'tx_dlf[page]': page.startRecordNumber, 'tx_dlf[id]': docUid}" arguments="{page: page.startRecordNumber, search: lastSearch}">{page.label}</f:link.action>
                         </li>
                     </f:defaultCase>
