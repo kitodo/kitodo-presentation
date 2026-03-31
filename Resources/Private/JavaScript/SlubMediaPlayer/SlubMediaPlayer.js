@@ -279,7 +279,7 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
   onDomContentLoaded() {
     super.onDomContentLoaded();
 
-    document.querySelectorAll("a[data-timecode], .tx-dlf-tableofcontents a, .tx-dlf-toc a").forEach(el => {
+    document.querySelectorAll("a[data-timecode], .tx-dlf-tableofcontents a").forEach(el => {
       const link = /** @type {HTMLAnchorElement} */(el);
       const videoLink = this.getChapterLink(link);
       if (videoLink !== null) {
