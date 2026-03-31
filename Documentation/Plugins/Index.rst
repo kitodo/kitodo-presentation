@@ -1277,7 +1277,7 @@ The default behavior is to show the fulltext after click on the toggle link. The
    :Default:
       html, body
 
-The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
+The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-toolbox-fulltext-selection">` of the pageview plugin.
 
 **Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ must be configured appropriate on the providing webserver.
 
