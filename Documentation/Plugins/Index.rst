@@ -526,7 +526,7 @@ FlexForm Configuration
 Media Player
 ------------
 
-The MediaPlayer plugin is only active if the selected document has valid video file use groups (useGroupsVideo).
+The MediaPlayer plugin is only active if the selected document has valid audio or video file use groups (useGroupsAudio, useGroupsVideo).
 
 :typoscript:`plugin.tx_dlf_mediaplayer.settings.`
 
@@ -556,7 +556,7 @@ The MediaPlayer plugin is only active if the selected document has valid video f
    :Data Type:
       :ref:`t3tsref:data-type-string`
    :Default:
-      tx-dlf-video
+      tx-dlf-media
    :Description:
       ID value of the HTML element for the media player.
 
@@ -1277,7 +1277,7 @@ The default behavior is to show the fulltext after click on the toggle link. The
    :Default:
       html, body
 
-The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-fulltextselection">` of the pageview plugin.
+The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-toolbox-fulltext-selection">` of the pageview plugin.
 
 **Please note**: To allow JavaScript fetching the fulltext, the `CORS headers <https://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_ must be configured appropriate on the providing webserver.
 

@@ -3,9 +3,9 @@
       data-namespace-typo3-fluid="true"
       lang="en">
 
-<f:if condition="{video}">
+<f:if condition="{media}">
     <script>
-        document.body.setAttribute("data-has-video", "yes");
+        document.body.setAttribute("mediaplayer", "yes");
     </script>
 
     <kitodo:mediaPlayerConfig id="MEDIA_CONFIG" settings="{settings}" />
@@ -14,12 +14,12 @@
         <div class="media-panel">
             <!-- Wrapper panels for toolbox toggles -->
             <div class="media-panel-wrappers">
-                <f:if condition="{settings.constants.showAudioLabelImage} == 1 && {video.url.audioLabelImage}">
+                <f:if condition="{settings.constants.showAudioLabelImage} == 1 && {media.url.audioLabelImage}">
                     <div id="panel-audiolabelimage" class="panel panel-audiolabelimage visible" data-panel="audiolabelimage">
                         <div class="audiolabelimage-inner">
-                            <div class="audiolabelimage-bg" style="background-image: url('{video.url.audioLabelImage.url}');"></div>
+                            <div class="audiolabelimage-bg" style="background-image: url('{media.url.audioLabelImage.url}');"></div>
                             <div class="audiolabelimage-art">
-                                <img src="{video.url.audioLabelImage.url}" alt="Audio Label Image">
+                                <img src="{media.url.audioLabelImage.url}" alt="Audio Label Image">
                             </div>
                         </div>
                     </div>
@@ -54,21 +54,21 @@
         </div>
 
         <div id="tx-dlf-view" class="tx-dlf-view">
-            <f:if condition="{video.url.waveform}">
-                <dlf-waveform hidden id="{settings.elementId}-waveform" forPlayer="{settings.elementId}" src="{video.url.waveform.url}" type="{video.url.waveform.mimeType}"></dlf-waveform>
+            <f:if condition="{media.url.waveform}">
+                <dlf-waveform hidden id="{settings.elementId}-waveform" forPlayer="{settings.elementId}" src="{media.url.waveform.url}" type="{media.url.waveform.mimeType}"></dlf-waveform>
             </f:if>
 
-            <slub-media id="{settings.elementId}" player-view="combined-container" poster="{video.url.poster.url}" config="MEDIA_CONFIG" start="{video.start}" mode="auto" mode-fallback="{video.mode}">
+            <slub-media id="{settings.elementId}" player-view="combined-container" poster="{media.url.poster.url}" config="MEDIA_CONFIG" start="{media.start}" mode="auto" mode-fallback="{media.mode}">
                 <f:comment>NOTE: If one of these doesn't exist, the player will try the next one.</f:comment>
-                <f:for each="{video.sources}" as="source">
+                <f:for each="{media.sources}" as="source">
                     <source src="{source.url}" type="{source.mimeType}" data-fps="{source.frameRate}" data-fileid="{source.fileId}">
                 </f:for>
 
-                <f:for each="{video.chapters}" as="chapter">
+                <f:for each="{media.chapters}" as="chapter">
                     <dlf-chapter title="{chapter.title}" timecode="{chapter.timecode}" fileids="{chapter.fileIdsJoin}" pageNo="{chapter.pageNo}"></dlf-chapter>
                 </f:for>
 
-                <f:for each="{video.metadata}" as="values" key="key">
+                <f:for each="{media.metadata}" as="values" key="key">
                     <f:for each="{values}" as="value">
                         <dlf-meta key="{key}" value="{value}"></dlf-meta>
                     </f:for>
@@ -77,7 +77,7 @@
                 <dlf-media-controls>
                     <button data-type="volume"></button>
                     <button data-type="mute"></button>
-                    <f:if condition="{video.url.waveform}">
+                    <f:if condition="{media.url.waveform}">
                         <button class="material-icons-round sxnd-waveform-button" data-t-title="control.waveform.tooltip" data-action="sound_tools.waveform.toggle">graphic_eq</button>
                     </f:if>
                     <button class="material-icons-round sxnd-screenshot-button" data-t-title="control.screenshot.tooltip" data-action="modal.screenshot.open">photo_camera</button>

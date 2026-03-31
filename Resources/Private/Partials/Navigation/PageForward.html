@@ -14,7 +14,7 @@
 
 <f:variable name="navigationPage" value="{viewData.requestData.page + 1 + viewData.requestData.double}" />
 
-<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-next', condition: pageForwardActive, navigationPage: navigationPage, value: 'nextPage', viewData: viewData}" />
+<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-next', condition: pageForwardActive, navigationPage: navigationPage, value: 'navigation.page.nextPage', viewData: viewData}" />
 
 </html>
 

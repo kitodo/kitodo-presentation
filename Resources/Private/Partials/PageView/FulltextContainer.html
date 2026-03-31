@@ -1,3 +1,7 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
 <f:comment>
     <!--
      * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
@@ -9,9 +13,9 @@
      * LICENSE.txt file that was distributed with this source code.
     -->
 </f:comment>
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      data-namespace-typo3-fluid="true">
 
-<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-first', condition: pageFirstActive, navigationPage: '1', value: 'navigation.page.firstPage', viewData: viewData}" />
+<div class="tx-dlf-toolbox-fulltext-container">
+    <div id="tx-dlf-toolbox-fulltext-selection"></div>
+</div>
 
 </html>

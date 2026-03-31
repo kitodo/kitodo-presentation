@@ -151,3 +151,50 @@ For information on equalizer configuration, see :ref:`the equalizer subpage <eq_
        }
      }
    }
+
+Additional TypoScript Setup
+===========================
+
+To ensure that the correct templates and view-functions are loaded for the audio/video mediaplayer, an additional TypoScript configuration is required.
+
+First, define variables that indicate whether the current document contains audio or video content. These variables are evaluated dynamically and passed to the plugin:
+
+.. code-block:: typoscript
+
+   page.10.variables {
+       isAudio = TEXT
+       isAudio.value = 0
+       isVideo = TEXT
+       isVideo.value = 0
+   }
+
+   [isAudio({$plugin.tx_dlf.persistence.storagePid})]
+       page.10.variables.isAudio.value = 1
+   [END]
+
+   [isVideo({$plugin.tx_dlf.persistence.storagePid})]
+       page.10.variables.isVideo.value = 1
+   [END]
+
+These conditions ensure that the frontend correctly detects the media type and loads the appropriate templates and functionality for either audio or video playback. 
+This Block needs to be above the toolbox configuration. So the variables are defined, before they got copied into the tx_dlf_audiovideotool plugin.
+
+Next, extend the toolbox plugin to register the audiovideotool. This makes the player variables available within the Kitodo toolbox and reuses shared functionality:
+
+.. code-block:: typoscript
+
+   plugin.tx_dlf_audiovideotool < plugin.tx_dlf_toolbox
+   plugin.tx_dlf_audiovideotool {
+       settings {
+           tools = audioVideoTool
+           
+           # copy constants from Mediaplayer into the plugin
+           constants < plugin.tx_dlf_mediaplayer.settings.constants
+
+           # copy variables into the plugin
+           isAudio < page.10.variables.isAudio.value
+           isVideo < page.10.variables.isVideo.value
+       }
+   }
+
+The configuration above links the audiovideotool with the existing media player settings and ensures that all constants (e.g., seek steps, captions, and behavior) are reused consistently.

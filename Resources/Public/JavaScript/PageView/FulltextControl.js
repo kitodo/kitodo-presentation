@@ -93,7 +93,7 @@ var dlfViewerFullTextControl = function(map) {
             'fulltext-on':'Activate Fulltext',
             'fulltext-off':'Deactivate Fulltext',
             'activate-full-text-initially':'0',
-            'full-text-scroll-element':'#tx-dlf-fulltextselection'};
+            'full-text-scroll-element':'#tx-dlf-toolbox-fulltext-selection'};
 
     /**
      * @private

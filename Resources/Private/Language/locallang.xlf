@@ -41,9 +41,6 @@
             <trans-unit id="search.resetFacet">
                 <source><![CDATA[Reset selection (%s)]]></source>
             </trans-unit>
-            <trans-unit id="backXPages">
-                <source><![CDATA[Back %s Pages]]></source>
-            </trans-unit>
             <trans-unit id="basket.addBasket">
                 <source><![CDATA[Add to basket]]></source>
             </trans-unit>
@@ -107,17 +104,8 @@
             <trans-unit id="calendar.view_list">
                 <source><![CDATA[List View]]></source>
             </trans-unit>
-            <trans-unit id="doublePage+1">
-                <source><![CDATA[Adjust recto/verso]]></source>
-            </trans-unit>
-            <trans-unit id="doublePageOff">
-                <source><![CDATA[Show single page]]></source>
-            </trans-unit>
             <trans-unit id="downloadModel">
                 <source><![CDATA[Download model]]></source>
-            </trans-unit>
-            <trans-unit id="doublePageOn">
-                <source><![CDATA[Show double pages]]></source>
             </trans-unit>
             <trans-unit id="downloadLeftPage">
                 <source><![CDATA[Download left page]]></source>
@@ -137,20 +125,44 @@
             <trans-unit id="scoredownload">
                 <source><![CDATA[Download score pdf file]]></source>
             </trans-unit>
-            <trans-unit id="firstPage">
-                <source><![CDATA[First Page]]></source>
-            </trans-unit>
-            <trans-unit id="forwardXPages">
-                <source><![CDATA[Forward %s Pages]]></source>
-            </trans-unit>
-            <trans-unit id="lastPage">
-                <source><![CDATA[Last Page]]></source>
-            </trans-unit>
             <trans-unit id="linkToList">
                 <source><![CDATA[Return to list view]]></source>
             </trans-unit>
-            <trans-unit id="nextPage">
+            <trans-unit id="navigation.document.back">
+                <source><![CDATA[Previous document]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.document.forward">
+                <source><![CDATA[Next document]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.doublePage.doublePageView">
+                <source><![CDATA[Show double pages]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.doublePage.rectoVerso">
+                <source><![CDATA[Adjust recto/verso]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.doublePage.singlePageView">
+                <source><![CDATA[Show single page]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.page.backXPages">
+                <source><![CDATA[Back %s Pages]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.page.firstPage">
+                <source><![CDATA[First Page]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.page.forwardXPages">
+                <source><![CDATA[Forward %s Pages]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.page.lastPage">
+                <source><![CDATA[Last Page]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.page.nextPage">
                 <source><![CDATA[Next Page]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.page.prevPage">
+                <source><![CDATA[Previous Page]]></source>
+            </trans-unit>
+            <trans-unit id="navigation.page.selectPage">
+                <source><![CDATA[Page]]></source>
             </trans-unit>
             <trans-unit id="noTitle">
                 <source><![CDATA[[no title]]]></source>
@@ -185,9 +197,6 @@
             <trans-unit id="plugins.validationform.validate">
                 <source><![CDATA[validate]]></source>
             </trans-unit>
-            <trans-unit id="prevPage">
-                <source><![CDATA[Previous Page]]></source>
-            </trans-unit>
             <trans-unit id="rotateLeft">
                 <source><![CDATA[Rotate Left]]></source>
             </trans-unit>
@@ -202,15 +211,6 @@
             </trans-unit>
             <trans-unit id="nextMeasure">
                 <source><![CDATA[Next Measure]]></source>
-            </trans-unit>
-            <trans-unit id="navigation.documentBack">
-                <source><![CDATA[Previous document]]></source>
-            </trans-unit>
-            <trans-unit id="navigation.documentForward">
-                <source><![CDATA[Next document]]></source>
-            </trans-unit>
-            <trans-unit id="selectPage">
-                <source><![CDATA[Page]]></source>
             </trans-unit>
             <trans-unit id="thumbnail">
                 <source><![CDATA[Thumbnail]]></source>
