@@ -1,16 +1,15 @@
-<f:comment>
-<!--
- * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
- *
- * This file is part of the Kitodo and TYPO3 projects.
- *
- * @license GNU General Public License version 3 or later.
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
--->
-</f:comment>
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+</f:comment>
 
 <span class="tx-dlf-tableofcontents-title">
     <f:if condition="{child.title}">
@@ -24,3 +23,5 @@
 </span>
 
 <span class="tx-dlf-tableofcontents-pagination"><f:format.htmlspecialchars doubleEncode="false">{child.pagination}</f:format.htmlspecialchars></span>
+
+</html>
