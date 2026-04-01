@@ -15,13 +15,13 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.type>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validationform.flexform.type.label</label>
-                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validationform.flexform.type.description</description>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validationForm.flexForm.type.label</label>
+                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validationForm.flexForm.type.description</description>
                         <config>
                             <type>input</type>
                             <eval>required,trim</eval>

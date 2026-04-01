@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.tools>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.flexform.tools</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:toolbox.flexForm.tools</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
@@ -35,7 +35,7 @@
                     </settings.tools>
                     <settings.solrcore>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.solrCore</label>
                         <config>
                             <type>select</type>
                             <renderType>selectSingle</renderType>

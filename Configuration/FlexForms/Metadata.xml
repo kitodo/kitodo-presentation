@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.excludeOther>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.excludeOther</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
@@ -29,7 +29,7 @@
                     <settings.linkTitle>
                         <onChange>reload</onChange>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.linkTitle</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.linkTitle</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
@@ -38,7 +38,7 @@
                     <settings.targetPid>
                         <displayCond>FIELD:settings.linkTitle:REQ:true</displayCond>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetPidPageView</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>
@@ -55,7 +55,7 @@
                     </settings.targetPid>
                     <settings.getTitle>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.getTitle</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.getTitle</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
@@ -63,7 +63,7 @@
                     </settings.getTitle>
                     <settings.showFull>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.showFull</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.showFull</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
@@ -71,21 +71,21 @@
                     </settings.showFull>
                     <settings.rootline>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.rootline</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.rootline</label>
                         <config>
                             <type>select</type>
                             <renderType>selectSingle</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.none</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.none</numIndex>
                                     <numIndex index="1">0</numIndex>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.all</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.all</numIndex>
                                     <numIndex index="1">1</numIndex>
                                 </numIndex>
                                 <numIndex index="2" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.rootline.titledata</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.rootLine.titleData</numIndex>
                                     <numIndex index="1">2</numIndex>
                                 </numIndex>
                             </items>
@@ -97,7 +97,7 @@
                     </settings.rootline>
                     <settings.originalIiifMetadata>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.originalIiifMetadata</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.originalIiifMetadata</label>
                         <onChange>reload</onChange>
                         <config>
                             <type>check</type>
@@ -106,7 +106,7 @@
                     </settings.originalIiifMetadata>
                     <settings.iiifMetadataWrap>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.iiifMetadataWrap</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.iiifMetadataWrap</label>
                         <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                         <config>
                             <type>text</type>
@@ -115,7 +115,7 @@
                     </settings.iiifMetadataWrap>
                     <settings.displayIiifDescription>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifDescription</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.displayIiifDescription</label>
                         <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                         <config>
                             <type>check</type>
@@ -124,7 +124,7 @@
                     </settings.displayIiifDescription>
                     <settings.displayIiifRights>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifRights</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.displayIiifRights</label>
                         <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                         <config>
                             <type>check</type>
@@ -133,7 +133,7 @@
                     </settings.displayIiifRights>
                     <settings.displayIiifLinks>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.displayIiifLinks</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexFormdisplayIiifLinks</label>
                         <displayCond>FIELD:settings.originalIiifMetadata:=:1</displayCond>
                         <config>
                             <type>check</type>
@@ -142,7 +142,7 @@
                     </settings.displayIiifLinks>
                     <settings.separator>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.flexform.separator</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.separator</label>
                         <config>
                             <type>input</type>
                             <eval>required,trim</eval>

@@ -4,8 +4,8 @@ mod.wizards.newContentElement.wizardItems {
     elements {
       tx_dlf_basket {
         iconIdentifier = tx-dlf-basket
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_basket
@@ -13,8 +13,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_calendar {
         iconIdentifier = tx-dlf-calendar
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:calendar.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:calendar.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_calendar
@@ -22,8 +22,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_collection {
         iconIdentifier = tx-dlf-collection
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.collection.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_collection
@@ -31,8 +31,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_embedded3dviewer {
         iconIdentifier = tx-dlf-embedded3dviewer
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:embedded3dViewer.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:embedded3dViewer.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_embedded3dviewer
@@ -40,8 +40,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_feeds {
         iconIdentifier = tx-dlf-feeds
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:feeds.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:feeds.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_feeds
@@ -49,8 +49,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_listview {
         iconIdentifier = tx-dlf-listview
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.listview.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.listview.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:listView.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:listView.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_listview
@@ -58,8 +58,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_mediaplayer {
         iconIdentifier = tx-dlf-mediaplayer
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_mediaplayer
@@ -67,8 +67,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_metadata {
         iconIdentifier = tx-dlf-metadata
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.metadata.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_metadata
@@ -76,8 +76,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_navigation {
         iconIdentifier = tx-dlf-navigation
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_navigation
@@ -85,8 +85,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_oaipmh {
         iconIdentifier = tx-dlf-oaipmh
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.oaipmh.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_oaipmh
@@ -94,8 +94,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_pagegrid {
         iconIdentifier = tx-dlf-pagegrid
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageGrid.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageGrid.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_pagegrid
@@ -103,8 +103,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_pageview {
         iconIdentifier = tx-dlf-pageview
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_pageview
@@ -112,8 +112,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_search {
         iconIdentifier = tx-dlf-search
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_search
@@ -121,8 +121,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_statistics {
         iconIdentifier = tx-dlf-statistics
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:statistics.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:statistics.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_statistics
@@ -130,8 +130,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_tableofcontents {
         iconIdentifier = tx-dlf-tableofcontents
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.tableofcontents.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.tableofcontents.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:tableOfContents.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:tableOfContents.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_tableofcontents
@@ -139,8 +139,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_toolbox {
         iconIdentifier = tx-dlf-toolbox
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.toolbox.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:toolbox.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:toolbox.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_toolbox
@@ -148,8 +148,8 @@ mod.wizards.newContentElement.wizardItems {
       }
       tx_dlf_validationform {
         iconIdentifier = tx-dlf-validationform
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validationform.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.validationform.description
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validationForm.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validationForm.plugin.description
         tt_content_defValues {
           CType = list
           list_type = dlf_validationform
