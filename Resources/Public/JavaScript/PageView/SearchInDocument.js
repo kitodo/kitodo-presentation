@@ -15,10 +15,10 @@
  * @returns void
  */
 function nextResultPage() {
-    var currentStart = $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val();
+    var currentStart = $("#tx-dlf-toolbox-searchindocument-form input[id='tx-dlf-toolbox-searchindocument-input-start']").val();
     var newStart = parseInt(currentStart) + 20;
-    $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val(newStart);
-    $('#tx-dlf-search-in-document-form').submit();
+    $("#tx-dlf-toolbox-searchindocument-form input[id='tx-dlf-toolbox-searchindocument-input-start']").val(newStart);
+    $('#tx-dlf-toolbox-searchindocument-form').submit();
 }
 
 /**
@@ -28,10 +28,10 @@ function nextResultPage() {
  * @returns void
  */
 function previousResultPage() {
-    var currentStart = $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val();
+    var currentStart = $("#tx-dlf-toolbox-searchindocument-form input[id='tx-dlf-toolbox-searchindocument-input-start']").val();
     var newStart = (parseInt(currentStart) > 20) ? (parseInt(currentStart) - 20) : 0;
-    $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val(newStart);
-    $('#tx-dlf-search-in-document-form').submit();
+    $("#tx-dlf-toolbox-searchindocument-form input[id='tx-dlf-toolbox-searchindocument-input-start']").val(newStart);
+    $('#tx-dlf-toolbox-searchindocument-form').submit();
 }
 
 /**
@@ -40,7 +40,7 @@ function previousResultPage() {
  * @returns void
  */
 function resetStart() {
-    $("#tx-dlf-search-in-document-form input[id='tx-dlf-search-in-document-start']").val(0);
+    $("#tx-dlf-toolbox-searchindocument-form input[id='tx-dlf-toolbox-searchindocument-input-start']").val(0);
 }
 
 /**
@@ -73,7 +73,7 @@ function getBaseUrl(id) {
     // The URL may be in the following form
     // - http://example.com/index.php?id=14
     // - http://example.com/workview (using slug on page with uid=14)
-    var baseUrl = $("form#tx-dlf-search-in-document-form").attr('action');
+    var baseUrl = $("form#tx-dlf-toolbox-searchindocument-form").attr('action');
 
     // check if action URL contains id, if not, get URL from window
     if(baseUrl === undefined || baseUrl.split('?')[0].indexOf(id) === -1) {
@@ -134,11 +134,11 @@ function getNavigationButtons(start, numFound) {
     var buttons = "";
 
     if(start > 0) {
-        buttons += '<input type="button" id="tx-dlf-search-in-document-button-previous" class="button-previous" onclick="previousResultPage();" />';
+        buttons += '<input type="button" id="tx-dlf-toolbox-searchindocument-button-previous" class="button-previous" onclick="previousResultPage();" />';
     }
 
     if(numFound > (start + 20)) {
-        buttons += '<input type="button" id="tx-dlf-search-in-document-button-next" class="button-next" onclick="nextResultPage();" />';
+        buttons += '<input type="button" id="tx-dlf-toolbox-searchindocument-button-next" class="button-next" onclick="nextResultPage();" />';
     }
     return buttons;
 }
@@ -157,7 +157,7 @@ function getCurrentPage() {
     for(var i = 0; i < queryParams.length; i++) {
         var queryParam = queryParams[i].split('=');
 
-        if(decodeURIComponent(queryParam[0]) === $("input[id='tx-dlf-search-in-document-page']").attr('name')) {
+        if(decodeURIComponent(queryParam[0]) === $("input[id='tx-dlf-toolbox-searchindocument-input-page']").attr('name')) {
             page = parseInt(queryParam[1], 10);
             pageFound = true;
         }
@@ -206,42 +206,44 @@ function addImageHighlight(data, word) {
  */
 function triggerSearchAfterHitLoad() {
     var queryParams = getCurrentQueryParams(getBaseUrl(" "));
-    var searchedQueryParam = $("input[id='tx-dlf-search-in-document-highlight-word']").attr('name');
+    var searchedQueryParam = $("input[id='tx-dlf-toolbox-searchindocument-form-highlight-word']").attr('name');
 
     for(var i = 0; i < queryParams.length; i++) {
         var queryParam = queryParams[i].split('=');
 
         if(searchedQueryParam && decodeURIComponent(queryParam[0]).indexOf(searchedQueryParam) !== -1) {
-            $("input[id='tx-dlf-search-in-document-query']").val(decodeURIComponent(queryParam[1]));
-            $("#tx-dlf-search-in-document-form").submit();
+            $("input[id='tx-dlf-toolbox-searchindocument-form-query']").val(decodeURIComponent(queryParam[1]));
+            $("#tx-dlf-toolbox-searchindocument-form").submit();
             break;
         }
     }
 }
 
 $(document).ready(function() {
-    $("#tx-dlf-search-in-document-form").submit(function(event) {
+    const id = '#tx-dlf-toolbox-searchindocument';
+    const input = 'tx-dlf-toolbox-searchindocument-input';
+    $(id + '-form').submit(function(event) {
         // Stop form from submitting normally
         event.preventDefault();
-        $('#tx-dlf-search-in-document-loading').show();
-        $('#tx-dlf-search-in-document-clearing').hide();
-        $('#tx-dlf-search-in-document-button-next').hide();
-        $('#tx-dlf-search-in-document-button-previous').hide();
+        $(id + '-loading').show();
+        $(id + '-clearing').hide();
+        $(id + '-button-next').hide();
+        $(id + '-button-previous').hide();
         // Send the data using post
         $.post(
             "/",
             {
                 middleware: "dlf/search-in-document",
-                q: $( "input[id='tx-dlf-search-in-document-query']" ).val(),
-                uid: $( "input[id='tx-dlf-search-in-document-id']" ).val(),
-                pid: $( "input[id='tx-dlf-search-in-document-pid']" ).val(),
-                start: $( "input[id='tx-dlf-search-in-document-start']" ).val(),
-                encrypted: $( "input[id='tx-dlf-search-in-document-encrypted']" ).val(),
+                q: $( "input[id='" + input + "-query']" ).val(),
+                uid: $( "input[id='" + input + "-id']" ).val(),
+                pid: $( "input[id='" + input + "-pid']" ).val(),
+                start: $( "input[id='" + input + "-start']" ).val(),
+                encrypted: $( "input[id='" + input + "-encrypted']" ).val(),
             },
             function(data) {
                 var resultItems = [];
                 var resultList = '<div class="results-active-indicator"></div><ul>';
-                var start = $( "input[id='tx-dlf-search-in-document-start']" ).val();
+                var start = $( "input[id='" + input + "-start']" ).val();
                 if (data['numFound'] > 0) {
                     data['documents'].forEach(function (element, i) {
                         if (start < 0) {
@@ -249,7 +251,7 @@ $(document).ready(function() {
                         }
                         if (element['snippet'].length > 0) {
                             resultItems[element['page']] = '<span class="structure">'
-                                + $('#tx-dlf-search-in-document-label-page').text() + ' ' + element['page']
+                                + $(id + '-label-page').text() + ' ' + element['page']
                                 + '</span><br />'
                                 + '<span class="textsnippet">'
                                 + '<a href=\"' + element['url'] + '\">' + element['snippet'] + '</a>'
@@ -264,30 +266,30 @@ $(document).ready(function() {
                         resultList += '<li>' + item + '</li>';
                     });
 
-                    addImageHighlight(data, $( "input[id='tx-dlf-search-in-document-query']" ).val());
+                    addImageHighlight(data, $( "input[id='" + input + "-query']" ).val());
                 } else {
                     resultList += '<li class="noresult"></li>';
                 }
                 resultList += '</ul>';
                 resultList += getNavigationButtons(start, data['numFound']);
-                $('#tx-dlf-search-in-document-results').html(resultList);
-                $('.noresult').text($('#tx-dlf-search-in-document-label-noresult').text());
-                $('.button-previous').attr('value', $('#tx-dlf-search-in-document-label-previous').text());
-                $('.button-next').attr('value', $('#tx-dlf-search-in-document-label-next').text());
+                $(id + '-results').html(resultList);
+                $('.noresult').text($(id + '-label-noresult').text());
+                $('.button-previous').attr('value', $(id + '-label-previous').text());
+                $('.button-next').attr('value', $(id + '-label-next').text());
             },
             "json"
         )
         .done(function (data) {
-            $('#tx-dlf-search-in-document-loading').hide();
-            $('#tx-dlf-search-in-document-clearing').show();
+            $(id + '-loading').hide();
+            $(id + '-clearing').show();
         });
     });
 
      // clearing button
-     $('#tx-dlf-search-in-document-clearing').click(function() {
-        $('#tx-dlf-search-in-document-results ul').remove();
+     $(id + '-clearing').click(function() {
+        $(id + '-results ul').remove();
         $('.results-active-indicator').remove();
-        $('#tx-dlf-search-in-document-query').val('');
+        $(id).val('');
     });
 
     triggerSearchAfterHitLoad();
