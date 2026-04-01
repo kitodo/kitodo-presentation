@@ -318,7 +318,7 @@ export function download(obj, filename) {
  * Convert binary string into an `ArrayBuffer`.
  *
  * @param {string} s
- * @returns {ArrayBuffer}
+ * @returns {Uint8Array<ArrayBuffer>}
  */
 export function binaryStringToArrayBuffer(s) {
   const buffer = new Uint8Array(s.length);

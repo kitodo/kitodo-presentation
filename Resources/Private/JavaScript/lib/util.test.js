@@ -56,22 +56,20 @@ describe('withObjectUrl', () => {
   });
 
   test('returns result of callback', () => {
-    // @ts-expect-error: DOM Blob vs Node Blob (TODO)
     expect(withObjectUrl(new Blob(), () => 1)).toBe(1);
     expect(spyRevoke).toHaveBeenCalledTimes(1);
   });
 
   test('returns async result', async () => {
-    // @ts-expect-error: DOM Blob vs Node Blob (TODO)
     expect(await withObjectUrl(new Blob(), async () => 1)).toBe(1);
     expect(spyRevoke).toHaveBeenCalledTimes(1);
   });
 
   test('revokes despite throw', () => {
+    /** @type {string | undefined} */
     let blobObjectUrl;
 
     expect(() => {
-      // @ts-expect-error: DOM Blob vs Node Blob (TODO)
       withObjectUrl(new Blob(), (objectUrl) => {
         blobObjectUrl = objectUrl;
         throw new Error("e1");
@@ -79,14 +77,14 @@ describe('withObjectUrl', () => {
     }).toThrow("e1");
 
     expect(spyRevoke).toHaveBeenCalledTimes(1);
-    expect(spyRevoke).toHaveBeenCalledWith(blobObjectUrl);
+    expect(spyRevoke).toHaveBeenCalledWith(/** @type {string} */ (blobObjectUrl));
   });
 
   test('revokes despite async throw', async () => {
+    /** @type {string | undefined} */
     let blobObjectUrl;
 
     await expect(async () => {
-      // @ts-expect-error: DOM Blob vs Node Blob (TODO)
       await withObjectUrl(new Blob(), async (objectUrl) => {
         blobObjectUrl = objectUrl;
         throw new Error("e2");
@@ -94,7 +92,7 @@ describe('withObjectUrl', () => {
     }).rejects.toThrow("e2");
 
     expect(spyRevoke).toHaveBeenCalledTimes(1);
-    expect(spyRevoke).toHaveBeenCalledWith(blobObjectUrl);
+    expect(spyRevoke).toHaveBeenCalledWith(/** @type {string} */ (blobObjectUrl));
   });
 });
 

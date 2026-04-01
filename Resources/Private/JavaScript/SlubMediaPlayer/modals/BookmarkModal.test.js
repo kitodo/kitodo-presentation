@@ -26,7 +26,7 @@ describe('BookmarkModal', () => {
   beforeEach(() => {
     // Mocking the environment and necessary elements for BookmarkModal
     mockElement = document.createElement('div');
-    mockEnv = {
+    mockEnv = /** @type {Translator & Identifier & Browser} */ ({
       t: jest.fn().mockImplementation((key) => key),
       mkid: jest.fn().mockReturnValue('mockId'),
       getLocation: jest.fn().mockReturnValue(new URL('https://sachsen.digital')),
@@ -37,7 +37,7 @@ describe('BookmarkModal', () => {
       getKeyboardVariant: jest.fn(),
       isInFullScreen: jest.fn(),
       toggleFullScreen: jest.fn(),
-    };
+    });
     mockConfig = {
       shareButtons: [
         {
@@ -61,7 +61,7 @@ describe('BookmarkModal', () => {
       mockConfig
     );
     originalOpen = window.open;
-    window.open = jest.fn();
+    window.open = /** @type {typeof window.open} */ (jest.fn());
     global.alert = jest.fn();
   });
 

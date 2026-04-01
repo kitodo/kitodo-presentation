@@ -46,7 +46,7 @@ import sanitizeThumbnail from 'DlfMediaPlayer/lib/thumbnails/sanitizeThumbnail';
  *
  * @typedef {{
  *  seekBar: HTMLElement;
- *  player: shaka.Player;
+ *  player: import('shaka-player/dist/shaka-player.ui').default.Player;
  *  network: ImageFetcher;
  *  interaction: Interaction;
  * }} Params

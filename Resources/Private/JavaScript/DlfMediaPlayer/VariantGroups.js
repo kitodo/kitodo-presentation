@@ -7,7 +7,7 @@ import ShakaThumbnailTrack from 'DlfMediaPlayer/lib/thumbnails/ShakaThumbnailTra
  *
  * @typedef {{
  *  key: GroupKey;
- *  variants: shaka.extern.Variant[];
+ *  variants: import('shaka-player/dist/shaka-player.ui').default.extern.Variant[];
  *  roles: Set<string>;
  *  hasPrimary: boolean;
  * }} Group
@@ -34,19 +34,19 @@ import ShakaThumbnailTrack from 'DlfMediaPlayer/lib/thumbnails/ShakaThumbnailTra
 export default class VariantGroups {
   /**
    *
-   * @param {shaka.Player} player Player to which the variant groups are bound.
+   * @param {import('shaka-player/dist/shaka-player.ui').default.Player} player Player to which the variant groups are bound.
    * Variants are read from this player's manifest.
    */
   constructor(player) {
     /**
      * @private
-     * @type {shaka.Player}
+     * @type {import('shaka-player/dist/shaka-player.ui').default.Player}
      */
     this.player = player;
 
     /**
      * @private
-     * @type {shaka.extern.Manifest | null}
+     * @type {import('shaka-player/dist/shaka-player.ui').default.extern.Manifest | null}
      */
     this.manifest = player.getManifest();
 
@@ -96,7 +96,7 @@ export default class VariantGroups {
   /**
    * Sorts {@link variant} into its group if it references a video.
    *
-   * @param {shaka.extern.Variant} variant
+   * @param {import('shaka-player/dist/shaka-player.ui').default.extern.Variant} variant
    */
   addVariant(variant) {
     const video = variant.video;
@@ -155,7 +155,7 @@ export default class VariantGroups {
    * Returns the track that is currently active (in the bound player), or
    * `undefined` if no track is active.
    *
-   * @returns {shaka.extern.Track | undefined}
+   * @returns {import('shaka-player/dist/shaka-player.ui').default.extern.Track | undefined}
    */
   findActiveTrack() {
     // There should be at most one active variant at a time
