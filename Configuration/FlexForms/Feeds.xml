@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.collections>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.collections</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.collections</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
@@ -36,7 +36,7 @@
                     </settings.collections>
                     <settings.excludeOther>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOtherCollections</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.excludeOtherCollections</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -44,7 +44,7 @@
                     </settings.excludeOther>
                     <settings.library>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.library</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.library</label>
                         <config>
                             <type>select</type>
                             <renderType>selectSingle</renderType>
@@ -59,7 +59,7 @@
                     </settings.library>
                     <settings.limit>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.limit</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.limit</label>
                         <config>
                             <type>input</type>
                             <eval>required,num,int</eval>
@@ -68,7 +68,7 @@
                     </settings.limit>
                     <settings.prependSuperiorTitle>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.prependSuperiorTitle</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:feeds.flexForm.prependSuperiorTitle</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -76,7 +76,7 @@
                     </settings.prependSuperiorTitle>
                     <settings.targetPid>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetPidPageView</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>
@@ -93,7 +93,7 @@
                     </settings.targetPid>
                     <settings.title>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.flexform.title</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:feeds.flexForm.title</label>
                         <config>
                             <type>input</type>
                             <eval>required,trim</eval>
@@ -101,7 +101,7 @@
                     </settings.title>
                     <settings.description>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.feeds.flexform.description</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:feeds.flexForm.description</label>
                         <config>
                             <type>input</type>
                             <eval>trim</eval>

@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.excludeOther>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.excludeOther</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
@@ -28,17 +28,17 @@
                     </settings.excludeOther>
                     <settings.features>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.features</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.features.overviewmap</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features.overviewMap</numIndex>
                                     <numIndex index="1">OverviewMap</numIndex>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.features.zoompanel</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features.zoomPanel</numIndex>
                                     <numIndex index="1">ZoomPanel</numIndex>
                                 </numIndex>
                             </items>
@@ -50,7 +50,7 @@
                     </settings.features>
                     <settings.elementId>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.elementId</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.elementId</label>
                         <config>
                             <type>input</type>
                             <eval>required,alphanum_x,nospace</eval>
@@ -59,7 +59,7 @@
                     </settings.elementId>
                     <settings.progressElementId>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.progressElementId</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.progressElementId</label>
                         <config>
                             <type>input</type>
                             <eval>required,alphanum_x,nospace</eval>
@@ -68,7 +68,7 @@
                     </settings.progressElementId>
                     <settings.useInternalProxy>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.useInternalProxy</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.useInternalProxy</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -76,7 +76,7 @@
                     </settings.useInternalProxy>
                     <settings.basketButton>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.showBasketButton</label>
                         <onChange>reload</onChange>
                         <config>
                             <type>check</type>
@@ -85,7 +85,7 @@
                     </settings.basketButton>
                     <settings.basket.crop>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.crop</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.crop</label>
                         <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                         <config>
                             <type>check</type>
@@ -94,7 +94,7 @@
                     </settings.basket.crop>
                     <settings.basket.magnifier>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.magnifier</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.magnifier</label>
                         <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                         <config>
                             <type>check</type>
@@ -103,7 +103,7 @@
                     </settings.basket.magnifier>
                     <settings.targetBasket>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetBasket</label>
                         <displayCond>FIELD:settings.basketButton:REQ:TRUE</displayCond>
                         <config>
                             <type>group</type>
@@ -121,7 +121,7 @@
                     </settings.targetBasket>
                     <settings.multiViewType>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pageview.flexform.multiViewType</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.multiViewType</label>
                         <config>
                             <type>input</type>
                             <eval>nospace</eval>

@@ -15,84 +15,76 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.features>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
                             <items>
                                 <numIndex index="0">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.doublePage</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.doublePage</numIndex>
                                     <numIndex index="1">doublePage</numIndex>
                                 </numIndex>
                                 <numIndex index="1">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageFirst</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageFirst</numIndex>
                                     <numIndex index="1">pageFirst</numIndex>
                                 </numIndex>
                                 <numIndex index="2">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageBack</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageBack</numIndex>
                                     <numIndex index="1">pageBack</numIndex>
                                 </numIndex>
                                 <numIndex index="3">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageStepBack</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageStepBack</numIndex>
                                     <numIndex index="1">pageStepBack</numIndex>
                                 </numIndex>
                                 <numIndex index="4">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageSelect</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexform.features.pageSelect</numIndex>
                                     <numIndex index="1">pageSelect</numIndex>
                                 </numIndex>
                                 <numIndex index="5">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageForward</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageForward</numIndex>
                                     <numIndex index="1">pageForward</numIndex>
                                 </numIndex>
                                 <numIndex index="6">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageStepForward</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageStepForward</numIndex>
                                     <numIndex index="1">pageStepForward</numIndex>
                                 </numIndex>
                                 <numIndex index="7">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.pageLast</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageLast</numIndex>
                                     <numIndex index="1">pageLast</numIndex>
                                 </numIndex>
                                 <numIndex index="8">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.listView</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.listView</numIndex>
                                     <numIndex index="1">listView</numIndex>
                                 </numIndex>
                                 <numIndex index="9">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.zoom</numIndex>
-                                    <numIndex index="1">zoom</numIndex>
-                                </numIndex>
-                                <numIndex index="10">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.rotation</numIndex>
-                                    <numIndex index="1">rotation</numIndex>
-                                </numIndex>
-                                <numIndex index="11">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.measureForward</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.measureForward</numIndex>
                                     <numIndex index="1">measureForward</numIndex>
                                 </numIndex>
-                                <numIndex index="12">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.measureBack</numIndex>
+                                <numIndex index="10">
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.measureBack</numIndex>
                                     <numIndex index="1">measureBack</numIndex>
                                 </numIndex>
-                                <numIndex index="13">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.documentBack</numIndex>
+                                <numIndex index="11">
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.documentBack</numIndex>
                                     <numIndex index="1">documentBack</numIndex>
                                 </numIndex>
-                                <numIndex index="14">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.features.documentForward</numIndex>
+                                <numIndex index="12">
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.documentForward</numIndex>
                                     <numIndex index="1">documentForward</numIndex>
                                 </numIndex>
                             </items>
-                            <default>doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,zoom,rotation,measureForward,measureBack,documentBack,documentForward</default>
+                            <default>doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,measureForward,measureBack,documentBack,documentForward</default>
                             <minitems>1</minitems>
                         </config>
                     </settings.features>
                     <settings.pageStep>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.navigation.flexform.pageStep</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.pageStep</label>
                         <config>
                             <type>input</type>
                             <eval>required,num,int</eval>
@@ -102,7 +94,7 @@
                     <settings.targetPid>
                         <exclude>1</exclude>
                         <displayCond>FIELD:settings.features:IN:listView</displayCond>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetPidListView</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>

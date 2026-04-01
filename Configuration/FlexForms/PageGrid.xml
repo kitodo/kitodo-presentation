@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.paginate.itemsPerPage>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.limit</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageGrid.flexForm.limit</label>
                         <config>
                             <type>input</type>
                             <eval>required,num,int</eval>
@@ -29,7 +29,7 @@
                     </settings.paginate.itemsPerPage>
                     <settings.placeholder>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.pagegrid.placeholder</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageGrid.flexForm.placeholder</label>
                         <config>
                             <type>inline</type>
                             <maxitems>1</maxitems>
@@ -101,7 +101,7 @@
                     </settings.placeholder>
                     <settings.targetPid>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetPidPageView</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>

@@ -40,14 +40,14 @@ class ConfigurationForm
         $solr = Solr::getInstance();
         if ($solr->ready) {
             Helper::addMessage(
-                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'solr.status'),
-                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'solr.connected'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.solr.status'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.solr.connected'),
                 ContextualFeedbackSeverity::OK
             );
         } else {
             Helper::addMessage(
-                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'solr.error'),
-                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'solr.notConnected'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.solr.error'),
+                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.solr.notConnected'),
                 ContextualFeedbackSeverity::WARNING
             );
         }
