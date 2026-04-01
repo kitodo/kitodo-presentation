@@ -163,17 +163,17 @@ class Indexer
                     if ($success) {
                         self::addMessage(
                             sprintf(
-                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentIndexed'),
+                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.flash.documentIndexed'),
                                 $document->getTitle(),
                                 $document->getUid()
                             ),
-                            'flash.done',
+                            'general.flash.done',
                             ContextualFeedbackSeverity::OK
                         );
                     } else {
                         self::addErrorMessage(
                             sprintf(
-                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.documentNotIndexed'),
+                                Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.flash.documentNotIndexed'),
                                 $document->getTitle(),
                                 $document->getUid()
                             )
@@ -188,8 +188,8 @@ class Indexer
         } else {
             if (!(Environment::isCli())) {
                 self::addMessage(
-                    Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrNoConnection'),
-                    'flash.warning',
+                    Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.flash.solrNoConnection'),
+                    'general.flash.warning',
                     ContextualFeedbackSeverity::WARNING
                 );
             }
@@ -221,8 +221,8 @@ class Indexer
             } catch (\Exception $e) {
                 if (!(Environment::isCli())) {
                     Helper::addMessage(
-                        Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
-                        Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.error'),
+                        Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.flash.solrException') . ' ' . htmlspecialchars($e->getMessage()),
+                        Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.flash.error'),
                         ContextualFeedbackSeverity::ERROR,
                         true,
                         'core.template.flashMessages'
@@ -908,7 +908,7 @@ class Indexer
     private static function handleException(string $errorMessage): void
     {
         if (!(Environment::isCli())) {
-            self::addErrorMessage(Helper::getLanguageService()->sL(self::LANG_PREFIX . 'flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
+            self::addErrorMessage(Helper::getLanguageService()->sL(self::LANG_PREFIX . 'general.flash.solrException') . '<br />' . htmlspecialchars($errorMessage));
         }
         Helper::error('Apache Solr threw exception: "' . $errorMessage . '"');
     }
@@ -928,7 +928,7 @@ class Indexer
     {
         self::addMessage(
             $message,
-            'flash.error',
+            'general.flash.error',
             ContextualFeedbackSeverity::ERROR
         );
     }

@@ -15,21 +15,21 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.fulltext>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.fulltext</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.fulltext</label>
                         <config>
                             <type>radio</type>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.yes</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.yes</numIndex>
                                     <numIndex index="1">1</numIndex>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.no</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.no</numIndex>
                                     <numIndex index="1">0</numIndex>
                                 </numIndex>
                             </items>
@@ -39,7 +39,7 @@
                     </settings.fulltext>
                     <settings.fulltextPreselect>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.fulltextPreselect</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.fulltextPreselect</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -47,7 +47,7 @@
                     </settings.fulltextPreselect>
                     <settings.datesearch>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.datesearch</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.dateSearch</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -55,7 +55,7 @@
                     </settings.datesearch>
                     <settings.solrcore>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.solrcore</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.solrCore</label>
                         <config>
                             <type>select</type>
                             <renderType>selectSingle</renderType>
@@ -68,7 +68,7 @@
                     </settings.solrcore>
                     <settings.extendedSlotCount>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.slotCount</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.extSearch.slotCount</label>
                         <config>
                             <type>input</type>
                             <eval>num,int</eval>
@@ -81,7 +81,7 @@
                     </settings.extendedSlotCount>
                     <settings.extendedFields>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.extSearch.fields</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.extSearch.fields</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
@@ -95,25 +95,25 @@
                     </settings.extendedFields>
                     <settings.searchIn>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn</label>
                         <config>
                             <type>select</type>
                             <renderType>selectSingle</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:text.none</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.none</numIndex>
                                     <numIndex index="1">none</numIndex>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn.document</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.document</numIndex>
                                     <numIndex index="1">document</numIndex>
                                 </numIndex>
                                 <numIndex index="2" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn.collection</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.collection</numIndex>
                                     <numIndex index="1">collection</numIndex>
                                 </numIndex>
                                 <numIndex index="3" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.searchIn.all</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.all</numIndex>
                                     <numIndex index="1">all</numIndex>
                                 </numIndex>
                             </items>
@@ -124,7 +124,7 @@
                     </settings.searchIn>
                     <settings.collections>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.collections</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.collections</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
@@ -133,7 +133,7 @@
                                 ORDER BY tx_dlf_collections.label ASC
                             </foreign_table_where>
                             <size>5</size>
-                            <autoSizeMax>15</autoSizeMax>                                
+                            <autoSizeMax>15</autoSizeMax>
                             <items type="array"></items>
                             <itemsProcFunc>Kitodo\Dlf\Hooks\ItemsProcFunc->getFacetsList</itemsProcFunc>
                             <maxitems>1024</maxitems>
@@ -142,7 +142,7 @@
                     </settings.collections>
                     <settings.facets>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.facets</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
@@ -156,7 +156,7 @@
                     </settings.facets>
                     <settings.facetCollections>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.collections</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.facets.collections</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
@@ -172,7 +172,7 @@
                     </settings.facetCollections>
                     <settings.limitFacets>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.limit</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.facets.limit</label>
                         <config>
                             <type>input</type>
                             <eval>num,int</eval>
@@ -185,7 +185,7 @@
                     </settings.limitFacets>
                     <settings.resetFacets>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.reset</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.facets.reset</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -193,17 +193,17 @@
                     </settings.resetFacets>
                     <settings.sortingFacets>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.facets.sorting</label>
                         <config>
                             <type>select</type>
                             <renderType>selectSingle</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting.count</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexform.facets.sorting.count</numIndex>
                                     <numIndex index="1">count</numIndex>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.facets.sorting.index</numIndex>
+                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexform.facets.sorting.index</numIndex>
                                     <numIndex index="1">index</numIndex>
                                 </numIndex>
                             </items>
@@ -214,7 +214,7 @@
                     </settings.sortingFacets>
                     <settings.suggest>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.suggest</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.suggest</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
@@ -222,7 +222,7 @@
                     </settings.suggest>
                     <settings.showLogicalPageField>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.showLogicalPageField</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.showLogicalPageField</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -231,7 +231,7 @@
                     <settings.showSingleResult>
                         <onChange>reload</onChange>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.search.flexform.showSingleResult</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.showSingleResult</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -239,7 +239,7 @@
                     </settings.showSingleResult>
                     <settings.targetPid>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidListView</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetPidListView</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>
@@ -256,7 +256,7 @@
                     </settings.targetPid>
                     <settings.targetPidPageView>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetPidPageView</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>

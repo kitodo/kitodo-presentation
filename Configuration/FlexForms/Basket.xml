@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.pregeneration>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.preGeneration</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.preGeneration</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -28,7 +28,7 @@
                     </settings.pregeneration>
                     <settings.pdfgenerate>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfGenerate</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfGenerate</label>
                         <config>
                             <type>input</type>
                             <eval>required</eval>
@@ -36,7 +36,7 @@
                     </settings.pdfgenerate>
                     <settings.pdfdownload>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfDownload</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfDownload</label>
                         <config>
                             <type>input</type>
                             <eval>required</eval>
@@ -45,7 +45,7 @@
                     </settings.pdfdownload>
                     <settings.pdfprint>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfPrint</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfPrint</label>
                         <config>
                             <type>input</type>
                             <eval>required</eval>
@@ -54,7 +54,7 @@
                     </settings.pdfprint>
                     <settings.pdfparams>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfParams</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfParams</label>
                         <config>
                             <type>input</type>
                             <eval>required</eval>
@@ -63,7 +63,7 @@
                     </settings.pdfparams>
                     <settings.pdfparamseparator>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.pdfParamSeparator</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfParamSeparator</label>
                         <config>
                             <type>input</type>
                             <eval>required</eval>
@@ -72,7 +72,7 @@
                     </settings.pdfparamseparator>
                     <settings.basketGoToButton>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.basket.flexform.basketGoToButton</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.basketGoToButton</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -80,7 +80,7 @@
                     </settings.basketGoToButton>
                     <settings.targetBasket>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexForm.targetBasket</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>

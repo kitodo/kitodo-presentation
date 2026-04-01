@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.excludeOther>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.excludeOther</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
@@ -28,7 +28,7 @@
                     </settings.excludeOther>
                     <settings.elementId>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.elementId</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.elementId</label>
                         <config>
                             <type>input</type>
                             <eval>required,alphanum_x,nospace</eval>
@@ -36,35 +36,35 @@
                         </config>
                     </settings.elementId>
                     <settings.shareButtons>
-                        <title>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.title</title>
+                        <title>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.title</title>
                         <type>array</type>
                         <section>1</section>
                         <el>
                             <singleButton>
-                                <title>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.single.title</title>
+                                <title>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.single.title</title>
                                 <type>array</type>
                                 <el>
                                     <type>
-                                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.type</label>
+                                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.type</label>
                                         <onChange>reload</onChange>
                                         <config>
                                             <type>select</type>
                                             <renderType>selectSingle</renderType>
                                             <items>
                                                 <numIndex index="0">
-                                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.type.material</numIndex>
+                                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.type.material</numIndex>
                                                     <numIndex index="1">material</numIndex>
                                                 </numIndex>
                                                 <numIndex index="1">
-                                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.type.image</numIndex>
+                                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.type.image</numIndex>
                                                     <numIndex index="1">image</numIndex>
                                                 </numIndex>
                                             </items>
                                         </config>
                                     </type>
                                     <icon>
-                                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.icon.label</label>
-                                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.icon.description</description>
+                                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.icon.label</label>
+                                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.icon.description</description>
                                         <displayCond>
                                             FIELD:type:=:material
                                         </displayCond>
@@ -86,8 +86,8 @@
                                         </config>
                                     </src>
                                     <titleTranslationKey>
-                                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.titleTranslationKey.label</label>
-                                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.titleTranslationKey.description</description>
+                                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.titleTranslationKey.label</label>
+                                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.titleTranslationKey.description</description>
                                         <config>
                                             <type>input</type>
                                             <size>255</size>
@@ -95,8 +95,8 @@
                                         </config>
                                     </titleTranslationKey>
                                     <hrefTemplate>
-                                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.hrefTemplate.label</label>
-                                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.shareButtons.hrefTemplate.description</description>
+                                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.hrefTemplate.label</label>
+                                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.hrefTemplate.description</description>
                                         <config>
                                             <type>input</type>
                                             <size>255</size>
@@ -109,15 +109,15 @@
                     </settings.shareButtons>
                     <settings.equalizer.enabled>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.equalizer.enabled</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlfmediaPlayer.flexForm.equalizer.enabled</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
                         </config>
                     </settings.equalizer.enabled>
                     <settings.constants.prevChapterTolerance>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.constants.prevChapterTolerance.label</label>
-                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.mediaplayer.flexform.constants.prevChapterTolerance.description</description>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.constants.prevChapterTolerance.label</label>
+                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.constants.prevChapterTolerance.description</description>
                         <config>
                             <type>input</type>
                             <eval>required,num,int</eval>

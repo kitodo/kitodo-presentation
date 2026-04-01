@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.excludeOther>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.excludeOther</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.excludeOther</label>
                         <config>
                             <type>check</type>
                             <default>1</default>
@@ -28,7 +28,7 @@
                     </settings.excludeOther>
                     <settings.basketButton>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.showBasketButton</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.showBasketButton</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -36,7 +36,7 @@
                     </settings.basketButton>
                     <settings.targetBasket>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetBasket</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetBasket</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>
@@ -53,7 +53,7 @@
                     </settings.targetBasket>
                     <settings.targetPid>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.targetPidPageView</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetPidPageView</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>
@@ -70,7 +70,7 @@
                     </settings.targetPid>
                     <settings.showFull>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.tableofcontents.flexform.showFull</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:tableOfContents.flexForm.showFull</label>
                         <config>
                             <type>check</type>
                             <default>0</default>

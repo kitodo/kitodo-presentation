@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.targetPid>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.flexform.targetPidPageView</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.targetPidPageView</label>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>
@@ -37,7 +37,7 @@
                     </settings.targetPid>
                     <settings.initialDocument>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.initialDocument</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:calendar.flexForm.initialDocument</label>
                         <config>
                             <type>group</type>
                             <allowed>tx_dlf_documents</allowed>
@@ -54,7 +54,7 @@
                     </settings.initialDocument>
                     <settings.showEmptyYears>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.showEmptyYears</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:calendar.flexForm.showEmptyYears</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
@@ -62,7 +62,7 @@
                     </settings.showEmptyYears>
                     <settings.showEmptyMonths>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.calendar.flexform.showEmptyMonths</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:calendar.flexForm.showEmptyMonths</label>
                         <config>
                             <type>check</type>
                             <default>1</default>

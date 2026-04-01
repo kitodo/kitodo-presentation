@@ -40,7 +40,7 @@ class EditInProductionWarning extends AbstractNode
         if ($this->data['command'] !== 'new') {
             // Create flash message.
             Helper::addMessage(
-                htmlspecialchars(Helper::getLanguageService()->sL('LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flash.editInProductionWarning')),
+                htmlspecialchars(Helper::getLanguageService()->sL('LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flash.editInProductionWarning')),
                 '', // We must not set a title/header, because <h4> isn't allowed in FieldInformation.
                 ContextualFeedbackSeverity::WARNING
             );

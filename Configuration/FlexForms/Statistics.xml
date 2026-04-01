@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.collections>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.collections</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.collections</label>
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
@@ -36,7 +36,7 @@
                     </settings.collections>
                     <settings.description>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.statistics.flexform.description</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:statistics.flexForm.description</label>
                         <config>
                             <type>text</type>
                             <cols>30</cols>

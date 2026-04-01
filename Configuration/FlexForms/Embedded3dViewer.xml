@@ -15,12 +15,12 @@
     <sheets>
         <sDEF>
             <ROOT>
-                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:flexform.sheet_general</sheetTitle>
+                <sheetTitle>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.sheet</sheetTitle>
                 <type>array</type>
                 <el>
                     <settings.document>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.flexform.document</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:embedded3dViewer.flexForm.document</label>
                         <config>
                             <type>input</type>
                             <eval>trim</eval>
@@ -28,7 +28,7 @@
                     </settings.document>
                     <settings.model>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.flexform.model</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:embedded3dViewer.flexForm.model</label>
                         <config>
                             <type>input</type>
                             <eval>trim</eval>
@@ -36,7 +36,7 @@
                     </settings.model>
                     <settings.viewer>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.flexform.viewer</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:embedded3dViewer.flexForm.viewer</label>
                         <config>
                             <type>input</type>
                             <eval>trim</eval>
@@ -44,7 +44,7 @@
                     </settings.viewer>
                     <settings.queryString>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.embedded3dviewer.flexform.queryString</label>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:embedded3dViewer.flexForm.queryString</label>
                         <config>
                             <type>input</type>
                             <eval>trim</eval>
