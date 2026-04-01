@@ -11,7 +11,9 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
-<li class="tx-dlf-tools-searchindocument">
+<f:variable name="id" value="tx-dlf-toolbox-searchindocument" />
+
+<li class="{id}">
     <f:if condition="{settings.searchUrl}">
         <f:then>
             <f:variable name="actionUrl" value="{settings.searchUrl}" />
@@ -20,30 +22,30 @@
             <f:variable name="actionUrl" value="{f:uri.page(pageUid='{viewData.pageUid}')}" />
         </f:else>
     </f:if>
-    <form class="tx-dlf-search-form" id="tx-dlf-search-in-document-form" action="{actionUrl}" method="get" enctype="multipart/form-data">
+    <form class="tx-dlf-search-form" id="{id}-form" action="{actionUrl}" method="get" enctype="multipart/form-data">
         <div>
-            <label for="tx-dlf-search-in-document-query">
+            <label for="{id}-input-query">
                 <f:translate key="search.query"/>
             </label>
-            <!-- Never change the @id of this input field! Otherwise search won't work! -->
-            <input type="text" id="tx-dlf-search-in-document-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{searchInDocument.labelQueryUrl}" />
-            <input type="submit" id="tx-dlf-search-in-document-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
-            <input type="hidden" id="tx-dlf-search-in-document-start" name="{searchInDocument.labelStart}" value="0" />
-            <input type="hidden" id="tx-dlf-search-in-document-id" name="{searchInDocument.labelId}" value="{searchInDocument.documentId}" />
-            <input type="hidden" id="tx-dlf-search-in-document-pid" name="{searchInDocument.labelPid}" value="{viewData.pageUid}" />
-            <input type="hidden" id="tx-dlf-search-in-document-page" name="{searchInDocument.labelPageUrl}" />
-            <input type="hidden" id="tx-dlf-search-in-document-highlight-word" name="{searchInDocument.labelHighlightWord}" />
-            <input type="hidden" id="tx-dlf-search-in-document-encrypted" name="{searchInDocument.labelEncrypted}" value="{searchInDocument.solrEncrypted}" />
+            <!-- Never change the @id of this input field! Otherwise, search won't work! -->
+            <input type="text" id="{id}-input-query" placeholder="{f:translate(key: 'tools.searchindocument.searchInDocument')}" name="{searchInDocument.labelQueryUrl}" />
+            <input type="submit" id="{id}-input-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
+            <input type="hidden" id="{id}-input-start" name="{searchInDocument.labelStart}" value="0" />
+            <input type="hidden" id="{id}-input-id" name="{searchInDocument.labelId}" value="{searchInDocument.documentId}" />
+            <input type="hidden" id="{id}-input-pid" name="{searchInDocument.labelPid}" value="{viewData.pageUid}" />
+            <input type="hidden" id="{id}-input-page" name="{searchInDocument.labelPageUrl}" />
+            <input type="hidden" id="{id}-input-highlight-word" name="{searchInDocument.labelHighlightWord}" />
+            <input type="hidden" id="{id}-input-encrypted" name="{searchInDocument.labelEncrypted}" value="{searchInDocument.solrEncrypted}" />
         </div>
     </form>
-    <div id="tx-dlf-search-in-document-loading" style="display: none;"><f:translate key="tools.searchindocument.loading"/>...</div>
-    <div id="tx-dlf-search-in-document-clearing"><f:translate key="tools.searchindocument.deleteSearch"/>...</div>
-    <div id="tx-dlf-search-in-document-results"></div>
-    <div id="tx-dlf-search-in-document-labels" style="display:none;">
-        <span id="tx-dlf-search-in-document-label-next"><f:translate key="tools.searchindocument.next"/></span>
-        <span id="tx-dlf-search-in-document-label-previous"><f:translate key="tools.searchindocument.previous"/></span>
-        <span id="tx-dlf-search-in-document-label-page"><f:translate key="search.logicalPage"/></span>
-        <span id="tx-dlf-search-in-document-label-noresult"><f:translate key="tools.searchindocument.noresult"/></span>
+    <div id="{id}-loading" style="display: none;"><f:translate key="tools.searchindocument.loading"/>...</div>
+    <div id="{id}-clearing"><f:translate key="tools.searchindocument.deleteSearch"/>...</div>
+    <div id="{id}-results"></div>
+    <div id="{id}-labels" style="display:none;">
+        <span id="{id}-label-next"><f:translate key="tools.searchindocument.next"/></span>
+        <span id="{id}-label-previous"><f:translate key="tools.searchindocument.previous"/></span>
+        <span id="{id}-label-page"><f:translate key="search.logicalPage"/></span>
+        <span id="{id}-label-noresult"><f:translate key="tools.searchindocument.noresult"/></span>
     </div>
 </li>
 
