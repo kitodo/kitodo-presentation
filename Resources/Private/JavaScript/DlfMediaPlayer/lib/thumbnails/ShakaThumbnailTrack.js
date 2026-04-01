@@ -1,15 +1,13 @@
 // @ts-check
 
-import shaka from 'shaka-player/dist/shaka-player.ui';
-
 /**
  * @implements {dlf.media.ThumbnailTrack}
  */
 export default class ShakaThumbnailTrack {
   /**
    *
-   * @param {shaka.Player} player
-   * @param {shaka.extern.ImageTrack} track Image track for thumbnails
+   * @param {import('shaka-player/dist/shaka-player.ui').default.Player} player
+   * @param {import('shaka-player/dist/shaka-player.ui').default.extern.ImageTrack} track Image track for thumbnails
    */
   constructor(player, track) {
     /** @private */

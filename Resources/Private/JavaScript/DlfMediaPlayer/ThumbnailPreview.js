@@ -10,7 +10,6 @@ import {
 
 import buildTimeString from 'DlfMediaPlayer/lib/buildTimeString';
 import sanitizeThumbnail from 'DlfMediaPlayer/lib/thumbnails/sanitizeThumbnail';
-import shaka from 'shaka-player/dist/shaka-player.ui';
 
 /**
  * @typedef {import('DlfMediaPlayer/Chapters').default} Chapters
@@ -47,7 +46,7 @@ import shaka from 'shaka-player/dist/shaka-player.ui';
  *
  * @typedef {{
  *  seekBar: HTMLElement;
- *  player: shaka.Player;
+ *  player: import('shaka-player/dist/shaka-player.ui').default.Player;
  *  network: ImageFetcher;
  *  interaction: Interaction;
  * }} Params
