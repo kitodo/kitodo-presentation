@@ -19,13 +19,14 @@ $addList = 'pi_flexform';
 
 $flexFormsPathPrefix = 'FILE:EXT:dlf/Configuration/FlexForms/';
 $iconsDirectory = 'EXT:dlf/Resources/Public/Icons/';
-$pluginsLabel = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:plugins.';
+$langFile = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
+$title = '.plugin.title';
 
 // Plugin "annotation".
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Annotation',
-    $pluginsLabel . 'annotation.title',
+    $langFile . 'annotation' . $title,
 );
 
 // Plugin "basket".
@@ -42,7 +43,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Basket',
-    $pluginsLabel . 'basket.title',
+    $langFile . 'basket' . $title,
     $iconsDirectory . 'tx-dlf-basket.svg'
 );
 
@@ -60,7 +61,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Calendar',
-    $pluginsLabel . 'calendar.title',
+    $langFile . 'calendar' . $title,
     $iconsDirectory . 'tx-dlf-calendar.svg'
 );
 
@@ -78,7 +79,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Collection',
-    $pluginsLabel . 'collection.title',
+    $langFile . 'collection' . $title,
     $iconsDirectory . 'tx-dlf-collection.svg'
 );
 
@@ -96,7 +97,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Embedded3dViewer',
-    $pluginsLabel . 'embedded3dviewer.title',
+    $langFile . 'embedded3dViewer' . $title,
     $iconsDirectory . 'tx-dlf-embedded3dviewer.svg'
 );
 
@@ -114,15 +115,9 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'ValidationForm',
-    $pluginsLabel . 'validationform.title',
+    $langFile . 'validationForm' . $title,
     $iconsDirectory . 'tx-dlf-validationform.svg'
 );
-
-// Plugin "feeds".
-$plugin = 'dlf_feeds';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
 
 // Plugin "feeds".
 $plugin = 'dlf_feeds';
@@ -138,7 +133,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Feeds',
-    $pluginsLabel . 'feeds.title',
+    $langFile . 'feeds' . $title,
     $iconsDirectory . 'tx-dlf-feeds.svg'
 );
 
@@ -156,7 +151,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'ListView',
-    $pluginsLabel . 'listview.title',
+    $langFile . 'listView' . $title,
     $iconsDirectory . 'tx-dlf-listview.svg'
 );
 
@@ -174,7 +169,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'MediaPlayer',
-    $pluginsLabel . 'mediaplayer.title',
+    $langFile . 'mediaPlayer' . $title,
     $iconsDirectory . 'tx-dlf-mediaplayer.svg'
 );
 
@@ -192,7 +187,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Metadata',
-    $pluginsLabel . 'metadata.title',
+    $langFile . 'metadata' . $title,
     $iconsDirectory . 'tx-dlf-metadata.svg'
 );
 
@@ -210,7 +205,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Navigation',
-    $pluginsLabel . 'navigation.title',
+    $langFile . 'navigation' . $title,
     $iconsDirectory . 'tx-dlf-navigation.svg'
 );
 
@@ -228,7 +223,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'OaiPmh',
-    $pluginsLabel . 'oaipmh.title',
+    $langFile . 'oaiPmh' . $title,
     $iconsDirectory . 'tx-dlf-oaipmh.svg'
 );
 
@@ -245,7 +240,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'PageGrid',
-    $pluginsLabel . 'pagegrid.title',
+    $langFile . 'pageGrid' . $title,
     $iconsDirectory . 'tx-dlf-pagegrid.svg'
 );
 
@@ -262,7 +257,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'PageView',
-    $pluginsLabel . 'pageview.title',
+    $langFile . 'pageView' . $title,
     $iconsDirectory . 'tx-dlf-pageview.svg'
 );
 
@@ -280,7 +275,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Search',
-    $pluginsLabel . 'search.title',
+    $langFile . 'search' . $title,
     $iconsDirectory . 'tx-dlf-search.svg'
 );
 
@@ -298,7 +293,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Statistics',
-    $pluginsLabel . 'statistics.title',
+    $langFile . 'statistics' . $title,
     $iconsDirectory . 'tx-dlf-statistics.svg'
 );
 
@@ -316,7 +311,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'TableOfContents',
-    $pluginsLabel . 'tableofcontents.title',
+    $langFile . 'tableOfContents' . $title,
     $iconsDirectory . 'tx-dlf-tableofcontents.svg'
 );
 
@@ -333,6 +328,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Toolbox',
-    $pluginsLabel . 'toolbox.title',
+    $langFile . 'toolbox' . $title,
     $iconsDirectory . 'tx-dlf-toolbox.svg'
 );
