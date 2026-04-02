@@ -18,10 +18,10 @@
             <f:if condition="{currentMeasure} > 1">
                 <f:then>
                     <f:variable name="prevMeasure" value="{currentMeasure - 1}" />
-                    <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{currentMeasure - 1}', 'page':'{measurePages.{prevMeasure}}'}"><f:translate key="prevMeasure"/></kitodo:link>
+                    <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{currentMeasure - 1}', 'page':'{measurePages.{prevMeasure}}'}"><f:translate key="general.prevMeasure"/></kitodo:link>
                 </f:then>
                 <f:else>
-                    <span title="{f:translate(key: 'prevPage')}"><f:translate key="prevMeasure"/></span>
+                    <span title="{f:translate(key: 'prevPage')}"><f:translate key="general.prevMeasure"/></span>
                 </f:else>
             </f:if>
         </span>

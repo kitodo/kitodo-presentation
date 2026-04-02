@@ -12,13 +12,16 @@
 </f:comment>
 
 <li class="tx-dlf-tools-zoom-in">
-    <a href="#" title="{f:translate(key: 'zoomIn')}" onclick="tx_dlf_viewer.map.zoomIn();"><f:translate key="zoomIn"/></a>
+    <f:variable name="zoomIn"><f:translate key="toolbox.zoom.in"/></f:variable>
+    <a href="#" title="{zoomIn}" onclick="tx_dlf_viewer.map.zoomIn();">{zoomIn}</a>
 </li>
 <li class="tx-dlf-tools-zoom-out">
-    <a href="#" title="{f:translate(key: 'zoomOut')}" onclick="tx_dlf_viewer.map.zoomOut();"><f:translate key="zoomOut"/></a>
+    <f:variable name="zoomOut"><f:translate key="toolbox.zoom.out"/></f:variable>
+    <a href="#" title="{zoomOut}" onclick="tx_dlf_viewer.map.zoomOut();">{zoomOut}</a>
 </li>
 <li class="tx-dlf-tools-fullscreen">
-    <a href="#" title="{f:translate(key: 'zoomFullscreen')}"><f:translate key="zoomFullscreen"/></a>
+    <f:variable name="zoomFullscreen"><f:translate key="toolbox.zoom.fullscreen"/></f:variable>
+    <a href="#" title="{zoomFullscreen}">{zoomFullscreen}</a>
 </li>
 
 </html>

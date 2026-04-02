@@ -29,8 +29,8 @@
                                 additionalParams="{'tx_dlf_feeds[collection]': item.collection.uid}"
                                 target="_blank">
                                 <f:image src="EXT:dlf/Resources/Public/Icons/txdlffeeds.png"
-                                        title="{f:translate(key:' item.collection.feed.title')}"
-                                        alt="{f:translate(key:' item.collection.feed.alt')}" />
+                                        title="{f:translate(key:'collection.feed.title')}"
+                                        alt="{f:translate(key:'collection.feed.alt')}" />
                             </f:link.page>
                         </span>
                     </f:if>
@@ -40,7 +40,7 @@
                         <f:link.action action="show"
                                        arguments="{collection : item.collection}"
                                        pageUid="{pageUid}">
-                            <f:image image="{item.collection.thumbnail}" alt="{f:translate(key: 'thumbnail')} {item.collection.label}" title="{item.collection.label}" maxWidth="250" />
+                            <f:image image="{item.collection.thumbnail}" alt="{f:translate(key: 'general.thumbnail')} {item.collection.label}" title="{item.collection.label}" maxWidth="250" />
                         </f:link.action>
                     </div>
                 </f:if>
@@ -51,10 +51,10 @@
                 </f:if>
                 <p class="tx-dlf-collection-counts">
                     ({item.info.titles -> f:count()}
-                    <f:translate key="{f:if(condition:'{item.info.titles -> f:count()} > 1', then: 'titles', else: 'title')}" />
+                    <f:translate key="{f:if(condition:'{item.info.titles -> f:count()} > 1', then: 'collection.titles', else: 'collection.title')}" />
                     /
                     {item.info.volumes -> f:count()}
-                    <f:translate key="{f:if(condition:'{item.info.volumes -> f:count()} > 1', then: 'volumes', else: 'volume')}" />)
+                    <f:translate key="{f:if(condition:'{item.info.volumes -> f:count()} > 1', then: 'collection.volumes', else: 'collection.volume')}" />)
                 </p>
             </li>
         </f:for>

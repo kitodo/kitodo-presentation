@@ -2,14 +2,14 @@
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
     <div class="tx-dlf-validationform" >
         <form action="{url}"
-            data-i18n-headline-error="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.error'/>"
-            data-i18n-headline-notice="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.notice'/>"
-            data-i18n-headline-success="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.success'/>"
-            data-i18n-headline-warning="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.headline.warning'/>"
+            data-i18n-headline-error="<f:translate key='validationForm.headline.error' extensionName='dlf' />"
+            data-i18n-headline-notice="<f:translate key='validationForm.headline.notice' extensionName='dlf' />"
+            data-i18n-headline-success="<f:translate key='validationForm.headline.success' extensionName='dlf' />"
+            data-i18n-headline-warning="<f:translate key='validationForm.headline.warning' extensionName='dlf'/>"
             >
             <input type="hidden" name="type" value="{settings.type}">
             <label>
-                <f:format.raw><f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.label' /></f:format.raw>
+                <f:format.raw><f:translate key='validationForm.label' extensionName='dlf' /></f:format.raw>
                 <input type="text" name="url" class="url" value="" required>
             </label>
             <div class="disabled-validators">
@@ -20,7 +20,7 @@
                     </label>
                 </f:for>
             </div>
-            <input type="submit" class="submit" value="<f:translate key='LLL:EXT:dlf/Resources/Private/Language/locallang.xlf:plugins.validationform.validate'/>">
+            <input type="submit" class="submit" value="<f:translate key='validationForm.validate' extensionName='dlf' />">
         </form>
     </div>
 </html>
