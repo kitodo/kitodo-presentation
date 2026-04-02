@@ -61,7 +61,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Calendar',
-    $langFile. 'calendar' . $title,
+    $langFile . 'calendar' . $title,
     $iconsDirectory . 'tx-dlf-calendar.svg'
 );
 
