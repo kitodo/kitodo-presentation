@@ -13,27 +13,23 @@
 
 <f:if condition="{settings.isVideo} == 1">
     <li class="tx-dlf-tools-audiovideo tx-dlf-tools-videomediaplayer" id="tx-dlf-tools-videomediaplayer" data-tools-audiovideo="videomediaplayer">
-        <a href="#" class="button-videomediaplayer" title="{f:translate(key: 'tools.audiovideotool.videomediaplayer')}">
-            <f:translate key="tools.audiovideotool.videomediaplayer"/>
-        </a>
+        <f:variable name="videoMediaPlayer"><f:translate key="toolbox.audioVideo.videoMediaPlayer"/></f:variable>
+        <a href="#" class="button-videomediaplayer" title="{videoMediaPlayer}">{videoMediaPlayer}</a>
     </li>
 </f:if>
 <f:if condition="{settings.constants.showAudioLabelImage} == 1 && {settings.isAudio} == 1 && {hasAudioLabelImage}">
     <li class="tx-dlf-tools-audiovideo tx-dlf-tools-audiolabelimage" id="tx-dlf-tools-audiolabelimage" data-tools-audiovideo="audiolabelimage">
-        <a href="#" class="button-audiolabelimage" title="{f:translate(key: 'tools.audiovideotool.audiolabelimage')}">
-            <f:translate key="tools.audiovideotool.audiolabelimage"/>
-        </a>
+        <f:variable name="audioLabelImage"><f:translate key="toolbox.audioVideo.audioLabelImage"/></f:variable>
+        <a href="#" class="button-audiolabelimage" title="{audioLabelImage}">{audioLabelImage}</a>
     </li>
 </f:if>
 <li class="tx-dlf-tools-audiovideo tx-dlf-tools-equalizer" id="tx-dlf-tools-equalizer" data-tools-audiovideo="equalizer">
-    <a href="#" class="button-equalizer" title="{f:translate(key: 'tools.audiovideotool.equalizer')}">
-        <f:translate key="tools.audiovideotool.equalizer"/>
-    </a>
+    <f:variable name="equalizer"><f:translate key="toolbox.audioVideo.equalizer"/></f:variable>
+    <a href="#" class="button-equalizer" title="{equalizer}">{equalizer}</a>
 </li>
 <li class="tx-dlf-tools-audiovideo tx-dlf-tools-markertable" id="tx-dlf-tools-markertable" data-tools-audiovideo="markertable">
-    <a href="#" class="button-markertable" title="{f:translate(key: 'tools.audiovideotool.markertable')}">
-        <f:translate key="tools.audiovideotool.markertable"/>
-    </a>
+    <f:variable name="markerTable"><f:translate key="toolbox.audioVideo.markerTable"/></f:variable>
+    <a href="#" class="button-markertable" title="{markerTable}">{markerTable}</a>
 </li>
 
 </html>

@@ -16,7 +16,7 @@
 <ol class="tx-dlf-abstracts">
     <f:for each="{paginator.paginatedItems}" as="document" iteration="docIterator">
         <f:variable name="metadataTitle" value="{f:if(condition:'{document.title}', then:'{document.title}', else:'{document.metsOrderlabel}')}" />
-        <f:variable name="docTitle" value="{f:if(condition:'{metadataTitle}', then:'{metadataTitle}', else:'{f:translate(key: \'noTitle\')}')}" />
+        <f:variable name="docTitle" value="{f:if(condition:'{metadataTitle}', then:'{metadataTitle}', else:'{f:translate(key: \'general.noTitle\')}')}" />
         <li value="{settings.list.paginate.itemsPerPage * pageOffset + docIterator.index}">
             <f:link.page
             pageUid="{settings.targetPidPageView}"
@@ -45,7 +45,7 @@
             <f:render partial="Basket/AddToBasket" arguments="{result: document}" />
 
             <f:if condition="{document.children} || {document.searchResults}">
-                <button class="tx-dlf-morevolumes" title="{f:translate(key='listview.moredetails.toggle')}"><f:translate key='listview.moredetails.toggle' /></button>
+                <button class="tx-dlf-morevolumes" title="{f:translate(key='listView.results.moreDetails')}"><f:translate key='listView.results.moreDetails' /></button>
             </f:if>
             <f:if condition="{document.children}">
                 <ol class="tx-dlf-volume">

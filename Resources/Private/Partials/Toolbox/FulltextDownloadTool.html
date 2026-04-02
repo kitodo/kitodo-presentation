@@ -15,13 +15,12 @@
     <span class="tx-dlf-tools-fulltextdownload">
         <f:if condition="{fulltextDownload}">
             <f:then>
-                <a href="#" id="tx-dlf-tools-fulltextdownload" title="{f:translate(key: 'tools.fulltextdownload.download-current-page')}">
-                    <f:translate key="tools.fulltextdownload.download-current-page"/>
-                </a>
+                <f:variable name="downloadCurrentPage"><f:translate key="toolbox.fulltextDownload.downloadCurrentPage"/></f:variable>
+                <a href="#" id="tx-dlf-tools-fulltextdownload" title="{downloadCurrentPage}">{downloadCurrentPage}</a>
             </f:then>
             <f:else>
                 <span class="tx-dlf-tools-fulltext-not-available">
-                    <f:translate key="tools.fulltext.not-available"/>
+                    <f:translate key="toolbox.fulltext.notAvailable"/>
                 </span>
             </f:else>
         </f:if>

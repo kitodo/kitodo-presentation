@@ -28,7 +28,7 @@
     <f:if condition="{error}">
         <f:then>
             <error code="{error}">
-                <f:translate key="oaipmh.{error}" />
+                <f:translate key="oaiPmh.{error}" />
             </error>
         </f:then>
         <f:else>
@@ -39,7 +39,7 @@
                 <f:case value="ListMetadataFormats"><f:render section="ListMetadataFormats" arguments="{metadataFormats: metadataFormats}"/></f:case>
                 <f:case value="ListRecords"><f:render section="ListRecords" arguments="{listRecords: listRecords, parameters: parameters, resumptionToken: resumptionToken}"/></f:case>
                 <f:case value="ListSets"><f:render section="ListSets" arguments="{oaiSets: oaiSets}" /></f:case>
-                <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
+                <f:defaultCase><error code="badVerb"><f:translate key="oaiPmh.badVerb" /></error></f:defaultCase>
             </f:switch>
         </f:else>
     </f:if>
@@ -100,7 +100,7 @@
             </ListSets>
         </f:then>
         <f:else>
-            <error code="noSetHierarchy"><f:translate key="oaipmh.noSetHierarchy" /></error>
+            <error code="noSetHierarchy"><f:translate key="oaiPmh.noSetHierarchy" /></error>
         </f:else>
     </f:if>
 </f:section>
@@ -209,7 +209,7 @@
                 <f:else>
                     <f:variable name="kitodoerror" value="kitodo:error" />
                     <{kitodoerror} xmlns="http://kitodo.org/">
-                        <f:translate key="oaipmh.error" />
+                        <f:translate key="oaiPmh.error" />
                     </{kitodoerror}>
                 </f:else>
             </f:if>
@@ -236,7 +236,7 @@
                 </record>
             </epicur>
         </f:case>
-        <f:defaultCase><error code="badVerb"><f:translate key="oaipmh.badVerb" /></error></f:defaultCase>
+        <f:defaultCase><error code="badVerb"><f:translate key="oaiPmh.badVerb" /></error></f:defaultCase>
     </f:switch>
 </f:section>
 

@@ -16,28 +16,28 @@
         <f:if condition="{double} === 0">
             <f:then>
                 <f:if condition="{pageLinks.0}">
-                    <f:link.external uri="{pageLinks.0}"><f:translate key="downloadSinglePage" /> (PDF)</f:link.external>
+                    <f:link.external uri="{pageLinks.0}"><f:translate key="toolbox.general.downloadSinglePage" /> (PDF)</f:link.external>
                 </f:if>
             </f:then>
             <f:else>
                 <f:if condition="{pageLinks.0}">
-                    <f:link.external uri="{pageLinks.0}"><f:translate key="downloadLeftPage" /> (PDF)</f:link.external>
+                    <f:link.external uri="{pageLinks.0}"><f:translate key="toolbox.general.downloadLeftPage" /> (PDF)</f:link.external>
                 </f:if>
                 <f:if condition="{pageLinks.1}">
-                    <f:link.external uri="{pageLinks.1}"><f:translate key="downloadRightPage" /> (PDF)</f:link.external>
+                    <f:link.external uri="{pageLinks.1}"><f:translate key="toolbox.general.downloadRightPage" /> (PDF)</f:link.external>
                 </f:if>
             </f:else>
         </f:if>
     </span>
     <span class="tx-dlf-tools-pdf-work">
         <f:if condition="{workLink}">
-            <f:link.external uri="{workLink}"><f:translate key="downloadWork"/> (PDF)</f:link.external>
+            <f:link.external uri="{workLink}"><f:translate key="toolbox.pdfDownload.downloadWork"/> (PDF)</f:link.external>
         </f:if>
     </span>
     <span class="tx-dlf-tools-score">
         <f:if condition="{scoreLinks}">
-            <a href="#" id="tx-dlf-score-midi-download" class="download-document"><f:translate key="mididownload"/> (MIDI)</a>
-            <a href="#" id="tx-dlf-score-download" class="download-document"><f:translate key="scoredownload"/> (PDF)</a>
+            <a href="#" id="tx-dlf-score-midi-download" class="download-document"><f:translate key="toolbox.pdfDownload.downloadMidi"/> (MIDI)</a>
+            <a href="#" id="tx-dlf-score-download" class="download-document"><f:translate key="toolbox.pdfDownload.downloadScore"/> (PDF)</a>
         </f:if>
     </span>
 </li>

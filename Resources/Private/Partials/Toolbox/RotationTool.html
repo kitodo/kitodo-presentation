@@ -12,13 +12,16 @@
 </f:comment>
 
 <li class="tx-dlf-tools-rotate-left">
-    <a href="#" title="{f:translate(key: 'rotateLeft')}" onclick="tx_dlf_viewer.map.rotateLeft();"><f:translate key="rotateLeft"/></a>
+    <f:variable name="rotateLeft"><f:translate key="toolbox.rotate.left"/></f:variable>
+    <a href="#" title="{rotateLeft}" onclick="tx_dlf_viewer.map.rotateLeft();">{rotateLeft}</a>
 </li>
 <li class="tx-dlf-tools-rotate-right">
-    <a href="#" title="{f:translate(key: 'rotateRight')}" onclick="tx_dlf_viewer.map.rotateRight();"><f:translate key="rotateRight"/></a>
+    <f:variable name="rotateRight"><f:translate key="toolbox.rotate.right"/></f:variable>
+    <a href="#" title="{rotateRight}" onclick="tx_dlf_viewer.map.rotateRight();">{rotateRight}</a>
 </li>
 <li class="tx-dlf-tools-rotate-reset">
-    <a href="#" title="{f:translate(key: 'rotateReset')}" onclick="tx_dlf_viewer.map.resetRotation();"><f:translate key="rotateReset"/></a>
+    <f:variable name="rotateReset"><f:translate key="toolbox.rotate.reset"/></f:variable>
+    <a href="#" title="{rotateReset}" onclick="tx_dlf_viewer.map.resetRotation();">{rotateReset}</a>
 </li>
 
 </html>
