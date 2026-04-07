@@ -82,8 +82,9 @@ class XmlSchemasValidatorTest extends UnitTestCase
 
     public function testValidation(): void
     {
+        $schemasPath = __DIR__ . '/../../Fixtures/Schemas';
         $xmlSchemesValidator = new XmlSchemasValidator(
-            [["namespace" => "http://www.loc.gov/METS/", "schemaLocation" => "http://www.loc.gov/standards/mets/mets.xsd"], ["namespace" => "http://www.loc.gov/mods/v3", "schemaLocation" => "http://www.loc.gov/standards/mods/mods.xsd"]]
+            [["namespace" => "http://www.loc.gov/METS/", "schemaLocation" => 'file://' . $schemasPath . '/mets.xsd'], ["namespace" => "http://www.loc.gov/mods/v3", "schemaLocation" => 'file://' . $schemasPath . '/mods.xsd']]
         );
 
         $domDocument = new DOMDocument();
