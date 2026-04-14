@@ -39,14 +39,14 @@ class StatisticsController extends AbstractController
         // Set replacements.
         $args['###TITLES###'] = $foundNumbers['titles'] . ' ' . htmlspecialchars(
             LocalizationUtility::translate(
-                ($foundNumbers['titles'] > 1 ? 'titles' : 'title'),
+                ($foundNumbers['titles'] > 1 ? 'collection.titles' : 'collection.title'),
                 'dlf'
             )
         );
 
         $args['###VOLUMES###'] = $foundNumbers['volumes'] . ' ' . htmlspecialchars(
             LocalizationUtility::translate(
-                ($foundNumbers['volumes'] > 1 ? 'volumes' : 'volume'),
+                ($foundNumbers['volumes'] > 1 ? 'collection.volumes' : 'collection.volume'),
                 'dlf'
             )
         );
