@@ -30,9 +30,6 @@ class IsInArrayViewHelper extends AbstractViewHelper
      */
     public function render(): bool
     {
-        $needle = $this->arguments['needle'];
-        $haystack = $this->arguments['haystack'];
-
-        return in_array($needle, $haystack);
+        return in_array($this->arguments['needle'], $this->arguments['haystack']);
     }
 }
