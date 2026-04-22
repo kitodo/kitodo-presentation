@@ -441,35 +441,28 @@ class DocumentRepository extends Repository
      */
     public function getOaiRecord(array $settings, array $parameters): array|false
     {
-        $where = '';
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
 
-        if (!$settings['show_userdefined']) {
-            $where .= 'AND tx_dlf_collections.fe_cruser_id=0 ';
+        $select = 'tx_dlf_documents.crdate AS crdate, tx_dlf_documents.tstamp AS tstamp, tx_dlf_documents.deleted AS deleted, tx_dlf_documents.hidden AS hidden, tx_dlf_documents.record_id AS record_id, tx_dlf_documents.document_format AS document_format, tx_dlf_documents.purl AS purl, tx_dlf_documents.urn AS urn, tx_dlf_documents.location AS location, GROUP_CONCAT(DISTINCT tx_dlf_collections_join.oai_name ORDER BY tx_dlf_collections_join.oai_name SEPARATOR " ") AS collections';
+
+        $qb = $queryBuilder
+            ->selectLiteral($select)
+            ->from('tx_dlf_documents')
+            ->innerJoin('tx_dlf_documents', 'tx_dlf_relations', 'tx_dlf_relations_join', 'tx_dlf_relations_join.uid_local = tx_dlf_documents.uid')
+            ->innerJoin('tx_dlf_relations_join', 'tx_dlf_collections', 'tx_dlf_collections_join', 'tx_dlf_collections_join.uid = tx_dlf_relations_join.uid_foreign')
+            ->where($queryBuilder->expr()->eq('tx_dlf_documents.record_id', $queryBuilder->createNamedParameter($parameters['identifier'])))
+            ->andWhere($queryBuilder->expr()->eq('tx_dlf_relations_join.ident', $queryBuilder->createNamedParameter('docs_colls')))
+            ->groupBy('tx_dlf_documents.uid');
+
+        if (empty($settings['show_userdefined'])) {
+            $qb->andWhere($queryBuilder->expr()->eq('tx_dlf_collections_join.fe_cruser_id', 0));
         }
 
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('tx_dlf_documents');
+        $qb->getConcreteQueryBuilder()->setMaxResults(1);
 
-        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
-            'FROM `tx_dlf_documents` ' .
-            'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
-            'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE `tx_dlf_documents`.`record_id` = ? ' .
-            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-            $where;
-
-        $values = [
-            $parameters['identifier']
-        ];
-
-        $types = [
-            Connection::PARAM_STR
-        ];
-
-        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
-        $statement = $connection->executeQuery($sql, $values, $types);
-
-        return $statement->fetchAssociative();
+        $result = $qb->executeQuery();
+        return $result->fetchAssociative();
     }
 
     /**
@@ -479,32 +472,27 @@ class DocumentRepository extends Repository
      *
      * @param mixed[] $documentsToProcess
      *
-     * @return Result The found document objects
+     * @return list<array<string,mixed>> The found document objects as associative arrays
      */
-    public function getOaiDocumentList(array $documentsToProcess): Result
+    public function getOaiDocumentList(array $documentsToProcess): array
     {
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('tx_dlf_documents');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_documents');
 
-        $sql = 'SELECT `tx_dlf_documents`.*, GROUP_CONCAT(DISTINCT `tx_dlf_collections`.`oai_name` ORDER BY `tx_dlf_collections`.`oai_name` SEPARATOR " ") AS `collections` ' .
-            'FROM `tx_dlf_documents` ' .
-            'INNER JOIN `tx_dlf_relations` ON `tx_dlf_relations`.`uid_local` = `tx_dlf_documents`.`uid` ' .
-            'INNER JOIN `tx_dlf_collections` ON `tx_dlf_collections`.`uid` = `tx_dlf_relations`.`uid_foreign` ' .
-            'WHERE `tx_dlf_documents`.`uid` IN ( ? ) ' .
-            'AND `tx_dlf_relations`.`ident`="docs_colls" ' .
-            'AND ' . Helper::whereExpression('tx_dlf_collections') . ' ' .
-            'GROUP BY `tx_dlf_documents`.`uid` ';
+        $select = 'tx_dlf_documents.crdate AS crdate, tx_dlf_documents.tstamp AS tstamp, tx_dlf_documents.deleted AS deleted, tx_dlf_documents.hidden AS hidden, tx_dlf_documents.record_id AS record_id, tx_dlf_documents.document_format AS document_format, tx_dlf_documents.purl AS purl, tx_dlf_documents.urn AS urn, tx_dlf_documents.location AS location, GROUP_CONCAT(DISTINCT tx_dlf_collections_join.oai_name ORDER BY tx_dlf_collections_join.oai_name SEPARATOR " ") AS collections';
 
-        $values = [
-            $documentsToProcess,
-        ];
+        $qb = $queryBuilder
+            ->selectLiteral($select)
+            ->from('tx_dlf_documents')
+            ->innerJoin('tx_dlf_documents', 'tx_dlf_relations', 'tx_dlf_relations_join', 'tx_dlf_relations_join.uid_local = tx_dlf_documents.uid')
+            ->innerJoin('tx_dlf_relations_join', 'tx_dlf_collections', 'tx_dlf_collections_join', 'tx_dlf_collections_join.uid = tx_dlf_relations_join.uid_foreign')
+            ->where($queryBuilder->expr()->in('tx_dlf_documents.uid', $queryBuilder->createNamedParameter($documentsToProcess, Connection::PARAM_INT_ARRAY)))
+            ->andWhere($queryBuilder->expr()->eq('tx_dlf_relations_join.ident', $queryBuilder->createNamedParameter('docs_colls')))
+            ->andWhere($queryBuilder->expr()->eq('tx_dlf_collections_join.deleted', 0))
+            ->groupBy('tx_dlf_documents.uid');
 
-        $types = [
-            Connection::PARAM_INT_ARRAY,
-        ];
-
-        // Create a prepared statement for the passed SQL query, bind the given params with their binding types and execute the query
-        return $connection->executeQuery($sql, $values, $types);
+        $result = $qb->executeQuery();
+        return $result->fetchAllAssociative();
     }
 
     /**
