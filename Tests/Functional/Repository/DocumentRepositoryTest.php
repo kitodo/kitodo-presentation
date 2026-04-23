@@ -94,7 +94,12 @@ class DocumentRepositoryTest extends FunctionalTestCase
      */
     public function canGetOaiDocumentList(): void
     {
-        $documents = $this->documentRepository->getOaiDocumentList([1001, 1002]);
+        $result = $this->documentRepository->getOaiDocumentList([1001, 1002]);
+
+        self::assertInstanceOf(Result::class, $result);
+
+        $documents = $result->fetchAllAssociative();
+
         self::assertIsArray($documents);
         self::assertCount(2, $documents);
 
