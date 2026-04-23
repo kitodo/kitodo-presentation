@@ -795,9 +795,9 @@ class OaiPmhController extends AbstractController
         $documents = $this->documentRepository->getOaiDocumentList($documentsToProcess);
 
         $records = [];
-        while ($resArray = $documents->fetchAssociative()) {
+        foreach ($documents as $document) {
             // we need the collections as array later
-            $resArray['collections'] = explode(' ', $resArray['collections']);
+            $document['collections'] = explode(' ', $document['collections']);
 
             if ($verb === 'ListRecords') {
                 // Add metadata node.
@@ -806,15 +806,15 @@ class OaiPmhController extends AbstractController
                     // If we resume an action the metadataPrefix is stored with the documentSet
                     $metadataPrefix = $documentListSet['metadata']['metadataPrefix'];
                 }
-                $resArray['metadata'] = match ($metadataPrefix) {
-                    'oai_dc' => $this->getDublinCoreData($resArray),
-                    'epicur' => $resArray,
-                    'mets' => $this->getMetsData($resArray),
+                $document['metadata'] = match ($metadataPrefix) {
+                    'oai_dc' => $this->getDublinCoreData($document),
+                    'epicur' => $document,
+                    'mets' => $this->getMetsData($document),
                     default => null,
                 };
             }
 
-            $records[] = $resArray;
+            $records[] = $document;
         }
 
         $this->generateResumptionTokenForDocumentListSet($documentListSet, count($documentsToProcess));
