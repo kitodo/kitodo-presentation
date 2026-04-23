@@ -24,15 +24,12 @@ class ImplodeViewHelper extends AbstractViewHelper
     }
 
     /**
-     * Checks if a value exists in an array.
+     * Implode array.
      *
      * @return string
      */
     public function render(): string
     {
-        $value = $this->arguments['value'];
-        $delimiter = $this->arguments['delimiter'];
-
-        return implode($delimiter, $value);
+        return implode($this->arguments['delimiter'], $this->arguments['value']);
     }
 }
