@@ -2,6 +2,16 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+</f:comment>
+
 <f:if condition="{settings.stylesheet}">
     <f:then>
         <?xml-stylesheet type="text/xsl" href="{f:uri.typolink(parameter:'{settings.stylesheet}', absolute:'1')}"?>
@@ -10,6 +20,7 @@
         <?xml-stylesheet type="text/xsl" href="{f:uri.resource(path:'Stylesheets/OaiPmh.xsl', absolute:'1')}"?>
     </f:else>
 </f:if>
+
 <OAI-PMH
     xmlns="http://www.openarchives.org/OAI/2.0/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -63,21 +74,10 @@
         <record>
         <f:if condition="{record.deleted} || {record.hidden}">
             <f:then>
-                <header status="deleted">
-                    <identifier>{record.record_id}</identifier>
-                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
-                </header>
+                <f:render partial="OaiPmh/HeaderDeleted" arguments="{record: record}" />
             </f:then>
             <f:else>
-                <header>
-                    <identifier>{record.record_id}</identifier>
-                    <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
-                    <f:for each="{record.collections}" as="collection">
-                        <f:if condition="{collection}">
-                            <setSpec>{collection}</setSpec>
-                        </f:if>
-                    </f:for>
-                </header>
+                <f:render partial="OaiPmh/Header" arguments="{record: record}" />
                 <metadata>
                     <f:render section="recordMetadata" arguments="{record: record, parameters: parameters}" />
                 </metadata>
@@ -111,21 +111,10 @@
             <f:for each="{listIdentifiers}" as="record">
                 <f:if condition="{record.deleted} || {record.hidden}">
                     <f:then>
-                        <header status="deleted">
-                            <identifier>{record.record_id}</identifier>
-                            <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
-                        </header>
+                        <f:render partial="OaiPmh/HeaderDeleted" arguments="{record: record}" />
                     </f:then>
                     <f:else>
-                        <header>
-                            <identifier>{record.record_id}</identifier>
-                            <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
-                            <f:for each="{record.collections}" as="collection">
-                                <f:if condition="{collection}">
-                                    <setSpec>{collection}</setSpec>
-                                </f:if>
-                            </f:for>
-                        </header>
+                        <f:render partial="OaiPmh/Header" arguments="{record: record}" />
                     </f:else>
                 </f:if>
             </f:for>
@@ -141,21 +130,10 @@
                 <record>
                     <f:if condition="{record.deleted} || {record.hidden}">
                         <f:then>
-                            <header status="deleted">
-                                <identifier>{record.record_id}</identifier>
-                                <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
-                            </header>
+                            <f:render partial="OaiPmh/HeaderDeleted" arguments="{record: record}" />
                         </f:then>
                         <f:else>
-                            <header>
-                                <identifier>{record.record_id}</identifier>
-                                <datestamp><f:format.date format="Y-m-d\TH:i:s\Z">{record.tstamp}</f:format.date></datestamp>
-                                <f:for each="{record.collections}" as="collection">
-                                    <f:if condition="{collection}">
-                                        <setSpec>{collection}</setSpec>
-                                    </f:if>
-                                </f:for>
-                            </header>
+                            <f:render partial="OaiPmh/Header" arguments="{record: record}" />
                             <metadata>
                                 <f:render section="recordMetadata" arguments="{record: record, parameters: parameters}" />
                             </metadata>
@@ -181,7 +159,6 @@
         </ListMetadataFormats>
     </f:if>
 </f:section>
-
 
 <f:section name="recordMetadata">
     <f:switch expression="{parameters.metadataPrefix}">
