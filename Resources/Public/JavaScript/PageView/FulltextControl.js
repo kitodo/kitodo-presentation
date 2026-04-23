@@ -67,7 +67,7 @@ dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
 
 /**
  * Encapsulates especially the fulltext behavior
- * @constructor
+ * @class
  * @param {ol.Map} map
  */
 var dlfViewerFullTextControl = function(map) {
@@ -85,7 +85,7 @@ var dlfViewerFullTextControl = function(map) {
     this.map = map;
 
     /**
-     * @type {Object}
+     * @type {object}
      * @private
      */
     this.dic = $(this.button).length > 0 && $(this.button).data('dic') ?
@@ -123,7 +123,7 @@ var dlfViewerFullTextControl = function(map) {
     }
 
     /**
-     * @type {Object}
+     * @type {object}
      * @private
      */
     this.layers_ = {
@@ -186,7 +186,7 @@ var dlfViewerFullTextControl = function(map) {
     this.textblocks_ = new dlfFulltextSegments();
 
     /**
-     * @type {Object}
+     * @type {object}
      * @private
      */
     this.handlers_ = {
@@ -534,7 +534,7 @@ dlfViewerFullTextControl.prototype.deactivate = function() {
 /**
  * Disable Fulltext Features
  *
- * @return void
+ * @returns {void}
  */
 dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
 
@@ -606,7 +606,7 @@ dlfTmplFulltext.space.className = "sp";
 /**
  * Show full text
  *
- * @param {Array.<ol.Feature>|undefined} features
+ * @param {array.<ol.Feature>|undefined} features
  */
 dlfViewerFullTextControl.prototype.showFulltext = function(features) {
     if (features === undefined) {

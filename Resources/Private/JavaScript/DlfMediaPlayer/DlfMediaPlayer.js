@@ -40,7 +40,10 @@ export default class DlfMediaPlayer extends HTMLElement {
       DlfMediaPlayer.hasInstalledPolyfills = true;
     }
 
-    /** @protected @type {dlf.media.PlayerConfig | null} */
+    /**
+     * @protected
+     * @type {dlf.media.PlayerConfig | null}
+     */
     this.config = null;
 
     /** @protected */
@@ -50,8 +53,9 @@ export default class DlfMediaPlayer extends HTMLElement {
     this.eventMgr_ = new EventManager();
 
     /**
-     * @protected
      * @type {ReturnType<this['constantDefaults']>}
+     *
+     * @protected
      */
     // @ts-expect-error
     this.constants = this.constantDefaults();
@@ -67,7 +71,14 @@ export default class DlfMediaPlayer extends HTMLElement {
       },
     };
 
-    /** @protected @readonly @type {HTMLVideoElement} */
+    /**
+     *
+     * @type {HTMLVideoElement}
+     *
+     * @readonly
+     *
+     * @protected
+     */
     this.video = e('video', {
       id: this.env.mkid(),
       className: "dlf-media",
@@ -79,46 +90,86 @@ export default class DlfMediaPlayer extends HTMLElement {
      *
      * See {@link pauseOn} and {@link resumeOn}.
      *
-     * @private
      * @type {any}
+     *
+     * @private
      */
     this.videoPausedOn = null;
 
-    /** @private @type {dlf.media.Source | null} */
+    /**
+     * @type {dlf.media.Source | null}
+     *
+     * @private
+     */
     this.currentSource = null;
 
-    /** @protected @type {dlf.media.TimeRange | null} */
+    /**
+     * @type {dlf.media.TimeRange | null}
+     * @protected
+     */
     this.timeRange = null;
 
-    /** @private @type {shaka.Player} */
+    /**
+     * @type {shaka.Player}
+     *
+     * @private
+     */
     this.player = new shaka.Player();
     this.player.attach(this.video);
 
-    /** @private @type {dlf.media.Fps | null} */
+    /**
+     * @type {dlf.media.Fps | null}
+     *
+     * @private
+     */
     this.fps = null;
 
-    /** @private @type {VariantGroups | null} */
+    /**
+     * @type {VariantGroups | null}
+     *
+     * @private
+     */
     this.variantGroups = null;
 
-    /** @private @type {Chapters} */
+    /**
+     * @type {Chapters}
+     *
+     * @private
+     */
     this.chapters_ = new Chapters([]);
 
-    /** @private @type {dlf.media.Chapter | null} */
+    /**
+     * @type {dlf.media.Chapter | null}
+     *
+     * @private
+     */
     this.currentChapter = null;
 
     /** @private */
     this.markers_ = new Markers();
 
-    /** @private @type {dlf.media.PlayerFrontend} */
+    /**
+     * @type {dlf.media.PlayerFrontend}
+     *
+     * @private
+     */
     this.frontend = new ShakaFrontend(this.env, this.eventMgr_, this.player, this.video);
 
-    /** @protected @type {HTMLElement | null} */
+    /**
+     * @type {HTMLElement | null}
+     *
+     * @protected
+     */
     this.playerView = null;
 
     /** @protected */
     this.autoplay_ = false;
 
-    /** @private @type {dlf.media.PlayerMode | 'auto'} */
+    /**
+     * @type {dlf.media.PlayerMode | 'auto'}
+     *
+     * @private
+     */
     this.mode = 'auto';
 
     /** @protected */
@@ -130,8 +181,9 @@ export default class DlfMediaPlayer extends HTMLElement {
      * The actions of the player. This is typed in a way that includes additions
      * made by overriding {@link getActions}.
      *
-     * @protected
      * @type {Readonly<ReturnType<this['getActions']>>}
+     *
+     * @protected
      */
     // @ts-expect-error
     this.actions = this.getActions();
@@ -1138,7 +1190,7 @@ export default class DlfMediaPlayer extends HTMLElement {
   }
 
   /**
-   * Whether or not enough data is available for the current playback position
+   * Whether enough data is available for the current playback position
    * (checks `readyState`).
    *
    * @returns {boolean}
@@ -1328,9 +1380,11 @@ export default class DlfMediaPlayer extends HTMLElement {
   /**
    * Returns the active segment if it exists and has a valid endTime.
    *
-   * @private
    * @typedef {import('./Markers.js').Segment & { endTime: number }} SegmentWithEnd
+   *
    * @returns {SegmentWithEnd | null}
+   *
+   * @private
    */
   getValidActiveSegment() {
     const activeSegment = this.markers_.activeSegment;
@@ -1343,8 +1397,9 @@ export default class DlfMediaPlayer extends HTMLElement {
   /**
    * Checks whether the active segment has reached or passed its end time and deactivates it.
    *
-   * @private
    * @returns {boolean}
+   *
+   * @private
    */
   deactivateActiveSegment() {
     const activeSegment = this.getValidActiveSegment();
@@ -1366,8 +1421,9 @@ export default class DlfMediaPlayer extends HTMLElement {
   /**
    * Checks whether playback has reached the active segment’s end time and pauses the video.
    *
-   * @private
    * @returns {boolean}
+   *
+   * @private
    */
   stopActiveSegment() {
     const activeSegment = this.getValidActiveSegment();

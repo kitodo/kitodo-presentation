@@ -51,7 +51,11 @@ export default class ControlPanelButton extends shaka.ui.Element {
 
     parent.appendChild(element);
 
-    /** @protected Avoid naming conflicts with parent class */
+    /**
+     * Avoid naming conflicts with parent class
+     *
+     * @protected
+     */
     this.dlf = { config, element };
 
     const { onClickAction } = config;

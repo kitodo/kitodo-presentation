@@ -198,9 +198,10 @@ export default class FlatSeekBar extends shaka.ui.Element {
   /**
    * Adds chapter marker elements to the seekbar.
    *
-   * @private
    * @param {Chapters} chapters
    * @param {number} duration Duration of the video to be assumed.
+   *
+   * @private
    */
   renderChapterMarkers(chapters, duration) {
     // Clear chapter markers, which would allow a full refresh

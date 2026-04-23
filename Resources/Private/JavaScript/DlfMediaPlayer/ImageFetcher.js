@@ -64,8 +64,9 @@ export default class ImageFetcher {
     /**
      * Map from URL to task.
      *
-     * @private
      * @type {Record<string, Task>}
+     *
+     * @private
      */
     this.tasks = {};
   }
@@ -109,9 +110,10 @@ export default class ImageFetcher {
   }
 
   /**
-   * @protected
    * @param {string} url
    * @returns {Task}
+   *
+   * @protected
    */
   createTask(url) {
     return {
@@ -125,17 +127,19 @@ export default class ImageFetcher {
   }
 
   /**
-   * @protected
    * @param {Task} task
+   *
+   * @protected
    */
   stopTask(task) {
     task.stopNext = true;
   }
 
   /**
-   * @protected
    * @param {Task} task
    * @returns {Promise<HTMLImageElement>}
+   *
+   * @protected
    */
   resumeTask(task) {
     // If we're still in the `for(;;)` loop, this just tells them to
@@ -172,8 +176,9 @@ export default class ImageFetcher {
   /**
    * This should be the only method that re-sets `task.state`.
    *
-   * @protected
    * @param {Task} task
+   *
+   * @protected
    */
   async progressTask(task) {
     switch (task.state.type) {

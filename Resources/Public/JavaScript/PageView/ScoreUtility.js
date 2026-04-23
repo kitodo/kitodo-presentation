@@ -13,7 +13,7 @@
 /**
  * Base namespace for utility functions used by the dlf module.
  *
- * @const
+ * @constant
  */
 let dlfScoreUtils;
 dlfScoreUtils = dlfScoreUtils || {};
@@ -59,6 +59,7 @@ dlfScoreUtil.parseGeometry_ = function(node) {
  * Parse from an alto element a OpenLayers feature object ulx, uly, lrx, lry
  * @param {Element} node
  * @returns {ol.Feature}
+ *
  * @private
  */
 dlfScoreUtil.parseFeatureWithGeometry_ = function(node) {
