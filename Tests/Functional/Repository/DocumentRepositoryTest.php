@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Repository;
 
+use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
@@ -66,6 +67,50 @@ class DocumentRepositoryTest extends FunctionalTestCase
         $document = $this->documentRepository->findOldestDocument();
         self::assertNotNull($document);
         self::assertEquals(1002, $document->getUid());
+    }
+
+    /**
+     * @test
+     */
+    public function canGetOaiRecord(): void
+    {
+        $settings = ['show_userdefined' => false, 'storagePid' => 20000];
+        $parameters = ['identifier' => 'oai:de:slub-dresden:db:id-476251419'];
+
+        $record = $this->documentRepository->getOaiRecord($settings, $parameters);
+
+        self::assertIsArray($record);
+        self::assertEquals('oai:de:slub-dresden:db:id-476251419', $record['record_id']);
+        self::assertNotEmpty($record['location']);
+        self::assertArrayHasKey('collections', $record);
+
+        $collections = explode(' ', $record['collections']);
+        self::assertContains('music', $collections);
+        self::assertContains('collection-with-single-document', $collections);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetOaiDocumentList(): void
+    {
+        $result = $this->documentRepository->getOaiDocumentList([1001, 1002]);
+
+        self::assertInstanceOf(Result::class, $result);
+
+        $documents = $result->fetchAllAssociative();
+
+        self::assertIsArray($documents);
+        self::assertCount(2, $documents);
+
+        $found = array_column($documents, null, 'record_id');
+        self::assertArrayHasKey('oai:de:slub-dresden:db:id-476251419', $found);
+        self::assertArrayHasKey('oai:de:slub-dresden:db:id-476248086', $found);
+
+        $first = $found['oai:de:slub-dresden:db:id-476251419'];
+        self::assertNotEmpty($first['location']);
+        $collections = explode(' ', $first['collections']);
+        self::assertContains('music', $collections);
     }
 
     /**
