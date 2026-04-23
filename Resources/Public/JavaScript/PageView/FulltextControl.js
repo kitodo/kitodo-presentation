@@ -17,7 +17,7 @@
  * @returns {jQuery}
  */
 jQuery.fn.scrollTo = function(elem, speed) {
-    var manualOffsetTop = $(elem).parent().height() / 2;
+    let manualOffsetTop = $(elem).parent().height() / 2;
     $(this).animate({
         scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top - manualOffsetTop
     }, speed === undefined ? 1000 : speed);
@@ -43,9 +43,7 @@ var dlfFulltextSegments = function () {
  * @param {ol.Feature[]} features
  */
 dlfFulltextSegments.prototype.populate = function (features) {
-    for (var i = 0; i < features.length; i++) {
-        var feature = features[i];
-
+    for (let feature of features) {
         this.segments_.push({
             feature,
             extent: feature.getGeometry().getExtent()
@@ -60,8 +58,7 @@ dlfFulltextSegments.prototype.populate = function (features) {
  * @returns {ol.Feature | undefined}
  */
 dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
-    for (var i = 0; i < this.segments_.length; i++) {
-        var segment = this.segments_[i];
+    for (let segment of this.segments_) {
         if (ol.extent.containsCoordinate(segment.extent, coordinate)) {
             return segment.feature;
         }
@@ -77,6 +74,12 @@ var dlfViewerFullTextControl = function(map) {
 
     /**
      * @private
+     * @type {string}
+     */
+    this.button = '#tx-dlf-tools-fulltext';
+
+    /**
+     * @private
      * @type {ol.Map}
      */
     this.map = map;
@@ -85,8 +88,8 @@ var dlfViewerFullTextControl = function(map) {
      * @type {Object}
      * @private
      */
-    this.dic = $('#tx-dlf-tools-fulltext').length > 0 && $('#tx-dlf-tools-fulltext').data('dic') ?
-        dlfUtils.parseDataDic($('#tx-dlf-tools-fulltext')) :
+    this.dic = $(this.button).length > 0 && $(this.button).data('dic') ?
+        dlfUtils.parseDataDic($(this.button)) :
         {
             'fulltext':'Fulltext',
             'fulltext-loading':'Loading full text...',
@@ -256,8 +259,8 @@ dlfViewerFullTextControl.prototype.getFullTextScrollElementId = function() {
     // in getElementById no '#' is necessary / allowed at the beginning
     // of the string. Therefor remove '#' if pre
     let fullTextScrollElementId = this.fullTextScrollElement;
-    if (fullTextScrollElementId.substr(0,1) === '#') {
-      fullTextScrollElementId = fullTextScrollElementId.substr(1);
+    if (fullTextScrollElementId.substring(0,1) === '#') {
+      fullTextScrollElementId = fullTextScrollElementId.substring(1);
     }
     return fullTextScrollElementId.trim();
 };
@@ -304,9 +307,9 @@ dlfViewerFullTextControl.prototype.changeActiveBehaviour = function() {
 };
 
 dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
-    var anchorEl = $('#tx-dlf-tools-fulltext');
+    let anchorEl = $(this.button);
     if (anchorEl.length > 0){
-        var toogleFulltext = $.proxy(function(event) {
+        var toggleFulltext = $.proxy(function(event) {
             event.preventDefault();
 
             this.activateFullTextInitially = 0;
@@ -319,22 +322,20 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOn = function() {
             this.activate();
         }, this);
 
-        anchorEl.on('click', toogleFulltext);
-        anchorEl.on('touchstart', toogleFulltext);
+        anchorEl.on('click', toggleFulltext);
+        anchorEl.on('touchstart', toggleFulltext);
     }
 
     // set initial title of fulltext element
-    $("#tx-dlf-tools-fulltext")
-        .text(this.dic['fulltext'])
-        .attr('title', this.dic['fulltext']);
+    $(this.button).text(this.dic['fulltext']).attr('title', this.dic['fulltext']);
 
     this.activate();
 };
 
 dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
-    var anchorEl = $('#tx-dlf-tools-fulltext');
+    let anchorEl = $(this.button);
     if (anchorEl.length > 0){
-        var toogleFulltext = $.proxy(function(event) {
+        var toggleFulltext = $.proxy(function(event) {
             event.preventDefault();
 
             if ($(event.target).hasClass('active')) {
@@ -345,14 +346,12 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
             this.activate();
         }, this);
 
-        anchorEl.on('click', toogleFulltext);
-        anchorEl.on('touchstart', toogleFulltext);
+        anchorEl.on('click', toggleFulltext);
+        anchorEl.on('touchstart', toggleFulltext);
     }
 
     // set initial title of fulltext element
-    $("#tx-dlf-tools-fulltext")
-        .text(this.dic['fulltext-on'])
-        .attr('title', this.dic['fulltext-on']);
+    $(this.button).text(this.dic['fulltext-on']).attr('title', this.dic['fulltext-on']);
 
     // if fulltext is activated via cookie then run activation method
     if (dlfUtils.getCookie("tx-dlf-pageview-fulltext-select") === 'enabled') {
@@ -438,7 +437,7 @@ dlfViewerFullTextControl.prototype.handleTextBlockElements = function(textblockF
  * @param {any} hoverSourceTextline_
  */
 dlfViewerFullTextControl.prototype.handleTextLineElements = function(textlineFeature, hoverSourceTextline_) {
-    var activeHoverTextBlockEl_ = dlfFullTextUtils.getFeature(hoverSourceTextline_),
+    let activeHoverTextBlockEl_ = dlfFullTextUtils.getFeature(hoverSourceTextline_),
         isFeatureEqualToOldHoverFeature_ = dlfFullTextUtils.isFeatureEqual(activeHoverTextBlockEl_, textlineFeature);
 
     if (!isFeatureEqualToOldHoverFeature_) {
@@ -454,7 +453,7 @@ dlfViewerFullTextControl.prototype.handleTextLineElements = function(textlineFea
  */
 dlfViewerFullTextControl.prototype.removeHighlightEffect = function(activeHoverTextBlockEl_, hoverSourceTextline_) {
     if (activeHoverTextBlockEl_) {
-        var oldTargetElem = $('#' + activeHoverTextBlockEl_.getId());
+        let oldTargetElem = $('#' + activeHoverTextBlockEl_.getId());
 
         if (oldTargetElem.hasClass('highlight') ) {
             oldTargetElem.removeClass('highlight');
@@ -472,7 +471,7 @@ dlfViewerFullTextControl.prototype.removeHighlightEffect = function(activeHoverT
  */
 dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature, hoverSourceTextline_) {
     if (textlineFeature) {
-        var targetElem = $('#' + textlineFeature.getId());
+        let targetElem = $('#' + textlineFeature.getId());
 
         if (targetElem.length > 0 && !targetElem.hasClass('highlight')) {
             targetElem.addClass('highlight');
@@ -501,7 +500,7 @@ dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScro
  */
 dlfViewerFullTextControl.prototype.activate = function() {
 
-    var controlEl = $('#tx-dlf-tools-fulltext');
+    let controlEl = $(this.button);
 
     this.showFulltext(this.textblockFeatures_);
 
@@ -520,7 +519,7 @@ dlfViewerFullTextControl.prototype.activate = function() {
  */
 dlfViewerFullTextControl.prototype.deactivate = function() {
 
-    var controlEl = $('#tx-dlf-tools-fulltext');
+    let controlEl = $(this.button);
 
     // deactivate fulltext
     this.disableFulltextSelect();
@@ -544,24 +543,21 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     this.map.un('pointermove', this.handlers_.mapHover);
 
     // remove layers
-    for (var key in this.layers_) {
+    for (let key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
             this.map.removeLayer(this.layers_[String(key)]);
         }
     }
 
-    var className = 'fulltext-visible';
-    $("#tx-dlf-tools-fulltext").removeClass(className);
+    let className = 'fulltext-visible';
+    $(this.button).removeClass(className);
 
     if(this.activateFullTextInitially === 0) {
-        $("#tx-dlf-tools-fulltext")
-        .text(this.dic['fulltext-on'])
-        .attr('title', this.dic['fulltext-on']);
+        $(this.button).text(this.dic['fulltext-on']).attr('title', this.dic['fulltext-on']);
     }
 
     $('html').find(this.fullTextScrollElement).removeClass(className);
     $('html').find(this.fullTextScrollElement).hide();
-
     $('body').removeClass(className);
 
 };
@@ -576,20 +572,18 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
     this.map.on('pointermove', this.handlers_.mapHover);
 
     // add layers to map
-    for (var key in this.layers_) {
+    for (let key in this.layers_) {
         if (this.layers_.hasOwnProperty(key)) {
             this.map.addLayer(this.layers_[String(key)]);
         }
     }
 
     // show fulltext container
-    var className = 'fulltext-visible';
-    $("#tx-dlf-tools-fulltext").addClass(className);
+    let className = 'fulltext-visible';
+    $(this.button).addClass(className);
 
     if(this.activateFullTextInitially=== 0) {
-        $("#tx-dlf-tools-fulltext")
-        .text(this.dic['fulltext-off'])
-        .attr('title', this.dic['fulltext-off']);
+        $(this.button).text(this.dic['fulltext-off']).attr('title', this.dic['fulltext-off']);
     }
 
     $('html').find(this.fullTextScrollElement).addClass(className);
@@ -626,13 +620,13 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
         return;
     }
 
-    var target = document.getElementById(this.getFullTextScrollElementId());
+    let target = document.getElementById(this.getFullTextScrollElementId());
     if (target !== null) {
         target.innerHTML = "";
-        for (var feature of features) {
-            var textLines = feature.get('textlines');
-            for (var textLine of textLines) {
-                var textLineSpan = this.getTextLineSpan(textLine);
+        for (let feature of features) {
+            let textLines = feature.get('textlines');
+            for (let textLine of textLines) {
+                let textLineSpan = this.getTextLineSpan(textLine);
                 target.append(textLineSpan);
             }
             target.append(document.createElement('br'), document.createElement('br'));
@@ -649,12 +643,12 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
  * @param {Object} textLine
  */
 dlfViewerFullTextControl.prototype.getTextLineSpan = function(textLine) {
-    var textLineSpan = dlfTmplFulltext.textline.cloneNode();
+    let textLineSpan = dlfTmplFulltext.textline.cloneNode();
     textLineSpan.id = textLine.getId();
 
     var content = textLine.get('content');
 
-    for (var item of content) {
+    for (let item of content) {
         textLineSpan.append(this.getItemForTextLineSpan(item));
     }
 
@@ -675,15 +669,15 @@ dlfViewerFullTextControl.prototype.getTextLineSpan = function(textLine) {
  * @return {HTMLElement}
  */
 dlfViewerFullTextControl.prototype.getItemForTextLineSpan = function(item) {
-    var type = item.get('type');
-    var span = dlfTmplFulltext.word.cloneNode();
+    let type = item.get('type');
+    let span = dlfTmplFulltext.word.cloneNode();
     span.className = type;
     if (type === 'string') {
         span.id = item.getId();
     }
 
-    var spanText = item.get('fulltext');
-    var spanTextLines = spanText.split(/\n/g);
+    let spanText = item.get('fulltext');
+    let spanTextLines = spanText.split(/\n/g);
     for (const [i, spanTextLine] of spanTextLines.entries()) {
         span.append(document.createTextNode(spanTextLine));
         if (i < spanTextLines.length - 1) {
