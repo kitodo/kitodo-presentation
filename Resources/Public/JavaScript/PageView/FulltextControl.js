@@ -225,7 +225,7 @@ var dlfViewerFullTextControl = function(map) {
         this),
         mapHover: $.proxy(function(event) {
                 // hover in case of dragging
-                if (event['dragging']) {
+                if (event.dragging) {
                     return;
                 }
 
