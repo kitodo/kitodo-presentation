@@ -69,7 +69,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
 
     this.handlers = {
         mapClick: $.proxy(function(event){
-            var feature = this.map.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
+            var feature = this.map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
                 if (feature.get('type') === 'annotationList') {
                     return feature;
                 }
@@ -102,7 +102,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
         }, this),
         mapHover: $.proxy(function(event){
             // hover in case of dragging
-            if (event['dragging']) {
+            if (event.dragging) {
                 return;
             }
 
@@ -113,7 +113,7 @@ function DlfAnnotationControl(map, image, annotationContainers) {
                 annotationListFeature,
                 annotationFeature;
 
-            map_.forEachFeatureAtPixel(event['pixel'], function(feature, layer) {
+            map_.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
                 if (feature.get('type') === 'annotationList') {
                     annotationListFeature = feature;
                 }

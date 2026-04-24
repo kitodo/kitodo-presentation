@@ -286,7 +286,7 @@ export default class BookmarkModal extends SimpleModal {
     const timerange = this.getActiveTimeRange(state);
     const extendedMetadata = makeExtendedMetadata(this.gen, metadata, timerange, fps);
 
-    const url = extendedMetadata['url']?.[0] ?? '';
+    const url = extendedMetadata.url?.[0] ?? '';
     const urlChanged = url !== this.lastRenderedUrl;
 
     if (urlChanged) {
