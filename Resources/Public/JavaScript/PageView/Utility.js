@@ -25,7 +25,7 @@ if (String.prototype.endsWith === undefined) {
 /**
  * Base namespace for utility functions used by the dlf module.
  *
- * @const
+ * @constant
  */
 var dlfUtils;
 dlfUtils = dlfUtils || {};
@@ -535,7 +535,7 @@ dlfUtils.getUrlParam = function (param) {
 /**
  * Check if an array (possibly nested) contains at least one non-empty value.
  *
- * @param {Array} arr - The array to check (may be nested).
+ * @param {array} arr - The array to check (may be nested).
  * @returns {boolean} True if at least one non-empty value exists, false otherwise.
  */
 dlfUtils.hasContent = function(arr) {
@@ -555,6 +555,7 @@ dlfUtils.hasContent = function(arr) {
 
 /**
  * Returns true if the specified value is null.
+ *
  * @param {?} val
  * @returns {boolean}
  */
@@ -564,6 +565,7 @@ dlfUtils.isNull = function (val) {
 
 /**
  * Returns true if the specified value is null, empty or undefined.
+ *
  * @param {?} val
  * @returns {boolean}
  */
@@ -589,6 +591,7 @@ dlfUtils.isFulltextDescriptor = function (obj) {
 
 /**
  * Check if body has the class 'multiviewembedded'
+ *
  * @returns {boolean}
  */
 dlfUtils.isMultiViewEmbedded = function () {
@@ -619,7 +622,6 @@ dlfUtils.parseDataDic = function (element) {
  * @param {string} name The key of the value
  * @param {?} value The value to save
  * @param {string} samesite Sets the SameSite attribute: lax, strict or none
- *
  */
 dlfUtils.setCookie = function (name, value, samesite) {
     switch(samesite) {
@@ -639,13 +641,13 @@ dlfUtils.setCookie = function (name, value, samesite) {
 /**
  * Scales down the given features geometries.
  * As a further improvement this function adds a unique ID to every feature.
- * @param {Array.<ol.Feature>} features
- * @param {Object} imageObj
+ * @param {array.<ol.Feature>} features
+ * @param {object} imageObj
  * @param {number} width
  * @param {number} height
  * @param {number=} optOffset
  * @deprecated
- * @returns {Array.<ol.Feature>}
+ * @returns {array.<ol.Feature>}
  */
 dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffset) {
 
@@ -692,6 +694,7 @@ dlfUtils.scaleToImageSize = function (features, imageObj, width, height, optOffs
 
 /**
  * Search a feature collection for a feature with the given coordinates
+ *
  * @param {Array.<ol.Feature>} featureCollection
  * @param {string} coordinates for highlighting
  * @returns {Array.<ol.Feature>|undefined}
@@ -710,6 +713,7 @@ dlfUtils.searchFeatureCollectionForCoordinates = function (featureCollection, co
 
 /**
  * Search a feature collection for a feature with the given word in its fulltext
+ *
  * @param {Array.<ol.Feature>} featureCollection
  * @param {string} word for highlighting
  * @returns {Array.<ol.Feature>|undefined}
@@ -728,6 +732,7 @@ dlfUtils.searchFeatureCollectionForWords = function (featureCollection, word) {
 
 /**
  * Append dlf url parameter and reload
+ *
  * @param {string} parameterName Name of the dlf parameter
  * @param {string} parameterValue Value of the dlf parameter
  * @param {boolean} forceDelete Delete parameter before appending

@@ -23,7 +23,8 @@ dlfViewerSource.IIIF = {};
  * Returns an iiif compatible metadata url.
  *
  * @param {string} baseUrl
- * @return {string}
+ *
+ * @returns {string}
  */
 dlfViewerSource.IIIF.getMetdadataURL = function(baseUrl) {
     var pathString = baseUrl.lastIndexOf('/') + 1 === baseUrl.length
@@ -42,7 +43,8 @@ dlfViewerSource.IIP = {};
  * Returns an iip compatible metadata url.
  *
  * @param {string} baseUrl
- * @return {string}
+ *
+ * @returns {string}
  */
 dlfViewerSource.IIP.getMetdadataURL = function(baseUrl) {
     var queryString = '&obj=IIP,1.0&obj=Max-size&obj=Tile-size&obj=Resolution-number',
@@ -56,7 +58,8 @@ dlfViewerSource.IIP.getMetdadataURL = function(baseUrl) {
  * Function parses a given string response for a iip metadata request.
  *
  * @param {string} metadataString
- * @return {Object}
+ *
+ * @returns {object}
  */
 dlfViewerSource.IIP.parseMetadata = function(metadataString) {
 
