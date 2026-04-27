@@ -19,7 +19,7 @@ tt_content,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
                             <field index=""settings.solrcore"">
                                 <value index=""vDEF"">1</value>
                             </field>
-                            <field index=""settings.show_userdefined"">
+                            <field index=""settings.showUserDefined"">
                                 <value index=""vDEF"">-1</value>
                             </field>
                             <field index=""settings.dont_show_single"">
@@ -54,7 +54,7 @@ tt_content,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
                             <field index=""settings.solrcore"">
                                 <value index=""vDEF"">1</value>
                             </field>
-                            <field index=""settings.show_userdefined"">
+                            <field index=""settings.showUserDefined"">
                                 <value index=""vDEF"">-1</value>
                             </field>
                             <field index=""settings.dont_show_single"">

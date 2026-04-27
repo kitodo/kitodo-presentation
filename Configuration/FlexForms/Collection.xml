@@ -49,7 +49,7 @@
                             <minitems>1</minitems>
                         </config>
                     </settings.solrcore>
-                    <settings.show_userdefined>
+                    <settings.showUserDefined>
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showUserDefined</label>
                         <config>
@@ -73,7 +73,7 @@
                             <maxitems>1</maxitems>
                             <minitems>0</minitems>
                         </config>
-                    </settings.show_userdefined>
+                    </settings.showUserDefined>
                     <settings.dont_show_single>
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showSingle</label>

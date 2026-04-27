@@ -269,7 +269,7 @@ FlexForm Configuration
    :Default:
 
  - :Property:
-      show_userdefined
+      showUserDefined
    :Data Type:
       :ref:`t3tsref:data-type-integer`
    :Default:
@@ -732,7 +732,7 @@ TypoScript Configuration
       1800
 
  - :Property:
-      show_userdefined
+      showUserDefined
    :Data Type:
       :ref:`t3tsref:data-type-boolean`
    :Default:

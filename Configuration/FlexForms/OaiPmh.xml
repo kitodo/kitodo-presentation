@@ -51,14 +51,14 @@
                             <default>1800</default>
                         </config>
                     </settings.expired>
-                    <settings.show_userdefined>
+                    <settings.showUserDefined>
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.flexForm.showUserDefined</label>
                         <config>
                             <type>check</type>
                             <default>0</default>
                         </config>
-                    </settings.show_userdefined>
+                    </settings.showUserDefined>
                     <settings.solrcore>
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.solrCore</label>
