@@ -119,7 +119,7 @@ final class IiifManifest extends AbstractDocument
 
     /**
      * {@inheritDoc}
-     * @see Doc::establishRecordId()
+     * @see AbstractDocument::establishRecordId()
      */
     protected function establishRecordId(int $pid): void
     {

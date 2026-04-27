@@ -217,13 +217,7 @@ class MetadataRepository extends Repository
      */
     public function findQueryPath(int $pid, string $iiifVersion): array
     {
-        /*
-         *  FIXME This will not consistently work because we can not be sure to have the pid at hand. It may miss
-         *  if the plugin that actually loads the manifest allows content from other pages.
-         *  Up until now the cPid is only set after the document has been initialized. We need it before to
-         *  check the configuration.
-         *  TODO Saving / indexing should still work - check!
-         */
+        // TODO: Saving / indexing should still work - check!
         $queryBuilder = $this->getQueryBuilder();
         $query = $queryBuilder
             ->select('tx_dlf_metadataformat.xpath AS querypath')
@@ -293,7 +287,8 @@ class MetadataRepository extends Repository
      *
      * @return QueryBuilder
      */
-    private function getQueryBuilder() : QueryBuilder {
+    private function getQueryBuilder() : QueryBuilder
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(self::TABLE);
 

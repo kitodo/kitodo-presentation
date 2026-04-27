@@ -1544,7 +1544,7 @@ final class MetsDocument extends AbstractDocument
             $strctId = $this->getToplevelId();
             $metadata = $this->getToplevelMetadata();
 
-            $allResults = $this->structureRepository->findThumbnail(intval($this->configPid), $metadata['type'][0]);
+            $allResults = $this->structureRepository->findThumbnail($this->configPid, $metadata['type'][0]);
 
             if (count($allResults) == 1) {
                 $resArray = $allResults[0];
