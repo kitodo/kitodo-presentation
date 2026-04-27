@@ -233,8 +233,8 @@ class MetadataRepository extends Repository
             ->where(
                 $queryBuilder->expr()->eq(self::TABLE . '.pid', $pid),
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', $pid),
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(self::TABLE . '.uid', 'tx_dlf_metadataformat.parent_id'),
                         $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
                         $queryBuilder->expr()->eq(self::TABLE . '.index_name', $queryBuilder->createNamedParameter('record_id')),
@@ -275,8 +275,8 @@ class MetadataRepository extends Repository
             ->where(
                 $queryBuilder->expr()->eq(self::TABLE . '.pid', $pid),
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', $pid),
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(self::TABLE . '.uid', 'tx_dlf_metadataformat.parent_id'),
                         $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
                         $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($iiifVersion))
