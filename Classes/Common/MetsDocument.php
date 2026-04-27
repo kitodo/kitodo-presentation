@@ -185,28 +185,12 @@ final class MetsDocument extends AbstractDocument
     /**
      * @var MetadataRepository
      */
-    protected $metadataRepository;
+    protected MetadataRepository $metadataRepository;
 
     /**
      * @var StructureRepository
      */
-    protected $structureRepository;
-
-    /**
-     * @param MetadataRepository $metadataRepository
-     */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
-    {
-        $this->metadataRepository = $metadataRepository;
-    }
-
-    /**
-     * @param StructureRepository $structureRepository
-     */
-    public function injectStructureRepository(StructureRepository $structureRepository)
-    {
-        $this->structureRepository = $structureRepository;
-    }
+    protected StructureRepository $structureRepository;
 
     /**
      * This adds metadata from METS structural map to metadata array.
@@ -1137,6 +1121,8 @@ final class MetsDocument extends AbstractDocument
     protected function init(string $location, array $settings): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
+        $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
+        $this->structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
         $this->settings = $settings;
         // Get METS node from XML file.
         $this->registerNamespaces($this->xml);

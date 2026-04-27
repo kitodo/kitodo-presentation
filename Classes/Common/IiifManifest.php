@@ -115,24 +115,16 @@ final class IiifManifest extends AbstractDocument
     /**
      * @var MetadataRepository
      */
-    protected $metadataRepository;
-
-    /**
-     * @param MetadataRepository $metadataRepository
-     */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository)
-    {
-        $this->metadataRepository = $metadataRepository;
-    }
+    protected MetadataRepository $metadataRepository;
 
     /**
      * {@inheritDoc}
      * @see Doc::establishRecordId()
      */
-    protected function establishRecordId($pid): void
+    protected function establishRecordId(int $pid): void
     {
         if ($this->iiif !== null) {
-            $allResults = $this->metadataRepository->findQueryPath(intval($pid), $this->getIiifVersion());
+            $allResults = $this->metadataRepository->findQueryPath($pid, $this->getIiifVersion());
             foreach ($allResults as $resArray) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
@@ -698,6 +690,7 @@ final class IiifManifest extends AbstractDocument
     protected function init(string $location, array $settings = []): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
+        $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
     }
 
     /**
@@ -706,7 +699,7 @@ final class IiifManifest extends AbstractDocument
     protected function prepareMetadataArray(): void
     {
         $id = $this->iiif->getId();
-        $this->metadataArray[(string) $id] = $this->getMetadata($id);
+        $this->metadataArray[$id] = $this->getMetadata($id);
     }
 
     /**
