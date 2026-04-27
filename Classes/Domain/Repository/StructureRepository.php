@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Doctrine\DBAL\Exception;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Structure;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -36,12 +37,14 @@ class StructureRepository extends Repository
     /**
      * Finds structure element to get thumbnail from.
      *
-     * @param int $cPid
+     * @param int $pid
      * @param string $type
      *
-     * @return array
+     * @return list<array<string,mixed>>
+     *
+     * @throws Exception
      */
-    public function findThumbnail($cPid, $type)
+    public function findThumbnail(int $pid, string $type): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_structures');
@@ -50,7 +53,7 @@ class StructureRepository extends Repository
             ->select('tx_dlf_structures.thumbnail AS thumbnail')
             ->from('tx_dlf_structures')
             ->where(
-                $queryBuilder->expr()->eq('tx_dlf_structures.pid', $cPid),
+                $queryBuilder->expr()->eq('tx_dlf_structures.pid', $pid),
                 $queryBuilder->expr()->eq(
                     'tx_dlf_structures.index_name',
                     $queryBuilder->expr()->literal($type)
@@ -59,6 +62,6 @@ class StructureRepository extends Repository
             )
             ->setMaxResults(1);
 
-        return $query->execute()->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 }

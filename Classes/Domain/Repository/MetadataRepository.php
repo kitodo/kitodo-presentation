@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Doctrine\DBAL\Exception;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -73,14 +74,67 @@ class MetadataRepository extends Repository
     }
 
     /**
+     * Find metadata subentries.
+     *
+     * @access public
+     *
+     * @param int $pid
+     *
+     * @return list<array<string,mixed>>
+     *
+     * @throws Exception
+     */
+    public function findSubentries(int $pid): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $query = $queryBuilder
+            ->select(
+                'tx_dlf_subentries_joins.index_name AS index_name',
+                'tx_dlf_metadata.index_name AS parent_index_name',
+                'tx_dlf_subentries_joins.xpath AS xpath',
+                'tx_dlf_subentries_joins.default_value AS default_value'
+            )
+            ->from(self::TABLE)
+            ->innerJoin(
+                self::TABLE,
+                'tx_dlf_metadataformat',
+                'tx_dlf_metadataformat_joins',
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_metadataformat_joins.parent_id',
+                    self::TABLE . '.uid'
+                )
+            )
+            ->innerJoin(
+                'tx_dlf_metadataformat_joins',
+                'tx_dlf_metadatasubentries',
+                'tx_dlf_subentries_joins',
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_subentries_joins.parent_id',
+                    'tx_dlf_metadataformat_joins.uid'
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->eq(self::TABLE . '.pid', $pid),
+                $queryBuilder->expr()->gt('tx_dlf_metadataformat_joins.subentries', 0),
+                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.l18n_parent', 0),
+                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', $pid)
+            )
+            ->orderBy('tx_dlf_subentries_joins.sorting');
+
+        return $query->executeQuery()->fetchAllAssociative();
+    }
+
+    /**
      * Finds all metadata with configured xpath and applicable format.
      *
      * @param int $pid
      * @param string $type
      *
-     * @return array
+     * @return list<array<string,mixed>>
+     *
+     * @throws Exception
      */
-    public function findWithFormat($pid, $type)
+    public function findWithFormat(int $pid, string $type): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $query = $queryBuilder
@@ -117,7 +171,8 @@ class MetadataRepository extends Repository
                 $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', $pid),
                 $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($type))
             );
-        return $query->execute()->fetchAllAssociative();
+
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -125,9 +180,11 @@ class MetadataRepository extends Repository
      *
      * @param int $pid
      *
-     * @return array
+     * @return list<array<string,mixed>>
+     *
+     * @throws Exception
      */
-    public function findWithoutFormat($pid)
+    public function findWithoutFormat(int $pid): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $query = $queryBuilder
@@ -145,7 +202,7 @@ class MetadataRepository extends Repository
                 $queryBuilder->expr()->neq(self::TABLE . '.default_value', $queryBuilder->createNamedParameter(''))
             );
 
-        return $query->execute()->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -154,9 +211,11 @@ class MetadataRepository extends Repository
      * @param int $pid
      * @param string $iiifVersion
      *
-     * @return array
+     * @return list<array<string,mixed>>
+     *
+     * @throws Exception
      */
-    public function findQueryPath($pid, $iiifVersion)
+    public function findQueryPath(int $pid, string $iiifVersion): array
     {
         /*
          *  FIXME This will not consistently work because we can not be sure to have the pid at hand. It may miss
@@ -185,7 +244,7 @@ class MetadataRepository extends Repository
                 )
             );
 
-        return $query->execute()->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -194,9 +253,11 @@ class MetadataRepository extends Repository
      * @param int $pid
      * @param string $iiifVersion
      *
-     * @return array
+     * @return list<array<string,mixed>>
+     *
+     * @throws Exception
      */
-    public function findForIiif($pid, $iiifVersion)
+    public function findForIiif(int $pid, string $iiifVersion): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $query = $queryBuilder
@@ -224,7 +285,7 @@ class MetadataRepository extends Repository
                 )
             );
 
-        return $query->execute()->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     /**
