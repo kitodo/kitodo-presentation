@@ -33,7 +33,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  *
  * @property int $configPid this holds the PID for the configuration
  * @property-read array $formats this holds the configuration for all supported metadata encodings
- * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
  * @property array $lastSearchedPhysicalPage the last searched logical and physical page
  * @property array $logicalUnits this holds the logical units
@@ -89,28 +88,7 @@ abstract class AbstractDocument
      *
      * @see loadFormats()
      */
-    protected array $formats = [
-        'OAI' => [
-            'rootElement' => 'OAI-PMH',
-            'namespaceURI' => 'http://www.openarchives.org/OAI/2.0/',
-        ],
-        'METS' => [
-            'rootElement' => 'mets',
-            'namespaceURI' => 'http://www.loc.gov/METS/',
-        ],
-        'XLINK' => [
-            'rootElement' => 'xlink',
-            'namespaceURI' => 'http://www.w3.org/1999/xlink',
-        ]
-    ];
-
-    /**
-     * @access protected
-     * @var bool Are the available metadata formats loaded?
-     *
-     * @see $formats
-     */
-    protected bool $formatsLoaded = false;
+    protected array $formats = [];
 
     /**
      * Are there any fulltext files available? This also includes IIIF text annotations
@@ -737,7 +715,7 @@ abstract class AbstractDocument
      */
     protected function loadFormats(): void
     {
-        if (!$this->formatsLoaded && $this->configPid > 0) {
+        if (empty($this->formats) && $this->configPid > 0) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_formats');
 
@@ -763,7 +741,6 @@ abstract class AbstractDocument
                     'class' => $resArray['class']
                 ];
             }
-            $this->formatsLoaded = true;
         }
     }
 
