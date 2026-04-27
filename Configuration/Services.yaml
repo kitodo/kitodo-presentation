@@ -7,10 +7,10 @@ services:
   Kitodo\Dlf\:
     resource: '../Classes/*'
 
-  Kitodo\Dlf\Command\DbDocsCommand:
+  Kitodo\Dlf\Command\DatabaseDocsGenerateCommand:
     tags:
       - name: console.command
-        command: 'kitodo:dbdocs'
+        command: 'kitodo:databaseDocsGenerate'
         description: 'Generate database rst file.'
 
   Kitodo\Dlf\Command\DeleteCommand:
