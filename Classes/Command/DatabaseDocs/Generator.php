@@ -15,11 +15,9 @@ namespace Kitodo\Dlf\Command\DatabaseDocs;
 use Doctrine\DBAL\Schema\Table;
 use ReflectionClass;
 use ReflectionProperty;
-use RuntimeException;
 use TYPO3\CMS\Core\Database\Schema\Parser\Lexer;
 use TYPO3\CMS\Core\Database\Schema\Parser\Parser;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -105,8 +103,8 @@ class Generator
         $result = [];
 
         foreach ($createTableStatements as $statement) {
-            $parser = new Parser($statement);
-            list($table) = $parser->parse();
+            $parser = new Parser(new Lexer());
+            list($table) = $parser->parse($statement);
 
             $tableName = $table->getName();
             if (!str_starts_with($tableName, 'tx_dlf_')) {
