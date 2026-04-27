@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Configuration\UseGroupsConfiguration;
+use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
@@ -76,6 +77,12 @@ abstract class AbstractDocument
      * @var string The extension key
      */
     public static string $extKey = 'dlf';
+
+    /**
+     * @access protected
+     * @var FormatRepository This holds the format repository
+     */
+    protected FormatRepository $formatRepository;
 
     /**
      * @access protected
@@ -738,31 +745,17 @@ abstract class AbstractDocument
     protected function loadFormats(): void
     {
         if (!$this->formatsLoaded && $this->configPid > 0) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_formats');
+            // TODO: it should work with findBy(['pid' => this->configPid]), but returns empty result
+            $formats = $this->formatRepository->findByPid($this->configPid);
 
-            // Get available data formats from database.
-            $result = $queryBuilder
-                ->select(
-                    'type',
-                    'root',
-                    'namespace',
-                    'class'
-                )
-                ->from('tx_dlf_formats')
-                ->where(
-                    $queryBuilder->expr()->eq('pid', $this->configPid)
-                )
-                ->executeQuery();
-
-            while ($resArray = $result->fetchAssociative()) {
-                // Update format registry.
-                $this->formats[$resArray['type']] = [
-                    'rootElement' => $resArray['root'],
-                    'namespaceURI' => $resArray['namespace'],
-                    'class' => $resArray['class']
+            foreach ($formats as $format) {
+                $this->formats[$format['type']] = [
+                    'rootElement' => $format['root'],
+                    'namespaceURI' => $format['namespace'],
+                    'class' => $format['class']
                 ];
             }
+
             $this->formatsLoaded = true;
         }
     }
@@ -1049,6 +1042,7 @@ abstract class AbstractDocument
         $storagePid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
         $this->configPid = $storagePid;
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
+        $this->formatRepository = GeneralUtility::makeInstance(FormatRepository::class);
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location, $settings);
         $this->establishRecordId($storagePid);
