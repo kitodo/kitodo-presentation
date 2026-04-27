@@ -18,7 +18,11 @@ import { EventTarget as FakeEventTarget } from 'DlfMediaPlayer/3rd-party/EventTa
  */
 export default class EventManager {
   constructor() {
-    /** @private @type {Listener[]} */
+    /**
+     * @type {Listener[]}
+     *
+     * @private
+     */
     this.listeners_ = [];
   }
 

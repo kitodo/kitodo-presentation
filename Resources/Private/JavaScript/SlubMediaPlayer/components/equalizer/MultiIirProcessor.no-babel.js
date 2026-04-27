@@ -67,7 +67,11 @@ export default function registerMultiIirProcessor() {
     constructor() {
       super();
 
-      /** @private @type {Record<string, Filter>} */
+      /**
+       * @type {Record<string, Filter>}
+       *
+       * @private
+       */
       this.filters = {};
 
       /** @private */
@@ -80,8 +84,9 @@ export default function registerMultiIirProcessor() {
     }
 
     /**
-     * @private
      * @param {MessageEvent} event
+     *
+     * @private
      */
     onmessage(event) {
       const data = event.data;

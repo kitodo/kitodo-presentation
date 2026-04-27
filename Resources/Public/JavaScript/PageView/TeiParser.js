@@ -66,6 +66,7 @@ dlfTeiParser.prototype.parse = function(document) {
 
 /**
  * @returns {string}
+ *
  * @private
  */
 dlfTeiParser.prototype.getFacsMapId = function() {
@@ -79,6 +80,7 @@ dlfTeiParser.prototype.getFacsMapId = function() {
  *
  * @param {XMLDocument|string} document
  * @returns {XMLDocument}
+ *
  * @private
  */
 dlfTeiParser.prototype.parseXML = function(document) {

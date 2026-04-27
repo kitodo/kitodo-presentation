@@ -30,7 +30,11 @@ export default class Equalizer {
     /** @private */
     this.fftData_ = new Float32Array(this.fftSize_);
 
-    /** @private @type {Connection | null} */
+    /**
+     * @type {Connection | null}
+     *
+     * @private
+     */
     this.connection_ = null;
 
     /** @private */
@@ -45,7 +49,7 @@ export default class Equalizer {
   }
 
   /**
-   * Whether or not the equalizer is active.
+   * Whether the equalizer is active.
    */
   get active() {
     return this.active_;

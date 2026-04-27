@@ -5,7 +5,7 @@ import TimecodeIndex from 'lib/TimecodeIndex';
 /**
  * Represents a set of chapter markers that is ordered by timecode.
  *
- * @extends TimecodeIndex<dlf.media.Chapter>
+ * @auguments TimecodeIndex<dlf.media.Chapter>
  */
 export default class Chapters extends TimecodeIndex {
   /**
