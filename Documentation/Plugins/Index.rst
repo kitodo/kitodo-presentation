@@ -275,7 +275,7 @@ FlexForm Configuration
    :Default:
 
  - :Property:
-      dont_show_single
+      showSingle
    :Data Type:
       :ref:`t3tsref:data-type-boolean`
    :Default:

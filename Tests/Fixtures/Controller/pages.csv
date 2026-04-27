@@ -22,7 +22,7 @@ tt_content,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
                             <field index=""settings.showUserDefined"">
                                 <value index=""vDEF"">-1</value>
                             </field>
-                            <field index=""settings.dont_show_single"">
+                            <field index=""settings.showSingle"">
                                 <value index=""vDEF"">0</value>
                             </field>
                             <field index=""settings.randomize"">
@@ -57,7 +57,7 @@ tt_content,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
                             <field index=""settings.showUserDefined"">
                                 <value index=""vDEF"">-1</value>
                             </field>
-                            <field index=""settings.dont_show_single"">
+                            <field index=""settings.showSingle"">
                                 <value index=""vDEF"">0</value>
                             </field>
                             <field index=""settings.randomize"">
