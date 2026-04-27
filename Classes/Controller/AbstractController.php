@@ -581,7 +581,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         if ($this instanceof OaiPmhController) {
             $this->setDefaultIntSetting('limit', 5);
-            $this->setDefaultIntSetting('solr_limit', 50000);
+            $this->setDefaultIntSetting('solrLimit', 50000);
         }
 
         if ($this instanceof PageViewController) {
