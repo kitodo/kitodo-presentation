@@ -16,7 +16,6 @@ use Doctrine\DBAL\Exception;
 use Kitodo\Dlf\Domain\Model\Format;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Format repository.

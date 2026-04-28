@@ -17,7 +17,6 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Structure;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Structure repository.
