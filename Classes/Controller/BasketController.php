@@ -119,6 +119,8 @@ class BasketController extends AbstractController
      */
     public function basketAction(): ResponseInterface
     {
+        $this->setStoragePid();
+
         $basket = $this->getBasketData();
 
         // action remove from basket
@@ -168,6 +170,8 @@ class BasketController extends AbstractController
      */
     public function addAction(): ResponseInterface
     {
+        $this->setStoragePid();
+
         $basket = $this->getBasketData();
 
         if (
@@ -189,6 +193,8 @@ class BasketController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
+        $this->setStoragePid();
+
         $basket = $this->getBasketData();
 
         $countDocs = 0;
@@ -197,7 +203,7 @@ class BasketController extends AbstractController
         }
         $this->view->assign('countDocs', $countDocs);
 
-        $allMails = $this->mailRepository->findAllWithPid($this->settings['storagePid']);
+        $allMails = $this->mailRepository->findAll();
 
         $mailSelect = [];
         if (iterator_count($allMails) > 0) {
@@ -725,5 +731,20 @@ class BasketController extends AbstractController
     {
         $context = GeneralUtility::makeInstance(Context::class);
         return $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+    }
+
+    /**
+     * Set storage pid for repositories.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function setStoragePid(): void
+    {
+        $this->actionLogRepository->setStoragePid($this->settings['storagePid']);
+        $this->basketRepository->setStoragePid($this->settings['storagePid']);
+        $this->mailRepository->setStoragePid($this->settings['storagePid']);
+        $this->printerRepository->setStoragePid($this->settings['storagePid']);
     }
 }
