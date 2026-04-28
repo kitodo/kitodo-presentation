@@ -131,8 +131,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->pageUid = $request->getAttribute('routing')->getPageId();
         }
 
-        $this->documentRepository->setStoragePid($this->settings['storagePid']);
-
         // Sanitize user input to prevent XSS attacks.
         $this->sanitizeRequestData();
 
