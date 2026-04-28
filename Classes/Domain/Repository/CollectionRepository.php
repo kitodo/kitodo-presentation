@@ -31,9 +31,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @method Collection|null findOneBy(array $criteria) Get a collection by criteria
  *
- * @extends Repository<Collection>
+ * @extends AbstractRepository<Collection>
  */
-class CollectionRepository extends Repository
+class CollectionRepository extends AbstractRepository
 {
     /**
      * @access protected

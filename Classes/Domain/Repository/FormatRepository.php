@@ -23,8 +23,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @access public
  *
- * @extends Repository<Format>
+ * @extends AbstractRepository<Format>
  */
-class FormatRepository extends Repository
+class FormatRepository extends AbstractRepository
 {
 }

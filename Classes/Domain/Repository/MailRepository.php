@@ -26,9 +26,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
- * @extends Repository<Mail>
+ * @extends AbstractRepository<Mail>
  */
-class MailRepository extends Repository
+class MailRepository extends AbstractRepository
 {
     /**
      * Find all mails by pid.
