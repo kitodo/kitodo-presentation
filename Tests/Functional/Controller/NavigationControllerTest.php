@@ -37,6 +37,7 @@ class NavigationControllerTest extends AbstractControllerTestCase
     public function canMainAction()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
         ];
 
@@ -67,6 +68,7 @@ class NavigationControllerTest extends AbstractControllerTestCase
     public function canPageSelectAction()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
         ];
 
