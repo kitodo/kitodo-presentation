@@ -113,6 +113,9 @@ class SearchController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->collectionRepository->setStoragePid($this->settings['storagePid']);
+        $this->metadataRepository->setStoragePid($this->settings['storagePid']);
+
         $this->addFieldsForExtendedSearch();
 
         $this->enableSuggester();
