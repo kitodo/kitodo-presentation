@@ -62,6 +62,8 @@ class MetadataRepository extends AbstractRepository
             ['sorting' => QueryInterface::ORDER_ASCENDING]
         );
 
+        $this->debugQuery($query);
+
         return $query->execute();
     }
 

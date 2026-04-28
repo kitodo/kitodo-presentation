@@ -47,6 +47,8 @@ class TokenRepository extends AbstractRepository
             $query->matching($query->logicalAnd(...$constraints));
         }
 
+        $this->debugQuery($query);
+
         $tokensToBeRemoved = $query->execute();
 
         foreach ($tokensToBeRemoved as $token) {
