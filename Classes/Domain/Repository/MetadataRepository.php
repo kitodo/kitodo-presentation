@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\Metadata;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -25,9 +24,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
- * @extends Repository<Metadata>
+ * @extends AbstractRepository<Metadata>
  */
-class MetadataRepository extends Repository
+class MetadataRepository extends AbstractRepository
 {
     /**
      * Finds all collection for the given settings
@@ -62,6 +61,8 @@ class MetadataRepository extends Repository
         $query->setOrderings(
             ['sorting' => QueryInterface::ORDER_ASCENDING]
         );
+
+        $this->debugQuery($query);
 
         return $query->execute();
     }

@@ -17,7 +17,6 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -31,9 +30,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @method Collection|null findOneBy(array $criteria) Get a collection by criteria
  *
- * @extends Repository<Collection>
+ * @extends AbstractRepository<Collection>
  */
-class CollectionRepository extends Repository
+class CollectionRepository extends AbstractRepository
 {
     /**
      * @access protected
@@ -64,6 +63,8 @@ class CollectionRepository extends Repository
         if (count($constraints)) {
             $query->matching($query->logicalAnd(...$constraints));
         }
+
+        $this->debugQuery($query);
 
         return $query->execute();
     }
@@ -112,6 +113,8 @@ class CollectionRepository extends Repository
             array('oai_name' => QueryInterface::ORDER_ASCENDING)
         );
 
+        $this->debugQuery($query);
+
         return $query->execute();
     }
 
@@ -153,6 +156,8 @@ class CollectionRepository extends Repository
                 Helper::whereExpression('tx_dlf_collections')
             )
             ->setMaxResults(1);
+
+        $this->debugQueryBuilder($result);
 
         return $result->executeQuery();
     }
