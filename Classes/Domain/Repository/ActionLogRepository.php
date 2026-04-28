@@ -23,8 +23,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @access public
  *
- * @extends Repository<ActionLog>
+ * @extends AbstractRepository<ActionLog>
  */
-class ActionLogRepository extends Repository
+class ActionLogRepository extends AbstractRepository
 {
 }

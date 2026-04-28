@@ -30,9 +30,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
- * @extends Repository<Metadata>
+ * @extends AbstractRepository<Metadata>
  */
-class MetadataRepository extends Repository
+class MetadataRepository extends AbstractRepository
 {
     const TABLE = 'tx_dlf_metadata';
 

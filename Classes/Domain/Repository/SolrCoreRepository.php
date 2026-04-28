@@ -23,8 +23,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @access public
  *
- * @extends Repository<SolrCore>
+ * @extends AbstractRepository<SolrCore>
  */
-class SolrCoreRepository extends Repository
+class SolrCoreRepository extends AbstractRepository
 {
 }

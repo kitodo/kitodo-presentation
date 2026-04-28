@@ -29,9 +29,9 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @method Structure|null findOneBy(array $criteria) Get a structure by criteria
  *
- * @extends Repository<Structure>
+ * @extends AbstractRepository<Structure>
  */
-class StructureRepository extends Repository
+class StructureRepository extends AbstractRepository
 {
 
     /**
