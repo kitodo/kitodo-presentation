@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\Printer;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Printer repository.
