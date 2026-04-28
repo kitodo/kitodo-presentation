@@ -38,6 +38,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canFulltextDownloadTool()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'tools' => 'fulltextDownloadTool'
         ];
         $templateHtml = '<html>fulltextDownload:{fulltextDownload}</html>';
@@ -58,6 +59,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canFulltextTool()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'tools' => 'fulltextTool',
             'activateFullTextInitially' => 1
         ];
@@ -79,6 +81,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canImageDownloadTool()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'tools' => 'imageDownloadTool'
         ];
         $templateHtml = '<html>imageDownload:<f:for each="{imageDownload}" as="image">
@@ -104,6 +107,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canImageManipulationTool()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'tools' => 'imageManipulationTool',
             'parentContainer' => '.parent-container'
         ];
@@ -125,6 +129,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canMainAction()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'library' => 1,
             'tools' => 'annotationTool',
@@ -149,6 +154,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canPdfDownloadTool()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'tools' => 'pdfDownloadTool'
         ];
         $templateHtml = '<html>pageLinks:<f:for each="{pageLinks}" as="link">
@@ -176,6 +182,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     public function canSearchInDocumentTool()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'tools' => 'searchInDocumentTool',
             'queryInputName' => 'queryInputName',

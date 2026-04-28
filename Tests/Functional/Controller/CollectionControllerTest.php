@@ -39,6 +39,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
     public function canListAction()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'collections' => '1',
             'showSingle' => '1',
@@ -61,6 +62,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
     public function canListActionForwardToShow()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'collections' => '1',
             'randomize' => ''
@@ -79,11 +81,11 @@ class CollectionControllerTest extends AbstractControllerTestCase
     public function canShowAction()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'collections' => '1',
-            'showSingle' => '0',
-            'randomize' => '',
-            'storagePid' => self::$storagePid
+            'showSingle' => 'some_value',
+            'randomize' => ''
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"><f:for each="{documents.solrResults.documents}" as="page" iteration="docIterator">{page.title},</f:for></html>';
 
@@ -104,6 +106,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
     public function canShowSortedAction()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'collections' => '1',
             'showSingle' => '0',
