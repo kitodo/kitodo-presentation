@@ -240,7 +240,7 @@ class BasketController extends AbstractController
      */
     protected function getBasketData(): Basket
     {
-        $this->basketRepository->setStoragePid($this->settings['storagePid']);
+        $this->basketRepository->useStoragePid($this->settings['storagePid']);
 
         // get user session
         $feUser = $this->request->getAttribute('frontend.user');
