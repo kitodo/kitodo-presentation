@@ -25,15 +25,10 @@ use Kitodo\Dlf\Validation\DocumentValidator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
-use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * Base class for CLI Command classes.
@@ -87,25 +82,11 @@ class BaseCommand extends Command
      */
     protected array $extConf;
 
-    /**
-     * @access protected
-     * @var ConfigurationManager
-     */
-    protected ConfigurationManager $configurationManager;
-
-    /**
-     * @access protected
-     * @var PersistenceManager
-     */
-    protected PersistenceManager $persistenceManager;
-
     public function __construct(
         CollectionRepository $collectionRepository,
         DocumentRepository $documentRepository,
         LibraryRepository $libraryRepository,
         StructureRepository $structureRepository,
-        ConfigurationManager $configurationManager,
-        PersistenceManager $persistenceManager
     ) {
         parent::__construct();
 
@@ -113,14 +94,10 @@ class BaseCommand extends Command
         $this->documentRepository = $documentRepository;
         $this->libraryRepository = $libraryRepository;
         $this->structureRepository = $structureRepository;
-        $this->configurationManager = $configurationManager;
-        $this->persistenceManager = $persistenceManager;
     }
 
     /**
      * Initialize the extbase repository based on the given storagePid.
-     *
-     * TYPO3 10+: Find a better solution e.g. based on Symfony Dependency Injection.
      *
      * @access protected
      *
@@ -130,14 +107,12 @@ class BaseCommand extends Command
      */
     protected function initializeRepositories(int $storagePid): void
     {
-        $request = (new ServerRequest())->withAttribute("applicationType", SystemEnvironmentBuilder::REQUESTTYPE_BE);
-        $this->configurationManager->setRequest($request);
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
-        $this->configurationManager->setConfiguration($frameworkConfiguration);
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
         $this->storagePid = MathUtility::forceIntegerInRange($storagePid, 0);
-        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $this->collectionRepository->useStoragePid($this->storagePid);
+        $this->documentRepository->useStoragePid($this->storagePid);
+        $this->libraryRepository->useStoragePid($this->storagePid);
+        $this->structureRepository->useStoragePid($this->storagePid);
     }
 
     /**
@@ -295,7 +270,7 @@ class BaseCommand extends Command
                 $this->documentRepository->update($document);
             }
 
-            $this->persistenceManager->persistAll();
+            $this->documentRepository->persistAll();
 
             return true;
         }
@@ -447,7 +422,7 @@ class BaseCommand extends Command
                 // add to CollectionRepository
                 $this->collectionRepository->add($documentCollection);
                 // persist collection to prevent duplicates
-                $this->persistenceManager->persistAll();
+                $this->collectionRepository->persistAll();
             }
             // add to document
             $document->addCollection($documentCollection);
