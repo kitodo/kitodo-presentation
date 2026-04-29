@@ -117,6 +117,18 @@ class AbstractRepository extends Repository
     }
 
     /**
+     * Persist objects.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function persistAll(): void
+    {
+        $this->persistenceManager->persistAll();
+    }
+
+    /**
      * Get default settings for repository, if not set create the new one.
      *
      * @return QuerySettingsInterface
