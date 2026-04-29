@@ -57,8 +57,8 @@ class SearchControllerTest extends AbstractControllerTestCase
             ]
         ];
         $settings = [
-            'solrcore' => self::$solrCoreId,
             'storagePid' => self::$storagePid,
+            'solrcore' => self::$solrCoreId,
             'extendedFields' => 'field1,field2,field3',
             'extendedSlotCount' => 1
         ];
@@ -128,8 +128,8 @@ class SearchControllerTest extends AbstractControllerTestCase
             'query' => '*'
         ];
         $settings = [
-            'solrcore' => self::$solrCoreId,
             'storagePid' => self::$storagePid,
+            'solrcore' => self::$solrCoreId,
             'facets' => 'type',
             'facetCollections' => '1'
         ];
@@ -188,7 +188,10 @@ class SearchControllerTest extends AbstractControllerTestCase
      */
     public function canSearchAction()
     {
-        $controller = $this->setUpController(SearchController::class, [], '');
+        $settings = [
+            'storagePid' => self::$storagePid,
+        ];
+        $controller = $this->setUpController(SearchController::class, $settings, '');
         $request = $this->setUpRequest('search');
         $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
