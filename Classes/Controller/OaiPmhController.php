@@ -276,6 +276,10 @@ class OaiPmhController extends AbstractController
         // Get allowed GET and POST variables.
         $this->getUrlParams($this->request);
 
+        $this->collectionRepository->setStoragePid((int) $this->settings['storagePid']);
+        $this->libraryRepository->setStoragePid((int) $this->settings['storagePid']);
+        $this->tokenRepository->setStoragePid((int) $this->settings['storagePid']);
+
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
 

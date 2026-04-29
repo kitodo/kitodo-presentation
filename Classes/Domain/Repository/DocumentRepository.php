@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -39,9 +38,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @method Document|null findByUid(int|null $uid) Get a document by its UID
  * @method Document|null findOneBy(array $criteria) Get a document by criteria
  *
- * @extends Repository<Document>
+ * @extends AbstractRepository<Document>
  */
-class DocumentRepository extends Repository
+class DocumentRepository extends AbstractRepository
 {
     /**
      * @access protected
