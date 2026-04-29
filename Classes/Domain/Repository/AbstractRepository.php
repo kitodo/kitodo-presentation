@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
@@ -47,9 +48,38 @@ class AbstractRepository extends Repository
      *
      * @return void
      */
+
     public function activateDebugMode(): void
     {
         $this->debug = true;
+    }
+
+    /**
+     * Sets deleted records to be not returned by the find methods in the repository.
+     *
+     * @access public
+     *
+     * @return void
+        */
+    public function ignoreDeleted(): void
+    {
+        $querySettings = $this->getDefaultQuerySettings();
+        $querySettings->setIncludeDeleted(false);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * Sets hidden records to be not returned by the find methods in the repository.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function ignoreHidden(): void
+    {
+        $querySettings = $this->getDefaultQuerySettings();
+        $querySettings->setIgnoreEnableFields(false);
+        $this->setDefaultQuerySettings($querySettings);
     }
 
     /**
@@ -61,7 +91,7 @@ class AbstractRepository extends Repository
      */
     public function ignoreStoragePid(): void
     {
-        $querySettings = $this->createQuery()->getQuerySettings();
+        $querySettings = $this->getDefaultQuerySettings();
         $querySettings->setRespectStoragePage(false);
         $this->setDefaultQuerySettings($querySettings);
     }
@@ -77,7 +107,7 @@ class AbstractRepository extends Repository
      */
     public function useStoragePid(int $storagePid): void
     {
-        $querySettings = $this->createQuery()->getQuerySettings();
+        $querySettings = $this->getDefaultQuerySettings();
         $querySettings->setRespectStoragePage(true);
         $querySettings->setStoragePageIds([$storagePid]);
         $this->setDefaultQuerySettings($querySettings);
@@ -117,5 +147,47 @@ class AbstractRepository extends Repository
             DebuggerUtility::var_dump($queryBuilder->getSQL());
             DebuggerUtility::var_dump($queryBuilder->getParameters());
         }
+    }
+
+    /**
+     * Sets deleted records to be returned by the find methods in the repository.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function showDeleted(): void
+    {
+        $querySettings = $this->getDefaultQuerySettings();
+        $querySettings->setIncludeDeleted(true);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * Sets hidden records to be not returned by the find methods in the repository.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function showHidden(): void
+    {
+        $querySettings = $this->getDefaultQuerySettings();
+        $querySettings->setIgnoreEnableFields(true);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * Get default settings for repository, if not set create the new one.
+     *
+     * @return QuerySettingsInterface
+     */
+    protected function getDefaultQuerySettings(): QuerySettingsInterface
+    {
+        // @phpstan-ignore-next-line (defaultQuerySettings can be null)
+        if (empty($this->defaultQuerySettings)) {
+            return $this->createQuery()->getQuerySettings();
+        }
+        return $this->defaultQuerySettings;
     }
 }
