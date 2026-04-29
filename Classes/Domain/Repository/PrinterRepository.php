@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\Printer;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Printer repository.
@@ -25,8 +24,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @method Printer|null findOneBy(array $criteria) Get a printer by criteria
  *
- * @extends Repository<Printer>
+ * @extends AbstractRepository<Printer>
  */
-class PrinterRepository extends Repository
+class PrinterRepository extends AbstractRepository
 {
 }
