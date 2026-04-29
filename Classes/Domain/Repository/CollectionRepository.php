@@ -17,7 +17,6 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Collection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -31,9 +30,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @method Collection|null findOneBy(array $criteria) Get a collection by criteria
  *
- * @extends Repository<Collection>
+ * @extends AbstractRepository<Collection>
  */
-class CollectionRepository extends Repository
+class CollectionRepository extends AbstractRepository
 {
     /**
      * @access protected
@@ -46,7 +45,7 @@ class CollectionRepository extends Repository
     ];
 
     /**
-     * Finds all collections
+     * Finds all collections for given uids
      *
      * @access public
      *
@@ -57,14 +56,7 @@ class CollectionRepository extends Repository
     public function findAllByUids(array $uids): QueryResultInterface
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-        $constraints[] = $query->in('uid', $uids);
-
-        if (count($constraints)) {
-            $query->matching($query->logicalAnd(...$constraints));
-        }
-
+        $query->matching($query->in('uid', $uids));
         return $query->execute();
     }
 
