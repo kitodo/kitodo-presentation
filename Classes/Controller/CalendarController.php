@@ -111,6 +111,8 @@ class CalendarController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->structureRepository->useStoragePid($this->settings['storagePid']);
+
         $calendarData = $this->buildCalendar();
 
         // Prepare list as alternative view.
@@ -158,6 +160,8 @@ class CalendarController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return $this->htmlResponse();
         }
+
+        $this->structureRepository->useStoragePid($this->settings['storagePid']);
 
         // Get all children of anchor. This should be the year anchor documents
         $documents = $this->documentRepository->getChildrenOfYearAnchor(
