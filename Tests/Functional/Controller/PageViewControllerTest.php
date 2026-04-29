@@ -37,6 +37,7 @@ class PageViewControllerTest extends AbstractControllerTestCase
     public function canMainAction()
     {
         $settings = [
+            'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId
         ];
 
