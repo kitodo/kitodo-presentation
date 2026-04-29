@@ -36,13 +36,17 @@ class PageGridControllerTest extends AbstractControllerTestCase
      */
     public function canMainAction()
     {
+        $settings = [
+            'storagePid' => self::$storagePid
+        ];
+
         $templateHtml = '<html>
             pageGridEntries:<f:count subject="{paginator.paginatedItems}"/>
             pageGridEntries[0]:{paginator.paginatedItems.0.pagination}, {paginator.paginatedItems.0.thumbnail}
             pageGridEntries[1]:{paginator.paginatedItems.1.pagination}, {paginator.paginatedItems.1.thumbnail}
             docUid:{docUid}
         </html>';
-        $controller = $this->setUpController(PageGridController::class, [], $templateHtml);
+        $controller = $this->setUpController(PageGridController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2001 ] ]);
 
         $response = $controller->processRequest($request);
