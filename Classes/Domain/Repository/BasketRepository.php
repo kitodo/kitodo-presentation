@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\Basket;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * (Basket Plugin) Basket repository.
@@ -25,8 +24,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @method Basket|null findOneBy(array $criteria) Get a basket by criteria
  *
- * @extends Repository<Basket>
+ * @extends AbstractRepository<Basket>
  */
-class BasketRepository extends Repository
+class BasketRepository extends AbstractRepository
 {
 }
