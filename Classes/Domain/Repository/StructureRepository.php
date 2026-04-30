@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\Structure;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Structure repository.
@@ -25,8 +24,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @method Structure|null findOneBy(array $criteria) Get a structure by criteria
  *
- * @extends Repository<Structure>
+ * @extends AbstractRepository<Structure>
  */
-class StructureRepository extends Repository
+class StructureRepository extends AbstractRepository
 {
 }
