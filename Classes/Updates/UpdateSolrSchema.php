@@ -13,8 +13,8 @@
 namespace Kitodo\Dlf\Updates;
 
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Solarium\Core\Client\Request;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
@@ -145,17 +145,14 @@ class UpdateSolrSchema implements UpgradeWizardInterface
      */
     private function getAllAffectedSolrCores(): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
-
-        $allSolrCores = $queryBuilder->select('uid', 'index_name')
-            ->from('tx_dlf_solrcores')
-            ->executeQuery()
-            ->fetchAllAssociative();
+        $solrCoreRepository = GeneralUtility::makeInstance(SolrCoreRepository::class);
+        $solrCoreRepository->ignoreStoragePid();
+        $allSolrCores = $solrCoreRepository->findAll();
 
         $affectedSolrCores = [];
 
         foreach ($allSolrCores as $solrCore) {
-            $solr = Solr::getInstance($solrCore['uid']);
+            $solr = Solr::getInstance($solrCore->getUid());
             if (!$solr->ready) {
                 continue;
             }
