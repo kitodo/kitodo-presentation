@@ -16,7 +16,9 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Model\Format;
+use Kitodo\Dlf\Domain\Model\Metadata;
 use Kitodo\Dlf\Domain\Model\SolrCore;
+use Kitodo\Dlf\Domain\Model\Structure;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
@@ -24,19 +26,12 @@ use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
-use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Fluid\View\TemplateView;
-use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Controller class for the backend module 'New Tenant'.
@@ -180,6 +175,11 @@ class NewTenantController extends AbstractController
     {
         $this->pid = (int) ($this->request->getQueryParams()['id'] ?? null);
 
+        $this->formatRepository->useStoragePid($this->pid);
+        $this->metadataRepository->useStoragePid($this->pid);
+        $this->solrCoreRepository->useStoragePid($this->pid);
+        $this->structureRepository->useStoragePid($this->pid);
+
         $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
         $this->configurationManager->setConfiguration($frameworkConfiguration);
@@ -225,8 +225,7 @@ class NewTenantController extends AbstractController
 
         // We must persist here, if we changed anything.
         if ($doPersist === true) {
-            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-            $persistenceManager->persistAll();
+            $this->formatRepository->persistAll();
         }
 
         return $this->redirect('index');
@@ -290,7 +289,7 @@ class NewTenantController extends AbstractController
 
         $insertedMetadata = [];
         foreach ($metadataIds as $id => $uid) {
-            /** @var \Kitodo\Dlf\Domain\Model\Metadata $metadata */
+            /** @var Metadata $metadata */
             $metadata = $this->metadataRepository->findByUid($uid);
             // id array contains also ids of formats
             if ($metadata != null) {
@@ -334,7 +333,7 @@ class NewTenantController extends AbstractController
         // load language file in own array
         $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
 
-        if ($this->solrCoreRepository->findOneBy(['pid' => $this->pid]) === null) {
+        if ($this->solrCoreRepository->findAll()->getFirst() === null) {
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
             $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getLocale()->getLanguageCode(), $beLabels). ' (PID ' . $this->pid . ')');
             $indexName = Solr::createCore('');
@@ -349,8 +348,7 @@ class NewTenantController extends AbstractController
 
         // We must persist here, if we changed anything.
         if ($doPersist === true) {
-            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-            $persistenceManager->persistAll();
+            $this->solrCoreRepository->persistAll();
         }
 
         return $this->redirect('index');
@@ -386,7 +384,7 @@ class NewTenantController extends AbstractController
 
         $insertedStructures = [];
         foreach ($structureIds as $id => $uid) {
-            /** @var \Kitodo\Dlf\Domain\Model\Structure $structure */
+            /** @var Structure $structure */
             $structure = $this->structureRepository->findByUid($uid);
             $insertedStructures[$uid] = $structure->getIndexName();
         }
@@ -435,14 +433,14 @@ class NewTenantController extends AbstractController
         $recordInfos['formats']['numDefault'] = count($formatsDefaults);
 
         $structuresDefaults = $this->getRecords('Structure');
-        $recordInfos['structures']['numCurrent'] = $this->structureRepository->count(['pid' => $this->pid]);
+        $recordInfos['structures']['numCurrent'] = $this->structureRepository->countAll();
         $recordInfos['structures']['numDefault'] = count($structuresDefaults);
 
         $metadataDefaults = $this->getRecords('Metadata');
-        $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->count(['pid' => $this->pid]);
+        $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->countAll();
         $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
 
-        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->count(['pid' => $this->pid]);
+        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->countAll();
 
         $viewData = ['recordInfos' => $recordInfos];
 
