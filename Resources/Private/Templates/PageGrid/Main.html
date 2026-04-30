@@ -11,6 +11,10 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
 <div class="tx-dlf-pagegrid">
     <ol class="tx-dlf-pagegrid-list">
         <f:for each="{paginator.paginatedItems}" as="entry" iteration="iterator">
