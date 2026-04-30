@@ -11,6 +11,10 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
 <div class="tx-dlf-collection">
     <ul class="tx-dlf-collection-list">
         <f:for each="{collections}" as="item">
