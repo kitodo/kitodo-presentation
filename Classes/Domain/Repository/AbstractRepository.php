@@ -178,6 +178,28 @@ class AbstractRepository extends Repository
     }
 
     /**
+     * Sets settings for queries in the repository.
+     *
+     * @access public
+     *
+     * @param int $storagePid
+     * @param bool $showHidden
+     * @param bool $showDeleted
+     * @param bool $useStoragePid
+     *
+     * @return void
+     */
+    public function setSettings(int $storagePid, bool $showHidden = false, bool $showDeleted = false, bool $useStoragePid = true): void
+    {
+        $querySettings = $this->getDefaultQuerySettings();
+        $querySettings->setIgnoreEnableFields($showHidden);
+        $querySettings->setIncludeDeleted($showDeleted);
+        $querySettings->setRespectStoragePage($useStoragePid);
+        $querySettings->setStoragePageIds([$storagePid]);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
      * Get default settings for repository, if not set create the new one.
      *
      * @return QuerySettingsInterface
