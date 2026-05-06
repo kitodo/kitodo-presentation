@@ -126,7 +126,7 @@ class Document extends AbstractEntity
 
     /**
      * @access protected
-     * @var Structure
+     * @var ?Structure
      */
     protected $structure;
 
@@ -461,17 +461,17 @@ class Document extends AbstractEntity
     }
 
     /**
-     * @return Structure
+     * @return ?Structure
      */
-    public function getStructure(): Structure
+    public function getStructure(): ?Structure
     {
         return $this->structure;
     }
 
     /**
-     * @param Structure $structure
+     * @param ?Structure $structure
      */
-    public function setStructure(Structure $structure): void
+    public function setStructure(?Structure $structure): void
     {
         $this->structure = $structure;
     }

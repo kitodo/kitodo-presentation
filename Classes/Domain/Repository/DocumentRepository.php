@@ -526,44 +526,39 @@ class DocumentRepository extends AbstractRepository
      */
     public function findAllByUids(array $uids, bool $checkPartof = false): array
     {
-        // get all documents from db we are talking about
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
-        // Fetch document info for UIDs in $documentSet from DB
-        $exprDocumentMatchesUid = $queryBuilder->expr()->in('uid', $uids);
+        $query = $this->createQuery();
+
+        $exprDocumentMatchesUid = $query->in('uid', $uids);
         if ($checkPartof) {
-            $exprDocumentMatchesUid = $queryBuilder->expr()->or(
-                $exprDocumentMatchesUid,
-                $queryBuilder->expr()->in('partof', $uids)
+            $exprDocumentMatchesUid = $query->logicalOr(
+                $query->in('uid', $uids),
+                $query->in('partof', $uids)
             );
         }
-        $kitodoDocuments = $queryBuilder
-            ->select(
-                'uid',
-                'title',
-                'structure',
-                'thumbnail',
-                'volume_sorting AS volumeSorting',
-                'mets_orderlabel AS metsOrderlabel',
-                'partof AS partOf'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->in('pid', $this->settings['storagePid']),
-                $exprDocumentMatchesUid
-            )
-            ->getConcreteQueryBuilder()
-            ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
-            ->addOrderBy('mets_orderlabel', 'asc')
-            ->executeQuery();
 
-        $this->debugQueryBuilder($queryBuilder);
+        $query->matching($exprDocumentMatchesUid);
+        $query->setOrderings([
+            'volumeSorting' => QueryInterface::ORDER_ASCENDING,
+            'metsOrderlabel' => QueryInterface::ORDER_ASCENDING
+        ]);
+
+        $result = $query->execute();
 
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
-        // Process documents in a usable array structure
-        while ($resArray = $kitodoDocuments->fetchAssociative()) {
-            $resArray['structure'] = $documentStructures[$resArray['structure']] ?? null;
+
+        /** @var Document $doc */
+        foreach ($result as $doc) {
+            $resArray = [
+                'uid' => $doc->getUid(),
+                'title' => $doc->getTitle(),
+                'structure' => $documentStructures[$doc->getStructure()?->getUid()] ?? null,
+                'thumbnail' => $doc->getThumbnail(),
+                'volumeSorting' => $doc->getVolumeSorting(),
+                'metsOrderlabel' => $doc->getMetsOrderlabel(),
+                'partOf' => $doc->getPartof()
+            ];
+
             $allDocuments[$resArray['uid']] = $resArray;
         }
 
