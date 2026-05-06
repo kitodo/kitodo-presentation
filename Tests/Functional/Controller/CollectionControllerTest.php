@@ -84,7 +84,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
             'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'collections' => '1',
-            'showSingle' => 'some_value',
+            'showSingle' => '0',
             'randomize' => ''
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"><f:for each="{documents.solrResults.documents}" as="page" iteration="docIterator">{page.title},</f:for></html>';
