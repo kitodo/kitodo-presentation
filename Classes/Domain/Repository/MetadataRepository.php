@@ -18,7 +18,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -30,9 +29,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
- * @extends Repository<Metadata>
+ * @extends AbstractRepository<Metadata>
  */
-class MetadataRepository extends Repository
+class MetadataRepository extends AbstractRepository
 {
     const TABLE = 'tx_dlf_metadata';
 
