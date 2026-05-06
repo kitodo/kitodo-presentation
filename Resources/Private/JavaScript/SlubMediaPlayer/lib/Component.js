@@ -14,26 +14,30 @@ export default class Component extends EventEmitter {
     super();
 
     /**
-     * @protected
      * @type {State}
+     *
+     * @protected
      */
     this.state = state;
 
     /**
-     * @private
      * @type {((prevState: State) => Partial<State>)[]}
+     *
+     * @private
      */
     this.pendingStateUpdates = [];
 
     /**
-     * @private
      * @type {ReturnType<setTimeout> | null}
+     *
+     * @private
      */
     this.renderTimeout = null;
 
     /**
-     * @private
      * @type {Promise<void>}
+     *
+     * @private
      */
     this.renderPromise = Promise.resolve();
   }
@@ -74,8 +78,9 @@ export default class Component extends EventEmitter {
   }
 
   /**
-   * @private
    * @returns {State}
+   *
+   * @private
    */
   squashStateUpdates() {
     const newState = Object.assign({}, this.state);
@@ -93,8 +98,10 @@ export default class Component extends EventEmitter {
    * which you may use to detect state changes.
    *
    * @abstract
-   * @protected
+   *
    * @param {State} state The updated state
+   *
+   * @protected
    */
   render(state) {
     //

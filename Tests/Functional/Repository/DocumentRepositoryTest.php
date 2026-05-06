@@ -175,7 +175,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
      */
     public function canGetOaiRecord(): void
     {
-        $settings = ['show_userdefined' => false, 'storagePid' => 20000];
+        $settings = ['showUserDefined' => false, 'storagePid' => 20000];
         $parameters = ['identifier' => 'oai:de:slub-dresden:db:id-476251419'];
 
         $record = $this->documentRepository->getOaiRecord($settings, $parameters);

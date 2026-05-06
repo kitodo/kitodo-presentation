@@ -455,7 +455,7 @@ class DocumentRepository extends Repository
             ->andWhere($queryBuilder->expr()->eq('tx_dlf_relations_join.ident', $queryBuilder->createNamedParameter('docs_colls')))
             ->groupBy('tx_dlf_documents.uid');
 
-        if (empty($settings['show_userdefined'])) {
+        if (empty($settings['showUserDefined'])) {
             $qb->andWhere($queryBuilder->expr()->eq('tx_dlf_collections_join.fe_cruser_id', 0));
         }
 

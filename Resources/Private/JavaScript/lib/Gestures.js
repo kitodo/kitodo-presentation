@@ -67,7 +67,11 @@ export default class Gestures {
    * @param {Partial<Config>} config
    */
   constructor(config = {}) {
-    /** @private @type {Config} */
+    /**
+     * @type {Config}
+     *
+     * @private
+     */
     this.config = {
       tapMaxDelay: 200,
       tapMaxDistance: 20,
@@ -77,14 +81,27 @@ export default class Gestures {
       ...config
     };
 
-    /** @private @type {Record<TapEvent['type'], Stat | null>} */
+    /**
+     * @type {Record<TapEvent['type'], Stat | null>}
+     *
+     * @private
+     */
     this.last = {
       'tapdown': null,
       'tapup': null,
     }
-    /** @private @type {ReturnType<setTimeout> | null} */
+    /**
+     * @type {ReturnType<setTimeout> | null}
+     *
+     * @private
+     * */
     this.holdTimeout = null;
-    /** @private @type {number} */
+
+    /**
+     * @type {number}
+     *
+     * @private
+     */
     this.tapCount = 0;
 
     /** @private */
@@ -137,8 +154,9 @@ export default class Gestures {
   }
 
   /**
-   * @private
    * @param {MouseEvent} _e
+   *
+   * @private
    */
   handleContextMenu(_e) {
     // Release if non-left mouse button is clicked
@@ -146,8 +164,9 @@ export default class Gestures {
   }
 
   /**
-   * @private
    * @param {PointerEvent} e
+   *
+   * @private
    */
   handlePointerDown(e) {
     // Release if non-left mouse button is clicked
@@ -182,8 +201,9 @@ export default class Gestures {
   }
 
   /**
-   * @private
    * @param {PointerEvent} e
+   *
+   * @private
    */
   handlePointerUp(e) {
     if (e.button !== 0 || !this.config.allowGesture(e)) {
@@ -236,16 +256,18 @@ export default class Gestures {
   }
 
   /**
-   * @private
    * @param {PointerEvent} _e
+   *
+   * @private
    */
   handlePointerCancel(_e) {
     this.release();
   }
 
   /**
-   * @private
    * @param {PointerEvent} _e
+   *
+   * @private
    */
   handlePointerLeave(_e) {
     const { tapdown, tapup } = this.last;
@@ -256,10 +278,11 @@ export default class Gestures {
   }
 
   /**
-   * @private
    * @param {TapEvent['type']} type
    * @param {PointerEvent} event
    * @param {Stat} stat
+   *
+   * @private
    */
   emitTap(type, event, stat) {
     this.events.emit('gesture', /** @type {TapEvent} */({
@@ -303,9 +326,10 @@ export default class Gestures {
   }
 
   /**
-   * @private
    * @param {MouseEvent} e
    * @returns {Stat}
+   *
+   * @private
    */
   getStat(e) {
     const bounding = /** @type {HTMLElement} */(e.target).getBoundingClientRect();
