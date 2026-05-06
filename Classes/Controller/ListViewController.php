@@ -81,8 +81,8 @@ class ListViewController extends AbstractController
     {
         $this->search = $this->getArrayParameterSafely('search');
 
-        $this->collectionRepository->setStoragePid($this->settings['storagePid']);
-        $this->metadataRepository->setStoragePid($this->settings['storagePid']);
+        $this->collectionRepository->useStoragePid($this->settings['storagePid']);
+        $this->metadataRepository->useStoragePid($this->settings['storagePid']);
 
         // extract collection(s) from collection parameter
         $collections = [];

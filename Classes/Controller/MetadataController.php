@@ -113,9 +113,9 @@ class MetadataController extends AbstractController
 
         $this->setPage();
 
-        $this->collectionRepository->setStoragePid($this->settings['storagePid']);
-        $this->metadataRepository->setStoragePid($this->settings['storagePid']);
-        $this->structureRepository->setStoragePid($this->settings['storagePid']);
+        $this->collectionRepository->useStoragePid($this->settings['storagePid']);
+        $this->metadataRepository->useStoragePid($this->settings['storagePid']);
+        $this->structureRepository->useStoragePid($this->settings['storagePid']);
 
         $this->currentDocument = $this->document->getCurrentDocument();
         $this->useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
