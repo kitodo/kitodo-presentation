@@ -93,14 +93,14 @@ class CollectionRepositoryTest extends FunctionalTestCase
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
                 'index_name' => ['Geschichte', 'collection-with-single-document'],
-                'show_userdefined' => true
+                'showUserDefined' => true
             ]
         );
         self::assertCount(2, $collectionsByLabel);
         self::assertArrayHasKey('Geschichte', $collectionsByLabel);
         self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
 
-        $collectionsByLabel = $this->findCollectionsBySettings(['show_userdefined' => true]);
+        $collectionsByLabel = $this->findCollectionsBySettings(['showUserDefined' => true]);
         self::assertCount(4, $collectionsByLabel);
         self::assertArrayHasKey('Musik', $collectionsByLabel);
         self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
@@ -111,7 +111,7 @@ class CollectionRepositoryTest extends FunctionalTestCase
             implode(', ', array_keys($collectionsByLabel))
         );
 
-        $collectionsByLabel = $this->findCollectionsBySettings(['show_userdefined' => false]);
+        $collectionsByLabel = $this->findCollectionsBySettings(['showUserDefined' => false]);
         self::assertCount(2, $collectionsByLabel);
         self::assertArrayHasKey('Musik', $collectionsByLabel);
         self::assertArrayHasKey('Collection with single document', $collectionsByLabel);
@@ -124,7 +124,7 @@ class CollectionRepositoryTest extends FunctionalTestCase
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
                 'hideEmptyOaiNames' => true,
-                'show_userdefined' => true
+                'showUserDefined' => true
             ]
         );
         self::assertCount(3, $collectionsByLabel);
@@ -135,7 +135,7 @@ class CollectionRepositoryTest extends FunctionalTestCase
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
                 'hideEmptyOaiNames' => false,
-                'show_userdefined' => true
+                'showUserDefined' => true
             ]
         );
         self::assertCount(4, $collectionsByLabel);
@@ -147,7 +147,7 @@ class CollectionRepositoryTest extends FunctionalTestCase
         $collectionsByLabel = $this->findCollectionsBySettings(
             [
                 'collections' => '1101, 1102, 1103, 1104',
-                'show_userdefined' => true,
+                'showUserDefined' => true,
                 'hideEmptyOaiNames' => false,
                 'index_name' => ['Geschichte', 'collection-with-single-document']
             ]
@@ -165,7 +165,7 @@ class CollectionRepositoryTest extends FunctionalTestCase
     public function canGetIndexNameForSolr(): void
     {
         $indexName = $this->collectionRepository->getIndexNameForSolr(
-            ['show_userdefined' => true, 'storagePid' => '20000'],
+            ['showUserDefined' => true, 'storagePid' => '20000'],
             'history'
         );
         $result = $indexName->fetchAllAssociative();
@@ -175,13 +175,13 @@ class CollectionRepositoryTest extends FunctionalTestCase
         self::assertEquals('1103', $result[0]['uid']);
 
         $indexName = $this->collectionRepository->getIndexNameForSolr(
-            ['show_userdefined' => false, 'storagePid' => '20000'],
+            ['showUserDefined' => false, 'storagePid' => '20000'],
             'history'
         );
         self::assertEquals(0, $indexName->rowCount());
 
         $indexName = $this->collectionRepository->getIndexNameForSolr(
-            ['show_userdefined' => false, 'storagePid' => '20000'],
+            ['showUserDefined' => false, 'storagePid' => '20000'],
             'collection-with-single-document'
         );
         self::assertEquals(1, $indexName->rowCount());

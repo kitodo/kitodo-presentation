@@ -47,7 +47,7 @@ import { EventTarget } from 'DlfMediaPlayer/3rd-party/EventTarget';
  *   'activate' parameter in {@link update}.
  * - The `activate_segment` event is fired whenever activation changes.
  *
- * @extends {EventTarget<Events>}
+ * @augments {EventTarget<Events>}
  */
 export default class Markers extends EventTarget {
   constructor() {
@@ -56,10 +56,18 @@ export default class Markers extends EventTarget {
     /** @private */
     this.cnt_ = 0;
 
-    /** @private @type {Segment | null} */
+    /**
+     * @type {Segment | null}
+     *
+     * @private
+     */
     this.activeSegment_ = null;
 
-    /** @private @type {Record<string, Segment>} */
+    /**
+     * @type {Record<string, Segment>}
+     *
+     * @private
+     */
     this.segments_ = {};
   }
 
@@ -168,8 +176,9 @@ export default class Markers extends EventTarget {
 
   /**
    *
-   * @protected
    * @param {Segment | null} segment
+   *
+   * @protected
    */
   activateSegment(segment) {
     if (segment !== this.activeSegment_) {
@@ -192,6 +201,7 @@ export default class Markers extends EventTarget {
   /**
    *
    * @param {string} id
+   *
    * @returns {Readonly<Segment> | undefined}
    */
   getSegment(id) {
@@ -208,8 +218,9 @@ export default class Markers extends EventTarget {
 
   /**
    *
-   * @private
    * @returns {string}
+   *
+   * @private
    */
   makeId() {
     return `dlf.segments.${this.cnt_++}`;

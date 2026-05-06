@@ -33,7 +33,6 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 class AbstractRepository extends Repository
 {
-
     /**
      * @access protected
      * @var bool allow debugging for queries

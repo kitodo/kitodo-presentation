@@ -9,7 +9,7 @@
  */
 
 /**
- * @return {number|undefined}
+ * @returns {number|undefined}
  */
 ol.Map.prototype.getZoom = function(){
     return this.getView().getZoom();

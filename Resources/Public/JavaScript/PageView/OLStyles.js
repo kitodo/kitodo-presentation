@@ -9,13 +9,14 @@
  */
 
 /**
- * @const
  * @namespace
+ *
+ * @constant
  */
 dlfViewerOLStyles = {};
 
 /**
- * @return {ol.style.Style}
+ * @returns {ol.style.Style}
  */
 dlfViewerOLStyles.defaultStyle = function() {
 
@@ -32,7 +33,7 @@ dlfViewerOLStyles.defaultStyle = function() {
 };
 
 /**
- * @return {ol.style.Style}
+ * @returns {ol.style.Style}
  */
 dlfViewerOLStyles.hoverStyle = function() {
 
@@ -49,7 +50,7 @@ dlfViewerOLStyles.hoverStyle = function() {
 };
 
 /**
- * @return {ol.style.Style}
+ * @returns {ol.style.Style}
  */
 dlfViewerOLStyles.invisibleStyle = function() {
 
@@ -66,7 +67,7 @@ dlfViewerOLStyles.invisibleStyle = function() {
 };
 
 /**
- * @return {ol.style.Style}
+ * @returns {ol.style.Style}
  */
 dlfViewerOLStyles.selectStyle = function() {
 
@@ -83,7 +84,7 @@ dlfViewerOLStyles.selectStyle = function() {
 };
 
 /**
- * @return {ol.style.Style}
+ * @returns {ol.style.Style}
  */
 dlfViewerOLStyles.textlineStyle = function() {
 
@@ -97,7 +98,7 @@ dlfViewerOLStyles.textlineStyle = function() {
 };
 
 /**
- * @return {ol.style.Style}
+ * @returns {ol.style.Style}
  */
 dlfViewerOLStyles.wordStyle = function() {
 
