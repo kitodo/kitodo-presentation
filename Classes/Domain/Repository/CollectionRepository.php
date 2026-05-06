@@ -140,10 +140,7 @@ class CollectionRepository extends AbstractRepository
             $constraints[] = $query->equals('feCruserId', 0);
         }
 
-        if (count($constraints)) {
-            $query->matching($query->logicalAnd(...$constraints));
-        }
-
+        $query->matching($query->logicalAnd(...$constraints));
         $query->setLimit(1);
 
         $this->debugQuery($query);
