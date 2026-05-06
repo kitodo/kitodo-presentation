@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Common;
 use Exception;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\Uri;
@@ -31,7 +32,6 @@ use TYPO3\CMS\Core\Resource\MimeTypeDetector;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
@@ -125,6 +125,8 @@ class Helper
      * @param string $queue The queue's unique identifier
      *
      * @return FlashMessageQueue The queue the message was added to
+     *
+     * @throws \TYPO3\CMS\Core\Exception
      */
     public static function addMessage(string $message, string $title, ContextualFeedbackSeverity $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
     {
@@ -175,7 +177,7 @@ class Helper
             self::error('Invalid parameters given for decryption');
             return false;
         }
-        // Split initialisation vector and encrypted data.
+        // Split initialization vector and encrypted data.
         $binary = base64_decode($encrypted);
         /** @var int $length */
         $iv = substr($binary, 0, $length);
@@ -197,7 +199,7 @@ class Helper
      *
      * @return \SimpleXMLElement|false
      */
-    public static function getXmlFileAsString($content): \SimpleXMLElement|false
+    public static function getXmlFileAsString(mixed $content): \SimpleXMLElement|false
     {
         // Don't make simplexml_load_string throw (when $content is an array
         // or object)
@@ -222,7 +224,7 @@ class Helper
      * @param string $documentLocation The URL of XML file or the IRI of the IIIF resource
      * @param mixed[] $settings
      *
-     * @return AbstractDocument
+     * @return ?AbstractDocument
      */
     public static function getDocumentInstance(string $documentLocation, array $settings): AbstractDocument|null
     {
@@ -350,7 +352,7 @@ class Helper
      *
      * @param string $scriptRelPath The path to the class file
      *
-     * @return mixed[] Array of hook objects for the class
+     * @return object[] Array of hook objects for the class
      */
     public static function getHookObjects(string $scriptRelPath): array
     {
@@ -376,6 +378,8 @@ class Helper
      * @param int $pid Get the "index_name" from this page
      *
      * @return string "index_name" for the given UID
+     *
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function getIndexNameFromUid(int $uid, string $table, int $pid = -1): string
     {
@@ -481,7 +485,9 @@ class Helper
      *
      * @param int $pid Get the "index_name" from this page only
      *
-     * @return mixed[]
+     * @return array<int|string, string> Array mapping record UID to its index_name
+     *
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function getDocumentStructures(int $pid = -1): array
     {
@@ -509,7 +515,7 @@ class Helper
 
         $allStructures = $kitodoStructures->fetchAllAssociative();
 
-        // make lookup-table indexName -> uid
+        // make lookup-table uid -> indexName
         return array_column($allStructures, 'indexName', 'uid');
     }
 
@@ -549,7 +555,9 @@ class Helper
      * @param bool $reverseOrder Should the data map be reversed?
      * @param bool $cmdFirst Should the command map be processed first?
      *
-     * @return mixed[] Array of substituted "NEW..." identifiers and their actual UIDs.
+     * @return array<string,int> Array of substituted "NEW..." identifiers and their actual UIDs.
+     *
+     * @throws AspectNotFoundException
      */
     public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], bool $reverseOrder = false, bool $cmdFirst = false): array
     {
@@ -655,6 +663,8 @@ class Helper
      * @param string $pid Get the translation from this page
      *
      * @return string Localized label for $indexName
+     *
+     * @throws AspectNotFoundException
      */
     public static function translate(string $indexName, string $table, string $pid): string
     {
@@ -814,7 +824,7 @@ class Helper
      *
      * @return bool TRUE if $id is valid XML ID, FALSE otherwise
      */
-    public static function isValidXmlId($id): bool
+    public static function isValidXmlId(mixed $id): bool
     {
         return preg_match('/^[_a-z][_a-z0-9-.]*$/i', $id) === 1;
     }
@@ -826,7 +836,7 @@ class Helper
      *
      * @static
      *
-     * @return mixed[]
+     * @return array<string,mixed>
      */
     private static function getOptions(): array
     {
@@ -887,7 +897,7 @@ class Helper
      *
      * @return bool True if the file mimetype belongs to any of the allowed mimetypes or matches any custom dlf mimetypes, false otherwise
      */
-    public static function filterFilesByMimeType($file, array $allowedCategories, null|bool|array $dlfMimeTypes = null, string $mimeTypeKey = 'mimetype'): bool
+    public static function filterFilesByMimeType(mixed $file, array $allowedCategories, null|bool|array $dlfMimeTypes = null, string $mimeTypeKey = 'mimetype'): bool
     {
         if (empty($allowedCategories) && empty($dlfMimeTypes)) {
             return false;
