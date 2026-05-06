@@ -24,6 +24,7 @@ export default class ShakaThumbnailTrack {
   /**
    *
    * @param {number} position
+   *
    * @returns {Promise<dlf.media.ThumbnailOnTrack | null>}
    */
   async getThumb(position) {

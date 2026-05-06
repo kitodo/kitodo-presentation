@@ -45,7 +45,11 @@ export default class MarkerTable extends DlfMediaPlugin {
   constructor() {
     super();
 
-    /** @private @type {Record<string, Row>} */
+    /**
+     * @type {Record<string, Row>}
+     *
+     * @private
+     */
     this.rows = {};
 
     /** @private */
@@ -54,7 +58,11 @@ export default class MarkerTable extends DlfMediaPlugin {
     /** @type {HTMLElement | null} */
     this.$container = null;
 
-    /** @private @type {Partial<import('DlfMediaPlayer/Markers').Handlers>} */
+    /**
+     * @type {Partial<import('DlfMediaPlayer/Markers').Handlers>}
+     *
+     * @private
+     */
     this.markersHandlers = {
       'remove': (event) => {
         for (const segment of event.detail.segments) {
@@ -142,9 +150,10 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {Row} row
    * @param {KeyboardEvent} event
+   *
+   * @private
    */
   onLabelEditKeydown(row, event) {
     // TODO: Use global keybindings table?
@@ -154,9 +163,10 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {Row} row
    * @param {Event} event
+   *
+   * @private
    */
   onLabelEditInput(row, event) {
     if (this.player === null) {
@@ -170,8 +180,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {Row} row
+   *
+   * @private
    */
   onDeleteRow(row) {
     if (this.player === null) {
@@ -182,8 +193,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {Row} row
+   *
+   * @private
    */
   onBookmarkRow(row) {
     if (this.player instanceof SlubMediaPlayer) {
@@ -192,8 +204,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {Row} row
+   *
+   * @private
    */
   onSeekToStartTime(row) {
     if (this.player === null) {
@@ -205,8 +218,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {Row} row
+   *
+   * @private
    */
   onSeekToEndTime(row) {
     if (this.player === null) {
@@ -218,8 +232,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {MouseEvent} event
+   *
+   * @private
    */
   onClear(event) {
     event.preventDefault();
@@ -235,8 +250,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {MouseEvent} event
+   *
+   * @private
    */
   onDownloadCsv(event) {
     event.preventDefault();
@@ -259,10 +275,12 @@ export default class MarkerTable extends DlfMediaPlugin {
    * Transform an event handler using a {@link Row} into an event handler that
    * can be attached to a {@link WithRow} DOM object.
    *
-   * @private
    * @template {Event} EventT
+   *
    * @param {(row: Row, event: EventT) => void} handler
    * @returns {(e: EventT) => void}
+   *
+   * @private
    */
   rowEvent(handler) {
     return (e) => {
@@ -283,8 +301,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   /**
    * Update rows for the given {@link segments}, and create rows as necessary.
    *
-   * @private
    * @param {import('DlfMediaPlayer/Markers').Segment[]} segments
+   *
+   * @private
    */
   syncSegments(segments) {
     for (const segment of segments) {
@@ -296,8 +315,9 @@ export default class MarkerTable extends DlfMediaPlugin {
    * Update row for the given {@link segment}. If no such row exists yet,
    * create one.
    *
-   * @private
    * @param {import('DlfMediaPlayer/Markers').Segment} segment
+   *
+   * @private
    */
   syncSegment(segment) {
     let isNew = false;
@@ -330,9 +350,10 @@ export default class MarkerTable extends DlfMediaPlugin {
   /**
    * Create table row object (without yet inserting).
    *
-   * @private
    * @param {import('DlfMediaPlayer/Markers').Segment} segment
    * @returns {Row}
+   *
+   * @private
    */
   createRow(segment) {
     let $tr, $id, $startTime, $endTime;
@@ -405,8 +426,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   /**
    * Insert or rearrange row into table.
    *
-   * @private
    * @param {Row} row
+   *
+   * @private
    */
   insertRow(row) {
     if (this.$body === undefined) {
@@ -429,8 +451,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {string | undefined} id
+   *
+   * @private
    */
   removeRowById(id) {
     if (id === undefined) {
@@ -458,8 +481,9 @@ export default class MarkerTable extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {Row} row
+   *
+   * @private
    */
   removeRow(row) {
     row.$tr.remove();
@@ -514,10 +538,11 @@ export default class MarkerTable extends DlfMediaPlugin {
   /**
    * Compare segments for sorting in UI.
    *
-   * @private
    * @param {import('DlfMediaPlayer/Markers').Segment} lhs
    * @param {import('DlfMediaPlayer/Markers').Segment} rhs
    * @returns {number}
+   *
+   * @private
    */
   cmpSegment(lhs, rhs) {
     return (
