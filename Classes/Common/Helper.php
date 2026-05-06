@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Common;
 
 use Exception;
+use Kitodo\Dlf\Domain\Model\Structure;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
@@ -31,7 +33,6 @@ use TYPO3\CMS\Core\Resource\MimeTypeDetector;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
@@ -485,32 +486,24 @@ class Helper
      */
     public static function getDocumentStructures(int $pid = -1): array
     {
-        // TODO: Against redundancy with getIndexNameFromUid
-
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_structures');
-
-        $where = '';
-        // Should we check for a specific PID, too?
+        // Use StructureRepository::findAll() instead of direct DB access.
+        // If $pid !== -1 use the given storage pid, otherwise ignore storage pid.
+        $structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
         if ($pid !== -1) {
-            $pid = max($pid, 0);
-            $where = $queryBuilder->expr()->eq('pid', $pid);
+            $structureRepository->useStoragePid(max($pid, 0));
+        } else {
+            $structureRepository->ignoreStoragePid();
         }
 
-        // Fetch document info for UIDs in $documentSet from DB
-        $kitodoStructures = $queryBuilder
-            ->select(
-                'uid',
-                'index_name AS indexName'
-            )
-            ->from('tx_dlf_structures')
-            ->where($where)
-            ->executeQuery();
+        $allStructures = [];
+        $structures = $structureRepository->findAll();
 
-        $allStructures = $kitodoStructures->fetchAllAssociative();
+        /** @var Structure $structure */
+        foreach ($structures as $structure) {
+            $allStructures[$structure->getUid()] = $structure->getIndexName();
+        }
 
-        // make lookup-table indexName -> uid
-        return array_column($allStructures, 'indexName', 'uid');
+        return $allStructures;
     }
 
     /**

@@ -244,7 +244,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
     {
         /* @var AbstractRepository $repository */
         $repository = GeneralUtility::makeInstance($className);
-        $repository->setStoragePid($storagePid);
+        $repository->useStoragePid($storagePid);
 
         return $repository;
     }

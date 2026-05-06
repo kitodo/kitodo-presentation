@@ -111,7 +111,7 @@ class CalendarController extends AbstractController
             return $this->htmlResponse();
         }
 
-        $this->structureRepository->setStoragePid($this->settings['storagePid']);
+        $this->structureRepository->useStoragePid($this->settings['storagePid']);
 
         $calendarData = $this->buildCalendar();
 
@@ -161,7 +161,7 @@ class CalendarController extends AbstractController
             return $this->htmlResponse();
         }
 
-        $this->structureRepository->setStoragePid($this->settings['storagePid']);
+        $this->structureRepository->useStoragePid($this->settings['storagePid']);
 
         // Get all children of anchor. This should be the year anchor documents
         $documents = $this->documentRepository->getChildrenOfYearAnchor(
