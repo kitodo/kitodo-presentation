@@ -85,7 +85,11 @@ export default class HelpModal extends SimpleModal {
     /** @private */
     this.config = config;
 
-    /** @private @type {TableSection[]} */
+    /**
+     * @type {TableSection[]}
+     *
+     * @private
+     */
     this.tableSections = [];
 
     this.createBodyDom();

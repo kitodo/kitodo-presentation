@@ -20,25 +20,29 @@ var DlfIiifAnnotationParser = function(optImageObj, optWidth, optHeight, optOffs
     // get width and height either from image info.json or from canvas information
 
     /**
-     * @type {Object|undefined}
+     * @type {object|undefined}
+     *
      * @private
      */
     this.image_ = dlfUtils.exists(optImageObj) ? optImageObj : undefined;
 
     /**
      * @type {number|undefined}
+     *
      * @private
      */
     this.width_ = dlfUtils.exists(optWidth) ? optWidth : undefined;
 
     /**
      * @type {number|undefined}
+     *
      * @private
      */
     this.height_ = dlfUtils.exists(optHeight) ? optHeight : undefined;
 
     /**
      * @type {number|undefined}
+     *
      * @private
      */
     this.offset_ = dlfUtils.exists(optOffset) ? optOffset : undefined;
@@ -49,6 +53,7 @@ var DlfIiifAnnotationParser = function(optImageObj, optWidth, optHeight, optOffs
  * @param {number} height
  * @param {number} hpos
  * @param {number} vpos
+ *
  * @private
  */
 DlfIiifAnnotationParser.prototype.generateId_ = function(width, height, hpos, vpos) {
@@ -59,7 +64,8 @@ DlfIiifAnnotationParser.prototype.generateId_ = function(width, height, hpos, vp
 /**
  * Create an OpenLayers Feature from a IIIF Annotation
  * @param {Object} annotation
- * @return {ol.Feature}
+ * @returns {ol.Feature}
+ *
  * @private
  */
 DlfIiifAnnotationParser.prototype.parseAnnotation = function(annotation) {
@@ -170,7 +176,7 @@ DlfIiifAnnotationParser.prototype.parseGeometry = function(annotation) {
 /**
  * Get position and dimension from the fragment identifier of the on-uri or from the canvas dimension
  * @param {Object} annotation
- * @return {Object}
+ * @returns {Object}
  * @private
  */
 DlfIiifAnnotationParser.prototype.getXYWHForAnnotation = function (annotation) {
@@ -200,7 +206,7 @@ DlfIiifAnnotationParser.prototype.getXYWHForAnnotation = function (annotation) {
 /**
  * Remove any fragment from the uri
  * @param {string} uri
- * @return {string|null}
+ * @returns {string|null}
  * @private
  */
 DlfIiifAnnotationParser.getTargetIdentifierWithoutFragment = function(uri) {
