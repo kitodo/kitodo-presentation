@@ -526,44 +526,39 @@ class DocumentRepository extends AbstractRepository
      */
     public function findAllByUids(array $uids, bool $checkPartof = false): array
     {
-        // get all documents from db we are talking about
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
-        // Fetch document info for UIDs in $documentSet from DB
-        $exprDocumentMatchesUid = $queryBuilder->expr()->in('uid', $uids);
+        $query = $this->createQuery();
+
+        $exprDocumentMatchesUid = $query->in('uid', $uids);
         if ($checkPartof) {
-            $exprDocumentMatchesUid = $queryBuilder->expr()->or(
-                $exprDocumentMatchesUid,
-                $queryBuilder->expr()->in('partof', $uids)
+            $exprDocumentMatchesUid = $query->logicalOr(
+                $query->in('uid', $uids),
+                $query->in('partof', $uids)
             );
         }
-        $kitodoDocuments = $queryBuilder
-            ->select(
-                'uid',
-                'title',
-                'structure',
-                'thumbnail',
-                'volume_sorting AS volumeSorting',
-                'mets_orderlabel AS metsOrderlabel',
-                'partof AS partOf'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->in('pid', $this->settings['storagePid']),
-                $exprDocumentMatchesUid
-            )
-            ->getConcreteQueryBuilder()
-            ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
-            ->addOrderBy('mets_orderlabel', 'asc')
-            ->executeQuery();
 
-        $this->debugQueryBuilder($queryBuilder);
+        $query->matching($exprDocumentMatchesUid);
+        $query->setOrderings([
+            'volumeSorting' => QueryInterface::ORDER_ASCENDING,
+            'metsOrderlabel' => QueryInterface::ORDER_ASCENDING
+        ]);
+
+        $result = $query->execute();
 
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
-        // Process documents in a usable array structure
-        while ($resArray = $kitodoDocuments->fetchAssociative()) {
-            $resArray['structure'] = $documentStructures[$resArray['structure']] ?? null;
+
+        /** @var Document $doc */
+        foreach ($result as $doc) {
+            $resArray = [
+                'uid' => $doc->getUid(),
+                'title' => $doc->getTitle(),
+                'structure' => $documentStructures[$doc->getStructure()?->getUid()] ?? null,
+                'thumbnail' => $doc->getThumbnail(),
+                'volumeSorting' => $doc->getVolumeSorting(),
+                'metsOrderlabel' => $doc->getMetsOrderlabel(),
+                'partOf' => $doc->getPartof()
+            ];
+
             $allDocuments[$resArray['uid']] = $resArray;
         }
 
@@ -705,27 +700,23 @@ class DocumentRepository extends AbstractRepository
             if ($parentId) {
                 $currentVolume = $currentDocument->getVolumeSorting();
 
-                $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-                $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
-
-                // Grab previous volume
-                $prevDocument = $queryBuilder
-                    ->select(
-                        'uid'
+                $query = $this->createQuery();
+                $query->matching(
+                    $query->logicalAnd(
+                        $query->equals('partof', $parentId),
+                        $query->lessThan('volumeSorting', $currentVolume)
                     )
-                    ->from('tx_dlf_documents')
-                    ->where(
-                        $queryBuilder->expr()->eq('partof', $parentId),
-                        'volume_sorting < \'' . $currentVolume . '\''
-                    )
-                    ->addOrderBy('volume_sorting', 'desc')
-                    ->executeQuery()
-                    ->fetchAssociative();
+                );
+                $query->setOrderings(['volumeSorting' => QueryInterface::ORDER_DESCENDING]);
+                $query->setLimit(1);
 
-                $this->debugQueryBuilder($queryBuilder);
+                $this->debugQuery($query);
 
-                if (!empty($prevDocument)) {
-                    return $prevDocument['uid'];
+                /** @var Document|null $prevDocument */
+                $prevDocument = $query->execute()->getFirst();
+
+                if ($prevDocument !== null) {
+                    return $prevDocument->getUid();
                 }
 
                 $previousDocumentId = $this->getPreviousDocumentUid($parentId);
@@ -757,27 +748,23 @@ class DocumentRepository extends AbstractRepository
             if ($parentId) {
                 $currentVolume = $currentDocument->getVolumeSorting();
 
-                $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-                $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
-
-                // Grab next volume
-                $nextDocument = $queryBuilder
-                    ->select(
-                        'uid'
+                $query = $this->createQuery();
+                $query->matching(
+                    $query->logicalAnd(
+                        $query->equals('partof', $parentId),
+                        $query->greaterThan('volumeSorting', $currentVolume)
                     )
-                    ->from('tx_dlf_documents')
-                    ->where(
-                        $queryBuilder->expr()->eq('partof', $parentId),
-                        'volume_sorting > \'' . $currentVolume . '\''
-                    )
-                    ->addOrderBy('volume_sorting', 'asc')
-                    ->executeQuery()
-                    ->fetchAssociative();
+                );
+                $query->setOrderings(['volumeSorting' => QueryInterface::ORDER_ASCENDING]);
+                $query->setLimit(1);
 
-                $this->debugQueryBuilder($queryBuilder);
+                $this->debugQuery($query);
 
-                if (!empty($nextDocument)) {
-                    return $nextDocument['uid'];
+                /** @var Document|null $nextDocument */
+                $nextDocument = $query->execute()->getFirst();
+
+                if ($nextDocument !== null) {
+                    return $nextDocument->getUid();
                 }
 
                 $nextDocumentId = $this->getNextDocumentUid($parentId);
@@ -801,28 +788,19 @@ class DocumentRepository extends AbstractRepository
      */
     public function getFirstChild(int $uid): int
     {
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
+        $query = $this->createChildQuery($uid);
+        $query->setOrderings(['volumeSorting' => QueryInterface::ORDER_ASCENDING]);
 
-        $child = $queryBuilder
-            ->select(
-                'uid'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('partof', $uid)
-            )
-            ->addOrderBy('volume_sorting', 'asc')
-            ->executeQuery()
-            ->fetchAssociative();
+        $this->debugQuery($query);
 
-        $this->debugQueryBuilder($queryBuilder);
+        /** @var Document|null $child */
+        $child = $query->execute()->getFirst();
 
-        if (empty($child['uid'])) {
+        if ($child === null) {
             return $uid;
         }
 
-        return $this->getFirstChild($child['uid']);
+        return $this->getFirstChild($child->getUid());
     }
 
     /**
@@ -836,27 +814,34 @@ class DocumentRepository extends AbstractRepository
      */
     public function getLastChild(int $uid): int
     {
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $queryBuilder = $connectionPool->getQueryBuilderForTable('tx_dlf_documents');
+        $query = $this->createChildQuery($uid);
+        $query->setOrderings(['volumeSorting' => QueryInterface::ORDER_DESCENDING]);
 
-        $child = $queryBuilder
-            ->select(
-                'uid'
-            )
-            ->from('tx_dlf_documents')
-            ->where(
-                $queryBuilder->expr()->eq('partof', $uid)
-            )
-            ->addOrderBy('volume_sorting', 'desc')
-            ->executeQuery()
-            ->fetchAssociative();
+        $this->debugQuery($query);
 
-        $this->debugQueryBuilder($queryBuilder);
-
-        if (empty($child['uid'])) {
+        /** @var Document|null $child */
+        $child = $query->execute()->getFirst();
+        if ($child === null) {
             return $uid;
         }
 
-        return $this->getFirstChild($child['uid']);
+        return $this->getFirstChild($child->getUid());
+    }
+
+    /**
+     * Create child query.
+     *
+     * @access private
+     *
+     * @param int $uid
+     *
+     * @return QueryInterface<Document>
+     */
+    private function createChildQuery(int $uid): QueryInterface
+    {
+        $query = $this->createQuery();
+        $query->matching($query->equals('partof', $uid));
+        $query->setLimit(1);
+        return $query;
     }
 }
