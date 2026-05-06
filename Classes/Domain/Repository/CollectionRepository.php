@@ -92,7 +92,7 @@ class CollectionRepository extends Repository
         }
 
         // do not find user created collections (used by oai-pmh plugin)
-        if (!($settings['show_userdefined'] ?? false)) {
+        if (!($settings['showUserDefined'] ?? false)) {
             $constraints[] = $query->equals('fe_cruser_id', 0);
         }
 
@@ -131,7 +131,7 @@ class CollectionRepository extends Repository
             ->getQueryBuilderForTable('tx_dlf_collections');
 
         $where = '';
-        if (!$settings['show_userdefined']) {
+        if (!$settings['showUserDefined']) {
             $where = $queryBuilder->expr()->eq('fe_cruser_id', 0);
         }
         // For SOLR we need the index_name of the collection,
