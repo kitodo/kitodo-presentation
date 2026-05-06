@@ -799,7 +799,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     private function getDocumentByUid(int $documentId): ?AbstractDocument
     {
         $doc = null;
-        $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
+        $this->document = $this->documentRepository->findByUid($documentId);
 
         if ($this->document) {
             $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings);
