@@ -179,7 +179,7 @@ class BaseCommand extends Command
      */
     protected function getSolrCores(int $pageId): array
     {
-        $this->solrCoreRepository->setStoragePid($pageId);
+        $this->solrCoreRepository->useStoragePid($pageId);
 
         $solrCores = [];
         $cores = $this->solrCoreRepository->findAll();
