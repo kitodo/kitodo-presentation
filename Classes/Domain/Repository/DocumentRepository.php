@@ -544,8 +544,6 @@ class DocumentRepository extends AbstractRepository
 
         $result = $query->execute();
 
-        $this->debugQueryBuilder($queryBuilder);
-
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
 
