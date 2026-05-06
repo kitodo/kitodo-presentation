@@ -385,7 +385,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return mixed[]
+     * @return array<string,mixed> Calendar data array keyed by "YYYY-M" with month/week structure
      */
     private function buildCalendar(): array
     {
@@ -411,7 +411,7 @@ class CalendarController extends AbstractController
                     $lastMonth = (int) key($issuesByMonth);
                 }
             }
-            $this->getCalendarYear($calendarData, $issuesByMonth, $year, $firstMonth, $lastMonth);
+            $this->getCalendarYear($calendarData, $issuesByMonth, (int) $year, $firstMonth, $lastMonth);
             $iteration++;
         }
 
@@ -423,7 +423,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return mixed[]
+     * @return array<int|string, array<int, array<int, array<int, mixed>>>> Issues grouped by year => month => day
      */
     private function getIssuesByYear(): array
     {

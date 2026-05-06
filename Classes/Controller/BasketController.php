@@ -275,7 +275,7 @@ class BasketController extends AbstractController
      *
      * @param object|bool|null $data DocumentData
      *
-     * @return mixed[] One basket entry
+     * @return array<string,mixed> One basket entry
      */
     protected function getEntry(object|bool|null $data): array
     {
@@ -335,7 +335,7 @@ class BasketController extends AbstractController
      * @param string $id Document id
      * @param mixed[] $data DocumentData
      *
-     * @return mixed[]|false download url or false
+     * @return array<string,mixed>|false Download URL or false
      */
     protected function getDocumentData(string $id, array $data): array|false
     {

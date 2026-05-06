@@ -247,7 +247,7 @@ class SearchController extends AbstractController
      *
      * @param mixed[] $facets
      *
-     * @return mixed[] HMENU array
+     * @return array<int,array<string,mixed>> HMENU array
      */
     private function makeFacetsMenuArray(array $facets): array
     {
