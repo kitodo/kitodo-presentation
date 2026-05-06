@@ -64,6 +64,8 @@ class CollectionRepository extends AbstractRepository
             $query->matching($query->logicalAnd(...$constraints));
         }
 
+        $this->debugQuery($query);
+
         return $query->execute();
     }
 
@@ -91,7 +93,7 @@ class CollectionRepository extends AbstractRepository
         }
 
         // do not find user created collections (used by oai-pmh plugin)
-        if (!($settings['show_userdefined'] ?? false)) {
+        if (!($settings['showUserDefined'] ?? false)) {
             $constraints[] = $query->equals('fe_cruser_id', 0);
         }
 
@@ -110,6 +112,8 @@ class CollectionRepository extends AbstractRepository
         $query->setOrderings(
             array('oai_name' => QueryInterface::ORDER_ASCENDING)
         );
+
+        $this->debugQuery($query);
 
         return $query->execute();
     }
@@ -130,7 +134,7 @@ class CollectionRepository extends AbstractRepository
             ->getQueryBuilderForTable('tx_dlf_collections');
 
         $where = '';
-        if (!$settings['show_userdefined']) {
+        if (!$settings['showUserDefined']) {
             $where = $queryBuilder->expr()->eq('fe_cruser_id', 0);
         }
         // For SOLR we need the index_name of the collection,
@@ -152,6 +156,8 @@ class CollectionRepository extends AbstractRepository
                 Helper::whereExpression('tx_dlf_collections')
             )
             ->setMaxResults(1);
+
+        $this->debugQueryBuilder($result);
 
         return $result->executeQuery();
     }

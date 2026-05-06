@@ -35,7 +35,7 @@ import UrlGenerator from 'SlubMediaPlayer/lib/UrlGenerator';
  */
 
 /**
- * @extends {SimpleModal<State>}
+ * @auguments {SimpleModal<State>}
  */
 export default class ScreenshotModal extends SimpleModal {
   /**
@@ -60,12 +60,20 @@ export default class ScreenshotModal extends SimpleModal {
 
     /** @private */
     this.env = env;
+
     /** @private */
     this.gen = new UrlGenerator(env);
-    /** @private @type {HTMLVideoElement | null} */
+
+    /**
+     * @type {HTMLVideoElement | null}
+     *
+     * @private
+     */
     this.videoDomElement = null;
+
     /** @private */
     this.config = config;
+
     /** @private */
     this.constants = typoConstants(config.constants, {
       screenshotFilenameTemplate: 'Screenshot',
@@ -196,8 +204,9 @@ export default class ScreenshotModal extends SimpleModal {
   }
 
   /**
-   * @private
    * @param {Event} e
+   *
+   * @private
    */
   handleChangeShowMetadata(e) {
     if (!(e.target instanceof HTMLInputElement)) {
@@ -210,8 +219,9 @@ export default class ScreenshotModal extends SimpleModal {
   }
 
   /**
-   * @private
    * @param {MouseEvent} e
+   *
+   * @private
    */
   async handleDownloadImage(e) {
     e.preventDefault();
@@ -296,7 +306,7 @@ export default class ScreenshotModal extends SimpleModal {
    *
    * @param {MetadataArray} metadata
    * @param {ImageFormatDesc} selectedImageFormat
-   * @return {string}
+   * @returns {string}
    */
   getFilename(metadata, selectedImageFormat) {
     const template = this.constants.screenshotFilenameTemplate;
@@ -338,6 +348,7 @@ export default class ScreenshotModal extends SimpleModal {
 
   /**
    * @override
+   *
    * @param {import('SlubMediaPlayer/lib/SimpleModal').BaseState & State} state
    */
   render(state) {

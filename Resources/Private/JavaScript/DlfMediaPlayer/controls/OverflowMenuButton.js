@@ -40,7 +40,11 @@ export default class OverflowMenuButton extends shaka.ui.SettingsMenu {
   constructor(parent, controls, config = {}) {
     super(parent, controls, config.material_icon ?? "");
 
-    /** @protected Avoid naming conflicts with parent class */
+    /**
+     * Avoid naming conflicts with parent class
+     *
+     * @protected
+     */
     this.dlf = { config };
 
     if (this.eventManager) {

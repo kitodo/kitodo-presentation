@@ -9,7 +9,7 @@
  */
 
 /**
- * @constructor
+ * @class
  * @param {Object=} options Control options.
  *  {Element} target
  *  {ol.Map} map
@@ -23,7 +23,7 @@ dlfViewerImageManipulationControl = function(options) {
     this.counter = dlfUtils.exists(options.counter) ? options.counter : 0;
 
     /**
-     * @type {Object}
+     * @type {object}
      * @private
      */
     this.dic = $('#tx-dlf-tools-imagemanipulation').length > 0 && $('#tx-dlf-tools-imagemanipulation').attr('data-dic') ?
@@ -80,13 +80,13 @@ dlfViewerImageManipulationControl = function(options) {
     };
 
     /**
-     * @type {Object}
+     * @type {object}
      * @private
      */
     this.filters_ = $.extend({}, FILTERS_DEFAULT_);
 
     /**
-     * @type {Object}
+     * @type {object}
      * @private
      */
     this.handler_ = {
@@ -236,7 +236,7 @@ dlfViewerImageManipulationControl.prototype.createFilters_ = function() {
  * @param {string} className
  * @param {string} orientation
  * @param {string} key
- * @param {Array.<number>|undefined} opt_baseValue
+ * @param {array.<number>|undefined} optBaseValues
  * @param {string=} optTitle
  * @param {Function=} optLabelFn
  * @return {Element}
@@ -314,7 +314,7 @@ dlfViewerImageManipulationControl.prototype.deactivate = function(){
 /**
  * Function checks if the image manipulation is in active state or not.
  *
- * @return {boolean}
+ * @returns {boolean}
  */
 dlfViewerImageManipulationControl.prototype.isActive = function() {
     return $(this.anchor_).hasClass('active');
@@ -336,8 +336,10 @@ dlfViewerImageManipulationControl.prototype.setFilter_ = function (filter, value
  *
  * @param {string} filter
  * @param {number} value
+ *
+ * @returns {string}
+ *
  * @private
- * @return {string}
  */
 dlfViewerImageManipulationControl.prototype.valueToCss_ = function (filter, value) {
     switch (filter) {

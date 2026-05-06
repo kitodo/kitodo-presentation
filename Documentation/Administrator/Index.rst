@@ -234,7 +234,7 @@ Plugin Collection
 
 The Collection plugin can now be used to display a list of collections or overview of a single collection. The list of collections will be
 displayed if more than one collection is inserted to the :code:`collections` setting in the FlexForm. There exists possibility to still
-display the list of collections even if only one collection is inserted, by checking the FlexForm setting :code:`dont_show_single`.
+display the list of collections even if only one collection is inserted, by checking the FlexForm setting :code:`showSingle`.
 
 Version 5.1 & Version 6.0 -> 7.0
 ==================

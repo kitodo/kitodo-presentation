@@ -119,6 +119,8 @@ class DocumentRepository extends AbstractRepository
         $query->setOrderings(['tstamp' => QueryInterface::ORDER_ASCENDING]);
         $query->setLimit(1);
 
+        $this->debugQuery($query);
+
         /** @var Document $document */
         $document = $query->execute()->getFirst();
         return $document;
@@ -144,6 +146,8 @@ class DocumentRepository extends AbstractRepository
             'mets_orderlabel' => QueryInterface::ORDER_ASCENDING
             ]
         );
+
+        $this->debugQuery($query);
 
         return $query->execute();
     }
@@ -194,6 +198,8 @@ class DocumentRepository extends AbstractRepository
             );
         }
 
+        $this->debugQuery($query);
+
         return $query->execute();
     }
 
@@ -232,6 +238,8 @@ class DocumentRepository extends AbstractRepository
             $query->setLimit($limit);
             $query->setOffset($offset);
         }
+
+        $this->debugQuery($query);
 
         return $query->execute();
     }
@@ -287,6 +295,8 @@ class DocumentRepository extends AbstractRepository
                 ->executeQuery()
                 ->fetchFirstColumn();
 
+            $this->debugQueryBuilder($queryBuilder);
+
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
             $subQueryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -331,6 +341,9 @@ class DocumentRepository extends AbstractRepository
                 )
                 ->executeQuery()
                 ->fetchFirstColumn();
+
+            $this->debugQueryBuilder($queryBuilder);
+            $this->debugQueryBuilder($subQueryBuilder);
         } else {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
@@ -370,6 +383,8 @@ class DocumentRepository extends AbstractRepository
                 )
                 ->executeQuery()
                 ->fetchFirstColumn();
+
+            $this->debugQueryBuilder($queryBuilder);
         }
 
         return ['titles' => $countTitles[0] ?? 0, 'volumes' => $countVolumes[0] ?? 0];
@@ -397,7 +412,7 @@ class DocumentRepository extends AbstractRepository
             $excludeOtherWhere = 'tx_dlf_documents.pid=' . (int) $settings['storagePid'];
         }
         // Check if there are any metadata to suggest.
-        return $queryBuilder
+        $queryBuilder
             ->select(
                 'tx_dlf_documents.uid AS uid',
                 'tx_dlf_documents.title AS title',
@@ -424,8 +439,11 @@ class DocumentRepository extends AbstractRepository
             )
             ->getConcreteQueryBuilder()
             ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
-            ->addOrderBy('tx_dlf_documents.mets_orderlabel')
-            ->executeQuery();
+            ->addOrderBy('tx_dlf_documents.mets_orderlabel');
+
+        $this->debugQueryBuilder($queryBuilder);
+
+        return $queryBuilder->executeQuery();
     }
 
     /**
@@ -454,14 +472,15 @@ class DocumentRepository extends AbstractRepository
             ->andWhere($queryBuilder->expr()->eq('tx_dlf_relations_join.ident', $queryBuilder->createNamedParameter('docs_colls')))
             ->groupBy('tx_dlf_documents.uid');
 
-        if (empty($settings['show_userdefined'])) {
+        if (empty($settings['showUserDefined'])) {
             $qb->andWhere($queryBuilder->expr()->eq('tx_dlf_collections_join.fe_cruser_id', 0));
         }
 
         $qb->getConcreteQueryBuilder()->setMaxResults(1);
 
-        $result = $qb->executeQuery();
-        return $result->fetchAssociative();
+        $this->debugQueryBuilder($queryBuilder);
+
+        return $qb->executeQuery()->fetchAssociative();
     }
 
     /**
@@ -490,8 +509,9 @@ class DocumentRepository extends AbstractRepository
             ->andWhere($queryBuilder->expr()->eq('tx_dlf_collections_join.deleted', 0))
             ->groupBy('tx_dlf_documents.uid');
 
-        $result = $qb->executeQuery();
-        return $result->fetchAllAssociative();
+        $this->debugQueryBuilder($queryBuilder);
+
+        return $qb->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -536,6 +556,8 @@ class DocumentRepository extends AbstractRepository
             ->orderBy('cast(volume_sorting as UNSIGNED)', 'asc')
             ->addOrderBy('mets_orderlabel', 'asc')
             ->executeQuery();
+
+        $this->debugQueryBuilder($queryBuilder);
 
         $allDocuments = [];
         $documentStructures = Helper::getDocumentStructures($this->settings['storagePid']);
@@ -700,6 +722,8 @@ class DocumentRepository extends AbstractRepository
                     ->executeQuery()
                     ->fetchAssociative();
 
+                $this->debugQueryBuilder($queryBuilder);
+
                 if (!empty($prevDocument)) {
                     return $prevDocument['uid'];
                 }
@@ -750,6 +774,8 @@ class DocumentRepository extends AbstractRepository
                     ->executeQuery()
                     ->fetchAssociative();
 
+                $this->debugQueryBuilder($queryBuilder);
+
                 if (!empty($nextDocument)) {
                     return $nextDocument['uid'];
                 }
@@ -790,6 +816,8 @@ class DocumentRepository extends AbstractRepository
             ->executeQuery()
             ->fetchAssociative();
 
+        $this->debugQueryBuilder($queryBuilder);
+
         if (empty($child['uid'])) {
             return $uid;
         }
@@ -822,6 +850,8 @@ class DocumentRepository extends AbstractRepository
             ->addOrderBy('volume_sorting', 'desc')
             ->executeQuery()
             ->fetchAssociative();
+
+        $this->debugQueryBuilder($queryBuilder);
 
         if (empty($child['uid'])) {
             return $uid;
