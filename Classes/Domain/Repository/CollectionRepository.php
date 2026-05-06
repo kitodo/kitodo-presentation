@@ -121,19 +121,19 @@ class CollectionRepository extends AbstractRepository
      * @access public
      *
      * @param mixed[] $settings
-     * @param mixed $set
+     * @param string $set
      *
      * @return array<string,string> The found row as associative array with keys
      *                              'index_name' and 'index_query' or an empty
      *                              array when not found.
      */
-    public function getIndexNameForSolr(array $settings, mixed $set): array
+    public function getIndexNameForSolr(array $settings, string $set): array
     {
         $query = $this->createQuery();
 
         $constraints = [];
         // Match by oai_name
-        $constraints[] = $query->equals('oaiName', (string) $set);
+        $constraints[] = $query->equals('oaiName', $set);
 
         // Exclude user defined collections when requested
         if (!($settings['showUserDefined'] ?? false)) {

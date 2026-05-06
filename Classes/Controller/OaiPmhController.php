@@ -592,7 +592,7 @@ class OaiPmhController extends AbstractController
         if (!empty($this->parameters['set'])) {
             // For SOLR we need the index_name of the collection,
             // For DB Query we need the UID of the collection
-            $indexName = $this->collectionRepository->getIndexNameForSolr($this->settings, $this->parameters['set']);
+            $indexName = $this->collectionRepository->getIndexNameForSolr($this->settings, (string) $this->parameters['set']);
             if (!empty($indexName)) {
                 if (!empty($indexName['index_query'])) {
                     $solrQuery .= '(' . $indexName['index_query'] . ')';
