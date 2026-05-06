@@ -731,7 +731,7 @@ abstract class AbstractDocument
     protected function loadFormats(): void
     {
         if (!$this->formatsLoaded && $this->configPid > 0) {
-            // TODO: it should work with findBy(['pid' => this->configPid]), but returns empty result
+            // TODO: it should work with findBy(['pid' => this->configPid]) or findAll(), but returns empty result
             $formats = $this->formatRepository->findByPid($this->configPid);
 
             foreach ($formats as $format) {
