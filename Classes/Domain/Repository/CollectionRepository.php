@@ -136,7 +136,7 @@ class CollectionRepository extends AbstractRepository
         $constraints[] = $query->equals('oaiName', (string) $set);
 
         // Exclude user defined collections when requested
-        if (!($settings['show_userdefined'] ?? false)) {
+        if (!($settings['showUserDefined'] ?? false)) {
             $constraints[] = $query->equals('feCruserId', 0);
         }
 
