@@ -17,7 +17,14 @@
  */
 
 /**
- * @constructor
+ * This class parses an ALTO XML document and creates OpenLayers features with geometries and properties for the page,
+ * print space, text blocks, text lines and strings.
+ * The parser can be initialized with an image object, width, height and offset for rescaling the coordinates of the features.
+ * If the page dimensions are given in the ALTO, they will be used for rescaling the coordinates.
+ * Otherwise, the provided width and height will be used. If no dimensions are given, the coordinates will not be rescaled.
+ *
+ * @class
+ *
  * @param {Object=} optImageObj
  * @param {number=} optWidth
  * @param {number=} optHeight
@@ -26,25 +33,29 @@
 var dlfAltoParser = function(optImageObj, optWidth, optHeight, optOffset) {
 
     /**
-     * @type {Object|undefined}
+     * @type {object|undefined}
+     *
      * @private
      */
     this.image_ = dlfUtils.exists(optImageObj) ? optImageObj : undefined;
 
     /**
      * @type {number|undefined}
+     *
      * @private
      */
     this.width_ = dlfUtils.exists(optWidth) ? optWidth : undefined;
 
     /**
      * @type {number|undefined}
+     *
      * @private
      */
     this.height_ = dlfUtils.exists(optHeight) ? optHeight : undefined;
 
     /**
      * @type {number|undefined}
+     *
      * @private
      */
     this.offset_ = dlfUtils.exists(optOffset) ? optOffset : undefined;
@@ -53,6 +64,8 @@ var dlfAltoParser = function(optImageObj, optWidth, optHeight, optOffset) {
 /**
  * @param {number} hpos
  * @param {number} vpos
+ * @returns {string}
+ *
  * @private
  */
 dlfAltoParser.prototype.generateId_ = function(hpos, vpos) {
@@ -61,8 +74,10 @@ dlfAltoParser.prototype.generateId_ = function(hpos, vpos) {
 
 /**
  * Parse from an alto element a OpenLayers feature object. This function does reproduce the parsing hierarchy of this parser.
+ *
  * @param {Element} node
- * @return {ol.Feature}
+ * @returns {ol.Feature}
+ *
  * @private
  */
 dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
@@ -113,7 +128,7 @@ dlfAltoParser.prototype.parseAltoFeature_ = function(node) {
 
 /**
  * @param {XMLDocument|string} document
- * @return {Array.<FullTextFeature>}
+ * @returns {array.<FullTextFeature>}
  */
 dlfAltoParser.prototype.parseFeatures = function(document) {
     var parsedDoc = this.parseXML_(document),
@@ -125,8 +140,9 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
         var feature = this.parseAltoFeature_(pageElements[i]);
 
         /**
-         * Attach function for a better access of of string elements
-         * @return {Array}
+         * Attach function for a better access of string elements
+         *
+         * @returns {array}
          */
         feature.getStringFeatures = function() {
             var textblockFeatures = this.get('printspace').get('textblocks'),
@@ -160,7 +176,8 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
 
         /**
          * Add function for getting the text blocks
-         * @return {Array}
+         *
+         * @returns {array}
          */
         feature.getTextblocks = function() {
             if (this.get('printspace') !== undefined && this.get('printspace').get('textblocks')) {
@@ -171,7 +188,8 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
 
         /**
          * Adding function for getting the textline
-         * @return {Array}
+         *
+         * @returns {array}
          */
         feature.getTextlines = function() {
             var textlines = [];
@@ -189,8 +207,10 @@ dlfAltoParser.prototype.parseFeatures = function(document) {
 
 /**
  * Parse from an alto element a OpenLayers feature object
+ *
  * @param {Element} node
- * @return {ol.Feature}
+ * @returns {ol.Feature}
+ *
  * @private
  */
 dlfAltoParser.prototype.parseFeatureWithGeometry_ = function(node) {
@@ -217,8 +237,10 @@ dlfAltoParser.prototype.parseFeatureWithGeometry_ = function(node) {
 
 /**
  * Parse from an alto element a OpenLayers geometry object
+ *
  * @param {Element} node
  * @return {ol.geom.Polygon|undefined}
+ *
  * @private
  */
 dlfAltoParser.prototype.parseGeometry_ = function(node) {
@@ -256,7 +278,8 @@ dlfAltoParser.prototype.parseGeometry_ = function(node) {
 
 /**
  * @param {Element} node
- * @return {ol.Feature|undefined}
+ * @returns {ol.Feature|undefined}
+ *
  * @private
  */
 dlfAltoParser.prototype.parsePrintSpaceFeature_ = function(node) {
@@ -271,6 +294,7 @@ dlfAltoParser.prototype.parsePrintSpaceFeature_ = function(node) {
 /**
  * @param {Element} node
  * @return {Array.<ol.Feature>}
+ *
  * @private
  */
 dlfAltoParser.prototype.parseTextBlockFeatures_ = function(node) {
@@ -297,6 +321,7 @@ dlfAltoParser.prototype.parseTextBlockFeatures_ = function(node) {
 /**
  * @param {Element} node
  * @return {Array.<ol.Feature>}
+ *
  * @private
  */
 dlfAltoParser.prototype.parseTextLineFeatures_ = function(node) {
@@ -322,7 +347,8 @@ dlfAltoParser.prototype.parseTextLineFeatures_ = function(node) {
 
 /**
  * @param {Element} node
- * @return {Array.<ol.Feature>}
+ * @return {array.<ol.Feature>}
+ *
  * @private
  */
 dlfAltoParser.prototype.parseContentFeatures_ = function(node) {
@@ -357,8 +383,9 @@ dlfAltoParser.prototype.parseContentFeatures_ = function(node) {
 
 /**
  *
- * @param {Element}
- * @return {string}
+ * @param {Element} textLineContentElement
+ * @returns {string}
+ *
  * @private
  */
 dlfAltoParser.prototype.parseString_ = function(textLineContentElement) {
@@ -374,8 +401,9 @@ dlfAltoParser.prototype.parseString_ = function(textLineContentElement) {
 
 /**
  *
- * @param {XMLDocument|string}
- * @return {XMLDocument}
+ * @param {XMLDocument|string} document
+ * @returns {XMLDocument}
+ *
  * @private
  */
 dlfAltoParser.prototype.parseXML_ = function(document) {

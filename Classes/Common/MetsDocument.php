@@ -17,11 +17,11 @@ use DOMElement;
 use DOMNode;
 use DOMNodeList;
 use DOMXPath;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
+use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Hooks\KitodoProductionHacks;
 use SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Services\AbstractImageService;
@@ -180,6 +180,16 @@ final class MetsDocument extends AbstractDocument
      * @access protected
      */
     protected int $numMeasures;
+
+    /**
+     * @var MetadataRepository
+     */
+    protected MetadataRepository $metadataRepository;
+
+    /**
+     * @var StructureRepository
+     */
+    protected StructureRepository $structureRepository;
 
     /**
      * This adds metadata from METS structural map to metadata array.
@@ -982,118 +992,18 @@ final class MetsDocument extends AbstractDocument
      */
     private function getAdditionalMetadataFromDatabase(string $dmdId): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
         // Get all metadata with configured xpath and applicable format first.
         // Exclude metadata with subentries, we will fetch them later.
-        $resultWithFormat = $queryBuilder
-            ->select(
-                'tx_dlf_metadata.index_name AS index_name',
-                'tx_dlf_metadataformat_joins.xpath AS xpath',
-                'tx_dlf_metadataformat_joins.xpath_sorting AS xpath_sorting',
-                'tx_dlf_metadata.is_sortable AS is_sortable',
-                'tx_dlf_metadata.default_value AS default_value',
-                'tx_dlf_metadata.format AS format'
-            )
-            ->from('tx_dlf_metadata')
-            ->innerJoin(
-                'tx_dlf_metadata',
-                'tx_dlf_metadataformat',
-                'tx_dlf_metadataformat_joins',
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_metadataformat_joins.parent_id',
-                    'tx_dlf_metadata.uid'
-                )
-            )
-            ->innerJoin(
-                'tx_dlf_metadataformat_joins',
-                'tx_dlf_formats',
-                'tx_dlf_formats_joins',
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_formats_joins.uid',
-                    'tx_dlf_metadataformat_joins.encoded'
-                )
-            )
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
-                $queryBuilder->expr()->eq('tx_dlf_metadata.l18n_parent', 0),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat_joins.pid', $this->configPid),
-                $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($this->mdSec[$dmdId]['type']))
-            )
-            ->executeQuery();
+        $resultWithFormat = $this->metadataRepository->findWithFormat($this->configPid, $this->mdSec[$dmdId]['type']);
         // Get all metadata without a format, but with a default value next.
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-        $resultWithoutFormat = $queryBuilder
-            ->select(
-                'index_name',
-                'is_sortable',
-                'default_value',
-                'format'
-            )
-            ->from('tx_dlf_metadata')
-            ->where(
-                $queryBuilder->expr()->eq('pid', $this->configPid),
-                $queryBuilder->expr()->eq('l18n_parent', 0),
-                $queryBuilder->expr()->eq('format', 0),
-                $queryBuilder->expr()->neq('default_value', $queryBuilder->createNamedParameter(''))
-            )
-            ->executeQuery();
+        $resultWithoutFormat = $this->metadataRepository->findWithoutFormat($this->configPid);
         // Merge both result sets.
-        $allResults = array_merge($resultWithFormat->fetchAllAssociative(), $resultWithoutFormat->fetchAllAssociative());
+        $allResults = array_merge($resultWithFormat, $resultWithoutFormat);
 
         // Get subentries separately.
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-        $subentries = $queryBuilder
-            ->select(
-                'tx_dlf_subentries_joins.index_name AS index_name',
-                'tx_dlf_metadata.index_name AS parent_index_name',
-                'tx_dlf_subentries_joins.xpath AS xpath',
-                'tx_dlf_subentries_joins.default_value AS default_value'
-            )
-            ->from('tx_dlf_metadata')
-            ->innerJoin(
-                'tx_dlf_metadata',
-                'tx_dlf_metadataformat',
-                'tx_dlf_metadataformat_joins',
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_metadataformat_joins.parent_id',
-                    'tx_dlf_metadata.uid'
-                )
-            )
-            ->innerJoin(
-                'tx_dlf_metadataformat_joins',
-                'tx_dlf_metadatasubentries',
-                'tx_dlf_subentries_joins',
-                $queryBuilder->expr()->eq(
-                    'tx_dlf_subentries_joins.parent_id',
-                    'tx_dlf_metadataformat_joins.uid'
-                )
-            )
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
-                $queryBuilder->expr()->gt('tx_dlf_metadataformat_joins.subentries', 0),
-                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.l18n_parent', 0),
-                $queryBuilder->expr()->eq('tx_dlf_subentries_joins.pid', $this->configPid)
-            )
-            ->orderBy('tx_dlf_subentries_joins.sorting')
-            ->executeQuery();
-        $subentriesResult = $subentries->fetchAllAssociative();
+        $subentries = $this->metadataRepository->findSubentries($this->configPid);
 
-        return array_merge($allResults, ['subentries' => $subentriesResult]);
+        return array_merge($allResults, ['subentries' => $subentries]);
     }
 
     /**
@@ -1210,6 +1120,8 @@ final class MetsDocument extends AbstractDocument
     protected function init(string $location, array $settings): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
+        $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
+        $this->structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
         $this->settings = $settings;
         // Get METS node from XML file.
         $this->registerNamespaces($this->xml);
@@ -1631,22 +1543,7 @@ final class MetsDocument extends AbstractDocument
             $strctId = $this->getToplevelId();
             $metadata = $this->getToplevelMetadata();
 
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_structures');
-
-            // Get structure element to get thumbnail from.
-            $result = $queryBuilder
-                ->select('thumbnail')
-                ->from('tx_dlf_structures')
-                ->where(
-                    $queryBuilder->expr()->eq('pid', $this->configPid),
-                    $queryBuilder->expr()->eq('index_name', $queryBuilder->expr()->literal($metadata['type'][0])),
-                    Helper::whereExpression('tx_dlf_structures')
-                )
-                ->setMaxResults(1)
-                ->executeQUery();
-
-            $allResults = $result->fetchAllAssociative();
+            $allResults = $this->structureRepository->findThumbnail($this->configPid, $metadata['type'][0]);
 
             if (count($allResults) == 1) {
                 $resArray = $allResults[0];

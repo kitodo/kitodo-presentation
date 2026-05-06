@@ -15081,7 +15081,7 @@ module.exports = deprecate;
  * will invoke `console.trace()` instead of `console.error()`.
  *
  * @param {Function} fn - the function to deprecate
- * @param {String} msg - the string to print to the console when `fn` is invoked
+ * @param {string} msg - the string to print to the console when `fn` is invoked
  * @returns {Function} a new "deprecated" version of `fn`
  * @api public
  */
@@ -15112,8 +15112,8 @@ function deprecate (fn, msg) {
 /**
  * Checks `localStorage` for boolean values for the given `name`.
  *
- * @param {String} name
- * @returns {Boolean}
+ * @param {string} name
+ * @returns {boolean}
  * @api private
  */
 
@@ -21332,8 +21332,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Creates shortcut functions to a cipher's object interface.
 	         *
 	         * @param {Cipher} cipher The cipher to create a helper for.
-	         *
-	         * @return {Object} An object with encrypt and decrypt shortcut functions.
+	         * @returns {object} An object with encrypt and decrypt shortcut functions.
 	         *
 	         * @static
 	         *
@@ -21393,7 +21392,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Creates this mode for encryption.
 	         *
 	         * @param {Cipher} cipher A block cipher instance.
-	         * @param {Array} iv The IV words.
+	         * @param {array} iv The IV words.
 	         *
 	         * @static
 	         *
@@ -21409,7 +21408,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Creates this mode for decryption.
 	         *
 	         * @param {Cipher} cipher A block cipher instance.
-	         * @param {Array} iv The IV words.
+	         * @param {array} iv The IV words.
 	         *
 	         * @static
 	         *
@@ -21425,7 +21424,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Initializes a newly created mode.
 	         *
 	         * @param {Cipher} cipher A block cipher instance.
-	         * @param {Array} iv The IV words.
+	         * @param {array} iv The IV words.
 	         *
 	         * @example
 	         *
@@ -21453,7 +21452,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	            /**
 	             * Processes the data block at offset.
 	             *
-	             * @param {Array} words The data words to operate on.
+	             * @param {array} words The data words to operate on.
 	             * @param {number} offset The offset where the block starts.
 	             *
 	             * @example
@@ -21481,7 +21480,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	            /**
 	             * Processes the data block at offset.
 	             *
-	             * @param {Array} words The data words to operate on.
+	             * @param {array} words The data words to operate on.
 	             * @param {number} offset The offset where the block starts.
 	             *
 	             * @example
@@ -21709,8 +21708,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts this cipher params object to a string.
 	         *
 	         * @param {Format} formatter (Optional) The formatting strategy to use.
-	         *
-	         * @return {string} The stringified cipher params.
+	         * @returns {string} The stringified cipher params.
 	         *
 	         * @throws Error If neither the formatter nor the default formatter is set.
 	         *
@@ -21738,8 +21736,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a cipher params object to an OpenSSL-compatible string.
 	         *
 	         * @param {CipherParams} cipherParams The cipher params object.
-	         *
-	         * @return {string} The OpenSSL-compatible string.
+	         * @returns {string} The OpenSSL-compatible string.
 	         *
 	         * @static
 	         *
@@ -21768,8 +21765,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts an OpenSSL-compatible string to a cipher params object.
 	         *
 	         * @param {string} openSSLStr The OpenSSL-compatible string.
-	         *
-	         * @return {CipherParams} The cipher params object.
+	         * @returns {CipherParams} The cipher params object.
 	         *
 	         * @static
 	         *
@@ -21820,8 +21816,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * @param {WordArray|string} message The message to encrypt.
 	         * @param {WordArray} key The key.
 	         * @param {Object} cfg (Optional) The configuration options to use for this operation.
-	         *
-	         * @return {CipherParams} A cipher params object.
+	         * @returns {CipherParams} A cipher params object.
 	         *
 	         * @static
 	         *
@@ -21862,8 +21857,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * @param {CipherParams|string} ciphertext The ciphertext to decrypt.
 	         * @param {WordArray} key The key.
 	         * @param {Object} cfg (Optional) The configuration options to use for this operation.
-	         *
-	         * @return {WordArray} The plaintext.
+	         * @returns {WordArray} The plaintext.
 	         *
 	         * @static
 	         *
@@ -21891,8 +21885,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         *
 	         * @param {CipherParams|string} ciphertext The ciphertext.
 	         * @param {Formatter} format The formatting strategy to use to parse serialized ciphertext.
-	         *
-	         * @return {CipherParams} The unserialized ciphertext.
+	         * @returns {CipherParams} The unserialized ciphertext.
 	         *
 	         * @static
 	         *
@@ -21925,8 +21918,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * @param {number} keySize The size in words of the key to generate.
 	         * @param {number} ivSize The size in words of the IV to generate.
 	         * @param {WordArray|string} salt (Optional) A 64-bit salt to use. If omitted, a salt will be generated randomly.
-	         *
-	         * @return {CipherParams} A cipher params object with the key, IV, and salt.
+	         * @returns {CipherParams} A cipher params object with the key, IV, and salt.
 	         *
 	         * @static
 	         *
@@ -22167,8 +22159,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	             * Creates a new object that inherits from this object.
 	             *
 	             * @param {Object} overrides Properties to copy into the new object.
-	             *
-	             * @return {Object} The new object.
+	             * @returns {object} The new object.
 	             *
 	             * @static
 	             *
@@ -22210,7 +22201,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	             * Extends this object and runs the init method.
 	             * Arguments to create() will be passed to init().
 	             *
-	             * @return {Object} The new object.
+	             * @returns {object} The new object.
 	             *
 	             * @static
 	             *
@@ -22267,7 +22258,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	            /**
 	             * Creates a copy of this object.
 	             *
-	             * @return {Object} The clone.
+	             * @returns {object} The clone.
 	             *
 	             * @example
 	             *
@@ -22289,7 +22280,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	        /**
 	         * Initializes a newly created word array.
 	         *
-	         * @param {Array} words (Optional) An array of 32-bit words.
+	         * @param {array} words (Optional) An array of 32-bit words.
 	         * @param {number} sigBytes (Optional) The number of significant bytes in the words.
 	         *
 	         * @example
@@ -22312,8 +22303,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts this word array to a string.
 	         *
 	         * @param {Encoder} encoder (Optional) The encoding strategy to use. Default: CryptoJS.enc.Hex
-	         *
-	         * @return {string} The stringified word array.
+	         * @returns {string} The stringified word array.
 	         *
 	         * @example
 	         *
@@ -22329,8 +22319,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Concatenates a word array to this word array.
 	         *
 	         * @param {WordArray} wordArray The word array to append.
-	         *
-	         * @return {WordArray} This word array.
+	         * @returns {WordArray} This word array.
 	         *
 	         * @example
 	         *
@@ -22435,8 +22424,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a word array to a hex string.
 	         *
 	         * @param {WordArray} wordArray The word array.
-	         *
-	         * @return {string} The hex string.
+	         * @returns {string} The hex string.
 	         *
 	         * @static
 	         *
@@ -22464,8 +22452,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a hex string to a word array.
 	         *
 	         * @param {string} hexStr The hex string.
-	         *
-	         * @return {WordArray} The word array.
+	         * @returns {WordArray} The word array.
 	         *
 	         * @static
 	         *
@@ -22495,8 +22482,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a word array to a Latin1 string.
 	         *
 	         * @param {WordArray} wordArray The word array.
-	         *
-	         * @return {string} The Latin1 string.
+	         * @returns {string} The Latin1 string.
 	         *
 	         * @static
 	         *
@@ -22523,8 +22509,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a Latin1 string to a word array.
 	         *
 	         * @param {string} latin1Str The Latin1 string.
-	         *
-	         * @return {WordArray} The word array.
+	         * @returns {WordArray} The word array.
 	         *
 	         * @static
 	         *
@@ -22554,8 +22539,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a word array to a UTF-8 string.
 	         *
 	         * @param {WordArray} wordArray The word array.
-	         *
-	         * @return {string} The UTF-8 string.
+	         * @returns {string} The UTF-8 string.
 	         *
 	         * @static
 	         *
@@ -22575,8 +22559,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a UTF-8 string to a word array.
 	         *
 	         * @param {string} utf8Str The UTF-8 string.
-	         *
-	         * @return {WordArray} The word array.
+	         * @returns {WordArray} The word array.
 	         *
 	         * @static
 	         *
@@ -22637,8 +22620,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * This method invokes _doProcessBlock(offset), which must be implemented by a concrete subtype.
 	         *
 	         * @param {boolean} doFlush Whether all blocks and partial blocks should be processed.
-	         *
-	         * @return {WordArray} The processed data.
+	         * @returns {WordArray} The processed data.
 	         *
 	         * @example
 	         *
@@ -22691,7 +22673,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	        /**
 	         * Creates a copy of this object.
 	         *
-	         * @return {Object} The clone.
+	         * @returns {object} The clone.
 	         *
 	         * @example
 	         *
@@ -22754,8 +22736,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Updates this hasher with a message.
 	         *
 	         * @param {WordArray|string} messageUpdate The message to append.
-	         *
-	         * @return {Hasher} This hasher.
+	         * @returns {Hasher} This hasher.
 	         *
 	         * @example
 	         *
@@ -22778,8 +22759,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Note that the finalize operation is effectively a destructive, read-once operation.
 	         *
 	         * @param {WordArray|string} messageUpdate (Optional) A final message update.
-	         *
-	         * @return {WordArray} The hash.
+	         * @returns {WordArray} The hash.
 	         *
 	         * @example
 	         *
@@ -22805,8 +22785,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Creates a shortcut function to a hasher's object interface.
 	         *
 	         * @param {Hasher} hasher The hasher to create a helper for.
-	         *
-	         * @return {Function} The shortcut function.
+	         * @returns {Function} The shortcut function.
 	         *
 	         * @static
 	         *
@@ -22824,8 +22803,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Creates a shortcut function to the HMAC's object interface.
 	         *
 	         * @param {Hasher} hasher The hasher to use in this HMAC helper.
-	         *
-	         * @return {Function} The shortcut function.
+	         * @returns {Function} The shortcut function.
 	         *
 	         * @static
 	         *
@@ -22884,8 +22862,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a word array to a Base64 string.
 	         *
 	         * @param {WordArray} wordArray The word array.
-	         *
-	         * @return {string} The Base64 string.
+	         * @returns {string} The Base64 string.
 	         *
 	         * @static
 	         *
@@ -22931,8 +22908,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a Base64 string to a word array.
 	         *
 	         * @param {string} base64Str The Base64 string.
-	         *
-	         * @return {WordArray} The word array.
+	         * @returns {WordArray} The word array.
 	         *
 	         * @static
 	         *
@@ -23021,10 +22997,8 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a word array to a Base64url string.
 	         *
 	         * @param {WordArray} wordArray The word array.
-	         *
 	         * @param {boolean} urlSafe Whether to use url safe
-	         *
-	         * @return {string} The Base64url string.
+	         * @returns {string} The Base64url string.
 	         *
 	         * @static
 	         *
@@ -23070,10 +23044,8 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a Base64url string to a word array.
 	         *
 	         * @param {string} base64Str The Base64url string.
-	         *
 	         * @param {boolean} urlSafe Whether to use url safe
-	         *
-	         * @return {WordArray} The word array.
+	         * @returns {WordArray} The word array.
 	         *
 	         * @static
 	         *
@@ -23162,8 +23134,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a word array to a UTF-16 BE string.
 	         *
 	         * @param {WordArray} wordArray The word array.
-	         *
-	         * @return {string} The UTF-16 BE string.
+	         * @returns {string} The UTF-16 BE string.
 	         *
 	         * @static
 	         *
@@ -23190,8 +23161,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a UTF-16 BE string to a word array.
 	         *
 	         * @param {string} utf16Str The UTF-16 BE string.
-	         *
-	         * @return {WordArray} The word array.
+	         * @returns {WordArray} The word array.
 	         *
 	         * @static
 	         *
@@ -23221,8 +23191,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a word array to a UTF-16 LE string.
 	         *
 	         * @param {WordArray} wordArray The word array.
-	         *
-	         * @return {string} The UTF-16 LE string.
+	         * @returns {string} The UTF-16 LE string.
 	         *
 	         * @static
 	         *
@@ -23249,8 +23218,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a UTF-16 LE string to a word array.
 	         *
 	         * @param {string} utf16Str The UTF-16 LE string.
-	         *
-	         * @return {WordArray} The word array.
+	         * @returns {WordArray} The word array.
 	         *
 	         * @static
 	         *
@@ -23344,8 +23312,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         *
 	         * @param {WordArray|string} password The password.
 	         * @param {WordArray|string} salt A salt.
-	         *
-	         * @return {WordArray} The derived key.
+	         * @returns {WordArray} The derived key.
 	         *
 	         * @example
 	         *
@@ -23396,8 +23363,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	     * @param {WordArray|string} password The password.
 	     * @param {WordArray|string} salt A salt.
 	     * @param {Object} cfg (Optional) The configuration options to use for this computation.
-	     *
-	     * @return {WordArray} The derived key.
+	     * @returns {WordArray} The derived key.
 	     *
 	     * @static
 	     *
@@ -23446,8 +23412,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts the ciphertext of a cipher params object to a hexadecimally encoded string.
 	         *
 	         * @param {CipherParams} cipherParams The cipher params object.
-	         *
-	         * @return {string} The hexadecimally encoded string.
+	         * @returns {string} The hexadecimally encoded string.
 	         *
 	         * @static
 	         *
@@ -23463,8 +23428,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Converts a hexadecimally encoded ciphertext string to a cipher params object.
 	         *
 	         * @param {string} input The hexadecimally encoded string.
-	         *
-	         * @return {CipherParams} The cipher params object.
+	         * @returns {CipherParams} The cipher params object.
 	         *
 	         * @static
 	         *
@@ -23582,8 +23546,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Updates this HMAC with a message.
 	         *
 	         * @param {WordArray|string} messageUpdate The message to append.
-	         *
-	         * @return {HMAC} This HMAC instance.
+	         * @returns {HMAC} This HMAC instance.
 	         *
 	         * @example
 	         *
@@ -23602,8 +23565,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	         * Note that the finalize operation is effectively a destructive, read-once operation.
 	         *
 	         * @param {WordArray|string} messageUpdate (Optional) A final message update.
-	         *
-	         * @return {WordArray} The HMAC.
+	         * @returns {WordArray} The HMAC.
 	         *
 	         * @example
 	         *
@@ -25697,8 +25659,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	     * Shortcut function to the hasher's object interface.
 	     *
 	     * @param {WordArray|string} message The message to hash.
-	     *
-	     * @return {WordArray} The hash.
+	     * @returns {WordArray} The hash.
 	     *
 	     * @static
 	     *
@@ -25714,8 +25675,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	     *
 	     * @param {WordArray|string} message The message to hash.
 	     * @param {WordArray|string} key The secret key.
-	     *
-	     * @return {WordArray} The HMAC.
+	     * @returns {WordArray} The HMAC.
 	     *
 	     * @static
 	     *
@@ -25897,8 +25857,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	     * Shortcut function to the hasher's object interface.
 	     *
 	     * @param {WordArray|string} message The message to hash.
-	     *
-	     * @return {WordArray} The hash.
+	     * @returns {WordArray} The hash.
 	     *
 	     * @static
 	     *
@@ -25914,8 +25873,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	     *
 	     * @param {WordArray|string} message The message to hash.
 	     * @param {WordArray|string} key The secret key.
-	     *
-	     * @return {WordArray} The HMAC.
+	     * @returns {WordArray} The HMAC.
 	     *
 	     * @static
 	     *
@@ -27671,7 +27629,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 	        /**
 	         * Initializes a newly created word array.
 	         *
-	         * @param {Array} words (Optional) An array of CryptoJS.x64.Word objects.
+	         * @param {array} words (Optional) An array of CryptoJS.x64.Word objects.
 	         * @param {number} sigBytes (Optional) The number of significant bytes in the words.
 	         *
 	         * @example
@@ -60652,8 +60610,10 @@ class PDFNameTree extends PDFTree {
 
 /**
  * Check if value is in a range group.
+ *
  * @param {number} value
  * @param {number[]} rangeGroup
+ *
  * @returns {boolean}
  */
 function inRange(value, rangeGroup) {
@@ -60970,11 +60930,10 @@ const last = x => x[x.length - 1];
  * Convert provided string into an array of Unicode Code Points.
  * Based on https://stackoverflow.com/a/21409165/1556249
  * and https://www.npmjs.com/package/code-point-at.
+ *
  * @param {string} input
  * @returns {number[]}
  */
-
-
 function toCodePoints(input) {
   const codepoints = [];
   const size = input.length;
@@ -60999,13 +60958,12 @@ function toCodePoints(input) {
 }
 /**
  * SASLprep.
+ *
  * @param {string} input
  * @param {Object} opts
  * @param {boolean} opts.allowUnassigned
  * @returns {string}
  */
-
-
 function saslprep(input, opts = {}) {
   if (typeof input !== 'string') {
     throw new TypeError('Expected string.');

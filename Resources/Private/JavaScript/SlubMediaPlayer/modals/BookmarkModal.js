@@ -37,7 +37,7 @@ const START_AT_MODES = /** @type {const} */(['current-time', 'marker', 'begin'])
  */
 
 /**
- * @extends {SimpleModal<State>}
+ * @auguments {SimpleModal<State>}
  */
 export default class BookmarkModal extends SimpleModal {
   /**
@@ -59,7 +59,11 @@ export default class BookmarkModal extends SimpleModal {
       showMastodonShare: false,
     });
 
-    /** @private @type {string | null} */
+    /**
+     * @type {string | null}
+     *
+     * @private
+     */
     this.lastRenderedUrl = null;
 
     /** @private */
@@ -146,9 +150,10 @@ export default class BookmarkModal extends SimpleModal {
 
   /**
    *
-   * @private
    * @param {string} radioGroup
    * @param {StartAtMode} mode
+   *
+   * @private
    */
   makeStartAtVariant(radioGroup, mode) {
     const id = this.env.mkid();
@@ -234,8 +239,9 @@ export default class BookmarkModal extends SimpleModal {
   }
 
   /**
-   * @private
    * @param {State} state
+   *
+   * @private
    */
   generateUrl(state) {
     const timerange = this.getActiveTimeRange(state);
@@ -243,9 +249,10 @@ export default class BookmarkModal extends SimpleModal {
   }
 
   /**
-   * @private
    * @param {State} state
    * @returns {dlf.media.TimeRange | null}
+   *
+   * @private
    */
   getActiveTimeRange(state) {
     switch (this.getStartAtMode(state)) {
@@ -275,6 +282,7 @@ export default class BookmarkModal extends SimpleModal {
 
   /**
    * @override
+   *
    * @param {import('SlubMediaPlayer/lib/SimpleModal').BaseState & State} state
    */
   render(state) {
@@ -360,9 +368,10 @@ export default class BookmarkModal extends SimpleModal {
   }
 
   /**
-   * @private
    * @param {Pick<State, 'startAtMode' | 'timing'>} state
    * @returns {StartAtMode}
+   *
+   * @private
    */
   getStartAtMode(state) {
     return this.isStartAtModeAllowed(state.startAtMode, state)
@@ -371,10 +380,11 @@ export default class BookmarkModal extends SimpleModal {
   }
 
   /**
-   * @private
    * @param {StartAtMode} mode
    * @param {Pick<State, 'timing'>} state
    * @returns {boolean}
+   *
+   * @private
    */
   isStartAtModeAllowed(mode, state) {
     switch (mode) {

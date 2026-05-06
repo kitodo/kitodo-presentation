@@ -116,7 +116,9 @@ dlfScoreUtil.fetchScoreDataFromServer = function (image, scoreUrl, pagebeginning
 
 /**
  * Encapsulates especially the score behavior
+ *
  * @class
+ *
  * @param dlfViewer
  * @param pagebeginning
  * @param pagecount
@@ -126,24 +128,27 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
   this.dlfViewer = dlfViewer;
 
   /**
-   *@ type(number)
+   * @type {number}
    */
   this.pagecount = pagecount;
 
   /**
    * @type {number}
+   *
    * @private
    */
   this.position = 0;
 
   /**
    * @type {string}
+   *
    * @private
    */
   this.pagebeginning = pagebeginning;
 
   /**
-   * @type {Object}
+   * @type {object}
+   *
    * @private
    */
   this.dic = $('#tx-dlf-tools-score-' + this.dlfViewer.counter).length > 0 && $('#tx-dlf-tools-score-' + this.dlfViewer.counter).attr('data-dic') ?
@@ -366,6 +371,7 @@ dlfViewerScoreControl.prototype.loadScoreData = function (image, scoreData, tk) 
 
     /**
      * Get the font name
+     *
      * @param {string} family
      * @param {string} bold
      * @param {string} italic
@@ -526,7 +532,7 @@ dlfViewerScoreControl.prototype.deactivate = function () {
 /**
  * Disable Score Features
  *
- * @return void
+ * @returns {void}
  */
 dlfViewerScoreControl.prototype.disableScoreSelect = function () {
 

@@ -42,21 +42,26 @@
  */
 
 /**
- * @TODO Trigger resize map event after fullscreen is toggled
+ * @class
+ *
  * @param {DlfViewerConfig} settings
- * @constructor
+ *
+ * @todo Trigger resize map event after fullscreen is toggled
  */
 var dlfViewer = function (settings) {
 
     /**
      * The element id of the map container
+     *
      * @type {string}
+     *
      * @private
      */
     this.div = dlfUtils.exists(settings.div) ? settings.div : "tx-dlf-map";
 
     /**
      * @type {Record<'overview-map', string>}
+     *
      * @private
      */
     this.dic = $.extend({
@@ -65,28 +70,36 @@ var dlfViewer = function (settings) {
 
     /**
      * Openlayers map object
+     *
      * @type {ol.Map|null}
+     *
      * @private
      */
     this.map = null;
 
     /**
      * Contains image information (e.g. URL, width, height)
+     *
      * @type {DlfViewerConfig['images']}
+     *
      * @private
      */
     this.imageUrls = dlfUtils.exists(settings.images) ? settings.images : [];
 
     /**
      * Contains image information (e.g. URL, width, height)
+     *
      * @type {Array.<{src: *, width: *, height: *}>}
+     *
      * @private
      */
     this.images = [];
 
     /**
      * Score information (e.g. URL)
+     *
      * @type {string}
+     *
      * @private
      */
     this.score = dlfUtils.exists(settings.score['url']) ? settings.score['url'] : '';
@@ -111,141 +124,168 @@ var dlfViewer = function (settings) {
 
     /**
      * Id of pagebeginning in score
+     *
      * @type {string}
+     *
      * @private
      */
     this.pagebeginning = dlfUtils.exists(settings.score['pagebeginning']) ? settings.score['pagebeginning'] : '';
 
     /**
      * The <progress> element for loading indicator.
+     *
      * @type {LoadingIndicator}
+     *
      * @private
      */
     this.loadingIndicator = this.makeLoadingIndicator(settings.progressElementId);
 
     /**
      * Fulltext information (e.g. URL)
+     *
      * @type {Array.<string|?>}
+     *
      * @private
      */
     this.fulltexts = dlfUtils.exists(settings.fulltexts) ? settings.fulltexts : [];
 
     /**
      * Loaded scores (as jQuery deferred object).
+     *
      * @type {svg}
+     *
      * @private
      */
     this.scoresLoaded_ = null;
 
     /**
      * Loaded fulltexts (as jQuery deferred object).
+     *
      * @type {JQueryStatic.Deferred[]}
+     *
      * @private
      */
     this.fulltextsLoaded_ = [];
 
     /**
      * IIIF annotation lists URLs for the current canvas
-     * @type {Array.<string|?>}
+     *
+     * @type {array.<string|?>}
+     *
      * @private
      */
     this.annotationContainers = dlfUtils.exists(settings.annotationContainers) ? settings.annotationContainers : [];
 
     /**
-     * @type {Array.<number>}
+     * @type {array.<number>}
+     *
      * @private
      */
     this.highlightFields = [];
 
     /**
-     * @type {Object|undefined}
+     * @type {object|undefined}
+     *
      * @private
      */
     this.highlightFieldParams = undefined;
 
     /**
      * @type {string|undefined}
+     *
      * @private
      */
      this.highlightWords = null;
 
     /**
-     * @type {Object|undefined}
+     * @type {object|undefined}
+     *
      * @private
      */
     this.imageManipulationControl = undefined;
 
     this.syncControl = undefined;
     /**
-     * @type {Object|undefined}
+     * @type {object|undefined}
+     *
      * @private
      */
     this.selection = undefined;
 
     /**
-     * @type {Object|undefined}
+     * @type {object|undefined}
+     *
      * @private
      */
     this.source = undefined;
 
     /**
-     * @type {Object|undefined}
+     * @type {object|undefined}
+     *
      * @private
      */
     this.selectionLayer = undefined;
 
     /**
-     * @type {Object|undefined}
+     * @type {object|undefined}
+     *
      * @private
      */
     this.draw = undefined;
 
     /**
-     * @type {Object|null}
+     * @type {object|null}
+     *
      * @private
      */
     this.source = null;
 
     /**
-     * @type {Object|null}
+     * @type {object|null}
+     *
      * @private
      */
     this.view = null;
 
     /**
-     * @type {Object|null}
+     * @type {object|null}
+     *
      * @private
      */
     this.ovView = null;
 
     /**
-     * @type {Boolean|false}
+     * @type {boolean|false}
+     *
      * @private
      */
     this.magnifierEnabled = false;
 
-
     /**
-     * @type {Object}
+     * @type {object}
+     *
      * @public
      */
      this.tk = null;
 
     /**
-     * @type {Boolean|false}
+     * @type {boolean|false}
+     *
      * @private
      */
     this.initMagnifier = false;
 
     /**
      *
-     * @type {Object|null}
+     * @type {object|null}
      */
     this.view = null;
 
     /**
      * use internal proxy setting
+     *
      * @type {boolean}
+     *
      * @private
      */
     this.useInternalProxy = dlfUtils.exists(settings.useInternalProxy) ? settings.useInternalProxy : false;
@@ -255,7 +295,7 @@ var dlfViewer = function (settings) {
 
 /**
  *
- * @param {string | undefined}
+ * @param {string|undefined} progressElementId
  * @returns {LoadingIndicator}
  */
 dlfViewer.prototype.makeLoadingIndicator = function (progressElementId) {
@@ -650,12 +690,11 @@ dlfViewer.prototype.addCustomControls = function(image) {
 /**
  * Add highlight field
  *
- * @param {Array.<number>} highlightField
+ * @param {array.<number>} highlightField
  * @param {number} imageIndex
  * @param {number} width
  * @param {number} height
- *
- * @returns void
+ * @returns {void}
  */
 dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, width, height) {
 
@@ -674,9 +713,11 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
 
 /**
  * Creates OpenLayers controls
- * @param {Array.<string>} controlNames
- * @param {Array.<ol.layer.Layer>} layers
- * @returns {Array.<ol.control.Control>}
+ *
+ * @param {array.<string>} controlNames
+ * @param {array.<ol.layer.Layer>} layers
+ * @returns {array.<ol.control.Control>}
+ *
  * @private
  */
 dlfViewer.prototype.createControls_ = function(controlNames, layers) {
@@ -699,8 +740,9 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
  * If `null` is returned, the control is omitted.
  *
  * @param {string} controlName
- * @param {Array.<ol.layer.Layer>} layers
+ * @param {array.<ol.layer.Layer>} layers
  * @returns {ol.control.Control | null}
+ *
  * @protected
  */
 dlfViewer.prototype.createControl = function(controlName, layers) {
@@ -743,9 +785,10 @@ dlfViewer.prototype.createControl = function(controlName, layers) {
 /**
  * Forwards the search to dlfUtils.searchFeatureCollectionForWords
  *
- * @param {Array.<ol.Feature>} stringFeatures - Array of features containing text information
+ * @param {array.<ol.Feature>} stringFeatures - Array of features containing text information
  * @param {string} value - Search term
- * @returns {Array.<ol.Feature>|undefined} Array of OpenLayers features containing found words
+ * @returns {array.<ol.Feature>|undefined} Array of OpenLayers features containing found words
+ *
  * @see dlfUtils.searchFeatureCollectionForWords
  */
 dlfViewer.prototype.searchFeatures = function(stringFeatures, value) {
@@ -834,7 +877,8 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
 /**
  * Start the init process of loading the map, etc.
  *
- * @param {Array.<string>} controlNames
+ * @param {array.<string>} controlNames
+ *
  * @private
  */
 dlfViewer.prototype.init = function(controlNames) {
@@ -946,7 +990,8 @@ dlfViewer.prototype.updateLayerSize = function() {
  * Generate the OpenLayers layer objects for given image sources. Returns a promise / jQuery deferred object.
  *
  * @param {ImageDesc[]} imageSourceObjs
- * @returns {jQuery.Deferred.<function(Array.<ol.layer.Layer>)>}
+ * @returns {jQuery.Deferred.<function(array.<ol.layer.Layer>)>}
+ *
  * @private
  */
 dlfViewer.prototype.initLayer = function(imageSourceObjs) {
@@ -954,8 +999,8 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
     // use deferred for async behavior
     var deferredResponse = new $.Deferred(),
       /**
-       * @param {Array.<{src: *, width: *, height: *}>} imageSourceData
-       * @param {Array.<ol.layer.Layer>} layers
+       * @param {array.<{src: *, width: *, height: *}>} imageSourceData
+       * @param {array.<ol.layer.Layer>} layers
        */
       resolveCallback = $.proxy(function(imageSourceData, layers) {
             this.images = imageSourceData;
@@ -1191,26 +1236,29 @@ function Drag() {
 
     /**
      * @type {ol.Pixel}
+     *
      * @private
      */
     this.coordinate_ = null;
 
     /**
      * @type {string|undefined}
+     *
      * @private
      */
     this.cursor_ = 'pointer';
 
     /**
      * @type {ol.Feature}
+     *
      * @private
      */
     this.feature_ = null;
 
     /**
      * @type {string|undefined}
+     *
      * @private
      */
     this.previousCursor_ = undefined;
-
-};
+}
