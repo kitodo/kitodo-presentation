@@ -20,13 +20,25 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
   constructor() {
     super();
 
-    /** @private @type {dlf.media.eq.FilterPreset[]} */
+    /**
+     * @type {dlf.media.eq.FilterPreset[]}
+     *
+     * @private
+     */
     this.presets_ = [];
 
-    /** @private @type {string | null} */
+    /**
+     * @type {string | null}
+     *
+     * @private
+     */
     this.defaultPreset_ = null;
 
-    /** @private @type {EqualizerView | null} */
+    /**
+     * @type {EqualizerView | null}
+     *
+     * @private
+     */
     this.eqView_ = null;
 
     /** @private */
@@ -34,16 +46,27 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
       onStorePreset: this.onStorePreset.bind(this),
     };
 
-    /** @private */
-    /** @private @type {AudioContext | null} */
+    /**
+     * @type {AudioContext | null}
+     *
+     * @private
+     */
     // Don't create AudioContext eagerly: some browsers block creation before
     // a user gesture (autoplay policies). Create / resume it on demand in resumeAudioContext().
     this.context = null;
 
-    /** @private @type {(value?: any) => void} */
+    /**
+     * @type {(value?: any) => void}
+     *
+     * @private
+     */
     this.markAsResumed = (/* value */) => { };
 
-    /** @private @type {HTMLElement | null} */
+    /**
+     * @type {HTMLElement | null}
+     *
+     * @private
+     */
     this.resumeHintEl_ = null;
 
     /** @private */
@@ -99,8 +122,9 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
    * `attachToPlayer` so initialization can be deferred until the panel is
    * visible.
    *
-   * @private
    * @param {DlfMediaPlayer} player
+   *
+   * @private
    */
   async initForPlayer(player) {
     if (window.location.protocol !== 'https:') {
@@ -290,8 +314,9 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {import('SlubMediaPlayer/components/equalizer/EqualizerView').EqualizerViewEvent<'store_preset'>} event
+   *
+   * @private
    */
   onStorePreset(event) {
     const { key, preset } = event.detail;
@@ -299,8 +324,9 @@ export default class EqualizerPlugin extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @returns {Record<string, dlf.media.eq.FilterPreset>}
+   *
+   * @private
    */
   getLocalPresets() {
     /** @type {Record<string, dlf.media.eq.FilterPreset>} */

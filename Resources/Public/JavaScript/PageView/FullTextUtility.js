@@ -15,7 +15,7 @@
  /**
  * Base namespace for utility functions used by the dlf module.
  *
- * @const
+ * @constant
  */
 var dlfFullTextUtils;
 dlfFullTextUtils = dlfFullTextUtils || {};
@@ -23,7 +23,7 @@ dlfFullTextUtils = dlfFullTextUtils || {};
 /**
  * Get feature from given source
  * @param {Object} source
- * @return {ol.Feature|undefined}
+ * @returns {ol.Feature|undefined}
  * @static
  */
 dlfFullTextUtils.getFeature = function(source){
@@ -34,7 +34,7 @@ dlfFullTextUtils.getFeature = function(source){
  * Check if given element is equal to given feature
  * @param {Object} element
  * @param {Object} feature
- * @return {boolean}
+ * @returns {boolean}
  * @static
  */
 dlfFullTextUtils.isFeatureEqual = function(element, feature){
@@ -82,7 +82,7 @@ dlfFullTextUtils.fetchFullTextDataFromServer = function(fulltext, image, optOffs
  * @param {Object} image
  * @param {number=} offset
  * @param {Object} request
- * @return {FullTextFeature | undefined}
+ * @returns {FullTextFeature | undefined}
  * @static
  */
 dlfFullTextUtils.parseAltoData = function(image, offset, request){

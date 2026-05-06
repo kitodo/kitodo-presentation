@@ -11,10 +11,18 @@ export default class DlfMediaPlugin extends HTMLElement {
   constructor() {
     super();
 
-    /** @protected @type {Translator & Identifier & Browser} */
+    /**
+     * @type {Translator & Identifier & Browser}
+     *
+     * @protected
+     */
     this.env = new Environment();
 
-    /** @protected @type {DlfMediaPlayer | null} */
+    /**
+     * @type {DlfMediaPlayer | null}
+     *
+     * @protected
+     */
     this.player = null;
 
     /** @protected */

@@ -51,7 +51,7 @@ import Scale, { Linear, Logarithmic } from 'SlubMediaPlayer/components/equalizer
  */
 
 /**
- * @extends {EventTarget<Events>}
+ * @augments {EventTarget<Events>}
  */
 export default class EqualizerView extends EventTarget {
   /**
@@ -166,13 +166,25 @@ export default class EqualizerView extends EventTarget {
     /** @private */
     this.eqBox = this.calcEqBox();
 
-    /** @private @type {ReturnType<requestAnimationFrame> | null} */
+    /**
+     * @type {ReturnType<requestAnimationFrame> | null}
+     *
+     * @private
+     */
     this.resizeAnimationFrame = null;
 
-    /** @private @type {ReturnType<requestAnimationFrame> | null} */
+    /**
+     * @type {ReturnType<requestAnimationFrame> | null}
+     *
+     * @private
+     */
     this.renderAnimationFrame = null;
 
-    /** @private @type {Hovered | null} */
+    /**
+     * @type {Hovered | null}
+     *
+     * @private
+     */
     this.hovered = null;
 
     /** @private */
@@ -273,8 +285,9 @@ export default class EqualizerView extends EventTarget {
   }
 
   /**
-   * @private
    * @param {MouseEvent} e
+   *
+   * @private
    */
   onCanvasMouseMove(e) {
     /** @type {Position} */
@@ -320,8 +333,9 @@ export default class EqualizerView extends EventTarget {
   }
 
   /**
-   * @private
    * @param {MouseEvent} e
+   *
+   * @private
    */
   onCanvasMouseDown(e) {
     if (this.hovered !== null) {
@@ -376,8 +390,9 @@ export default class EqualizerView extends EventTarget {
   }
 
   /**
-   * @private
    * @param {WheelEvent} e
+   *
+   * @private
    */
   onCanvasWheel(e) {
     if (this.hovered !== null && this.hovered.grabbed === null) {
@@ -393,8 +408,9 @@ export default class EqualizerView extends EventTarget {
   }
 
   /**
-   * @private
    * @param {Hovered | null} hovered
+   *
+   * @private
    */
   setHovered(hovered) {
     this.hovered = hovered;
@@ -409,28 +425,31 @@ export default class EqualizerView extends EventTarget {
   }
 
   /**
-   * @private
    * @param {dlf.media.eq.Param} param
    * @param {(oldValue: number) => number} fn
+   *
+   * @private
    */
   updateFilterGain(param, fn) {
     this.updateEqValue(param.gain, fn, [-24, 24]);
   }
 
   /**
-   * @private
    * @param {dlf.media.eq.Param} param
    * @param {(oldValue: number) => number} fn
+   *
+   * @private
    */
   updateFilterFreq(param, fn) {
     this.updateEqValue(param.frequency, fn, [10, this.freq.max]);
   }
 
   /**
-   * @private
    * @param {dlf.media.eq.ParamValue} param
    * @param {(oldValue: number) => number} fn
    * @param {[number, number]} bounds
+   *
+   * @private
    */
   updateEqValue(param, fn, bounds) {
     if (param.editable) {
@@ -558,8 +577,9 @@ export default class EqualizerView extends EventTarget {
   }
 
   /**
-   * @private
    * @param {string} group
+   *
+   * @private
    */
   addPresetOptgroup(group) {
     const optgroup = e('optgroup', {
@@ -718,9 +738,10 @@ export default class EqualizerView extends EventTarget {
   }
 
   /**
-   * @private
    * @param {dlf.media.eq.Curve} curve
    * @param {'gain' | 'phase'} part
+   *
+   * @private
    */
   fillEqCurve(curve, part = 'gain') {
     if (this.$ctx === null) {
@@ -747,9 +768,10 @@ export default class EqualizerView extends EventTarget {
   }
 
   /**
-   * @private
    * @param {dlf.media.eq.Curve} curve
    * @param {'gain' | 'phase'} part
+   *
+   * @private
    */
   drawEqCurve(curve, part = 'gain') {
     if (this.$ctx === null) {
