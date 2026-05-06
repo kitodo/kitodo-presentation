@@ -52,10 +52,18 @@ export default class WaveForm extends DlfMediaPlugin {
 
     shadow.append(this.$style, this.$container);
 
-    /** @private @type {string | null} */
+    /**
+     * @type {string | null}
+     *
+     * @private
+     */
     this.nextUrl = null;
 
-    /** @private @type {import('peaks.js').PeaksInstance | null} */
+    /**
+     * @type {import('peaks.js').PeaksInstance | null}
+     *
+     * @private
+     */
     this.peaks_ = null;
 
     /** @private */
@@ -70,7 +78,11 @@ export default class WaveForm extends DlfMediaPlugin {
     /** @private */
     this.samplesPerPixel = 0;
 
-    /** @private @type {import('peaks.js').WaveformZoomView | null} */
+    /**
+     * @type {import('peaks.js').WaveformZoomView | null}
+     *
+     * @private
+     */
     this.zoomview = null;
 
     /** @private */
@@ -79,7 +91,11 @@ export default class WaveForm extends DlfMediaPlugin {
       onResize: this.onResize.bind(this),
     };
 
-    /** @private @type {Partial<import('peaks.js').PeaksEvents>} */
+    /**
+     * @type {Partial<import('peaks.js').PeaksEvents>}
+     *
+     * @private
+     */
     this.peaksHandlers = {
       'points.dragend': (event) => {
         if (this.player !== null && event.point.id !== undefined) {
@@ -106,7 +122,11 @@ export default class WaveForm extends DlfMediaPlugin {
       },
     }
 
-    /** @private @type {Partial<import('DlfMediaPlayer/Markers').Handlers>} */
+    /**
+     * @type {Partial<import('DlfMediaPlayer/Markers').Handlers>}
+     *
+     * @private
+     */
     this.markersHandlers = {
       'remove': (event) => {
         for (const segment of event.detail.segments) {
@@ -195,8 +215,9 @@ export default class WaveForm extends DlfMediaPlugin {
   }
 
   /**
-   * @override
    * @inheritdoc
+   * @override
+   *
    * @param {DlfMediaPlayer} player
    */
   async attachToPlayer(player) {
@@ -228,8 +249,9 @@ export default class WaveForm extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {string} url
+   *
+   * @private
    */
   async load(url) {
     this.nextUrl = url;
@@ -319,8 +341,9 @@ export default class WaveForm extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {import('DlfMediaPlayer/Markers').Segment[]} segments
+   *
+   * @private
    */
   peaksAddSegments(segments) {
     if (this.peaks_ !== null) {
@@ -348,8 +371,9 @@ export default class WaveForm extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {WheelEvent} e
+   *
+   * @private
    */
   onWheel(e) {
     const zoomInFactor = 1.5 ** (-e.deltaY / 100);
@@ -365,8 +389,9 @@ export default class WaveForm extends DlfMediaPlugin {
   }
 
   /**
-   * @private
    * @param {number} samplesPerPixel
+   *
+   * @private
    */
   updateZoom(samplesPerPixel = this.samplesPerPixel) {
     if (this.waveformdata === null) {

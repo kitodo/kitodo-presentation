@@ -628,8 +628,8 @@ class OaiPmhController extends AbstractController
             return $documentSet;
         }
 
-        if ($this->settings['solr_limit'] > 0) {
-            $solr->limit = $this->settings['solr_limit'];
+        if ($this->settings['solrLimit'] > 0) {
+            $solr->limit = $this->settings['solrLimit'];
         }
         // We only care about the UID in the results and want them sorted
         $parameters = [

@@ -38,10 +38,18 @@ export default class BandEq {
     /** @private */
     this.audioContext_ = context;
 
-    /** @private @type {Band[]} */
+    /**
+     * @type {Band[]}
+     *
+     * @private
+     */
     this.bands_ = [];
 
-    /** @private @type {AudioNode | null} */
+    /**
+     * @type {AudioNode | null}
+     *
+     * @private
+     */
     this.prevNode_ = null;
 
     /** @private */

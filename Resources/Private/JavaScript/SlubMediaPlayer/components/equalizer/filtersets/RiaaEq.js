@@ -58,7 +58,11 @@ export default class RiaaEq {
     /** @private */
     this.processorNode = new AudioWorkletNode(context, 'multi-iir-processor');
 
-    /** @private @type {Record<RiaaParamKey, dlf.media.eq.Param<ParamValue>>} */
+    /**
+     * @type {Record<RiaaParamKey, dlf.media.eq.Param<ParamValue>>}
+     *
+     * @private
+     */
     this.pp = {
       deepBaseRolloff: this.makeParam('base', 50),
       baseBoostRolloff: this.makeParam('mid', 1000, () => [0, this.pp.baseBoost.frequency.value - 0.01]),
@@ -66,7 +70,11 @@ export default class RiaaEq {
       trebleCut: this.makeParam('treble', 5000),
     };
 
-    /** @private @type {dlf.media.eq.Param[]} */
+    /**
+     * @type {dlf.media.eq.Param[]}
+     *
+     * @private
+     */
     this.parameters_ = [
       this.pp.deepBaseRolloff,
       this.pp.baseBoostRolloff,
@@ -77,7 +85,11 @@ export default class RiaaEq {
     /** @private */
     this.gain_ = 1;
 
-    /** @private @type {Record<NodeKey, IIRFilter>} */
+    /**
+     * @type {Record<NodeKey, IIRFilter>}
+     *
+     * @private
+     */
     this.keyedFilters_ = this.createFilters();
 
     this.updateFilters();
@@ -179,11 +191,12 @@ export default class RiaaEq {
   }
 
   /**
-   * @private
    * @param {NodeKey} nodeKey
    * @param {number} initialFrequency
    * @param {() => [number, number]} rangeFn TODO?
    * @returns {dlf.media.eq.Param<ParamValue>}
+   *
+   * @private
    */
   makeParam(nodeKey, initialFrequency, rangeFn = () => [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY]) {
     return {
@@ -242,9 +255,10 @@ export default class RiaaEq {
 
   /**
    *
-   * @private
    * @param {NodeKey} nodeKey
    * @returns {IIRFilter}
+   *
+   * @private
    */
   makeFilter(nodeKey) {
     switch (nodeKey) {
@@ -331,8 +345,9 @@ export default class RiaaEq {
   /**
    * Get target gain at given {@link frequency}.
    *
-   * @private
    * @param {number} frequency
+   *
+   * @private
    */
   single(frequency) {
     let result = 0;
