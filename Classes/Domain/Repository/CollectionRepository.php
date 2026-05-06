@@ -64,6 +64,8 @@ class CollectionRepository extends AbstractRepository
             $query->matching($query->logicalAnd(...$constraints));
         }
 
+        $this->debugQuery($query);
+
         return $query->execute();
     }
 
@@ -111,6 +113,8 @@ class CollectionRepository extends AbstractRepository
             array('oai_name' => QueryInterface::ORDER_ASCENDING)
         );
 
+        $this->debugQuery($query);
+
         return $query->execute();
     }
 
@@ -152,6 +156,8 @@ class CollectionRepository extends AbstractRepository
                 Helper::whereExpression('tx_dlf_collections')
             )
             ->setMaxResults(1);
+
+        $this->debugQueryBuilder($result);
 
         return $result->executeQuery();
     }
