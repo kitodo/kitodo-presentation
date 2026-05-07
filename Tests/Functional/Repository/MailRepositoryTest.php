@@ -36,7 +36,7 @@ class MailRepositoryTest extends FunctionalTestCase
 
         $this->mailRepository = $this->initializeRepository(
             MailRepository::class,
-            20000
+            30000
         );
 
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/mail.csv');
@@ -46,9 +46,9 @@ class MailRepositoryTest extends FunctionalTestCase
      * @test
      * @group find
      */
-    public function canFindAllWithPid(): void
+    public function canFindAll(): void
     {
-        $mails = $this->mailRepository->findAllWithPid(30000);
+        $mails = $this->mailRepository->findAll();
         self::assertNotNull($mails);
         self::assertInstanceOf(QueryResult::class, $mails);
 

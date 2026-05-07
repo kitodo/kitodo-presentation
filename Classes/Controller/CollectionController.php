@@ -84,6 +84,9 @@ class CollectionController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->collectionRepository->useStoragePid($this->settings['storagePid']);
+        $this->metadataRepository->useStoragePid($this->settings['storagePid']);
+
         // Sort collections according to order in plugin flexform configuration
         if ($this->settings['collections']) {
             $sortedCollections = [];

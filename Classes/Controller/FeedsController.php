@@ -66,6 +66,8 @@ class FeedsController extends AbstractController
         // access to GET parameter tx_dlf_feeds['collection']
         $requestData = $this->request->getArguments();
 
+        $this->libraryRepository->useStoragePid($this->settings['storagePid']);
+
         // get library information
         /** @var \Kitodo\Dlf\Domain\Model\Library|null $library */
         $library = $this->libraryRepository->findByUid($this->settings['library']);
