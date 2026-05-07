@@ -1,26 +1,42 @@
 <html data-namespace-typo3-fluid="true"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
-    <div class="tx-dlf-validationform" >
-        <form action="{url}"
-            data-i18n-headline-error="<f:translate key='validationForm.headline.error' extensionName='dlf' />"
-            data-i18n-headline-notice="<f:translate key='validationForm.headline.notice' extensionName='dlf' />"
-            data-i18n-headline-success="<f:translate key='validationForm.headline.success' extensionName='dlf' />"
-            data-i18n-headline-warning="<f:translate key='validationForm.headline.warning' extensionName='dlf'/>"
-            >
-            <input type="hidden" name="type" value="{settings.type}">
-            <label>
-                <f:format.raw><f:translate key='validationForm.label' extensionName='dlf' /></f:format.raw>
-                <input type="text" name="url" class="url" value="" required>
-            </label>
-            <div class="disabled-validators">
-                <f:for each="{disabledValidators}" as="value" key="key" >
-                    <label title="{f:translate(key: value.shortdescription)}">
-                        <input type="checkbox" name="enableValidator[]" class="checkbox" value="{key}"/>
-                        {f:translate(key: value.title)}
-                    </label>
-                </f:for>
-            </div>
-            <input type="submit" class="submit" value="<f:translate key='validationForm.validate' extensionName='dlf' />">
-        </form>
-    </div>
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+</f:comment>
+
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
+<div class="tx-dlf-validationform" >
+    <form action="{url}"
+          data-i18n-headline-error="<f:translate key='validationForm.headline.error' extensionName='dlf' />"
+          data-i18n-headline-notice="<f:translate key='validationForm.headline.notice' extensionName='dlf' />"
+          data-i18n-headline-success="<f:translate key='validationForm.headline.success' extensionName='dlf' />"
+          data-i18n-headline-warning="<f:translate key='validationForm.headline.warning' extensionName='dlf'/>"
+    >
+        <input type="hidden" name="type" value="{settings.type}">
+        <label>
+            <f:format.raw><f:translate key='validationForm.label' extensionName='dlf' /></f:format.raw>
+            <input type="text" name="url" class="url" value="" required>
+        </label>
+        <div class="disabled-validators">
+            <f:for each="{disabledValidators}" as="value" key="key" >
+                <label title="{f:translate(key: value.shortdescription)}">
+                    <input type="checkbox" name="enableValidator[]" class="checkbox" value="{key}"/>
+                    {f:translate(key: value.title)}
+                </label>
+            </f:for>
+        </div>
+        <input type="submit" class="submit" value="<f:translate key='validationForm.validate' extensionName='dlf' />">
+    </form>
+</div>
+
 </html>
