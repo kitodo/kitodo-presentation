@@ -18,7 +18,6 @@ use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Psr\Http\Message\ResponseInterface;
-use Random\RandomException;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -224,8 +223,6 @@ class CollectionController extends AbstractController
      * @param Solr $solr for query
      *
      * @return array<int,array{collection:Collection,info:array<string,mixed>}> Processed collections keyed by priority-based integer
-     *
-     * @throws RandomException
      */
     private function processCollections(array$collections, Solr $solr): array
     {
