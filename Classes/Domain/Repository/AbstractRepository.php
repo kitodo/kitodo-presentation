@@ -53,7 +53,21 @@ class AbstractRepository extends Repository
     }
 
     /**
-     * Sets the storage pid for the repository.
+     * Sets the storage pid to be ignored in the repository.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function ignoreStoragePid(): void
+    {
+        $querySettings = $this->createQuery()->getQuerySettings();
+        $querySettings->setRespectStoragePage(false);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * Sets the storage pid for use in the repository.
      *
      * @access public
      *
@@ -61,9 +75,10 @@ class AbstractRepository extends Repository
      *
      * @return void
      */
-    public function setStoragePid(int $storagePid): void
+    public function useStoragePid(int $storagePid): void
     {
         $querySettings = $this->createQuery()->getQuerySettings();
+        $querySettings->setRespectStoragePage(true);
         $querySettings->setStoragePageIds([$storagePid]);
         $this->setDefaultQuerySettings($querySettings);
     }

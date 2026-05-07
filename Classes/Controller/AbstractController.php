@@ -259,7 +259,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // Sanitize FlexForm settings to avoid later casting.
         $this->sanitizeSettings();
 
-        $this->documentRepository->setStoragePid($this->settings['storagePid']);
+        $this->documentRepository->useStoragePid($this->settings['storagePid']);
 
         // Get document ID from request data if not passed as parameter.
         if (!$documentId && !empty($this->requestData['id'])) {
