@@ -86,7 +86,7 @@ dlfValidationForms.forEach((validationForm) => {
     }
 
     /**
-     * Create the messages container.
+     * Create the messages' container.
      *
      * @param {string} type of callout class
      * @param {Array} messages of type

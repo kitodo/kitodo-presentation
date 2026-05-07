@@ -13,9 +13,8 @@
 namespace Kitodo\Dlf\Common;
 
 use Flow\JSONPath\JSONPath;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\AnnotationContainerInterface;
@@ -114,38 +113,19 @@ final class IiifManifest extends AbstractDocument
     protected array $mimeTypes = [];
 
     /**
+     * @var MetadataRepository
+     */
+    protected MetadataRepository $metadataRepository;
+
+    /**
+     * {@inheritDoc}
      * @see AbstractDocument::establishRecordId()
      */
     protected function establishRecordId(int $pid): void
     {
         if ($this->iiif !== null) {
-            // TODO: Saving / indexing should still work - check!
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-            // Get hidden records, too.
-            $queryBuilder
-                ->getRestrictions()
-                ->removeByType(HiddenRestriction::class);
-            $result = $queryBuilder
-                ->select('tx_dlf_metadataformat.xpath AS querypath')
-                ->from('tx_dlf_metadata')
-                ->from('tx_dlf_metadataformat')
-                ->from('tx_dlf_formats')
-                ->where(
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.pid', (int) $pid),
-                    $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', (int) $pid),
-                    $queryBuilder->expr()->or(
-                        $queryBuilder->expr()->and(
-                            $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
-                            $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
-                            $queryBuilder->expr()->eq('tx_dlf_metadata.index_name', $queryBuilder->createNamedParameter('record_id')),
-                            $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($this->getIiifVersion()))
-                        ),
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
-                    )
-                )
-                ->executeQuery();
-            while ($resArray = $result->fetchAssociative()) {
+            $allResults = $this->metadataRepository->findQueryPath($pid, $this->getIiifVersion());
+            foreach ($allResults as $resArray) {
                 $recordIdPath = $resArray['querypath'];
                 if (!empty($recordIdPath)) {
                     try {
@@ -535,44 +515,14 @@ final class IiifManifest extends AbstractDocument
 
         $metadata = $this->initializeMetadata('IIIF');
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_metadata');
-        // Get hidden records, too.
-        $queryBuilder
-            ->getRestrictions()
-            ->removeByType(HiddenRestriction::class);
-        $result = $queryBuilder
-            ->select(
-                'tx_dlf_metadata.index_name AS index_name',
-                'tx_dlf_metadataformat.xpath AS xpath',
-                'tx_dlf_metadataformat.xpath_sorting AS xpath_sorting',
-                'tx_dlf_metadata.is_sortable AS is_sortable',
-                'tx_dlf_metadata.default_value AS default_value',
-                'tx_dlf_metadata.format AS format'
-            )
-            ->from('tx_dlf_metadata')
-            ->from('tx_dlf_metadataformat')
-            ->from('tx_dlf_formats')
-            ->where(
-                $queryBuilder->expr()->eq('tx_dlf_metadata.pid', $this->configPid),
-                $queryBuilder->expr()->eq('tx_dlf_metadataformat.pid', $this->configPid),
-                $queryBuilder->expr()->or(
-                    $queryBuilder->expr()->and(
-                        $queryBuilder->expr()->eq('tx_dlf_metadata.uid', 'tx_dlf_metadataformat.parent_id'),
-                        $queryBuilder->expr()->eq('tx_dlf_metadataformat.encoded', 'tx_dlf_formats.uid'),
-                        $queryBuilder->expr()->eq('tx_dlf_formats.type', $queryBuilder->createNamedParameter($this->getIiifVersion()))
-                    ),
-                    $queryBuilder->expr()->eq('tx_dlf_metadata.format', 0)
-                )
-            )
-            ->executeQuery();
+        $allResults = $this->metadataRepository->findForIiif($this->configPid, $this->getIiifVersion());
         $iiifResource = $this->iiif->getContainedResourceById($id);
-        while ($resArray = $result->fetchAssociative()) {
+        foreach ($allResults as $resArray) {
             // Set metadata field's value(s).
             if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
                 $values = $iiifResource->jsonPath($resArray['xpath']);
                 if (is_string($values)) {
-                    $metadata[$resArray['index_name']] = [trim((string) $values)];
+                    $metadata[$resArray['index_name']] = [trim($values)];
                 } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
                     $metadata[$resArray['index_name']] = [];
                     foreach ($values->getData() as $value) {
@@ -740,6 +690,7 @@ final class IiifManifest extends AbstractDocument
     protected function init(string $location, array $settings = []): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
+        $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
     }
 
     /**
@@ -748,7 +699,7 @@ final class IiifManifest extends AbstractDocument
     protected function prepareMetadataArray(): void
     {
         $id = $this->iiif->getId();
-        $this->metadataArray[(string) $id] = $this->getMetadata($id);
+        $this->metadataArray[$id] = $this->getMetadata($id);
     }
 
     /**

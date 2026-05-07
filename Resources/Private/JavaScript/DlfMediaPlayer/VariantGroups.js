@@ -39,32 +39,37 @@ export default class VariantGroups {
    */
   constructor(player) {
     /**
-     * @private
      * @type {import('shaka-player/dist/shaka-player.ui').default.Player}
+     *
+     * @private
      */
     this.player = player;
 
     /**
-     * @private
      * @type {import('shaka-player/dist/shaka-player.ui').default.extern.Manifest | null}
+     *
+     * @private
      */
     this.manifest = player.getManifest();
 
     /**
-     * @private
      * @type {GroupKey[]}
+     *
+     * @private
      */
     this.groupKeys = [];
 
     /**
-     * @private
      * @type {Group[]}
+     *
+     * @private
      */
     this.groups = [];
 
     /**
-     * @private
      * @type {Record<GroupKey, Group>}
+     *
+     * @private
      */
     this.keyToGroup = {};
 
@@ -231,9 +236,10 @@ export default class VariantGroups {
 
   /**
    *
-   * @protected
    * @param {Group | undefined} group
    * @returns {boolean}
+   *
+   * @protected
    */
   trySelectGroup(group) {
     if (group) {

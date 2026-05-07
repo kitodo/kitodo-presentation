@@ -17,6 +17,7 @@ use GuzzleHttp\Client as HttpClient;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Repository\AbstractRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -24,8 +25,6 @@ use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
@@ -234,20 +233,18 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
      *
      * @access protected
      *
-     * @template T
+     * @template T of AbstractRepository
      *
      * @param class-string<T> $className The fully qualified class name of the repository
      * @param int $storagePid The storage PID to set in the query settings
      *
      * @return T The initialized repository
      */
-    protected function initializeRepository(string $className, int $storagePid): Repository
+    protected function initializeRepository(string $className, int $storagePid): AbstractRepository
     {
-        /* @var Repository $repository */
+        /* @var AbstractRepository $repository */
         $repository = GeneralUtility::makeInstance($className);
-        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
-        $querySettings->setStoragePageIds([$storagePid]);
-        $repository->setDefaultQuerySettings($querySettings);
+        $repository->useStoragePid($storagePid);
 
         return $repository;
     }

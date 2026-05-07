@@ -57,7 +57,10 @@ export default class ShakaFrontend {
     /** @private */
     this.media = media;
 
-    /** @private @type {dlf.media.MediaProperties} */
+    /**
+     * @private
+     * @type {dlf.media.MediaProperties}
+     */
     this.mediaProperties = {
       poster: null,
       chapters: null,
@@ -68,7 +71,11 @@ export default class ShakaFrontend {
     /** @private */
     this.lastReadyState = 0;
 
-    /** @private @type {dlf.media.PlayerProperties} */
+    /**
+     * @type {dlf.media.PlayerProperties}
+     *
+     * @private
+     */
     this.playerProperties = {
       mode: 'audio',
       locale: '',
@@ -79,16 +86,32 @@ export default class ShakaFrontend {
       playerView: null,
     };
 
-    /** @private @type {string[]} */
+    /**
+     * @type {string[]}
+     *
+     * @private
+     */
     this.overflowMenuButtons = [];
 
-    /** @private @type {HTMLElement | null} */
+    /**
+     * @type {HTMLElement | null}
+     *
+     * @private
+     */
     this.shakaBottomControls = null;
 
-    /** @private @type {HTMLElement[]} */
+    /**
+     * @type {HTMLElement[]}
+     *
+     * @private
+     */
     this.shakaBottomControlElements = [];
 
-    /** @private @type {FlatSeekBar | null} */
+    /**
+     * @type {FlatSeekBar | null}
+     *
+     * @private
+     */
     this.seekBar_ = null;
 
     /** @private */
@@ -112,10 +135,18 @@ export default class ShakaFrontend {
     /** @private */
     this.ui = new shaka.ui.Overlay(this.player, this.$videoBox, this.media);
 
-    /** @private */
-    this.controls = /** @type {shaka.ui.Controls} */(this.ui.getControls());
+    /**
+     * @type {shaka.ui.Controls
+     *
+     * @private
+     */
+    this.controls = (this.ui.getControls());
 
-    /** @private @type {ReturnType<setTimeout> | null} */
+    /**
+     * @type {ReturnType<setTimeout> | null}
+     *
+     * @private
+     */
     this.configureTimeout = null;
 
     /** @private */
@@ -184,9 +215,10 @@ export default class ShakaFrontend {
   }
 
   /**
-   * @private
    * @param {dlf.media.MediaProperties} fullProps
    * @param {Partial<dlf.media.MediaProperties>} updateProps
+   *
+   * @private
    */
   notifyMediaProperties(
     fullProps = this.mediaProperties,
@@ -481,8 +513,9 @@ export default class ShakaFrontend {
    * Determine whether or not {@link event} should be interpreted as (part of)
    * a gesture. See configuration of {@link Gestures} for more information.
    *
-   * @private
    * @param {PointerEvent} event
+   *
+   * @private
    */
   allowGesture(event) {
     // Don't allow gestures over Shaka bottom controls
@@ -537,8 +570,9 @@ export default class ShakaFrontend {
   }
 
   /**
-   * @private
    * @param {number} readyState
+   *
+   * @private
    */
   updateBottomControlsVisibility(readyState) {
     // When readyState is strictly between 0 and minBottomControlsReadyState,
