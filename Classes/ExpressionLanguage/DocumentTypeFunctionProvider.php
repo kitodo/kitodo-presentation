@@ -180,10 +180,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             $this->document = null;
             if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
                 // find document from repository by uid
-                $this->document = $this->documentRepository->findOneByIdAndSettings(
-                    (int) $requestData['id'],
-                    ['storagePid' => $storagePid]
-                );
+                $this->document = $this->documentRepository->findByUid((int) $requestData['id']);
                 if ($this->document) {
                     $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid]);
                 } else {
