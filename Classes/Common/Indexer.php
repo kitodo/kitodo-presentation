@@ -284,7 +284,7 @@ class Indexer
         if (!self::$fieldsLoaded) {
             /** @var MetadataRepository $metadataRepository */
             $metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
-            $metadataRepository->setStoragePid($pid);
+            $metadataRepository->useStoragePid($pid);
             $metadata = $metadataRepository->findAll();
 
             /** @var Metadata $indexing */
