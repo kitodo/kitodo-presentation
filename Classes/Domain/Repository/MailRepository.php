@@ -13,10 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\Mail;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-use TYPO3\CMS\Extbase\Persistence\Repository;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Mail repository.
@@ -26,28 +22,9 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
- * @extends Repository<Mail>
+ * @extends AbstractRepository<Mail>
  */
-class MailRepository extends Repository
+class MailRepository extends AbstractRepository
 {
-    /**
-     * Find all mails by pid.
-     *
-     * @access public
-     *
-     * @param int $pid
-     *
-     * @return array<Mail>|QueryResultInterface<int, Mail>
-     */
-    public function findAllWithPid(int $pid): array|QueryResultInterface
-    {
-        /** @var Typo3QuerySettings $querySettings */
-        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
 
-        $querySettings->setStoragePageIds([$pid]);
-
-        $this->setDefaultQuerySettings($querySettings);
-
-        return $this->findAll(); // @phpstan-ignore-line
-    }
 }
