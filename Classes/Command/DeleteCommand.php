@@ -146,7 +146,7 @@ class DeleteCommand extends BaseCommand
                 $io->section('Deleting ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
             }
             $this->documentRepository->remove($document);
-            $this->persistenceManager->persistAll();
+            $this->documentRepository->persistAll();
             if ($io->isVerbose()) {
                 $io->success('Deleted ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . '.');
             }
